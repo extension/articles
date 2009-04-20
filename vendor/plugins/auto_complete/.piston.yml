@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 7b18f05af68dec0f9e45b1a01d6b7c94e306caeb
+  branch: master
+lock: false
+repository_class: Piston::Git::Repository
+repository_url: git://github.com/rails/auto_complete.git
