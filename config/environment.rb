@@ -15,10 +15,14 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
-  # config.gem "bj"
-  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
-  # config.gem "sqlite3-ruby", :lib => "sqlite3"
-  # config.gem "aws-s3", :lib => "aws/s3"
+  config.gem 'mislav-will_paginate', :version => '~>2.3', :lib => 'will_paginate', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'ruby-openid', :version => '~>2.1', :lib => 'openid', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'has_many_polymorphs', :version => '~>2.13', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'ratom', :version => '~>0.6', :lib => 'atom', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'hpricot', :version => '~>0.8', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'tzinfo', :version => '~>0.3', :source => 'http://systems.extension.org/rubygems/'
+  
+  # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -38,4 +42,12 @@ Rails::Initializer.run do |config|
   # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
+
+  # cache configuration
+  config.cache_store = :mem_cache_store, 'localhost', {:namespace => 'pubsite'}
 end
+
+# require for tagging
+# commented out for now
+# TODO: figure out why this has to be in environment.rb
+# require 'tagging_extensions'

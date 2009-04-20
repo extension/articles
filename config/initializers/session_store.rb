@@ -5,8 +5,9 @@
 # Make sure the secret is at least 30 characters and all random, 
 # no regular words or you'll be exposed to dictionary attacks.
 ActionController::Base.session = {
-  :key         => '_darmok_session',
-  :secret      => 'b1c69252c451df73002849d0f665ae4978ad3fc4b3d1f0107296009f5e9787c6ad8d0dc66ef3f7b31efe999b2337e0b86cfd31772f2b1e0c4c6f38af04a6341c'
+  :key         => '_pubsite_session',
+  :secret      => AppConfig.configtable['sessionsecret'],
+  :expire_after => 2.days
 }
 
 # Use the database for sessions instead of the cookie-based default,
