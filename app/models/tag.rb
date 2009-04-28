@@ -12,8 +12,8 @@ class Tag < ActiveRecord::Base
   SYSTEM = 'system'
   SHARED = 'shared'
  
-  SPLITTER = Regexp.new(/("[^"]*")|\s+|\s*,\s*/)
-  JOINER = " " 
+  SPLITTER = Regexp.new(/\s*,\s*/)
+  JOINER = "," 
 
   # If database speed becomes an issue, you could remove these validations and rescue the ActiveRecord database constraint errors instead.
   validates_presence_of :name
@@ -41,9 +41,11 @@ class Tag < ActiveRecord::Base
   class << self
   
     # normalize tag names 
-    # eg. remove spaces, special characters and downcase
+    # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces) 
+    # TODO: test like crazy.
+    # TODO: there's probably a more efficient regex out there than these chained gsubs - fix!
     def normalizename(name)
-      return name.downcase.gsub(/[^a-z0-9:_-]/,'')
+      return name.downcase.gsub(/\s+/,' ').gsub('_',' ').gsub(/[^a-z0-9:-\s]/,'').strip
     end
   
   end
