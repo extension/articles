@@ -41,7 +41,7 @@ class ActivityApplication < ActiveRecord::Base
     noerrors = true
     return false if !(self.isactivitysource?)
     if(retrievedby.nil?)
-      retrievedby = User.peoplebot
+      retrievedby = User.systemuser
     end
     baseoptions = {:activityapplication => self, :refreshall => refreshall}
     case self.activitysourcetype    
@@ -93,7 +93,7 @@ class ActivityApplication < ActiveRecord::Base
     returninformation = {}
     return returninformation if !(self.isactivitysource?)
     if(retrievedby.nil?)
-      retrievedby = User.peoplebot
+      retrievedby = User.systemuser
     end
     baseoptions = {:activityapplication => self, :refreshall => refreshall}
     case self.activitysourcetype    

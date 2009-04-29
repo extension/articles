@@ -34,12 +34,12 @@ class UserEvent < ActiveRecord::Base
   LOGIN_LOCAL_FAILED = 302 
   
   
-  # peoplebot events
+  # systemuser events
   RETRIEVE_DATA_SUCCESS = 1001
   RETRIEVE_DATA_FAILURE = 1002
   
-  def self.log_peoplebot_event(opts)
-    opts[:user] = user = User.find(1) # Mr. Peoplebot
+  def self.log_systemuser_event(opts)
+    opts[:user] = user = User.systemuser
     opts[:login] = user.login
     opts[:ip] = 'local'
     UserEvent.create(opts)

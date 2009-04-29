@@ -328,7 +328,7 @@ module DataImportActivity
   def aae_submissions_sql(activityapplication,last_activitysource_at=nil,refreshall=false)
       mydatabase = self.connection.instance_variable_get("@config")[:database]
       activitydatabase = activityapplication.activitysource
-      system_user_id = User.peoplebot.id
+      system_user_id = User.systemuser.id
 
       dtc = "#{activitydatabase}.submitted_questions.external_app_id"
       casestatement = "CASE #{dtc} WHEN 'widget' THEN #{Activity::AAE_SUBMISSION_WIDGET} WHEN 'www.extension.org' THEN #{Activity::AAE_SUBMISSION_PUBSITE} ELSE #{Activity::AAE_SUBMISSION_OTHER} END"

@@ -697,7 +697,7 @@ class Activity < ActiveRecord::Base
       
       # creator check
       if(opts[:creator].nil?)
-        opts[:creator] = User.peoplebot
+        opts[:creator] = User.systemuser
       end
 
       if(opts[:ipaddr].nil?)

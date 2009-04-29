@@ -148,8 +148,8 @@ class NotificationMailer < ActionMailer::Base
     # base parameters for the email
     self.base_email
     @recipients     = oncolleague.email
-    # don't cc peoplebot
-    if(!bycolleague.is_peoplebot?)
+    # don't cc systemuser
+    if(!bycolleague.is_systemuser?)
       @cc             = bycolleague.email
     end
     

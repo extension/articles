@@ -39,7 +39,7 @@ class ActivityEvent < ActiveRecord::Base
     def log_event(options)
       creationoptions = options
       if(creationoptions[:user].nil?)
-        creationoptions[:user] = User.peoplebot
+        creationoptions[:user] = User.systemuser
       end
     
       # ip address
@@ -51,7 +51,7 @@ class ActivityEvent < ActiveRecord::Base
   
     def log_system_event(options)
       creationoptions = options
-      creationoptions[:user] = User.peoplebot # Mr. Peoplebot
+      creationoptions[:user] = User.systemuser # THE SYSTEM
       # ip address
       if(creationoptions[:ipaddr].nil?)
         creationoptions[:ipaddr] = AppConfig.configtable['request_ip_address']

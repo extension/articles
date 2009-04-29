@@ -166,14 +166,12 @@ class Community < ActiveRecord::Base
     self.update_attribute(:taglist_cache,my_top_tags_displaylist(:order => 'weightedfrequency DESC', :minweight => 2))
   end
   
-  def peoplebot_sharedtags_displaylist
-    peoplebot = User.find(1)
-    return self.tag_displaylist_by_owner_and_kind(peoplebot,Tag::SHARED)
+  def system_sharedtags_displaylist
+    return self.tag_displaylist_by_owner_and_kind(User.systemuser,Tag::SHARED)
   end
   
-  def tag_myself_with_peoplebot_tags(taglist)
-    peoplebot = User.find(1)
-    self.tag_with_and_cache(taglist,peoplebot,Tag::SHARED,AppConfig::configtable['peoplebot_sharedtag_weight'])
+  def tag_myself_with_systemuser_tags(taglist)
+    self.tag_with_and_cache(taglist,User.systemuser,Tag::SHARED,AppConfig::configtable['systemuser_sharedtag_weight'])
   end
   
   def shared_tag_list_to_s(limit=10)
