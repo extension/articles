@@ -105,12 +105,8 @@ class User < ActiveRecord::Base
   has_many :categories, :through => :expertise_areas
   has_many :expertise_events
   has_many :user_roles
-
   has_many :assignment_widgets, :source => :widget, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id}" 
-  has_many :widgets
 
-  
-  
   #has_many :listmemberships, :dependent => :destroy
   #has_many :listownerships, :dependent => :destroy
   #has_many :lists, :through => :listmemberships, :source => :list
@@ -124,8 +120,6 @@ class User < ActiveRecord::Base
   before_create :encrypt_password
   before_update :encrypt_password
   
-
-  
   validates_uniqueness_of :login, :on => :create
   
   # Starts with a letter, has letters, numbers, and underscores in the middle
@@ -135,8 +129,6 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/
   validates_length_of :email, :maximum=>96
-
-
 
   validates_confirmation_of :password, :message => 'has to be the same in both fields. Please type both passwords again.'
   validates_length_of :login, :within => 3..40
@@ -1365,10 +1357,7 @@ class User < ActiveRecord::Base
     
   end
   
-    def has_right_for?(action, controller)
-      user_roles.detect { |user_role| user_role.has_right_for?(action, controller)}
-    end
-
+    # faq user model...
     def get_preference_by_name(name)
       user_preferences.find_by_name(name)
     end
@@ -1485,92 +1474,11 @@ class User < ActiveRecord::Base
       assigned_questions.count(:conditions => "status_state = #{SubmittedQuestion::STATUS_SUBMITTED} And external_app_id IS NOT NULL")
     end
 
-    def report_resolved(date1, date2)
-      if (date1 && date2)
-        return resolved_questions.count(:conditions => ["(status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED})) and created_at > ? and created_at < ?", date1, date2])
-      else
-        return resolved_questions.count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED})")
-      end
-    end
-
     def get_resolved
       return resolved_questions.count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED})")
     end
-
-    def get_avg_resp_time(date1, date2)
-      statuses = [ "", " and status='resolved'", "and status='rejected'","and status='no answer'"]
-      n = statuses.size; i = 0; results=[]
-      while i < n do
-          if (date1 && date2)
-             avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as stdev from users join
-               submitted_questions on submitted_questions.resolved_by=users.id where users.id=#{self.id} and
-               submitted_questions.created_at  between ? and ? #{statuses[i]}",  date1, date2])
-           else
-             avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as stdev from users join
-             submitted_questions on submitted_questions.resolved_by=users.id where users.id=#{self.id} #{statuses[i]}"])
-           end
-        results[i] = [avgstd[0].ra, avgstd[0].stdev, avgstd[0].count_all]
-        i = i + 1
-      end
-      results
-    end
     
-    def get_number_entered(date1, date2)
-      statuses = ["", " and status='draft'", " and status='archived'", " and status='published'"]
-      results = Array.new; i = 0; cond_string = "and questions.created_at between ? and ?" ; 
-      while i < 4 do
-        cond = " revision_number=1 and user_id='#{self.id}'"+ statuses[i]
-        if (date1 && date2)
-          cond = cond +  cond_string   
-        end 
-        results[i] = Revision.count(:all, :joins => " join questions on revisions.question_id=questions.id ",
-          :conditions => ((date1 && date2) ? [cond, date1, date2] : cond))
-        i = i + 1
-      end  
-      return [results[0], results[1], results[2], results[3]]
-    end
-
-    def get_search_terms
-       Search.find_by_sql(["Select terms from searches where user_id = ?", id])  
-    end
-
-
-
-    def get_comments_with_questions(limit)
-      return Review.find_by_sql(["Select reviews.*, revisions.question_id as question_id from reviews join revisions on " +
-                                 "revisions.id = reviews.revision_id where reviews.user_id = ? and TRIM(reviews.comments) <> '' order by reviews.created_at desc LIMIT #{limit}", self.id])
-    end
-
-
-
-    def self.get_answerers_in_category(catid)
-      find_by_sql(["Select distinct users.id, users.first_name, users.last_name, users.login, roles.name, roles.id as rid  from users join expertise_areas as ea on users.id=ea.user_id " +
-        " left join user_roles on user_roles.user_id=users.id left join roles on user_roles.role_id=roles.id " +
-        " where ea.category_id=? order by users.last_name", catid ])
-    end
-
-    def self.find_state_users(loc, county, date1, date2, *args)
-       cdstring= " state='#{loc.abbreviation}'"
-       if (county)
-         cdstring = cdstring + " and county='#{county}' "
-       end
-       if (date1 && date2)
-           cdstring = [cdstring + " and created_at > ? and created_at < ?", date1, date2]
-       end
-       @users=User.with_scope(:find => { :conditions => cdstring, :limit => 100}) do
-         paginate(*args)
-       end
-    end
-
-    def self.find_cat_users(cat, date1, date2, *args)
-      cdstring= " category_id=#{cat.id}"
-      if (date1 && date2)
-           cdstring = [cdstring + " and users.created_at between ? and ?", date1, date2]
-       end
-       @users=User.with_scope(:find => { :conditions => cdstring, :limit => 100}) do
-         paginate(*args)
-       end
-     end
+    # end faq user model
 
      #returns the name of a university logo
      def logo_image_name
