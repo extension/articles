@@ -1420,8 +1420,6 @@ class User < ActiveRecord::Base
       end
     end
 
-
-
     def get_counties_in_location(location)
       if intersect_counties = expertise_counties_in_location(location)
         return "(#{intersect_counties.map{|c| c.name}.join(',')})"
@@ -1516,89 +1514,7 @@ class User < ActiveRecord::Base
       end
       results
     end
-
-    def count_contributions(*args)
-      Question.count_user_contributions(self, *args)
-    end  
-
-    def count_contributions_with_new_activity
-      questions = Question.find_by_sql("SELECT DISTINCT q.*
-      FROM questions AS q
-      JOIN revisions AS r ON r.question_id = q.id
-      WHERE r.user_id = #{self.id}
-      AND q.last_revision_date >= (
-      SELECT MAX( vq.created_at )
-      FROM viewed_questions AS vq
-      WHERE vq.user_id = #{self.id}
-      AND vq.question_id = q.id )")
-
-      return questions.length
-    end
-
-    def count_watched_with_new_activity
-      questions = Question.find_by_sql("SELECT DISTINCT q.*
-      FROM questions AS q
-      JOIN questions_users AS qu ON q.id = qu.question_id
-      JOIN users AS u ON u.id = qu.user_id
-      WHERE u.id = #{self.id}
-      AND q.last_revision_date >= (
-      SELECT MAX( vq.created_at )
-      FROM viewed_questions AS vq
-      WHERE vq.user_id = #{self.id}
-      AND vq.question_id = q.id )")
-
-      return questions.length
-    end
-
-    def count_commented_with_new_activity
-      questions = Question.find_by_sql("SELECT DISTINCT q.*
-      FROM questions AS q
-      JOIN revisions AS r ON r.question_id = q.id
-      JOIN reviews AS rev ON rev.revision_id = r.id
-      WHERE rev.user_id = #{self.id}
-      AND q.last_revision_date >= (
-      SELECT MAX( vq.created_at )
-      FROM viewed_questions AS vq
-      WHERE vq.user_id = #{self.id}
-      AND vq.question_id = q.id )")
-
-      return questions.length
-    end
-
-    def User.get_registered_users(date1, date2)
-      if (date1 && date2)
-        return self.count(:all,
-        :conditions => [" created_at >= ? and created_at <= ?", date1, date2])
-      else
-        return self.count
-      end
-    end
-
-    def User.entered_question
-     # find_by_sql(["Select users.id from users join revisions on users.id=revisions.user_id where revision_number=1"]).uniq.size
-      return self.count(:all,
-       :select => "distinct users.id",
-       :joins => " join revisions on users.id=revisions.user_id",
-       :conditions => " revision_number=1")
-    end
-
-   #  <--   These are potential fields if they should prove interesting 
-
-   #  def User.entered_question_by_state(stateobj)
-   #     find_by_sql(["Select users.id from users join revisions on users.id=revisions.user_id where revision_number=1 && state=?", stateobj.abbreviation]).uniq.size
-  #  end
-
-   # def User.entered_question_by_category(catobj)
-   #    find_by_sql(["Select users.id from users join revisions on users.id=revisions.user_id join expertise_areas on users.id=expertise_areas.user_id where revision_number=1 && category_id=?", catobj.id]).uniq.size
-   #  end
-
-  #  def User.entered_question_by_university(univobj)
-   #    find_by_sql(["Select users.id from users join revisions on users.id=revisions.user_id where revision_number=1 && university=?", univobj.name]).uniq.size
-   #  end
-    #    -->
-
-
-
+    
     def get_number_entered(date1, date2)
       statuses = ["", " and status='draft'", " and status='archived'", " and status='published'"]
       results = Array.new; i = 0; cond_string = "and questions.created_at between ? and ?" ; 
@@ -1632,59 +1548,6 @@ class User < ActiveRecord::Base
         " left join user_roles on user_roles.user_id=users.id left join roles on user_roles.role_id=roles.id " +
         " where ea.category_id=? order by users.last_name", catid ])
     end
-
-
-
-  #  def User.get_reg_user_by_county(countyname, locabbr, date1, date2)
-  #   if (date1 && date2)
-  #     return self.count(:all,
-  #     :conditions => ["county= ? and state=? and created_at >= ? and created_at <= ?", countyname, locabbr, date1, date2])
-  #   else
-  #     return self.count(:all,
-  #      :conditions => ["county = ? and state=? ", countyname, locabbr])
-  #   end
-  #  end
-
-
-
-    def User.get_reg_user_by_community(commobj)
-    return self.count(:all,
-     :joins => "join community_assignments on users.id=community_assignments.user_id ",
-     :conditions => "community_id='#{commobj.id}'")
-    end
-
-
-    def User.get_reg_user_by_university(univobj)
-     return self.count(:all,
-      :conditions => "university='#{univobj.name}'")
-    end
-
-
-    # This was written to be used as a console command
-    def User.get_list_of_wranglers
-      wrs=find_by_sql([" Select * from users join user_roles on user_roles.user_id=users.id where role_id=3"]).sort { |a,b| a.last_name <=> b.last_name}
-      wrs.each do |wr|
-        puts wr.first_name + " " + wr.last_name + "        " + wr.email
-      end
-      nil
-    end
-
-
-
-  #  def User.get_number_entered_comment_by_county(countyname, locabbr, date1, date2)
-  #    if (date1 && date2)
-  #      return self.count(:all,
-  #       :select => " DISTINCT users.id",
-  #        :joins => " join reviews on users.id=reviews.user_id",
-  #        :conditions => [" county = ? and state = ? and comments <> '' and reviews.created_at >=? and reviews.created_at <= ?", countyname, locabbr, date1, date2])
-  #    else
-  #       return self.count(:all,
-  #         :select => " DISTINCT users.id",
-  #         :joins => " join reviews on users.id=reviews.user_id",
-  #         :conditions => ["county = ? and state = ? and  comments <> '' ", countyname, locabbr])
-  #    end
-  #  end
-
 
     def self.find_state_users(loc, county, date1, date2, *args)
        cdstring= " state='#{loc.abbreviation}'"
