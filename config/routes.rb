@@ -1,43 +1,74 @@
 ActionController::Routing::Routes.draw do |map|
-  # The priority is based upon order of creation: first created -> highest priority.
-
-  # Sample of regular route:
-  #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
-  # Keep in mind you can assign values other than :controller and :action
-
-  # Sample of named route:
-  #   map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
-  # This route can be invoked with purchase_url(:id => product.id)
-
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   map.resources :products
-
-  # Sample resource route with options:
-  #   map.resources :products, :member => { :short => :get, :toggle => :post }, :collection => { :sold => :get }
-
-  # Sample resource route with sub-resources:
-  #   map.resources :products, :has_many => [ :comments, :sales ], :has_one => :seller
   
-  # Sample resource route with more complex sub-resources
-  #   map.resources :products do |products|
-  #     products.resources :comments
-  #     products.resources :sales, :collection => { :recent => :get }
-  #   end
+  map.root :controller => 'main'
+  
+  map.resources :assets, :path_prefix => '/admin', :except => :show
+  map.resources :county_links, :path_prefix => '/admin'
+  map.resources :institutions, :path_prefix => '/admin'
+  map.resources :feed_locations, :path_prefix => '/admin'
+  
+  map.asset 'admin/asset/:file', :controller => "assets", :action => "show"
+  map.connect 'admin/asset/:file.:format', :controller => "assets", :action => "show"
+      
+  map.open_id_complete 'openidsession', :controller => "openidsessions", :action => "create", :requirements => { :method => :get }
+  map.resource :openidsession
+  
+  map.home '', :controller => 'main', :action => 'index'
+  map.redirect 'news', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :category => 'all', :permanent => true
+  map.redirect 'faqs', :controller => 'faq', :action => 'index', :page => '1', :order => 'heureka_published_at DESC', :category => 'all', :permanent => true
+  map.redirect 'articles', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :category => 'all', :permanent => true
+  
+  map.connect 'admin/:action/:id', :controller => 'admin'
+  map.connect 'admin/:action', :controller => 'admin'
+  
+  map.connect 'rating/:action', :controller => 'rating'
+  map.connect 'rating/:action/:id', :controller => 'rating'
+  map.connect 'main/:action', :controller => 'main'
+  
+  map.connect 'sitemap_index', :controller => 'feeds', :action => 'sitemap_index'
+  map.connect 'sitemap_communities', :controller => 'feeds', :action => 'sitemap_communities'
+  map.connect 'sitemap_pages', :controller => 'feeds', :action => 'sitemap_pages'
+  map.connect 'sitemap_faq', :controller => 'feeds', :action => 'sitemap_faq'
+  map.connect 'sitemap_events', :controller => 'feeds', :action => 'sitemap_events'
+  map.connect 'feeds/:action', :controller => 'feeds', :requirements => {:action => /articles|article|faqs|events|all/}
+  map.connect 'feeds/:action/-/*categories', :controller => 'feeds'
+  map.connect 'feeds/:action/:type/*id', :controller => 'feeds'
+  
+  map.connect ':controller', :action => 'index'
+  
+  map.ask_an_expert 'expert/ask_an_expert', :controller => 'expert', :action => 'ask_an_expert'
+  map.connection 'expert/:action', :controller => 'expert'
+  map.connect 'expert/:action/:category', :controller => 'expert'
 
-  # Sample resource route within a namespace:
-  #   map.namespace :admin do |admin|
-  #     # Directs /admin/products/* to Admin::ProductsController (app/controllers/admin/products_controller.rb)
-  #     admin.resources :products
-  #   end
+  map.category_index 'category/:category', :controller => 'main', :action => 'category'
+  
+  map.site_news ':category/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_faqs ':category/faqs/:order/:page', :controller => 'faq', :action => 'index', :page => '1', :order => 'heureka_published_at DESC', :requirements => { :page => /\d+/ }
+  map.site_articles ':category/articles/:order/:page', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_events ':category/events/:state', :controller => 'events', :action => 'index', :state => ''
+  map.site_events_month ':category/events/:year/:month/:state', :controller => 'events', :action => 'index', :category => 'all', :state => ''
+  
+  map.site_learning_lessons ':category/learning_lessons/:order/:page', :controller => 'articles', :action => 'learning_lessons', :page => '1',:order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  
+  map.site_index ':category', :controller => 'main', :action => 'category'
 
-  # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  # map.root :controller => "welcome"
-
-  # See how all your routes lay out with "rake routes"
-
-  # Install the default routes as the lowest priority.
-  # Note: These default routes make all actions in every controller accessible via GET requests. You should
-  # consider removing the them or commenting them out if you're using named routes and resources.
+  map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
+  map.article_page 'article/:id', :controller => 'articles', :action => 'page', :requirements => { :id => /\d+/ }
+  map.connect 'article/:id/print', :controller => 'articles', :action => 'page', :print => 1, :requirements => { :id => /\d+/ }
+  map.wiki_page 'pages/*title', :controller => 'articles', :action => 'page'
+  
+  map.faq_page 'faq/:id', :controller => 'faq', :action => 'detail'
+  map.events_page 'events/:id', :controller => 'events', :action => 'detail'
+  map.connect 'faq/:id/print', :controller => 'faq', :action => 'detail', :print => 1
+  map.connect 'events/:id/print', :controller => 'events', :action => 'detail', :print => 1
+    
+  map.connect 'faq/:year/:month/:day/:hour/:minute/:second', :controller => 'faq', :action => 'send_questions'
+  
+  map.connect ':controller/rest/*email', :action => 'rest'
+  map.connect ':controller/:action'
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
+  
+  # this must be last
+  map.connect '*path', :controller => 'application', :action => 'do_404', :requirements => { :path => /.*/ }
 end
