@@ -6,9 +6,8 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ExpertController < QuestionsBaseController
-
-  layout  'aae'
-  include Akismet  
+  # TODO: reference rakismet
+  layout  'aae'  
 
   skip_before_filter :check_authorization
   before_filter :login_required, :except => [:email_escalation_report, :expert_widget]
@@ -112,6 +111,30 @@ class ExpertController < QuestionsBaseController
     
   end
   
+  def ask_an_expert
+    session[:return_to] = params[:redirect_to]
+    flash.now[:googleanalytics] = '/ask-an-expert-form'
+    
+    set_title("Ask an Expert - eXtension", "New Question")
+    set_titletag("Ask an Expert - eXtension")
+
+    # if we are editing
+    if params[:expert_question]
+      flash.now[:googleanalytics] = '/ask-an-expert-edit-question'
+      set_titletag("Edit your Question - eXtension")
+      begin
+        @expert_question = ExpertQuestion.new(params[:expert_question])
+      rescue
+        @expert_question = ExpertQuestion.new
+      end
+      @expert_question.valid?      
+    else
+      @expert_question = ExpertQuestion.new_from_personal(@personal)      
+    end
+  
+    @locations = Location.find(:all)
+  end
+  
   def location
     if params[:id]
       @location = Location.find(:first, :conditions => ["fipsid = ?", params[:id].to_i])
@@ -196,7 +219,58 @@ class ExpertController < QuestionsBaseController
     end
     render :layout => false
   end
+  
+  def question_confirmation
+    #q must be used for google to recognize
+    if !params[:q] or params[:q].strip == '' || !params[:expert_question]
+      flash[:notice] = "You must enter valid text into the question field."
+      return redirect_to( {:action => 'ask_an_expert'}.update( flatten_hash_for_url( {:expert_question => params[:expert_question]} ) ))
+    end
+    params[:expert_question][:asked_question] = params[:q]
+    flash.now[:googleanalytics] = '/ask-an-expert-search-results'
+    set_title("Ask an Expert - eXtension", "Confirmation")
+    set_titletag("Search Results for Ask an Expert - eXtension")
+    
+    @expert_question = ExpertQuestion.new(params[:expert_question])
+    @expert_question.status = 'submitted'
+    @flattened_eq_parameters = flatten_hash_for_url( {:expert_question => params[:expert_question]} )
+    unless @expert_question.valid?
+      return redirect_to( {:action => 'ask_an_expert'}.update( @flattened_eq_parameters ))
+    end
 
+    formatted_question = params[:q].strip.upcase
+    
+    if ExpertQuestion.find(:first, :conditions => ["submitted_by = ? and (UCase(trim(asked_question)) = trim(?))", session[:user_id], formatted_question])
+      flash[:notice] = "Our records indicate that you have already submitted this question.<br />Please do not submit a question more than once."
+      redirect_to :action => 'ask_an_expert', 
+      :location_selected => params[:location_option], :county_selected => params[:county_option], :question => params[:q]
+      return
+    end  
+  end
+  
+  def submit_question
+    @expert_question = ExpertQuestion.new(params[:expert_question])
+    #@expert_question.submitted_by = current_user.id if logged_in?
+    @expert_question.status = 'submitted'
+    @expert_question.spam = false
+    @expert_question.app_string = request.host
+    
+    
+    if !@expert_question.valid? || !@expert_question.save
+      flash[:notice] = 'There was an error saving your question. Please try again.'
+      redirect_to :action => 'ask_an_expert'
+      return
+    end
+    
+    flash[:notice] = 'Your question has been submitted and the answer will be sent to your email. Our experts try to answer within 48 hours.'
+    flash[:googleanalytics] = '/ask-an-expert-question-submitted'
+    if session[:return_to]
+      redirect_to(session[:return_to]) 
+    else
+      redirect_to '/'
+    end
+  end
+  
   # Show the expert form to answer an external question
   def answer_external_question
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
@@ -490,17 +564,24 @@ class ExpertController < QuestionsBaseController
   
   def reserve_question
     if request.post?
-      @submitted_question = SubmittedQuestion.find(params[:sq_id].strip)
-      if User.current_user.id != @submitted_question.assignee.id
-        previous_assignee_email = @submitted_question.assignee.email
-        @submitted_question.assign_to(User.current_user, User.current_user, nil) 
-        # if the question is currently assigned to someone,
-        # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
-        ExpertMailer.deliver_assigned(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), request.host)
-        ExpertMailer.deliver_reassign_notification(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), previous_assignee_email, request.host) 
+      if params[:sq_id] and @submitted_question = SubmittedQuestion.find_by_id(params[:sq_id].strip) and !@submitted_question.resolved?
+        if User.current_user.id != @submitted_question.assignee.id
+          previous_assignee_email = @submitted_question.assignee.email
+          @submitted_question.assign_to(User.current_user, User.current_user, nil) 
+          # if the question is currently assigned to someone,
+          # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
+          ExpertMailer.deliver_assigned(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), request.host)
+          ExpertMailer.deliver_reassign_notification(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), previous_assignee_email, request.host) 
+        end
+        SubmittedQuestionEvent.log_working_on(@submitted_question, User.current_user)
+        redirect_to :controller => :expert, :action => :question, :id => @submitted_question.id
+      else
+        flash[:message] = "Invalid submitted question number."
+        redirect_to :controller => :expert, :action => :incoming
       end
-      SubmittedQuestionEvent.log_working_on(@submitted_question, User.current_user)
-      redirect_to :controller => :expert, :action => :question, :id => @submitted_question.id
+    else
+      do_404
+      return
     end
   end
   
