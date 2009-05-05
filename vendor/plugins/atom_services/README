@@ -1,0 +1,9 @@
+AtomServices
+============
+
+This plugin was designed to allow for the generation of atom feeds within applications.
+It is initially planned to be used for both the faq and events applications within eXtension to deliver data from
+these applications in an atom feed for qualifying external applications that have a need/desire to access this
+data. 
+NOTE: This plugin was originally based on the resource_feeder ruby on rails plugin
+that can be found here: http://dev.rubyonrails.org/browser/plugins/resource_feeder
