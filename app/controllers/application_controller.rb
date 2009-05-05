@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   require 'zip_code_to_state'
   require 'image_size'
 
-  include AuthenticatedSystem
+  # include AuthenticatedSystem
   include ExceptionNotifiable   
   include Logo
   
