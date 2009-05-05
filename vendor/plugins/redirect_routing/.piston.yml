@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 4955f895f21a4968f1f8be82e1d9725955f0a23f
+  branch: master
+lock: false
+repository_class: Piston::Git::Repository
+repository_url: git://github.com/larspind/redirect_routing.git
