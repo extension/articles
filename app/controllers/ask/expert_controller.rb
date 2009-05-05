@@ -6,9 +6,10 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ExpertController < QuestionsBaseController
-  # TODO: reference rakismet
   layout  'aae'  
-
+  
+  has_rakismet :only => [:submit_question, :widget_submit]
+  
   skip_before_filter :check_authorization
   before_filter :login_required, :except => [:email_escalation_report, :expert_widget]
   before_filter :set_current_user, :except => [:email_escalation_report, :expert_widget]
@@ -250,11 +251,11 @@ class ExpertController < QuestionsBaseController
   
   def submit_question
     @expert_question = ExpertQuestion.new(params[:expert_question])
-    #@expert_question.submitted_by = current_user.id if logged_in?
     @expert_question.status = 'submitted'
-    @expert_question.spam = false
-    @expert_question.app_string = request.host
-    
+    @expert_question.user_ip = request.remote_ip
+    @expert_question.user_agent = request.env['HTTP_USER_AGENT']
+    @expert_question.referrer = request.env['HTTP_REFERER']
+    @expert_question.spam = @expert_question.spam?    
     
     if !@expert_question.valid? || !@expert_question.save
       flash[:notice] = 'There was an error saving your question. Please try again.'
@@ -269,6 +270,12 @@ class ExpertController < QuestionsBaseController
     else
       redirect_to '/'
     end
+  end
+  
+  # TODO: fill out this method
+  # receives and saves the question submitted from a widget
+  def widget_submit
+    
   end
   
   # Show the expert form to answer an external question
@@ -693,34 +700,21 @@ class ExpertController < QuestionsBaseController
   end
   
   def report_spam
-    if request.post?
-      # validate akismet key and log an error if something goes wrong with connecting to 
-      # akismet web service to verify the key
+    if request.post?      
       begin
-        valid_key = has_verified_akismet_key?
-      rescue Exception => e
-        logger.error "Error verifying akismet key #{AppConfig.configtable['akismet_key']} while reporting spam at #{time.now.to_s}.\nError: #{e.message}"
-        valid_key = false
-      end
-      
-      if valid_key
-        begin
-          submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
-          if submitted_question
-            submitted_question.update_attribute(:spam, true)
-            SubmittedQuestionEvent.log_spam(submitted_question, User.current_user)       
-            submit_spam submitted_question.to_akismet_hash
-            flash[:success] = "Incoming question has been successfully marked as spam."
-          else
-            flash[:failure] = "Incoming question does not exist."
-          end
-        rescue Exception => ex
-          flash[:failure] = "There was a problem reporting spam. Please try again at a later time."
-          logger.error "Problem reporting spam at #{Time.now.to_s}\nError: #{ex.message}"
+        submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
+        if submitted_question
+          submitted_question.update_attribute(:spam, true)
+          SubmittedQuestionEvent.log_spam(submitted_question, User.current_user)       
+          submitted_question.spam!
+          flash[:success] = "Incoming question has been successfully marked as spam."
+        else
+          flash[:failure] = "Incoming question does not exist."
         end
-      else
-        flash[:failure] = "There was an error validating the spam key.<br />Please contact an administrator to resolve this problem.<br />Sorry for any inconvienience this may have caused you."
-        logger.error "Akismet key #{AppConfig.configtable['akismet_key']} was not validated at #{Time.now.to_s} while reporting spam."
+        
+      rescue Exception => ex
+        flash[:failure] = "There was a problem reporting spam. Please try again at a later time."
+        logger.error "Problem reporting spam at #{Time.now.to_s}\nError: #{ex.message}"
       end
       redirect_to :controller => :expert, :action => :incoming
     end
@@ -728,36 +722,24 @@ class ExpertController < QuestionsBaseController
 
   def report_ham
     if request.post?
-      # validate akismet key and log an error if something goes wrong with connecting to 
-      # akismet web service to verify the key
       begin
-        valid_key = has_verified_akismet_key?
-      rescue Exception => e
-        logger.error "Error verifying akismet key #{AppConfig.configtable['akismet_key']} while reporting ham at #{time.now.to_s}.\nError: #{e.message}"
-        valid_key = false
-      end
-      
-      if valid_key
-        begin
-          submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
-          if submitted_question
-            submitted_question.update_attribute(:spam, false)
-            SubmittedQuestionEvent.log_non_spam(submitted_question, User.current_user)
-            submit_ham submitted_question.to_akismet_hash
-            flash[:success] = "Incoming question has been successfully marked as non-spam."
-            redirect_to :controller => :expert, :action => :question, :id => submitted_question.id
-            return
-          else
-            flash[:failure] = "Incoming question does not exist."
-          end
-        rescue Exception => ex
-          flash[:failure] = "There was a problem marking this question as non-spam. Please try again at a later time."
-          logger.error "Problem reporting ham at #{Time.now.to_s}\nError: #{ex.message}"
+        submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
+        if submitted_question
+          submitted_question.update_attribute(:spam, false)
+          SubmittedQuestionEvent.log_non_spam(submitted_question, User.current_user)
+          submitted_question.ham!
+          flash[:success] = "Incoming question has been successfully marked as non-spam."
+          redirect_to :controller => :expert, :action => :question, :id => submitted_question.id
+          return
+        else
+          flash[:failure] = "Incoming question does not exist."
         end
-      else
-        flash[:failure] = "There was an error validating the spam key.<br />Please contact an administrator to resolve this problem.<br />Sorry for any inconvienience this may have caused you."
-        logger.error "Akismet key #{AppConfig.configtable['akismet_key']} was not validated at #{Time.now.to_s} while reporting ham."
+        
+      rescue Exception => ex
+        flash[:failure] = "There was a problem marking this question as non-spam. Please try again at a later time."
+        logger.error "Problem reporting ham at #{Time.now.to_s}\nError: #{ex.message}"
       end
+        
       redirect_to :controller => :expert, :action => :spam_list
     end   
   end

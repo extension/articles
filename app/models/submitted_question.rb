@@ -24,6 +24,12 @@ before_update :add_resolution
 after_save :assign_parent_categories
 after_create :auto_assign_by_preference
 
+has_rakismet :author_email => self.external_submitter,
+             :comment_type => "ask an expert question",
+             :content => self.asked_question,
+             :user_ip => self.user_ip,
+             :user_agent => self.user_agent,
+             :referrer => self.referrer
 
 
 # adds resolved date to submitted questions on save or update and also 
@@ -56,16 +62,6 @@ def category_names
       return self.categories[0].name 
     end
   end
-end
-
-def to_akismet_hash(overriding_hash = Hash.new)
-  return { :comment_type => "expert question",
-           :comment_content => self.asked_question,
-           :comment_author_email => self.external_submitter,
-           :user_ip => self.user_ip,
-           :user_agent => self.user_agent,
-           :referrer => self.referrer,
-           :blog => (self.external_app_id == 'widget') ? AppConfig.configtable['ask_site'] : AppConfig.configtable['public_site'] }.merge(overriding_hash)
 end
 
 def to_faq(user)

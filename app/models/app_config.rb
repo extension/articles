@@ -91,7 +91,9 @@ class AppConfig
     @@configtable['default_datefield'] = 'created_at'
     @@configtable['default_dateinterval'] = 'withinlastmonth'
     @@configtable['default_timezone'] = 'utc'
-          
+    
+    # Akismet spam blocker key
+    @@configtable['akismet_key'] = 'default'      
   end
   
   def AppConfig.load_config
