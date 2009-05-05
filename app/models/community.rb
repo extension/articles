@@ -78,6 +78,9 @@ class Community < ActiveRecord::Base
   
   # institutions
   has_many :institutions, :foreign_key => 'institutionalteam_id'
+
+  # topics for public site
+  belongs_to :topic, :foreign_key => 'public_topic_id'
   
   # validations
   validates_uniqueness_of :name

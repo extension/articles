@@ -525,7 +525,7 @@ class User < ActiveRecord::Base
       end
       if(options[:notificationcode] and options[:notificationcode] != Notification::NONE)
         Notification.create(:notifytype => options[:notificationcode], :user => self, :creator => connector, :community => community)
-        # TODO!!!! FIX THIS  user events really shouldn't be based on notificationcodes, but such is life
+        # FIXME: user events really shouldn't be based on notificationcodes, but such is life
         if(connector != self)
           UserEvent.log_event(:etype => UserEvent::COMMUNITY,:user => connector,:description => Notification.userevent(options[:notificationcode],self,community))
           UserEvent.log_event(:etype => UserEvent::COMMUNITY,:user => self,:description => Notification.showuserevent(options[:notificationcode],self,connector,community))

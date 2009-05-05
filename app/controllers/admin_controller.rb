@@ -116,11 +116,10 @@ class AdminController < DataController
   
   def update_community_description
     @community =  Community.find(params['id'])
-    @community.topic_id = params['community']['topic_id']
-    @community.description = params['community']['description']
-    @community.title = params['community']['title']
-    @community.name = params['community']['name']
-    @community.visible = ( params['community']['visible'] ? true : false)
+    @community.public_topic_id = params['community']['public_topic_id']
+    @community.public_description = params['community']['public_description']
+    @community.public_name = params['community']['public_name']
+    @community.is_launched = ( params['community']['is_launched'] ? true : false)
 
     if @community.save
       flash[:notice] = 'Community Updated'
