@@ -45,7 +45,7 @@ class Tag < ActiveRecord::Base
     # TODO: test like crazy.
     # TODO: there's probably a more efficient regex out there than these chained gsubs - fix!
     def normalizename(name)
-      return name.downcase.gsub(/\s+/,' ').gsub('_',' ').gsub(/[^a-z0-9:-\s]/,'').strip
+      return name.downcase.gsub(/\s+/,' ').gsub('_',' ').gsub(/[^a-z0-9\s:-]/,'').strip
     end
   
   end
