@@ -5,10 +5,12 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+class SubmittedQuestion < ActiveRecord::Base
 # To Do: Need to add associations for tagging which will be treated like categories and subcategories
 belongs_to :county
 belongs_to :location
 has_many :submitted_question_events
+# TODO: need to change this
 belongs_to :contributing_faq, :class_name => "Question", :foreign_key => "current_contributing_faq"
 belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
 belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
@@ -19,6 +21,7 @@ validates_presence_of :status_state
 validates_presence_of :external_submitter
 # check the format of the question submitter's email address
 validates_format_of :external_submitter, :with => /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
 
 before_update :add_resolution
 after_save :assign_parent_categories
@@ -286,6 +289,31 @@ def self.find_uncategorized(*args)
   end
 end
 
+#TODO: not sure if we'll need this
+def self.new_from_personal(personal)
+  new_instance = self.new
+  if(personal[:zip_code] && zc = ZipCode.find_by_zip_code(personal[:zip_code]))
+    new_instance.county = zc.county
+    new_instance.location = new_instance.county.location
+  end
+    
+  new_instance.category_tag = personal[:tag] if personal[:tag]
+  return new_instance
+end
+
+#TODO: not sure if we'll need this
+def state_fipsid
+  zc = ZipCode.find_by_zip_code(zip_code)
+  l = Location.find_by_abbreviation(zc.state)
+  l.fipsid
+end
+
+#TODO: not sure if we'll need this  
+def county_fipsid
+  zc = ZipCode.find_by_zip_code(zip_code)
+  zc.county_fips
+end
+
 # utility function to convert status_state numbers to status strings
 def self.convert_to_string(status_number)
   case status_number
@@ -464,7 +492,7 @@ def pick_user_from_category(question_categories)
   assignee
 end
 
-
+end
 
 
 

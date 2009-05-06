@@ -5,6 +5,8 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+require 'zip_code_to_state'
+
 class ExpertController < QuestionsBaseController
   layout  'aae'  
   
