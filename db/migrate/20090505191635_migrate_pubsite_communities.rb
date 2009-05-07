@@ -36,7 +36,8 @@ class MigratePubsiteCommunities < ActiveRecord::Migration
     community_mappings['Pork Information'] = 16
     community_mappings['Animal Manure Management'] = 13
     community_mappings['Parenting'] = 12
-    community_mappings['Financial Crisis'] = 190
+    # "managing in tough times community"
+    community_mappings['Financial Crisis'] = 193
     community_mappings['Goats'] = 26
     community_mappings['Small Meat Processors'] = 29
     
