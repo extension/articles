@@ -21,7 +21,6 @@ class Faq < ActiveRecord::Base
   
   acts_as_rateable
   has_many :expert_questions
-  acts_as_taggable
   
   PUBLISHED = "published"
   UNPUBLISHED = "unpublished"

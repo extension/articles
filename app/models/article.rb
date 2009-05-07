@@ -24,7 +24,6 @@ class Article < ActiveRecord::Base
   default_url_options[:port] = AppConfig.configtable['urlwriter_port'] unless AppConfig.configtable['urlwriter_port'] == 80
   
   acts_as_rateable
-  acts_as_taggable
   
   class << self
     

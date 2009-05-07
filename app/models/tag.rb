@@ -48,6 +48,12 @@ class Tag < ActiveRecord::Base
       return name.downcase.gsub(/\s+/,' ').gsub('_',' ').gsub(/[^a-z0-9\s:-]/,'').strip
     end
   
+    def normalizename_alternate(name)
+      # make an initial downcased copy - don't want to modify name as a side effect
+      returnstring = name.downcase
+      # now, use the replacement versions of gsub and strip on returnstrin
+      return returnstring.gsub!(/\s+/,' ').gsub!('_',' ').gsub!(/[^a-z0-9\s:-]/,'').strip!
+    end
   end
     
   # Tag::Error class. Raised by ActiveRecord::Base::TaggingExtensions if something goes wrong.

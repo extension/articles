@@ -27,12 +27,12 @@ before_update :add_resolution
 after_save :assign_parent_categories
 after_create :auto_assign_by_preference
 
-has_rakismet :author_email => self.external_submitter,
+has_rakismet :author_email => :external_submitter,
              :comment_type => "ask an expert question",
-             :content => self.asked_question,
-             :user_ip => self.user_ip,
-             :user_agent => self.user_agent,
-             :referrer => self.referrer
+             :content => :asked_question,
+             :user_ip => :user_ip,
+             :user_agent => :user_agent,
+             :referrer => :referrer
 
 
 # adds resolved date to submitted questions on save or update and also 
