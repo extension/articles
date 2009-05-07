@@ -45,8 +45,7 @@ module Extension
       def has_categories(opts = {})
         
         # TODO: PUll back out into models
-        acts_as_taggable
-        
+              
         # Get options with defaults
         add_categories_scope({:within => nil}.merge(opts))
         add_not_categories_scope({:within => nil}.merge(opts))

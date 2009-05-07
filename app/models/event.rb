@@ -9,6 +9,7 @@ require 'cgi'
 require 'mofo'
 
 class Event < ActiveRecord::Base
+  has_many :tag_caches, :as => :tagcacheable
   
   #-- Rails 2.1 dependent stuff
   include HasStates

@@ -8,9 +8,12 @@
 # The Tag model. This model is automatically generated and added to your app if you run the tagging generator included with has_many_polymorphs.
 
 class Tag < ActiveRecord::Base
-  USER = 'user'
-  SYSTEM = 'system'
-  SHARED = 'shared'
+  SYSTEM = 0  # table defaults
+  USER = 1
+  SHARED = 2
+  
+  # special class of 'all' for caching purposes
+  ALL = 42  # the ultimate answer, of course
  
   SPLITTER = Regexp.new(/\s*,\s*/)
   JOINER = "," 

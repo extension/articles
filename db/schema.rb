@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090506205126) do
+ActiveRecord::Schema.define(:version => 20090507213212) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -588,16 +588,26 @@ ActiveRecord::Schema.define(:version => 20090506205126) do
   add_index "submitted_questions", ["user_id"], :name => "user_id_idx"
   add_index "submitted_questions", ["widget_name"], :name => "index_submitted_questions_on_widget_name"
 
+  create_table "tag_caches", :force => true do |t|
+    t.integer  "tagcacheable_id"
+    t.string   "tagcacheable_type"
+    t.integer  "cached_kind"
+    t.text     "cached_tags"
+    t.text     "cached_ids"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id",                                     :null => false
     t.integer  "taggable_id",                                :null => false
     t.string   "taggable_type", :limit => 32
-    t.string   "tag_kind",      :limit => 16
     t.string   "tag_display",                                :null => false
     t.integer  "owner_id",                                   :null => false
     t.integer  "weight",                      :default => 1, :null => false
     t.datetime "created_at",                                 :null => false
     t.datetime "updated_at"
+    t.integer  "tag_kind"
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tag_kind", "owner_id"], :name => "taggingindex", :unique => true

@@ -5,9 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-#load 'vendor/plugins/acts_as_taggable_on_steroids/lib/acts_as_taggable.rb'
-
-
 class ArticlesController < DataController
   
   def index

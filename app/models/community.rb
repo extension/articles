@@ -82,9 +82,13 @@ class Community < ActiveRecord::Base
   # topics for public site
   belongs_to :topic, :foreign_key => 'public_topic_id'
   
+  has_many :tag_caches, :as => :tagcacheable
+  
+  
   # validations
   validates_uniqueness_of :name
   validates_presence_of :name, :description, :entrytype
+     
      
   
   named_scope :approved, :conditions => {:entrytype => Community::APPROVED}

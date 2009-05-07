@@ -7,6 +7,8 @@
 
 require 'uri'
 class Article < ActiveRecord::Base
+  has_many :tag_caches, :as => :tagcacheable
+  
     
   before_create :store_original_url
   after_create :store_content
