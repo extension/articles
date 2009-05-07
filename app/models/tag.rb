@@ -21,7 +21,7 @@ class Tag < ActiveRecord::Base
   
   # Set up the polymorphic relationship.
   has_many_polymorphs :taggables, 
-    :from => [:users, :communities, :institutions], 
+    :from => [:users, :communities, :institutions, :articles, :faqs, :events, :submitted_questions], 
     :through => :taggings, 
     :dependent => :destroy,
     :as => :tag,
@@ -41,18 +41,16 @@ class Tag < ActiveRecord::Base
   class << self
   
     # normalize tag names 
-    # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces) 
-    # TODO: test like crazy.
-    # TODO: there's probably a more efficient regex out there than these chained gsubs - fix!
+    # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces)   
     def normalizename(name)
-      return name.downcase.gsub(/\s+/,' ').gsub('_',' ').gsub(/[^a-z0-9\s:-]/,'').strip
-    end
-  
-    def normalizename_alternate(name)
       # make an initial downcased copy - don't want to modify name as a side effect
       returnstring = name.downcase
-      # now, use the replacement versions of gsub and strip on returnstrin
-      return returnstring.gsub!(/\s+/,' ').gsub!('_',' ').gsub!(/[^a-z0-9\s:-]/,'').strip!
+      # now, use the replacement versions of gsub and strip on returnstring
+      returnstring.gsub!('_',' ')
+      returnstring.gsub!(/[^\w\s:-]/,'')
+      returnstring.gsub!(/\s+/,' ')
+      returnstring.strip!
+      returnstring
     end
   end
     
