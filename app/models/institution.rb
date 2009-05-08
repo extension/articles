@@ -119,20 +119,20 @@ class Institution < ActiveRecord::Base
       return nil unless uri.kind_of? URI::HTTP
       return nil unless uri.host
       return nil if uri.host.empty?
-      domain = uri.host.split('.').slice(-2, 2).join(".") rescue nil
+      referer_domain = uri.host.split('.').slice(-2, 2).join(".") rescue nil
       # handle some exceptions
-      if(domain == 'bia.edu')
-        domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
-      elsif(domain == 'nd.us')
-        domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
-      elsif(domain == 'mt.us')
-        domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
-      elsif(domain == 'nm.us')
-        domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
-      elsif(domain == 'clu.edu')
-        domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
+      if(referer_domain == 'bia.edu')
+        referer_domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
+      elsif(referer_domain == 'nd.us')
+        referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
+      elsif(referer_domain == 'mt.us')
+        referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
+      elsif(referer_domain == 'nm.us')
+        referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
+      elsif(referer_domain == 'clu.edu')
+        referer_domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
       end
-      return find_by_domain(domain) if domain
+      return find_by_referer_domain(referer_domain) if referer_domain
     end    
 
   end

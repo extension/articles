@@ -182,7 +182,7 @@ class MainController < DataController
       end
       insts = Institution.find_all_by_state(state)
       if insts and insts.length > 0
-        if insts[0].shared or insts.length == 1
+        if insts[0].shared_logo or insts.length == 1
           render :partial => "shared/institution_selected", :locals => {:state => state}, :layout => false
         else
           render :partial => "shared/institution_select", :locals => {:institutions => insts}, :layout => false
@@ -202,7 +202,7 @@ class MainController < DataController
   def find_institution
     @personal[:location] = Location.find_by_abbreviation(params[:state])
     if(@personal[:location] && @personal[:location].institutions.length > 0)
-      if @personal[:location].institutions[0].shared or
+      if @personal[:location].institutions[0].shared_logo or
          @personal[:location].institutions.length == 1
         @personal[:state] = params[:state]
         @personal[:institution] = @personal[:location].institutions[0]

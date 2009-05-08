@@ -18,25 +18,11 @@ class InstitutionsController < ApplicationController
   end
 
   def new
-    @institution = Institution.new
-    @right_column = false
   end
 
   def edit
     @institution = Institution.find(params[:id])
     @right_column = false
-  end
-
-  def create
-    @institution = Institution.new(params[:institution])
-
-    if @institution.save
-      flash[:notice] = 'Link uploaded.'
-      redirect_to institutions_url
-    else
-      flash[:error] = "Error saving link."
-      render :action => 'new'
-    end
   end
 
   def update
@@ -49,13 +35,7 @@ class InstitutionsController < ApplicationController
       flash[:error] = "Error updating link."
       render :action => "edit"
     end
-  end
-
-  def destroy
-    @institution = Institution.find(params[:id])
-    @institution.destroy
-    redirect_to institutions_url
-  end    
+  end 
 
 protected
 

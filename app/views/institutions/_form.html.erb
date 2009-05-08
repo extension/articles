@@ -8,12 +8,12 @@
 	<%= text_field :institution, :state, :size => 3, :class => "short" %>
 </p>
 <p>
-	<%= label(:institution, :domain, "Institution Domain") %>
-	<%= text_field :institution, :domain, :size => 50 %>
+	<%= label(:institution, :referer_domain, "Institution Domain") %>
+	<%= text_field :institution, :referer_domain, :size => 50 %>
 </p>
 
 <p>
-	<%= label(:institution, :uri, "URL (\"about this institution\" link)") %>
-	<%= text_field :institution, :uri, :size => 50 %>
+	<%= label(:institution, :public_uri, "URL (\"about this institution\" link)") %>
+	<%= text_field :institution, :public_uri, :size => 50 %>
 </p>
 </fieldset>

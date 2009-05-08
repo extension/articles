@@ -14,8 +14,8 @@
             <tr>
                 <td><%= institution.state %></td>
 	            <td><%= institution.name %></td>
-	            <td><%= link_to institution.uri, institution.uri %></td>
-	            <td><%= institution.domain %></td>
+	            <td><%= link_to institution.public_uri, institution.public_uri %></td>
+	            <td><%= institution.referer_domain %></td>
                 <td><%= link_to 'edit', edit_institution_path(institution) %></td>
             </tr>
         <% end %>
