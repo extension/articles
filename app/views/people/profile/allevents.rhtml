@@ -1,0 +1,39 @@
+<% @page_title = "All Recent Events" %>
+<% @selected_tab = :my_profile %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<div id="profile">
+    
+	<%= render(:partial => 'navtabs', :locals => { :selected => 'recent' }) %>
+
+
+<h1>All Recent Events</h1>
+<p>This table lists <strong>all</strong> the activity, publicly displayed and private events, for your account that is captured inside the People application.</p>
+
+<div id="paginator_wrapper">
+	<%= will_paginate @events %>
+</div>
+
+<table cellspacing="0" class="general_table recent_activity" summary="Recent Events">
+    <tr>
+        <th scope="col">Event</th>
+        <th scope="col">Application</th>
+        <th scope="col">Where</th>
+        <th scope="col">Time</th>
+    </tr>
+    
+    <% for user_event in @events %>
+        <tr>
+            <td><%= user_event.description %></td>
+            <td><%= user_event.appname %></td>
+            <td><%= user_event.ip %></td>
+            <td><%= user_event.created_at %></td>
+        </tr>
+    <% end%>
+</table>
+
+<div id="paginator_wrapper">
+	<%= will_paginate @events %>
+</div>
+</div>

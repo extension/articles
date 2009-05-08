@@ -1,0 +1,16 @@
+<table cellspacing="0" border="1" >
+    <tr>
+        <th><%= itemtype.capitalize %></th>
+        <th><%= count_title %></th>
+    </tr>
+    
+    <% itemlist.each do |item| %>
+    	<tr>
+			<td><%= link_to_object_numbers_action(item) %></td>  
+			<td><%= itemcounts[item.id] %>
+				<% if !@currentuser.nil? %>
+				(<%= link_to_userlist('list',findoptions.merge({item.class.name.downcase.to_sym => item}),{:title => "Users #{filter_string(findoptions.merge({:nolink => true, item.class.name.downcase.to_sym => item}))}"}) %>)<% end %>				
+			</td>
+        </tr>
+    <% end%>
+</table>

@@ -1,0 +1,38 @@
+<% if @isdemo %>
+	-=-=-=-=-= PLEASE DISREGARD:  DEMONSTRATION EMAIL =-=-=-=-=-
+
+	This is a demo email being sent from a demo/test/development 
+	install of our Identity application.  
+
+	We are currently testing functionality in the application that 
+	generated this test email.  You may ignore this email message.
+
+	-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+<% end %>
+Hi <%= @user.first_name %>,
+
+Thank you for signing up for your eXtensionID! 
+
+You have registered with the following information:
+
+eXtensionID: <%= @user.login %>
+First Name: <%= @user.first_name %>
+Last Name: <%= @user.last_name %>
+Email Address: <%= @user.email %>
+
+Tell us more about your interests and expertise and review your profile information here:
+
+<%= @urls['profile'] %>
+
+Learn a great deal more about eXtension at our "About eXtension" site at:
+
+http://about.extension.org
+
+Welcome to eXtension!
+
+If you have any questions or need assistance, please contact us at:
+
+<%= @urls['contactus'] %>
+--
+eXtension Team
+http://about.extension.org

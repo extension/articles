@@ -1,0 +1,29 @@
+<% @page_title = "Your Interests" %>
+<% @selected_tab = :my_profile %>
+
+<div id="profile">
+	<%= render(:partial => 'navtabs', :locals => { :selected => 'recent' }) %>
+
+<h1>Your Interests</h1>
+
+<%= render(:partial => 'partial/flashmessages') %>
+<p>Enter words and phrases that describe you, your interests, and areas of expertise.  Your <%= link_to("colleagues", :controller => :colleagues, :action => :index) %> can search and find you based on these terms.</p>
+
+<% form_tag({:action => 'tagedit'}, {:id => "tags"}) do %>
+    <fieldset>
+	    <p>
+	        <label for="tag_list">Your Interests: 
+	        <%= text_area_tag(:tag_list,@currentuser.tag_displaylist_by_owner_and_kind(@currentuser,"all"),{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
+	        <em>Interests can be separated with commas or spaces.  Create multi-word phrases with double quotes (ie. learning "sharing information" education )</em>
+	        </label>
+	    </p>
+	    <%= render(:partial => 'tags/popular_tags', :locals => { :title => 'Popular interests from colleagues in the same position.', :listoftags => @position_peer_popular_tags}) %>
+    	<%= render(:partial => 'tags/popular_tags', :locals => { :title => 'Popular interests from all colleagues.', :listoftags => @all_peer_popular_tags}) %>
+        <p><%= submit_tag 'Save' %> or <%= link_to 'Cancel', :controller => :profile, :action => :me %></p>
+	</fieldset>
+
+
+<% end %>
+
+</div>
+

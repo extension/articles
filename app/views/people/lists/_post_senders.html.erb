@@ -1,0 +1,16 @@
+<table class="list_stats" cellspacing="0" summary="Posting Summary">
+	<th>Sender</th>
+	<th>Messages</th>
+	<th>Size</th>
+	<% senderlist.each do |sender_id,messages,size| %>
+		<tr>
+			<% if sender_id != 0 %>
+			<td><%= link_to_user(User.find(sender_id))%></td>
+			<% else %>
+				<td>Others</td>
+			<% end %>
+			<td class="bignumber"><%= messages %></td>
+			<td><%= number_to_human_size(size) %></td>
+		</tr>
+	<% end %>
+</table>

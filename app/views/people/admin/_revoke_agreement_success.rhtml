@@ -1,0 +1,7 @@
+<h3>Revocation Succeeded!</h3>
+
+<p>The revocation operation has succeeded.   An email record of this revocation has been to to you and to <%= @revokeuser.first_name %> <%= @revokeuser.last_name %> (<%= @revokeuser.email %>).</p>
+
+<p>
+  <%= link_to 'Admin Home', :action => :index %> | <%= link_to 'Show user record', :action => :showuser, :id => @revokeuser.login %> 
+</p>

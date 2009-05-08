@@ -1,0 +1,19 @@
+<table cellspacing="0" border="1">
+    <tr>
+        <th>Name</th>
+        <th>eXtensionID</th>
+        <th>Email</th>
+        <th>Institution</th>
+        <th>Location</th>
+    </tr>
+    
+    <% for showuser in @userlist %>
+        <tr>
+			<td><%= link_to("#{showuser.fullname}", :controller => :colleagues, :action => :showuser, :id => showuser.login) %></td>
+            <td><%= showuser.login %></td>
+            <td><%= showuser.email %></td>            
+	        <td><%= (showuser.institution.nil? or showuser.institution == '') ? '<span class="na">not specified</span>': showuser.institution.name %></td>
+	        <td><%= (showuser.location.nil? or showuser.location == '') ? '<span class="na">n/a</span>': showuser.location.abbreviation %></td>
+        </tr>
+    <% end%>
+</table>

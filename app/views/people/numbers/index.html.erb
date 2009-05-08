@@ -1,0 +1,8 @@
+<% @page_title = "eXtension People by the Numbers" %>
+<% @selected_tab = :numbers %>
+
+<h1>Numbers for all eXtension People</h1>
+
+<div id="primary_column" class="narrow">
+    <%= render(:partial => 'summary', :locals => { :numbers => @numbers, :filteroptions => nil }) %>
+</div>

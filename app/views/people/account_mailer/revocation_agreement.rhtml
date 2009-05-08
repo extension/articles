@@ -1,0 +1,39 @@
+<% if @isdemo %>
+	-=-=-=-=-= PLEASE DISREGARD:  DEMONSTRATION EMAIL =-=-=-=-=-
+
+	This is a demo email being sent from a demo/test/development 
+	install of our Identity application.  
+
+	We are currently testing functionality in the application that 
+	generated this test email.  You may ignore this email message.
+
+	-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+<% end %>
+Hi <%= @revokeuser.first_name %>,
+
+Your response to the eXtension Contributor and Business Agreement has been revoked.   
+
+This revocation was entered at: <%= @agreetime %>
+
+The eXtension Account that made this request is:
+
+  <%= @adminuser.first_name %> <%= @adminuser.last_name %>
+  <%= @adminuser.email %>
+
+The eXtension Account holder is duly authorized by eXtension to execute the request, and should have done so with your pre-arranged consent.
+
+This response revocation allows you to review the Contributor Agreement again and provide a response to the Agreement.  
+
+Please do so at your earliest convenience at:
+
+ <%= @urls['agreementurl'] %>
+
+If you have any questions or concerns about the revocation procedure, please contact a member of the eXtension Executive Team:
+
+ <%= @urls['execurl'] %>
+
+If you have any questions or need assistance with the People application, please reply to this email or contact us at eXtensionHelp@extension.org
+
+--
+eXtension Team
+http://about.extension.org

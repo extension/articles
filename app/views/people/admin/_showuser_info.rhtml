@@ -1,0 +1,116 @@
+<h2>Admin - User Detail</h2>
+
+<table cellspacing="0" >
+	 <!-- ID -->
+    <tr>
+        <td scope="row" class="label">ID Number:</td>
+        <td><%= @showuser.id%></td>
+    </tr>
+    <tr>
+        <td scope="row" class="label">eXtensionID:</td>
+        <td><%= @showuser.login%></td>
+    </tr>
+
+    <tr>
+        <td scope="row" class="label">Account created date:</td>
+        <td><%= @showuser.created_at%></td>
+    </tr>
+
+	<tr>
+		<td scope="row" class="label">Account Enabled?</td>
+        <% if @showuser.retired? %>
+			<td>No (retired at: <%= @showuser.retired_at %>) <%= link_to "enable account", :action => 'enable', :id => @showuser.login %></td>
+		<% else %>
+			<td>Yes <%= link_to "retire account", :action => 'retire', :id => @showuser.login %></td>
+		<% end %>
+	</tr>
+	
+    <tr>
+        <td scope="row" class="label">Account Status</td>
+      	<% if (@showuser.account_status == User::STATUS_INVALIDEMAIL or  @showuser.account_status == User::STATUS_INVALIDEMAIL_FROM_SIGNUP) %>
+      	    <td><%= @showuser.account_status_string %> <%= link_to "fix email", :action => 'fixemail', :id => @showuser.login %></td>
+        <% else %>
+	    	<td><%= @showuser.account_status_string %> <%= link_to "mark email invalid", :action => 'invalidemail', :id => @showuser.login %></td>
+        <% end %>
+    </tr>
+
+
+
+	<% if @showuser.vouched? %>
+	    <tr>
+	        <td scope="row" class="label">Account Vouched:</td>
+			<% if @showuser.vouched_by == @showuser.id %>
+	        	<td>Yes (by themself at <%= @showuser.vouched_at%>)</td>
+			<% else %>
+				<% @vouchedby = User.find_by_id(@showuser.vouched_by) %>
+				<% if @vouchedby.nil? %>
+					<td>Yes (by system at <%= @showuser.vouched_at%>)</td>
+				<% else %>	
+	    			<td>Yes (by <%= link_to(@vouchedby.login, :controller => 'admin',:action => 'showuser', :id => @vouchedby.login) %> at <%= @showuser.vouched_at%>)</td>
+				<% end %>
+			<% end %>
+	    </tr>
+	<% else %>	
+	    <tr>
+	        <td scope="row" class="label">Account Vouched:</td>
+			<td>No</td>
+	    </tr>		
+	<% end %>
+
+    <tr>
+        <td scope="row" class="label">Last Login:</td>
+        <td><%= @showuser.last_login_at%></td>
+    </tr>
+
+    <tr>
+        <td scope="row" class="label">Last User record update:</td>
+        <td><%= @showuser.updated_at%></td>
+    </tr>
+
+
+	<% if @showuser.emailconfirmed? %>
+    <tr>
+        <td scope="row" class="label">Email address confirmed:</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td scope="row" class="label">Email address confirmed date:</td>
+        <td><%= @showuser.email_event_at%></td>
+    </tr>
+	<% else %>	
+    <tr>
+        <td scope="row" class="label">Email Address confirmed:</td>
+		<td>No</td>
+    </tr>		
+	<% end %>
+	
+	<% if !@showuser.contributor_agreement.nil? %>
+    <tr>
+        <td scope="row" class="label">Contributor Agreement reviewed: </td>
+		<% if @showuser.contributor_agreement %>
+       	<td>Yes - Accepted Agreement <%= link_to "Revoke", :action => 'confirm_revoke_agreement', :id => @showuser.login %></td>
+		<% else %>	
+       	<td>Yes - Did not accept Agreement <%= link_to "Revoke", :action => 'confirm_revoke_agreement', :id => @showuser.login %></td>
+		<% end %>	
+    </tr>
+    <tr>
+        <td scope="row" class="label">Contributor Agreement reviewed date: </td>
+        <td><%= @showuser.contributor_agreement_at%></td>
+    </tr>
+	<% else %>	
+    <tr>
+        <td scope="row" class="label">Contributor Agreement reviewed: </td>
+		<td>No</td>
+    </tr>		
+	<% end %>
+	
+	<tr>
+		<td scope="row" class="label">Admin User?</td>
+        <% if @showuser.is_admin? %>
+			<td>Yes <% if @currentuser.is_sudoer? %><%= link_to "remove admin", :action => 'makeadmin', :id => @showuser.login, :operation => 'remove' %><% end %></td>
+		<% else %>
+			<td>No <% if @currentuser.is_sudoer? %><%= link_to "make admin", :action => 'makeadmin', :id => @showuser.login, :operation => 'add' %><% end %></td>
+		<% end %>
+	</tr>
+		
+</table>

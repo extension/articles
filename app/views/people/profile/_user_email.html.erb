@@ -1,0 +1,28 @@
+<% 	if user_email.new_record? 
+		fieldid = user_email.object_id
+		newrecord = 'yes'
+	else
+		fieldid = user_email.id
+		newrecord = 'no'
+	end 
+%>
+
+<div id="useremail_item_<%= fieldid %>" class="useremail">
+		
+  <% fields_for_user_email(user_email) do |form| %>
+
+    <p class="user-email">
+		<!-- email -->
+		<% if(user_email.new_record?) %>
+		<label>Email Address
+		    <%= form.text_field(:email,{:id => "useremail_#{fieldid}_email"})%>
+        </label>
+		<% else %>
+		<%= form.hidden_field(:email, {:value => user_email.email, :id => "useremail_#{fieldid}_email"}) %>
+		<span><%= user_email.email %></span>
+		<% end %>
+    	<%= link_to_function "remove", "$(this).up('.useremail').remove()", :class => "remove" %>
+	</p>
+							
+  <% end %>
+</div>

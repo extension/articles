@@ -1,0 +1,7 @@
+<div id="tag_cloud">
+    <ul class="tagCloud"> 
+        <% showuser.tags.each do |tag| %>
+          <li><%= link_to(tag.name,:controller=> :colleagues, :action => :tags, :taglist=>tag.name) %></li>
+        <% end %>
+    </ul>
+</div>

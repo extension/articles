@@ -1,0 +1,22 @@
+<% @page_title = "Find Colleagues" %>
+<% @selected_tab = :colleagues %>
+
+
+<%= render(:partial => 'partial/flashmessages') %>
+<%= render(:partial => 'navtabs', :locals => { :selected => 'home' }) %>
+
+<h1>Find Colleagues</h1>
+
+
+
+<%= render(:partial => 'find_user_form') %>
+
+<% if(@vouchwaiting >= 1) %>
+<h2>Colleague waiting on review?</h2>
+<p><%= link_to("Browse the list of colleagues pending review.", :action => :vouchlist)%> If you know that a colleague has signed up for an eXtensionID and is waiting for review, you can vouch for them.</p>
+<% end %>
+
+<h2>Colleague not found?</h2>
+
+<p><%= link_to("Invite your colleague to get an eXtensionID", :action => :invite)%>. You just need to know your colleague's email address.  You can also <%= link_to("browse existing invitations", invitations_url)%>.</p>
+

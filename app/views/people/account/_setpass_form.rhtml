@@ -1,0 +1,22 @@
+<% form_tag(:action=> "set_password") do %>
+
+	<p>Please enter and re-enter what you would like to change your password to:</p>
+	<%= hidden_field_tag('token',@token.token) %>
+
+	<p>
+	<label for="user[password]" class="field-password">
+	    Password
+		<%= password_field(:user, :password, :class => 'medsize') %>
+	</label>
+	</p>
+
+	<p>
+	<label for="user[password_confirmation]" class="field-password">
+	    Re-enter password:
+		<%= password_field(:user, :password_confirmation, :class => 'medsize') %>
+	</label>
+	</p>
+
+    <input type="submit" name="setpass" value="Set Password" />
+
+<% end %>

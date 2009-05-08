@@ -1,0 +1,28 @@
+<% @page_title = "Your Chat Account" %>
+<% @selected_tab = :my_profile %>
+
+<div id="profile">
+
+	<%= render(:partial => 'navtabs', :locals => { :selected => 'chat' }) %>
+
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<h1>Your Chat Account</h1>
+
+<p><img alt="jabberlogo" id="jabberlogon" src="/images/Jabber_logo.png" /></p>
+
+<p>Your eXtensionID includes access to a xmpp/jabber account using the eXtension chat server, <a href="http://chat.extension.org">chat.extension.org</a>.  XMPP is an open chat protocol that allows your chat account at chat.extension.org to communicate with xmpp/jabber-based chat servers all over the world, including the Google Talk chat service.</p>
+
+<p>Learn more about the eXtension Chat Server and how to find and configure chat clients for the service at <a href="http://about.extension.org/wiki/eXtension_Chat_Server">http://about.extension.org/wiki/eXtension_Chat_Server</a>.
+
+<% if @currentuser.chat_account.nil? %>
+	<p>Your eXtensionID-based chat account is not yet enabled.</p>
+<% else %>
+ 	<p>Your eXtensionID-based chat account is: <strong><%= @currentuser.chat_account.username %>@chat.extension.org</strong></p>
+<% end %>
+
+
+<p><%= link_to("Return to your Personal Profile", :action => :me) %></p>
+
+</div>

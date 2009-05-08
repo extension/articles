@@ -1,0 +1,63 @@
+<% @page_title = "Admin" %>
+<% @selected_tab = :admin %>
+<%= render(:partial => 'partial/flashmessages') %>
+<h1>Admin</h1>
+<h2>Find User</h2>
+<%= render(:partial => 'find_user_form') %>
+<h2>Activity Reports</h2>
+<p><em>Please note: Activity reports are limited to the data captured by the People application itself</em></p>
+<ul>
+    <li><%= link_to 'Recent User Activity', :action => :activity %> (past <%= AppConfig.configtable['recent_activity_delta'] %> days)</li>
+</ul>
+
+<h2>Missing Data</h2>
+<table class="community_stats" cellspacing="0">
+
+    <tr>
+	    <td><%= link_by_count(@missing["institution"],"Missing Institution", :action => 'missing_institution') %></td>
+	    <td class="bignumber"><%= @missing["institution"] %></td>
+	</tr>
+    <tr>
+	    <td><%= link_by_count(@missing["location"],"Missing Location", :action => 'missing_location') %></td>
+	    <td class="bignumber"><%= @missing["location"] %></td>
+	</tr>
+    <tr>
+	    <td><%= link_by_count(@missing["position"],"Missing Position", :action => 'missing_position') %></td>
+	    <td class="bignumber"><%= @missing["position"] %></td>
+	</tr>
+
+</table>
+
+<h2>Account Status</h2>
+	<table class="community_stats" cellspacing="0">
+	    <tr>
+		    <td><%= link_by_count(@confirmaccount_users,"Users waiting account confirmation", :action => 'confirmaccount_users') %></td>
+		    <td class="bignumber"><%= @confirmaccount_users %></td>
+		</tr>
+	    <tr>
+		    <td><%= link_by_count(@review_users,"Users pending review", :action => 'review_users') %></td>
+		    <td class="bignumber"><%= @review_users %></td>
+		</tr>
+	    <tr>
+		    <td><%= link_by_count(@confirmemail_users,"Users waiting email confirmation", :action => 'confirmemail_users') %></td>
+		    <td class="bignumber"><%= @confirmemail_users %></td>
+		</tr>
+	    <tr>
+		    <td><%= link_by_count(@invalidemail_users,"Users with invalid email addresses", :action => 'invalidemail_users') %></td>
+		    <td class="bignumber"><%= @invalidemail_users %></td>
+		</tr>
+	    <tr>
+		    <td><%= link_by_count(@retired_accounts,"Retired accounts", :action => 'retired_accounts') %></td>
+		    <td class="bignumber"><%= @retired_accounts %></td>
+		</tr>
+
+	</table>		
+
+<% if @currentuser.is_sudoer? %>
+<h2>Sudoer Actions</h2>
+<ul>
+    <li><%= link_to 'Admin user list', :action => :adminusers %></li>
+    <li><%= link_to 'Admin events list', :action => :adminevents %></li>
+  	<li><%= link_to 'Show/Reload Program Configuration', :action => :show_config %></li>
+</ul>
+<% end %>

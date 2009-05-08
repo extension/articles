@@ -1,0 +1,32 @@
+<% @page_title = "Lists - Posting Activity" %>
+<% @selected_tab = :lists %>
+<h1>Posting Activity</h1>
+
+<div id="recent_list_stats" class="section">
+	<h3>Recent Posting Stats</h3> 
+	<p>Within the last week: <%= list_stat_line(@stats[:lastweek])%></p>
+	<p>Within the last month: <%= list_stat_line(@stats[:lastmonth])%></p>				
+</div>
+
+<div class="tag_cloud">
+<h3>Inactive Lists - Last Month (<%= @inactive.length %>)</h3> 
+<% if @inactive.length == 0 %>
+    <p>No inactive lists</p>
+<% else %>
+    <ul class="tagCloud">
+    <% @inactive.each do |list| %>
+        <li><%= link_to_mailinglist(list) %></li>
+    <% end %>
+    </ul>
+<% end %>
+</div>
+
+<div id="recent_list_stats" class="section">
+	<h3>Activity by List - Last Month</h3> 
+	<%= render(:partial => 'post_lists', :locals => {:listoflists => ListPost.get_count_bylist('lastmonth')}) %>
+</div>
+
+<div id="recent_list_stats" class="section">
+	<h3>Top 15 Senders - Last Month</h3> 
+	<%= render(:partial => 'post_senders', :locals => {:senderlist => ListPost.get_count_bysender('lastmonth',true,15)}) %>
+</div>

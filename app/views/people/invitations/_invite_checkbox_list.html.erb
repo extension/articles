@@ -1,0 +1,30 @@
+<%- invitedcommunities ||= [] -%>
+<h3>Include Community Invitations</h3>
+<p>Invite your colleague to join one or more of the following communities after they've accepted your invitation</p>
+<div class="multi_col_list">
+<% 
+       list_count = 1
+       community_count = 0
+       column_limit = (communitylist.length / 3) + 1
+   %>
+    <% communitylist.each do |community| %>
+        <%= (community_count == 0) ? '<ul class="radio alpha_sort col1">' : '' %>
+        <li>
+			<% 	buttonopts = Hash.new(:class => "radiobutton")	%>
+            <%= check_box_tag('invitecommunities[]',community.id,invitedcommunities.include?(community.id.to_s),buttonopts) %>
+            <label for="invitation_community_id_<%= community.id.to_s %>"><%= community.name %></label>
+        </li>
+        <%
+            community_count += 1
+
+            if community_count > communitylist.length
+                %></ul><%
+            elsif (community_count % column_limit) == 0
+                list_count += 1 %>
+                </ul>
+                <ul class="radio alpha_sort col<%= list_count %>"><% 
+            end
+        %>
+    <% end %>
+</ul>
+</div>

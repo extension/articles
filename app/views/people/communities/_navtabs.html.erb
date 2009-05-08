@@ -1,0 +1,5 @@
+<ul id="nav">
+	<%= selected == 'home' ? '<li class="on home">' : '<li class="home">' %><%= link_to "Community Home", :action => 'index' %></li>
+	<%= selected == 'cop' ? '<li class="on">' : '<li>' %><%= link_to "Communities of Practice", :action => 'cop' %></li>
+</ul>
+<br class="clear"/>

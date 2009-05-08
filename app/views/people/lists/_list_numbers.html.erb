@@ -1,0 +1,40 @@
+<table class="list_stats" cellspacing="0" summary="Summary of List Subscribers and Other Stats">
+    <caption>List Subscribers and Owners</caption>
+    <tr>
+        <td><%= link_by_permission_and_count(@list,@list.list_subscriptions.subscribers.count, 'Subscribers', subscriptionlist_list_url(@list.id, :type => 'subscribers')) %></td>
+        <td class="bignumber"><%= @list.list_subscriptions.subscribers.count %></td>
+    </tr>
+
+    <tr>
+        <td><%= link_by_permission_and_count(@list,@list.list_subscriptions.optout.count, 'Opt-Out', subscriptionlist_list_url(@list.id, :type => 'optout')) %></td>
+        <td class="bignumber"><%= @list.list_subscriptions.optout.count %></td>
+    </tr>
+	
+	<% if(!@list.dropunconnected)%>
+    <tr>
+        <td><%= link_by_permission_and_count(@list,@list.unconnected_subscription_count, 'Subscribers (not connected to community)', subscriptionlist_list_url(@list.id, :type => 'unconnected')) %></td>
+        <td class="bignumber"><%= @list.unconnected_subscription_count %></td>
+    </tr>
+	<% end %>
+
+	<% if(!@list.dropforeignsubscriptions)%>
+    <tr>
+        <td><%= link_by_permission_and_count(@list,@list.list_subscriptions.noidsubscribers.count, 'Subscribers (without eXtensionIDs)', subscriptionlist_list_url(@list.id, :type => 'noidsubscribers')) %></td>
+        <td class="bignumber"><%= @list.list_subscriptions.noidsubscribers.count %></td>
+    </tr>
+	<% end %>
+	
+	<tr>
+        <td><%= link_by_permission_and_count(@list,@list.list_owners.idowners.count, 'List Owners', ownerlist_list_url(@list.id, :type => 'idowners')) %></td>
+        <td class="bignumber"><%= @list.list_owners.idowners.count %></td>
+    </tr>
+
+	<% if(!@list.connected_and_managed?)%>
+    <tr>
+        <td><%= link_by_permission_and_count(@list,@list.list_owners.noidowners.count, 'List Owners (without eXtensionIDs)', ownerlist_list_url(@list.id, :type => 'noidowners')) %></td>
+        <td class="bignumber"><%= @list.list_owners.noidowners.count %></td>
+    </tr>
+	<% end %>
+	
+
+</table>

@@ -1,0 +1,7 @@
+<%= render(:partial => 'partial/flashmessages') %>
+
+<% form_tag(:action=> "invalidemail") do %>
+    <label for="reason">Please provide a reason why you are marking this email address invalid: </label>
+    <input type="text" name="reason" id="reason" size="50" value=""/>
+    <%= submit_tag 'Mark Email Address Invalid' %>  or <%= link_to 'Cancel', :controller => :admin, :action => :showuser, :id => params[:id] %>
+<% end %>

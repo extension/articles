@@ -1,0 +1,15 @@
+<% if newrecord %>
+	<% if SocialNetwork.has_editable_url?(network) %>
+		<%= text_field_tag("socialnetworks[#{label}][][accounturl]",accounturl,{:id => "socialnetwork_#{fieldid}_accounturl"}) %>
+	<% else %>
+		<%= hidden_field_tag("socialnetworks[#{label}][][accounturl]",accounturl,{:id => "socialnetwork_#{fieldid}_accounturl"}) %>
+		<%= accounturl_link(accounturl) %>
+	<% end %>
+<% else %>
+	<% if SocialNetwork.has_editable_url?(network) %>
+		<%= text_field_tag("socialnetworks[#{label}][#{fieldid}][accounturl]",accounturl,{:id => "socialnetwork_#{fieldid}_accounturl"}) %>
+	<% else %>
+		<%= hidden_field_tag("socialnetworks[#{label}][#{fieldid}][accounturl]",accounturl,{:id => "socialnetwork_#{fieldid}_accounturl"}) %>
+		<%= accounturl_link(accounturl) %>
+	<% end %>
+<% end %>

@@ -1,0 +1,30 @@
+<% @page_title = "Welcome" %>
+<% @selected_tab = :home %>
+
+<div id="welcome">
+	<h1>Hi <%= @currentuser.first_name %>, Welcome Back!</h1>
+	<%= render(:partial => 'partial/flashmessages') %>
+	<p>This is the eXtensionID account directory and management application.  Your eXtensionID allows access to the eXtension collaborative workspace.</p>
+
+	<% if (@currentuser.account_status == User::STATUS_INVALIDEMAIL or  @currentuser.account_status == User::STATUS_INVALIDEMAIL_FROM_SIGNUP )%>
+	<%= render(:partial => 'warning_invalidemail') %>
+	<% elsif @currentuser.account_status == User::STATUS_REVIEW %>
+	<%= render(:partial => 'warning_review') %>
+	<% else %>
+
+	<% if @currentuser.account_status == User::STATUS_REVIEWAGREEMENT %>
+	<%= render(:partial => 'warning_agreement') %>   
+	<% end %>
+
+	<% if((@currentuser.institution_id == 0) or (@currentuser.position_id == 0) or (@currentuser.location_id == 0)) %>
+	<%= render(:partial => 'warning_missingdata') %>   	
+	<% end %>
+
+	<% if @currentuser.tags.empty? %>
+	<%= render(:partial => 'warning_missingexpertise') %>   	
+	<% end %>
+	
+	<%= render(:partial => 'active_message') %>
+
+	<% end %>
+</div>

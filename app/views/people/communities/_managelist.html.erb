@@ -1,0 +1,37 @@
+<% if(mailinglist = community.listconnection(listtype)) %>
+	<h4><%= link_to("#{mailinglist.list.name}", mailinglist.list)%></h4>
+	<p>Created On: <strong><%= mailinglist.list.created_at %></strong></p>
+	<p>Posting activity within the last month: <%= list_stat_line(mailinglist.list.get_posting_stats('lastmonth')) %></p>
+<% else %>
+
+	<p>No <%= listtype %> mailing list has been created for this community.</p>
+	<% if(@currentuser.is_community_leader?(@community) or admin_mode?) %>
+		<p><%= link_to_function "Create the #{listtype} list", "Effect.toggle('community_#{community.id}_#{listtype}_list_form_block','blind', { duration: .4});" %></p>
+
+		<% if !errors.nil? %>
+			<div id="community_<%= community.id %>_<%= listtype %>_list_form_block">
+		<% else %>
+			<div id="community_<%= community.id %>_<%= listtype %>_list_form_block" style="display:none;">
+		<% end %>
+
+		<% if !errors.nil? %>
+		    <div class="feedback_banner failure"><p><%= errors %></p></div>
+		<% end %>
+			<% form_remote_tag(:url => {:controller => :communities, :action => :xhr_create_list, :communityid => community.id}, :html => {:id => "community_#{community.id}_#{listtype}_list_form"}) do %>
+			<div class="form_section">
+			    <fieldset>	
+			        <p>	
+						<%= hidden_field_tag('id',community.id) %>
+						<%= hidden_field_tag('listtype',listtype) %>
+				        <label for="#{listtype}-listname">List Name: <em class="required">*</em>
+				        <%= text_field_tag "#{listtype}-listname", listname, :class => "medsize" %></label>
+				        <span class="advice">May only contain Alphanumeric Characters ([a-z],[0-9]) or dashes.  No spaces or special characters. This cannot be changed later without destroying the list, choose carefully!</span>
+			        </p>
+				</fieldset>
+				<p><%= submit_tag('Create List', :confirm => 'Are you sure you want to create this list?') %> or <%= link_to_function 'cancel', "Effect.toggle('community_#{community.id}_#{listtype}_list_form_block','blind', { duration: .4});" %></p>
+			</div>
+			<% end %>
+	
+		</div>
+	<% end %>
+<% end %>

@@ -1,0 +1,16 @@
+<p>You should have received a confirmation email at the address that you specified 
+    for your eXtensionID. If you didn't receive an email, please make sure that your
+    spam filter didn't throw it out. You may need to add eXtensionHelp@extension.org
+    to a list of approved email addresses to make sure it gets through.</p>
+
+<% form_tag(:action => "revoke_agreement") do %>
+
+    <p>
+    <label for="token">Confirmation Token:</label><br/>
+    <%= text_field_tag("token", '', :size => 42) %>
+    </p>
+
+    <br/>
+    <input type="submit" value="Confirm Revocation Request &#187;" class="primary" />
+
+<% end %>

@@ -1,0 +1,7 @@
+<ul class="institutionlist">
+	<% if !institutionlist.nil? %>
+	<% for institution in institutionlist do %>
+	<li class="institution"><div class="name"><span class="selected_institution_name"><%= h institution.name %></span></div></li>
+	<% end %>
+	<%end%>
+</ul>

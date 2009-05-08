@@ -1,0 +1,16 @@
+<% @page_title = "Communities of Practice" %>
+<% @selected_tab = :communities %>
+
+<h2>Communities of Practice</h2>
+
+<%= render(:partial => 'navtabs', :locals => { :selected => 'cop' }) %>
+
+
+<div id="tag_cloud">
+    <ul class="tagCloud"> 
+        <% @communities.each do |community| %>
+          <li><%= link_to("#{community.name}", community)%></li>
+        <% end %>
+    </ul>
+</div>
+

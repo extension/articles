@@ -1,0 +1,26 @@
+<table cellspacing="0" border="1">
+    <tr>
+        <th>Name</th>
+        <th>Community Connection:</th>
+        <th>Community Connection Type</th>
+        <th>Subscribers</th>
+        <th>Opted Out</th>
+    </tr>
+    
+    <% listoflists.each do |list| %>
+        <tr id="listrow_<%= list.id %>">
+			<td><%= link_to("#{list.name}", list)%></td>
+        	<td><%= link_to_community(list.community,false) %></td>
+			<td><%= link_to_community_connection(list.community, list.communityconnection,'',false) %></td>
+			<td><%= list_subscriber_count(list) %>
+			<% if list.managed? and !list.dropunconnected %>
+				<br/><%= list.unconnected_subscription_count %> unconnected  
+			<% end %>				
+			<% if !list.managed? or !list.dropforeignsubscriptions  %>
+				<br/><%= list.list_subscriptions.noidsubscribers.count %> w/o eXtensionID    
+			<% end %>
+			</td>            
+			<td><%= list.list_subscriptions.optout.count %></td>            
+        </tr>
+    <% end%>
+</table>

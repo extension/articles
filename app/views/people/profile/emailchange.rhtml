@@ -1,0 +1,7 @@
+<% @page_title = "Email Confirmation" %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<h2>Hi <%= @currentuser.first_name %>.</h2>
+
+<%= render(:partial => 'common/emailnotice') %>

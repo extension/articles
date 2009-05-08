@@ -1,0 +1,11 @@
+<% @filterstring = filter_string(@findoptions.merge({:controller => :numbers, :action => :summary,:nolink => true})) %>
+<% if @filterstring.empty? %>
+	<% @page_title = "Numbers by Location"%>
+<% else %>
+	<% @page_title = "Numbers by Location (Filtered)"%>
+<% end %>
+<% @selected_tab = :numbers %>
+<%= render(:partial => 'navtabs') %>
+<h1><%= @page_title %></h1>
+<p><%= @filterstring %></p>
+<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'location', :itemlist => @locations, :itemcounts => @locationcounts, :filtered => !@filterstring.empty?, :findoptions => @findoptions }) %>

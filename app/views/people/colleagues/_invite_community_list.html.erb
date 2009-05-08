@@ -1,0 +1,13 @@
+<% if communitylist.nil? or communitylist.size == 0 %>
+	<!-- empty search results -->
+<% else %>
+	<% if communitylist.size >= 10 %>
+		<p>Here's the first 10 results we found. Try being more specific to narrow down your search.</p>
+		<% communitylist.slice!(9)%>
+	<% end %>
+	<% communitylist.each do |community| %>
+		<div id="community_<%= community.id %>_showuser_<%= showuser.id %>_invite_block" class="communityinvite">
+		<%= render(:partial => 'invite_community', :locals => { :showuser => showuser, :community => community}) %>
+		</div>
+	<% end %>
+<% end %>

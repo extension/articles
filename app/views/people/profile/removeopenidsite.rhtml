@@ -1,0 +1,11 @@
+<% @page_title = "Remove OpenID Site" %>
+<% @selected_tab = :my_profile %>
+
+<h1>Remove OpenID Trusted Site?</h1>
+
+<% form_tag(:action=> "removeopenidsite") do %>
+    <p>Do you want to remove the following website from your OpenID trust list?</p>
+	<p><code><%= @removesite.trust_root %></code></p>
+	<%= hidden_field_tag('id',@removesite.id) %>
+    <%= submit_tag 'Remove' %>  or <%= link_to('Cancel', :controller => :profile, :action => :openid) %>
+<% end %>

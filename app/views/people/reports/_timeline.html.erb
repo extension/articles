@@ -1,0 +1,26 @@
+<script type="text/javascript">
+	  google.load("visualization", "1", {packages:["annotatedtimeline"]});
+	  
+	  // Set a callback to run when the API is loaded.
+      google.setOnLoadCallback(queryData);
+    
+	function queryData() {
+	  // Replace the data source URL on next line with your data source URL.
+	  var query = new google.visualization.Query('<%= chart_options[:querysource] %>');
+	  Element.show('loading');
+	  query.send(handleQueryResponse);
+    }
+
+
+  function handleQueryResponse(response) {
+	Element.hide('loading');
+  	if (response.isError()) {
+    	alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+    	return;
+  	}
+
+  	var data = response.getDataTable();
+	var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('<%= chart_options[:chartdiv] %>'));
+    chart.draw(data,{scaleType:'maxmize'});
+  }
+</script>

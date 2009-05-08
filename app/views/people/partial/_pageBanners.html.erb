@@ -1,0 +1,12 @@
+<% if(AppConfig.configtable['app_location'] != 'production' and AppConfig.configtable['app_location'] != 'shownav' )%>
+	<div id="app_location" class="<%= AppConfig.configtable['app_location'] %>"><p>Location Reminder: You are viewing the eXtension <strong><%= AppConfig.configtable['app_location'] %></strong> site</p></div>
+<% end %>
+<ul id="extensionNav">
+    <li class="begin"><a href="<%= AppConfig.configtable['events_site'] %>">Events</a></li>
+    <li><a href="<%= AppConfig.configtable['faq_site'] %>" title="FAQ / Ask an Expert Tool">FAQ/AaE</a></li>
+    <li><a href="<%= AppConfig.configtable['people_site'] %>">People</a></li>
+    <li><a href="<%= AppConfig.configtable['cop_site'] %>">CoP Wiki</a></li>
+    <li><a href="<%= AppConfig.configtable['collaborate_site'] %>">Collaborate Wiki</a></li>
+    <li><a href="<%= AppConfig.configtable['about_site'] %>">About Wiki</a></li>
+    <li><a href="<%= AppConfig.configtable['about_blog'] %>">About Blog</a></li>
+</ul>

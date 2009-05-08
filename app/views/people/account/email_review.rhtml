@@ -1,0 +1,13 @@
+<% @page_title = "Account Review" %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<h2>Hi <%= @currentuser.first_name %>.</h2>
+
+<p>Thank you for confirming your email address.</p>
+    
+<p>In order to provide a verification of your eligibility for an eXtensionID, your eXtensionID request (or email change) has been marked for review by our support team.  Email addresses that are not part of the ".edu" or ".gov" domains are automatically flagged for review.</p>
+
+<p>You should receive an automatic response that our support staff has received the review request.  That email will include a "Case ID" that you can use for tracking your support call.   An eXtension support representative will be following up within 2 business days to let you know that we have reviewed your account request and either approved or rejected the request, or that we need more information about your Extension affiliation.</p>
+
+<p>If you do have a ".edu" or ".gov" email address, you can speed up the review process by <%= link_to("editing your profile", :controller => :profile, :action => :edit %> and setting your registered email address with your ".edu" or ".gov" email address.</p>

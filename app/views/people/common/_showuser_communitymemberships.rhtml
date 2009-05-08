@@ -1,0 +1,60 @@
+<h2>Community Memberships</h2>
+
+<% if (!@showuser.communitymemberships.nil? and !@showuser.communitymemberships.empty?) 
+	communitycount = 0 %>
+	<p class="leader"><span style="color: black;">bold</span> <span style="font-weight: normal;"> = indicates <%= @showuser.first_name %> has been designated as a community leader</span></p> 
+	<table cellspacing="0" class="general_table" summary="User Communities">
+	
+	<% @showuser.communitymemberships.each do |community| 
+		communitycount += 1
+	%>
+		<tr>
+			<% if @showuser.is_community_leader?(community) %>
+				<td class="leader"><%= link_to("#{community.name}", community)%></td>
+				<% if @currentuser.is_community_leader?(community) or admin_mode? %>
+					<td>(<%= link_to("remove from membership", {:action => 'removecommunitymember', :communityid => community.id, :userid => @showuser.id, :view=>'showuser'}, :title=>'remove from membership') %>)</td>	
+					<td>
+					(<%= link_to("remove from leadership", :action => 'removecommunityleader', :communityid => community.id, :userid => @showuser.id, :view=>'showuser') %>)
+					</td>
+				<% end %>
+			<% else %>
+				<td><%= link_to("#{community.name}", community)%></td>
+				<% if @currentuser.is_community_leader?(community) or admin_mode? %>
+					<td>(<%= link_to("remove from membership", {:action => 'removecommunitymember', :communityid => community.id, :userid => @showuser.id, :view=>'showuser'}, :title=>'remove from membership') %>)</td>
+					<td>
+					(<%= link_to("add to leadership", :action => 'addcommunityleader', :communityid => community.id, :userid => @showuser.id, :view=>'showuser') %>)
+					</td>
+	
+				<% end %>		
+			<% end %>
+		</tr>
+	<% end %>
+</table>
+<% else %>
+<table cellspacing="0" class="general_table" summary="User Communities">
+
+	<tr>
+		<td><%= @showuser.first_name %> has not yet been designated as a member in any communities.</td>
+	</tr>
+	</table>	
+<% end %>
+
+<% if !@currentuser.communityleaderships.nil? or admin_mode? %>
+	<p>You may add <%= @showuser.first_name %> as a member in the following communities:</p>
+	<table cellspacing="0" class="general_table" summary="User Communities">
+
+	<% 
+	if admin_mode? 
+		@leadercommunities = Community.find(:all, :order => 'name')
+	else
+		@leadercommunities = @currentuser.communityleaderships
+	end
+	%>
+	<% @leadercommunities.each do |community| %>
+	<tr>
+		<td><%= link_to("Add as a member of #{community.name}", :action => 'addcommunitymember', :communityid => community.id, :userid => @showuser.id, :view=>'showuser') %></td>
+	</tr>
+	<% end %>
+	</table>	
+	
+<% end %>

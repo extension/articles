@@ -1,0 +1,48 @@
+<%- @page_title = "Invite a Colleague" -%>
+<%- @selected_tab = :invitations -%>
+<%= render(:partial => 'navtabs', :locals => { :selected => 'show' }) %>
+<%= render(:partial => 'partial/flashmessages') %>
+
+<h1>Invitation to <%= @invitation.email%></h1>
+
+<%- if ((@invitation.status == Invitation::PENDING or @invitation.status == Invitation::INVALID_EMAIL) and @invitation.user == @currentuser)  -%>
+<p><%= link_to('Resend',edit_invitation_url(@invitation))%></p>
+<%- end -%>
+<h3>Invitation Details</h3>
+<p>Created At: <%= humane_date(@invitation.created_at) %></p>
+<p>Created By: <%= link_to_user(@invitation.user) %></p>
+<%- if @invitation.status == Invitation::ACCEPTED -%>
+	<p>Accepted At: <%= humane_date(@invitation.accepted_at) -%></p>
+	<p>Accepted by: <%= link_to_user(@invitation.colleague) -%></p>
+<%- elsif @invitation.status == Invitation::HASACCOUNT -%>
+	<p>Has Account: <%= link_to_user(@invitation.colleague) -%></p>
+<%- end -%>
+<%- if @invitation.resent_count > 0 -%>
+	<h3>Invitation Resent Details</h3>
+	<p>Resent Count: <%= @invitation.resent_count %></p>
+	<p>Last Resent At: <%= humane_date(@invitation.resent_at) %></p>
+	<p>Resent by:</p>
+		<p><ul> 
+	<%- @invitation.additionaldata[:resentby].uniq.each do |resender_id| -%>
+		<li><%= link_to_user(User.find_by_id(resender_id.to_i)) %></li>
+	<% end %>
+		</ul></p>
+		<% if !@invitation.resendmessage.blank? %>
+		<p>Last Invitation Resend Message<br/>
+		<%= Hpricot(@invitation.message).to_plain_text %></p>
+		<% end %>
+<%- end -%>
+<% if !@invitation.message.blank? %>
+<h3>Invitation Message</h3>
+<p><%= Hpricot(@invitation.message).to_plain_text %></p>
+<% end %>
+<%- if(!@invitation.additionaldata.nil? and !@invitation.additionaldata[:invitecommunities].nil?) 
+  communityids = @invitation.additionaldata[:invitecommunities] -%>
+	<h3>Invitation Communities</h3>
+	<ul>
+  <%- communityids.each do |invitedcommunity_id| -%>
+    <%- if(community = Community.find(invitedcommunity_id.to_i)) -%>
+      <li><%= link_to_community(community) %></li>
+    <%- end -%> 
+  <%- end -%> 
+<%- end -%> 

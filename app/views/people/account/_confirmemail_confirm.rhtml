@@ -1,0 +1,39 @@
+<% @page_title = "Confirm Email Address" %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<h2>Confirm Email Address</h2>
+
+<p>You should have received a confirmation email at:</p>
+
+<p><code class="email"><%= @currentuser.email %></code> <span class="help">(Incorrect address? Please <%= link_to('fix it in your profile', :controller => 'profile', :action => 'edit')%>)</span></p>
+
+<p>Once you receive it, either click the confirmation link in the email or provide the confirmation token below.</p>
+
+
+<% form_tag(:action => :confirmemail) do %>
+
+    <label for="confirmation_code">Confirmation Token
+    <%= text_field_tag("token", '', :class => "medsize") %>
+    </label>
+
+    <input type="submit" value="Confirm Email Address" />
+
+<% end %>
+
+
+<div class="form_help">
+    <h2>If you didn't receive the email yet...</h2>
+    
+    <p><%= link_to('Please send me another confirmation email', :controller => :account, :action => :confirmemail, :token => 'send') %></p>
+
+    <p>Sometimes emails can get delayed up to a few hours. It's also possible for email to be mistakenly flagged as spam by your email provider. You may want to check your Spam or Junk folders to see if it's there.</p>
+    
+    <p>This email will be from:
+    <br /><code>eXtensionHelp@extension.org</code></p>
+
+    <p>with the subject:
+    <br /><code>eXtension Initiative: Please confirm your email address</code></p>
+    
+    <p>If you don't receive the email within the next 24 hours, please <%= link_to("contact us", :controller => :help, :action => :contactform) %>.</p>
+</div>

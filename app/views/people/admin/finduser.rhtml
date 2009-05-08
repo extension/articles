@@ -1,0 +1,23 @@
+<% @page_title = "Admin - Find Results" %>
+<% @selected_tab = :admin %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<h1>Find Users</h1>
+<%= render(:partial => 'find_user_form') %>
+
+<div id="paginator_wrapper">
+    
+<% if @userlist.length > 0 %>
+    <p class="display_results">Displaying <strong><%= @userlist.offset + 1 %>-<%= @userlist.offset + @userlist.length %></strong> of <strong><%= @userlist.total_entries %></strong></p>
+<% else %>
+    <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+<% end %>
+
+<%= will_paginate(@userlist,:params => {:searchterm => params[:searchterm]}) %>
+</div>
+<%= render(:partial => 'users_table') %>
+
+<p>
+    <%= link_to 'Admin Home', :controller => 'admin' %>
+</p>

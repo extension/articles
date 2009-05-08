@@ -1,0 +1,41 @@
+<% @page_title = "Resend Invitation" %>
+<% @selected_tab = :invitations %>
+<%= render(:partial => 'navtabs', :locals => { :selected => 'edit' }) %>
+<%= render(:partial => 'partial/flashmessages') %>
+
+<h1>Resend Invitation</h1>
+
+
+<%= error_messages_for 'invitation' %>
+<% form_for @invitation do |i| %>
+<div class="form_section">
+	<% if @invitation.status == Invitation::INVALID_EMAIL %>
+		<p>
+			<label for="invitation_email" class="helptext">Enter a valid email address for your colleague:</label> 
+			<%= i.text_field(:email,{:size => 30}) %>
+		</p>
+	<% else %>
+		<p class='easyread'>Email: <%= @invitation.email %></p>
+	<% end %>
+	<% if @invitation.user == @currentuser %>
+		<p>
+			<label for="invitation_message" class="helptext">You can include a personal message in the invitation (text only, html will be removed):
+			<%= i.text_area(:message,{"onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)", "rows" => 4}) %></label>
+		</p>
+
+		<% if(@currentuser.communityinvitejoins.count > 0) %>
+			<%= render(:partial => 'invite_checkbox_list', :locals => { :communitylist => @currentuser.communityinvitejoins, :invitedcommunities => (@invitation.additionaldata.blank? ? nil : @invitation.additionaldata[:invitecommunities])}) %>
+	    <% end %>
+	<% else %>
+	<p>
+		<label for="invitation_message" class="helptext">You can include an additional personal message in the invitation (text only, html will be removed):
+		<%= i.text_area(:resendmessage,{"onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)", "rows" => 4}) %></label>
+	</p>
+	<% end %>
+</div>
+<div class="form_section">
+<%= submit_tag 'Resend' %> or <%= link_to 'Cancel', invitations_url %>
+</div>
+<% end %>
+
+

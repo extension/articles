@@ -1,0 +1,19 @@
+<% @page_title = "Admin - Find by Institution" %>
+<% @selected_tab = :admin %>
+
+<h1>Institutions</h1>
+
+
+<table cellspacing="0" border="1" >
+    <tr>
+        <th>institution</th>
+        <th>users</th>
+    </tr>
+    
+    <% @institutions.each do |institution| %>
+        <tr>
+            <td><%= link_to institution.name, :action => 'institution', :id => institution %></td>
+            <td><%= (@institution_counts[institution.name]) ? @institution_counts[institution.name] : 0 %></td>
+        </tr>
+    <% end%>
+</table>

@@ -1,0 +1,9 @@
+<li id="homenav" <%= selected_tab_if(:home) %>><%= link_to 'Home', '/' %></li>
+<li <%= selected_tab_if(:my_profile) %>><%= link_to "My Profile", :controller => "profile", :action => "me" %></li>
+<li <%= selected_tab_if(:communities) %>><%= link_to "Communities", :controller => :communities %></li>
+<li <%= selected_tab_if(:colleagues) %>><%= link_to "Find Colleagues", :controller => :colleagues %></li>
+<li <%= selected_tab_if(:activity) %>><%= link_to "Activity", :controller => :activity %></li>
+<li <%= selected_tab_if(:numbers) %>><%= link_to "Numbers", :controller => :numbers %></li>
+<% if adminmode %>
+	<li id="admin" <%= selected_tab_if(:admin) %>><%= link_to "Admin (restricted)", :controller => "admin" %></li>
+<% end %>

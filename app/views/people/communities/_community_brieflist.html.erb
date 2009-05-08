@@ -1,0 +1,5 @@
+<ul> 
+	<% communitylist.each do |community| %>
+    	<li><span><%= communitycounts[community.id] %> <%= connectiontype %></span> <%= link_to("#{community.name}", community)%></li>
+    <% end %>
+</ul>

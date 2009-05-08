@@ -1,0 +1,22 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+Hello <%= @oncolleague.first_name %>,
+
+<%= @actionstring %> <% if !@bycolleague.is_peoplebot? %>by a colleague that's currently a leader or member in the community.
+
+Information about your colleague:
+
+ <%= @bycolleague.fullname %>
+ <%= @bycolleague.email %>
+ <%= @urls['bycolleague']%><%end%>
+
+<%= @responsestring %>
+
+ <%= @urls['showcommunity']%>
+
+--
+eXtension Staff
+http://about.extension.org
+
+Replies to this email address are not monitored. If you have questions please contact us at: 
+ 
+ <%= @urls['contactus']%>

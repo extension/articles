@@ -1,0 +1,19 @@
+<% if(!@userlist.nil? and !@userlist.empty?) %>
+<table cellspacing="0" border="1">
+    <tr>
+        <th scope="col">eXtensionID:</th>
+        <th scope="col">email</th>
+        <th scope="col">first name</th>
+        <th scope="col">last name</th>
+    </tr>
+    
+    <% for showuser in @userlist %>
+        <tr>
+            <td><%= showuser.login %></td>
+            <td><%= showuser.email %></td>
+            <td><%= showuser.first_name %></td>
+            <td><%= showuser.last_name %></td>	
+        </tr>
+    <% end%>
+</table>
+<% end %>

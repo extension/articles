@@ -1,0 +1,28 @@
+<% if (!showuser.communitiesofanyinterest.blank?) 
+	communitycount = 0 %>
+	<table cellspacing="0" class="general_table" summary="User Communities">
+		<tr>
+	        <th>Name</th>
+	        <th>Type</th>
+	        <th>Connection</th>
+			<% if admin_mode? or displayactions %>
+	        	<th>Actions</th>
+			<% end %>
+	    </tr>
+	    <% showuser.communitiesofanyinterest.each do |community| 
+		communitycount += 1
+	%>
+    	<tr id="communitylist_row_<%= community.id %>">
+			<%= render(:partial => 'manage_cc_row', :locals => { :community => community, :showuser => showuser, :displayactions => displayactions, :connectaction => 'none'  }) %>					
+		</tr>
+	<% end %>
+</table>
+<% else %>
+	<p><%= showuser.first_name %> is not yet part of any communities.</p>
+<% end %>
+
+<% if (!@showuser.retired? and @showuser.account_status != User::STATUS_SIGNUP and @showuser.vouched? )%>		
+	<% if admin_mode? or @currentuser.communityinvitejoins.count > 0 %>
+		<p class="clear"><%= link_to ("Invite #{@showuser.first_name} to join a Community", {:controller => :colleagues, :action => :invitetocommunity, :id => @showuser.id}, {:class => "action"}) %></p>
+	<% end %>
+<% end %>

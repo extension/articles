@@ -1,0 +1,16 @@
+<h3>My Social Network Identities <%= link_to "edit", :controller => 'profile', :action => 'socialnetworks' %></h3>
+
+<% if !@currentuser.social_networks.empty? %>
+    <div id="showuser_socialnetworks">
+        <% @currentuser.social_networks.each do |social_network| %>
+            <dl class="usernetwork">
+                <dt class="<%= social_network_class(social_network.network) %>"><%= link_to(social_network_name(social_network), {:controller => :colleagues, :action => :socialnetwork, :id => social_network.network}) %></dt>
+                <dd><%= social_network_link(social_network) %></dd>
+            </dl>
+        <% end %>
+    </div>
+<% else %>
+    <div class="instructions">
+        <p>You have not yet provided any social networks that you belong to.</p>
+    </div>
+<% end %>

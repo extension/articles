@@ -1,0 +1,16 @@
+<% @page_title = "Admin - Contributor Agreement Revocation" %>
+<% @selected_tab = :admin %>
+
+<h2>Contributor Agreement Revocation</h2>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<% if @notoken %>
+	<%= render(:partial => 'revoke_agreement_token') %>
+<% elsif @tokenexpired %>
+	<%= render(:partial => 'expiredtoken') %>
+<% elsif @revocationfailed %>
+  <%= render(:partial => 'revoke_agreement_failure') %>
+<% else %>
+	<%= render(:partial => 'revoke_agreement_success') %>
+<% end %>

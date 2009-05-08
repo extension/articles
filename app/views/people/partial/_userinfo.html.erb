@@ -1,0 +1,14 @@
+<% if @currentuser %>
+<ul id="userinfo">
+    <li id="username"><%= @currentuser.login %></li>
+	<li><%= link_to "account", :controller => "profile", :action => 'account' %></li>
+    <li><%= link_to "sign out", :controller => "account", :action => "logout" %></li>
+    <% if @currentuser.is_admin? %>
+		<li id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></li>
+	<% end %>
+</ul>
+<% else %>
+<ul id="userinfo">
+	<li><%= link_to "sign in", :controller => "account", :action => "login" %></li>
+</ul>
+<% end %>

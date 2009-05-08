@@ -1,0 +1,10 @@
+<h1>Invite <%= @showuser.first_name %> to a community</h1>
+
+
+<% if (admin_mode? or @currentuser.communityinvitejoins.count > 10) %>
+	<%= render(:partial => 'xhr_findcommunity_form') %>
+<%end %>
+
+<div id="invitelist" class="section">
+	<%= render(:partial => 'invite_community_list', :locals => { :communitylist => @communitylist, :showuser => @showuser}) %>
+</div>

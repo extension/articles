@@ -1,0 +1,25 @@
+<% @filterstring = filter_string(@findoptions.merge({:nolink => true})) %>
+<% @selected_tab = :communities %>
+
+<h1><%= (@page_title) ? @page_title : "Downloads" %></h1>
+<% if !@filterstring.empty? %>
+	<p><%= @filterstring %></p>
+<% end %>
+
+<table cellspacing="0" class="general_table" summary="Community List">
+	<tr>
+        <th>Name</th>
+        <th>Community Type</th>
+        <th>People</th>
+        <th>Link to People List</th>
+    </tr>
+    <% @communities.each do |community| %>
+	<tr>
+		<td><%= link_to("#{community.name}", community)%></td>
+		<td><%= community.entrytype_to_s %></td>
+		<td><%= @communitycounts[community.id] %></td>
+		<td class='csvfile'><%= link_to('Download (csv format)',userlist_community_url(@findoptions.merge(:id => community.id, :download => 'csv'))) %></td>
+	</tr>
+<% end %>
+</table>
+

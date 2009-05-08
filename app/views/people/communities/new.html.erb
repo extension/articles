@@ -1,0 +1,46 @@
+<h1>Create a new community</h1>
+
+<%= error_messages_for :community %>
+
+<% form_for(@community) do |community| %>
+    <fieldset>
+        <p class="wide">
+            <label for="community_name">Community Name <em class="required">*</em>
+	        <%= community.text_field(:name) %>
+	        </label>
+	    </p>
+	    <p>
+	        <label for="community_description">Community Description <em class="required">*</em>
+	        <%= community.text_area(:description, {:cols => "30", :rows => "5"}) %>
+            </label>
+        </p>
+	        
+	    <p>
+		    <label for="community_memberfilter">Community Membership Filter<em class="required">*</em><a class="tooltip-help" href="#" id="source_trigger">?</a></label>
+    			<%= select(:community, :memberfilter, Community::MEMBERFILTERS.invert, {:include_blank => false}) %>
+		</p>
+        <div id='source_tooltip' style="display:none;" class="tooltip">
+            <p id="tooltip_hook"><strong>Open:</strong> allows anyone to become a member by clicking a "Join" button. <strong>Moderated:</strong> anyone can indicate that they want to join the community, but they have to be approved by a community leader to become members. <strong>Invitation Only:</strong> members can only be invited to join the community</p>
+        </div>
+
+	<% if(admin_mode?)%>
+	    <p>
+		    <label for="community_entrytype">Community Type <em class="required">*</em></label>
+    			<%= select(:community, :entrytype, get_communitytypes_for_select, {:include_blank => "Select type"}) %>
+		</p>
+	<% end %>
+
+	 <p>
+	     <label for="community_tag_list">Provide some initial tags for this community: 
+	     <%= text_area_tag(:tag_list,params[:tag_list],{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
+	     <em>Separate tags with commas or spaces.  Create multi-word tags with double quotes (ie. learning "sharing information" education )</em>
+	     </label>
+	 </p>
+	
+    <p><%= submit_tag 'Create' %> or <%= link_to 'Cancel', :controller => :communities, :action => :index %></p>
+    </fieldset>
+ <% end %>
+
+ <script type="text/javascript">
+   var my_tooltip = new Tooltip('source_trigger', 'source_tooltip')
+ </script>

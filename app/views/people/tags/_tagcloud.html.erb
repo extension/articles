@@ -1,0 +1,14 @@
+<div class="tag_cloud">
+<h4><%= title %> (<%= listoftags.size %>)</h4>
+<% if listoftags.blank? %>
+    <p>No tags yet.</p>
+<% else %>
+    <ul class="tagCloud">
+    <% listoftags.each do |tag| %>
+        <li><%= link_to("#{tag.name}<span>(#{tag.frequency})</span>", {:action => :tags, :taglist => tag.name}) %></li>
+    <% end %>
+    </ul>
+<% end %>
+</div>
+
+

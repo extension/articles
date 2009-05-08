@@ -1,0 +1,8 @@
+<dl> 
+<% listoflists.each do |list|%>
+  <dt> <%= link_to("#{list.name}", list)%></dt>
+  <dd class="list_type"><%= list_subscriber_count(list) %> Subscribers</dd>
+  <dd class="list_description"><%= list_description(list) %></dd>
+<% end %>
+</dl>
+

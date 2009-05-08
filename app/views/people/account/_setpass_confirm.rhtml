@@ -1,0 +1,15 @@
+<% form_tag(:action => "set_password") do %>
+    
+    <p>You should have received a confirmation email at the address that you specified 
+        for your eXtensionID. If you didn't receive an email, please make sure that your
+        spam filter didn't throw it out. You may need to add <code>eXtensionHelp@extension.org</code>
+        to a list of approved email addresses to make sure it gets through.</p>
+
+    <p>
+    <label for="token">Confirmation Token:</label>
+    <%= text_field_tag("token", '', :size => 42) %>
+    </p>
+
+    <input type="submit" value="Confirm New Password Request" />
+
+<% end %>

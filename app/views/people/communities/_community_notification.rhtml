@@ -1,0 +1,13 @@
+
+<div id="communitynotificationhighlight">
+	<p><%= check_box_tag("community_notification","yesiwill",@currentuser.communityleaderships_withnotifications.include?(@community), {:id => "community_notification_#{@community.id}"}) %> Receive community notifications. <a class="tooltip-help" href="#" id="source_trigger">?</a></p>
+	<%= observe_field("community_notification_#{@community.id}", :update => "community_notification", :url => {:controller => :communities, :action => :change_my_notification, :id => @community.id}, :with => "'notification=' + value") %>
+	
+	<div id='source_tooltip' style="display:none;" class="tooltip">
+        <p id="tooltip_hook"><strong>Notifications:</strong> As a community leader, you can change whether or not you want to receive notifications for changes in the community (members and leaders added or removed) and for colleagues indicating an interest in the community.</p>
+    </div>
+</div>
+
+<script type="text/javascript">
+  var my_tooltip = new Tooltip('source_trigger', 'source_tooltip')
+</script>

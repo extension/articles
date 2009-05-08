@@ -1,0 +1,21 @@
+<p>In order to confirm your email address we just sent an email to:</p>
+
+<p><code class="email"><%= @currentuser.email %></code> <span class="help">(Incorrect address? Please <%= link_to('fix it in your profile', :controller => 'profile', :action => 'edit')%>)</span></p>
+
+<p>The email should arrive within a few minutes. Once you receive it, either click the confirmation link or use the provided token to <%= link_to('confirm your address', :controller => :account, :action => :confirmemail) %>.</p>
+
+<p><strong>Thanks for signing up!</strong></p>
+
+<div class="form_help">
+    <h2>If you didn't receive the email yet...</h2>
+
+    <p>Sometimes emails can get delayed up to a few hours. It's also possible for email to be mistakenly flagged as spam by your email provider. You may want to check your Spam or Junk folders to see if it's there.</p>
+
+    <p>This email will be from:
+    <br /><code><%= %("#{AppConfig.configtable['mail_system_noreply_name']}" &lt;#{AppConfig.configtable['mail_system_noreply']}&gt;) %></code></p>
+
+    <p>with the subject:
+    <br /><code>eXtension Initiative: Please confirm your email address</code></p>
+
+    <p>If you don't receive the email within the next 24 hours, please <%= link_to("contact us", :controller => :help, :action => :contactform) %>.</p>
+</div>

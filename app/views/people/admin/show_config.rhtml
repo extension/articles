@@ -1,0 +1,35 @@
+<% @page_title = "Program Configuration" %>
+<% @selected_tab = :admin %>
+
+<h2>Program Configuration <%= link_to "(reload)", :controller => 'admin', :action => 'reload_config' %></h2>
+
+<table cellspacing="0" border="1">
+    <tr>
+        <th scope="col">Configuration Setting</th>
+        <th scope="col">Value</th>
+    </tr>
+<% AppConfig.configtable.sort.each do |key,value| %>
+	<% if value.class == Hash%>
+		<% value.sort.each do |subkey,subvalue| %>
+	    <tr>
+	        <td><%= key %>:<%= subkey %></td>
+        	<td><%= subvalue %></td>
+		</tr>
+		<% end %>
+	<% else %>
+    <tr>
+        <td><%= key %></td>
+		<% if key != 'appkey'%>
+        	<td><%= value %></td>
+       	<% else %>
+    		<td>(not displayed)</td>
+		<% end %>
+    </tr>
+	<% end %>
+
+<% end %>
+</table>
+
+<p>
+  <%= link_to 'Admin Home', :action => 'index' %>
+</p>

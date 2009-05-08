@@ -1,0 +1,32 @@
+<% if @isdemo %>
+	-=-=-=-=-= PLEASE DISREGARD:  DEMONSTRATION EMAIL =-=-=-=-=-
+
+	This is a demo email being sent from a demo/test/development 
+	install of our Identity application.  
+
+	We are currently testing functionality in the application that 
+	generated this test email.  You may ignore this email message.
+
+	-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+<% end %>
+Hi <%= @token.user.first_name %>,
+
+We are sending this confirmation email to verify that you requested to revoke the contributor agreement for <%= @revokeuser.first_name %> <%= @revokeuser.last_name %> (<%= @revokeuser.email %>)
+
+In order to confirm this request and complete the revocation, you should click the following link:
+
+<%= @urls['directurl'] %>
+
+If the above link does not work, or word-wraps incorrectly in your email client, then visit:
+
+<%= @urls['manualurl'] %>
+
+and enter your confirmation token.  
+
+Your confirmation token is: <%= @token.token %>
+
+If you have any questions or need assistance, please reply to this email or contact us at eXtensionHelp@extension.org
+
+--
+eXtension Team
+http://about.extension.org

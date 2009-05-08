@@ -1,0 +1,15 @@
+<% if flash[:success] %>
+    <div class="feedback_banner success"><p><%= flash[:success] %></p></div>
+<% end %>
+<% if flash[:failure]%>
+    <div class="feedback_banner failure"><p><%= flash[:failure] %></p></div>
+<% end %>
+<% if flash[:failurelist]%>
+    <div class="feedback_banner failure"><%= flash[:failurelist] %></div>
+<% end %>
+<% if flash[:error]%>
+    <div class="feedback_banner failure"><p><%= flash[:error] %></p></div>
+<% end %>
+<% if flash[:warning] %>
+    <div class="feedback_banner warning"><p><%= flash[:warning] %></p></div>
+<% end %>

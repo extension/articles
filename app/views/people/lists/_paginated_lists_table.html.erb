@@ -1,0 +1,12 @@
+<div id="paginator_wrapper">
+<% if @listoflists.length > 0 %>
+    <p class="display_results">Displaying <strong><%= @listoflists.offset + 1 %>-<%= @listoflists.offset + @listoflists.length %></strong> of <strong><%= @listoflists.total_entries %></strong></p>
+<% else %>
+    <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+<% end %>
+<%= will_paginate @listoflists %>
+</div>
+<%= render(:partial => 'lists_table', :locals => {:listoflists => @listoflists}) %>
+<div id="paginator_wrapper">
+<%= will_paginate @listoflists %>
+</div>

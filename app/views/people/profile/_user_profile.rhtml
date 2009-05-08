@@ -1,0 +1,72 @@
+<h3>Personal Info <%= link_to "edit", :controller => 'profile', :action => 'edit' %></h3>
+
+<div class="vcard">
+	<div class="vcardHeader">
+	</div>
+	<p class="item">
+		<span class="vcardLabel">Full Name:</span>
+		<span class="fn"><%= @currentuser.fullname%></span>
+	</p>
+	<div class="n">
+	<p class="item">
+		<span class="vcardLabel">First Name:</span>
+		<span class="given-name"><%= @currentuser.first_name%></span>
+	</p>	
+	<p class="item">
+		<span class="vcardLabel">Last Name:</span>
+		<span class="family-name"><%= @currentuser.last_name%></span>
+	</p>
+	</div>
+	<p class="item">
+		<span class="vcardLabel">eXtensionID:</span>
+		<span class="extensionid"><%= @currentuser.login%></span>
+	</p>
+	<p class="item">
+		<span class="vcardLabel">eXtension Chat Account:</span>
+		<span class="extensionchat">
+			<% if !@currentuser.chat_account.nil? %>
+		    	<%= @currentuser.chat_account.username %>@chat.extension.org 
+		    <% else %>
+				Not yet enabled.
+			<% end %>
+			<%= link_to('what is this?', {:action => :chat}, :class => 'help') %>
+		</span>
+	</p>
+	<p class="item">
+		<span class="vcardLabel">Email:</span>
+		<span class="email"><%= @currentuser.email%></span>
+	</p>
+	
+	<p class="item">
+		<span class="vcardLabel">Preferred Phone:</span>
+		<span class="tel"><%= (@currentuser.phonenumber.nil? or @currentuser.phonenumber == '') ? '&nbsp;' : number_to_phone(@currentuser.phonenumber, :area_code => true)%></span>
+	</p>
+	<p class="item">
+		<span class="vcardLabel">Title:</span>
+		<span class="title"><%= (@currentuser.title.nil? or @currentuser.title == '') ? '&nbsp;': @currentuser.title %></span>
+	</p>
+	<p class="item">
+		<span class="vcardLabel">Position:</span>
+		<span class="role"><%= (@currentuser.position.nil? or @currentuser.position == '') ? '&nbsp;': @currentuser.position.name %></span>
+	</p>
+	<div class="org">
+		<p class="item">
+			<span class="vcardLabel">Institution:</span>
+			<span class="organization-name"><%= (@currentuser.institution.nil? or @currentuser.institution == '') ? '&nbsp;': @currentuser.institution.name %></span>
+		</p>
+	</div>
+	<div class="adr">	
+		<p class="item">
+			<span class="vcardLabel">Location:</span>
+			<span class="region"><%= (@currentuser.location.nil? or @currentuser.location == '') ? '&nbsp;': @currentuser.location.name %></span>
+		</p>
+		<p class="item">
+			<span class="vcardLabel">County:</span>
+			<span class="county-name"><%= (@currentuser.county.nil? or @currentuser.county == '') ? '&nbsp;': @currentuser.county.name %></span>
+		</p>
+	</div>
+	<p class="item">
+		<span class="vcardLabel">Announcements List:</span>
+		<span><%= (@currentuser.announcements) ? 'Subscribed': 'Not Subscribed' %></span>
+	</p>	
+</div>

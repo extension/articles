@@ -1,0 +1,19 @@
+<% @page_title = "Admin - Agreement Status" %>
+<% @selected_tab = :admin %>
+
+<h2>Agreement Status</h2>
+
+
+	
+<% if not @summaryonly %>
+
+<h2><%= @tabletitle %></h2>
+
+	
+<%= render(:partial => 'users_table') %>
+
+<% end %>
+
+<p>
+    <%= link_to 'Admin Home', :action => 'index' %>
+</p>

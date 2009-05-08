@@ -1,0 +1,23 @@
+<% @page_title = "Admin - Find by Location" %>
+<% @selected_tab = :admin %>
+
+<h1>Location</h1>
+
+
+<table cellspacing="0" border="1" cellpadding="4">
+    <tr>
+        <th>location</th>
+        <th>users</th>
+    </tr>
+
+    <% @locations.each do |location| %>
+        <tr>
+            <td><%= link_to location.name, :action => 'location', :id => location.id %></td>
+            <td><%= (@location_counts[location.name]) ? @location_counts[location.name] : 0 %></td>
+        </tr>
+    <% end %>
+</table>
+
+<p>
+    <%= link_to 'Admin Home', :action => :index %>
+</p>

@@ -1,0 +1,1 @@
+page.replace_html "invitelist", :partial => 'invite_community_list', :locals => { :communitylist => @communitylist, :showuser => @showuser}

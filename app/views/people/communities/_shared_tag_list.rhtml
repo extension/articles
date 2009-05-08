@@ -1,0 +1,18 @@
+<% if @community.shared_tag_list.size > 0 %>
+	<h4>Shared tags for this community
+		<% if(@currentuser.communityjoins.include?(@community)) %>
+		<small class="edit"><%= link_to 'tag this community', describe_community_path(@community) %></small>
+		<% end %>
+	</h4>
+	<p class="taglist"><%= link_shared_tags(@community.shared_tag_list.map(&:name).sort) %> <a class="tooltip-help" href="#" id="tags_trigger">?</a></p>
+	<div id='tags_tooltip' style="display:none;" class="tooltip">
+        <p id="tooltip_hook"><strong>Community Tags</strong> These tags reflect the shared descriptions of the community from members and leaders</p>
+    </div>
+	<% if @community.user_tag_list(@currentuser).length > 0 %>
+	<h4>Your tags for this community</h4>
+	<p class="taglist"><%= link_shared_tags(@community.user_tag_list(@currentuser).sort) %></p>
+	<% end %>	
+<script type="text/javascript">
+  var my_tooltip = new Tooltip('tags_trigger', 'tags_tooltip')
+</script>
+<% end %>

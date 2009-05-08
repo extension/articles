@@ -1,0 +1,17 @@
+<% @page_title = "Admin - User Detail" %>
+<% @selected_tab = :admin %>
+<%= render(:partial => 'partial/flashmessages') %>
+<% if @showuser.nil? %>
+  <h2>Find User</h2>
+  <%= render(:partial => 'find_user_form') %>
+<% else %>
+  <%= render(:partial => 'showuser_info') %>
+  <p><%= link_to("More information available in the colleague profile", :controller => 'colleagues', :action => 'showuser', :id => @showuser.login) %></p>
+  <%= render(:partial => 'common/showuser_profile', :locals => {:showuser => @showuser}) %>
+  <%= render(:partial => 'showuser_events') %>
+<% end %>
+
+
+<p>
+    <%= link_to 'Admin Home', :action => :index %>
+</p>

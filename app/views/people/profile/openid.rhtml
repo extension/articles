@@ -1,0 +1,50 @@
+<% @page_title = "Your OpenID" %>
+<% @selected_tab = :my_profile %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<%= render(:partial => 'navtabs', :locals => { :selected => 'home' }) %>
+
+<h1>OpenID</h1>
+
+<div id="openid_page">
+    <p><img alt="open id" id="openid" src="/images/openid_full_logo.gif" /></p>
+
+    <p>OpenID is a technology that allows you to use a single user log-in at any website that supports OpenID. This means that for sites that support OpenID <strong>you will never need to create and remember another username/password combination</strong>.</p>
+
+    <p>Now you can't throw away all your passwords yet because not every site has adopted OpenID, but there is hope for the future. To help out, <strong>your eXtensionID automatically includes an OpenID URL</strong> that you can use at any website that supports OpenID.</p>
+
+    <p class="fine_print">(Some notable OpenID-accepting websites include <a href="http://jyte.com/">Jyte</a>, <a href="http://ma.gnolia.com/">Ma.gnolia</a>, <a href="http://wikitravel.org/en/Main_Page">Wikitravel</a>. Search for more participating websites at <a href="https://www.myopenid.com/directory">my OpenID</a> or <a href="http://openiddirectory.com/">The OpenID Directory</a>. More and more are joining every day. <a href="http://openid.net/">Learn more about OpenID</a>.)</p>
+
+    <h2>Your eXtensionID-based OpenID URL</h2>
+    <div id="youropenid">
+    <p class="directions">Use this string of text to sign-in to any OpenID-accepting website.</p>
+    <p class="openid easyread"><%= @openidurl %></p>
+    </div>
+
+<% if !@currentuser.opie_approvals.empty? %>
+
+<h2>Sites You Trust</h2>
+
+<p>Below are the sites that you have chosen to trust with your eXtensionID-based OpenID:</p>
+
+<table cellspacing="0">
+    <tr>
+        <th>Site</th>
+        <th>Date Added</th>
+		<th>&nbsp;</th>
+    </tr>
+    
+    <% @currentuser.opie_approvals.each do |oa| %>
+        <tr>
+            <td><%= link_to(oa.trust_root,oa.trust_root) %></td>
+            <td><%= oa.created_at %></td>
+			<td><%= link_to("remove", :action => 'removeopenidsite', :id => oa.id) %></td>
+        </tr>
+    <% end %>
+</table>
+
+<% end %>
+</div>
+<p><%= link_to("Return to your Personal Profile", :action => :me) %></p>
+

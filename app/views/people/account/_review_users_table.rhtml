@@ -1,0 +1,28 @@
+<div id="users_table">
+	<% if !@reviewers.nil? and !@reviewers.empty? %>
+		<% if(@reviewers.length > 25)%>
+			<p><em>Your search term returned more than 25 results, please refine your search.</em></p>
+		<% end %>
+		<table cellspacing="0" border="1">
+		    <tr>
+		        <th>eXtensionID:</th>
+		        <th>email</th>
+		        <th>first name</th>
+		        <th>last name</th>
+		        <th>institution</th>
+		        <th>location</th>
+		    </tr>
+    
+		    <% for showuser in @reviewers %>
+		        <tr>
+		            <td><%= showuser.login %></td>
+		            <td><%= showuser.email %></td>
+		            <td><%= showuser.first_name %></td>
+		            <td><%= showuser.last_name %></td>
+			        <td><%= (showuser.institution.nil? or showuser.institution == '') ? '(Not specified)': showuser.institution.name %></td>
+			        <td><%= (showuser.location.nil? or showuser.location == '') ? 'N/A': showuser.location.abbreviation %></td>
+		        </tr>
+		    <% end%>
+		</table>
+	<% end%>
+</div>

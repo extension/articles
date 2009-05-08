@@ -1,0 +1,24 @@
+
+<% form_tag(:action=> "new_password") do %>
+<div class="form_section">
+<fieldset>
+<p>If you have forgotten your password, you can set a new password for your account.</p>
+
+<p>In order to verify your request, we are going to send an confirmation note to the email you have registered with us.</p>
+
+<p>
+    <label for="login_or_email">Enter your eXtensionID or email address:</label>
+    <input type="text" name="login_or_email" id="login_or_email" class="medsize" value=""/>
+</p>
+
+<p>The email with your confirmation can be intercepted by spam filters. If you don't get the email with your new password within a few hours of making your request, check to make sure that it wasn't treated as spam. You may have to add <code>eXtensionHelp@extension.org</code> to a list of approved addresses in order to receive the confirmation email.
+</p>
+
+<p>
+    <input type="submit" name="login" value="Send Confirmation" />
+</p>
+</fieldset>
+</div>
+<% end %>
+
+<p><%= link_to 'Go back to log in', :action => 'login' %></p>	

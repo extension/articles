@@ -1,0 +1,25 @@
+<% @page_title = "Your Profile : Edit " %>
+
+<%= render(:partial => 'navtabs', :locals => { :selected => 'home' }) %>
+
+<h1>Edit Your Profile</h1>
+
+<%= error_messages_for :user %> 
+<%= render(:partial => 'partial/flashmessages') %>
+
+<% form_tag({:action => 'edit'}, {:id => "profile"}) do %>
+    <h3>Basic Info</h3>
+	<p><span class="advice">Fields marked with an asterisk (<em class="required">*</em>) are required</span></p>
+	<%= error_messages_for 'user' %>
+	<div class="form_section">
+	<fieldset>
+	<p>
+        <label for="user_email">Email Address: <em class="required">*</em></label>
+        <%= text_field "user", "email" %>
+    </p>
+	</fieldset>
+	</div>
+	<%= render(:partial => 'profile_fields', :locals => {:user => @currentuser, :signup => false}) %>
+    <p><%= submit_tag 'Save' %> or <%= link_to 'Cancel', :controller => :profile, :action => :me %> </p>
+
+<% end %>

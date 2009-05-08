@@ -1,0 +1,26 @@
+<% @page_title = "My Communities" %>
+<% @selected_tab = :my_profile %>
+
+<%= render(:partial => 'navtabs', :locals => { :selected => 'communities' }) %>
+<h1>My Communities</h1>
+<% if (!@currentuser.communitiesofanyinterest.blank?) 
+	communitycount = 0 %>
+	<table cellspacing="0" class="general_table" summary="My Communities">
+		<tr>
+	        <th>Name</th>
+	        <th>Type</th>
+	        <th>Connection</th>
+	    </tr>
+	    <% @currentuser.communitiesofanyinterest.each do |community| 
+		communitycount += 1
+	%>
+    	<tr id="communitylist_row_<%= community.id %>">
+			<td><%= link_to("#{community.name}", community)%></td>
+			<td><%= community.entrytype_to_s %></td>
+			<td><%= @currentuser.connection_display(community) %></td>
+		</tr>
+	<% end %>
+</table>
+<% else %>
+	<p>You are not yet part of any communities. <%= link_to("Find a community", {:controller => :communities, :action => :index})%>.</p>
+<% end %>

@@ -1,0 +1,167 @@
+<div id="activity_one" class="activity_summary">
+
+<h2>People</h2>
+
+<table class="general" cellspacing="0">
+    <tr>
+		<td><%= link_to_userlist('Total Users',total.findoptions.merge({:calledfrom => 'numbersummary'}),{:title => "Users #{filter_string(total.findoptions.merge({:nolink => true}))}"}) %></td>
+        <td class="bignumber"><%= number_with_delimiter(total.totalpeople) %></td>
+    </tr>
+    <tr>
+        <td>New Users (within the last month)</td>
+        <td class="bignumber"><%= number_with_delimiter(lastmonth.newpeople) %></td>
+    </tr>
+    <tr>
+        <td>Active Users (those with a login or edit within the last month)</td>
+        <td class="bignumber"><%= number_with_delimiter(lastmonth.active) %></td>
+    </tr>
+    <% if !total.positions.nil? and total.positions != 0 %>
+    <tr>
+        <td><%= link_to("Represented Positions",url_for_itemlist(:positions,total.findoptions)) %></td>
+        <td class="bignumber"><%= number_with_delimiter(total.positions)%></td>
+    </tr>
+    <% end %>
+</table>
+
+<% if !total.communities.nil? and !total.communities.empty? %>
+
+<h2>Communities</h2>
+<table cellspacing="0">
+    <tr><th></th><th class="righttext">Total</th><th class="righttext">Members</th></tr>
+    <tr>
+        <td><%= link_to("eXtension Communities of Practice",url_for_itemlist(:communities,total.findoptions,{:communitytype => 'approved',:connectiontype => 'joined'})) %></td>
+        <td class="bignumber"><%= number_with_delimiter(total.communities[:approved][:count])%></td>
+        <td class="bignumber"><%= number_with_delimiter(total.communities[:approved][:joined]) %></td>
+    </tr>
+    <tr>
+        <td><%= link_to("People-contributed Communities",url_for_itemlist(:communities,total.findoptions,{:communitytype => 'usercontributed',:connectiontype => 'joined'})) %></td>
+        <td class="bignumber"><%= number_with_delimiter(total.communities[:usercontributed][:count])%></td>
+        <td class="bignumber"><%= number_with_delimiter(total.communities[:usercontributed][:joined]) %></td>
+    </tr>
+</table>
+<% end %>
+
+<h2>Places</h2>
+<table cellspacing="0">
+    <tr><th></th><th class="righttext">Total</th></tr>
+    <% if !total.institutions.nil? and !total.institutions.empty? %>
+    
+    <tr>
+        <td><%= link_to("Land-Grant, State, and Federal Institutions",url_for_itemlist(:institutions,total.findoptions,{:displayfilter => 'system'})) %></td>
+        <td class="bignumber"><%= number_with_delimiter(total.institutions[:system]) %></td>
+    </tr>
+    <tr>
+        <td><%= link_to("People-contributed Institutions",url_for_itemlist(:institutions,total.findoptions,{:displayfilter => 'usercontributed'})) %></td>
+        <td class="bignumber"><%= number_with_delimiter(total.institutions[:usercontributed]) %></td>
+    </tr>
+    <% end %>
+    <% if !total.locations.nil? and !total.locations != 0 %>
+    <tr>
+        <td><%= link_to("States and related",url_for_itemlist(:locations,total.findoptions)) %></td>
+        <td class="bignumber"><%= number_with_delimiter(total.locations) %></td>
+    </tr>
+    <tr>
+        <td>Counties, Parishes and related</td><td class="bignumber"><%= number_with_delimiter(total.counties) %></td>
+    </tr>
+    <% end %>
+</table>
+
+
+<% if !total.agreements.nil? and total.agreements %>
+	<h2>Agreements</h2>
+
+	<table class="general" cellspacing="0">
+
+	<tr>
+	    <td>Pending Contributor Agreement Reviews</td>
+	    <td class="bignumber"><%= number_with_delimiter(total.agreements[:empty]) %></td>
+	</tr>
+	<tr>
+	    <td>Accepted Contributor Agreement</td>
+	    <td class="bignumber"><%= number_with_delimiter(total.agreements[:agree]) %></td>	</tr>
+	<tr>
+	    <td>Did Not Accept Contributor Agreement</td>
+	    <td class="bignumber"><%= number_with_delimiter(total.agreements[:reject]) %></td>	</tr>
+	</table>
+<% end %>
+
+</div>
+	
+<div id="activity_two" class="activity_summary">
+<h2>Published Content</h2>
+<table cellspacing="0">
+    <tr><th></th><th class="righttext">Last 30 days</th></tr>
+    <tr>
+        <td>CoP Wiki Pages</td>
+        <td class="bignumber"><%= number_with_delimiter(lastmonth.published_copwikipages) %></td>
+    </tr>
+    <tr>
+        <td>Events</td>
+        <td class="bignumber"><%= number_with_delimiter(lastmonth.published_events) %></td>
+    </tr>
+    <tr>
+        <td>FAQs</td>
+        <td class="bignumber"><%= number_with_delimiter(lastmonth.published_faqs) %></td>
+    </tr>
+</table>
+
+<h2>Ask an Expert</h2>
+<table cellspacing="0">
+    <tr><th></th><th class="righttext">Last 30 days</th></tr>
+    <tr>
+        <td>Answered (resolved)</td>
+        <td class="bignumber"><%= number_with_delimiter(lastmonth.resolved_questions) %></td>
+        
+    </tr>
+    <tr>
+        <td>Closed/Unanswered</td>
+        <td class="bignumber"><%= number_with_delimiter(lastmonth.unanswered_questions) %></td>
+    </tr>
+    <tr>
+        <td>Rejected</td>
+        <td class="bignumber"><%= number_with_delimiter(lastmonth.rejected_questions) %></td>
+    </tr>
+</table>
+
+<% if !lastmonth.applications.nil? and !lastmonth.applications.empty? %>
+<h2>Edit Activity - Last 30 days</h2>
+<table cellspacing="0">
+    <tr><th></th><th class="righttext">Edits</th><th class="righttext">Items</th><th class="righttext">People</th></tr>
+    <tr>
+        <td>CoP Wiki</td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['copwiki_page'],:contributions) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['copwiki_page'],:objects) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['copwiki_page'],:users) %></td>
+    </tr>
+    <tr>
+        <td>Frequently Asked Questions</td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['faq'],:contributions) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['faq'],:objects) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['faq'],:users) %></td>
+    </tr>
+    <tr>
+        <td>Events</td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['event'],:contributions) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['event'],:objects) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['event'],:users) %></td>
+    </tr>
+    <tr>
+        <td>Collaborate Wiki</td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['collabwiki_page'],:contributions) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['collabwiki_page'],:objects) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['collabwiki_page'],:users) %></td>
+    </tr>
+    <tr>
+        <td>About Wiki</td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['aboutwiki_page'],:contributions) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['aboutwiki_page'],:objects) %></td>
+        <td class="bignumber"><%= nilhash_number_with_delimiter(lastmonth.applications['aboutwiki_page'],:users) %></td>
+    </tr>
+</table>
+<% end %>
+</div>
+
+
+
+
+

@@ -1,0 +1,70 @@
+<div class="form_section">
+<fieldset>
+    <p>
+        <label for="user_first_name">First Name: <em class="required">*</em></label>
+        <%= text_field "user", "first_name" %>
+    </p>
+
+    <p>
+        <label for="user_last_name">Last Name: <em class="required">*</em></label>
+        <%= text_field "user", "last_name" %>
+    </p>
+
+    <p>
+        <label for="user_phonenumber">Preferred Phone Number:</label>
+        <%= text_field("user", "phonenumber", {:value => number_to_phone(@user.phonenumber,:area_code => true)}) %>
+    </p>
+
+    <p>
+        <label for="user_title">Title:</label>
+        <%= text_field "user", "title", :class => "medsize" %>
+    </p>
+</fieldset>
+</div>
+    
+<div class="form_section">
+   <%= render(:partial => 'profile/profile_position', :locals => { :positionslist => Position.geteditlist}) %>
+</div>
+
+<div class="form_section">
+<h3>Location</h3>
+	<div id="location">
+		<p>
+		    <label for="user_location_id">Location:</label>
+		<%= select(:user, :location_id, @locations.map {|loc| [loc.name,loc.id]}, :include_blank => true) %>
+		<%= observe_field(:user_location_id,
+		                  :url       => { :controller => :profile, :action => :xhr_countylist },
+		                  :with      => "'location='+value") %>
+		</p>
+	</div>
+	<div id="county">
+		<% if !@countylist.nil? %>
+			<%= render(:partial => "profile/county", :locals => {:countylist => @countylist}) %>
+		<% end %>
+	</div>
+</div>
+
+<div class="form_section">
+<h3>Your Institution/Affiliation</h3>
+	<div id="institution">
+		<% if @user.institution.nil? or signup %>
+			<%= render(:partial => "profile/edit_institution") %>
+		<% else %>
+			<%= render(:partial => "profile/profile_field_institution", :locals => {:user => @user}) %>
+		<% end %>
+	</div>
+</div>
+
+<div class="form_section">
+<h3>Announcements</h3>
+	<div id="announcements">
+	    <p>
+	        <label>
+	            <%= check_box(:user,:announcements) %> Subscribe me to the eXtension.org "announcements" mailing list.
+	        </label>
+	    </p>
+	</div>
+</div>
+
+
+

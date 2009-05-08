@@ -1,0 +1,7 @@
+<%= render(:partial => 'partial/flashmessages') %>
+
+<% form_tag(:action=> "makeadmin") do %>
+    <p>Are you sure you want to <%= params[:operation] %> admin status for this user?: </p>
+	<%= hidden_field_tag('operation',params[:operation]) %>
+    <%= submit_tag 'Yes' %>  or <%= link_to 'Cancel', :controller => :admin, :action => :showuser, :id => params[:id] %>
+<% end %>

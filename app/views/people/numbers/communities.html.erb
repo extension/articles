@@ -1,0 +1,11 @@
+<% @filterstring = community_filter_string(@findoptions.merge({:controller => :numbers, :action => :summary,:nolink => true})) %>
+<% if @filterstring.empty? %>
+	<% @page_title = "Numbers by Community"%>
+<% else %>
+	<% @page_title = "Numbers by Community - (Filtered)"%>
+<% end %>
+<% @selected_tab = :numbers %>
+<%= render(:partial => 'navtabs') %>
+<h1><%= @page_title %></h1>
+<p><%= @filterstring %></p>
+<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Joined',:itemtype => 'community', :itemlist => @communities,  :itemcounts => @communitycounts,  :filtered => !@filterstring.empty?, :findoptions => @findoptions }) %>

@@ -1,0 +1,26 @@
+<% @page_title = "My Lists" %>
+<% @selected_tab = :my_profile %>
+
+<%= render(:partial => 'navtabs', :locals => { :selected => 'lists' }) %>
+<h1>My Lists</h1>
+<% if (!@currentuser.subscribedlists.blank?) 
+	communitycount = 0 %>
+	<table cellspacing="0" class="general_table" summary="My Lists">
+		<tr>
+	        <th>Name</th>
+			<th>Subscribers</th>
+	        <th>Posts (this month)</th>
+	    </tr>
+	    <% @currentuser.subscribedlists.each do |list| 
+		communitycount += 1
+	%>
+    	<tr id="list_row_<%= list.id %>">
+			<td><%= link_to("#{list.name}", list)%></td>
+			<td><%= list_subscriber_count(list) %></td>
+			<td><%= list.get_posting_stats('lastmonth')[:messages] %></td>
+		</tr>
+	<% end %>
+</table>
+<% else %>
+	<p>You are not yet subscribed to any lists.  eXtension mailing lists are associated with communities. <%= link_to("Find a community", {:controller => :communities, :action => :index})%>.</p>
+<% end %>

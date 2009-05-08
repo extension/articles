@@ -1,0 +1,10 @@
+<% @selected_tab = :numbers %>
+<h1><%= @page_title %></h1>
+
+<%- if @graphtype == 'timeline' %>
+<div id="visualization_chart" style='width: <%=@chart_options[:width] %>px; height: <%=@chart_options[:height] %>px;'>
+<%- else -%>
+<div id="visualization_chart">
+<%- end -%>
+	<div id="loading" style="display:none"><img src='/images/ajax-loader-gviz.gif' /><p>Loading data...</p></div>
+</div>

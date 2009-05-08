@@ -1,0 +1,6 @@
+<% activitylist.each do |activityitem| %>
+<dl class="event">
+    <dt><%= link_to(time_ago_in_words(activityitem.created_at,true)+" ago", :controller => :activity, :action => :show, :id => activityitem.id) %></dt>
+    <dd><%= activity_to_s(activityitem,activityoptions) %></dd>
+</dl>
+<% end %>

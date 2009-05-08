@@ -1,0 +1,19 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+Hello <%= @notification.user.first_name %>,
+
+We wanted to let you know that your colleague has accepted your invitation to get an eXtensionID.
+
+Your Colleague:
+
+ <%= @notification.creator.fullname %>
+ <%= @notification.creator.email %>
+ Institution: <%= (@notification.creator.institution.nil? or @notification.creator.institution == '') ? '(Not specified)': @notification.creator.institution.name %> 
+ <%= @urls['showcolleague']%>  
+
+--
+eXtension Staff
+http://about.extension.org
+
+Replies to this email address are not monitored. If you have questions please contact us at: 
+ 
+ <%= @urls['contactus']%>

@@ -1,0 +1,13 @@
+<table cellspacing="0" border="1" >
+    <tr>
+        <th>Community</th>
+        <th>Joined Users</th>
+    </tr>
+    
+    <% communitylist.each do |community| %>
+    	<tr>
+            <td><%= link_to_item(community,"community",filtered)%></td>
+            <td><%= link_number_to_userlist(community.usercount,findoptions.merge({:community => community}),{:title => "Community Users #{filter_string(findoptions.merge({:nolink => true, :community => community}))}"}) %></td>
+        </tr>
+    <% end%>
+</table>

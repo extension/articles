@@ -1,0 +1,24 @@
+<% @page_title = "Relevant Communities" %>
+<% @selected_tab = :colleagues %>
+
+<h2>Relevant Communities</h2>
+<% if (!@relevantcommunities.blank?) %>
+	<table cellspacing="0" class="general_table" summary="Relevant Communities">
+		<tr>
+	        <th>Name</th>
+	        <th>Type</th>
+	        <th>Connection</th>
+        	<th>Relevancy Score</th>
+	    </tr>
+	    <% @relevantcommunities.each do |community,relevancy| %>
+    	<tr>
+			<td><%= link_to("#{community.name}", community)%></td>
+			<td><%= community.entrytype_to_s %></td>
+			<td><%= @showuser.connection_display(community) %></td>
+			<td><%= number_with_precision(relevancy,:precision => 3) %></td>
+		</tr>
+	<% end %>
+</table>
+<% else %>
+	<p><%= @showuser.first_name %> does not have any relevant communities.</p>
+<% end %>

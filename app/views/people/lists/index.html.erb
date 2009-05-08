@@ -1,0 +1,32 @@
+<% @page_title = "Mailing Lists" %>
+<% @selected_tab = :lists %>
+
+    
+  	
+  	<div id="listhome">
+		<% if @currentuser.listownerships.count > 0 %>
+			<div class="listsdisplay">
+				<h3>Lists that you are an owner for</h3>
+				<%= render(:partial => 'listsconnection', :locals => {:listoflists => @currentuser.listownerships}) %>
+			</div>
+		<% end %>
+				
+		<div class="listsdisplay">
+			<h3>Lists that you are subscribed to</h3>
+			<% if @currentuser.subscribedlists.count > 0 %>
+				<%= render(:partial => 'listsconnection', :locals => {:listoflists => @currentuser.subscribedlists}) %>
+			<% else %>
+				<p> You are not currently subscribed to any mailing lists </p>
+			<% end %>
+    	</div>
+
+		<% if @currentuser.nonsubscribedlists.count > 0 %>
+		<div class="listsdisplay">
+			<h3>Lists that you are connected to, but not subscribed to</h3>
+			<%= render(:partial => 'listsconnection', :locals => {:listoflists => @currentuser.nonsubscribedlists}) %>
+    	</div>
+		<% end %>
+    </div>
+	<!-- <div id="listhome-sidebar">
+        <h4>eXtension Mailing List Statistics</h4>
+    </div> -->

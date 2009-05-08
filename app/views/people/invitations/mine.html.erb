@@ -1,0 +1,8 @@
+<% @selected_tab = :colleagues %>
+<%= render(:partial => 'navtabs', :locals => { :selected => 'mine' }) %>
+<h1><%= (@page_title) ? @page_title : "Invitations" %></h1>
+<%= make_invitations_filter_line('mine') %>
+<%= render(:partial => 'invitelist', :locals => { :invitelist => @invitelist}) %>
+<% if @backto %>
+	<%= link_to @backto[:label], @backto[:url] %> 
+<% end %>

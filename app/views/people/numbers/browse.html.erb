@@ -1,0 +1,4 @@
+<% @selected_tab = :numbers %>
+<%= render(:partial => 'navtabs') %>
+<h1><%= @page_title %></h1>
+<%= render(:partial => 'itemlist_table', :locals => { :linkobjectlist => @itemlist}) %>

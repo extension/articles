@@ -1,0 +1,31 @@
+<% @page_title = "Admin - Recent Activity" %>
+<% @selected_tab = :admin %>
+
+<h2>Activity Report (past <%= AppConfig.configtable['recent_activity_delta'] %> days)</h2>
+
+<%= will_paginate @eventslist %>
+<table cellspacing="0" border="1" >
+    <tr>
+        <th scope="col">user</th>
+        <th scope="col">event</th>
+        <th scope="col">application</th>
+        <th scope="col">ip</th>
+        <th scope="col">time</th>
+    </tr>
+    
+    <% for event in @eventslist %>
+        <tr>
+            <td><%= link_to_login(event.login) %></td>
+            <td><%= event.description %></td>
+            <td><%= event.appname %><br /></td>
+            <td><%= event.ip %></td>
+            <td><%= event.created_at %></td>
+        </tr>
+    <% end%>
+</table>
+
+
+
+<p>
+    <%= link_to 'Admin Home', :action => 'index' %>
+</p>

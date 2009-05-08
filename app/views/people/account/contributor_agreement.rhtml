@@ -1,0 +1,29 @@
+<% @page_title = "Contributor and eXtension Business Agreement" %>
+<% @selected_tab = :contributor_agreement %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<% if !@currentuser.contributor_agreement.nil? %>
+	<h2>Agreement Review Recorded</h2>
+	<p><%= @currentuser.first_name %>, you have reviewed the eXtension Contributor and Business Agreement, indicating that you
+		<% if @currentuser.contributor_agreement %>
+			accepted
+		<% else %>
+			did not accept
+		<% end %>
+		the agreement on <%= @currentuser.contributor_agreement_at %>.
+	</p>
+<% else %>
+	<h2>Review Agreement</h2>
+<p><%= @currentuser.first_name %>	please review the eXtension Contributor and Business Agreement below and indicate whether you accept or do not accept this Agreement.   By not accepting the agreement, you will not be able to edit content in the eXtension collaborative publishing tools. However, you are still able to view and read all content.</p>
+<p><% form_tag do %>
+<%= submit_tag  'I ACCEPT', :class => 'submitbutton', :name=>"agreement_agree" %>
+<%= submit_tag  'I DO NOT ACCEPT', :class => 'submitbutton', :name=>"agreement_noagree" %>
+<% end %></p>
+<% end %>
+<hr/>
+<h2>Contributor and eXtension Business Agreement</h2>
+
+<%= render(:partial => 'agreement_core') %>
+<hr/>
+<%= render(:partial => 'agreement_learnmore') %>

@@ -1,0 +1,12 @@
+<% @page_title = "Account Confirmation" %>
+<% if @reason == 'invalidtoken' %>
+<h2>Invalid Token</h2>
+<p>The token that you supplied is not valid (it may have expired and been removed from the system).</p>
+<% elsif @reason == 'expiredtoken' %>
+<h2>Expired Token</h2>
+<p>The token that you were sent in email has expired.</p>
+<% else %>
+<h2>Confirm Your Account</h2>
+<%end%>
+<p>Please try <%= link_to("sending another confirmation email", :controller => :signup, :action => :confirm, :token => 'send') %> or 
+<%= link_to("contact us", :controller => :help, :action => :contactform) %> for more information.</p>

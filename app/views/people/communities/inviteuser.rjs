@@ -1,0 +1,4 @@
+if(!@showuser.nil?)
+  page.replace_html "community_#{@community.id}_user_#{@showuser.id}_invite_block", :partial => 'invite_user', :locals => { :user => @showuser,:community => @community}
+  page.visual_effect :highlight, "community_#{@community.id}_user_#{@showuser.id}_connection"
+end

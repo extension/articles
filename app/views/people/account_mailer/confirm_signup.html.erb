@@ -1,0 +1,47 @@
+<% if @isdemo %>
+	-=-=-=-=-= PLEASE DISREGARD:  DEMONSTRATION EMAIL =-=-=-=-=-
+
+	This is a demo email being sent from a demo/test/development 
+	install of our Identity application.  
+
+	We are currently testing functionality in the application that 
+	generated this test email.  You may ignore this email message.
+
+	-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+<% end %>
+Hi <%= @token.user.first_name %>,
+<% if(!@additionaloptions[:fromfixemail].nil? and @additionaloptions[:fromfixemail]) %>
+We have changed your email address that is associated with your eXtensionID.  Your previous email address was marked as invalid, most likely because of a typo in the address at the time that you signed up for an account.  We have tried to find your correct email address by searching for your published listing at your institution.
+
+Your previous email address:  <%= @additionaloptions[:oldemail] %>
+Your new email address: <%= @additionaloptions[:newemail] %>
+<% end %>
+Thank you for signing up for your eXtensionID! We are sending this confirmation email to verify that your email address is correct.
+
+In order to confirm your email address, you should click the following link:
+
+<%= @urls['directurl'] %>
+
+If the above link does not work, or word-wraps incorrectly in your email client, then visit:
+
+<%= @urls['manualurl'] %>
+
+and enter your confirmation token.  
+
+Your confirmation token is: <%= @token.token %>
+
+PLEASE NOTE:  This confirmation token will expire on: 
+
+ <%= @token.expires_at %> 
+
+If your token has expired - you can send yourself a new one at:
+
+ <%= @urls['newtoken'] %>
+
+If you have any questions or need assistance please contact us at:
+ 
+ <%= @urls['contactus']%>
+
+--
+eXtension Team
+http://about.extension.org

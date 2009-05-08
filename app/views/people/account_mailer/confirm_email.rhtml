@@ -1,0 +1,42 @@
+<% if @isdemo %>
+	-=-=-=-=-= PLEASE DISREGARD:  DEMONSTRATION EMAIL =-=-=-=-=-
+
+	This is a demo email being sent from a demo/test/development 
+	install of our Identity application.  
+
+	We are currently testing functionality in the application that 
+	generated this test email.  You may ignore this email message.
+
+	-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+<% end %>
+Hi <%= @token.user.first_name %>,
+
+We are sending this confirmation email to verify that your email address is correct.
+
+In order to confirm your email address, you should click the following link:
+
+<%= @urls['directurl'] %>
+
+If the above link does not work, or word-wraps incorrectly in your email client, then visit:
+
+<%= @urls['manualurl'] %>
+
+and enter your confirmation token.  
+
+Your confirmation token is: <%= @token.token %>
+
+PLEASE NOTE:  This confirmation token will expire on: 
+
+ <%= @token.expires_at %> 
+
+If your token has expired - you can send yourself a new one at:
+
+ <%= @urls['newtoken'] %>
+
+If you have any questions or need assistance, please reply to this email or contact us at:
+ 
+ <%= @urls['contactus']%>
+
+--
+eXtension Team
+http://about.extension.org

@@ -1,0 +1,32 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+Hello all,
+
+As leaders for the <%= @community.name %> community, we are sending this email to let you know that <%= sprintf(@actionstring,@oncolleague.fullname) %>
+
+Information about <%= @oncolleague.first_name %>:
+
+ <%= @oncolleague.fullname %>
+ <%= @oncolleague.email %>
+ <%= @urls['oncolleague']%>
+
+<% if !@bycolleague.is_peoplebot? %>
+The colleague that performed this action is:
+
+ <%= @bycolleague.fullname %>
+ <%= @bycolleague.email %>
+ <%= @urls['bycolleague']%>
+<%else%>
+This action was performed by an automated script.
+<%end%>
+
+You can see more information about the <%= @community.name %> community and set whether or not you receive these notifications at:
+
+ <%= @urls['showcommunity']%>
+
+--
+eXtension Staff
+http://about.extension.org
+
+Replies to this email address are not monitored. If you have questions please contact us at: 
+ 
+ <%= @urls['contactus']%>

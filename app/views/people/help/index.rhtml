@@ -1,0 +1,28 @@
+<div class="apphelp">
+<% if @feed_text == ""%>
+
+    <h1>People Help</h1>
+    
+    <h2>How-to Articles and Explanations</h2>
+    <div id="howto">
+        <p><%= link_to "What's the difference in Community Interest and Community Membership?", :controller => 'help', :action => 'Community_Interest_vs_Membership' %></p>
+    </div>
+    
+    <h2>Help Topics</h2>
+    <ul>
+    <li><%= link_to "Vouching for Colleagues", {:controller => 'help', :action => 'Vouching_for_Colleagues'} %></li>
+    <li><%= link_to "Inviting a Colleague to get an eXtensionID", {:controller => 'help', :action => 'inviting_colleagues'} %></li>
+    <li><%= link_to "Specifying a Community Interest", {:controller => 'help', :action => 'Specifying_a_Community_Interest'} %></li>    
+    </ul>
+    
+<% else %>
+    <p><%= link_to "Help", {:controller => 'help', :action =>""}, {:class => "helplink"} %></p>
+    <%= @feed_text %>
+<div id="faq_help">
+  <p>
+   Want to contribute to this help page? Go <%= link_to "here", AppConfig.configtable['help_wiki']+ @page %>, Log in, and click on the   <b>Edit</b> tab
+  </p>
+</div>
+<% end %>
+
+</div>

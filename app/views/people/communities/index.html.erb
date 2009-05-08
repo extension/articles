@@ -1,0 +1,95 @@
+<% @page_title = "eXtension Communities" %>
+<% @selected_tab = :communities %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<div id="communities">
+    
+    <h1>eXtension Communities</h1>
+    
+    <div id="col_one">
+
+        <%= render(:partial => 'find_community_form') %>
+        <p>Can't find a community? <%= link_to("Create a new one",new_community_url)%>.</p>
+ 
+        <h3>Browse</h3>
+    	<p><%= link_to("Browse the list of communities",browse_communities_url)%></p>
+       
+        
+        <% if !@currentuser.communityinvitations.empty? %>
+            <h3>Pending Invitations</h3>
+    		<ul class="your_comms">
+        	<% @currentuser.connectinvitations.each do |communityconnection|%>
+        		<li>
+        		    <%= link_to("#{communityconnection.community.name}", communityconnection.community)%>
+        		    <span><%= communityconnection.connectiontype.capitalize %></span>
+        		</li>
+        	<% end %>
+        	</ul>
+        <% end %>
+        
+        
+        <h3>Your Communities</h3>
+        <% if !@currentuser.communitiesofanyinterest.empty? %>
+
+        	<ul class="your_comms">
+        	<% @currentuser.communitiesofanyinterest.each do |community|%>
+        		<li>
+        		    <%= link_to("#{community.name}", community)%>
+        		    <span><%= @currentuser.connection_display(community) %></span>
+        		</li>
+        	<% end %>
+        	</ul>
+
+        <% else %>
+        	<p>You haven't yet created, joined, or indicated that you want to join any communities</p>
+        <% end %>
+        
+        <h3>You may be interested in joining these communities</h3>
+        <% if @currentuser.tags.count == 0 %>
+            
+        	<p><%= link_to("Tell us about your interests and expertise", :controller => :profile, :action => :tagedit ) %> and we'll try to recommend some communities for you.</p>
+        <% elsif @relevant_communities.size == 0 %>
+        	<p>We don't have any recommendations right now. If you <%= link_to("add some more tags", :controller => :profile, :action => :tagedit ) %> maybe we can find a match.</p>
+        <% else %>
+        	    <dl> 
+        	    <% @relevant_communities.each do |rc| %>
+				  <% community = rc[0] %>
+				  <% next if community.memberfilter == Community::INVITATIONONLY %>
+        	      <dt><%= link_to("#{community.name}", community)%></dt>
+	        	  <dd class="comm_type"><%= community.entrytype_to_s %> - <%= community.memberfilter_to_s %>
+				  <% if !community.description.nil? %>
+        	  		<dd class="comm_description"><%= community.description %></dd>
+	              <% end %>
+        	    <% end %>
+        	    </dl>
+	        	<p><%= link_to("Edit your interests and expertise", :controller => :profile, :action => :tagedit ) %> for more or fewer recommendations.</p>
+        <% end %>
+
+        <h3>Newest Communities</h3>
+            <dl> 
+            <% Community.newest.each do |community| %>
+              <dt><%= link_to("#{community.name}", community)%></dt>
+        	  <dd class="comm_type"><%= community.entrytype_to_s %> - <%= community.memberfilter_to_s %></dd>
+			  <% if !community.description.nil? %>
+        	  	<dd class="comm_description"><%= community.description %></dd>
+              <% end %>
+			  
+            <% end %>
+            </dl>
+		<p><%= link_to("More...",newest_communities_url)%></p>
+		
+    </div>
+
+
+    <div id="col_two">
+        
+        <h3>eXtension Communities of Practice</h3>
+        <%= render(:partial => 'community_brieflist', :locals => {:communitylist => Community.get_approved_list, :communitycounts => Community.userfilter_count({:connectiontype => 'joined',:communitytype => 'approved', :dateinterval => 'all'}), :connectiontype => 'joined'} )%>
+
+    </div>
+
+
+
+
+</div>

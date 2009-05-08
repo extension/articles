@@ -1,0 +1,26 @@
+<% @page_title = "Find Colleagues by Social Network" %>
+<% @selected_tab = :colleagues %>
+<%= render(:partial => 'navtabs', :locals => { :selected => 'socialnetworks' }) %>
+<h1><%= @page_title %></h1>
+<div class="multi_col_list" id="socialnetworklist">
+<% 
+       list_count = 1
+       item_count = 0
+       column_limit = (@socialnetworkslist.length / 3) + 1
+   %>
+   <% @socialnetworkslist.each do |network,displayname,count| %>
+        <%= (item_count == 0) ? '<ul class="alpha_sort col1">' : '' %>
+        <li class="<%= social_network_class(network) %>"><%= link_to(displayname, {:action => :socialnetwork, :id => network}) %> (<%= count %>)</li>
+        <%
+            item_count += 1
+            if item_count > @socialnetworkslist.length
+                %></ul><%
+            elsif (item_count % column_limit) == 0
+                list_count += 1 %>
+                </ul>
+                <ul class="alpha_sort col<%= list_count %>"><% 
+            end
+        %>
+    <% end %>
+</ul>
+</div>

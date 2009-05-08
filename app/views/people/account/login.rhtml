@@ -1,0 +1,26 @@
+<% @page_title = "Login" %>
+<% @selected_tab = :login %>
+<%= render(:partial =>  "partial/flashmessages")%>
+
+<% form_tag({:action=> "login"}, {:id => "login"}) do %>
+    <fieldset>
+	    <h2><%= login_prompt_string %></h2>
+	    <p>
+	        <label for="user_login">eXtensionID or registered email address:</label>
+	        <input type="text" name="user_login" id="user_login" value="" tabindex="1"/>
+	    </p>
+
+	    <p>
+	        <label for="user_password">Password:</label>
+	        <input type="password" name="user_password" id="user_password" tabindex="2"/>
+	    </p>
+   
+	    <p><input type="submit" name="login" value="Log in" tabindex="3" /> <%= link_to 'Forgot your password?', :action => 'new_password'%></p>
+	</fieldset>
+	<%- if !session[:last_opierequest] -%>
+    <p>This is the eXtension Account Management site. You can use it to update your eXtension profile, find Extension colleagues, or manage your eXtensionID and password.</p>
+	<%- end -%>
+	<p>If you don't already have an eXtensionID, please <%= link_to "signup for one!", :controller => :signup, :action => :new %></p>
+<% end %>
+
+

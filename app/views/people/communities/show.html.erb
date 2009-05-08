@@ -1,0 +1,68 @@
+<% @page_title = "#{@community.name} - Community Information" %>
+<% @selected_tab = :communities %>
+
+<%= render(:partial => 'partial/flashmessages') %>
+
+<div id="community">
+    <h1><%= @community.name%></h1>
+    
+    <div id="community_sidebar">
+		<% if @community.entrytype != Community::SYSTEM %>
+      	  <% if ((@am_i_leader or admin_mode?) or @currentuser.communityopenjoins.include?(@community)) %>
+	    		<p class="button2"><%= link_to('Invite people to join this Community', invite_community_path(@community)) %></p>
+	    	<% end %>
+			<div id = "connectiontocommunity">
+				<%= render(:partial => 'community_connection') %>
+			</div>
+    
+		<% end %>
+
+       	<div id="communitymailinglists">        
+       		<%= render(:partial => 'community_mailinglists') %>
+   	    </div>
+	
+        <div id="communitynumbers">
+    		<%= render(:partial => 'community_numbers') %>
+	    </div>
+        
+    	<div class="community_summary">
+    	    <h3>Community Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_community_path(@community) %></small><% end %></h3>
+
+    	    <dl>
+    	        <dt>Community Type:</dt>
+    		    <dd><%= @community.entrytype_to_s %></dd>
+    		    <dt>Created:</dt>
+    	        <dd><%= @community.created_at%></dd>
+    	        <dt>Created by:</dt>
+    	        <dd><%= link_to_user(@community.creator) %></dd>
+    	        <dt>Membership:</dt>
+    	        <dd><%= @community.memberfilter_to_s %></dd>
+    	    </dl>
+	    </div>
+	</div>
+
+	<div id="primary_column">
+    	
+    	
+    	<% if !@community.description.nil? %>
+    	    <p id="description"><%= @community.description %> 
+    	        <% if (@am_i_leader or admin_mode?) %>
+    	    <small class="edit"><%= link_to 'edit', edit_community_path(@community) %></small></p>
+    	    <% end %>
+    	<% end %>
+    	
+    	<div id="sharedtaglist">
+    		<%= render(:partial => 'shared_tag_list') %>
+    	</div>
+		
+
+
+		
+
+	    <div id="recent_community_activity" class="section">
+			<%= render(:partial => 'recent_activity') %>
+	    </div>
+	</div>
+
+</div>
+

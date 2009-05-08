@@ -1,0 +1,13 @@
+<% @filterstring = filter_string(@total.findoptions.merge({:controller => :numbers, :action => :summary, :nolink => true})) %>
+<% if @filterstring.empty? %>
+	<% @page_title = "eXtension People by the Numbers"%>
+<% else %>
+	<% @page_title = "eXtension People by the Numbers (Filtered)"%>
+<% end %>
+<% @selected_tab = :numbers %>
+<%= render(:partial => 'navtabs') %>
+<h1><%= @page_title %></h1>
+<p><%= @filterstring %></p>
+<!-- <div id="primary_column" class="narrow"> -->
+<%= render(:partial => 'summary', :locals => {:total => @total, :lastmonth => @lastmonth }) %>
+<!-- </div> -->

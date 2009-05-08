@@ -1,0 +1,18 @@
+<h2>Hi <%= @currentuser.first_name %>,</h2>
+
+<p>The site: <code><%= @opierequest.trust_root %></code> is requesting verification of your provided OpenID.  You may choose to "Allow" or "Deny" this request.</p>
+<% if !@willprovide.nil? %>
+<p>Additionally, this site has asked for the following information, which we will provide to them if you choose to allow this verification request:</p>
+<ul>
+	<% @willprovide.each do |item| %>
+	<li><%= item %></li>
+	<% end %>
+</ul>
+<% end %>
+
+<form method="post" action="<%= @desicionurl %>">
+
+<input type="submit" name="Allow" value="Allow" />
+<input type="submit" name="Deny" value="Deny" />
+
+</form>

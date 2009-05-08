@@ -1,0 +1,47 @@
+<% @page_title = "Activity and Numbers" %>
+<% @selected_tab = :activity %>
+<%= render(:partial => 'navtabs') %>
+<div id="activity_one" class="activity_summary">
+    <h1>Activity Summary</h1>
+	<!-- numbers -->
+	<div class="section">
+		<h2>Activity This Past Week</h2>
+		<p><span class="bignumber"><%= Activity.count_signups({:dateinterval => 'withinlastweek'}) %></span> <%= link_to("new users",{:action => :list, :activity => 'signup', :dateinterval => 'withinlastweek'})%></p>
+		<p><span class="bignumber"><%= Activity.count_active_users({:dateinterval => 'withinlastweek'})%></span> <%= link_to("active users",{:action => :list, :activity => 'active', :dateinterval => 'withinlastweek'})%></p>
+	</div>
+	
+	<div class="section">
+    <h2>Recent Activity</h2>
+    <%= render(:partial => 'activitylist', :locals => { :activitylist => Activity.displayactivity.find(:all, :order => 'created_at DESC', :limit => 10), :activityoptions => {}}) %>
+    <p class="more"><%= link_to("More...",{:action => :list})%></p>
+    </div>
+</div>
+
+<div id="activity_two" class="activity_summary">
+    <h1>Activity Related to You</h1>
+	<h2>Activity This Past Week</h2>
+
+	<% if !@currentuser.institution.nil? %>	
+		<p><span class="bignumber"><%= Activity.count_active_users({:dateinterval => 'withinlastweek', :institution => @currentuser.institution})%></span> <%= link_to("active users from your institution",{:action => :list, :institution => @currentuser.institution, :dateinterval => 'withinlastweek'} )%> logging activity </p>
+	<% end %>
+	<% if !@currentuser.location.nil? %>	
+		<p><span class="bignumber"><%= Activity.count_active_users({:dateinterval => 'withinlastweek', :location => @currentuser.location})%></span> <%= link_to("active users from your location",{:action => :list, :location => @currentuser.location, :dateinterval => 'withinlastweek'} )%> logging activity </p>
+	<% end %>
+	
+	<h2>Browse Recent Activity Within Your Communities</h2>
+    <% if !@currentuser.communitiesofanyinterest.empty? %>
+
+    	<ul class="your_comms">
+    	<% @currentuser.connectionsofanyinterest.each do |communityconnection|%>
+    		<li>
+    		    <%= link_to("#{communityconnection.community.name}", :action => :list, :community => communityconnection.community.id)%>
+    		    <span><%= communityconnection.connectiontype.capitalize %></span>
+    		</li>
+    	<% end %>
+    	</ul>
+
+    <% else %>
+    	<p>You haven't yet created, joined, or indicated a desire to join any <%= link_to("communities",:controller => :communities, :action => :index)%></p>
+    <% end %>
+
+</div>

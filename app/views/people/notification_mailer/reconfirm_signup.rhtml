@@ -1,0 +1,45 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+Hi <%= @token.user.first_name %>,
+
+You signed up for an account with us at <%= @urls['home']%> on:
+
+<%= @token.user.created_at %> 
+
+with the following information:
+
+eXtensionID: <%=  @token.user.login %>
+First Name: <%= @token.user.first_name %>
+Last Name: <%= @token.user.last_name %>
+Email Address: <%= @token.user.email %>
+
+and you have not yet confirmed your account and email address.   
+
+You'll need to confirm your account and email address with us in order to take advantage of all of the services we have available, so we are re-sending this confirmation email to verify that your email address is correct.
+
+In order to confirm your email address, you should click the following link:
+
+<%= @urls['directurl'] %>
+
+If the above link does not work, or word-wraps incorrectly in your email client, then visit:
+
+<%= @urls['manualurl'] %>
+
+and enter your confirmation token.  
+
+Your confirmation token is: <%= @token.token %>
+
+PLEASE NOTE:  This confirmation token will expire on: 
+
+ <%= @token.expires_at %> 
+
+If your token has expired - you can send yourself a new one at:
+
+ <%= @urls['newtoken'] %>
+
+If you have any questions or need assistance, please contact us at:
+ 
+ <%= @urls['contactus']%>
+
+--
+eXtension Staff
+http://about.extension.org

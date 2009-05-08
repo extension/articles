@@ -1,0 +1,70 @@
+<% if !publicattributes[:fullname].nil? %>
+<div class="vcard">
+    <h1 class="vcardHeader">User Profile for <%= showuser.fullname %></h1> 
+	<p class="item">
+		<span class="vcardLabel">Full Name:</span>
+		<span class="fn"><%= showuser.fullname %></span>
+	</p>
+	<% if !publicattributes[:first_name].nil? and !publicattributes[:last_name].nil? %>
+	<div class="n">
+	<p class="item">
+		<span class="vcardLabel">First Name:</span>
+		<span class="given-name"><%= showuser.first_name%></span>
+	</p>	
+	<p class="item">
+		<span class="vcardLabel">Last Name:</span>
+		<span class="family-name"><%= showuser.last_name%></span>
+	</p>
+	</div>
+	<% end %>
+	<% if !publicattributes[:email].nil? %>
+	<p class="item">
+		<span class="vcardLabel">Email:</span>
+		<span class="email"><%= showuser.email%></span>
+	</p>
+	<% end %>
+	<% if !publicattributes[:phone].nil? %>
+	<p class="item">
+		<span class="vcardLabel">Preferred Phone:</span>
+		<span class="tel"><%= (showuser.phonenumber.nil? or showuser.phonenumber == '') ? '&nbsp;' : number_to_phone(showuser.phonenumber, :area_code => true)%></span>
+	</p>
+	<% end %>
+	<% if !publicattributes[:title].nil? %>
+	<p class="item">
+		<span class="vcardLabel">Title:</span>
+		<span class="title"><%= (showuser.title.nil? or showuser.title == '') ? '&nbsp;': showuser.title %></span>
+	</p>
+	<% end %>
+	<% if !publicattributes[:position].nil? %>
+	<p class="item">
+		<span class="vcardLabel">Position:</span>
+		<span class="role"><%= (showuser.position.nil? or showuser.position == '') ? '&nbsp;': showuser.position.name %></span>
+	</p>
+	<% end %>
+	<% if !publicattributes[:position].nil? %>
+	<div class="org">
+		<p class="item">
+			<span class="vcardLabel">Institution:</span>
+			<span class="organization-name"><%= (showuser.institution.nil? or showuser.institution == '') ? '&nbsp;': showuser.institution.name %></span>
+		</p>
+	</div>
+	<% end %>
+	<% if !publicattributes[:location].nil? or !publicattributes[:county].nil? %>
+	<div class="adr">
+	    <% if !publicattributes[:county].nil? %>	
+		<p class="item">
+			<span class="vcardLabel">Location:</span>
+			<span class="region"><%= (showuser.location.nil? or showuser.location == '') ? '&nbsp;': showuser.location.name %></span>
+		</p>
+		<% end %>
+    	<% if !publicattributes[:county].nil? %>
+		<p class="item">
+			<span class="vcardLabel">County:</span>
+			<span class="county-name"><%= (showuser.county.nil? or showuser.county == '') ? '&nbsp;': showuser.county.name %></span>
+		</p>
+		<% end %>
+	</div>
+	<% end %>
+</div>
+<% end %>
+

@@ -1,0 +1,49 @@
+<% @page_title = "Numbers - Browse by Institution"%>
+<% @selected_tab = :numbers %>
+<%= render(:partial => 'navtabs') %>
+<h1><%= @page_title %></h1>
+<a name='list'/><% if @displayfilter == 'all' %>
+	<ul>
+		<% if !@landgrant.nil? %><li><a href='#LandGrant'>Land Grant Institutions</a></li><% end %>
+		<% if !@federal.nil? %><li><a href='#Federal'>Federal Institutions</a></li><% end %>
+		<% if !@state.nil? %><li><a href='#State'>State Institutions</a></li><% end %>
+		<% if !@usercontributed.nil? %><li><a href='#UserSpecified'>User-specified Institutions</a></li><% end %>
+	</ul>
+<% elsif @displayfilter == 'system' %>
+	<ul>
+		<% if !@landgrant.nil? %><li><a href='#LandGrant'>Land Grant Institutions</a></li><% end %>
+		<% if !@federal.nil? %><li><a href='#Federal'>Federal Institutions</a></li><% end %>
+		<% if !@state.nil? %><li><a href='#State'>State Institutions</a></li><% end %>
+	</ul>
+<% end %>
+
+<% if !@landgrant.nil? %>
+	<div class="section">
+	<a name='LandGrant'/><h3>Land Grant Institutions</h3>
+	<%= render(:partial => 'itemlist_table', :locals => { :linkobjectlist => @landgrant}) %>
+	</div>
+<% end %>
+
+<% if !@federal.nil? %>
+<div class="section">
+<a name='Federal'/><h3>Federal Institutions</h3>
+<% if @displayfilter == 'all' or @displayfilter == 'system' %> <p>(<a href='#list'>back to institutions list</a>)</p><% end %>
+<%= render(:partial => 'itemlist_table', :locals => { :linkobjectlist => @federal}) %>
+</div>
+<% end %>
+
+<% if !@state.nil? %>
+<div class="section">
+<a name='State'/><h3>State Institutions</h3>
+<% if @displayfilter == 'all' or @displayfilter == 'system' %> <p>(<a href='#list'>back to institutions list</a>)</p><% end %>
+<%= render(:partial => 'itemlist_table', :locals => { :linkobjectlist => @state}) %>
+</div>
+<% end %>
+
+<% if !@usercontributed.nil? %>
+<div class="section">
+<a name='UserSpecified'/><h3>User-contributed Institutions</h3>
+<% if @displayfilter == 'all' or @displayfilter == 'system' %> <p>(<a href='#list'>back to institutions list</a>)</p><% end %>
+<%= render(:partial => 'itemlist_table', :locals => { :linkobjectlist => @usercontributed}) %>
+</div>
+<% end %>
