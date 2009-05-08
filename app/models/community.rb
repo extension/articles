@@ -153,12 +153,7 @@ class Community < ActiveRecord::Base
   end
   
   def remove_user_tags(owner)
-    self.remove_tags_and_update_cache(self.user_tag_list(owner),owner,Tag::USER)
-  end
-  
-  def remove_tags_and_update_cache(taglist,owner,kind)
-    self._remove_tags(taglist,owner,kind)
-    self.cache_shared_tag_list
+    self.remove_tags_and_update_cache(self.user_tag_list(owner),owner.id,Tag::USER)
   end
     
   def system_sharedtags_displaylist

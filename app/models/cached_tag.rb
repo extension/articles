@@ -6,21 +6,28 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class CachedTag < ActiveRecord::Base
+  # tag kinds are from the tag model
+  # cached kinds - so that later we might cache "top" tags
+  ALL = 0
+  TOP = 1
+  
   belongs_to :tagcacheable, :polymorphic => true
+  serialize :cachedata
   
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
   class << self
     
-    def create_or_update_with_tagarray(tagcacheable,taglist_kind,tagarray)
-      taglist = tagarray.map(&:name).join(Tag::JOINER)
-      tagidlist = tagarray.map(&:id).join(Tag::JOINER)
-      find_object = self.find(:first, :conditions => {:tagcacheable_type => tagcacheable.class.name,:tagcacheable_id => tagcacheable.id, :taglist_kind => taglist_kind})
+    def create_or_update(tagcacheable,ownerid,tag_kind)
+      tagacheable.taggable?(true)
+      tagarray = tagcacheable.tags_by_kind(kind)
+      fulltextlist = tagarray.map(&:name).join(Tag::JOINER)
+      find_object = self.find(:first, :conditions => {:tagcacheable_type => tagcacheable.class.name,:tagcacheable_id => tagcacheable.id, :owner_id => ownerid, :tag_kind => tag_kind})
       if(find_object.nil?)
-        find_object = create(:tagcacheable => tagcacheable, :taglist_kind => taglist_kind, :taglist => taglist, :idlist => tagidlist)
+        find_object = create(:tagcacheable => tagcacheable, :owner_id => ownerid, :tag_kind => tag_kind, :fulltextlist => fulltextlist, :cachedata => tagarray)
       else
-        find_object.update_attributes({:taglist => taglist, :idlist => tagidlist})
+        find_object.update_attributes({:fulltextlist => fulltextlist, :cachedata => tagarray})
       end
       return find_object
     end
