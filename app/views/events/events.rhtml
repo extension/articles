@@ -1,0 +1,44 @@
+<div class = "mission">
+    <%if @page_title_text && @header_description%>
+        <h2 class="missionstatement"><%=@page_title_text%></h2>
+    <%end%>
+</div>
+
+<div class="sortbox calendar">
+    <form>
+        <fieldset>
+            <p>
+                <label>Filter by Resource Area: <%= link_to 'Start Over', site_events_url(:category => 'all') %> <%=community_select(@category)%></label>
+            </p>
+        </fieldset>
+        <fieldset>
+            <p>
+                <label>Locale: <%= state_select(:locale, params)%></label>
+            </p>
+        </fieldset>
+    </form>
+  <p class="months"><span>Month</span>: <%=month_select(get_month, false, @category, params[:state])%></p>
+</div>
+
+<%if @results.length == 0%>
+    <h2>There are no events scheduled at this time.</h2>
+<%end%>
+
+<% for event in @results %>
+<dl class="events">
+    <dt><%= link_to event.title, events_page_url(:id => event) %></dt>
+    <dd><%= time_print(event.start) %></dd>
+    <dd>
+        <span class="community">Community:</span>
+        <%community_tags = event.tags.community %>
+        <%for community_tag in community_tags%>
+            <%= link_to community_tag.community.name, site_index_url(:category => community_tag.name)%>
+        <%end%>
+    </dd>
+    <dd>
+        <span class="location">Location:</span>
+        <%= event.location %>
+    </dd>
+</dl>
+<% end %>
+

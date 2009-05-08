@@ -1,0 +1,12 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %>  > <%= link_to 'Advertisements', :controller=>'advertisements', :action => 'list' %></p>
+    <h2>Advertisement</h2>
+    
+    <%= render_inline_image(@advertisement.image, false) %>
+
+    <p>Graphic: <%= link_to @advertisement.image.filename, assets_path if @advertisement.image %></p>
+    <p>Tag: <%= @advertisement.tag.name %></p>
+
+    <p><%= link_to 'Edit', :action => 'edit', :id => @advertisement %></p>
+    <p><%= link_to 'Delete', { :action => 'destroy', :id => @advertisement }, :confirm => 'Are you sure?', :method => :post %></p>
+</div>

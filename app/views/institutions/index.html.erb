@@ -1,0 +1,30 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+    <h2>Institution Management</h2>
+    <table>
+        <tr>
+            <th scope="col">State</th>	
+            <th scope="col">Institution</th>
+            <th scope="col">URL ("about this institution" link)</th>
+            <th scope="col">Domain</th>
+            <th scope="col">edit</th>
+        </tr>
+
+        <% for institution in @institutions %>
+            <tr>
+                <td><%= institution.state %></td>
+	            <td><%= institution.name %></td>
+	            <td><%= link_to institution.uri, institution.uri %></td>
+	            <td><%= institution.domain %></td>
+                <td><%= link_to 'edit', edit_institution_path(institution) %></td>
+            </tr>
+        <% end %>
+    </table>
+
+<!--
+<br />
+
+<%= link_to 'Create a new institution', new_institution_path %>
+
+-->
+</div>

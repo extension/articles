@@ -1,0 +1,40 @@
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%=AppConfig.configtable['google_map_key']%>"
+      type="text/javascript"></script>
+
+<div class="pageextras">
+    <p class="print"><%= link_to 'Print', request.request_uri + "/print/" unless params[:print]%></p>
+</div>
+
+<div class="vevent">
+    
+    <div class = "headline left">
+        <h1 class="title"><%= @event.title %></h1>
+        <p class="caption">
+            <%= render (:partial => '/data/created_by',  :locals => { :community_tags => @community_tags}) if @community_tags %>
+        </p>
+        <p class="view-as-web-page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
+    </div>
+    <br class="clearing" />
+	
+    <p><strong><span class="location"><%= @event.location %></span></strong>
+    <%if @event.has_map?%>
+        <a href='http://maps.google.com/maps?q=<%= @event.location %>'>open in google maps</a>
+    <%end%>
+    </p>
+
+    <p><strong><%= micro_time_print(@event.start, 'dtstart') %></strong></p>
+    <div class="description"><p><strong>Description</strong>:<br /><%= @event.description %></p></div>
+    <p class="coverage"><strong>Coverage:</strong> <%= @event.coverage %></p> 
+    <p class="states"><strong>States:</strong> <%= @event.states.join(', ') %></p>
+    <%if @event.has_map?%>
+        <div id="map" style="width: 500px; height: 300px"></div>
+    <% end %>
+</div>
+<%if @event.has_map?%>
+<%= javascript_include_tag "maps" %>
+<script type='text/javascript'>
+	MAPS.search_and_set("<%= @event.location %>")
+
+</script>
+<%end%>
+

@@ -1,0 +1,12 @@
+<h1>Create a new feed source</h1>
+
+<%= error_messages_for :feed_location %>
+
+<% form_for(@feed_location) do |f| %>
+  <%= render :partial => 'form', :locals => { :feed_location => @feed_location } %>	
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', feed_locations_path %>

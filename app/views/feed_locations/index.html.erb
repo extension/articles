@@ -1,0 +1,20 @@
+<h1>Manage External Feed Sources</h1>
+<table>
+  <tr>	
+	<th>Feed URL</th>
+	<th>Active?</th>
+	<th>Manage</th>
+  </tr>
+
+<% for feed in @feed_locations %>
+  <tr>
+	<td><%= h feed.uri %></td>
+	<td><%= feed.active? ? 'yes' : 'no' %></td>
+  <td><%= link_to 'Edit', edit_feed_location_path(feed) %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Create a new external feed source', new_feed_location_path %>

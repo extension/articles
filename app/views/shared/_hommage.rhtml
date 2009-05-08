@@ -1,0 +1,8 @@
+<% if @community && @community.visible? %>
+    <div id="homage">
+        <p>This resource area was created by the: <span><%=@homage ? @homage.content : link_to_community(@community) %> community</span></p>
+    </div>
+    <div class = "homagepic">
+        <%=community_image(@community)%>
+    </div>  
+<% end %>

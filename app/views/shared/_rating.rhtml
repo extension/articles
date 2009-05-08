@@ -1,0 +1,54 @@
+<h4 class="article_subhead2">Did you find this page useful?</h4>
+
+<%if object.rating >1%>
+    <div class = "ratingbox currentrating" style = "text-align: left" id='rating'>
+		<h2>Current rating: <strong><%= object.rating %></strong></h2>
+        <p><%=object.ratings.size%> ratings.   <%= link_to_function( "what is this?", "new Effect.toggle('whatisthis')" ) %></p>
+	</div>
+	
+<% else %>
+<div class = "ratingbox currentrating" style = "text-align: left" id='rating'>
+    <h2>No one has rated this article yet. Why not be the first?</h2>
+    <%= link_to_function( "what is this?", "new Effect.toggle('whatisthis')" ) %>
+</div>
+<%end%>
+
+<div id="whatisthis" class="infobox" style="display:none;">
+    <p>The current rating is determined by users like yourself rating the usefulness of content. Submit your own ranking using the scale below. 1 means not very useful, 5 means very useful.</p>
+</div>
+
+<%if new_ranking%>
+	<p>Thanks for your ranking.</p>
+<%else%>
+	<%=form_remote_tag 	:update => 'rating', 
+  					  :url => {:controller => 'rating', :action => 'add_rating'}, 
+    					:html => {:id => 'rating_form'} %>
+		<%= hidden_field :object, :id, :value=> object.id.to_s%>
+		<%= hidden_field :object, :class, :value => object.class.to_s%>
+
+
+  		<div class="ratingbox">
+      		  <div>
+      		    <div class = "left ">
+      		      not useful
+    		    </div>
+    		    <div class = "right" style = "padding-right: 60px">
+    		        very useful
+    	        </div>
+    	        <div class = "clearing"> </div>
+              </div>
+      		<table width="300">
+      			<tr>
+      				<td><input type='radio' value='1' name='rating' style='float:left'/>&nbsp;1</td>
+      				<td><input type='radio' value='2' name='rating' style='float:left'/>&nbsp;2</td>
+      				<td><input type='radio' value='3' name='rating' style='float:left'/>&nbsp;3</td>
+      				<td><input type='radio' value='4' name='rating' style='float:left'/>&nbsp;4</td>
+      				<td><input type='radio' value='5' name='rating' style='float:left'/>&nbsp;5</td>
+      				<td><%= submit_tag  'Rate', :class => 'submitbutton' %></td>
+      			</tr>
+      		</table>
+		 </div>
+     </form>
+<%end%>
+   
+

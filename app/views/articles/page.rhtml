@@ -1,0 +1,65 @@
+<% @in_this_resource_area = true %>
+<% @resource_area_feeds = true %>
+<% @hide_popular = true %>
+
+
+<div class = "mission">
+    <%if @page_title_text && @header_description%>
+        <h2 class="missionstatement"><%=@header_description%></h2>
+    <%end%>
+</div>
+
+    <div class="pageextras">
+        <% if not @youth %>
+          <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', :controller => 'expert', :action => 'ask_an_expert', :redirect_to => request.request_uri %></p>
+        <% end %>
+        
+        <p class="print"><%= link_to 'Print', request.request_uri + "/print/" unless params[:print]%></p>
+    </div>
+    
+    <div class = "headline left">
+      <h1 class="title"><%= article.title %></h1>
+      
+      
+      <p class="caption">
+          <span class="updatedmeta">Last Updated: <%= micro_time_print(article.wiki_updated_at, 'updated') %></span>
+        <% if false # this attr will not exist til wiki feed updated %>
+         Published: <%= micro_time_print(article.wiki_created_at, 'published') %>
+        <% end %>
+        <%= render(:partial => '/data/created_by',  :locals => { :community_tags => @community_tags }) if @community_tags%>
+      </p>
+      
+      <p class="view-as-web-page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
+    </div>
+    <br class="clearing" />
+
+      <div id="content_css_reset">
+          
+          <div id="article">
+              
+            <%= article.content %>
+         </div>
+  	  </div>
+  	  <br class="clearing" />
+
+  <%   
+      related = article.tags.collect{|cat| cat.name unless @blacklist.include?(cat.name) }
+         related.compact!
+         keywords = related.collect{|tag| link_to tag, site_index_url(tag) }
+  	if keywords.length > 0
+  %>
+      <div class="related">
+          <h4>More information</h4>
+          <p><%= keywords.join(", ") %></p>
+      </div>
+  <% end %>
+
+<% if not @youth %>
+  <div id="aae_plug">
+      <h4>Have a specific question? <%= link_to 'Try asking one of our Experts', :controller => 'expert', :action => 'ask_an_expert', :redirect_to => request.request_uri %></h4>
+      <p>Unlike most other resources on the web, we have experts from Universities around the country ready to answer your questions.</p>
+  </div>
+ <% end %>
+<div id='rating'>
+   <%= render :partial => '/shared/rating',  :locals => { :object => article, :new_ranking => false }%>
+</div>

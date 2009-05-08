@@ -1,0 +1,3 @@
+<span id="relatedresources">Related resource areas: 
+<%= community_tags.collect{|tag| tag.community }.uniq.compact.collect { |community| link_to_community(community) }.join(', ')  %>
+</span>

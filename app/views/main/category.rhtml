@@ -1,0 +1,116 @@
+<% @resource_area_feeds = true %>
+<% @hide_popular = true %>
+
+
+<h1><%=@page_title_text%></h1>
+<h2><%=@header_description%></h2>
+
+<%if @community and @community_highlights.length > 0 %>
+    <h3 class="instructions">Here are some of our featured articles and activities...</h3>
+    
+
+        <div id="slider2" class="cop_slider">
+  		    <%for highlight in @community_highlights%>
+                <div class="contentdiv">
+                    <dl>
+                        <dt><%= link_to highlight.title, highlight.id_and_link %></dt>
+                        <dd class="img"><%=first_image highlight.content%></dd>
+                        <dd><%= truncate_at_word(get_title(strip_tags(highlight.content)), 160) %></dd>
+                        <dd class="more"><%= link_to "More...", highlight.id_and_link %></dd>
+                    </dl>
+                </div>
+  		    <%end%>
+  		    <div class="clearing"></div>
+        </div>
+        <div class="pagination" id="paginate-slider2"></div>
+	<script type="text/javascript">
+		ContentSlider("slider2", 10000)
+	
+	</script>
+<%end%>
+
+<%if @news.length > 0 || @faqs.length > 0 || @calendar_events.length > 0 %>
+<div style = "margin-top: 30px; padding-bottom: 20px">
+    <%if @news.length > 0 and (@in_this_section or @recent_articles) %>
+        <%if @faqs.length > 0%>
+            <div class="homesection half left">
+        <% else %>
+            <div>
+        <% end %>
+            <% if @in_this_section %>
+                <h2>In This Resource Area</h2>
+                <div class="whatsnewbox">
+                    <%=@in_this_section.content %>
+                </div>
+            <% else %>
+               <h2>Recent Articles</h2>
+               <div class="whatsnewbox">
+                  <%for article in @recent_articles %>
+        		       <dl>
+        		         <dt><%= expanded_time_print(article.wiki_updated_at)%></dt>
+                     <dd><%= link_to article.title, article.id_and_link %></dd>
+                   </dl>
+                  <%end%>
+                  <p><%= link_to "More ...", site_articles_url(:category => @category.name) %></p>
+                  
+               </div>
+            <% end %>
+            </div>
+    <%end%>
+
+    <%if @faqs.length > 0%>
+        <%if @news.length > 0%>
+            <div class="homesection half left">
+        <% else %>
+            <div>
+        <% end %>
+                <h2>Answers from our Experts</h2>
+                <div class="whatsnewbox">
+                    <%for faq in @faqs%>
+                        <dl>
+                            <dt><%= expanded_time_print(faq.heureka_published_at)%></dt>
+                            <dd><%= link_to truncate_at_word(faq.question,100), faq_page_url(:id => faq) %></dd>
+                        </dl>
+                    <%end%>
+                    <p><%= link_to "More ...", site_faqs_url(:category => @category.name) %></p>
+                </div>
+            </div>
+    <%end%>
+    
+    <%= render(:partial => "shared/calendar", :locals => {:month  => @month, :calendar_events => @calendar_events, :date => @date }) %>
+    
+</div>
+<%end%>
+
+<%if @articles && @articles.length > 0%>
+    <div class="homesection">
+        <h2>Most Popular Articles</h2>
+        <div class = "whatsnewbox">
+            <%for article in @articles%>
+  		       <dl>
+  		         <dt><%= expanded_time_print(article.wiki_updated_at)%></dt>
+               <dd><%= link_to article.title, article.id_and_link %></dd>
+             </dl>
+            <%end%>
+   
+        <p><%= link_to "More ...", site_articles_url(:category => @category.name) %></p>
+    </div>
+<%end%>
+
+
+<%if @popular_learning_lessons.length > 0%>
+    <div class="homesection">
+        <h2>Most Popular Learning Lessons</h2>
+	    <div class = "whatsnewbox">
+            <%for lesson in @popular_learning_lessons%>
+             <dl>
+               <dt><%= expanded_time_print(lesson.wiki_updated_at)%><dt>
+               <dd><%= link_to lesson.title, lesson.id_and_link %><dd>
+             </dl>
+            <%end%>
+        </div>
+        <p><%= link_to "More ...", site_learning_lessons_url(:category => @category.name) %></p>
+    </div>
+<%end%>
+
+

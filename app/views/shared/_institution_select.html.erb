@@ -1,0 +1,9 @@
+<script type="text/javascript">
+Effect.BlindDown('institution_list', {duration: .4});
+</script>
+<fieldset class="results">
+   <h3>Select an Institution</h3>
+   <ul>
+      <%= render :partial => 'shared/institution_select_list', :locals => {:institutions => institutions} %>
+   </ul>
+</fieldset>

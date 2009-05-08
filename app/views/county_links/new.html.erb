@@ -1,0 +1,12 @@
+<h1>Create a new county link</h1>
+
+<%= error_messages_for :county_link %>
+
+<% form_for(@county_link) do |f| %>
+  <%= render :partial => 'form', :locals => { :county_link => @county_link } %>	
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', county_links_path %>

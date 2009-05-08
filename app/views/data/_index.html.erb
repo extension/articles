@@ -1,0 +1,41 @@
+<div class = "mission">
+    <%if @page_title_text && @header_description%>
+        <h2 class="missionstatement"><%=@page_title_text%></h2>
+    <%end%>
+</div>
+
+<div class="sortbox">
+    <h3>Filter and sort using the options below or type a phrase in the search box above.</h3>
+    
+    <%= render :partial => 'data/selector' %>
+    
+    <fieldset class="sort_options">
+        <p>Sort by:</p>
+        <% klass.orderings.each{|name, ordering|%>
+            <%= form_tag( {:category => @category.name, :page => 1, :order => ordering}, {:method => :get})%>
+                <p><input type="radio" onclick='this.form.submit()' <%='checked="checked"' if ordering == params[:order] %> /> <label><%= name %></label></p>
+            </form>
+	    <%}%>	    
+    </fieldset>
+</div>
+
+<%= render :partial => "shared/will_paginator", :locals => { :collection => items } %>
+
+<% index_start = (items.current_page - 1) * items.per_page + 1 %>
+<ol class="searchresult" start="<%= index_start %>;">
+<% items.each_with_index do |item, i| %>
+    <li>
+        <%= link_to_page item %>
+        <span class="item-rating"><%= star_ranking item %></span>
+        <span class="published">Published: <%= expanded_time_print(item.published_at)%></span>
+    </li>
+<% end %>
+</ol>
+
+<%if items.length == 0 %>
+	<h2>There are currently no matches for this resource area.</h2>
+<%end%>
+
+<%= render :partial => "shared/will_paginator", :locals => { :collection => items } %>
+
+<p class="askanexpert">Didn't find what you were looking for? <%= link_to 'Try asking one of our Experts', :controller => 'expert', :action => 'ask_an_expert', :redirect_to => request.request_uri %>.</p>

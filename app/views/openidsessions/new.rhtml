@@ -1,0 +1,46 @@
+<div  id="loginform">
+    <h1>Sign in</h1>
+    
+    <div class="loginleft">
+        <% form_tag(openidsession_url) do %>
+        <fieldset class="openidform">
+            <p>
+                <label for="openid_url">OpenID:</label>
+                <%= text_field_tag("openid_url",params[:openid_url].nil? ? '' : params[:openid_url]) %>
+                <span class="directions">For example: http://openid.aol.com/screenname</span>
+            </p>
+            <p class="opensubmit"><%= submit_tag 'Sign in', :disable_with => "Submitting&hellip;", :class => 'submit' %>  Prefer a username and password? <%= link_to 'Sign-in', :controller => 'session', :action => 'new' %> or <%= link_to 'register', :controller => 'users', :action => 'new' %></p>
+        </fieldset>
+        <% end %>
+        
+    <dl>
+        <dt>Do you have an OpenID?</dt>
+        <dd>You may already have one because AOL/AIM is an OpenID provider. (If you use AOL, your OpenID looks like this: <code>http://openid.aol.com/screenname</code>). If you don't already have an OpenID, you can get one for free by going to the <a href = "http://openiddirectory.com/openid-providers-c-1.html">Directory of OpenID providers</a> or using <a href = "https://www.myopenid.com/">MyOpenID</a> or <a href="http://claimid.com/">ClaimID</a>.</dd>
+    </dl>
+        
+    <dl>
+        <dt>Are you a Cooperative Extension employee?</dt>
+        <dd>If you have signed up for an <%= link_to('eXtensionID','https://people.extension.org') %>, you can use your eXtension OpenID (<code>https://people.extension.org/your-personal-eXtensionID</code>)  to sign in.  <%= link_to('Learn more about your eXtension OpenID','https://people.extension.org/profile/openid') %>.</dd>
+    </dl>
+    
+    <dl>
+        <dt>First time here?</dt>
+        <dd>You don't have to remember if you signed in here before or not. Signing in with OpenID will automatically create an account for you if you don't already have one.</dd>
+    </dl>
+    </div>
+
+
+<div class="loginright">
+    <h2>Why OpenID?</h2>
+    
+    <p>Tired of setting up a username and password for every new web site you want to use?</p>
+
+    <p>OpenID solves this problem by letting you use a single account to sign in to any OpenID-enabled site.</p>
+
+    <p>OpenID is non-proprietary and is already supported by AOL with Yahoo on the way.</p>
+
+    <p>Start using OpenID and dramatically simplify your web experience.</p>
+</div>
+
+<div class = "clearing"> </div>
+</div>

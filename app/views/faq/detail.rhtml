@@ -1,0 +1,52 @@
+<% @in_this_resource_area = true %>
+<% @resource_area_feeds = true %>
+<% @hide_popular = true %>
+
+<div class = "mission">
+    <h2 class="missionstatement">FAQ #<%=@faq.id%></h2>
+</div>
+
+<div class="pageextras">
+    <% if not @youth %>
+      <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', :controller => 'expert', :action => 'ask_an_expert', :redirect_to => request.request_uri %></p>
+    <% end %>
+    <p class="print"><%= link_to 'Print', request.request_uri + "/print/" unless params[:print]%></p>
+</div>
+
+<div>
+    <div class = "headline left">
+        <h1 class="title"><%= @faq.question %></h1>
+        <p class="caption">
+            <%= render(:partial => '/data/created_by',  :locals => { :community_tags => @community_tags }) if @community_tags %>
+        </p>
+    </div>
+    <br class="clearing" />
+</div>
+<p class="view-as-web-page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
+<div id="content_css_reset">
+    <div id="article" class="faq">
+    <%= simple_format @faq.answer %>
+    </div>
+</div>
+
+<% if not @youth %>
+   <div id="aae_plug">
+      <h4>Have a specific question? <%= link_to 'Try asking one of our Experts', :controller => 'expert', :action => 'ask_an_expert', :redirect_to => request.request_uri %></h4>
+      <p>Unlike most other resources on the web, we have experts from Universities around the country ready to answer your questions.</p>
+   </div>
+<% end %>
+  
+<div id='rating'>
+    <%= render :partial => '/shared/rating',  :locals => { :object => @faq, :new_ranking => false }%>
+</div>
+
+<% if @refq %>
+<p id="refqs">Reference Questions:
+         
+         <% @refq.each do |qno| %>
+           <% if Faq.find_by_id(qno.to_i)%>
+             <%= link_to qno, :action => 'detail', :id=>qno.to_i%>
+           <% end%>
+         <% end%>
+</p>
+<%end%>

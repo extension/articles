@@ -1,0 +1,9 @@
+xml.instruct!
+
+xml.urlset "xmlns" => "http://www.google.com/schemas/sitemap/0.84" do
+
+  @communities.each do |community|
+    xml.url { xml.loc site_index_url(:category => community.tags[0].name) }
+  end
+
+end

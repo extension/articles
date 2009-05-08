@@ -1,0 +1,26 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :action => :index%></p>
+    <h2>Manage Topics</h2>
+    
+    <h3>Create a new topic:</h3>
+    <% form_tag :action => :create_topic do -%>
+        <fieldset>
+	        <p>
+	            <%= text_field_tag 'topic[name]' %>
+	        </p>
+	        <p>
+	            <%= submit_tag 'Submit' %>
+	        </p>
+	    </fieldset>
+    <% end -%>
+    
+    <h3>Topics</h3>
+    <table>
+    <% for topic in @topics %>
+    	<tr>
+    		<td><%= topic.name %></td>
+    		<td><%= link_to 'delete', :action => 'destroy_topic', :id => topic.id %></td>
+    	</tr>
+    <% end %>
+    </table>
+</div>

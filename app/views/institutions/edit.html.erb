@@ -1,0 +1,19 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %> > <%= link_to 'Institutions', institutions_path %></p>
+    <h2>Edit an institution</h2>
+
+    <%= error_messages_for :institution %>
+
+    <% form_for(@institution) do |f| %>
+    <%= render :partial => 'form', :locals => { :institution => @institution } %>
+    <fieldset class="stacked ver2">
+    <p>
+        <%= f.submit "Update" %>
+    </p>
+    </fieldset>
+    <% end %>
+</div>
+<!--
+<%= link_to 'Destroy', @institution, :confirm => 'Are you sure?', :method => :delete %> |
+-->
+

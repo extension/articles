@@ -1,0 +1,20 @@
+<div class="homesection">
+    <h2>Calendar</h2>
+    <div class="whatsnewbox">
+    <p class="months right"><%=month_select(@month, true, @category)%></p>
+
+    <%last_date = nil%>
+    <%while @calendar_events.length > 0
+        event = @calendar_events.shift%>
+        <%if event.date != last_date%>
+  	        <%= '</ul>' if last_date%>
+            <h3><%=event.date.strftime("%B") + ' ' + event.date.day.to_s%></h3>
+	        <ul class="event_listings">
+        <%end%>
+        <li><% htmlClass = @personal[:state] && ! (event.local_to? @personal[:state]) ? 'gray' : '' %>
+        <%= link_to event.title, events_page_url(:id => event), {:class => htmlClass} %></li>
+        <%last_date = event.date %>
+    <%end%>
+    </ul>
+    </div>
+</div>

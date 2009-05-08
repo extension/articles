@@ -1,0 +1,14 @@
+<h1>Update feed source</h1>
+
+<%= error_messages_for :feed_location %>
+
+<% form_for(@feed_location) do |f| %>
+  <%= render :partial => 'form', :locals => { :feed_location => @feed_location } %>	
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Destroy', @feed_location, :confirm => 'Are you sure?', :method => :delete %> |
+
+<%= link_to 'Back', feed_locations_path %>

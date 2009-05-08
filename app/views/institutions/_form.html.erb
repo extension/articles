@@ -1,0 +1,19 @@
+<fieldset class="stacked ver2">
+<p>
+	<%= label(:institution, :location_id, "Location") %>
+	<%= select('institution', 'location_id', Location.find(:all).collect { |l| [l.name, l.id] }) %>
+</p>
+<p>
+	<%= label(:institution, :state, "State Abbreviation") %>
+	<%= text_field :institution, :state, :size => 3, :class => "short" %>
+</p>
+<p>
+	<%= label(:institution, :domain, "Institution Domain") %>
+	<%= text_field :institution, :domain, :size => 50 %>
+</p>
+
+<p>
+	<%= label(:institution, :uri, "URL (\"about this institution\" link)") %>
+	<%= text_field :institution, :uri, :size => 50 %>
+</p>
+</fieldset>

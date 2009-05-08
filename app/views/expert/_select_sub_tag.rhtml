@@ -1,0 +1,9 @@
+<label for="category" class="field-dropdown">Subcategory <span class="optional">(optional)</span>
+
+<%
+    options = expert_question.category_tag.sub_tags
+    options.insert(0, ["", ""])    
+%>
+
+<%= select_tag('expert_question[subcategory_name]', options_for_select(options, expert_question.subcategory_tag ), :disabled => disabled) %>
+</label>

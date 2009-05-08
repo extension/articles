@@ -1,0 +1,14 @@
+<h1>Edit a county link</h1>
+
+<%= error_messages_for :county_link %>
+
+<% form_for(@county_link) do |f| %>
+  <%= render :partial => 'form', :locals => { :county_link => @county_link } %>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Destroy', @county_link, :confirm => 'Are you sure?', :method => :delete %> |
+
+<%= link_to 'Back', county_links_path %>

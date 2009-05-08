@@ -1,0 +1,31 @@
+<h1>Search Results for Ask an Expert</h1>
+
+<h3>If these results (listed below your question) aren't helpful, please click the "Submit my question" button to send to one of our experts.</h3>
+
+<div class="aae-options">
+    <% if (@expert_question.category_name && @expert_question.category_name != "") %>
+        <p><strong>Category:</strong> <%= @expert_question.category_name %></p>
+    <% end %>
+    
+    <% if (@expert_question.subcategory_name && @expert_question.subcategory_name != "") %>
+        <p><strong>Subcategory:</strong> <%= @expert_question.subcategory_name %></p>
+    <% end %>
+    
+    <p><strong>Your Question:</strong><br /><%= @expert_question.asked_question %></p>
+    
+    <p class="button2"><%= link_to 'Submit my Question', { :action => 'submit_question' }.update(@flattened_eq_parameters), :method => :post %></p> 
+    <p class="button2"><%= link_to 'Edit my Question', { :action => 'ask_an_expert'}.update(@flattened_eq_parameters) %></p>
+</div>
+
+<!-- Google Search Result Snippet Begins -->
+<div id="results_002594610894210374936:hggphannnzi"></div>
+<script type="text/javascript">
+  var googleSearchIframeName = "results_002594610894210374936:hggphannnzi";
+  var googleSearchFormName = "searchbox_002594610894210374936:hggphannnzi";
+  var googleSearchFrameWidth = 650;
+  var googleSearchFrameborder = 0;
+  var googleSearchDomain = "www.google.com";
+  var googleSearchPath = "/cse";
+</script>
+<script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
+<!-- Google Search Result Snippet Ends -->

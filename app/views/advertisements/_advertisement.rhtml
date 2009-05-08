@@ -1,0 +1,13 @@
+<h1>Our Sponsors</h1>
+
+<% for ad in @sponsors %>
+  <div class="advertisement">
+	<% if !ad.nil? and !ad.image.nil? %>
+		<%= render_inline_image ad.image %>
+	<% end %>
+  </div>
+<% end %>
+
+<p class="readmore">
+  <%=link_to 'Read more about our sponsors...', :controller => 'main', :action => 'sponsors' %>
+</p>

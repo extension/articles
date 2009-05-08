@@ -1,0 +1,7 @@
+<% form_tag do %>
+    <fieldset class="resource_selector">
+        <p>
+            <%=community_select(@category)%> <%= link_to 'Show All', {:category => 'all'} %> 
+        </p>
+    </fieldset>
+<% end %>

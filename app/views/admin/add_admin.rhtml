@@ -1,0 +1,11 @@
+<div id="admin">
+  <h2>Add an Admin</h2>
+  <p><%= link_to 'Back to Admin', :action => :index%></p>
+  <table>
+  <% for @user in @users %>
+  <tr id="checkbox_user_<%= @user.id.to_s %>">
+	<%= render_partial('admin/toggle_admin') %>
+  </tr>
+  <% end %>
+  </table>
+</div>

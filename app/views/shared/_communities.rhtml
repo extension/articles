@@ -1,0 +1,11 @@
+
+<%for topic in topics%>
+        <h3><%= topic.name%></h3>
+        <ul>
+        <%for community in topic.communities.sort {|a, b|  a.name <=> b.name }%>
+            <li><%= link_to_community community %></li>
+        <%end%>
+        </ul>
+<%end%>
+
+<p class="sidenote">More resource areas are being added every month...</p>

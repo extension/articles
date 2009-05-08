@@ -1,0 +1,21 @@
+<h1 class="missionstatement">The following feeds are available:</h1>
+
+<ul class="communitylist">
+    <li><a href="/feeds/all/" title="All things Atom">All content</a></li>
+    <li><a href="/feeds/articles/" title="Articles over Atom">News &amp; articles</a></li>
+    <li><a href="/feeds/faqs/" title="FAQs over Atom">Frequently Asked Questions to our experts</a></li>
+    <li><a href="/feeds/events/" title="Events over Atom">Calendar Events</a></li>
+    <%for community in @communities%>
+        <%if community.tags.length == 0%>
+
+        <%else%>
+		    <li><a href='/feeds/community/-/<%=community.tags[0].name%>'><%=community.name%></a></li>
+        <%end%>
+    <%end%>
+</ul>
+
+<h2 class="missionstatement">What is a feed?</h2>
+    
+<p>Feeds like Atom feeds or RSS feeds are formats for delivering regularly changing web content. eXtension allows you to subscribe to content as a "feed" so when there is something new to tell you, it's automatically sent, much like getting an email. For example, atom feeds are being used in eXtension so you can be kept up to date on new events and news items without having to always come to the site.</p>
+
+<p>To read an atom or RSS feed, you need something called a "Reader." Many browsers like Firefox, Internet Explorer 7, and Safari have readers built in. You can also download a reader or use a web-based one like the <a href="http://reader.google.com">Google reader</a>. To start using an eXtension atom feed, just click on one of the links above and follow the instructions in your browser or copy/paste the URL in to your reader. Once it's saved in your reader, whenever there is an update, it will automatically be sent to you. It's that easy!</p>

@@ -1,0 +1,71 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :action => 'index' %>, <%= link_to 'All Communities', :action => 'manage_communities' %></p>
+    <h2>Edit Community Details</h2>
+    
+
+    <h3><%= @community.name %></h3>
+    
+  
+    <% form_tag( {:action => 'update_community_description', :id => @community}) do %>
+        <fieldset class="stacked">
+            <h3>Edit details</h3>
+        <p>
+            <label>Name:</label>
+            <%= text_field_tag 'community[name]', @community.name %>
+            <span class="instructions">This will show up for links to this community.</span>
+        </p>
+        
+        <p>
+            <label>Title:</label>
+            <%= text_field_tag 'community[title]', @community.title %>
+            <span class="instructions">This is used as the official name in this communities page.</span>
+        </p>
+        
+        <p>
+            <label>Topic:</label>
+            <%= select_tag_for_topic(@community)%>
+            <span class="instructions">The heading the community shows up in the right navigation bar.</span>
+        </p>
+        
+        <p>
+            <label>Description:</label>
+            <%= text_field_tag 'community[description]', @community.description %>
+            <span class="instructions">The sentence that shows up under the community name on its main page.</span>
+        <p>
+        
+        <p>
+            <%= check_box_tag 'community[visible]', true, @community.visible %> Show to the Public
+            <span class="instructions">Allows the public to see this community. The change is immediate.</span>
+        </p>
+
+        <p>
+            <input type="submit" value="Update">
+        </p>
+        </fieldset>
+    <% end %>
+
+    <h3><%= @community.name %> tags/categories</h3>
+    
+<% form_tag( {:action => 'add_tag', :id => @community}) do %>
+    <fieldset class="stacked">
+        <ul>
+            <%for tag in @community.tags%>
+                <li>
+                    <%= tag.name%>
+                    <%= link_to '(Remove tag)', :action => 'remove_tag', :tag_id => tag.id, :id => @community%>
+                </li>
+            <%end%>
+        </ul>
+    
+	
+	<p>
+	    <label>Add tag</label>
+	    <%= select_tag_for_community%>
+    </p>
+    <p>
+        <%= submit_tag 'Add Tag' %>
+    </p>
+	</fieldset>
+<% end %>
+
+</div>

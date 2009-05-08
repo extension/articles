@@ -1,0 +1,49 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :action => :index%></p>
+    <h2>Manage Communities</h2>
+  
+  <div id="left_col">
+  <h3>Communities</h3>
+      <%for community in @communities%>
+    <dl>
+        <dt><%= link_to community.name, :action => 'edit_community', :id => community.id%></dt>
+        <dd><%= community.description %></dd>
+        <dd>tags: <%=community.tags.collect{|t| t.name}.join(', ')%></dd>
+    </dl>
+      <%end%>
+    </div>
+    <div id="right_col">
+  <% form_tag( {:action => 'create_community'} ) do %>
+	<fieldset id="loginform" class="stack_labels">
+	  <h3>Create a New Community</h3>
+		<p>
+		  <label for="community[name]">Community Name:</label>
+		  <%= text_field_tag 'community[name]', ''%>
+		</p>
+		<p>
+		  <label for="tag_id">Tag:</label>
+			<%= select_tag_for_community%>
+		</p>
+		<p>
+		  <label for="community[topic_id]">Topic:</label>
+			<%= select_tag_for_topic%>
+		</p>
+		<p>
+		  <label for="community[description]">Description:</label>
+		  <%= text_field_tag 'community[description]', ''%>
+		</p>
+		<p>
+		  <label for="community[visible]">Visible:</label>
+		  <%= check_box_tag 'community[visible]', true, true %>
+		</p>
+		
+		<p class="submit">
+		  <input type="submit" value="Create" />
+		</p>
+	</fieldset>
+  <% end %>
+  
+  </div>
+
+  
+</div>

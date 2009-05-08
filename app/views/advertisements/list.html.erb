@@ -1,0 +1,25 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+    <h2>Advertisements</h2>
+    <p><%= link_to 'Add a new advertisement', :action => 'new' %> | <%= link_to 'Manage Advertising Graphics', assets_path %></p>
+    <h3>Drag and drop advertisements to change the display order</h3>
+    <p>The ads will be displayed in this order on the eXtension homepage.</p>
+    <div id="ad_list">
+        <ul id="sortable_list">
+        <% @advertisements.each do |ad| %>    
+            <li id="item_<%= ad.id %>">
+                <span class="ad-actions">
+                    <span>location: <strong><%= ad.tag.name %></strong></span>
+                    <%= link_to "edit", :action => 'edit', :id => ad.id %>
+                    <%= link_to 'delete', { :action => 'destroy', :id => ad.id }, :confirm => 'Are you sure?', :method => :post %>
+                </span>
+                <%=  render_inline_image(ad.image, true) %>
+                
+            </li>
+        <% end %>
+        </ul>
+    </div>  
+
+    
+    <%= sortable_element('sortable_list', :url => {:action => :update_positions}) %>
+</div>

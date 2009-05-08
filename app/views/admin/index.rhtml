@@ -1,0 +1,33 @@
+<div id="admin">
+    <h2>Public Site Administration</h2>
+    
+    <h3>Content Management</h3>
+    <ul>
+        <li><%= link_to 'Manage Communities', :action => 'manage_communities' %></li>
+        <li><%= link_to 'Manage Topics', :action => 'manage_topics' %></li>
+        <li><%= link_to 'Manage Advertising', :controller => :advertisements, :action => 'list' %></li>
+        <li><%= link_to 'Manage Advertising Graphics', assets_path %></li>
+        <li><%= link_to 'Manage County Links', county_links_url %></li>
+        <li><%= link_to 'Manage Institutions', institutions_url %></li>
+        <li><%= link_to 'Manage External Feed sources', feed_locations_url %></li>
+    </ul>
+    
+    <h3>People</h3>
+    <ul>
+    <li><%= link_to 'Browse Accounts', :action => 'users' %></li>
+    <!-- <li><%= link_to 'Browse Admins', :action => 'admins' %></li> -->
+    <!-- <li><%= link_to 'Browse Community leaders', :action => 'leaders' %></li> -->
+    </ul>
+
+    <% if !AppConfig.configtable['production_site'] %>
+    <h3>Jobs</h3>
+    <ul>
+            <li><%= link_to 'Retrieve Wiki Articles', :action => 'retrieve_wikis' %></li>
+            <li><%= link_to 'Retrieve FAQs', :action => 'retrieve_faqs' %></li>
+            <li><%= link_to 'Retrieve Events', :action => 'retrieve_events' %></li>
+            <li><%= link_to 'Retrieve External Articles', :action => 'retrieve_external_articles' %></li>
+        <!-- <li><%= link_to 'Retrieve AAE Subcategories', :action => 'retrieve_subcats' %></li> -->
+    </ul>
+    <% end %>
+
+</div>

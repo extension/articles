@@ -1,0 +1,9 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %>  > <%= link_to 'Advertisements', :controller=>'advertisements', :action => 'list' %></p>
+    <h2>New advertisement</h2>
+    <% form_tag( {:action => 'create'},  :multipart => true )do %>
+        <fieldset class="stacked">
+            <%= render :partial => 'form' %>
+            <p><%= submit_tag "Create" %> <%= link_to 'Cancel', :action => 'list' %></p>
+        </fieldset>
+    <% end %>

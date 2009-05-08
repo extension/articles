@@ -1,0 +1,72 @@
+<% @show_resource_areas = true %>
+<% @hide_popular = true %>
+    
+    <h1 class="missionstatement">Objective. Research-based. Credible. Information and tools you can use every day to improve your life.</h1>
+    <h2 class="headerdescription">This is the most reliable information you'll find on the Internet brought to you by the nation's largest and oldest network of universities. <a href = "/main/about">More...</a></h2>
+    <h3 class="instructions">Here are some of our featured articles and activities...</h3>
+    
+    
+    <div id="slider2" class="home_slider">
+	    <%for highlight in @community_highlights%>
+            <div class="contentdiv">
+                <dl>
+                    <dt><%= link_to highlight.title, highlight.id_and_link %></dt>
+                    <dd class="img"><%=first_image highlight.content%></dd>
+                    <dd><%= truncate_at_word(get_title(strip_tags(highlight.content)), 160) %></dd>
+                    <dd class="more"><%= link_to "More...", highlight.id_and_link %></dd>
+                </dl>
+            </div>
+	    <%end%>
+	    <div class="clearing"></div>
+    </div>
+    <div class="pagination" id="paginate-slider2"></div>
+	<script type="text/javascript">
+		ContentSlider("slider2", 10000)
+	
+	</script>
+
+    <div style = "padding-top: 30px; border: 0px solid #000">
+        <div class="homesection half left">
+            <h2>What's New</h2>
+            <h3 class="headerdescription">Our latest and greatest.</h3>
+            <div class="whatsnewbox">
+                <dl>
+                    <dt><%=expanded_time_print(@latest_article.wiki_updated_at)%><dt>
+                    <dd><%= link_to truncate_at_word(@latest_article.title,60), @latest_article.id_and_link %></dd>
+                </dl>
+                <% if @latest_faq %>
+                    <dl>
+                        <dt><%=expanded_time_print(@latest_faq.heureka_published_at)%></dt>
+                        <dd><%= link_to truncate_at_word(@latest_faq.question,60), faq_page_url(:id => @latest_faq.id) %></dd>
+                    </dl>
+                <%end%>
+                <dl>
+                    <dt><%=expanded_time_print(@latest_learning_lesson.wiki_updated_at)%><dt>
+                    <dd><%= link_to truncate_at_word(@latest_learning_lesson.title,60), @latest_learning_lesson.id_and_link %></dd>
+                </dl>
+                <dl>
+                    <dt><%=expanded_time_print(@second_latest.wiki_updated_at)%></dt>
+                    <dd><%= link_to truncate_at_word(@second_latest.title,60), @second_latest.id_and_link %></dd>
+                </dl>
+            </div>
+        </div>
+        
+        <div class="homesection half left">
+            <h2>In the News</h2>
+            <h3 class="headerdescription">Extension serving local communities.</h3>
+            <div class="whatsnewbox">
+            <%for news in @in_the_news%>
+                <dl>
+                    <dt><%= expanded_time_print(news.wiki_updated_at)%></dt>
+                    <dd><%= link_to news.title, news.id_and_link %></dd>
+                </dl>
+            <%end%>
+            </div>
+            <p><%= link_to 'More...', site_news_url(:category => @category.name)%></p>
+        </div>
+    </div>
+      
+    <%= render(:partial => "shared/calendar", :locals => {:month  => @month, :calendar_events => @calendar_events }) %>
+      
+  
+<!-- END LEFT COLUMN -->
