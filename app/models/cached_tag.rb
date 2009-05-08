@@ -20,14 +20,15 @@ class CachedTag < ActiveRecord::Base
   class << self
     
     def create_or_update(tagcacheable,ownerid,tag_kind)
-      tagacheable.taggable?(true)
-      tagarray = tagcacheable.tags_by_kind(kind)
+      tagarray = tagcacheable.tags_by_ownerid_and_kind(ownerid,tag_kind)
       fulltextlist = tagarray.map(&:name).join(Tag::JOINER)
+      cachedata = {}
+      tagarray.map{|t| cachedata[t.id] = t.name}
       find_object = self.find(:first, :conditions => {:tagcacheable_type => tagcacheable.class.name,:tagcacheable_id => tagcacheable.id, :owner_id => ownerid, :tag_kind => tag_kind})
       if(find_object.nil?)
-        find_object = create(:tagcacheable => tagcacheable, :owner_id => ownerid, :tag_kind => tag_kind, :fulltextlist => fulltextlist, :cachedata => tagarray)
+        find_object = create(:tagcacheable => tagcacheable, :owner_id => ownerid, :tag_kind => tag_kind, :fulltextlist => fulltextlist, :cachedata => cachedata)
       else
-        find_object.update_attributes({:fulltextlist => fulltextlist, :cachedata => tagarray})
+        find_object.update_attributes({:fulltextlist => fulltextlist, :cachedata => cachedata})
       end
       return find_object
     end
