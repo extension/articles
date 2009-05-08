@@ -46,7 +46,7 @@ ActionController::Routing::Routes.draw do |map|
   map.site_faqs ':category/faqs/:order/:page', :controller => 'faq', :action => 'index', :page => '1', :order => 'heureka_published_at DESC', :requirements => { :page => /\d+/ }
   map.site_articles ':category/articles/:order/:page', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
   map.site_events ':category/events/:state', :controller => 'events', :action => 'index', :state => ''
-  map.site_events_month ':category/events/:year/:month/:state', :controller => 'events', :action => 'index', :category => 'all', :state => ''
+  map.site_events_month ':category/events/:year/:month/:state', :controller => 'events', :action => 'index', :state => ''
   
   map.site_learning_lessons ':category/learning_lessons/:order/:page', :controller => 'articles', :action => 'learning_lessons', :page => '1',:order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
   
