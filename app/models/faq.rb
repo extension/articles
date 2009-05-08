@@ -8,8 +8,9 @@
 require 'rexml/document'
 
 class Faq < ActiveRecord::Base
-  has_many :cached_tags, :as => :tagcacheable
-  
+  # currently, no need to cache, we don't fulltext search tags
+  # has_many :cached_tags, :as => :tagcacheable
+    
   #--- New stuff
   has_categories
   ordered_by :orderings => {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'heureka_published_at DESC'},

@@ -9,8 +9,9 @@ require 'cgi'
 require 'mofo'
 
 class Event < ActiveRecord::Base
-  has_many :cached_tags, :as => :tagcacheable
-  
+  # currently, no need to cache, we don't fulltext search tags
+  # has_many :cached_tags, :as => :tagcacheable
+    
   #-- Rails 2.1 dependent stuff
   include HasStates
   has_categories

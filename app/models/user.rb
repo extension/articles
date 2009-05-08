@@ -191,7 +191,7 @@ class User < ActiveRecord::Base
         when 'county'
           returnhash.merge!({:county => self.county.name})
         when 'interests'
-          returnhash.merge!({:interests => self.tag_displaylist_by_owner_and_kind(self,"all",true)})
+          returnhash.merge!({:interests => self.tag_displaylist_by_ownerid_and_kind(self.id,"all",true)})
         end
       end  
     end
@@ -1162,6 +1162,10 @@ class User < ActiveRecord::Base
   
     def systemuser
       find(1)
+    end
+    
+    def systemuserid
+      1
     end
     
     def per_page

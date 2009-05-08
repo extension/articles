@@ -141,11 +141,11 @@ class Community < ActiveRecord::Base
   end
     
   def user_tag_list(owner)
-    self.tag_list_by_owner_and_kind(owner,Tag::USER)
+    self.tag_list_by_ownerid_and_kind(owner.id,Tag::USER)
   end
   
   def user_tag_displaylist(owner)
-    return self.tag_displaylist_by_owner_and_kind(owner,Tag::USER)
+    return self.tag_displaylist_by_ownerid_and_kind(owner.id,Tag::USER)
   end
   
   def update_user_tags(taglist,owner)
@@ -162,7 +162,7 @@ class Community < ActiveRecord::Base
   end
     
   def system_sharedtags_displaylist
-    return self.tag_displaylist_by_owner_and_kind(User.systemuser,Tag::SHARED)
+    return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tag::SHARED)
   end
   
   def tag_myself_with_systemuser_tags(taglist)

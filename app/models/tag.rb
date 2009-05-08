@@ -11,6 +11,7 @@ class Tag < ActiveRecord::Base
   GENERIC = 0  # table defaults
   USER = 1
   SHARED = 2
+  CONTENT = 3
   
   # special class of 'all' for caching purposes
   ALL = 42  # the ultimate answer, of course

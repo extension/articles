@@ -7,13 +7,13 @@ class ActiveRecord::Base #:nodoc:
     # Add tags to <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
     #
     # We need to avoid name conflicts with the built-in ActiveRecord association methods, thus the underscores.
-    def _add_tags(list,owner=User.systemuser,kind=Tag::GENERIC,weight=1)
+    def _add_tags(list,ownerid=User.systemuserid,kind=Tag::GENERIC,weight=1)
       taggable?(true)
       tag_cast_to_string(list).each do |tag_name|
         begin
           tag = Tag.find_or_create_by_name(Tag.normalizename(tag_name))
           raise Tag::Error, "tag could not be saved: #{tag_name}" if tag.new_record?
-          Tagging.create(:tag => tag, :taggable => self, :tag_kind => kind, :tag_display => tag_name, :owner => owner, :weight => weight)          
+          Tagging.create(:tag => tag, :taggable => self, :tag_kind => kind, :tag_display => tag_name, :owner_id => ownerid, :weight => weight)          
         rescue ActiveRecord::StatementInvalid => e
           raise unless e.to_s =~ /duplicate/i
         rescue Tag::Error => e
@@ -23,27 +23,27 @@ class ActiveRecord::Base #:nodoc:
     end
   
     # Removes tags from <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.  
-    def _remove_tags(list,owner=User.systemuser,kind=Tag::GENERIC)
+    def _remove_tags(list,ownerid=User.systemuserid,kind=Tag::GENERIC)
       taggable?(true)
       list = tag_cast_to_string(list,true) # probably redundant
-      taggings.reload
+      #taggings.reload
       # because of http://dev.rubyonrails.org/ticket/6466
-      taggings.destroy(*(taggings.find(:all, :include => :tag, :conditions => ["tag_kind = ? AND owner_id =?",kind,owner.id]).select do |tagging| 
+      taggings.destroy(*(taggings.find(:all, :include => :tag, :conditions => ["tag_kind = ? AND owner_id =?",kind,ownerid]).select do |tagging| 
         (list.include? tagging.tag.name)  
       end))
       end
 
     # Replace the existing tags on <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
-    def tag_with(list,owner=User.systemuser,kind=Tag::GENERIC,weight=1)    
+    def tag_with(list,ownerid=User.systemuserid,kind=Tag::GENERIC,weight=1)    
       taggable?(true)
       list = tag_cast_to_string(list)
            
       # Transactions may not be ideal for you here; be aware.
       Tag.transaction do 
-        current_tags = (tags_by_owner_and_kind(owner=User.systemuser,kind))
+        current_tags = (tags_by_ownerid_and_kind(ownerid,kind))
         current = tag_cast_to_string(current_tags)        
-        _add_tags(list - current,owner,kind,weight)  # may have dups, but won't create duplicate records
-        _remove_tags(current - (list.map{|tag| Tag.normalizename(tag)}),owner,kind)
+        _add_tags(list - current,ownerid,kind,weight)  # may have dups, but won't create duplicate records
+        _remove_tags(current - (list.map{|tag| Tag.normalizename(tag)}),ownerid,kind)
       end
       
       self
@@ -56,42 +56,42 @@ class ActiveRecord::Base #:nodoc:
       CachedTag.create_or_update_with_tagarray(self,kind,tagarray)
     end
     
-    def tag_with_and_cache(list,owner=User.systemuser,kind=Tag::GENERIC,weight=1)
-      self.tag_with(list,owner,kind,weight)
+    def tag_with_and_cache(list,ownerid=User.systemuserid,kind=Tag::GENERIC,weight=1)
+      self.tag_with(list,ownerid,kind,weight)
       self.cache_tags
     end    
 
    # Returns the tags on <tt>self</tt> as a string.
     def tag_list #:nodoc:
       taggable?(true)
-      tags.reload
+      #tags.reload
       tags.to_s
     end
     
     def tag_count
       # this may be problematic down the line for an object with a lot of tags
       taggable?(true)
-      taggings.reload
+      #taggings.reload
       taggings.count(:group => :tag)
     end  
     
-    def tag_count_by_owner_and_kind(owner=User.systemuser,kind=Tag::ALL)      
+    def tag_count_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)      
       # this may be problematic down the line for an object with a lot of tags
       taggable?(true)
-      taggings.reload
-      taggings.count(:group => :tag, :conditions => tagcond(owner,kind))
+      #taggings.reload
+      taggings.count(:group => :tag, :conditions => tagcond(ownerid,kind))
     end
     
-    def tags_by_owner_and_kind(owner=User.systemuser,kind=Tag::ALL)      
+    def tags_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)      
       taggable?(true)
-      tags.reload
+      #tags.reload
       # has to be uniq by mysql index
-      tags.find(:all, :conditions => tagcond(owner,kind))
+      tags.find(:all, :conditions => tagcond(ownerid,kind))
     end
     
     def tags_by_kind(kind=Tag::ALL)      
       taggable?(true)
-      tags.reload
+      #tags.reload
       # has to be uniq by mysql index
       if(kind != Tag::ALL)
         tags.find(:all, :conditions => "taggings.tag_kind = #{kind}")
@@ -100,14 +100,14 @@ class ActiveRecord::Base #:nodoc:
       end
     end
     
-    def tag_list_by_owner_and_kind(owner=User.systemuser,kind=Tag::ALL)
-       tags_by_owner_and_kind(owner,kind).map(&:name).join(Tag::JOINER)
+    def tag_list_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)
+       tags_by_ownerid_and_kind(ownerid,kind).map(&:name).join(Tag::JOINER)
     end
 
-     def tag_displaylist_by_owner_and_kind(owner=User.systemuser,kind=Tag::ALL,returnarray=false)
+     def tag_displaylist_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL,returnarray=false)
        taggable?(true)
-       taggings.reload
-       array = taggings.find(:all, :conditions => tagcond(owner,kind)).map(&:tag_display)
+       #taggings.reload
+       array = taggings.find(:all, :conditions => tagcond(ownerid,kind)).map(&:tag_display)
        if(returnarray)
          array
        else
@@ -186,11 +186,11 @@ class ActiveRecord::Base #:nodoc:
       flag
     end
     
-    def tagcond(owner,kind)     
+    def tagcond(ownerid,kind)     
       if(kind.nil? or kind == Tag::ALL)
-        "taggings.owner_id = #{owner.id}"
+        "taggings.owner_id = #{ownerid}"
       else
-        "taggings.owner_id = #{owner.id} AND taggings.tag_kind = #{kind}"
+        "taggings.owner_id = #{ownerid} AND taggings.tag_kind = #{kind}"
       end
     end
 
