@@ -1,4 +1,4 @@
-<% if @community && @community.visible? %>
+<% if @community && @community.is_launched? %>
     <div id="homage">
         <p>This resource area was created by the: <span><%=@homage ? @homage.content : link_to_community(@community) %> community</span></p>
     </div>

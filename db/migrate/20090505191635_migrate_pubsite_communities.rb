@@ -54,6 +54,15 @@ class MigratePubsiteCommunities < ActiveRecord::Migration
       execute sqlstring
     end
     
+    # before we drop the table, update the community id in the pubsite tags table
+    community_mappings.each do |name,id|
+      sqlstring = "UPDATE pubsite_tags,pubsite_communities"
+      sqlstring += " SET pubsite_tags.community_id = #{id}"
+      sqlstring += " WHERE pubsite_communities.name = '#{name}'"
+      sqlstring += " AND pubsite_tags.community_id = pubsite_communities.id"  
+      execute sqlstring
+    end
+    
     drop_table(:pubsite_communities)
     
   end

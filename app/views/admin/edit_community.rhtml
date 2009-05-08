@@ -11,16 +11,10 @@
             <h3>Edit details</h3>
         <p>
             <label>Name:</label>
-            <%= text_field_tag 'community[name]', @community.name %>
+            <%= text_field_tag 'community[public_name]', @community.public_name %>
             <span class="instructions">This will show up for links to this community.</span>
         </p>
-        
-        <p>
-            <label>Title:</label>
-            <%= text_field_tag 'community[title]', @community.title %>
-            <span class="instructions">This is used as the official name in this communities page.</span>
-        </p>
-        
+                
         <p>
             <label>Topic:</label>
             <%= select_tag_for_topic(@community)%>
@@ -29,12 +23,12 @@
         
         <p>
             <label>Description:</label>
-            <%= text_field_tag 'community[description]', @community.description %>
+            <%= text_field_tag 'community[public_description]', @community.public_description %>
             <span class="instructions">The sentence that shows up under the community name on its main page.</span>
         <p>
         
         <p>
-            <%= check_box_tag 'community[visible]', true, @community.visible %> Show to the Public
+            <%= check_box_tag 'community[is_launched]', true, @community.is_launched %> Show to the Public
             <span class="instructions">Allows the public to see this community. The change is immediate.</span>
         </p>
 

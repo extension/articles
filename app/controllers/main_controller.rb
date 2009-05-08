@@ -44,8 +44,9 @@ class MainController < DataController
     get_date
     
     if @community
-      set_title(@community.name,@community.description)
-      set_titletag("#{@community.name} - eXtension")
+      set_title(@community.name,@community.public_description)
+      set_titletag("#{@community.public_name} - eXtension")
+      # TODO: write a helper method to get the content tags
       @community_tags = @community.tags
       adtag = @community_tags[0] if @community_tags and @community_tags.length > 0
       @sponsors = Advertisement.prioritized_for_tag(adtag) if adtag

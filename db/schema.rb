@@ -156,18 +156,22 @@ ActiveRecord::Schema.define(:version => 20090508180042) do
   add_index "chat_accounts", ["username"], :name => "username", :unique => true
 
   create_table "communities", :force => true do |t|
-    t.integer  "entrytype",    :default => 0,     :null => false
-    t.string   "name",                            :null => false
+    t.integer  "entrytype",          :default => 0,     :null => false
+    t.string   "name",                                  :null => false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "open",         :default => false
-    t.integer  "created_by",   :default => 0
+    t.boolean  "open",               :default => false
+    t.integer  "created_by",         :default => 0
     t.string   "uri"
-    t.integer  "memberfilter", :default => 1
-    t.boolean  "ismeta",       :default => false
-    t.boolean  "listeligible", :default => true
+    t.integer  "memberfilter",       :default => 1
+    t.boolean  "ismeta",             :default => false
+    t.boolean  "listeligible",       :default => true
     t.string   "shortname"
+    t.string   "public_name"
+    t.text     "public_description"
+    t.boolean  "is_launched",        :default => false
+    t.integer  "public_topic_id"
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
@@ -245,36 +249,6 @@ ActiveRecord::Schema.define(:version => 20090508180042) do
     t.boolean  "deleted"
   end
 
-  create_table "expert_questions", :force => true do |t|
-    t.integer  "submitted_by"
-    t.string   "submitter_email",      :default => "",              :null => false
-    t.string   "app_string",           :default => "extension.org", :null => false
-    t.datetime "resolved_at"
-    t.string   "status",               :default => "",              :null => false
-    t.text     "asked_question",                                    :null => false
-    t.text     "answer"
-    t.boolean  "has_read",             :default => false,           :null => false
-    t.text     "reject_message"
-    t.datetime "created_at",                                        :null => false
-    t.datetime "updated_at"
-    t.boolean  "duplicate",            :default => false,           :null => false
-    t.integer  "faq_id"
-    t.string   "resolver_email"
-    t.text     "question_fingerprint",                              :null => false
-    t.string   "submitter_firstname",  :default => "",              :null => false
-    t.string   "submitter_lastname",   :default => "",              :null => false
-    t.integer  "location_id"
-    t.integer  "county_id"
-    t.string   "category_name"
-    t.string   "subcategory_name"
-    t.string   "zip_code"
-    t.boolean  "spam"
-  end
-
-  add_index "expert_questions", ["county_id"], :name => "fk_eq_county"
-  add_index "expert_questions", ["faq_id"], :name => "fk_faq_eq"
-  add_index "expert_questions", ["location_id"], :name => "fk_eq_location"
-
   create_table "expertise_areas", :force => true do |t|
     t.integer  "category_id", :null => false
     t.integer  "user_id",     :null => false
@@ -321,17 +295,6 @@ ActiveRecord::Schema.define(:version => 20090508180042) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "identity_locations", :force => true do |t|
-    t.integer  "entrytype",                  :default => 0, :null => false
-    t.string   "name",                                      :null => false
-    t.string   "abbreviation", :limit => 10,                :null => false
-    t.integer  "fipsid",                     :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "identity_locations", ["name"], :name => "NAME", :unique => true
 
   create_table "institutions", :force => true do |t|
     t.integer  "entrytype",                           :default => 0,     :null => false
@@ -517,12 +480,9 @@ ActiveRecord::Schema.define(:version => 20090508180042) do
 
   add_index "privacy_settings", ["user_id"], :name => "index_privacy_settings_on_user_id"
 
-  create_table "pubsite_communities", :force => true do |t|
-    t.string  "title"
-    t.text    "description"
-    t.boolean "visible",     :default => true
-    t.integer "topic_id"
+  create_table "pubsite_tags", :force => true do |t|
     t.string  "name"
+    t.integer "community_id"
   end
 
   create_table "ratings", :force => true do |t|
@@ -601,6 +561,7 @@ ActiveRecord::Schema.define(:version => 20090508180042) do
     t.string   "referrer",                 :default => "",    :null => false
     t.string   "widget_name"
     t.integer  "status_state",                                :null => false
+    t.string   "zip_code"
   end
 
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"
@@ -619,12 +580,12 @@ ActiveRecord::Schema.define(:version => 20090508180042) do
     t.integer  "tag_id",                                     :null => false
     t.integer  "taggable_id",                                :null => false
     t.string   "taggable_type", :limit => 32
-    t.string   "tag_kind",      :limit => 16
     t.string   "tag_display",                                :null => false
     t.integer  "owner_id",                                   :null => false
     t.integer  "weight",                      :default => 1, :null => false
     t.datetime "created_at",                                 :null => false
     t.datetime "updated_at"
+    t.integer  "tag_kind"
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tag_kind", "owner_id"], :name => "taggingindex", :unique => true
