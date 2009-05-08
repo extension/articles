@@ -1,0 +1,65 @@
+<% if users.length == 0 %>
+    <p><span class="alert">There are no matching experts.</span></p>
+<% else %>
+<h4>Matching Experts</h4>
+
+<ul>
+<% users.each do |user| %>
+    <li>
+    <%= link_to_remote (user.get_first_last_name, {:url => {:action => 'show_profile', :id => user.id}}, 
+    {:id => "user_trigger_#{user.id}", :class => 'userlink', :class => 'profile'}) %>
+    
+    <%= user.locations.length > 0 ? '(' + user.locations.map{|l| l.abbreviation}.join(', ') + ')' : '' %>
+    </li>
+<% end %>
+</ul>
+
+
+<% users.each do |user| %>
+    <div id='user_tooltip_<%= user.id %>' style="display:none;" class="usertooltip">
+        <div id="usertooltip_hook">
+        <h3><%= user.first_name %> <%= user.last_name %> <small>(<%= user.login %>)</small></h3>
+        
+        <% if user.title %>
+            <h4><%= user.title %></h4>
+        <% end %>
+
+        <% if user.university %>
+            <h4><%= user.university %></h4>
+        <% end %>
+        
+        <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>
+        
+        <% if user.locations.length > 0 %>
+            <h5>Expertise Locations:</h5>
+            <p><%= user.locations.map{|l| l.name + user.get_counties_in_location(l)}.join(', ') %></p>
+        <% end %>
+        
+        <% if user.categories.length > 0 %>
+            <h5>Expertise Categories:</h5>
+            <p><%= user.categories.collect { |cat| cat.full_name }.join(", ") %></p>
+        <% end %>
+            
+        <% if user.categories.length == 0 %>
+            <p class="none">No category expertise specified</p>
+        <% end %>
+        <% if user.locations.length == 0 %>
+            <p class="none">No geographic expertise specified</p>
+        <% end %>
+        
+        <% if user.is_answerer? %>
+            <p class="none">Signed up to receive auto-routed questions</p>
+        <% else %>
+            <p class="none">Not signed up to receive auto-routed questions</p>
+        <% end %>
+        </div>
+    </div>
+<% end %>
+
+<% end %>
+
+<script type="text/javascript">
+<% users.each do |user| %>
+  var my_tooltip = new Tooltip('user_trigger_<%= user.id %>', 'user_tooltip_<%= user.id %>')
+<% end %>
+</script>

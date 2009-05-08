@@ -1,0 +1,12 @@
+<% if @questions_not_in_filter and @questions_not_in_filter.length > 0 %>
+<p class="inc_listcount">Displaying <strong>1-<%= @questions_not_in_filter.length %></strong>
+ of <strong><%= @questions_not_in_filter.length %></strong> 
+</p>
+<% end %>
+
+<%= render(:partial => "partial/flashmessages") %>
+<% @menu_partial_to_display = 'expert_list_filter' %>
+
+<% if @questions_not_in_filter and @questions_not_in_filter.length > 0 %>
+  <%= render(:partial => 'expert/submitted_questions_list', :locals => { :submitted_questions_to_list => @questions_not_in_filter }) %>
+<% end %>

@@ -1,0 +1,99 @@
+<table cellspacing="0">
+    <% submitted_questions_to_list.each do |sq| %>
+        <tr>     
+                <% if @questions_status and @questions_status == SubmittedQuestion::STATUS_SUBMITTED and @reserved_questions.include?(sq.id) %>
+                <td class="inc qs-taken">
+                  <p class="workalert">Someone is working on this question right now.</p>
+                <% else %>
+                <td class="inc">
+                <% end %>
+                <% if @questions_status and @questions_status == SubmittedQuestion::STATUS_RESOLVED %>
+                    <p class="inc_resolved">
+                        <span class="resolved">RESOLVED<%= sq.status_state == SubmittedQuestion::STATUS_RESOLVED ? "" : "(#{sq.status})" %>: 
+                        </span> <%= link_to "View response", {:controller => 'expert', :action => 'question', :id => sq.id} %> 
+                        <% if sq.contributing_faq %>
+                            | <%= sq.contributing_faq ? (link_to "Related FAQ (##{sq.current_contributing_faq})", 
+                                                 {:controller => 'questions', :action => 'show', :id => sq.current_contributing_faq}) : 'None' %>
+                        <% end %>
+                    </p>
+                <% end %>
+                <% if sq.status_state == SubmittedQuestion::STATUS_REJECTED %>
+                <strong>Reason for rejection</strong>: <%= wrap_text(sq.current_response) %>
+                <% end %>
+                <p class="inc_category">
+                    <span id="category_names_<%= sq.id %>"><%= sq.category_names %></span>
+                                      
+                    <% if sq.county and sq.location %>
+                      <span class="inc_location">  
+                      <%= link_to(sq.county.name + ",", 
+                      {:controller => controller.controller_name, 
+                       :action => controller.action_name, 
+                       :county => sq.county.fipsid, 
+                       :location => sq.location.fipsid}, 
+                       :method => :post, 
+                       :title => "Show all incoming questions for " + sq.county.name + " county") %>
+
+                      <%= link_to(sq.location.abbreviation, 
+                      {:controller => controller.controller_name, 
+                       :action => controller.action_name, 
+                       :location => sq.location.fipsid}, 
+                       :method => :post, 
+                       :title => "Show all incoming questions for " + sq.location.name) %>
+                      </span>
+                    <% elsif sq.location %>
+                      <span class="inc_location">
+                      <%= link_to(sq.location.abbreviation, 
+                      {:controller => controller.controller_name, 
+                       :action => controller.action_name, 
+                       :location => sq.location.fipsid}, 
+                       :method => :post, 
+                       :title => "Show all incoming questions for " + sq.location.name) %>    
+                      </span>
+                    <% end %>
+                    <% if @questions_status && @questions_status != SubmittedQuestion::STATUS_RESOLVED %>
+                    <% if !sq.spam %>
+                    <%= link_to_remote "edit", :update => "category_change_#{sq.id}", :html => {:class => "recatedit"},
+                            :url => { :controller => :expert, :action => :enable_category_change, :id => sq.id } %>
+                    <% if !sq.asked_question.index("http://").nil? %>
+                    &nbsp;| &nbsp;
+                    <%= link_to "Report as Spam", {:controller => :expert, :action => :report_spam, :id => sq.id}, 
+                                                   :confirm => "Are you sure you want to report this question as spam?", :method => :post %>
+                    <% end %>
+                    <% else %>
+                    <%= link_to "This is not spam", {:controller => :expert, :action => :report_ham, :id => sq.id},
+                                                       :confirm => "Are you sure you want to report this question as non-spam?", :method => :post %>
+                    <% end %>
+                    <% end %>
+                </p>
+                
+                <div id="category_change_<%= sq.id %>"></div>
+                
+
+                <p class="inc_question"><%= link_to sq.asked_question, {:controller => 'expert', :action => 'question', :id => sq.id} %></p>
+                
+                <p class="inc_time_ago">
+                    Submitted from <em><%= sq.external_app_id %> <% if sq.widget_name %>(<%= sq.widget_name %>)<% end %></em>
+                    <%= time_ago_in_words(sq.created_at) %> ago
+                </p>
+                
+                <% if @questions_status && @questions_status == SubmittedQuestion::STATUS_SUBMITTED %>
+                     <p class="inc_assigned">
+                         Assigned to <%= (sq.assignee) ? link_to(sq.assignee.login, {:controller => 'account', :action => 'aaeprofile', :id => sq.assignee.login}) : "<span>nobody</span>"%>
+                         <!-- Show the assigned date of the submitted question if it exists and is valid -->
+                         <%= (sq.assignee and (assign_date = sq.assigned_date)) ? time_ago_in_words(assign_date) + ' ago' : ""%> 
+                    </p>
+                <% end %>
+             
+                <% if @questions_status && @questions_status != SubmittedQuestion::STATUS_SUBMITTED %>
+                    <p class="inc_resolved_by">
+                    Resolved by <%= link_to sq.resolved_by.login, {:controller => 'account', :action => 'aaeprofile', :id => sq.resolved_by.login }, 
+                    :class => "profile" %> 
+                    <%= (sq.resolved_at) ? time_ago_in_words(sq.resolved_at) + ' ago' : '' %>
+                    
+                    </p>
+                <% end %>
+                
+            </td>
+        </tr>
+     <% end %>
+ </table>

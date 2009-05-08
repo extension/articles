@@ -1,0 +1,27 @@
+<strong style="color:#000;"><%= user_bio.first_name %> <%= user_bio.last_name %></strong> (<%= user_bio.login %>)<br />
+<% open_question_count = user_bio.open_question_count %>
+<strong><%= open_question_count %><%= (open_question_count > 1 or open_question_count == 0) ? ' questions' : ' question' %></strong> currently assigned.
+<br />
+<% if user_bio.title %>
+    <%= user_bio.title %><br />
+<% end %>
+
+<% if user_bio.university %>
+    <%= user_bio.university %><br />
+<% end %>
+
+<strong>Expertise Locations:</strong>
+<% if user_bio.locations.length > 0 %>
+    <%= user_bio.locations.map{|l| l.name + user_bio.get_counties_in_location(l)}.join(', ') %>
+<% else %>
+    None Specified   
+<% end %>
+<br />
+
+<strong>Expertise Categories:</strong>
+<% if user_bio.categories.length > 0 %>
+    <%= user_bio.categories.collect { |cat| cat.full_name }.join(", ") %>
+<% else %>
+    None Specified
+<% end %>
+<br />

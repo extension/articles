@@ -1,0 +1,25 @@
+<% @selected_tab = :incoming_questions %>
+<% @page_title = "Incoming Questions" %>
+<% @help_title = "Incoming Questions" %>
+
+<% if !@category and !@location and !@county and !@source %>
+    <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small><span class="syndication">
+    <%= link_to 'feed', :controller => 'feeds', :action => 'incoming' %></span></h2>
+<% else %>
+    <% if @category == Category::UNASSIGNED %>
+         <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small> <span class="syndication">
+         <%= link_to 'feed', :controller => 'feeds', :action => 'incoming', :id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source %></span></h2> 
+    <% else %>
+         <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small> <span class="syndication">
+         <%= link_to 'feed', :controller => 'feeds', :action => 'incoming', :id => @category, :location => @location, :county => @county, :source => @source %></span></h2>
+    <% end %>
+<% end %>
+
+<%= render(:partial => "submitted_questions") %>
+
+<% if @submitted_questions.length == 0 %>
+    <div class="noresults">
+        <h3>There are no questions that match your question filter</h3>
+        <p>(You can change your filter settings on the right)</p>
+    </div>
+<% end %>

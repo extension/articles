@@ -1,0 +1,10 @@
+<div class="aae_module">
+    <h3>Search FAQs for an answer</h3>
+    <% form_tag({:action => :show_duplicates}, {:method => 'get'}) do %>
+    <p>
+       <%= text_field_tag "query", params[:query], :size => 24 %>
+       <%= submit_tag "Search" %>
+       <%= hidden_field_tag(:squid, @submitted_question.id) %>
+    </p>
+    <% end %>
+</div>

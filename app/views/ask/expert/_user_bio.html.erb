@@ -1,0 +1,23 @@
+<div id="user_bio">
+    <h3>Assign to <%= user_bio.get_first_last_name %></h3>
+    
+    <% if !user_bio.is_answerer? %>
+      <!-- <h4>NOT AN ANSWERER</h4> -->
+    <% end %>
+    
+    <p class="assign">
+        <label for="assign_comment">Comments for assignee</label>
+        <%= text_area_tag("assign_comment", nil, :cols => "10", :rows => "3") %>
+        
+        <input type="hidden" name="assignee_login" value="<%= user_bio.login %>" />
+        <%= submit_tag ("Assign question "), :class => "submit" %>
+    </p>
+    
+    <p><%= link_to("view profile", { :controller => 'account', :action => 'aaeprofile', :id => user_bio.login }, :title => "view profile") %></p>
+    <% open_question_count = user_bio.open_question_count %>
+    <p><strong><%= open_question_count %> <%= (open_question_count > 1 or open_question_count == 0) ? ' questions' : ' question' %></strong> currently assigned.</p>
+    <p><%= user_bio.title %></p>
+    <p><%= user_bio.university %></p>
+    <p><%= user_bio.categories.collect { |cat| cat.full_name }.join(", ") %></p>
+</div>
+<br class="clearing" />

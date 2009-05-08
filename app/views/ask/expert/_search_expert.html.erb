@@ -1,0 +1,33 @@
+<% form_tag({:action => 'assign'}, {:id => 'cat_loc_form'}) do %>
+<p class="close"><%= link_to_function 'close', "Effect.toggle('assignUser','blind', { duration: .4});" %></p>
+  <h3>Browse by Location or Category</h3>
+  <p><label class="hide">Browse by category</label><%= select_tag (:category, options_for_select([""].concat(@category_options), @category_id)) %></p>
+
+  <p><label class="hide">Browse by location</label><%= select_tag (:location, options_for_select(@location_options, @location_fips)) %></p>        
+  
+  <%= hidden_field_tag(:id, @submitted_question.id) %>                      
+  
+  <div id="expert_county">
+  <% if @location_fips %>
+  <p><label class="hide">Browse by county</label>
+  <%= select_tag(:county, options_for_select([['All Counties', 'all']].concat(County.find(:all, :conditions => "state_fipsid = #{@location_fips} and countycode <> '0'", :order => "name").map{|c| [c.name, c.fipsid]}), @county_fips)) %>
+  </p>
+  <% end %>
+  </div>
+  
+  <div id="user_list">
+  <div id="loading" style="display:none"><img src='/images/loading.gif' /> Loading... </div>
+  <% if @users %>
+    <%= render (:partial => 'possible_assignees', :locals => {:users => @users, :category => @category}) %>
+  <% end %> 
+  </div>
+
+<% end %>
+    
+
+<%= observe_form 'cat_loc_form', 
+    :url => { :action => 'assignees_by_cat_loc' },
+    :update => 'assignUser',
+    :loading => "Element.show('loading')",
+    :complete    => "Element.hide('loading')"
+%>

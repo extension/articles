@@ -1,0 +1,25 @@
+<% if defined?(@submitted_questions.total_entries) %>
+
+<% if @submitted_questions.total_entries > 0 %>
+<p class="inc_listcount">Displaying <strong><%= @submitted_questions.offset + 1 %>-<%= @submitted_questions.offset + @submitted_questions.length %></strong>
+ of <strong><%= @submitted_questions.total_entries %></strong> &nbsp <%= link_to "Sort by #{@toggle_order} date", :order => @toggle_order, :page => params[:page], :type => params[:type] %> 
+</p>
+<% end %>
+
+<%= will_paginate @submitted_questions %>
+
+<% else %>
+<% if @submitted_questions.length > 0 %>
+<p class="inc_listcount">Displaying <strong>1-<%= @submitted_questions.length %></strong>
+ of <strong><%= @submitted_questions.length %></strong> &nbsp <%= link_to "Sort by #{@toggle_order} date", :order => @toggle_order, :type => params[:type] %>
+</p>
+<% end %>
+
+<% end %>
+
+
+<%= render(:partial => "list_view") %>
+
+<% if defined?(@submitted_questions.total_entries) %>
+<%= will_paginate @submitted_questions %>
+<% end %>

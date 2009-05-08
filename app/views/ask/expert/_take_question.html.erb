@@ -1,0 +1,11 @@
+<div id="aaemastheadwrapper">
+    <div id="aaemasthead" >
+    <div id="description">
+        <h3>This question is <%= time_ago_in_words(@submitted_question.created_at) %> old and up for grabs</h3>
+        <p>Yes, this question is assigned to someone, but that person has not clicked the "I'm working on this" button or their working time has expired on it. You are welcome to go ahead and answer it. <a class="moreinfo" href="http://about.extension.org/2009/03/19/new-in-ask-an-expert-im-working-on-this/">?</a></p>
+    </div>    
+    </div>
+    <div id="aaebigbutton">
+        <p><%= link_to "<strong>I want this question</strong><span>(We'll assign it to you and take it 'off the market' for two hours.)</span>", {:controller => :expert, :action => :reserve_question, :sq_id => @submitted_question.id}, :method => :post %></p>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+<div id="aaemastheadwrapper" class="active handsoff">
+    <div id="aaemasthead" >
+    <div id="description">
+        <h3><em>Heads up: Answer In Progress</em><br /><%= @submitted_question.assignee.get_first_last_name %> is working on this question right now.</h3>
+        <p>They still have <%= time_ago_in_words(SubmittedQuestionEvent.work_in_progress(@submitted_question.assignee.id, @submitted_question.id).latest[0].created_at + 7200) %> left to answer it. If it's not answered or updated by then, you can take a stab at it. Thanks! <a class="moreinfo" href="http://about.extension.org/2009/03/19/new-in-ask-an-expert-im-working-on-this/">?</a></p>
+    </div>    
+    </div>
+</div>
+

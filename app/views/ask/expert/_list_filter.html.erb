@@ -1,0 +1,37 @@
+<div id="list_filter">
+    <h3>Filter questions by...</h3>
+    <p><%= select_tag "source", options_for_select(@source_options, @source ? @source : nil) %> <a class="tooltip-help" href="#" id="source_trigger">?</a></p>
+    
+    <p><%= select_tag "category", options_from_categories(@category) %></p>
+    
+    <p><%= select_tag "location", options_for_select([['All Locations', 'all']].concat(Location.find(:all, :order => 'entrytype, name').map{|l| [l.name, l.fipsid]}), @location ? @location.fipsid : nil) %></p>
+
+<%= observe_field(:source, :function => "(value == 'add_sources') ? window.location = '#{@widget_filter_url}' : null;") %>
+
+<%= observe_field(:location,
+                  :update    => :county_select_box,
+                  :url       => { :controller => :expert, :action => :get_counties },
+                  :with      => "'location='+value") %>
+
+
+    <div class="inc_filter" id="county_select_box">
+    <% if @location %>
+      <%= select_tag "county", 
+      options_for_select([['All Counties', 'all']].concat(@location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'").map{|c| [c.name, c.fipsid]}), 
+      @county ? @county.fipsid : nil) %>  
+    <% end %>
+    </div>
+    <fieldset>
+    <p><%= submit_tag "Apply" %></p>
+    </fieldset>
+</div>
+
+<div id='source_tooltip' style="display:none;" class="tooltip">
+    <div id="tooltip_hook">
+        <p><strong>Where the question originated.</strong> Questions can come from the Public Site (www.extension.org) or from widgets created at ask.extension.org.</p>
+    </div>
+</div>
+
+<script type="text/javascript">
+  var my_tooltip = new Tooltip('source_trigger', 'source_tooltip')
+</script>
