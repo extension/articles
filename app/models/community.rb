@@ -82,7 +82,7 @@ class Community < ActiveRecord::Base
   # topics for public site
   belongs_to :topic, :foreign_key => 'public_topic_id'
   
-  has_many :tag_caches, :as => :tagcacheable
+  has_many :cached_tags, :as => :tagcacheable
   
   
   # validations
@@ -139,14 +139,7 @@ class Community < ActiveRecord::Base
       my_top_tags(:order => 'weightedfrequency DESC', :limit => limit, :minweight => minweight)
     end
   end
-  
-  def tag_with_and_cache(taglist,owner,kind,weight=1)
-    logger.debug "=================================== Inside tag_with_and_cache: #{self.attributes.inspect}"
     
-    self.tag_with(taglist,owner,kind,weight)
-    self.cache_shared_tag_list
-  end
-  
   def user_tag_list(owner)
     self.tag_list_by_owner_and_kind(owner,Tag::USER)
   end
@@ -167,12 +160,7 @@ class Community < ActiveRecord::Base
     self._remove_tags(taglist,owner,kind)
     self.cache_shared_tag_list
   end
-  
-  def cache_shared_tag_list()
-    logger.debug "=================================== Inside cache_shared_tag_list: #{self.attributes.inspect}"
-    self.update_attribute(:taglist_cache,my_top_tags_displaylist(:order => 'weightedfrequency DESC', :minweight => 2))
-  end
-  
+    
   def system_sharedtags_displaylist
     return self.tag_displaylist_by_owner_and_kind(User.systemuser,Tag::SHARED)
   end

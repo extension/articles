@@ -8,7 +8,7 @@
 # The Tag model. This model is automatically generated and added to your app if you run the tagging generator included with has_many_polymorphs.
 
 class Tag < ActiveRecord::Base
-  SYSTEM = 0  # table defaults
+  GENERIC = 0  # table defaults
   USER = 1
   SHARED = 2
   

@@ -8,7 +8,7 @@
 require 'rexml/document'
 
 class Faq < ActiveRecord::Base
-  has_many :tag_caches, :as => :tagcacheable
+  has_many :cached_tags, :as => :tagcacheable
   
   #--- New stuff
   has_categories

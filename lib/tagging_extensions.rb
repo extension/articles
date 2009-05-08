@@ -7,7 +7,7 @@ class ActiveRecord::Base #:nodoc:
     # Add tags to <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
     #
     # We need to avoid name conflicts with the built-in ActiveRecord association methods, thus the underscores.
-    def _add_tags(list,owner,kind=Tag::GENERIC,weight=1)
+    def _add_tags(list,owner=User.systemuser,kind=Tag::GENERIC,weight=1)
       taggable?(true)
       tag_cast_to_string(list).each do |tag_name|
         begin
@@ -23,48 +23,49 @@ class ActiveRecord::Base #:nodoc:
     end
   
     # Removes tags from <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.  
-    def _remove_tags(list,owner,kind=Tag::GENERIC)
+    def _remove_tags(list,owner=User.systemuser,kind=Tag::GENERIC)
       taggable?(true)
       list = tag_cast_to_string(list,true) # probably redundant
       taggings.reload
       # because of http://dev.rubyonrails.org/ticket/6466
-      taggings.delete(*(taggings.find(:all, :include => :tag, :conditions => ["tag_kind = ? AND owner_id =?",kind,owner.id]).select do |tagging| 
+      taggings.destroy(*(taggings.find(:all, :include => :tag, :conditions => ["tag_kind = ? AND owner_id =?",kind,owner.id]).select do |tagging| 
         (list.include? tagging.tag.name)  
       end))
       end
 
-   # Returns the tags on <tt>self</tt> as a string.
-    def tag_list
-      # Redefined later to avoid an RDoc parse error.
-    end
-  
     # Replace the existing tags on <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
-    def tag_with(list,owner,kind,weight=1)    
-      #:stopdoc:
-      logger.debug "=================================== Inside tag_with: #{self.attributes.inspect}"
-      
+    def tag_with(list,owner=User.systemuser,kind=Tag::GENERIC,weight=1)    
       taggable?(true)
       list = tag_cast_to_string(list)
            
       # Transactions may not be ideal for you here; be aware.
       Tag.transaction do 
-        current_tags = (tags_by_owner_and_kind(owner,kind))
+        current_tags = (tags_by_owner_and_kind(owner=User.systemuser,kind))
         current = tag_cast_to_string(current_tags)        
         _add_tags(list - current,owner,kind,weight)  # may have dups, but won't create duplicate records
         _remove_tags(current - (list.map{|tag| Tag.normalizename(tag)}),owner,kind)
       end
       
       self
-      #:startdoc:
     end
+    
+    def cache_tags(kind=Tag::ALL)
+      tagarray = tags_by_kind(kind)
+      # TODO: possibly handle just the top tags?
+      # e.g. my_top_tags_displaylist(:order => 'weightedfrequency DESC', :minweight => 2))
+      CachedTag.create_or_update_with_tagarray(self,kind,tagarray)
+    end
+    
+    def tag_with_and_cache(list,owner=User.systemuser,kind=Tag::GENERIC,weight=1)
+      self.tag_with(list,owner,kind,weight)
+      self.cache_tags
+    end    
 
    # Returns the tags on <tt>self</tt> as a string.
     def tag_list #:nodoc:
-      #:stopdoc:
       taggable?(true)
       tags.reload
       tags.to_s
-      #:startdoc:
     end
     
     def tag_count
@@ -74,34 +75,43 @@ class ActiveRecord::Base #:nodoc:
       taggings.count(:group => :tag)
     end  
     
-    def tag_count_by_owner_and_kind(owner,kind='all')      
+    def tag_count_by_owner_and_kind(owner=User.systemuser,kind=Tag::ALL)      
       # this may be problematic down the line for an object with a lot of tags
       taggable?(true)
       taggings.reload
       taggings.count(:group => :tag, :conditions => tagcond(owner,kind))
     end
     
-    def tags_by_owner_and_kind(owner,kind='all')
-      logger.debug "=================================== Inside tags_by_owner_and_kind: #{self.attributes.inspect}"
-      
+    def tags_by_owner_and_kind(owner=User.systemuser,kind=Tag::ALL)      
       taggable?(true)
       tags.reload
       # has to be uniq by mysql index
       tags.find(:all, :conditions => tagcond(owner,kind))
     end
     
-    def tag_list_by_owner_and_kind(owner,kind='all')
-       tags_by_owner_and_kind(owner,kind).map(&:name).join(' ')
+    def tags_by_kind(kind=Tag::ALL)      
+      taggable?(true)
+      tags.reload
+      # has to be uniq by mysql index
+      if(kind != Tag::ALL)
+        tags.find(:all, :conditions => "taggings.tag_kind = #{kind}")
+      else
+        tags.find(:all)
+      end
+    end
+    
+    def tag_list_by_owner_and_kind(owner=User.systemuser,kind=Tag::ALL)
+       tags_by_owner_and_kind(owner,kind).map(&:name).join(Tag::JOINER)
     end
 
-     def tag_displaylist_by_owner_and_kind(owner,kind='all',returnarray=false)
+     def tag_displaylist_by_owner_and_kind(owner=User.systemuser,kind=Tag::ALL,returnarray=false)
        taggable?(true)
        taggings.reload
        array = taggings.find(:all, :conditions => tagcond(owner,kind)).map(&:tag_display)
        if(returnarray)
          array
        else
-         array.join(' ')
+         array.join(Tag::JOINER)
        end
      end
 
@@ -139,7 +149,7 @@ class ActiveRecord::Base #:nodoc:
      
     def my_top_tags_displaylist(options={})
       logger.debug "=================================== Inside my_top_tags_displaylist: #{self.attributes.inspect}"
-      my_top_tags(options).map(&:name).join(' ')
+      my_top_tags(options).map(&:name).join(Tag::JOINER)
     end
     
     
@@ -176,11 +186,11 @@ class ActiveRecord::Base #:nodoc:
       flag
     end
     
-    def tagcond(owner,kind)
-      if(kind.nil? or kind == 'all')
+    def tagcond(owner,kind)     
+      if(kind.nil? or kind == Tag::ALL)
         "taggings.owner_id = #{owner.id}"
       else
-        "taggings.owner_id = #{owner.id} AND taggings.tag_kind = '#{kind}'"
+        "taggings.owner_id = #{owner.id} AND taggings.tag_kind = #{kind}"
       end
     end
 

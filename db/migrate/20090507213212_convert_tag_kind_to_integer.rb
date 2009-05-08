@@ -10,7 +10,7 @@ class ConvertTagKindToInteger < ActiveRecord::Migration
     add_column(:taggings, :tag_kind, :integer)
     
     # current data only has "user" and "shared" tags
-    execute "UPDATE taggings SET tag_kind = CASE old_tag_kind WHEN 'user' THEN #{Tag::USER} WHEN 'shared' THEN #{Tag::SHARED} ELSE #{Tag::SYSTEM} END"
+    execute "UPDATE taggings SET tag_kind = CASE old_tag_kind WHEN 'user' THEN #{Tag::USER} WHEN 'shared' THEN #{Tag::SHARED} ELSE #{Tag::GENERIC} END"
     
     # add the index back
     add_index(:taggings, ["tag_id", "taggable_id", "taggable_type", "tag_kind", "owner_id"], :name => "taggingindex", :unique => true)

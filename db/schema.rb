@@ -112,6 +112,16 @@ ActiveRecord::Schema.define(:version => 20090507213212) do
     t.integer  "db_file_id"
   end
 
+  create_table "cached_tags", :force => true do |t|
+    t.integer  "tagcacheable_id"
+    t.string   "tagcacheable_type"
+    t.integer  "taglist_kind"
+    t.text     "taglist"
+    t.text     "idlist"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "categories", :force => true do |t|
     t.string   "name"
     t.string   "default_keyword"
@@ -587,16 +597,6 @@ ActiveRecord::Schema.define(:version => 20090507213212) do
   add_index "submitted_questions", ["user_id"], :name => "fk_usr_sq"
   add_index "submitted_questions", ["user_id"], :name => "user_id_idx"
   add_index "submitted_questions", ["widget_name"], :name => "index_submitted_questions_on_widget_name"
-
-  create_table "tag_caches", :force => true do |t|
-    t.integer  "tagcacheable_id"
-    t.string   "tagcacheable_type"
-    t.integer  "cached_kind"
-    t.text     "cached_tags"
-    t.text     "cached_ids"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id",                                     :null => false

@@ -5,6 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'digest/sha1'
+
 class User < ActiveRecord::Base 
   extend ConditionExtensions
   STATUS_CONTRIBUTOR = 0
@@ -93,7 +94,7 @@ class User < ActiveRecord::Base
   # tags and taggings
   has_many :ownedtaggings, :class_name => "Tagging"
   has_many :ownedtags, :through => :ownedtaggings
-  has_many :tag_caches, :as => :tagcacheable
+  has_many :cached_tags, :as => :tagcacheable
 
 
   has_many :user_preferences

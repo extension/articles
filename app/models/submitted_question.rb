@@ -15,7 +15,7 @@ belongs_to :contributing_faq, :class_name => "Question", :foreign_key => "curren
 belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
 belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
 
-has_many :tag_caches, :as => :tagcacheable
+has_many :cached_tags, :as => :tagcacheable
 
 validates_presence_of :asked_question
 validates_presence_of :status

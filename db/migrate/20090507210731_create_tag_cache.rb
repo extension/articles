@@ -1,11 +1,11 @@
 class CreateTagCache < ActiveRecord::Migration
   def self.up
-    create_table "tag_caches", :force => true do |t|
+    create_table "cached_tags", :force => true do |t|
       t.integer "tagcacheable_id"
       t.string "tagcacheable_type"
-      t.integer "cached_kind"
-      t.text "cached_tags"
-      t.text "cached_ids"      
+      t.integer "taglist_kind"
+      t.text "taglist"
+      t.text "idlist"      
       t.timestamps
     end
   end

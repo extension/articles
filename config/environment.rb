@@ -50,4 +50,4 @@ end
 # require for tagging
 # commented out for now
 # TODO: figure out why this has to be in environment.rb
-# require 'tagging_extensions'
+require 'tagging_extensions'
