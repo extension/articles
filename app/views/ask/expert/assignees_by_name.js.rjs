@@ -1,0 +1,2 @@
+page.replace_html "user_list", :partial => 'possible_assignees', :locals => {:users => @users, :category => @category}
+  

@@ -1,0 +1,24 @@
+<% 
+@page_title = "Ask an Expert Escalation Report"
+%>
+
+<% if !@category
+    %>
+    <h1><%= @page_title %></h1>
+    <%
+else
+    if @category == Category::UNASSIGNED
+        %>
+        <h1><%= @page_title %>(Uncategorized)</h1>
+        <%  
+    else        
+        %>
+        <h1><%= @page_title %> (<%= @category.full_name %>)</h1>
+        <%    
+    end
+end
+%>
+
+<% if @submitted_questions and @submitted_questions.length > 0 %>
+  <%= render (:partial => "expert/submitted_questions_list", :locals => { :submitted_questions_to_list => @submitted_questions }) %>
+<% end %>

@@ -1,0 +1,52 @@
+<%= render(:partial => "partial/flashmessages") %>
+
+<h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'expert', :action => 'question', :id => @submitted_question.id} %></h3>
+<h1>Write an Answer</h1>
+
+<div id="response_form">
+    <h2>Your response will be sent via email using the following format</h2>
+    <div id="email_content">
+        <p><strong>Subject:</strong> [Message from eXtension] Your question has been answered by one of our experts.</p>
+        <p><strong>From:</strong> noreplies@extension.org</p>
+    
+            <% if @external_name %>
+                <p>Hello <%= @external_name %>,</p>
+            <% else %>
+                <p>Hello,</p>
+            <% end %>
+
+            <p>A question you asked via eXtension's 'Ask an Expert' tool has been answered!</p>
+
+            <p>Question asked:</p> 
+            <p><%= @submitted_question.asked_question %></p>
+            
+            <% form_tag :action => 'answer_external_question', :squid => @submitted_question.id, :status_state => @status, :question => @question ? @question.id : nil do %>
+
+            <p><label for="current_response">Answer:</label>
+            
+            <% if (@sampletext || @question) %>
+                <% @answer = (@sampletext ? @sampletext : @question.current_revision.answer)%>
+            <% end %>
+            
+            <%= text_area_tag 'current_response', @answer ? @answer : nil, 
+            "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)", "rows" => 6 %>
+            </p>
+
+            <p><label for="signature" class="helptext">Your default email signature can be set in your preferences</label> 
+            <%= text_area_tag 'signature', @signature, "rows" => 3 %></p>
+
+            <p>Looking for more? See what's new at the eXtension public site:</p>
+            <p>http://www.extension.org</p>
+            
+            <p>Thank you for using our 'Ask an Expert' system.</p>
+            <p>***PLEASE DO NOT REPLY TO THIS MESSAGE***</p/>
+            
+            <p><%= SubmittedQuestion::EXPERT_DISCLAIMER %></p>
+            
+            <p><span class="helptext">-- end of email message --</span></p>
+    </div>
+    <p class="save_it"><%= submit_tag 'Send Email' %> (If you want, you can then convert your response into an FAQ.)</p>
+</div>
+
+
+<% end %>

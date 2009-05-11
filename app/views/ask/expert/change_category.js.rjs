@@ -1,0 +1,2 @@
+page.replace_html "category_names_#{@submitted_question.id}", @submitted_question.category_names
+page.replace_html "recat_link", "edit"
