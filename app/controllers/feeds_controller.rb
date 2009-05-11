@@ -235,7 +235,7 @@ class FeedsController < ApplicationController
     case type
       when 'faqs'
         if category_array
-          entries = Faq.categorized(category_array).ordered.limit(limit).
+          entries = Faq.tagged_with_content_tags(category_array).ordered.limit(limit).
                       find(:all, :select => select, :conditions => conditions)
         else
           entries = Faq.ordered("faqs.heureka_published_at DESC").limit(limit).find(:all, :select => select,
@@ -245,16 +245,14 @@ class FeedsController < ApplicationController
                         
       when 'articles'
         if category_array
-          entries = Article.categorized(category_array).not_categorized('dpl').not_categorized('dpl').ordered.limit(limit).
-                      find(:all, :select => select, :conditions => conditions)
+          entries = Article.tagged_with_content_tags(category_array + ['!dpl']).ordered.limit(limit).find(:all, :select => select, :conditions => conditions)
         else
-          entries = Article.not_categorized('dpl').ordered("articles.wiki_updated_at DESC").limit(limit).
-                      find(:all, :select => select, :joins => joins, :conditions => conditions)
+          entries = Article.tagged_with_content_tags('!dpl').ordered("articles.wiki_updated_at DESC").limit(limit).find(:all, :select => select, :joins => joins, :conditions => conditions)
         end  
               
       when 'events'
         if category_array
-          entries = Event.categorized(category_array).ordered.limit(limit).
+          entries = Event.tagged_with_content_tags(category_array).ordered.limit(limit).
                       find(:all, :select => select, :conditions => conditions)
         else
           entries = Event.ordered('events.date DESC').limit(limit).

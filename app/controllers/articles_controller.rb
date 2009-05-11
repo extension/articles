@@ -11,7 +11,7 @@ class ArticlesController < DataController
     set_title('Articles', "Don't just read. Learn.")
     set_titletag("Articles - #{@category.name} - eXtension")
     return do_404 unless Article.orderings.has_value?(params[:order])
-    articles = Article.categorized(@category.name).ordered(params[:order]).paginate(:page => params[:page])
+    articles = Article.tagged@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'data/index', :locals => { :items => articles, :klass => Article }, :layout => true
   end
@@ -81,8 +81,8 @@ class ArticlesController < DataController
     # go through tags, get first one that has .community not nil
     if category
       @community = category.community
-      @homage = Article.categorized(['homage', category.name]).ordered.first if @community
-      @in_this_section = Article.categorized(['contents', category.name]).ordered.first if @community
+      @homage = Article.tagged_with_content_tags(['homage', category.name]).ordered.first if @community
+      @in_this_section = Article.tagged_with_content_tags(['contents', category.name]).ordered.first if @community
       @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
     end
     
@@ -112,7 +112,7 @@ class ArticlesController < DataController
     set_title('News', "Check out the news from the land grant university in your area.")
     set_titletag('News - eXtension')
     return do_404 unless Article.orderings.has_value?(params[:order])
-    @news = Article.categorized(['news', @category.name]).ordered(params[:order]).paginate(:page => params[:page])
+    @news = Article.tagged_with_content_tags(['news', @category.name]).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'data/index', :locals => { :items => @news, :klass => Article }, :layout => true
   end
@@ -121,7 +121,7 @@ class ArticlesController < DataController
     set_title('Learning Lessons', "Don't just read. Learn.")
     set_titletag('Learning Lessons - eXtension')
     return do_404 unless Article.orderings.has_value?(params[:order])
-    @learning_lessons = Article.categorized(['learning lessons', @category.name]).ordered(params[:order]).paginate(:page => params[:page])
+    @learning_lessons = Article.tagged_with_content_tags(['learning lessons', @category.name]).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'data/index', :locals => { :items => @learning_lessons, :klass => Article }, :layout => true
   end

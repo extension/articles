@@ -15,8 +15,7 @@ class Article < ActiveRecord::Base
   after_create :store_content
   before_update :check_content
   
-  #-- New Rails 2.1 stuff
-  has_categories
+  has_content_tags
   ordered_by :orderings => {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'wiki_updated_at DESC'},
              :default => "#{self.table_name}.wiki_updated_at DESC"
              

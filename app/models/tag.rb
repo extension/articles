@@ -56,6 +56,58 @@ class Tag < ActiveRecord::Base
       returnstring.strip!
       returnstring
     end
+
+    def castlist_to_array(obj,normalizestring=true,processnots=false)      
+      returnarray = []
+      if(processnots)
+        returnnotarray = []
+      end 
+      
+      case obj
+        when Array
+          obj.each do |item|
+            case item
+              when /^\d+$/, Fixnum then returnarray << Tag.find(item).name # This will be slow if you use ids a lot.
+              when Tag then returnarray << item.name
+              when String                
+                if(processnots and item.starts_with?('!'))
+                  returnnotarray << (normalizestring ? Tag.normalizename(item) : item.strip)
+                else
+                  returnarray << (normalizestring ? Tag.normalizename(item) : item.strip)
+                end
+              else
+                raise "Invalid type"
+            end
+          end              
+        when String          
+          obj.split(Tag::SPLITTER).each do |tag_name| 
+            if(!tag_name.empty?)
+              if(processnots and tag_name.starts_with?('!'))
+                returnnotarray << (normalizestring ? Tag.normalizename(tag_name) : tag_name.strip)
+              else
+                returnarray << (normalizestring ? Tag.normalizename(tag_name) : tag_name.strip)
+              end
+            end
+          end
+        else
+          raise "Invalid object of class #{obj.class} as tagging method parameter"
+      end
+      
+      returnarray.flatten!
+      returnarray.compact!
+      returnarray.uniq!
+      
+      
+      if(processnots)
+        returnnotarray.flatten!
+        returnnotarray.compact!
+        returnnotarray.uniq!
+        return [returnarray,returnnotarray]
+      else
+        return returnarray
+      end
+    end
+    
   end
     
   # Tag::Error class. Raised by ActiveRecord::Base::TaggingExtensions if something goes wrong.

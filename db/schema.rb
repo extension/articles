@@ -480,11 +480,6 @@ ActiveRecord::Schema.define(:version => 20090508180042) do
 
   add_index "privacy_settings", ["user_id"], :name => "index_privacy_settings_on_user_id"
 
-  create_table "pubsite_tags", :force => true do |t|
-    t.string  "name"
-    t.integer "community_id"
-  end
-
   create_table "ratings", :force => true do |t|
     t.integer  "rating",                       :default => 0
     t.datetime "created_at",                                   :null => false

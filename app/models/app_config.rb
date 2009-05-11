@@ -68,6 +68,11 @@ class AppConfig
     #@@configtable['urlwriter_port'] = 443
     #@@configtable['urlwriter_protocol'] = 'https'
 
+    @@configtable['default_host'] = 'www.extension.org'
+    @@configtable['default_port'] = 80
+    @@configtable['urlwriter_host'] = 'www.extension.org'
+    @@configtable['urlwriter_port'] = 80
+    
     # used to push IP Address down into the models, for the email crons
     @@configtable['default_request_ip'] = '127.0.0.1'
     @@configtable['request_ip_address'] = '127.0.0.1'

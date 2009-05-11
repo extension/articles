@@ -1,8 +1,5 @@
 class AssetsController < ApplicationController
-  
-  before_filter :check_authentication, :except => :show
-  before_filter :check_authorization, :except => :show
-  
+    
   # and these aren't registered by default....why?
   Mime::Type.register("image/gif", :gif)
   Mime::Type.register("image/jpg", :jpg)
@@ -105,22 +102,5 @@ class AssetsController < ApplicationController
       format.xml  { head :ok }
     end
   end    
-  
-protected
-  
-  def check_authorization 
-    if current_user == :false || ! has_right?(current_user)
-      bounce_unauthorized_user
-      return false 
-    end 
-  end
-  
-  def bounce_unauthorized_user
-    flash[:notice] = "You are not authorized to view the page you requested." 
-    request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
-  end
-  
-  def has_right?(user)
-    user.has_right_for?(action_name, self.class.controller_path)
-  end
+    
 end

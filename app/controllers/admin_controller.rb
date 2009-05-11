@@ -8,7 +8,6 @@ require 'zip_code_to_state'
 class AdminController < DataController
   
   include Akismet
-  before_filter :check_authentication, :check_authorization
   
   def index
     set_title('Administration')
@@ -225,9 +224,7 @@ class AdminController < DataController
   end
   
   private
-  def has_right?(user)
-    user.has_right_for?(action_name, self.class.controller_path)
-  end
+
 
   def finished_retrieving(what)
     ActiveRecord::Base::logger.debug "Imported #{what} at: " + Time.now.to_s    
@@ -243,12 +240,7 @@ class AdminController < DataController
   end
   
   protected
-  
-  def bounce_unauthorized_user
-    flash[:notice] = "You are not authorized to view the page you requested." 
-    request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
-  end
-    
+      
   def check_self_demotion user_in_question
     (user_in_question == current_user and user_in_question.is_admin?)
   end  

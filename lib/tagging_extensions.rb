@@ -11,9 +11,9 @@ class ActiveRecord::Base #:nodoc:
     # Add tags to <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
     #
     # We need to avoid name conflicts with the built-in ActiveRecord association methods, thus the underscores.
-    def _add_tags(list,ownerid,kind,weight)
+    def _add_tags(tagarray,ownerid,kind,weight)
       taggable?(true)
-      tag_cast_to_string(list).each do |tag_name|
+      tagarray.each do |tag_name|
         begin
           tag = Tag.find_or_create_by_name(Tag.normalizename(tag_name))
           raise Tag::Error, "tag could not be saved: #{tag_name}" if tag.new_record?
@@ -27,27 +27,26 @@ class ActiveRecord::Base #:nodoc:
     end
   
     # Removes tags from <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.  
-    def _remove_tags(list,ownerid,kind)
+    def _remove_tags(tagarray,ownerid,kind)
       taggable?(true)
-      list = tag_cast_to_string(list,true) # probably redundant
       #taggings.reload
       # because of http://dev.rubyonrails.org/ticket/6466
       taggings.destroy(*(taggings.find(:all, :include => :tag, :conditions => ["tag_kind = ? AND owner_id =?",kind,ownerid]).select do |tagging| 
-        (list.include? tagging.tag.name)  
+        (tagarray.include? tagging.tag.name)  
       end))
       end
 
     # Replace the existing tags on <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
     def tag_with(list,ownerid=User.systemuserid,kind=self.default_tag_kind,weight=1)    
       taggable?(true)
-      list = tag_cast_to_string(list)
+      tagarray = Tag.castlist_to_array(list,false)  # do not normalize the list
            
       # Transactions may not be ideal for you here; be aware.
       Tag.transaction do 
-        current_tags = (tags_by_ownerid_and_kind(ownerid,kind))
-        current = tag_cast_to_string(current_tags)        
-        _add_tags(list - current,ownerid,kind,weight)  # may have dups, but won't create duplicate records
-        _remove_tags(current - (list.map{|tag| Tag.normalizename(tag)}),ownerid,kind)
+        current_tags = tags_by_ownerid_and_kind(ownerid,kind).map(&:name)
+        # because tag array is not normalized, this will likely have dups, but won't create duplicate records
+        _add_tags(tagarray - current,ownerid,kind,weight)  
+        _remove_tags(current - (tagarray.map{|tag| Tag.normalizename(tag)}),ownerid,kind)
       end
       
       self
@@ -155,29 +154,6 @@ class ActiveRecord::Base #:nodoc:
     
     private
     
-    def tag_cast_to_string(obj,normalizestring=false) #:nodoc:
-      case obj
-        when Array
-          obj.map! do |item|
-            case item
-              when /^\d+$/, Fixnum then Tag.find(item).name # This will be slow if you use ids a lot.
-              when Tag then item.name
-              when String then normalizestring ? Tag.normalizename(item) : item.strip
-              else
-                raise "Invalid type"
-            end
-          end              
-        when String
-          obj = obj.split(Tag::SPLITTER).map do |tag_name| 
-            if(!tag_name.empty?)
-              normalizestring ? Tag.normalizename(tag_name) : tag_name.strip
-            end
-          end
-        else
-          raise "Invalid object of class #{obj.class} as tagging method parameter"
-      end.flatten.compact.uniq
-    end 
-  
     # Check if a model is in the :taggables target list. The alternative to this check is to explicitly include a TaggingMethods module (which you would create) in each target model.  
     def taggable?(should_raise = false) #:nodoc:
       unless flag = respond_to?(:tags)
@@ -201,36 +177,6 @@ class ActiveRecord::Base #:nodoc:
   end
   
   module TaggingFinders
-    # 
-    # Find all the objects tagged with the supplied list of tags
-    # 
-    # Usage : Model.tagged_with("ruby")
-    #         Model.tagged_with("hello", "world")
-    #         Model.tagged_with("hello", "world", :limit => 10)
-    #
-    
-    def tag_cast_to_string(obj,normalizestring=false) #:nodoc:
-      case obj
-        when Array
-          obj.map! do |item|
-            case item
-              when /^\d+$/, Fixnum then Tag.find(item).name # This will be slow if you use ids a lot.
-              when Tag then item.name
-              when String then normalizestring ? Tag.normalizename(item) : item.strip
-              else
-                raise "Invalid type"
-            end
-          end              
-        when String
-          obj = obj.split(Tag::SPLITTER).map do |tag_name| 
-            if(!tag_name.empty?)
-              normalizestring ? Tag.normalizename(tag_name) : tag_name.strip
-            end
-          end
-        else
-          raise "Invalid object of class #{obj.class} as tagging method parameter"
-      end.flatten.compact.uniq
-    end
     
     def tagged_with_any(*tag_list)
       options = tag_list.last.is_a?(Hash) ? tag_list.pop : {}

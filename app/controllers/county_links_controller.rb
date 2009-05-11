@@ -1,7 +1,5 @@
 class CountyLinksController < ApplicationController
 
-  before_filter :check_authentication
-  before_filter :check_authorization
   before_filter :set_page_title
 
   def index
@@ -55,22 +53,6 @@ class CountyLinksController < ApplicationController
   end    
 
 protected
-
-  def check_authorization 
-    if current_user == :false || ! has_right?(current_user)
-      bounce_unauthorized_user
-      return false 
-    end 
-  end
-
-  def bounce_unauthorized_user
-    flash[:notice] = "You are not authorized to view the page you requested." 
-    request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
-  end
-
-  def has_right?(user)
-    user.has_right_for?(action_name, self.class.controller_path)
-  end
   
   def set_page_title
     set_title('Manage County Links')

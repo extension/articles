@@ -14,7 +14,7 @@ class Event < ActiveRecord::Base
     
   #-- Rails 2.1 dependent stuff
   include HasStates
-  has_categories
+  has_content_tags
   ordered_by :default => "#{quoted_table_name}.date ASC"
   
   # Get all events in a given month, this month if no month is given

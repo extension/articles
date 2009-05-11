@@ -10,7 +10,7 @@ class EventsController < DataController
   def index    
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
     set_titletag('eXtension - Calendar of Events')    
-    @results  =  Event.monthly(get_month).ordered.in_states(params[:state]).categorized(@category.name)
+    @results  =  Event.monthly(get_month).ordered.in_states(params[:state]).tagged_with_content_tags(@category.name)
     @youth = true if @topic and @topic.name == 'Youth'
     render :action => 'events'
   end

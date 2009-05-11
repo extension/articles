@@ -11,7 +11,7 @@ class FaqController < DataController
     set_title('Answered Questions from Our Experts', "Frequently asked questions from our resource area experts.")
     set_titletag('Answered Questions from Our Experts - eXtension')
     return do_404 unless Faq.orderings.has_value?(params[:order])
-    @faqs = Faq.categorized(@category.name).ordered(params[:order]).paginate(:page => params[:page])
+    @faqs = Faq.tagged_with_content_tags(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'data/index', :locals => { :items => @faqs, :klass => Faq }, :layout => true
   end
@@ -41,8 +41,8 @@ class FaqController < DataController
     # go through tags, get first one that has .community not nil
     if category
       @community = category.community
-      @homage = Article.categorized(['homage', category.name]).ordered.first if @community
-      @in_this_section = Article.categorized(['contents', category.name]).ordered.first if @community
+      @homage = Article.tagged_with_content_tags(['homage', category.name]).ordered.first if @community
+      @in_this_section = Article.tagged_with_content_tags(['contents', category.name]).ordered.first if @community
       @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
     end
     

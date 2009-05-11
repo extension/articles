@@ -1,5 +1,4 @@
 class AdvertisementsController < ApplicationController
-  before_filter :check_authentication, :check_authorization
   
   # ajax call to update the position of the ads relative to each other
   def update_positions
@@ -71,19 +70,5 @@ class AdvertisementsController < ApplicationController
     Advertisement.find(params[:id]).destroy
     redirect_to :action => 'list'
   end
-  
-   def check_authorization 
-    if current_user == :false || ! has_right?(current_user)
-      flash[:notice] = "You are not authorized to view the page you requested." 
-      request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url) 
-      return false 
-    end 
-  end 
-  
-  private
-  
-  def has_right?(user)
-    user.has_right_for?(action_name, self.class.controller_path)
-  end
-  
+    
 end

@@ -12,7 +12,7 @@ class Faq < ActiveRecord::Base
   # has_many :cached_tags, :as => :tagcacheable
     
   #--- New stuff
-  has_categories
+  has_content_tags
   ordered_by :orderings => {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'heureka_published_at DESC'},
              :default => "#{quoted_table_name}.heureka_published_at DESC"
   

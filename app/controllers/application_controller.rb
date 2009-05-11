@@ -81,16 +81,6 @@ class ApplicationController < ActionController::Base
     session[:category] = @category.name if @category
   end
   
-  def check_authentication
-    unless logged_in?
-      flash[:notice] = "You must log in or register to access this part of the site."
-      session[:jumpto] = request.parameters
-      store_location
-      redirect_to(:controller => "openidsession", :action => "new")
-      return false
-    end
-  end
-
   private
   
   def disable_link_prefetching
@@ -121,7 +111,6 @@ class ApplicationController < ActionController::Base
     end
         
     @personal[:tag] = @category
-    @personal[:user] = current_user if logged_in?
   end
   
   def set_title(main, sub = nil)

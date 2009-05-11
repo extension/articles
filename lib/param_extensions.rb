@@ -12,51 +12,22 @@ module ParamExtensions
     additionaldata[:remoteaddr] = request.env["REMOTE_ADDR"]
     return additionaldata
   end
-
-  def check_model_columns(objectklass,columnstring)
-    columnarray = columnstring.split(',')
-    if(columnarray.size > 1)
-      columnarray.each do |column|
-        if(!objectklass.column_names.include?(column))
-          return nil
-        end
-      end
-      # all columns match
-      return columnstring
-    else
-      if(objectklass.column_names.include?(columnstring))
-        return columnstring
+  
+  def order_from_params(defaultdirection='ASC')
+    # either going to be "order=columnstring direction" 
+    # or it will be "orderby=columnstring&sortorder=direction"
+    if(!params[:order].blank?)
+      return params[:order]
+    elsif(!params[:orderby].blank?)
+      if(!params[:sortorder].blank?)
+        return "#{params[:orderby]} #{params[:sortorder]}"
       else
-        return nil
+        return "#{params[:orderby]} #{defaultdirection}"
       end
-    end
-  end
-  
-  def order_from_params(objectklass,defaultcolumns,defaultdirection='ASC')
-    orderbyparam = params[:orderby] || nil
-    sortorder = params[:sortorder] || defaultdirection
-
-    # check if orderby is compound
-    if(!orderbyparam.nil?)
-      orderby = check_model_columns(objectklass,orderbyparam)
-    end
-    
-    if(orderby.nil?)
-      orderby = check_model_columns(objectklass,defaultcolumns)
-    end
-    
-    if(orderby.nil?)
-      return nil
-    end        
-      
-    if(['d','descending','desc'].include?(sortorder.downcase))
-      direction = 'DESC'
     else
-      direction = 'ASC'
+      return nil
     end
-    return "#{orderby} #{direction}"
   end
-  
   
   #
   # ToDo:  This really needs to check for array lists

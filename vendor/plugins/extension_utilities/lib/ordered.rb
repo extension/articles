@@ -26,12 +26,49 @@ module Extension
         opts = {:orderings => {}, :default => 'id ASC'}.merge(opts)
         
         # Add named scope
-        named_scope :ordered, lambda { |*order| { :order => order.blank? ? self.default_ordering : order } }
+        named_scope :ordered, lambda { |*order|
+          # expecting an order param of "column[,columns] direction"
+          if(!order.blank?)
+            (columnstring,sortorder) = order.split(' ')
+            # make sure direction is valid
+            if(['d','descending','desc'].include?(sortorder.downcase))
+              direction = 'DESC'
+            else
+              direction = 'ASC'
+            end
+            if(orderby = check_model_columns(columnstring))
+              {:order => "#{orderby} #{direction}"}
+            else
+              {:order => self.default_ordering}
+            end
+          else
+            {:order => self.default_ordering}
+          end
+        }
         
         # Give the class it's convenience "orderings" and "default_ordering" accessors
         metaclass.instance_eval do
           define_method(:orderings) { opts[:orderings] }
           define_method(:default_ordering) { opts[:default] }
+        end
+      end
+      
+      def check_model_columns(columnstring)
+        columnarray = columnstring.split(',')
+        if(columnarray.size > 1)
+          columnarray.each do |column|
+            if(!self.column_names.include?(column))
+              return nil
+            end
+          end
+          # all columns match
+          return columnstring
+        else
+          if(self.column_names.include?(columnstring))
+            return columnstring
+          else
+            return nil
+          end
         end
       end
       

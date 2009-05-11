@@ -1,9 +1,9 @@
-require 'has_categories'
+require 'has_tags'
 require 'ordered'
 require 'utility_scopes'
 
 ActiveRecord::Base.class_eval do
-  include Extension::HasCategories
+  include Extension::HasTags
   include Extension::Ordered
   include Extension::UtilityScopes
 end
