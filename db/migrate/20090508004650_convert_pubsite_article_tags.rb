@@ -30,7 +30,7 @@ class ConvertPubsiteArticleTags < ActiveRecord::Migration
         if(!a.cached_tag_list.blank?)
           a.cached_tag_list.split(',').each do |tag|
             if(tagid = tag_name_to_id[Tag.normalizename(tag)])
-              taggings_to_insert << "(#{tagid},#{a.id},'#{a.class.name}','#{tag.gsub("'",'')}',#{ownerid},'#{insert_time}','#{insert_time}',#{Tag::CONTENT})"
+              taggings_to_insert << "(#{tagid},#{a.id},'#{a.class.name}','#{tag.gsub("'",'').strip}',#{ownerid},'#{insert_time}','#{insert_time}',#{Tag::CONTENT})"
             end
           end
         end

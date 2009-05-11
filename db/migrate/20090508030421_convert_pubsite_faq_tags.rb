@@ -32,7 +32,7 @@ class ConvertPubsiteFaqTags < ActiveRecord::Migration
         if(!f.categories.blank?)
           f.categories.split(',').each do |tag|
             if(tagid = tag_name_to_id[Tag.normalizename(tag)])
-              taggings_to_insert << "(#{tagid},#{f.id},'#{f.class.name}','#{tag.gsub("'",'')}',#{ownerid},'#{insert_time}','#{insert_time}',#{Tag::CONTENT})"
+              taggings_to_insert << "(#{tagid},#{f.id},'#{f.class.name}','#{tag.gsub("'",'').strip}',#{ownerid},'#{insert_time}','#{insert_time}',#{Tag::CONTENT})"
             end
           end
         end
