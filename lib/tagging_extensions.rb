@@ -45,8 +45,8 @@ class ActiveRecord::Base #:nodoc:
       Tag.transaction do 
         current_tags = tags_by_ownerid_and_kind(ownerid,kind).map(&:name)
         # because tag array is not normalized, this will likely have dups, but won't create duplicate records
-        _add_tags(tagarray - current,ownerid,kind,weight)  
-        _remove_tags(current - (tagarray.map{|tag| Tag.normalizename(tag)}),ownerid,kind)
+        _add_tags(tagarray - current_tags,ownerid,kind,weight)  
+        _remove_tags(current_tags - (tagarray.map{|tag| Tag.normalizename(tag)}),ownerid,kind)
       end
       
       self
