@@ -1,0 +1,34 @@
+<% @page_title = "Questions resolved by me" %>
+
+<h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small></h2>
+
+<% if @filtered_submitted_questions.length == 0 %>
+    <div class="noresults">
+        <h3>There are no questions that match your question filter</h3>
+        <p>(You can change your filter settings on the right)</p>
+    </div>
+<% end %>
+
+
+<% if @question_difference > 0 %>
+    <% if @filtered_submitted_questions.length == 0 %>
+    
+    <div class="noresults">
+        <h3>There <%= @question_difference == 1 ? "is" : "are" %> <strong><%= @question_difference %> 
+        <%= @question_difference == 1 ? "question" : "questions" %> resolved by you</strong> outside of your filter:</h3>
+        <p>We've listed them below</p>
+    </div>
+    <%= render (:partial => "submitted_questions") %>
+    
+    <% else %>
+    <%= render (:partial => "submitted_questions") %>
+    <div class="noresults">
+        <h3>There <%= @question_difference == 1 ? "is" : "are" %> <%= @question_difference %> other
+        <%= @question_difference == 1 ? "question" : "questions" %> outside of your filter.</h3>
+        <p>You can change your filter (in the right-hand sidebar) to view those questions.</p>
+    </div>
+    <% end %>
+<% else %>
+    <%= render (:partial => "submitted_questions") %>
+<% end %>
+

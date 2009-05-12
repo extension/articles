@@ -1,0 +1,1 @@
+page.replace_html "user_list", :partial => 'user_bio', :locals => { :user_bio => @user }

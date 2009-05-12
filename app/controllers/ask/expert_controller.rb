@@ -7,7 +7,7 @@
 
 require 'zip_code_to_state'
 
-class ExpertController < QuestionsBaseController
+class ExpertController < ApplicationController
   layout  'aae'  
   
   has_rakismet :only => [:submit_question, :widget_submit]
@@ -281,7 +281,7 @@ class ExpertController < QuestionsBaseController
   end
   
   # Show the expert form to answer an external question
-  def answer_external_question
+  def answer_question
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
     
     if !@submitted_question

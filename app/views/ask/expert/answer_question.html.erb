@@ -20,7 +20,7 @@
             <p>Question asked:</p> 
             <p><%= @submitted_question.asked_question %></p>
             
-            <% form_tag :action => 'answer_external_question', :squid => @submitted_question.id, :status_state => @status, :question => @question ? @question.id : nil do %>
+            <% form_tag :action => 'answer_question', :squid => @submitted_question.id, :status_state => @status, :question => @question ? @question.id : nil do %>
 
             <p><label for="current_response">Answer:</label>
             

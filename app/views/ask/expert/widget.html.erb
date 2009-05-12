@@ -1,0 +1,21 @@
+<h1>Widget: <%= @widget.name %></h1>
+<%= render(:partial => "partial/flashmessages") %>
+<p>Created: <%= @widget.created_at %></p>
+<h3>Widget Assignees (users taking responsibility for questions)</h3>
+
+<% if @widget_assignees.length > 0 %>
+  <table id="aoe_table">
+      <tr>
+          <th>User</th>
+      </tr>
+  <% @widget_assignees.each do |user| %>
+    <tr>
+      <td><%= link_to (user.get_first_last_name, {:controller => :account, :action => :aaeprofile, :id => user.login}, {:class => "profile"}) %></td>
+    </tr>
+  <% end %>
+  </table>
+<% else %>
+  <p>This widget currently has no users signed up to receive questions from it. If you like, you can 
+  <%= link_to ("sign up to receive questions", :controller => :account, :action => :widget_preferences) %> from 
+     this widget and begin answering.</p>
+<% end %>

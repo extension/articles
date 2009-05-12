@@ -33,23 +33,6 @@
     <%= error_message_on "expert_question", "submitter_email"%>
 </fieldset>
 
-	
-<h3>Category <span class="optional">(optional)</span></h3>
-<p class="instructions">Tip: Questions can be answered more quickly when assigned to the correct community</p>
-<fieldset class="stack_labels">
-	<p>
-	    <%= select_tag("expert_question[category_name]", options_for_select(@community_tags, @expert_question.category_tag ? @expert_question.category_tag : ''), :disabled => @disableform) %>
-	</p>
-	<%= observe_field("expert_question_category_name", :update => :subtag_div, :url => { :action => :get_subtags }, :with => "'category_name=' + value") %>
-
-    <p id="subtag_div">
-        <% if @expert_question.category_tag and @expert_question.category_tag.sub_tags.length > 0 %>
-            <%= render :partial => "select_sub_tag", :locals => { :expert_question => @expert_question, :disabled =>  @disableform}%>	 
-        <% end %>
-    </p>
-</fieldset>
-
-
 <h3>Your location</h3>
 <p class="instructions">Enter the location where you want the question to be directed</p>
 <fieldset class="stack_labels">

@@ -1,0 +1,11 @@
+<h1>Location: <%= @location.name %></h1>
+<table id="aoe_table">
+    <tr>
+        <th>User</th>
+    </tr>
+<% @users.each do |user| %>
+    <tr>
+        <td><%= link_to (user.get_first_last_name, {:controller => 'account', :action => 'aaeprofile', :id => user.login}, {:class => "profile"}) %></td>
+    </tr>
+<% end %>
+</table>

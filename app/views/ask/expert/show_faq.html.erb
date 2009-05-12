@@ -1,0 +1,25 @@
+<% @page_title = "Resolve with an existing FAQ" %>
+<div id="inc_body">
+    
+    <h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'expert', :action => 'question', :id => @submitted_question.id} %> > Resolve using this FAQ</h3>
+    
+    <h2 class="inc_question"><span><%= @submitted_question.asked_question %></span></h2>
+    <br class="clear" />
+    
+    <p class="inc_descriptive"><strong><%= @submitted_question.get_submitter_name %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+
+
+<% if @submitted_question.assignee.id == User.current_user.id %>
+	<p class="button2">
+        <%= link_to "FAQ ##{params[:id]} is a relevant answer. Use it to write my response.", :controller => 'expert', :action => 'answer_question', :question => @question, 
+        :squid => @submitted_question %>
+    </p>
+<% else %>
+        <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", {:controller => 'expert', :action => 'question', :id => @submitted_question.id} %>.</h3>
+<% end %>
+    <p class="clear"><strong><%= link_to "Return to search results", :action => 'show_duplicates', :squid => @submitted_question, :query => params[:query] %></strong></p>
+
+
+<%= render(:partial => "questions/question", :locals => {:question => @question}) %>
+
+</div>

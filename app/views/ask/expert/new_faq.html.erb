@@ -1,0 +1,23 @@
+<% @page_title = "Enter New FAQ" %>
+
+<h1><%= @page_title %></h1>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<form action="create" name="faq_form" id="faq_form" method="post">
+  <%= hidden_field_tag("squid", @submitted_question.id) %>
+
+  <%= render(:partial => 'questions/form') %>
+
+<div class="form_section textarea_group">
+    <h3>Questions for Reference</h3>
+    <p>
+        <label>Numbers
+        <%= text_field_tag('Numbers', @input_numbers)%>
+        <br />(Separated by spaces, for example: 2366 1 23665)
+        </label>
+    </p>
+</div>
+
+<p><%= submit_tag "Save New Question" %></p>
+</form>

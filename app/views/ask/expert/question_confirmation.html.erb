@@ -3,14 +3,6 @@
 <h3>If these results (listed below your question) aren't helpful, please click the "Submit my question" button to send to one of our experts.</h3>
 
 <div class="aae-options">
-    <% if (@expert_question.category_name && @expert_question.category_name != "") %>
-        <p><strong>Category:</strong> <%= @expert_question.category_name %></p>
-    <% end %>
-    
-    <% if (@expert_question.subcategory_name && @expert_question.subcategory_name != "") %>
-        <p><strong>Subcategory:</strong> <%= @expert_question.subcategory_name %></p>
-    <% end %>
-    
     <p><strong>Your Question:</strong><br /><%= @expert_question.asked_question %></p>
     
     <p class="button2"><%= link_to 'Submit my Question', { :action => 'submit_question' }.update(@flattened_eq_parameters), :method => :post %></p> 
