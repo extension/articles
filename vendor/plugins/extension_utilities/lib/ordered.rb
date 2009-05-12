@@ -31,7 +31,7 @@ module Extension
           if(!order.blank?)
             (columnstring,sortorder) = order.split(' ')
             # make sure direction is valid
-            if(['d','descending','desc'].include?(sortorder.downcase))
+            if(!sortorder.blank? and ['d','descending','desc'].include?(sortorder.downcase))
               direction = 'DESC'
             else
               direction = 'ASC'
