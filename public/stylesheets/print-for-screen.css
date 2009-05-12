@@ -1,0 +1,91 @@
+/* Print Overrides
+----------------------------------------------- */
+* {background: none !important; color: #000 !important;}
+
+body {font-size: small;margin:0;padding:3%;font-family: georgia, times, serif;color: #000;}
+
+/*hide all these*/
+#app_location, #skiplist, .identity, .navbar, .didyouknow, #aae_pitch, #aae_plug, #rating, .comment_form, .feedlink, #footer ul, .commentbuttons, .hiddenStructure, .login-options, #institution_actions, .missionstatement, #relatedresources, .related {display:none;}
+.noprint {display:none;}
+.dontprintme {display:none;}
+
+.rightcolumn h1, 
+.rightcolumn p,
+.rightcolumn ul,
+.rightcolumn img,
+.rightcolumn form,
+.rightcolumn div {display:none;}
+
+.rightcolumn #homage {display:block;background-color:#eee !important;padding:.45em .75em;font-size:.95em;clear:both;}
+.rightcolumn #homage p {display:inline;padding:0;margin:0;color:#333 !important;}
+.rightcolumn #homage p span p {font-size:1em;}
+.rightcolumn #homage p span {color:#333 !important;}
+.rightcolumn #homage a {color:#333 !important;}
+
+.clear { clear: both; }
+
+.left {float:left;}
+.right {float:right;}
+
+/* format type */
+p {/*font-size: 1.4em;  */font-family: georgia, times, serif; line-height: 1.4em;}
+li {list-style-position: inside;}
+#article {/*border:1px solid orange;*/font-size:1.05em;}
+
+/*ul, ol {margin-left:0; padding-left:0;}*/
+li {/*font-size: 1.4em;*//*border:1px solid lime;*/}
+.updatedmeta abbr {border:0;}
+
+img {vertical-align:top;}
+
+h1 {font-size:14pt;}
+h2 {font-size:13pt;}
+h3 {font-size:12pt;}
+h4 {font-size:11pt;}
+h5 {font-size:10pt;}
+
+h1.title {font-size:2.1em !important;font-weight:normal;padding-bottom:0;margin-bottom:0;}
+
+img {border: 0;}
+
+
+#article {margin:0 0 20pt;padding:0 0 20pt;font-family: georgia, times, serif;}
+#content_css_reset #article {margin:0;padding:0;}
+.singleimage {margin:0 24pt 12pt 24pt;}
+.singleimage.left {margin-left:0;}
+.singleimage.right {margin-right:0;}
+.thumbcaption {font-size:9pt;}
+
+#comments {display:none;margin:0;padding:0;font-size:9pt;}
+#comments h4 {margin:0 0 10pt;}
+#comments h5 {margin:0 0 0pt;}
+#comments h5 span.date {font-weight:normal;}
+#comments .comment_box {margin:0 0 10pt;padding:0 0 10pt;border-bottom: 1pt solid #ccc;}
+#comments .comment {padding:0 10pt;}
+
+
+#footer {border-top:1px solid #bbb;}
+#footer p {line-height:12pt;font-size:.9em;}
+#footer p.copyright {text-align:center;}
+
+.headline {border-bottom:1px solid #ccc;width:100%;margin-bottom:1.2em;}
+p.caption {padding:0;margin:0 0 1em;font-size:.95em;}
+p.caption * {color:#555 !important;}
+
+#eXlogo {display:none;}
+#print-logo {margin-bottom:24pt;display:block;float:right;}
+.logo{float:left;margin:0;padding:0;}
+
+
+
+.clearing {clear:both;}
+.aboutex {color:#666;border-bottom:1px solid #ddd;font-size:1.3em;padding-bottom:.25em;display:none;}
+
+/*.leftcolumn {border:red solid 1px;}*/
+#table_of_contents h3 {font-size:1em;font-weight:normal;}
+table {border:0;border-spacing:0;border-collapse: collapse;border: 1px solid #bbb;}
+table td {padding:.45em;font-size:1em !important;}
+.infobox {border:none;padding:0;margin:0 auto;}
+
+.calloutbox {border:1px solid #ccc;padding:.5em 1em;}
+#pageurl {font-size:.8em;}

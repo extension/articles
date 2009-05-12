@@ -1,0 +1,29 @@
+.contentslide{background: #d0e4fa; border: 1px solid #9dbcde; padding: 10px}
+
+.contentslide .contentdiv{
+display: none;
+}
+.contentdiv {padding: 10px}
+
+.contentdiv img {
+	
+	
+}
+.pagination{
+/*Width of pagination DIV. To equal that of Content Slider's width, take into account the later's left/right paddings!*/
+text-align: center;
+padding:4px;
+}
+
+.pagination a{
+padding: .1em .4em;
+text-decoration: none; 
+color: #989898;
+background-color: white;
+}
+#paginate-slider2 a {border: 1px solid #C8C8C8; }
+
+.pagination a:hover, .pagination a.selected{
+color: #000;
+background-color: #ff9c00;
+}

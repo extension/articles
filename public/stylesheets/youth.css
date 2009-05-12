@@ -1,0 +1,120 @@
+body, html {background: url(/images/layout/youth/Youthbackground.jpg) repeat left #f4f4f4;}
+
+#wrap {padding-top: 10px;}
+#main-content { background: url(/images/layout/youth/youthrightnavbgnd.gif) left #fff repeat-y;}
+
+.rightcolumncontent {padding-left: 0}
+
+.rightcolumncontent ul {margin: 0; padding-left: 20px; color: #333}
+
+.rightcolmodule { background: url(/images/layout/youth/greenStar.gif) left #fbf2c8 repeat; width:259px; text-align: left; padding: 0px; margin-bottom: 10px; margin-left: 1px; margin-right: auto; height:auto !important; /* real browsers */ height:100%; /* IE6: treaded as min-height*/ min-height:100%; /* real browsers */ position: relative; } 
+#rightcontent ul li {list-style: disc url(/images/layout/youth/youthbullet.gif);}
+
+#homage { width: 240px; margin-top: .5em; margin-left: 1px; color: white; background-color: black; padding: 5px;font-size:1.2em;}
+
+.homagepic {width: 250px; margin-bottom: 20px; margin-left: 1px; padding: 0; background-color: black;}
+
+.leftcolumn {float: left; margin-right: 0px; width: 658px; padding: 15px; padding-bottom: 150px; margin-top: 0px; border-left: 1px solid #ebebeb;background:#fff;}
+
+a:link {cursor: pointer; text-decoration: none; color: #336699}
+.leftcolumn h1 {font-size: 2.7em;font-weight:normal; color: #b64810; margin:0 0 0;padding:0;}
+
+.rightcolumn h1 {
+    font-size:1.68em;font-weight:bold;text-transform:capitalize;margin: 1em 0 .45em;padding: 6px 0 0 10px; color: #336600; height: 1.6em; background: url(/images/layout/youth/youthrightnavheaderbgnd.gif) no-repeat; /*border:1px solid red;*/}
+    
+.navbar {height: 72px; background:none;overflow:visible;}
+
+.globalnav {float:left;width: 620px;padding:0;}
+.globalnav ul{height:72px; padding:0; float:left;width:680px;}
+.globalnav ul li {float:left; padding:0; width:85px; border:0;}
+.globalnav ul li a {height:72px; display:block; text-indent:-5000px;overflow:auto;}
+
+.globalnav ul li.home a{background:url(/images/layout/youth/youthhomebut.gif) 0 0 no-repeat; }
+.globalnav ul li.home a:hover{background:url(/images/layout/youth/youthhomebutover.gif) 0 0 no-repeat;}
+
+.globalnav ul li.about a{background:url(/images/layout/youth/youthaboutbut.gif) 0 0 no-repeat; }
+.globalnav ul li.about a:hover{background:url(/images/layout/youth/youthaboutbutover.gif) 0 0 no-repeat;}
+
+.globalnav ul li.topics a{background:url(/images/layout/youth/youthtopicsbut.gif) 0 0 no-repeat; }
+.globalnav ul li.topics a:hover{background:url(/images/layout/youth/youthtopicsbutover.gif) 0 0 no-repeat;}
+
+.globalnav ul li.news a{background:url(/images/layout/youth/youthnewsbut.gif) 0 0 no-repeat; }
+.globalnav ul li.news a:hover{background:url(/images/layout/youth/youthnewsbutover.gif) 0 0 no-repeat;}
+
+.globalnav ul li.answers a{background:url(/images/layout/youth/youthanswersbut.gif) 0 0 no-repeat; }
+.globalnav ul li.answers a:hover{background:url(/images/layout/youth/youthanswersbutover.gif) 0 0 no-repeat;}
+
+.globalnav ul li.calendar a{background:url(/images/layout/youth/youthcalbut.gif) 0 0 no-repeat; }
+.globalnav ul li.calendar a:hover{background:url(/images/layout/youth/youthcalbutover.gif) 0 0 no-repeat;}
+
+.globalnav ul li.lessons a{background:url(/images/layout/youth/youthlessonsbut.gif) 0 0 no-repeat; }
+.globalnav ul li.lessons a:hover{background:url(/images/layout/youth/youthlessonsbutover.gif) 0 0 no-repeat;}
+
+.globalnav ul li.feeds a{background:url(/images/layout/youth/youthfeedsbut.gif) 0 0 no-repeat; }
+.globalnav ul li.feeds a:hover{background:url(/images/layout/youth/youthfeedsbutover.gif) 0 0 no-repeat;}
+
+.searchbar { width:283px; height:72px; background:url(/images/layout/youth/youthsearchbkgrnd.gif) no-repeat;padding: 20px 0 0 0;}
+.searchbar .searchfield {width: 190px;}
+
+/*
+#slider2 {margin:0 0 2em; padding:0; width: 615px; }
+#slider2 .contentdiv {margin:0; padding:15px 0 0; width: 615px; }
+#slider2.home_slider .contentdiv {background: url(images/layout/youth/featurebgnd_top.gif) no-repeat top center;}
+#slider2.cop_slider {background: url(/images/layout/youth/youthfeaturebackground.gif) no-repeat 50% top; background-color:#fb8f5c;}
+#slider2 .contentdiv_bottom {background: url(/images/layout/youth/youthfeaturebottom.gif) no-repeat 50% top; height:11px; width:615px;}
+
+.pagination {font-size:1.2em;margin:0; padding:2px; width: 615px;}
+
+#slider2 dl {float:left;width:200px;margin:0 0 0;padding: 0 0 30px;}
+
+#slider2 dt,
+#slider2 dd {
+    width: 200px;
+    padding-right: 20px;
+    font-size:1.4em;
+	margin-left:15px;
+	margin-right:15px;
+}
+
+#slider2 dd.img {float:none;     border: 5px solid #8cb60c;}
+
+#slider2 dd.more {
+    font-weight:bold;
+    font-size:1.4em;
+    margin-bottom:0;
+	margin-left:15px;
+	margin-right:15px;
+}
+
+#slider2 dt {
+	font-weight:bold;
+    font-size: 1.4em;
+    margin:15px 0 .5em;
+	margin-left:15px;
+	margin-right:15px;
+}
+
+
+.cop_slider2 {background: url(images/layout/youth/youthfeaturebackground.gif) no-repeat; width: 615px; height: 275px; border: 0}
+*/
+
+.whatsnewbox { padding: 10px; color: #333; background: url(/images/layout/youth/youthwhatsnewbackground.gif) top left repeat-x; }
+
+.instructions {color: #366805; padding-bottom: 5px}
+h3.instructions {color: #366805; font-weight:normal;}
+.dates {color: #333; padding-bottom: 3px}
+
+h1.title {color:#333;font-weight:normal;font-size:2.1em;margin-bottom:.35em;}
+
+form {padding:0px;}
+.photocontainercenter {text-align: center; background: #fff; border: 2px solid #6d98b6; padding: 10px;}
+
+.singleimage {border: 2px solid #6d98b6;}
+
+.homesection {padding-top: 0;}
+.homesection .whatsnewbox {padding-top: 20px;clear:both; background: url(/images/layout/youth/youthwhatsnewbackground.gif) top left repeat-x; }
+.homesection h2 {color: #346602;font-size:2.1em;margin-bottom:.25em; padding-left: 5px;}
+
+.homesection .whatsnewbox ul li {list-style: disc url(/images/layout/youth/youthbullet.gif) !important;}
+.homesection {background: url(/images/layout/youth/youthhomesectionheaders.gif) top left repeat-x;}
+#homesectionHeaderRight {height: 32px; width: 7px; background: url(/images/layout/youth/youthhomesectionright.gif) top right;}
