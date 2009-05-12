@@ -36,8 +36,7 @@ class Tag < ActiveRecord::Base
         self.map(&:name).sort.join(Tag::JOINER)
       end
     }
-    
-    
+        
   # Callback to normalize the tagname before saving it. 
   def before_save
     self.name = self.class.normalizename(self.name)

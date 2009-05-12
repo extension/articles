@@ -27,7 +27,7 @@
         <div class="rightcolmodule">
         <h1><span class="feed">Resource Area Feeds</span></h1>
         <ul>
-           <% tag_name = @community.primary_content_tag.name %>
+           <% tag_name = @community.primary_content_tag_name %>
             <li><a href='/feeds/community/-/<%=tag_name%>'>Track all new content</a></li>
          </ul>
          <%if File.exists?( File.join('app','views', 'newsletter_registration_forms','_'+tag_name+'.rhtml' )) %>

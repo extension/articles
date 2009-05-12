@@ -7,6 +7,7 @@
 require 'hpricot'
 
 class Community < ActiveRecord::Base
+  serialize :cached_content_tag_data
   extend ConditionExtensions
   has_content_tags
   ordered_by :default => "#{self.table_name}.name ASC"
@@ -101,12 +102,28 @@ class Community < ActiveRecord::Base
   
   named_scope :launched, {:conditions => {:is_launched => true}}
   
+   
   before_create :clean_description_and_shortname
   before_update :clean_description_and_shortname
 
-  def primary_content_tag
-    tags.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
+  def primary_content_tag_name
+    self.cached_content_tags[0]
   end
+  
+  # returns an array of the names
+  def cached_content_tags(force_cache_update=false)
+    if(self.cached_content_tag_data.blank? or force_cache_update)
+      tagarray = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+      cachedata = {}
+      tagarray.map{|t| cachedata[t.id] = t.name}
+      update_attribute(:cached_content_tag_data, cachedata)
+      return tagarray.collect(&:name)
+    else
+      return self.cached_content_tag_data.collect{|id,name| name}
+    end
+  end
+  
+  
   def clean_description_and_shortname
     if(!self.description.nil?)
       self.description = Hpricot(self.description).to_html 

@@ -14,6 +14,8 @@ class CachedTag < ActiveRecord::Base
   belongs_to :tagcacheable, :polymorphic => true
   serialize :cachedata
   
+  named_scope :content, {:conditions => "owner_id = #{User.systemuserid} and tag_kind = #{Tag::CONTENT}"}
+  
   # -----------------------------------
   # Class-level methods
   # -----------------------------------

@@ -10,7 +10,7 @@ module DataHelper
     txt += '>All</option>'
 
     for community in communities
-      txt += "<option value='#{community.primary_content_tag.name}'"
+      txt += "<option value='#{community.primary_content_tag_name}'"
       txt += ' selected' if (selected_community && community == selected_community)
       txt += '>'+ community.public_name+'</option>'
     end
@@ -21,7 +21,7 @@ module DataHelper
     if community.tags.empty?
       return community.public_name
     else
-      return link_to(h(community.public_name), site_index_url(:category => community.primary_content_tag.name))
+      return link_to(h(community.public_name), site_index_url(:category => community.primary_content_tag_name))
     end
   end
   
@@ -98,7 +98,7 @@ module DataHelper
   end
 
   def community_image(community)
-    category_name = community.primary_content_tag.name
+    category_name = community.primary_content_tag_name
     file_name = category_name.gsub(/[,_]/,'').gsub(/ /,'_').downcase
     if File.exists?(File.join('public', "images/layout/copad_#{file_name}.gif"))
       image_tag("/images/layout/copad_#{file_name}.gif", :border => 0, :alt => "") 
