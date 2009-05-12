@@ -7,14 +7,14 @@
 
 require 'zip_code_to_state'
 
-class ExpertController < ApplicationController
-  layout  'aae'  
+class Ask::ExpertController < ApplicationController
+  #layout  'aae'  
   
   has_rakismet :only => [:submit_question, :widget_submit]
   
   skip_before_filter :check_authorization
-  before_filter :login_required, :except => [:email_escalation_report, :expert_widget]
-  before_filter :set_current_user, :except => [:email_escalation_report, :expert_widget]
+  #before_filter :login_required, :except => [:email_escalation_report, :expert_widget]
+  #before_filter :set_current_user, :except => [:email_escalation_report, :expert_widget]
   
   def assign
     if !params[:id]
@@ -126,13 +126,15 @@ class ExpertController < ApplicationController
       flash.now[:googleanalytics] = '/ask-an-expert-edit-question'
       set_titletag("Edit your Question - eXtension")
       begin
-        @expert_question = ExpertQuestion.new(params[:expert_question])
+        @submitted_question = SubmittedQuestion.new(params[:expert_question])
       rescue
-        @expert_question = ExpertQuestion.new
+        @submitted_question = SubmittedQuestion.new
       end
-      @expert_question.valid?      
+      @submitted_question.valid?      
     else
-      @expert_question = ExpertQuestion.new_from_personal(@personal)      
+      # not sure yet if we'll be using the 'new_from_personal' method
+      #@submitted_question = SubmittedQuestion.new_from_personal(@personal)      
+      @submitted_question = SubmittedQuestion.new
     end
   
     @locations = Location.find(:all)

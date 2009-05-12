@@ -9,28 +9,28 @@
 
 <fieldset>
     <p class="simplefield">
-        <label for="expert_question[submitter_firstname]">First Name: <em class="required">*</em></label>
-        <%= text_field_tag "expert_question[submitter_firstname]", @expert_question.submitter_firstname %>
+        <label for="submitted_question[submitter_firstname]">First Name: <em class="required">*</em></label>
+        <%= text_field_tag "submitted_question[submitter_firstname]", @submitted_question.submitter_firstname %>
     </p>
-    <%= error_message_on "expert_question", "submitter_firstname"%>
+    <%= error_message_on "submitted_question", "submitter_firstname"%>
 	<br class="clearing" />
     <p class="simplefield">
-        <label for="expert_question[submitter_lastname]">Last Name: <em class="required">*</em></label>
-        <%= text_field_tag "expert_question[submitter_lastname]", @expert_question.submitter_lastname %>
+        <label for="submitted_question[submitter_lastname]">Last Name: <em class="required">*</em></label>
+        <%= text_field_tag "submitted_question[submitter_lastname]", @submitted_question.submitter_lastname %>
     </p>
-    <%= error_message_on "expert_question", "submitter_lastname"%>
+    <%= error_message_on "submitted_question", "submitter_lastname"%>
 		<br class="clearing" />
     <p class="simplefield">
-        <label for="expert_question[zip_code]">Zip Code:</label>
-        <%= text_field_tag "expert_question[zip_code]", @expert_question.zip_code %>
+        <label for="submitted_question[zip_code]">Zip Code:</label>
+        <%= text_field_tag "submitted_question[zip_code]", @submitted_question.zip_code %>
     </p>
-    <%= error_message_on "expert_question", "zip_code"%>
+    <%= error_message_on "submitted_question", "zip_code"%>
 <br class="clearing" />
     <p class="simplefield">
-        <label for="expert_question[submitter_email]">Email: <em class="required">*</em></label>
-        <%= text_field_tag "expert_question[submitter_email]", @expert_question.submitter_email %>
+        <label for="submitted_question[submitter_email]">Email: <em class="required">*</em></label>
+        <%= text_field_tag "submitted_question[submitter_email]", @submitted_question.submitter_email %>
     </p>
-    <%= error_message_on "expert_question", "submitter_email"%>
+    <%= error_message_on "submitted_question", "submitter_email"%>
 </fieldset>
 
 <h3>Your location</h3>
@@ -44,8 +44,8 @@
 <fieldset>
     <!-- Google CSE Search Box Begins -->
     <!-- <form id="searchbox_002594610894210374936:hggphannnzi" action="/main/search"> -->
-        <label for="expert_question[asked_question]" class="field-textarea"> 
-        <%= text_area_tag "q", (@expert_question.asked_question) ? @expert_question.asked_question : '', :cols => "60", :rows => "3", :id => "expert_question_asked_question", :disabled => @disableform %>
+        <label for="submitted_question[asked_question]" class="field-textarea"> 
+        <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :cols => "60", :rows => "3", :id => "submitted_question_asked_question", :disabled => @disableform %>
         </label>
 </fieldset>
 <p>

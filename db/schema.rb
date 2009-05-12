@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090508180042) do
+ActiveRecord::Schema.define(:version => 20090512190906) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -539,7 +539,7 @@ ActiveRecord::Schema.define(:version => 20090508180042) do
     t.integer  "user_id"
     t.boolean  "duplicate",                :default => false, :null => false
     t.string   "external_app_id"
-    t.string   "external_submitter"
+    t.string   "submitter_email"
     t.datetime "resolved_at"
     t.integer  "external_id"
     t.datetime "question_updated_at"
