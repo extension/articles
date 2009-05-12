@@ -8,6 +8,8 @@ require 'hpricot'
 
 class Community < ActiveRecord::Base
   extend ConditionExtensions
+  has_content_tags
+  ordered_by :default => "#{self.table_name}.name ASC"
 
   UNKNOWN = 0
   
@@ -97,10 +99,14 @@ class Community < ActiveRecord::Base
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
   
+  named_scope :launched, {:conditions => {:is_launched => true}}
   
   before_create :clean_description_and_shortname
   before_update :clean_description_and_shortname
 
+  def primary_content_tag
+    tags.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
+  end
   def clean_description_and_shortname
     if(!self.description.nil?)
       self.description = Hpricot(self.description).to_html 

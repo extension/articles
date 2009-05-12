@@ -37,6 +37,7 @@ class Tag < ActiveRecord::Base
       end
     }
     
+    
   # Callback to normalize the tagname before saving it. 
   def before_save
     self.name = self.class.normalizename(self.name)
@@ -46,6 +47,7 @@ class Tag < ActiveRecord::Base
   def content_community
     communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
   end
+  
   
   class << self
   

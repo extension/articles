@@ -11,7 +11,7 @@ class ArticlesController < DataController
     set_title('Articles', "Don't just read. Learn.")
     set_titletag("Articles - #{@category.name} - eXtension")
     return do_404 unless Article.orderings.has_value?(params[:order])
-    articles = Article.tagged@category.name).ordered(params[:order]).paginate(:page => params[:page])
+    articles = Article.tagged_with_content_tags(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'data/index', :locals => { :items => articles, :klass => Article }, :layout => true
   end

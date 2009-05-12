@@ -6,6 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class MainController < DataController
+  protect_from_forgery :except => :find_institution
   skip_before_filter :disable_link_prefetching, :get_tag, :only => :find_institution
 
   def index

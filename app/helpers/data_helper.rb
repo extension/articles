@@ -1,28 +1,27 @@
 module DataHelper
 
-  def community_select(selected)
-    communities = Community.find_visible_sorted
-    #communities.compact!
+  # TODO:  this is stupid.  a) there's probably a better to get the primary_content_tags and B) if a community has more than one content tag, the news won't be picked up
+  # this is crazy, either limit the communities to a single content tag, or find all the content for all the content tags for that community, period.
+  def community_select(selected_community)
+    communities = Community.launched.ordered("public_name ASC")
     txt = "<select name='community' onchange='update_category(this.value)'>"
     txt += '<option value="all"'
-    txt += ' selected="selected"' unless selected
+    txt += ' selected="selected"' unless selected_community
     txt += '>All</option>'
 
     for community in communities
-      if !community.tags.empty?
-        txt += '<option value="'+community.tags[0].name+'"'
-        txt += ' selected' if selected && community.tags[0].name.downcase == selected.name.downcase
-        txt += '>'+ community.name+'</option>'
-      end
+      txt += "<option value='#{community.primary_content_tag.name}'"
+      txt += ' selected' if (selected_community && community == selected_community)
+      txt += '>'+ community.public_name+'</option>'
     end
     return txt+'</select>'
   end
   
   def link_to_community(community)
     if community.tags.empty?
-      return community.name
+      return community.public_name
     else
-      return link_to(h(community.name), site_index_url(:category => community.tags[0].name))
+      return link_to(h(community.public_name), site_index_url(:category => community.primary_content_tag.name))
     end
   end
   
@@ -99,7 +98,7 @@ module DataHelper
   end
 
   def community_image(community)
-    category_name = community.tags[0].name
+    category_name = community.primary_content_tag.name
     file_name = category_name.gsub(/[,_]/,'').gsub(/ /,'_').downcase
     if File.exists?(File.join('public', "images/layout/copad_#{file_name}.gif"))
       image_tag("/images/layout/copad_#{file_name}.gif", :border => 0, :alt => "") 

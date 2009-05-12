@@ -25,35 +25,35 @@ module Extension
           # this is about to get a little hairy...   in the most common case - with only a list of tags that you want to find with
           # e.g. "horses" and "learning lessons", we can do this in one query
           
+          # actually, no we can't because the counter sql's won't work (like .size or paginate)
+          # this may be related to:
+          # https://rails.lighthouseapp.com/projects/8994/tickets/2310
+          
           # HOWEVER if you want to do "horses" and "!dpl" - we have to pre-query with both and then query against the id's
                         
           if(!includelist.empty?)
-            if(excludelist.empty?)
-              # yay!
-              conditions = []
-              conditions << "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')}))"
-              needed_item_count = includelist.size
-              conditions << "(taggings.tag_kind = #{Tag::CONTENT})"
-              {:select => "#{base_class.quoted_table_name}.*, COUNT(taggings.taggable_id) as matchingtotal", :joins => { :taggings => :tag}, :conditions => conditions.join(' AND '), :group => "taggings.taggable_id", :having => "matchingtotal = #{needed_item_count}"}
-            else
-              # damn
-              # get a list of all the id's tagged with the includelist
-              includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tag::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
-              excludeconditions = "(tags.name IN (#{excludelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tag::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
-              
-              includetaggings = Tagging.find(:all, :include => :tag, :conditions => includeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
-              excludetaggings = Tagging.find(:all, :include => :tag, :conditions => excludeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
-              
-              taggings_we_want = includetaggings - excludetaggings
-              {:conditions => "id IN (#{taggings_we_want.join(',')})"}
-            end
+            # get a list of all the id's tagged with the includelist
+            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tag::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
+            includetaggings = Tagging.find(:all, :include => :tag, :conditions => includeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
+          end
+
+          if(!excludelist.empty?)
+            excludeconditions = "(tags.name IN (#{excludelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tag::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
+            excludetaggings = Tagging.find(:all, :include => :tag, :conditions => excludeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
+          end
+          
+          if(!includelist.empty? and !excludelist.empty?)
+            taggings_we_want = includetaggings - excludetaggings
+          elsif(!includelist.empty?)
+            taggings_we_want = includetaggings
           elsif(!excludelist.empty?)
-            # excludes only
-            conditions = []
-            conditions << "(tags.name NOT IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')}))"
-            needed_item_count = excludelist.size
-            conditions << "(taggings.tag_kind = #{Tag::CONTENT})"
-            {:select => "#{base_class.quoted_table_name}.*, COUNT(taggings.taggable_id) as matchingtotal", :joins => { :taggings => :tag}, :conditions => conditions.join(' AND '), :group => "taggings.taggable_id", :having => "matchingtotal = #{needed_item_count}"}
+            taggings_we_want = excludetaggings
+          else
+            taggings_we_want = []
+          end
+          
+          if(!taggings_we_want.empty?)
+            {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
           else
             {}
           end
