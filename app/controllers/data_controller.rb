@@ -10,8 +10,8 @@ class DataController < ApplicationController
   
   def get_community
     @community = nil
-    if @category && @category.name != 'all' && @category.community
-      @community = @category.community
+    if @category && @category.name != 'all' && @category.content_community
+      @community = @category.content_community
     end
     @personal[:community] = @community
     @topic = @community.topic if @community and @community.topic

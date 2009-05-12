@@ -42,6 +42,11 @@ class Tag < ActiveRecord::Base
     self.name = self.class.normalizename(self.name)
   end
   
+  # TODO: review.  This is kind of a hack that might should be done differently
+  def content_community
+    communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
+  end
+  
   class << self
   
     # normalize tag names 
