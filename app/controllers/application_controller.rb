@@ -11,27 +11,47 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
+  include LoginSystem
+  include ExceptionNotifiable
+  include ArrayStats
+  include ParamExtensions
+  include Logo
 
   # Scrub sensitive parameters from your log
   filter_parameter_logging :password
 
   require 'zip_code_to_state'
   require 'image_size'
-
-  # include AuthenticatedSystem
-  include ExceptionNotifiable   
-  include Logo
   
   # please do not show allowable actions
   rescue_from ActionController::RoutingError, :with => :do_404
   rescue_from ActionController::MethodNotAllowed, :with => :do_404
   rescue_from ActionController::UnknownAction, :with => :do_404
 
-  before_filter :unescape_params, :disable_link_prefetching, :get_tag, :personalize, :set_default_host_and_port_for_urlwriter
+  before_filter :set_locale, :unescape_params, :disable_link_prefetching, :get_tag, :personalize, :set_default_host_and_port_for_urlwriter, :set_default_request_ip_address
     
   def set_default_host_and_port_for_urlwriter
     AppConfig.configtable['urlwriter_host'] = !request.nil? && !request.host.nil? ? request.host : AppConfig.configtable['default_host']
     AppConfig.configtable['urlwriter_port'] = !request.nil? && !request.port.nil? ? request.port : AppConfig.configtable['default_port']
+    AppConfig.configtable['urlwriter_protocol'] = !request.nil? && !request.protocol.nil? ? request.protocol : AppConfig.configtable['default_protocol']
+  end
+
+  def set_default_request_ip_address
+    if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
+      AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
+    elsif(!request.env["REMOTE_ADDR"].nil?)
+      AppConfig.configtable['request_ip_address'] = request.env["REMOTE_ADDR"]
+    else
+      AppConfig.configtable['request_ip_address'] = AppConfig.configtable['default_request_ip']
+    end
+  end
+  
+  def set_locale
+    # update session if passed
+    session[:locale] = params[:locale] if params[:locale]
+
+    # set locale based on session or default 
+    I18n.locale = session[:locale] || I18n.default_locale
   end
   
   # Account for the double encoding occuring at the webserver level by
@@ -121,5 +141,7 @@ class ApplicationController < ActionController::Base
   def set_titletag(main)
     @title_tag = ERB::Util::html_escape(main)
   end
-
+  
 end
+
+

@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class WelcomeController < ApplicationController
+class People::WelcomeController < ApplicationController
   include AuthCheck
   
   layout 'people'
