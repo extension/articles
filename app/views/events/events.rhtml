@@ -32,7 +32,7 @@
         <span class="community">Community:</span>
         <%community_tags = event.tags.community %>
         <%for community_tag in community_tags%>
-            <%= link_to community_tag.community.name, site_index_url(:category => community_tag.name)%>
+            <%= link_to community_tag.content_community.public_name, site_index_url(:category => community_tag.name)%>
         <%end%>
     </dd>
     <dd>

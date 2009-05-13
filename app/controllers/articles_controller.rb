@@ -11,7 +11,7 @@ class ArticlesController < DataController
     set_title('Articles', "Don't just read. Learn.")
     set_titletag("Articles - #{@category.name} - eXtension")
     return do_404 unless Article.orderings.has_value?(params[:order])
-    articles = Article.tagged_with_content_tags(@category.name).ordered(params[:order]).paginate(:page => params[:page])
+    articles = Article.tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'data/index', :locals => { :items => articles, :klass => Article }, :layout => true
   end
@@ -74,15 +74,15 @@ class ArticlesController < DataController
     end
     
     for tag in article.tags
-      category = tag if !tag.community.nil?
+      category = tag if !tag.content_community.nil?
       @youth = true if tag.name == 'youth'
     end
 
     # go through tags, get first one that has .community not nil
     if category
       @community = category.community
-      @homage = Article.tagged_with_content_tags(['homage', category.name]).ordered.first if @community
-      @in_this_section = Article.tagged_with_content_tags(['contents', category.name]).ordered.first if @community
+      @homage = Article.bucketed_as('homage').tagged_with_content_tag(category.name).ordered.first if @community
+      @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(category.name).ordered.first if @community
       @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
     end
     
@@ -102,7 +102,7 @@ class ArticlesController < DataController
     adtag = @community_tags[0] if @community_tags and @community_tags.length > 0
     @sponsors = Advertisement.prioritized_for_tag(adtag) if adtag
     
-    flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.community }.uniq.compact.collect { |community| community.category }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
+    flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.category }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
     
     # Specify view since we want sub class (external articles) to go here too
     render :template => 'articles/page', :locals => { :article => article }
@@ -112,7 +112,7 @@ class ArticlesController < DataController
     set_title('News', "Check out the news from the land grant university in your area.")
     set_titletag('News - eXtension')
     return do_404 unless Article.orderings.has_value?(params[:order])
-    @news = Article.tagged_with_content_tags(['news', @category.name]).ordered(params[:order]).paginate(:page => params[:page])
+    @news = Article.bucketed_as('news').tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'data/index', :locals => { :items => @news, :klass => Article }, :layout => true
   end
@@ -121,7 +121,7 @@ class ArticlesController < DataController
     set_title('Learning Lessons', "Don't just read. Learn.")
     set_titletag('Learning Lessons - eXtension')
     return do_404 unless Article.orderings.has_value?(params[:order])
-    @learning_lessons = Article.tagged_with_content_tags(['learning lessons', @category.name]).ordered(params[:order]).paginate(:page => params[:page])
+    @learning_lessons = Article.bucketed_as('learning lessons').tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'data/index', :locals => { :items => @learning_lessons, :klass => Article }, :layout => true
   end

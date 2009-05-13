@@ -87,6 +87,13 @@ class Community < ActiveRecord::Base
   
   has_many :cached_tags, :as => :tagcacheable
   
+  named_scope :tagged_with_content_tag, lambda {|tagname| 
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tag::CONTENT}"}
+  }
+  
+  named_scope :tagged_with_shared_tag, lambda {|tagname| 
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tag::SHARED}"}
+  }
   
   # validations
   validates_uniqueness_of :name
@@ -101,7 +108,7 @@ class Community < ActiveRecord::Base
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
   
   named_scope :launched, {:conditions => {:is_launched => true}}
-  
+  named_scope :ordered_by_topic, {:include => :topic, :order => 'topics.name ASC, communities.public_name ASC'}
    
   before_create :clean_description_and_shortname
   before_update :clean_description_and_shortname

@@ -9,6 +9,10 @@ module Extension
       def has_content_tags(opts ={})
         # Get options with defaults
         add_content_tags_scope(opts)
+        
+        # single tag scoper
+        add_content_tag_scope(opts)
+
       end
   
       # no options currently
@@ -57,6 +61,12 @@ module Extension
           else
             {}
           end
+        }
+      end
+      
+      def add_content_tag_scope(opts={})
+        named_scope :tagged_with_content_tag, lambda {|tagname| 
+          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tag_kind = #{Tag::CONTENT}"}
         }
       end
     end

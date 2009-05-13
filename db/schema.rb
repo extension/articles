@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090512193318) do
+ActiveRecord::Schema.define(:version => 20090512225414) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -77,6 +77,15 @@ ActiveRecord::Schema.define(:version => 20090512193318) do
     t.integer "image_id"
     t.integer "position"
   end
+
+  create_table "article_buckets", :force => true do |t|
+    t.string   "article_id",        :null => false
+    t.string   "content_bucket_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "article_buckets", ["article_id", "content_bucket_id"], :name => "index_article_buckets_on_article_id_and_content_bucket_id", :unique => true
 
   create_table "articles", :force => true do |t|
     t.text     "title"
@@ -202,6 +211,13 @@ ActiveRecord::Schema.define(:version => 20090512193318) do
 
   add_index "communitylistconnections", ["connectiontype"], :name => "index_communitylistconnections_on_connectiontype"
   add_index "communitylistconnections", ["list_id", "community_id"], :name => "list_community", :unique => true
+
+  create_table "content_buckets", :force => true do |t|
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
+  end
+
+  add_index "content_buckets", ["name"], :name => "index_content_buckets_on_name", :unique => true
 
   create_table "counties", :force => true do |t|
     t.integer "fipsid",                    :default => 0,  :null => false

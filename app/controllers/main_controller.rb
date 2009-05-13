@@ -19,9 +19,9 @@ class MainController < DataController
      
      @sponsors = Advertisement.prioritized_for_tag(Tag.find_by_name('all'))
      
-     @in_the_news = Article.tagged_with_content_tags('news').ordered.limit(4)
+     @in_the_news = Article.bucketed_as('news').ordered.limit(4)
      
-     @community_highlights = Article.tagged_with_content_tags('feature').ordered.limit(8)
+     @community_highlights = Article.bucketed_as('feature').ordered.limit(8)
      
      @latest_activities = Article.find(:all, :order => 'wiki_updated_at DESC', :limit => 4)
      @latest_faq = Faq.ordered.first
@@ -32,7 +32,7 @@ class MainController < DataController
      date_conditions = ['start >= ? AND start < ?', @date, @date+5]
      @calendar_events = Event.find(:all, :conditions => date_conditions, :order => 'date ASC')
 
-     @latest_learning_lesson = Article.tagged_with_content_tags('learning lessons').ordered.first     
+     @latest_learning_lesson = Article.bucketed_as('learning lessons').ordered.first     
   end
 
   def category
@@ -52,10 +52,9 @@ class MainController < DataController
       adtag = @community_tags[0] if @community_tags and @community_tags.length > 0
       @sponsors = Advertisement.prioritized_for_tag(adtag) if adtag
       
-      @homage = Article.tagged_with_content_tags(['homage', params[:category]]).ordered.first
-      @in_this_section = Article.tagged_with_content_tags(['contents', params[:category]]).ordered.first
-      @community_highlights = Article.tagged_with_content_tags(['feature', params[:category]]).
-          ordered.limit(8)
+      @homage = Article.bucketed_as('homage').tagged_with_content_tag(params[:category]).ordered.first
+      @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(params[:category]).ordered.first
+      @community_highlights = Article.bucketed_as('feature').tagged_with_content_tag(params[:category]).ordered.limit(8)
       @youth = true if @topic and @topic.name == 'Youth'
           
     else
@@ -66,26 +65,25 @@ class MainController < DataController
     
     if @category.name == 'all'
       
-      @news = Article.tagged_with_content_tags('news').ordered.limit(3)
-      @popular_learning_lessons = Article.tagged_with_content_tags('learning lessons').ordered(Article.orderings['Most Useful']).limit(3)
+      @news = Article.bucketed_as('news').ordered.limit(3)
+      @popular_learning_lessons = Article.bucketed_as('learning lessons').ordered(Article.orderings['Most Useful']).limit(3)
       @faqs = Faq.limit(3).ordered
       @calendar_events = Event.ordered.within(3, @date)
       @articles = Article.ordered(Article.orderings['Most Useful']).limit(3)
       
     else
       
-      @news = Article.tagged_with_content_tags(['news', params[:category]]).ordered.limit(3)
+      @news = Article.bucketed_as('news').tagged_with_content_tag(params[:category]).ordered.limit(3)
       @popular_learning_lessons = 
-        Article.tagged_with_content_tags(['learning lessons', params[:category]]).
-          ordered(Article.orderings['Most Useful']).limit(3)
+        Article.bucketed_as('learning lessons').tagged_with_content_tag(params[:category]).ordered(Article.orderings['Most Useful']).limit(3)
           
-      @faqs = Faq.tagged_with_content_tags(@category.name).ordered.limit(3)
-      @calendar_events =  Event.tagged_with_content_tags(@category.name).ordered.limit(5).after(@date)
+      @faqs = Faq.tagged_with_content_tag(@category.name).ordered.limit(3)
+      @calendar_events =  Event.tagged_with_content_tag(@category.name).ordered.limit(5).after(@date)
     
-      @articles = Article.tagged_with_content_tags(params[:category]).
+      @articles = Article.tagged_with_content_tag(params[:category]).
           ordered(Article.orderings['Most Useful']).limit(8) unless @community
         
-      @recent_articles = Article.tagged_with_content_tags(params[:category]).
+      @recent_articles = Article.tagged_with_content_tag(params[:category]).
               ordered.limit(3) unless @in_this_section
       
     end
@@ -164,7 +162,7 @@ class MainController < DataController
   def communities
     set_title('Resource Areas', ' eXtension content is organized around resource areas. See which areas might make a connection with you.')
     set_titletag('eXtension - Resource Areas')
-    @communities = Community.find_all_visible_sorted
+    @communities = Community.launched.ordered_by_topic
     @article = Article.find_by_title_url("eXtension_Resource_Areas")
   end
 

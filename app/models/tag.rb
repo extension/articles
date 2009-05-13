@@ -47,6 +47,8 @@ class Tag < ActiveRecord::Base
     communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
   end
   
+  named_scope :community_content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggable_type = 'Community'"}
+    
   
   class << self
   

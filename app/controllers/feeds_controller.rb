@@ -64,7 +64,7 @@ class FeedsController < ApplicationController
     end
     
     tag = Tag.find_by_name(params[:categories][0])
-    community = tag.community if tag
+    community = tag.content_community if tag
     
     # all that just to make sure the category is a community?  ugh.
     unless community
