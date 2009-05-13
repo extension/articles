@@ -136,8 +136,7 @@ class Ask::ExpertController < ApplicationController
       #@submitted_question = SubmittedQuestion.new_from_personal(@personal)      
       @submitted_question = SubmittedQuestion.new
     end
-  
-    @locations = Location.find(:all)
+    @locations = Location.find(:all, :order => 'entrytype, name')
   end
   
   def location
@@ -224,6 +223,12 @@ class Ask::ExpertController < ApplicationController
     end
     render :layout => false
   end
+  
+  def get_aae_form_counties
+    return render( :nothing => true) if !params[:location_id] or  params[:location_id].strip == ''
+    render(:partial => 'county_list', :locals => {:location=> Location.find(params[:location_id]), :disabled => false} )
+  end
+  
   
   def question_confirmation
     #q must be used for google to recognize

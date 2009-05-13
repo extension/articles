@@ -24,8 +24,6 @@ class Location < ActiveRecord::Base
   has_and_belongs_to_many :users
   has_many :counties
   has_many :institutions  
-  # TODO: review expert vs. submitted_questions - Justcode Issue #553
-  has_many :expert_questions
   has_many :submitted_questions
   has_one :county_link
   
@@ -33,6 +31,6 @@ class Location < ActiveRecord::Base
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
   
   
-  # TODO: review heureka location reporting methods.  Justcode Issue #555
+  # TODO: review heureka location reporting methods.  Justcode Issue #555  
   
 end

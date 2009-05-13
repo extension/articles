@@ -2,7 +2,7 @@
 	<%= select_tag ('submitted_question[location_id]', options_for_select([["", ""]] + @locations.map{|l| [l.name, l.id]}, @submitted_question.location_id ), :disabled => disabled) %>
 	<%= observe_field('submitted_question_location_id',
 	                  :update    => :county_list,
-	                  :url       => { :action => :get_counties },
+	                  :url       => { :action => :get_aae_form_counties },
 	                  :with      => "'location_id='+value") %>
 
 <p id="county_list">

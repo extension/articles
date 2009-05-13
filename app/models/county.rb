@@ -13,7 +13,6 @@ class County < ActiveRecord::Base
   has_many :users
   belongs_to :location
   #TODO:  review submitted vs. expert questions  Justcode Issue #553
-  has_many :expert_questions
   has_many :submitted_questions    
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
 
