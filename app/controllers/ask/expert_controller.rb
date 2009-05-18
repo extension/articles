@@ -122,11 +122,11 @@ class Ask::ExpertController < ApplicationController
     set_titletag("Ask an Expert - eXtension")
 
     # if we are editing
-    if params[:expert_question]
+    if params[:submitted_question]
       flash.now[:googleanalytics] = '/ask-an-expert-edit-question'
       set_titletag("Edit your Question - eXtension")
       begin
-        @submitted_question = SubmittedQuestion.new(params[:expert_question])
+        @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       rescue
         @submitted_question = SubmittedQuestion.new
       end
@@ -231,31 +231,19 @@ class Ask::ExpertController < ApplicationController
   
   
   def question_confirmation
-    #q must be used for google to recognize
-    if !params[:q] or params[:q].strip == '' || !params[:expert_question]
-      flash[:notice] = "You must enter valid text into the question field."
-      return redirect_to( {:action => 'ask_an_expert'}.update( flatten_hash_for_url( {:expert_question => params[:expert_question]} ) ))
-    end
-    params[:expert_question][:asked_question] = params[:q]
+    params[:submitted_question][:asked_question] = params[:q]
     flash.now[:googleanalytics] = '/ask-an-expert-search-results'
     set_title("Ask an Expert - eXtension", "Confirmation")
     set_titletag("Search Results for Ask an Expert - eXtension")
     
-    @expert_question = ExpertQuestion.new(params[:expert_question])
-    @expert_question.status = 'submitted'
-    @flattened_eq_parameters = flatten_hash_for_url( {:expert_question => params[:expert_question]} )
-    unless @expert_question.valid?
-      return redirect_to( {:action => 'ask_an_expert'}.update( @flattened_eq_parameters ))
+    @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+    
+    unless @submitted_question.valid?
+      @locations = Location.find(:all, :order => 'entrytype, name')
+      render :action => 'ask_an_expert'
     end
 
     formatted_question = params[:q].strip.upcase
-    
-    if ExpertQuestion.find(:first, :conditions => ["submitted_by = ? and (UCase(trim(asked_question)) = trim(?))", session[:user_id], formatted_question])
-      flash[:notice] = "Our records indicate that you have already submitted this question.<br />Please do not submit a question more than once."
-      redirect_to :action => 'ask_an_expert', 
-      :location_selected => params[:location_option], :county_selected => params[:county_option], :question => params[:q]
-      return
-    end  
   end
   
   def submit_question

@@ -19,11 +19,11 @@ belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
 # has_many :cached_tags, :as => :tagcacheable
 
 validates_presence_of :asked_question
-validates_presence_of :status
-validates_presence_of :status_state
-validates_presence_of :external_submitter
+validates_presence_of :submitter_email
+validates_presence_of :submitter_firstname
+validates_presence_of :submitter_lastname
 # check the format of the question submitter's email address
-validates_format_of :external_submitter, :with => /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+validates_format_of :submitter_email, :with => /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
 
 before_update :add_resolution

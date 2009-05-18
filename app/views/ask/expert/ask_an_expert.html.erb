@@ -1,7 +1,7 @@
 <h1 class="title">Ask an Expert</h1>
 <h2>We have experts from Universities around the country ready to answer your questions</h2>
 
-<form class="aae" id="searchbox_002594610894210374936:hggphannnzi" action="/expert/question_confirmation" style='<%= @disableform ? 'color:gray' : ''%>'>
+<form class="aae" id="searchbox_002594610894210374936:hggphannnzi" action="/ask/expert/question_confirmation" style='<%= @disableform ? 'color:gray' : ''%>'>
 	
 <h3>Personal Information</h3>
 
@@ -12,7 +12,7 @@
         <label for="submitted_question[submitter_firstname]">First Name: <em class="required">*</em></label>
         <%= text_field_tag "submitted_question[submitter_firstname]", @submitted_question.submitter_firstname %>
     </p>
-    <%= error_message_on "submitted_question", "submitter_firstname"%>
+    <%= error_message_on "submitted_question", "submitter_firstname" %>
 	<br class="clearing" />
     <p class="simplefield">
         <label for="submitted_question[submitter_lastname]">Last Name: <em class="required">*</em></label>
@@ -39,17 +39,15 @@
 	<p><%= render(:partial => 'location_county', :locals => {:disabled =>  @disableform }) %></p>
 </fieldset>
 
-<h3>Your question</h3>
-<p class="instructions">Before submitting your question we will search eXtension and show you the results.</p>
+<h3>Your question</h3> 
+<p class="instructions">Before submitting your question, we will search eXtension and show you the results.</p>
 <fieldset>
-    <!-- Google CSE Search Box Begins -->
-    <!-- <form id="searchbox_002594610894210374936:hggphannnzi" action="/main/search"> -->
-        <label for="submitted_question[asked_question]" class="field-textarea"> 
-        <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :cols => "60", :rows => "3", :id => "submitted_question_asked_question", :disabled => @disableform %>
-        </label>
+    <label for="submitted_question[asked_question]" class="field-textarea"> 
+    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :cols => "60", :rows => "3", :id => "submitted_question_asked_question", :disabled => @disableform %> <%= error_message_on "submitted_question", "asked_question"%>
+    </label>
 </fieldset>
 <p>
-    <%= submit_tag "Search for an Answer", :name => "sa", :value => "Search for an Answer", :alt => "Go", :disabled => @disableform %>
+ <%= submit_tag "Search for an Answer", :name => "sa", :value => "Search for an Answer", :alt => "Go", :disabled => @disableform %>
 </p>
         <input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
         <input type="hidden" name="cof" value="FORID:11" />
