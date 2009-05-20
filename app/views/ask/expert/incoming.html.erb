@@ -3,14 +3,14 @@
 <% @help_title = "Incoming Questions" %>
 
 <% if !@category and !@location and !@county and !@source %>
-    <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small><span class="syndication">
+    <h2><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
     <%= link_to 'feed', :controller => 'feeds', :action => 'incoming' %></span></h2>
 <% else %>
     <% if @category == Category::UNASSIGNED %>
-         <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small> <span class="syndication">
+         <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
          <%= link_to 'feed', :controller => 'feeds', :action => 'incoming', :id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source %></span></h2> 
     <% else %>
-         <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small> <span class="syndication">
+         <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
          <%= link_to 'feed', :controller => 'feeds', :action => 'incoming', :id => @category, :location => @location, :county => @county, :source => @source %></span></h2>
     <% end %>
 <% end %>

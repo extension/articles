@@ -25,6 +25,16 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'rating/:action/:id', :controller => 'rating'
   map.connect 'main/:action', :controller => 'main'
   
+  # Routes for widgets that are named and tracked
+  map.connect 'ask/widget/tracking/:id/:location/:county', :controller => 'ask/expert', :action => 'widget'
+  map.connect 'ask/widget/tracking/:id/:location', :controller => 'ask/expert', :action => 'widget'
+  map.connect 'ask/widget/tracking/:id', :controller => 'ask/expert', :action => 'widget'
+  
+  # Routes for widgets that are not named and tracked
+  map.connect 'ask/widget/:location/:county', :controller => 'ask/expert', :action => 'widget'
+  map.connect 'ask/widget/:location', :controller => 'ask/expert', :action => 'widget'
+  map.connect 'ask/widget', :controller => 'ask/expert', :action => 'widget'  
+  
   map.connect 'sitemap_index', :controller => 'feeds', :action => 'sitemap_index'
   map.connect 'sitemap_communities', :controller => 'feeds', :action => 'sitemap_communities'
   map.connect 'sitemap_pages', :controller => 'feeds', :action => 'sitemap_pages'

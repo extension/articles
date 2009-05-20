@@ -16,6 +16,9 @@ class Ask::ExpertController < ApplicationController
   #before_filter :login_required, :except => [:email_escalation_report, :expert_widget]
   #before_filter :set_current_user, :except => [:email_escalation_report, :expert_widget]
   
+  UNASSIGNED = "uncategorized"
+  ALL = "all"
+  
   def assign
     if !params[:id]
       flash[:failure] = "You must select a question to assign."
@@ -154,7 +157,21 @@ class Ask::ExpertController < ApplicationController
     end
   end
   
+  # ask widget pulled from remote iframe
   def widget
+    if params[:location]
+      @location = Location.lookup_location(["abbreviation = ?", params[:location].strip])
+      if params[:county] and @location
+        @county = County.find_county(["name = ? and state_fipsid = ?", params[:county].strip, @location.fipsid])
+      end 
+    end
+    
+    @fingerprint = params[:id]
+    @host_name = request.host_with_port
+    render :layout => false
+  end
+
+  def widget_assignees
     @widget = Widget.find(params[:id])
     if !@widget
       flash[:notice] = "The widget you specified does not exist."
@@ -609,6 +626,7 @@ class Ask::ExpertController < ApplicationController
     #set the instance variables based on parameters
     list_view
     set_filters
+    @filter_string = filter_string_helper
     
     @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
@@ -845,7 +863,10 @@ class Ask::ExpertController < ApplicationController
   end
   
   def set_filters
-    user = User.current_user
+    #user = User.current_user
+    # TODO: hack to test until we get current user working. you can modify with your own user id for testing.
+    user = User.find(12)
+    
     source_filter_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting}.join(',')
     widgets_to_filter = Widget.find(:all, :conditions => "widgets.id IN (#{source_filter_prefs})", :order => "name") if source_filter_prefs and source_filter_prefs.strip != ''
     @source_options = [['All Sources', 'all'], ['www.extension.org', 'pubsite'], ['All Ask eXtension widgets', 'widget']]
@@ -907,5 +928,215 @@ class Ask::ExpertController < ApplicationController
     email.set_content_type("text/plain")
     ErrorMailer.deliver(email)
   end
+  
+  def filter_string_helper
+    if !@category and !@location and !@county and !@source
+      return 'All'
+    else
+        filter_params = Array.new
+        if @category
+            if @category == Category::UNASSIGNED
+                filter_params << "Uncategorized"
+            else
+                filter_params << @category.full_name
+            end
+        end
+        if @location
+            filter_params << @location.name
+        end
+        if @county
+            filter_params << @county.name
+        end
+
+        if @source
+          case @source
+            when 'pubsite'
+              filter_params << 'www.extension.org'
+            when 'widget'
+              filter_params << 'Ask eXtension widgets'
+            else
+              source_int = @source.to_i
+              if source_int != 0
+                widget = Widget.find(:first, :conditions => "id = #{source_int}")
+              end
+
+              if widget
+                filter_params << "#{widget.name} widget"
+              end
+          end  
+        end
+
+        return filter_params.join(' + ')
+    end
+  end
+  
+   #sets the instance variables based on parameters from views like incoming questions and resolved questions
+   #if there was no category parameter, then use the category specified in the user's preferences if it exists
+   def list_view(is_resolved = false)
+     #user = User.current_user
+     # TODO: hack to test until we get current user working. you can modify with your own user id for testing.
+     user = User.find(12)
+     
+     (is_resolved) ? field_to_sort_on = 'resolved_at' : field_to_sort_on = 'created_at'
+            
+     if params[:order] and params[:order] == "asc"
+         @order = "submitted_questions.#{field_to_sort_on} asc"
+         @toggle_order = "desc"
+     # either no order parameter or order parameter is "desc"
+     elsif !params[:order] or params[:order] == "desc"
+       @order = "submitted_questions.#{field_to_sort_on} desc"
+       @toggle_order = "asc"
+     end
+     
+     # if there are no filter parameters, then find saved filter options if they exist
+     if !params[:category] and !params[:location] and !params[:county] and !params[:source]
+  
+       # TODO: comment out for now until we get tag scheme figured out for categories
+       # filter by category if it exists
+       #if (pref = user.user_preferences.find_by_name(UserPreference::AAE_FILTER_CATEGORY))
+         #if pref.setting == UNASSIGNED
+        #   @category = UNASSIGNED
+        #  else   
+        #    @category = Category.find(pref.setting)
+        #    if !@category
+        #      flash[:failure] = "Invalid category."
+        #      redirect_to home_url
+        #      return
+        #    end
+        #  end
+        #end  
+
+        # filter by location if it exists
+        if (pref = user.user_preferences.find_by_name(UserPreference::AAE_FILTER_LOCATION))
+          @location = Location.find_by_fipsid(pref.setting)
+          if !@location
+            flash[:failure] = "Invalid location."
+            redirect_to home_url
+            return
+          end
+        end
+
+        # filter by county if it exists
+        if (@location) and (pref = user.user_preferences.find_by_name(UserPreference::AAE_FILTER_COUNTY))
+          @county = County.find_by_fipsid(pref.setting)
+          if !@county
+            flash[:failure] = "Invalid county."
+            redirect_to home_url
+            return
+          end
+        end
+        
+        # filter by source if it exists
+        if pref = user.user_preferences.find_by_name(UserPreference::AAE_FILTER_SOURCE)
+          @source = pref.setting
+        end
+        
+        
+     # parameters exist, process parameters and save preferences    
+     else
+       #process location preference
+       if params[:location] == Location::ALL
+         @location = nil
+       elsif params[:location] and params[:location].strip != ''
+         @location = Location.find(:first, :conditions => ["fipsid = ?", params[:location].strip])
+         if !@location
+           flash[:failure] = "Invalid location."
+           redirect_to home_url
+           return
+         end
+       end
+
+       # TODO: comment out for now until we get tag scheme figured out for categories
+       #process county preference
+       #if params[:county] == County::ALL
+      #   @county = nil
+      # elsif params[:county] and params[:county].strip != ''
+      #   @county = County.find(:first, :conditions => ["fipsid = ?", params[:county].strip])
+      #   if !@county
+      #     flash[:failure] = "Invalid county."
+      #     redirect_to home_url
+      #     return
+      #   end
+      # end
+      
+      
+       # TODO: comment out for now until we get tag scheme figured out for categories
+       #process category preference
+       #if params[:category] == Category::UNASSIGNED
+      #   @category = Category::UNASSIGNED
+      # elsif params[:category] == Category::ALL
+      #   @category = nil
+      # elsif params[:category] and params[:category].strip != ''
+      #   @category = Category.find(:first, :conditions => ["id = ?", params[:category].strip])
+      #   if !@category
+      #     flash[:failure] = "Invalid category."
+      #     redirect_to home_url
+      #     return  
+      #   end
+      # end
+       
+       #process source preference
+       if params[:source] == UserPreference::ALL
+         @source = nil
+       elsif params[:source] and params[:source].strip != '' and params[:source].strip != 'add_sources'
+         @source = params[:source]
+       end
+         
+       # save the category, location and source prefs from the filter
+
+       #save category prefs
+       #user_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_CATEGORY}'")
+       #if user_prefs
+       #   user_prefs.each {|up| up.destroy}
+       #end
+       
+       # TODO: comment out for now until we get tag scheme figured out for categories
+       #if @category.class == Category
+       #   cat_setting = @category.id
+       #elsif @category == Category::UNASSIGNED
+       #  cat_setting = @category
+       #end
+
+       #if cat_setting
+      #   up = UserPreference.new(:user_id => user.id, :name => UserPreference::AAE_FILTER_CATEGORY, :setting => cat_setting)
+      #   up.save
+      # end
+
+       #save location prefs
+       user_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_LOCATION}'")
+       if user_prefs
+         user_prefs.each {|up| up.destroy}
+       end
+
+       if @location 
+         up = UserPreference.new(:user_id => user.id, :name => UserPreference::AAE_FILTER_LOCATION, :setting => @location.fipsid)
+         up.save
+       end
+
+       #save county prefs
+       user_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_COUNTY}'")
+       if user_prefs
+         user_prefs.each {|up| up.destroy}
+       end
+
+       if @county 
+         up = UserPreference.new(:user_id => user.id, :name => UserPreference::AAE_FILTER_COUNTY, :setting => @county.fipsid)
+         up.save
+       end
+       
+       #save source prefs
+       user_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_SOURCE}'")
+       if user_prefs
+         user_prefs.each{ |up| up.destroy}
+       end
+       
+       if @source
+         up = UserPreference.new(:user_id => user.id, :name => UserPreference::AAE_FILTER_SOURCE, :setting => @source)
+         up.save
+       end
+       
+       # end the save prefs section
+     end
+   end
   
 end
