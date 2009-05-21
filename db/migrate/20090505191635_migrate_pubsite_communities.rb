@@ -40,6 +40,7 @@ class MigratePubsiteCommunities < ActiveRecord::Migration
     community_mappings['Financial Crisis'] = 193
     community_mappings['Goats'] = 26
     community_mappings['Small Meat Processors'] = 29
+    community_mappings['Pest Management In and Around Structures'] = 17
     
     
     # loop through the list and run update statements - yes, 24 queries is a lot, but...
