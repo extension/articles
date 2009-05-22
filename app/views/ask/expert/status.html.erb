@@ -1,1 +1,5 @@
-<h1>Application exited with status: <%= @status %>.</h1>
+<p>
+Application exited with status: <%= @status %>.<br />
+<%= @argument_errors if @argument_errors %>
+</p>
+

@@ -1,0 +1,39 @@
+Hi there,
+
+A question is assigned to you at the eXtension Ask an Expert site.
+
+*** UPDATE: We just added a NEW feature ***
+You can now tell us "I'm working on this." 
+Read about this change: http://tinyurl.com/ddb82b
+
+Please visit the question page and click the BIG, 
+green button before you start working. thanks!
+<%= url_for(:controller => 'expert', :action => 'question', :id => @submitted_question.id) %>
+
+The question is:
+"<%= @submitted_question.asked_question %>"
+
+<% if @submitted_question.current_response and @submitted_question.current_response.strip != '' %>
+Comment from the assigner:
+<%= @submitted_question.current_response %>
+<% end %>
+
+We need your help. Please either
+1) Answer the question
+2) Assign it to someone else
+3) Reject it (but only if it's a duplicate submission or inappropriate)
+
+Please resolve this question before 
+<%= (@assigned_at + (60 * 60 * 24 * 2)).strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00). 
+
+Thanks for your help!
+
+p.s. To serve the public as quickly as possible, we 
+encourage anyone to answer a question if they have 
+the knowledge. Another expert may have stepped in and 
+already answered this question. Please visit the 
+question page before you start working.
+
+The question was assigned to you <%= @assigned_at.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00).
+
+***PLEASE DO NOT REPLY TO THIS MESSAGE***

@@ -9,7 +9,10 @@ class SubmittedQuestion < ActiveRecord::Base
 # To Do: Need to add associations for tagging which will be treated like categories and subcategories
 belongs_to :county
 belongs_to :location
+belongs_to :widget
 has_many :submitted_question_events
+# TODO: take out category association. using it for testing for now...
+has_and_belongs_to_many :categories
 # TODO: need to change this
 belongs_to :contributing_faq, :class_name => "Question", :foreign_key => "current_contributing_faq"
 belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
@@ -20,14 +23,15 @@ belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
 
 validates_presence_of :asked_question
 validates_presence_of :submitter_email
-validates_presence_of :submitter_firstname
-validates_presence_of :submitter_lastname
+#validates_presence_of :submitter_firstname
+#validates_presence_of :submitter_lastname
 # check the format of the question submitter's email address
 validates_format_of :submitter_email, :with => /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
 
 before_update :add_resolution
-after_save :assign_parent_categories
+#TODO: need to convert to tags
+#after_save :assign_parent_categories
 after_create :auto_assign_by_preference
 
 has_rakismet :author_email => :external_submitter,
@@ -36,7 +40,19 @@ has_rakismet :author_email => :external_submitter,
              :user_ip => :user_ip,
              :user_agent => :user_agent,
              :referrer => :referrer
+             
+# status numbers (will be used from now on for status_state and the old field of status will be phased out)     
+STATUS_SUBMITTED = 1
+STATUS_RESOLVED = 2
+STATUS_NO_ANSWER = 3
+STATUS_REJECTED = 4
 
+# status text (to be used when a text version of the status is needed)
+SUBMITTED_TEXT = 'submitted'
+RESOLVED_TEXT = 'resolved'
+ANSWERED_TEXT = 'answered'
+NO_ANSWER_TEXT = 'not_answered'
+REJECTED_TEXT = 'rejected'
 
 # adds resolved date to submitted questions on save or update and also 
 # calls the function to log a new resolved submitted question event 
@@ -116,7 +132,7 @@ def get_submitter_name
 end
 
 def auto_assign_by_preference
-  if existing_sq = SubmittedQuestion.find(:first, :conditions => ["id != #{self.id} and asked_question = ? and external_submitter = '#{self.external_submitter}'", self.asked_question])
+  if existing_sq = SubmittedQuestion.find(:first, :conditions => ["id != #{self.id} and asked_question = ? and submitter_email = '#{self.submitter_email}'", self.asked_question])
     reject_msg = "This question was a duplicate of incoming question ##{existing_sq.id}"
     if !self.reject(User.find_by_login('faq_bot'), reject_msg)
       logger.error("Submitted Question #{self.id} did not get properly saved on rejection.")
@@ -129,6 +145,7 @@ def auto_assign_by_preference
   end
 end
 
+# TODO: replace categories commented out for tags
 def auto_assign
   assignee = nil
   # first, check to see if it's from a named widget 
@@ -141,12 +158,12 @@ def auto_assign
   end
   
   if !assignee
-    if !self.categories || self.categories.length == 0
-      question_categories = nil
-    else
-      question_categories = self.categories
-      parent_category = question_categories.detect{|c| !c.parent_id}
-    end
+    #if !self.categories || self.categories.length == 0
+    #  question_categories = nil
+    #else
+    #  question_categories = self.categories
+    #  parent_category = question_categories.detect{|c| !c.parent_id}
+    #end
   
     # if a state and county were provided when the question was asked
     # update: if there is location data supplied and there is not a category 
@@ -162,15 +179,15 @@ def auto_assign
   
   # if a user cannot be found yet...
   if !assignee
-    if !question_categories
+    #if !question_categories
       # if no category, wrangle it
       assignee = pick_user_from_list(User.uncategorized_wrangler_routers)
-    else
+    #else
       # got category, first, look for a user with specified category
-      assignee = pick_user_from_category(question_categories)
+    #  assignee = pick_user_from_category(question_categories)
       # still ain't got no one? send to the wranglers to wrangle
-      assignee = pick_user_from_list(User.uncategorized_wrangler_routers) if not assignee
-    end
+    #  assignee = pick_user_from_list(User.uncategorized_wrangler_routers) if not assignee
+    #end
       
   end
   
@@ -188,8 +205,9 @@ end
 def assign_to(user, assigned_by, comment)
   raise ArgumentError unless user and user.instance_of?(User)
   return if assignee and user.id == assignee.id
-  SubmittedQuestionEvent.log_assignment(self, user, assigned_by, comment)
   update_attributes(:assignee => user, :current_response => comment)
+  SubmittedQuestionEvent.log_assignment(self, user, assigned_by, comment)
+  AskMailer.deliver_assigned(self)
 end
 
 ##Class Methods##

@@ -98,7 +98,13 @@ class AppConfig
     @@configtable['default_timezone'] = 'utc'
     
     # Akismet spam blocker key
-    @@configtable['akismet_key'] = 'default'      
+    @@configtable['akismet_key'] = 'default'
+    
+    # Ask an expert settings
+    @@configtable['auto_assign_incoming_questions'] = true
+    @@configtable['send_escalation_report'] = true
+    @@configtable['send_aae_emails'] = true
+          
   end
   
   def AppConfig.load_config

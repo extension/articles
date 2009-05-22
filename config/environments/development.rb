@@ -27,3 +27,5 @@ config.action_mailer.smtp_settings = {
   :port => 25,
   :domain => "extension.org"
 }
+
+config.action_mailer.perform_deliveries = false

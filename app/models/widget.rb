@@ -9,6 +9,14 @@ class Widget < ActiveRecord::Base
 
   has_many :user_roles
   has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} and users.retired = false"
-
+  has_many :submitted_questions
+  
+  validates_presence_of :name  
+  validates_uniqueness_of :name, :case_sensitive => false
+  
+  def set_fingerprint(user)
+    create_time = Time.now.to_s
+    self.fingerprint = Digest::SHA1.hexdigest(create_time + user.id.to_s + self.name)
+  end
 
 end
