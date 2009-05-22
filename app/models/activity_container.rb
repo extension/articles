@@ -168,8 +168,8 @@ class ActivityContainer
     
     def convert_yearmonth_to_array(first,last)
       returnarray = []
-      currentmonth = Date.parse(first)
-      lastmonth = Date.parse(last)
+      currentmonth = Date.parse(first+'-01')
+      lastmonth = Date.parse(last+'-01')
       while(currentmonth <= lastmonth)
         returnarray << currentmonth.strftime("%Y-%m")
         currentmonth += 1.month
