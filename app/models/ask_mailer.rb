@@ -13,11 +13,12 @@ class AskMailer < ActionMailer::Base
     ActionMailer::Base.perform_deliveries = true
   end
 
-  def assigned(submitted_question, sent_at = Time.now)
-    @subject    =  'www.extension.org: Incoming question assigned to you'
+  def assigned(submitted_question, url, host = 'www.extension.org', sent_at = Time.now)
+    @subject    =  host.to_s + ': Incoming question assigned to you'
     @body["submitted_question"] = submitted_question
-    #@body["question_url"] = url
+    @body["question_url"] = url
     @body["assigned_at"] = sent_at
+    @body["host"] = host
     @recipients = submitted_question.assignee.email
     @from       = 'noreplies@extension.org'
     @sent_on    = sent_at

@@ -207,7 +207,6 @@ def assign_to(user, assigned_by, comment)
   return if assignee and user.id == assignee.id
   update_attributes(:assignee => user, :current_response => comment)
   SubmittedQuestionEvent.log_assignment(self, user, assigned_by, comment)
-  AskMailer.deliver_assigned(self)
 end
 
 ##Class Methods##

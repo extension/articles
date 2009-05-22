@@ -213,6 +213,9 @@ class Ask::ExpertController < ApplicationController
         #end
 
         if @submitted_question.save
+          if @submitted_question.assignee
+            AskMailer.deliver_assigned(@submitted_question, url_for(:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id), request.host)
+          end
           render :layout => false
         else
           raise InternalError
