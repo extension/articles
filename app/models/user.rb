@@ -185,11 +185,11 @@ class User < ActiveRecord::Base
         when 'position'
           returnhash.merge!({:position => self.position.name})
         when 'institution'
-          returnhash.merge!({:institution => self.institution.name})
+          returnhash.merge!({:institution => (self.institution.nil? ? '' : self.institution.name)})
         when 'location'
-          returnhash.merge!({:location => self.location.name})
+          returnhash.merge!({:location => (self.location.nil? ? '' : self.location.name)})
         when 'county'
-          returnhash.merge!({:county => self.county.name})
+          returnhash.merge!({:county => (self.county.nil? ? '' : self.county.name)})
         when 'interests'
           returnhash.merge!({:interests => self.tag_displaylist_by_ownerid_and_kind(self.id,"all",true)})
         end

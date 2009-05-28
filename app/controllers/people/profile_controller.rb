@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class ProfileController < ApplicationController
+class People::ProfileController < ApplicationController
   include ApplicationHelper
   include LoggingHelper
   layout 'people'
@@ -129,8 +129,12 @@ class ProfileController < ApplicationController
       end
     else
       # institution
-      if(!params[:institution].nil? and !params[:institution][:name].nil?)
-        @currentuser.institution = Institution.find_existing_or_create_new_user_institution(params[:institution][:name],@currentuser.login)
+      if(!params[:institution].nil?)
+        if(!params[:institution][:name].blank?)
+          @currentuser.institution = Institution.find_existing_or_create_new_user_institution(params[:institution][:name],@currentuser.login)
+        else
+          @currentuser.institution = nil
+        end
       end
       @currentuser.attributes=(params[:user])
             
