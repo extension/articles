@@ -6,265 +6,619 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 module ParamExtensions
-  
-  def additionaldata_from_params(params)
-    additionaldata = params
-    additionaldata[:remoteaddr] = request.env["REMOTE_ADDR"]
-    return additionaldata
-  end
-  
-  def order_from_params(defaultdirection='ASC')
-    # either going to be "order=columnstring direction" 
-    # or it will be "orderby=columnstring&sortorder=direction"
-    if(!params[:order].blank?)
-      return params[:order]
-    elsif(!params[:orderby].blank?)
-      if(!params[:sortorder].blank?)
-        return "#{params[:orderby]} #{params[:sortorder]}"
-      else
-        return "#{params[:orderby]} #{defaultdirection}"
+
+    class MissingParameterError < NoMethodError
+    end
+
+    class WantedParameter
+      TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE'].to_set
+      FALSE_VALUES = [false, 0, '0', 'f', 'F', 'false', 'FALSE'].to_set
+
+
+      attr_reader :name, :default, :datatype, :null
+
+      def initialize(name, datatype, default = nil, null = true)
+        @name, @datatype, @default, @null,  = name, datatype, default, null
       end
-    else
-      return nil
-    end
-  end
-  
-  #
-  # ToDo:  This really needs to check for array lists
-  # 
-  def check_for_filters
 
-    returnoptions = {}
 
-    # community
-    if(!params[:community].nil?)
-      returnoptions[:community] = Community.find_by_id(params[:community])
-    end
+      # Casts value (which is a String coming from the parameters) to an appropriate instance.
+      def type_cast(value)
+        return nil if value.nil?
+        case datatype
+          when :string    then value
+          when :integer   then value.to_i rescue value ? 1 : 0
+          when :float     then value.to_f
+          when :datetime  then Time.zone.parse(value) rescue nil 
+          when :date      then Time.zone.parse(value).to_date rescue nil 
+          when :boolean   then self.class.value_to_boolean(value)
+          when :serialized then YAML::load(Base64.decode64(value)) rescue nil
+          # TODO: objects like community? etc?
+          else value
+        end
+      end
 
-    # location
-    if(!params[:location].nil?)
-      returnoptions[:location] = Location.find_by_id(params[:location])
-    end
+      def type_cast_code(var_name)
+        case datatype
+          when :string    then nil
+          when :integer   then "(#{var_name}.to_i rescue #{var_name} ? 1 : 0)"
+          when :float     then "#{var_name.to_f}"
+          when :datetime  then "(Time.zone.parse(#{var_name}) rescue nil)"
+          when :date      then "(Time.zone.parse(#{var_name}).to_date rescue nil)"
+          when :boolean   then "#{self.class.name}.value_to_boolean(#{var_name})"
+          when :serialized then "(YAML::load(Base64.decode64(#{var_name})) rescue nil)"
+          # TODO: objects like community? etc?
+          else nil
+        end
+      end
 
-    # county
-    if(!params[:county].nil?)
-      returnoptions[:county] = Location.find_by_id(params[:county])
-    end
-    
-    # position
-    if(!params[:position].nil?)
-      returnoptions[:position] = Position.find_by_id(params[:position])
-    end
+      def number?
+        datatype == :integer || datatype == :float 
+      end
 
-    # institution
-    if(!params[:institution].nil?)
-      returnoptions[:institution] = Institution.find_by_id(params[:institution])
-    end
+      # -----------------------------------
+      # Class-level methods
+      # -----------------------------------
+      class << self
 
-    # person/user
-    if(!params[:person].nil?)      
-      # only process this when logged in
-      # TODO: change when user activity is allowed to be public
-      if(!@currentuser.nil?)
-        if(params[:person].to_i != 0)
-          returnoptions[:user] = User.find_by_id(params[:person])
-        elsif(params[:person] == 'me')
-          returnoptions[:user] = @currentuser
+        # convert something to a boolean
+        def value_to_boolean(value)
+          if value.is_a?(String) && value.blank?
+            nil
+          else
+            TRUE_VALUES.include?(value)
+          end
+        end
+
+      end
+    end # FilteredParameter
+
+    class ParamsFilter 
+
+      def initialize(parameters = nil)
+        @filteredparameters = {}
+        #@filteredparameters = filteredparameters_from_wantedparameters_definition
+        # self.attributes = attributes unless attributes.nil?
+        result = yield self if block_given?
+        result
+      end
+
+      def [](parameter_name)
+        read_parameter(parameter_name)
+      end
+
+      # Updates the attribute identified by <tt>attr_name</tt> with the specified +value+.
+      # (Alias for the protected write_attribute method).
+      def []=(parameter_name, value)
+        write_parameter(parameter_name, value)
+      end
+
+      # def attributes=(new_attributes, guard_protected_attributes = true)
+      #   return if new_attributes.nil?
+      #   attributes = new_attributes.dup
+      #   attributes.stringify_keys!
+      # 
+      #   multi_parameter_attributes = []
+      #   attributes = remove_attributes_protected_from_mass_assignment(attributes) if guard_protected_attributes
+      # 
+      #   attributes.each do |k, v|
+      #     if k.include?("(")
+      #       multi_parameter_attributes << [ k, v ]
+      #     else
+      #       respond_to?(:"#{k}=") ? send(:"#{k}=", v) : raise(UnknownAttributeError, "unknown attribute: #{k}")
+      #     end
+      #   end
+      # 
+      #   assign_multiparameter_attributes(multi_parameter_attributes)
+      # end
+      # 
+      # # Returns a hash of all the attributes with their names as keys and the values of the attributes as values.
+      # def attributes
+      #   self.attribute_names.inject({}) do |attrs, name|
+      #     attrs[name] = read_attribute(name)
+      #     attrs
+      #   end
+      # end
+      # 
+      # # Returns a hash of attributes before typecasting and deserialization.
+      # def attributes_before_type_cast
+      #   self.attribute_names.inject({}) do |attrs, name|
+      #     attrs[name] = read_attribute_before_type_cast(name)
+      #     attrs
+      #   end
+      # end
+
+      def method_missing(method_id, *args, &block)
+        method_name = method_id.to_s
+
+        # private_method_defined? is a ruby module method
+        if self.class.private_method_defined?(method_name)
+          raise NoMethodError.new("Attempt to call private method", method_name, args)
+        end
+
+        # If we haven't generated any methods yet, generate them, then
+        # see if we've created the method we're looking for.
+        if !self.class.generated_methods?
+          self.class.define_parameter_methods
+          if self.class.generated_methods.include?(method_name)
+            return self.send(method_id, *args, &block)
+          end
+        end
+
+        if md = self.class.match_parameter_method?(method_name)
+          parameter_name, method_type = md.pre_match, md.to_s
+          if @filteredparameters.include?(parameter_name)
+            __send__("parameter#{method_type}", parameter_name, *args, &block)
+          else
+            super
+          end
+        elsif @filteredparameters.include?(method_name)
+          read_parameter(method_name)
         else
-          returnoptions[:user] = User.find_by_login(params[:person])
+          super
         end
       end
-    end
 
-    if(!params[:connectiontype].nil?)
-      if(Communityconnection::TYPES.keys.include?(params[:connectiontype]))
-        returnoptions[:connectiontype] = params[:connectiontype]
-      end
-    end
-
-    if(!params[:communitytype].nil?)
-      returnoptions[:communitytype] = params[:communitytype]
-    end
-
-    if(!params[:agreementstatus].nil?)
-      returnoptions[:agreementstatus] = params[:agreementstatus]
-    end
-
-
-
-    # dates
-    if(!params[:dateinterval].nil?)
-      if(params[:dateinterval] == 'range')
-        # get start and end dates and pack them up into an array
-        if(!params[:datestart].nil? and !params[:dateend].nil?)
-          returnoptions[:dateinterval] = [params[:datestart],params[:dateend]]
+      def read_parameter(parameter_name)
+        parameter_name = parameter_name.to_s
+        if !(value = @filteredparameters[parameter_name]).nil?
+          if wantedparameter = wantedparameter_for_filteredparameter(parameter_name)
+            wantedparameter.type_cast(value)
+          else
+            value
+          end
+        else
+          nil
         end
-      else
-        returnoptions[:dateinterval] = params[:dateinterval]
       end
-    end
 
-    if(!params[:datecount].nil?)
-      returnoptions[:datecount] = params[:datecount]
-    end
-    
-    if(!params[:announcements].nil?)
-      if(params[:announcements] == '1' or params[:announcements] == 'yes')
-        returnoptions[:announcements] = true
-      else
-        returnoptions[:announcements] = false
+      def read_attribute_before_type_cast(parameter_name)
+        @filteredparameters[parameter_name]
       end
-    end
 
-    if(!params[:datefield].nil?)
-      returnoptions[:datefield] = params[:datefield]
-    end
-
-    if(!params[:tz].nil?)
-      returnoptions[:tz] = params[:tz]
-    end
-
-    # user activity specific
-    if(!params[:activityapplication].nil?)
-      returnoptions[:activityapplication] = ActivityApplication.find_by_id(params[:activityapplication])
-    end
-
-    if(!params[:appname].nil?)
-      returnoptions[:appname] = params[:appname]
-    end
-
-    if(!params[:activityentrytype].nil?)
-      returnoptions[:activityentrytype] = params[:activityentrytype]
-    end
-    
-    # ip address
-    if(!params[:activityaddress].nil?)
-      returnoptions[:activityaddress] = params[:activityaddress]
-    end
-    
-    if(!params[:activity].nil?)
-      if(activitycodes = Activity.activity_to_codes(params[:activity]))
-        returnoptions[:activity] = params[:activity]
+      def write_parameter(parameter_name, value)
+        parameter_name = parameter_name.to_s
+        if (wantedparameter = wantedparameter_for_filteredparameter(parameter_name)) && wantedparameter.number?
+          @filteredparameters[parameter_name] = convert_number_column_value(value)
+        else
+          @filteredparameters[parameter_name] = value
+        end
       end
-    end
-    
-    if(!params[:activitygroup].nil?)
-      if(activitycodes = Activity.activitygroup_to_types(params[:activitygroup]))
-        returnoptions[:activitygroup] = params[:activitygroup]
+
+      def wantedparameter_for_filteredparameter(name)
+        self.class.wantedparameters_hash[name.to_s]
       end
-    end
 
-    if(!params[:ignorecommunity].nil?)
-      returnoptions[:ignorecommunity] = Community.find_by_id(params[:ignorecommunity])
-    end
-
-    if(!params[:communityactivity].nil?)
-      returnoptions[:communityactivity] = params[:communityactivity]
-    end              
-    return returnoptions
-  end
-
-  def create_filter_params(options = {})    
-
-    returnparams = {}
-    if(options.nil?)
-      return {}
-    end
-
-    if(!options[:community].nil?)
-      returnparams[:community] = options[:community].id
-    end
-
-    if(!options[:institution].nil?)
-      returnparams[:institution] = options[:institution].id
-    end
-
-    if(!options[:location].nil?)
-      returnparams[:location] = options[:location].id
-    end
-
-    if(!options[:county].nil?)
-      returnparams[:county] = options[:county].id
-    end
-    
-    if(!options[:position].nil?)
-      returnparams[:position] = options[:position].id
-    end
-
-    if(!options[:user].nil?)
-      returnparams[:person] = options[:user].id
-    end
-
-    if(!options[:connectiontype].nil?)
-      returnparams[:connectiontype] = options[:connectiontype]
-    end
-
-    if(!options[:agreementstatus].nil?)
-      returnparams[:agreementstatus] = options[:agreementstatus]
-    end
-
-    if(!options[:communitytype].nil?)
-      returnparams[:communitytype] = options[:communitytype]
-    end    
-
-    # dates
-    if(!options[:dateinterval].nil?)
-      if(options[:dateinterval].is_a?(Array))
-        # assume range
-        returnparams[:dateinterval] = 'range'
-        returnparams[:datestart] = options[:dateinterval][0]
-        returnparams[:dateend] = options[:dateinterval][1]
-      else
-        returnparams[:dateinterval] = options[:dateinterval]
+      def query_parameter(parameter_name)
+        unless value = read_parameter(parameter_name)
+          false
+        else
+          wantedparameter = self.class.wantedparameters_hash[parameter_name]
+          if wantedparameter.nil?
+            if Numeric === value || value !~ /[^0-9]/
+              !value.to_i.zero?
+            else
+              return false if ParamExtensions::WantedParameter::FALSE_VALUES.include?(value)
+              !value.blank?
+            end
+          elsif wantedparameter.number?
+            !value.zero?
+          else
+            !value.blank?
+          end
+        end
       end
-    end
 
-    if(!options[:datecount].nil?)
-      returnparams[:datecount] = options[:datecount]
-    end
+      def convert_number_column_value(value)
+        if value == false
+          0
+        elsif value == true
+          1
+        elsif value.is_a?(String) && value.blank?
+          nil
+        else
+          value
+        end
+      end
 
-    if(!options[:datefield].nil?)
-      returnparams[:datefield] = options[:datefield]
-    end
+      def filteredparameters_from_wantedparameters_definition
+        self.class.wantedparameters.inject({}) do |parameters, wantedparameter|
+          filteredparameters[wantedparameter.name] = wantedparameter.default
+          filteredparameters
+        end
+      end
 
-    if(!options[:tz].nil?)
-      returnparams[:tz] = options[:tz]
-    end
+      def missing_parameter(parameter_name, stack)
+        raise ParamExtensions::MissingParameterError, "missing parameter: #{parameter_name}", stack
+      end
 
-    # user activity specific
-    if(!options[:activityapplication].nil?)
-      returnparams[:activityapplication] = options[:activityapplication].id
-    end
-    
-    if(!options[:appname].nil?)
-      returnparams[:appname] = options[:appname]
-    end
-    
-    if(!options[:activityaddress].nil?)
-      returnparams[:activityaddress] = options[:activityaddress]
-    end
+      # Handle *? for method_missing.
+      def parameter?(parameter_name)
+        query_parameter(parameter_name)
+      end
 
-    if(!options[:activityentrytype].nil?)
-      returnparams[:activityentrytype] = options[:activityentrytype]
-    end
-    
-    if(!options[:activity].nil?)
-      returnparams[:activity] = options[:activity]
-    end
+      # Handle *= for method_missing.
+      def parameter=(parameter_name, value)
+        write_parameter(parameter_name, value)
+      end
 
-    if(!options[:activitygroup].nil?)
-      returnparams[:activitygroup] = options[:activitygroup]
+      # Handle *_before_type_cast for method_missing.
+      def parameter_before_type_cast(parameter_name)
+        read_parameter_before_type_cast(parameter_name)
+      end
+
+      # -----------------------------------
+      # Class-level methods
+      # -----------------------------------
+      class << self
+
+        def wantedparameters_hash
+          @wantedparameters_hash ||= wantedparameters.inject({}) { |hash, wantedparameter| hash[wantedparameter.name] = wantedparameter; hash }
+        end
+
+        def wantedparameters()
+          @wantedparameters ||= []
+        end
+
+        def wantsparameter(name, datatype, default = nil, null = true)
+          wantedparameters << ParamExtensions::WantedParameter.new(name.to_s,datatype,default,null)
+        end
+
+        def parameter_method_suffix(*suffixes)
+          parameter_method_suffixes.concat suffixes
+          rebuild_parameter_method_regexp
+        end
+
+        # Returns MatchData if method_name is an attribute method.
+        def match_parameter_method?(method_name)
+          rebuild_parameter_method_regexp unless defined?(@@parameter_method_regexp) && @@parameter_method_regexp
+          @@parameter_method_regexp.match(method_name)
+        end
+
+
+        # Contains the names of the generated attribute methods.
+        def generated_methods #:nodoc:
+          @generated_methods ||= Set.new
+        end
+
+        def generated_methods?
+          !generated_methods.empty?
+        end
+
+        def instance_method_already_implemented?(method_name)
+          method_name = method_name.to_s
+          return (method_name =~ /^id(=$|\?$|$)/)
+        end
+
+
+        def define_parameter_methods
+          return if generated_methods?
+          wantedparameters_hash.each do |name, wp|
+            unless instance_method_already_implemented?(name)
+              define_read_method(name.to_sym, name, wp)
+            end
+
+            unless instance_method_already_implemented?("#{name}=")
+              define_write_method(name.to_sym)
+            end
+
+            unless instance_method_already_implemented?("#{name}?")
+              define_question_method(name)
+            end
+          end
+        end
+
+        # begin privates
+        private
+
+          # Suffixes a, ?, c become regexp /(a|\?|c)$/
+          def rebuild_parameter_method_regexp
+            suffixes = parameter_method_suffixes.map { |s| Regexp.escape(s) }
+            @@parameter_method_regexp = /(#{suffixes.join('|')})$/.freeze
+          end
+
+          # Default to =, ?, _before_type_cast
+          def parameter_method_suffixes
+            @@parameter_method_suffixes ||= []
+          end
+
+          def define_read_method(symbol, parameter_name, wantedparameter)
+            cast_code = wantedparameter.type_cast_code('v') if wantedparameter
+            access_code = cast_code ? "(v=@filteredparameters['#{parameter_name}']) && #{cast_code}" : "@filteredparameters['#{parameter_name}']"
+            access_code = access_code.insert(0, "missing_parameter('#{parameter_name}', caller) unless @filteredparameters.has_key?('#{parameter_name}'); ")
+            evaluate_parameter_method parameter_name, "def #{symbol}; #{access_code}; end"
+          end
+
+          def define_question_method(parameter_name)
+            evaluate_parameter_method parameter_name, "def #{parameter_name}?; query_parameter('#{parameter_name}'); end", "#{parameter_name}?"
+          end
+
+          def define_write_method(parameter_name)
+            evaluate_parameter_method parameter_name, "def #{parameter_name}=(new_value);write_parameter('#{parameter_name}', new_value);end", "#{parameter_name}="
+          end
+
+          # Evaluate the definition for an parameter related method
+          def evaluate_parameter_method(parameter_name, method_definition, method_name=parameter_name)
+            generated_methods << method_name
+
+            begin
+              class_eval(method_definition, __FILE__, __LINE__)
+            rescue SyntaxError => err
+              generated_methods.delete(parameter_name)
+              if logger
+                logger.warn "Exception occurred during reader method compilation."
+                logger.warn "Maybe #{parameter_name} is not a valid Ruby identifier?"
+                logger.warn err.message
+              end
+            end
+          end
+
+
+
+
+
+          # end privates
+      end #  ClassMethods
     end
-
-    if(!options[:ignorecommunity].nil?)
-      returnparams[:ignorecommunity] = options[:ignorecommunity].id
-    end
-
-    if(!options[:communityactivity].nil?)
-      returnparams[:communityactivity] = options[:communityactivity]
-    end
-
-    return returnparams
-
-  end
+  
+  # def additionaldata_from_params(params)
+  #   additionaldata = params
+  #   additionaldata[:remoteaddr] = request.env["REMOTE_ADDR"]
+  #   return additionaldata
+  # end
+  # 
+  # def order_from_params(defaultdirection='ASC')
+  #   # either going to be "order=columnstring direction" 
+  #   # or it will be "orderby=columnstring&sortorder=direction"
+  #   if(!params[:order].blank?)
+  #     return params[:order]
+  #   elsif(!params[:orderby].blank?)
+  #     if(!params[:sortorder].blank?)
+  #       return "#{params[:orderby]} #{params[:sortorder]}"
+  #     else
+  #       return "#{params[:orderby]} #{defaultdirection}"
+  #     end
+  #   else
+  #     return nil
+  #   end
+  # end
+  # 
+  # #
+  # # ToDo:  This really needs to check for array lists
+  # # 
+  # def check_for_filters
+  # 
+  #   returnoptions = {}
+  # 
+  #   # community
+  #   if(!params[:community].nil?)
+  #     returnoptions[:community] = Community.find_by_id(params[:community])
+  #   end
+  # 
+  #   # location
+  #   if(!params[:location].nil?)
+  #     returnoptions[:location] = Location.find_by_id(params[:location])
+  #   end
+  # 
+  #   # county
+  #   if(!params[:county].nil?)
+  #     returnoptions[:county] = Location.find_by_id(params[:county])
+  #   end
+  #   
+  #   # position
+  #   if(!params[:position].nil?)
+  #     returnoptions[:position] = Position.find_by_id(params[:position])
+  #   end
+  # 
+  #   # institution
+  #   if(!params[:institution].nil?)
+  #     returnoptions[:institution] = Institution.find_by_id(params[:institution])
+  #   end
+  # 
+  #   # person/user
+  #   if(!params[:person].nil?)      
+  #     # only process this when logged in
+  #     # TODO: change when user activity is allowed to be public
+  #     if(!@currentuser.nil?)
+  #       if(params[:person].to_i != 0)
+  #         returnoptions[:user] = User.find_by_id(params[:person])
+  #       elsif(params[:person] == 'me')
+  #         returnoptions[:user] = @currentuser
+  #       else
+  #         returnoptions[:user] = User.find_by_login(params[:person])
+  #       end
+  #     end
+  #   end
+  # 
+  #   if(!params[:connectiontype].nil?)
+  #     if(Communityconnection::TYPES.keys.include?(params[:connectiontype]))
+  #       returnoptions[:connectiontype] = params[:connectiontype]
+  #     end
+  #   end
+  # 
+  #   if(!params[:communitytype].nil?)
+  #     returnoptions[:communitytype] = params[:communitytype]
+  #   end
+  # 
+  #   if(!params[:agreementstatus].nil?)
+  #     returnoptions[:agreementstatus] = params[:agreementstatus]
+  #   end
+  # 
+  # 
+  # 
+  #   # dates
+  #   if(!params[:dateinterval].nil?)
+  #     if(params[:dateinterval] == 'range')
+  #       # get start and end dates and pack them up into an array
+  #       if(!params[:datestart].nil? and !params[:dateend].nil?)
+  #         returnoptions[:dateinterval] = [params[:datestart],params[:dateend]]
+  #       end
+  #     else
+  #       returnoptions[:dateinterval] = params[:dateinterval]
+  #     end
+  #   end
+  # 
+  #   if(!params[:datecount].nil?)
+  #     returnoptions[:datecount] = params[:datecount]
+  #   end
+  #   
+  #   if(!params[:announcements].nil?)
+  #     if(params[:announcements] == '1' or params[:announcements] == 'yes')
+  #       returnoptions[:announcements] = true
+  #     else
+  #       returnoptions[:announcements] = false
+  #     end
+  #   end
+  # 
+  #   if(!params[:datefield].nil?)
+  #     returnoptions[:datefield] = params[:datefield]
+  #   end
+  # 
+  #   if(!params[:tz].nil?)
+  #     returnoptions[:tz] = params[:tz]
+  #   end
+  # 
+  #   # user activity specific
+  #   if(!params[:activityapplication].nil?)
+  #     returnoptions[:activityapplication] = ActivityApplication.find_by_id(params[:activityapplication])
+  #   end
+  # 
+  #   if(!params[:appname].nil?)
+  #     returnoptions[:appname] = params[:appname]
+  #   end
+  # 
+  #   if(!params[:activityentrytype].nil?)
+  #     returnoptions[:activityentrytype] = params[:activityentrytype]
+  #   end
+  #   
+  #   # ip address
+  #   if(!params[:activityaddress].nil?)
+  #     returnoptions[:activityaddress] = params[:activityaddress]
+  #   end
+  #   
+  #   if(!params[:activity].nil?)
+  #     if(activitycodes = Activity.activity_to_codes(params[:activity]))
+  #       returnoptions[:activity] = params[:activity]
+  #     end
+  #   end
+  #   
+  #   if(!params[:activitygroup].nil?)
+  #     if(activitycodes = Activity.activitygroup_to_types(params[:activitygroup]))
+  #       returnoptions[:activitygroup] = params[:activitygroup]
+  #     end
+  #   end
+  # 
+  #   if(!params[:ignorecommunity].nil?)
+  #     returnoptions[:ignorecommunity] = Community.find_by_id(params[:ignorecommunity])
+  #   end
+  # 
+  #   if(!params[:communityactivity].nil?)
+  #     returnoptions[:communityactivity] = params[:communityactivity]
+  #   end              
+  #   return returnoptions
+  # end
+  # 
+  # def create_filter_params(options = {})    
+  # 
+  #   returnparams = {}
+  #   if(options.nil?)
+  #     return {}
+  #   end
+  # 
+  #   if(!options[:community].nil?)
+  #     returnparams[:community] = options[:community].id
+  #   end
+  # 
+  #   if(!options[:institution].nil?)
+  #     returnparams[:institution] = options[:institution].id
+  #   end
+  # 
+  #   if(!options[:location].nil?)
+  #     returnparams[:location] = options[:location].id
+  #   end
+  # 
+  #   if(!options[:county].nil?)
+  #     returnparams[:county] = options[:county].id
+  #   end
+  #   
+  #   if(!options[:position].nil?)
+  #     returnparams[:position] = options[:position].id
+  #   end
+  # 
+  #   if(!options[:user].nil?)
+  #     returnparams[:person] = options[:user].id
+  #   end
+  # 
+  #   if(!options[:connectiontype].nil?)
+  #     returnparams[:connectiontype] = options[:connectiontype]
+  #   end
+  # 
+  #   if(!options[:agreementstatus].nil?)
+  #     returnparams[:agreementstatus] = options[:agreementstatus]
+  #   end
+  # 
+  #   if(!options[:communitytype].nil?)
+  #     returnparams[:communitytype] = options[:communitytype]
+  #   end    
+  # 
+  #   # dates
+  #   if(!options[:dateinterval].nil?)
+  #     if(options[:dateinterval].is_a?(Array))
+  #       # assume range
+  #       returnparams[:dateinterval] = 'range'
+  #       returnparams[:datestart] = options[:dateinterval][0]
+  #       returnparams[:dateend] = options[:dateinterval][1]
+  #     else
+  #       returnparams[:dateinterval] = options[:dateinterval]
+  #     end
+  #   end
+  # 
+  #   if(!options[:datecount].nil?)
+  #     returnparams[:datecount] = options[:datecount]
+  #   end
+  # 
+  #   if(!options[:datefield].nil?)
+  #     returnparams[:datefield] = options[:datefield]
+  #   end
+  # 
+  #   if(!options[:tz].nil?)
+  #     returnparams[:tz] = options[:tz]
+  #   end
+  # 
+  #   # user activity specific
+  #   if(!options[:activityapplication].nil?)
+  #     returnparams[:activityapplication] = options[:activityapplication].id
+  #   end
+  #   
+  #   if(!options[:appname].nil?)
+  #     returnparams[:appname] = options[:appname]
+  #   end
+  #   
+  #   if(!options[:activityaddress].nil?)
+  #     returnparams[:activityaddress] = options[:activityaddress]
+  #   end
+  # 
+  #   if(!options[:activityentrytype].nil?)
+  #     returnparams[:activityentrytype] = options[:activityentrytype]
+  #   end
+  #   
+  #   if(!options[:activity].nil?)
+  #     returnparams[:activity] = options[:activity]
+  #   end
+  # 
+  #   if(!options[:activitygroup].nil?)
+  #     returnparams[:activitygroup] = options[:activitygroup]
+  #   end
+  # 
+  #   if(!options[:ignorecommunity].nil?)
+  #     returnparams[:ignorecommunity] = options[:ignorecommunity].id
+  #   end
+  # 
+  #   if(!options[:communityactivity].nil?)
+  #     returnparams[:communityactivity] = options[:communityactivity]
+  #   end
+  # 
+  #   return returnparams
+  # 
+  # end
 end
