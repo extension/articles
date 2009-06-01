@@ -14,7 +14,6 @@ class ApplicationController < ActionController::Base
   include LoginSystem
   include ExceptionNotifiable
   include ArrayStats
-  include ParamExtensions
   include Logo
 
   # Scrub sensitive parameters from your log
