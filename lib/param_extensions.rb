@@ -112,14 +112,8 @@ module ParamExtensions
         parameters.stringify_keys!
           
         parameters.each do |k, v|
-          ActiveRecord::Base.logger.debug("k | v = #{k} #{v}")
-          if(self.respond_to?(:"#{k}="))
-            ActiveRecord::Base.logger.debug("responds! ")
-            send(:"#{k}=", v)
-          else
-            @unfilteredparameters[k] = v
-          end
-        end      
+          respond_to?(:"#{k}=") ? send(:"#{k}=", v) : @unfilteredparameters[k] = v
+        end   
       end
       
       
