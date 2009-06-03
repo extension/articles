@@ -1,0 +1,24 @@
+<h1 class="title">Ask an Expert Widgets</h1>
+
+<ul id="nav">
+    <li><%= link_to_unless_current "Active", :controller => :widgets, :action => :index %></li>
+    <li><%= link_to_unless_current "In-Active", :controller => :widgets, :action => :index, :id => 'inactive' %></li>
+</ul>
+
+<br class="clear"/>
+
+<p>
+    <%= label_tag 'widget_name', 'By Name (start typing to filter widgets)' %>
+    <%= text_field_tag('widget_name') %>
+</p>
+
+<%= observe_field(:widget_name,
+                  :url       => { :controller => :widgets, :action => :get_widgets },
+                  :update    => :widget_list,
+                  :frequency => 0.6,
+                  :with      => "'widget_name=' + value")
+%>
+
+<div id="widget_list">
+<%= render(:partial => 'widget_list') %>
+</div>

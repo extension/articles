@@ -1,0 +1,30 @@
+<h1 class="title">Ask an Expert Widget <%= @widget.name %> </h1>
+
+<ul id="nav">
+    <li><%= link_to_unless_current "Summary", :controller => :widgets, :action => :view, :id => @widget.id %></li>
+    <li><%= link_to_unless_current "Admin", :controller => :widgets, :action => :admin, :id => @widget.id %></li>
+</ul>
+
+<p>Name: <%= @widget.name %></p>
+<p>Administrator: <%= @widget.author %></p>
+<p>Active: <%= @widget.active? ? "yes" : "no" %></p>
+<p>Date Created: <%= @widget.created_at %></p>
+
+<% if controller.action_name == 'admin' %>
+<p>Widget iFrame Code:<br /><%= h(@widget_iframe_code) %></p>
+
+<p id="<%= @widget.name %>"><%= label_tag "widget_#{@widget.id}", 'Active' %>
+<%= check_box_tag "widget_#{@widget.id}", @widget.id, @widget.active? %>
+<div id="loading_widget_<%= @widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </div></p>
+
+<%= observe_field("widget_#{@widget.id}",
+                      :url       => { :action => :toggle_activation },
+                      :with      => "'widget_id=#{@widget.id}'",
+                      :loading => "Element.show('loading_widget_#{@widget.id}')",
+                      :complete    => "Element.hide('loading_widget_#{@widget.id}')") %>
+<% end %>
+        
+
+        
+
+

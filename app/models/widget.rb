@@ -14,9 +14,17 @@ class Widget < ActiveRecord::Base
   validates_presence_of :name  
   validates_uniqueness_of :name, :case_sensitive => false
   
+  named_scope :inactive, :conditions => "active = false", :order => "name"
+  named_scope :active, :conditions => "active = true", :order => "name"
+  named_scope :byname, lambda {|widget_name| {:conditions => "name like '#{widget_name}%'", :order => "name"} }
+  
   def set_fingerprint(user)
     create_time = Time.now.to_s
     self.fingerprint = Digest::SHA1.hexdigest(create_time + user.id.to_s + self.name)
   end
-
+  
+  def get_iframe_code
+    return '<iframe style="border:0" width="100%" src="' +  self.widget_url + '" height="300px"></iframe>'
+  end
+  
 end

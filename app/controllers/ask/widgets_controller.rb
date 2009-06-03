@@ -1,0 +1,55 @@
+# === COPYRIGHT:
+#  Copyright (c) 2005-2006 North Carolina State University
+#  Developed with funding for the National eXtension Initiative.
+# === LICENSE:
+#  BSD(-compatible)
+#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+
+class Ask::WidgetsController < ApplicationController
+  
+  def index
+    if params[:id] and params[:id] == 'inactive'
+      @widgets = Widget.inactive
+    else
+      @widgets = Widget.active
+    end
+  end
+  
+  def admin
+    if params[:id] and @widget = Widget.find(params[:id])
+      @widget_iframe_code = @widget.get_iframe_code
+    else
+      flash[:failure] = "You must specify a valid widget"
+      redirect_to :action => :index
+    end
+    render :action => :view
+  end
+  
+  def view
+    if !(params[:id] and @widget = Widget.find(params[:id]))
+      flash[:failure] = "You must specify a valid widget"
+      redirect_to :action => :index
+    end
+  end
+  
+  def get_widgets
+    @widgets = Widget.byname(params[:widget_name])
+    render :partial => "widget_list", :layout => false
+  end
+  
+  def toggle_activation
+    if request.post?
+      if params[:widget_id]
+        @widget = Widget.find(params[:widget_id])
+        @widget.update_attributes(:active => !@widget.active?)
+        render :update do |page|
+          page.visual_effect :highlight, @widget.name
+        end        
+      end
+    else
+      do_404
+    end
+  end
+  
+  
+end

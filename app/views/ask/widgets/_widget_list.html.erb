@@ -1,0 +1,16 @@
+<table>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Administrator</th>
+        <th scope="col">Date Created</th>
+    </tr>
+
+<% @widgets.each do |widget| %>
+    <tr id="<%= widget.name %>">
+        <td><%= link_to(widget.name, :controller => :widgets, :action => :view, :id => widget.id) %></td>
+        <td><%= link_to(widget.author, :controller => "people/colleagues", :action => :showuser, :userid => widget.author) %></td>
+        <td><%= widget.created_at %></td>
+    </tr>
+<% end %>
+
+</table>
