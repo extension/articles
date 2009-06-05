@@ -33,7 +33,11 @@ class Ask::WidgetsController < ApplicationController
   end
   
   def get_widgets
-    @widgets = Widget.byname(params[:widget_name])
+    if params[:id] and params[:id] == 'inactive'
+      @widgets = Widget.byname(params[:widget_name]).inactive
+    else
+      @widgets = Widget.byname(params[:widget_name]).active
+    end
     render :partial => "widget_list", :layout => false
   end
   
