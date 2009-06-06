@@ -46,6 +46,10 @@ class Ask::WidgetsController < ApplicationController
       if params[:widget_id]
         @widget = Widget.find(params[:widget_id])
         @widget.update_attributes(:active => !@widget.active?)
+        event = @widget.active? ? WidgetEvent::ACTIVATED : WidgetEvent::DEACTIVATED
+        # ToDo: change to current user, just putting in an id for now
+        WidgetEvent.log_event(@widget.id, 12, event)
+        
         render :update do |page|
           page.visual_effect :highlight, @widget.name
         end        

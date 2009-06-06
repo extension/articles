@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090527215721) do
+ActiveRecord::Schema.define(:version => 20090606173153) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -712,6 +712,14 @@ ActiveRecord::Schema.define(:version => 20090527215721) do
   add_index "users", ["email"], :name => "email", :unique => true
   add_index "users", ["login"], :name => "login", :unique => true
   add_index "users", ["vouched", "retired"], :name => "index_users_on_vouched_and_retired"
+
+  create_table "widget_events", :force => true do |t|
+    t.integer  "widget_id",                  :null => false
+    t.integer  "user_id",                    :null => false
+    t.string   "event",      :default => "", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "widgets", :force => true do |t|
     t.string   "name",        :default => "",   :null => false
