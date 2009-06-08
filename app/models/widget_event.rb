@@ -9,6 +9,9 @@ class WidgetEvent < ActiveRecord::Base
   ACTIVATED = "activated"
   DEACTIVATED = "deactivated"
   
+  belongs_to :user
+  belongs_to :widget
+  
   
   def self.log_event(widget_id, user_id, event)
     widget_event = WidgetEvent.create(:user_id => user_id, :widget_id => widget_id, :event => event)

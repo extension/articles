@@ -42,6 +42,8 @@ class User < ActiveRecord::Base
   has_many :activities, :order => 'created_at DESC', :dependent => :destroy
   
   has_many :notifications, :dependent => :destroy
+  
+  has_many :widget_events
       
   belongs_to :institution
   belongs_to :position

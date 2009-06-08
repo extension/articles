@@ -52,6 +52,8 @@ class Ask::WidgetsController < ApplicationController
         
         render :update do |page|
           page.visual_effect :highlight, @widget.name
+          page.replace_html :widget_active, @widget.active? ? "yes" : "no"
+          page.replace_html :history, :partial => 'widget_history'
         end        
       end
     else

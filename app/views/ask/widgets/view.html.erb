@@ -7,7 +7,7 @@
 
 <p>Name: <%= @widget.name %></p>
 <p>Administrator: <%= @widget.author %></p>
-<p>Active: <%= @widget.active? ? "yes" : "no" %></p>
+<p>Active: <span id="widget_active"><%= @widget.active? ? "yes" : "no" %></span></p>
 <p>Date Created: <%= @widget.created_at %></p>
 
 <% if controller.action_name == 'admin' %>
@@ -23,8 +23,9 @@
                       :loading => "Element.show('loading_widget_#{@widget.id}')",
                       :complete    => "Element.hide('loading_widget_#{@widget.id}')") %>
 <% end %>
-        
 
-        
-
+<br />
+<div id="history">
+<%= render(:partial => 'widget_history') %>
+</div>
 

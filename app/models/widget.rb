@@ -10,6 +10,7 @@ class Widget < ActiveRecord::Base
   has_many :user_roles
   has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} and users.retired = false"
   has_many :submitted_questions
+  has_many :widget_events
   
   validates_presence_of :name  
   validates_uniqueness_of :name, :case_sensitive => false
@@ -25,6 +26,18 @@ class Widget < ActiveRecord::Base
   
   def get_iframe_code
     return '<iframe style="border:0" width="100%" src="' +  self.widget_url + '" height="300px"></iframe>'
+  end
+  
+  def history
+    history_array = Array.new
+    history_array << "Created at #{self.created_at} by <a href='/people/colleagues/showuser?userid=#{self.author}'>#{self.author}</a>"
+    
+    events = self.widget_events
+    events.each do |event|
+      history_array << "#{event.event.capitalize} on #{event.created_at} by <a href='/people/colleagues/showuser?userid=#{event.user.login}'>#{event.user.login}</a>"
+    end    
+    
+    return history_array
   end
   
 end
