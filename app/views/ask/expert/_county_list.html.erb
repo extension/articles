@@ -1,6 +1,0 @@
-<% if location and location.counties.length > 0 %>
-	<label>
-	County (optional)
-	<%= select_tag ('submitted_question[county_id]', options_for_select([["", ""]] + location.counties.map{|c| [c.name, c.id]}, @submitted_question ? @submitted_question.county_id : nil ), :disabled => disabled) %>
-    </label>
-<% end %>

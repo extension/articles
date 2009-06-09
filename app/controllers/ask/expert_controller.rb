@@ -160,9 +160,9 @@ class Ask::ExpertController < ApplicationController
   # ask widget pulled from remote iframe
   def widget
     if params[:location]
-      @location = Location.lookup_location(["abbreviation = ?", params[:location].strip])
+      @location = Location.find_by_abbreviation(params[:location].strip)
       if params[:county] and @location
-        @county = County.find_county(["name = ? and state_fipsid = ?", params[:county].strip, @location.fipsid])
+        @county = County.find_by_name_and_location_id(params[:county].strip, @location.id)
       end 
     end
     
@@ -292,13 +292,7 @@ class Ask::ExpertController < ApplicationController
     end
     render :layout => false
   end
-  
-  def get_aae_form_counties
-    return render( :nothing => true) if !params[:location_id] or  params[:location_id].strip == ''
-    render(:partial => 'county_list', :locals => {:location=> Location.find(params[:location_id]), :disabled => false} )
-  end
-  
-  
+
   def question_confirmation
     params[:submitted_question][:asked_question] = params[:q]
     flash.now[:googleanalytics] = '/ask-an-expert-search-results'

@@ -1,0 +1,14 @@
+<label>
+Location
+<%= select_tag 'location_id', options_for_select(@location_options, @submitted_question ? @submitted_question.location_id : nil) %>
+</label>
+
+		
+	<%= observe_field('location_id',
+	                  :update    => :county_list,
+	                  :url       => { :action => :get_counties },
+	                  :with      => "'location_id='+value") %>
+
+<p id="county_list">
+<%= render(:partial => 'shared/county_list', :locals => {:location=> @submitted_question ? @submitted_question.location : nil} ) %>
+</p>

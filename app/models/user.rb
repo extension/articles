@@ -44,6 +44,7 @@ class User < ActiveRecord::Base
   has_many :notifications, :dependent => :destroy
   
   has_many :widget_events
+  has_many :widgets
       
   belongs_to :institution
   belongs_to :position

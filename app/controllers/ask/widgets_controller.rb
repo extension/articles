@@ -32,6 +32,44 @@ class Ask::WidgetsController < ApplicationController
     end
   end
   
+  # created new named widget form
+  def new
+    @location_options = get_location_options
+  end
+  
+  # generates the iframe code for users to paste into their websites 
+  # that pulls the widget code from this app with provided location and county
+  def generate_widget_code
+    if params[:location_id]
+      location = Location.find(params[:location_id].strip.to_i)
+      if params[:county_id] and location
+        county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id)
+      end
+    end
+    
+    (location) ? location_str = location.abbreviation : location_str = nil
+    (county and location) ? county_str = county.name : county_str = nil
+    
+    @widget = Widget.new(params[:widget])
+    
+    if !@widget.valid?
+      @location_options = get_location_options
+      render :template => '/ask/widgets/new'
+      return
+    end
+    
+    #ToDo: Switch user to current user instead of using me as the default user
+    user = User.find(12)
+    
+    @widget.set_fingerprint(user)
+    @widget_url = url_for(:controller => 'ask/expert', :action => :widget, :location => location_str, :county => county_str, :id => @widget.fingerprint, :only_path => false)  
+    @widget.widget_url = @widget_url
+    @widget.author = user.login
+    
+    user.widgets << @widget
+    #User.current_user.widgets << @widget  
+  end
+  
   def get_widgets
     if params[:id] and params[:id] == 'inactive'
       @widgets = Widget.byname(params[:widget_name]).inactive

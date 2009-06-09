@@ -32,7 +32,8 @@ validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should 
 before_update :add_resolution
 #TODO: need to convert to tags
 #after_save :assign_parent_categories
-after_create :auto_assign_by_preference
+#ToDo: re-enable auto routing
+#after_create :auto_assign_by_preference
 
 has_rakismet :author_email => :external_submitter,
              :comment_type => "ask an expert question",
@@ -170,10 +171,12 @@ def auto_assign
     # associated with the question, then route to the uncategorized question wranglers 
     # that chose that location or county in their location preferences
     if self.county and self.location
-      assignee = pick_user_from_county(self.county, question_categories) 
+      assignee = pick_user_from_county(self.county) 
+      #assignee = pick_user_from_county(self.county, question_categories) 
     #if a state and no county were provided when the question was asked
     elsif self.location
-      assignee = pick_user_from_state(self.location, question_categories)
+      assignee = pick_user_from_state(self.location)
+      #assignee = pick_user_from_state(self.location, question_categories)
     end
   end
   

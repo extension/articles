@@ -11,6 +11,7 @@ class Widget < ActiveRecord::Base
   has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} and users.retired = false"
   has_many :submitted_questions
   has_many :widget_events
+  belongs_to :user
   
   validates_presence_of :name  
   validates_uniqueness_of :name, :case_sensitive => false
