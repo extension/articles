@@ -40,11 +40,18 @@ class ApplicationController < ActionController::Base
     return [['', '']].concat(locations.map{|l| [l.name, l.id]})
   end
   
+  def get_county_options
+    if params[:location_id] and params[:location_id].strip != '' and location = Location.find(params[:location_id])
+      counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
+      return [['', '']].concat(counties.map{|c| [c.name, c.id]})
+    end
+  end
+  
   def get_counties
-    return render( :nothing => true) if !params[:location_id] or params[:location_id].strip == '' or !(location = Location.find(params[:location_id]))
+    return render(:nothing => true) if !params[:location_id] or params[:location_id].strip == '' or !(location = Location.find(params[:location_id]))
     counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
-    county_options = [['', '']].concat(counties.map{|c| [c.name, c.id]})
-    render(:partial => 'shared/county_list', :locals => {:location=> Location.find(params[:location_id]), :county_options => county_options}, :layout => false)
+    @county_options = [['', '']].concat(counties.map{|c| [c.name, c.id]})
+    render(:partial => 'shared/county_list', :locals => {:location=> Location.find(params[:location_id])}, :layout => false)
   end
 
   def set_default_request_ip_address

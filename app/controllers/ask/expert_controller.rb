@@ -130,6 +130,8 @@ class Ask::ExpertController < ApplicationController
       set_titletag("Edit your Question - eXtension")
       begin
         @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+        @submitted_question.location_id = params[:location_id]
+        @submitted_question.county_id = params[:county_id]
       rescue
         @submitted_question = SubmittedQuestion.new
       end
@@ -139,7 +141,9 @@ class Ask::ExpertController < ApplicationController
       #@submitted_question = SubmittedQuestion.new_from_personal(@personal)      
       @submitted_question = SubmittedQuestion.new
     end
-    @locations = Location.find(:all, :order => 'entrytype, name')
+    
+    @location_options = get_location_options
+    @county_options = get_county_options
   end
   
   def location
@@ -283,7 +287,7 @@ class Ask::ExpertController < ApplicationController
   end
  
   # Get counties for location selected for aae question filtering
-  def get_counties
+  def get_aae_counties
     if params[:location] and params[:location].strip != Location::ALL
       location = Location.find(:first, :conditions => ["fipsid = ?", params[:location].strip])
       @counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
@@ -300,6 +304,8 @@ class Ask::ExpertController < ApplicationController
     set_titletag("Search Results for Ask an Expert - eXtension")
     
     @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+    @submitted_question.location_id = params[:location_id]
+    @submitted_question.county_id = params[:county_id]
     
     unless @submitted_question.valid?
       @locations = Location.find(:all, :order => 'entrytype, name')
@@ -310,14 +316,19 @@ class Ask::ExpertController < ApplicationController
   end
   
   def submit_question
-    @expert_question = ExpertQuestion.new(params[:expert_question])
-    @expert_question.status = 'submitted'
-    @expert_question.user_ip = request.remote_ip
-    @expert_question.user_agent = request.env['HTTP_USER_AGENT']
-    @expert_question.referrer = request.env['HTTP_REFERER']
-    @expert_question.spam = @expert_question.spam?    
+    @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+    @submitted_question.location_id = params[:location_id]
+    @submitted_question.county_id = params[:county_id]
+    @submitted_question.status = 'submitted'
+    @submitted_question.user_ip = request.remote_ip
+    @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
+    @submitted_question.referrer = request.env['HTTP_REFERER']
+    @submitted_question.spam = @submitted_question.spam?
+    @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
+    @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
+    @submitted_question.external_app_id = 'www.extension.org'
     
-    if !@expert_question.valid? || !@expert_question.save
+    if !@submitted_question.valid? || !@submitted_question.save
       flash[:notice] = 'There was an error saving your question. Please try again.'
       redirect_to :action => 'ask_an_expert'
       return

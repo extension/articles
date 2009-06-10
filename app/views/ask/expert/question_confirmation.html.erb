@@ -5,8 +5,8 @@
 <div class="aae-options">
     <p><strong>Your Question:</strong><br /><%= @submitted_question.asked_question %></p>
     
-    <p class="button2"><%= link_to 'Submit my Question', { :action => 'submit_question' }, :method => :post %></p> 
-    <p class="button2"><%= link_to 'Edit my Question', { :action => 'ask_an_expert', :submitted_question => params[:submitted_question] } %></p>
+    <p class="button2"><%= link_to 'Submit my Question', { :action => 'submit_question', :submitted_question => params[:submitted_question], :location_id => params[:location_id], :county_id => params[:county_id] }, :method => :post %></p> 
+    <p class="button2"><%= link_to 'Edit my Question', { :action => 'ask_an_expert', :submitted_question => params[:submitted_question], :location_id => params[:location_id], :county_id => params[:county_id] } %></p>
 </div>
 
 <!-- Google Search Result Snippet Begins -->
