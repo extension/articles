@@ -41,7 +41,7 @@ class Ask::WidgetsController < ApplicationController
   # that pulls the widget code from this app with provided location and county
   def generate_widget_code
     if params[:location_id]
-      location = Location.find(params[:location_id].strip.to_i)
+      location = Location.find_by_id(params[:location_id].strip.to_i)
       if params[:county_id] and location
         county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id)
       end
