@@ -35,7 +35,7 @@
 <body>
     <% form_remote_tag (:update => 'myFormOutput', 
                         :html => {:id => 'myForm'}, 
-                        :url => {:controller => :expert, :action => :create_from_widget, :id => @fingerprint}, 
+                        :url => {:controller => :widgets, :action => :create_from_widget, :id => @fingerprint}, 
                         :loading => "ask_submit.disabled=true; ask_submit.value='Submitting...'", 
                         :complete => "new Effect.Opacity('myFormOutput', {duration:7.0, from:1.0, to:0.0}); ask_submit.disabled=false; ask_submit.value='Ask'; submitted_question_question.value=''") do %>
 
