@@ -9,7 +9,7 @@
 <h2>Would you like to convert your response into an FAQ?</h2>
 
 <p>
-   <% form_tag({:controller => 'expert', :action => 'new_faq'}) do %>
+   <% form_tag({:controller => 'ask/faq', :action => 'new_faq'}) do %>
      <%= hidden_field_tag(:question, @revision.question_text) %>
      <%= hidden_field_tag(:answer, @revision.answer) %>
      <%= hidden_field_tag(:squid, @submitted_question.id) %>

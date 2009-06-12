@@ -7,7 +7,7 @@
     <h2>You can search again or answer the question</h2>
     
     <span>Search again</span>
-    <% form_tag({:action => :show_duplicates}, {:method => 'get'}) do %>
+    <% form_tag({:controller => 'ask/faq', :action => :show_duplicates}, {:method => 'get'}) do %>
     <p>
         <%= text_field_tag "query", params[:query], :size => 30 %>
         <%= submit_tag "Search" %>
@@ -35,7 +35,7 @@
     <div id="search_for_answer">
     <h2>Don't see a good answer?</h2>
 
-    <% form_tag({:action => :show_duplicates}, {:method => 'get'}) do %>
+    <% form_tag({:controller => 'ask/faq', :action => :show_duplicates}, {:method => 'get'}) do %>
     
     <h4>Search again</h4>
     <p>

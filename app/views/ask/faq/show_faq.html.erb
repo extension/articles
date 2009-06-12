@@ -17,7 +17,7 @@
 <% else %>
         <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", {:controller => 'expert', :action => 'question', :id => @submitted_question.id} %>.</h3>
 <% end %>
-    <p class="clear"><strong><%= link_to "Return to search results", :action => 'show_duplicates', :squid => @submitted_question, :query => params[:query] %></strong></p>
+    <p class="clear"><strong><%= link_to "Return to search results", :controller => 'ask/faq', :action => 'show_duplicates', :squid => @submitted_question, :query => params[:query] %></strong></p>
 
 
 <%= render(:partial => "questions/question", :locals => {:question => @question}) %>
