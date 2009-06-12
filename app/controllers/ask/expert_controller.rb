@@ -784,13 +784,6 @@ class Ask::ExpertController < ApplicationController
     return Category.find(id).name
   end
   
-  def email_aae_retrieve_error(host, error_message)
-    message = "Error Message: " + error_message + "\n\n\n"
-    email = ErrorMailer.create_aae_retrieve_error(host, message)
-    email.set_content_type("text/plain")
-    ErrorMailer.deliver(email)
-  end
-  
   def filter_string_helper
     if !@category and !@location and !@county and !@source
       return 'All'
