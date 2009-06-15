@@ -1174,6 +1174,23 @@ class User < ActiveRecord::Base
     def per_page
       25
     end
+    
+  
+    # used for parameter searching
+    def find_by_email_or_extensionid_or_id(value)
+      if(value.to_i != 0)
+        # assume id value
+        return User.find_by_id(value)
+      elsif (value =~ /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/ )
+        # looks like an email address
+        return User.find_by_email(value)
+      elseif (value =~ /^[a-zA-Z]+[a-zA-Z0-9]+$/) 
+        # looks like a valid extensionid 
+        return User.find_by_login(value)
+      else
+        return nil
+      end
+    end
         
     def searchcolleagues(opts = {})
       adminsearch = opts.delete(:adminsearch)

@@ -38,7 +38,7 @@ module ParamExtensions
           when :county      then County.find_by_id(value)
           when :position    then Position.find_by_id(value)
           when :institution then Institution.find_by_id(value)
-          when :user        then ((value.to_i != 0) ? User.find_by_id(value) : User.find_by_login(value))
+          when :user        then User.find_by_email_or_extensionid_or_id(value)
           when :activity_application then ActivityApplication.find_by_id(value)
           else value
         end
@@ -58,7 +58,7 @@ module ParamExtensions
           when :county     then "County.find_by_id(#{var_name})"
           when :position   then "Position.find_by_id(#{var_name})"
           when :institution then "Institution.find_by_id(#{var_name})"
-          when :user       then "((#{var_name}.to_i != 0) ? User.find_by_id(#{var_name}) : User.find_by_login(#{var_name}))"
+          when :user       then "User.find_by_email_or_extensionid_or_id(#{var_name})"
           when :activity_application then "ActivityApplication.find_by_id(#{var_name})"
           else nil
         end
@@ -340,9 +340,10 @@ module ParamExtensions
 
         def instance_method_already_implemented?(method_name)
           method_name = method_name.to_s
-          return (method_name =~ /^id(=$|\?$|$)/)
-        end
-
+          return true if (method_name =~ /^id(=$|\?$|$)/)
+          @_defined_class_methods ||= (self.public_instance_methods(false) | self.private_instance_methods(false) | self.protected_instance_methods(false) ).map(&:to_s).to_set
+          @_defined_class_methods.include?(method_name)
+        end        
 
         def define_parameter_methods
           return if generated_methods?
@@ -398,17 +399,13 @@ module ParamExtensions
               class_eval(method_definition, __FILE__, __LINE__)
             rescue SyntaxError => err
               generated_methods.delete(parameter_name)
-              if logger
-                logger.warn "Exception occurred during reader method compilation."
-                logger.warn "Maybe #{parameter_name} is not a valid Ruby identifier?"
-                logger.warn err.message
-              end
+              # if logger
+              #   logger.warn "Exception occurred during reader method compilation."
+              #   logger.warn "Maybe #{parameter_name} is not a valid Ruby identifier?"
+              #   logger.warn err.message
+              # end
             end
           end
-
-
-
-
 
           # end privates
       end #  ClassMethods

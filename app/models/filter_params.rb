@@ -29,17 +29,21 @@ class FilterParams < ParamExtensions::ParamsFilter
   wantsparameter :activityapplication, :activity_application
   wantsparameter :activityentrytype, :string
   wantsparameter :activityaddress, :string
-  wantsparameter :activity, :string #TODO sanity check
-  wantsparameter :activitygroup, :string # TODO sanity check
+  wantsparameter :activity
+  wantsparameter :activitygroup
   
   wantsparameter :ignorecommunity, :community
   wantsparameter :communityactivity, :string
 
   # gdata params
-  # published-min, published-max
-  # updated-min, updated-max
+  wantsparameter :author, :user
+  wantsparameter 'published-min', :datetime
+  wantsparameter 'published-max', :datetime
+  wantsparameter 'updated-min', :datetime
+  wantsparameter 'updated-max', :datetime
+  
+  # TODO:
   # alt
-  # author
   # category
   # q
   # prettyprint
@@ -47,7 +51,28 @@ class FilterParams < ParamExtensions::ParamsFilter
   
   
   
+  # -----------------------------------
+  # instance methods
+  # -----------------------------------
   
+  # sanity checks provided activity string
+  def activity
+    if(activitycodes = Activity.activity_to_codes(read_parameter(:activity)))
+      return read_parameter(:activity)
+    else
+      return nil
+    end
+  end
+  
+  # sanity checks provided activitygroup string
+  def activitygroup
+    if(activitycodes = Activity.activitygroup_to_types(read_parameter(:activitygroup)))
+      return read_parameter(:activitygroup)
+    else
+      return nil
+    end
+  end
+    
 
   #   # dates
   #   if(!params[:dateinterval].nil?)
@@ -62,23 +87,6 @@ class FilterParams < ParamExtensions::ParamsFilter
   #   end
   # 
   #   
-  # 
-
-  # 
-
-  #   
-  #   
-  #   if(!params[:activity].nil?)
-  #     if(activitycodes = Activity.activity_to_codes(params[:activity]))
-  #       returnoptions[:activity] = params[:activity]
-  #     end
-  #   end
-  #   
-  #   if(!params[:activitygroup].nil?)
-  #     if(activitycodes = Activity.activitygroup_to_types(params[:activitygroup]))
-  #       returnoptions[:activitygroup] = params[:activitygroup]
-  #     end
-  #   end
   # 
 
 end
