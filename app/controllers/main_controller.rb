@@ -66,22 +66,22 @@ class MainController < DataController
     if @category.name == 'all'
       
       @news = Article.bucketed_as('news').ordered.limit(3)
-      @popular_learning_lessons = Article.bucketed_as('learning lessons').ordered(Article.orderings['Most Useful']).limit(3)
+      @recent_learning_lessons = Article.bucketed_as('learning lessons').ordered(Article.orderings['Newest to oldest']).limit(3)
       @faqs = Faq.limit(3).ordered
       @calendar_events = Event.ordered.within(3, @date)
-      @articles = Article.ordered(Article.orderings['Most Useful']).limit(3)
+      @articles = Article.ordered(Article.orderings['Newest to oldest']).limit(3)
       
     else
       
       @news = Article.bucketed_as('news').tagged_with_content_tag(params[:category]).ordered.limit(3)
-      @popular_learning_lessons = 
-        Article.bucketed_as('learning lessons').tagged_with_content_tag(params[:category]).ordered(Article.orderings['Most Useful']).limit(3)
+      @recent_learning_lessons = 
+        Article.bucketed_as('learning lessons').tagged_with_content_tag(params[:category]).ordered(Article.orderings['Newest to oldest']).limit(3)
           
       @faqs = Faq.tagged_with_content_tag(@category.name).ordered.limit(3)
       @calendar_events =  Event.tagged_with_content_tag(@category.name).ordered.limit(5).after(@date)
     
       @articles = Article.tagged_with_content_tag(params[:category]).
-          ordered(Article.orderings['Most Useful']).limit(8) unless @community
+          ordered(Article.orderings['Newest to oldest']).limit(8) unless @community
         
       @recent_articles = Article.tagged_with_content_tag(params[:category]).
               ordered.limit(3) unless @in_this_section

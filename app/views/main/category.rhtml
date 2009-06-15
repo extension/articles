@@ -1,6 +1,4 @@
 <% @resource_area_feeds = true %>
-<% @hide_popular = true %>
-
 
 <h1><%=@page_title_text%></h1>
 <h2><%=@header_description%></h2>
@@ -84,7 +82,7 @@
 
 <%if @articles && @articles.length > 0%>
     <div class="homesection">
-        <h2>Most Popular Articles</h2>
+        <h2>Recent Articles</h2>
         <div class = "whatsnewbox">
             <%for article in @articles%>
   		       <dl>
@@ -98,11 +96,11 @@
 <%end%>
 
 
-<%if @popular_learning_lessons.length > 0%>
+<%if @recent_learning_lessons.length > 0%>
     <div class="homesection">
-        <h2>Most Popular Learning Lessons</h2>
+        <h2>Recent Learning Lessons</h2>
 	    <div class = "whatsnewbox">
-            <%for lesson in @popular_learning_lessons%>
+            <%for lesson in @recent_learning_lessons%>
              <dl>
                <dt><%= expanded_time_print(lesson.wiki_updated_at)%><dt>
                <dd><%= link_to lesson.title, lesson.id_and_link %><dd>
