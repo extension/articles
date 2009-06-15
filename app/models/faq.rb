@@ -13,7 +13,7 @@ class Faq < ActiveRecord::Base
     
   #--- New stuff
   has_content_tags
-  ordered_by :orderings => {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'heureka_published_at DESC'},
+  ordered_by :orderings => {'Newest to oldest'=> 'heureka_published_at DESC'},
              :default => "#{quoted_table_name}.heureka_published_at DESC"
   
   #-- 'legacy'
@@ -21,7 +21,6 @@ class Faq < ActiveRecord::Base
   default_url_options[:host] = AppConfig.configtable['urlwriter_host']
   default_url_options[:port] = AppConfig.configtable['urlwriter_port'] unless AppConfig.configtable['urlwriter_port'] == 80
   
-  acts_as_rateable
   has_many :expert_questions
   
   PUBLISHED = "published"
@@ -180,10 +179,6 @@ class Faq < ActiveRecord::Base
   
   def self.assign_tags(faq)
     faq.tag_list.add(*faq.categories.split(',')) if faq.categories
-  end
-  
-  def self.find_faq_ratings
-    Rating.find_by_sql(["Select * from ratings where rateable_type='Faq'"])
   end
   
 end

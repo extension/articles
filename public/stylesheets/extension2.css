@@ -382,7 +382,6 @@ div#slider2.cop_slider dl {background: url(/images/layout/cop_featurebgnd_bottom
 .searchresult {width: 570px; border: 0px solid #000;padding:0 1em 0 6em;margin:0;}
 .searchresult li {margin:0 0 2em;font-size:1.4em;}
 .searchresult li span {display:block;color:#999;font-size:.85em;}
-.searchresult li span.item-rating {float:left; margin-right:1em;}
 
 
 
@@ -431,10 +430,6 @@ table.dottedtable { border-width: 1px 1px 1px 1px; border-spacing: 0px; border-s
 
 .currentscore {padding: 5px; border:1px solid #efdb95; background: #fff0bb; text-align: center;}
 .headline {padding-left: 0px; width: 500px;}
-.ratingbox { padding: 5px; border:1px solid #ddd; background: #f4f4f4; text-align: center; width: 300px;margin-bottom:1em;}
-.currentrating {border:1px solid #efdb95; background: #fff0bb;color:#C09F2C;}
-.currentrating h2 {color:#C09F2C !important;}
-.currentrating strong {color:#333;font-weight:normal;}
 .related {padding:.75em; border:1px solid #bbb; background:#ebebeb; text-align:left;}
 .related h4 {margin:0;padding:0;}
 .related p {font-size:1.2em;}

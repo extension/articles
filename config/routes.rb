@@ -21,8 +21,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'admin/:action/:id', :controller => 'admin'
   map.connect 'admin/:action', :controller => 'admin'
   
-  map.connect 'rating/:action', :controller => 'rating'
-  map.connect 'rating/:action/:id', :controller => 'rating'
   map.connect 'main/:action', :controller => 'main'
   
   # Routes for widgets that are named and tracked

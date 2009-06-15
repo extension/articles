@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class SignupController < ApplicationController
+class People::SignupController < ApplicationController
   include AuthCheck
   include ApplicationHelper
   include LoggingHelper

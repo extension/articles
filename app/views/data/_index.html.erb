@@ -5,18 +5,9 @@
 </div>
 
 <div class="sortbox">
-    <h3>Filter and sort using the options below or type a phrase in the search box above.</h3>
-    
+    <h3>Filter by category using the menu below.</h3>
     <%= render :partial => 'data/selector' %>
-    
-    <fieldset class="sort_options">
-        <p>Sort by:</p>
-        <% klass.orderings.each{|name, ordering|%>
-            <%= form_tag( {:category => @category.name, :page => 1, :order => ordering}, {:method => :get})%>
-                <p><input type="radio" onclick='this.form.submit()' <%='checked="checked"' if ordering == params[:order] %> /> <label><%= name %></label></p>
-            </form>
-	    <%}%>	    
-    </fieldset>
+    <p><em>Items are sorted by most recently updated.</em>r</p>
 </div>
 
 <%= render :partial => "shared/will_paginator", :locals => { :collection => items } %>
@@ -26,7 +17,6 @@
 <% items.each_with_index do |item, i| %>
     <li>
         <%= link_to_page item %>
-        <span class="item-rating"><%= star_ranking item %></span>
         <span class="published">Published: <%= expanded_time_print(item.published_at)%></span>
     </li>
 <% end %>

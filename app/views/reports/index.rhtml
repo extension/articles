@@ -1,28 +1,23 @@
 <h1>Reports</h1>
+<em>Public site reports are currently in transition, check back later for more data and information about published content</em>
 
-<h3>Ratings Reports</h3>
+<h3>Published Item Count</h3>
 <div id='report'>
-
-    <table cellspacing="0" summary="Ratings " class="report">
+    <table cellspacing="0" summary="Item Counts" class="report">
 	 <tr>
-		    <th scope="col">Scope</th> 
-		    <th scope="col">Average Rating </th>
-		    <th scope="col">Number of Ratings </th>
-		    <th scope="col">Standard Deviation </th>
-
+		    <th scope="col">Item</th> 
+		    <th scope="col">Published Count</th>
 	   </tr>
-	   <tr><td>Overall Rating </td><td><%= @allavg%></td><td><%= @allN%></td><td><%= @allstdev%></td></tr>
-	   <tr><td>All FAQ Ratings </td><td><%= @faqsavg%></td><td><%= @faqsN%></td><td><%= @faqsstdev%></td></tr>
-	   <tr><td>All Article Ratings </td><td><%= @artsavg%></td><td><%= @artsN%></td><td><%= @artsstdev%></td></tr>
+	   <tr>
+	       <td>Articles</td>
+	       <td><%= Article.all.count %></td>
+       </tr>
+           <td>Faqs</td>
+           <td><%= Faq.all.count %></td>
+       <tr>
+       </tr>
+           <td>Events</td>
+           <td><%= Event.all.count %></td>
+       <tr>
     </table>
-<p></p>
 </div>
-	
-<h2>Select a Ratings Report</h2>	
-		
-<ul>
-   <li><%= link_to "Overall Ratings Report by Category", :action => 'overall_ratings_by_category'%></li>
-   <li><%= link_to "FAQ Ratings Report by Category", :action => 'faq_ratings_by_category'%></li>
-   <li><%= link_to "Articles Ratings Report by Category", :action => 'wiki_ratings_by_category'%></li>
-  
-</ul>

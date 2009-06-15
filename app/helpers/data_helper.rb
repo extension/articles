@@ -89,14 +89,6 @@ module DataHelper
     return '<img height="135" '+src+' alt="" />'
   end
   
-  def star_ranking(content)
-    if content.average_ranking != nil
-      image_tag "layout/#{content.average_ranking.to_i.to_s}stars.gif", :alt => "rating: #{content.average_ranking.to_i.to_s} stars"
-    else
-      "<span class='not_rated'>not rated</span>"
-    end
-  end
-
   def community_image(community)
     category_name = community.primary_content_tag_name
     file_name = category_name.gsub(/[,_]/,'').gsub(/ /,'_').downcase

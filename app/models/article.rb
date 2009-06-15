@@ -16,7 +16,7 @@ class Article < ActiveRecord::Base
   before_update :check_content
   
   has_content_tags
-  ordered_by :orderings => {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'wiki_updated_at DESC'},
+  ordered_by :orderings => {'Newest to oldest'=> 'wiki_updated_at DESC'},
              :default => "#{self.table_name}.wiki_updated_at DESC"
              
   has_many :article_buckets
@@ -26,8 +26,6 @@ class Article < ActiveRecord::Base
   include ActionController::UrlWriter
   default_url_options[:host] = AppConfig.configtable['urlwriter_host']
   default_url_options[:port] = AppConfig.configtable['urlwriter_port'] unless AppConfig.configtable['urlwriter_port'] == 80
-  
-  acts_as_rateable
   
   named_scope :bucketed_as, lambda{|bucketname|
     {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}

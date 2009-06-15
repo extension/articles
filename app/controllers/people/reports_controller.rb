@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class ReportsController < ApplicationController
+class People::ReportsController < ApplicationController
   layout 'reports'
   before_filter :login_optional
   
