@@ -14,7 +14,7 @@ body, html {background: url(/images/layout/youth/Youthbackground.jpg) repeat lef
 
 .homagepic {width: 250px; margin-bottom: 20px; margin-left: 1px; padding: 0; background-color: black;}
 
-.leftcolumn {float: left; margin-right: 0px; width: 658px; padding: 15px; padding-bottom: 150px; margin-top: 0px; border-left: 1px solid #ebebeb;background:#fff;}
+.leftcolumn {float: left; margin-right: 0px; width: 658px; padding: 15px; margin-top: 0px; border-left: 1px solid #ebebeb;background:#fff;}
 
 a:link {cursor: pointer; text-decoration: none; color: #336699}
 .leftcolumn h1 {font-size: 2.7em;font-weight:normal; color: #b64810; margin:0 0 0;padding:0;}

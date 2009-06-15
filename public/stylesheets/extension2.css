@@ -64,7 +64,7 @@ code {font-size:1.1em;}
 
 /* COLUMN SETUP */
 
-.leftcolumn {float: left; margin-right: 0px; width: 658px; padding: 15px; padding-bottom: 150px; margin-top: 0px; background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;  border-left: 1px solid #ebebeb}
+.leftcolumn {float: left; margin-right: 0px; width: 658px; padding: 15px; margin-top: 0px; background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;  border-left: 1px solid #ebebeb}
 .rightcolumn {float: left; margin-right: 0px; width: 273px; margin-top: 0px;/*padding-top:1em;*/}
 .leftcolumn.fullwidth {width:932px;}
 
