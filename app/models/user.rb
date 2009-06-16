@@ -1453,9 +1453,10 @@ class User < ActiveRecord::Base
     end
 
     def is_answerer?
-      answering_role = Role.find_by_name(Role::AUTO_ROUTE)
+      pubsite_answering_role = Role.find_by_name(Role::AUTO_ROUTE)
+      widget_answering_role = Role.find_by_name(Role::WIDGET_AUTO_ROUTE)
 
-      if UserRole.find(:first, :conditions => "role_id = #{answering_role.id} and user_id = #{self.id}") 
+      if UserRole.find(:first, :conditions => "(role_id = #{pubsite_answering_role.id} or role_id = #{widget_answering_role.id}) and user_id = #{self.id}") 
         return true
       else
         return false
