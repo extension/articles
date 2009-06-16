@@ -35,6 +35,12 @@ class Ask::ExpertController < ApplicationController
       return
     end
     
+    if @submitted_question.resolved?
+      flash[:failure] = "Question has already been resolved."
+      redirect_to :action => :question, :id => @submitted_question
+      return
+    end
+    
     if request.post?
       if !params[:assignee_login]
         flash[:failure] = "You must select a user."
@@ -473,29 +479,6 @@ class Ask::ExpertController < ApplicationController
     
   end
   
-  def reserve_question
-    if request.post?
-      if params[:sq_id] and @submitted_question = SubmittedQuestion.find_by_id(params[:sq_id].strip) and !@submitted_question.resolved?
-        if User.current_user.id != @submitted_question.assignee.id
-          previous_assignee_email = @submitted_question.assignee.email
-          @submitted_question.assign_to(User.current_user, User.current_user, nil) 
-          # if the question is currently assigned to someone,
-          # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
-          ExpertMailer.deliver_assigned(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), request.host)
-          ExpertMailer.deliver_reassign_notification(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), previous_assignee_email, request.host) 
-        end
-        SubmittedQuestionEvent.log_working_on(@submitted_question, User.current_user)
-        redirect_to :controller => :expert, :action => :question, :id => @submitted_question.id
-      else
-        flash[:message] = "Invalid submitted question number."
-        redirect_to :controller => :expert, :action => :incoming
-      end
-    else
-      do_404
-      return
-    end
-  end
-  
   def get_subcats
     parent_cat = Category.find_by_id(params[:category].strip) if params[:category] and params[:category].strip != '' and params[:category].strip != "uncat"
     if parent_cat 
@@ -664,10 +647,10 @@ class Ask::ExpertController < ApplicationController
   def reject    
     @submitted_question = SubmittedQuestion.find_by_id(params[:id])
     @submitter_name = @submitted_question.get_submitter_name
-    if @submitted_question
-      if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER
+    if @submitted_question  
+      if @submitted_question.resolved?
         flash[:failure] = "This question has already been resolved."
-        redirect_to :controller => :expert, :action => :question, :id => @submitted_question.id
+        redirect_to :controller => :expert, :action => :question, :id => @submitted_question
         return
       end
       
@@ -679,7 +662,7 @@ class Ask::ExpertController < ApplicationController
           return
         end
         
-        if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER
+        if @submitted_question.resolved?
           flash.now[:failure] = "This question has already been resolved."
           render nil
           return
