@@ -148,17 +148,11 @@ class NumbersController < ApplicationController
   def summary
     @filteredparams = FilterParams.new(params)
     
-    forcecacheupdate = params[:forcecacheupdate].nil? ? false : (params[:forcecacheupdate] == 'true')
-    baseoptions = {:forcecacheupdate => forcecacheupdate}
-
-    if(params[:community])
-      begin
-        @community = Community.find(params[:community])
-        baseoptions[:filtercommunity] = @community
-      rescue ActiveRecord::RecordNotFound  
-        flash[:error] = 'That community does not exist'  
-        return(redirect_to(:action => 'index'))
-      end
+    if(params[:community] and @filteredparams.community.nil?)
+      flash[:error] = 'That community does not exist'  
+      return(redirect_to(:action => 'index'))
+    else
+      baseoptions = {:filtercommunity => @filteredparams.community, :forcecacheupdate => @filteredparams.forcecacheupdate}
     end
     
     totaloptions = baseoptions.merge({:findoptions => @filteredparams.findoptions})

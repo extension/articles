@@ -8,7 +8,10 @@
 class DataController < ApplicationController
   layout 'people'
   before_filter :login_optional
-    
+  if defined?(Footnotes::Filter)
+    skip_after_filter Footnotes::Filter
+  end
+  
   def activitytable
     error = false
     errors = []

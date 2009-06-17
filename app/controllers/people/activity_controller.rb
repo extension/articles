@@ -43,7 +43,7 @@ class ActivityController < ApplicationController
     @page_title = "Activity for #{@showuser.fullname}"
     feedtitle = "#{@showuser.fullname} Activity Atom Feed"
 
-    urlparams = @filteredparameters.included_parameters_hash.merge({:id => @showuser.id, :feedkey => @currentuser.feedkey})
+    urlparams = @filteredparameters.option_values_hash.merge({:id => @showuser.id, :feedkey => @currentuser.feedkey})
     urlparams.delete(:dateinterval)
     urlparams.delete(:datefield)
     urlparams.merge!({:controller => :feeds, :action => :showuser})
@@ -121,7 +121,7 @@ class ActivityController < ApplicationController
     feedtitle = "Activity Atom Feed #{filter_string(@findoptions.merge({:nolink => true}))}"
     
     
-    urlparams = @filteredparameters.included_parameters_hash.merge({:feedkey => @currentuser.feedkey})
+    urlparams = @filteredparameters.option_values_hash.merge({:feedkey => @currentuser.feedkey})
     urlparams.delete(:dateinterval)
     urlparams.delete(:datefield)
     urlparams.merge!({:controller => :feeds, :action => :list})
@@ -135,7 +135,7 @@ class ActivityController < ApplicationController
       @findoptions.merge!({:paginate => true, :page => params[:page]})
       @activitylist = Activity.filtered(@findoptions).paginate(:all, :page => params[:page], :order => @filteredparams.order)
       if((@activitylist.length) > 0)
-        urloptions = @filteredparams.included_parameters_hash
+        urloptions = @filteredparams.option_values_hash
         urloptions.merge!({:paginate => true, :page => params[:page]})
         urloptions.merge!({:action => :list, :download => 'csv'})
         @csvreporturl = CGI.escapeHTML(url_for(urloptions))

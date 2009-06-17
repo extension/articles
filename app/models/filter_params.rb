@@ -7,11 +7,15 @@
 
 class FilterParams < ParamExtensions::ParamsFilter
   
-  # defines
-  
+  # -----------------------------------
+  # instance methods
+  # -----------------------------------
   # per specification
   ALLOWED_GDATA_ALT_TYPES = ['atom','rss','json','json-in-script','atom-in-script','rss-in-script']
-  
+
+  # -----------------------------------
+  # filtered parameters
+  # -----------------------------------
   wantsparameter :community, :community
   wantsparameter :location, :location
   wantsparameter :county, :county
@@ -43,6 +47,8 @@ class FilterParams < ParamExtensions::ParamsFilter
   wantsparameter :ignorecommunity, :community
   wantsparameter :communityactivity, :string
 
+  wantsparameter :forcecacheupdate, :boolean, false
+  
   # gdata params - some are quoted because symbols can't have dashes
   wantsparameter :author, :user
   wantsparameter 'published-min', :datetime  # note, does not validate for RFC 3339 format per spec.
@@ -57,14 +63,19 @@ class FilterParams < ParamExtensions::ParamsFilter
   wantsparameter :q, :string # TODO: parse for terms and phrases, and negative values
   wantsparameter :category, :string # TODO: parse for ANDs and ORs (ANDs = ',' ORs = | )
 
-
+  attr_accessor :additional_options
   
-  
+  def initialize(parameters = nil)
+    @additional_options = Hash.new
+    super
+  end
   
   # -----------------------------------
   # instance methods
   # -----------------------------------
 
+  # ------------ sanity checking for parameters -----------
+  
   # sanity checks provided activity string
   def activity
     if(activitycodes = Activity.activity_to_codes(read_parameter(:activity)))
@@ -91,46 +102,7 @@ class FilterParams < ParamExtensions::ParamsFilter
       return nil
     end
   end
-  
-  def included_parameters_hash(options = {})
-    validate_wanted_parameters = (options[:validate_wanted_parameters].nil? ? true : options[:validate_wanted_parameters])
-    include_unfiltered_parameters = (options[:include_unfiltered_parameters].nil? ? false : options[:include_unfiltered_parameters])
-    returnhash = {}
     
-    if(include_unfiltered_parameters)
-      @unfilteredparameters.each do |key,value|
-        returnhash[key.to_sym] = value
-      end
-    end
-    
-    if(!validate_wanted_parameters)
-      @filteredparameters.each do |key,value|
-        if(!value.nil?)
-          returnhash[key.to_sym] = value
-        end
-      end
-    else
-      @filteredparameters.each do |key,value|
-        if(!value.nil? and (returnvalue = self.send(key)))
-          returnhash[key.to_sym] = returnvalue
-        end
-      end
-    end
-    
-    return returnhash
-  end
-  
-  # this is a compatibility function to have the @findoptions = check_for_filters continue to work
-  def findoptions
-    findoptions = {}
-    @filteredparameters.each do |key,value|
-      if(!value.nil? and (returnvalue = self.send(key)))
-        findoptions[key.to_sym] = returnvalue
-      end
-    end
-    return findoptions
-  end
-  
   def order(defaultcolumns=nil,defaultdirection='ASC')
     if(read_parameter(:order).nil?)
       # check orderby and sortorder
@@ -166,9 +138,59 @@ class FilterParams < ParamExtensions::ParamsFilter
     return "#{returncolumns} #{returndirection}"
   end
   
-  # def order_from_params
-  # def additionaldata_from_params
+  # ---------- end sanity checking for parameters ---------
   
+  def add_option(key,value)
+    @additional_options[key] = value
+  end
+  
+  def option_values_hash(options = {})
+    validate_wanted_parameters = (options[:validate_wanted_parameters].nil? ? true : options[:validate_wanted_parameters])
+    include_unfiltered_parameters = (options[:include_unfiltered_parameters].nil? ? false : options[:include_unfiltered_parameters])
+    include_additional_options = (options[:include_additional_options].nil? ? false : options[:include_additional_options])
+    
+    returnhash = {}
+    
+    if(include_additional_options)
+      @additional_options.each do |key,value|
+        returnhash[key.to_sym] = value
+      end
+    end
+    
+    if(include_unfiltered_parameters)
+      @unfilteredparameters.each do |key,value|
+        returnhash[key.to_sym] = value
+      end
+    end
+    
+    if(!validate_wanted_parameters)
+      @filteredparameters.each do |key,value|
+        if(!value.nil?)
+          returnhash[key.to_sym] = value
+        end
+      end
+    else
+      @filteredparameters.each do |key,value|
+        if(!value.nil? and (returnvalue = self.send(key)))
+          returnhash[key.to_sym] = returnvalue
+        end
+      end
+    end
+    
+    return returnhash
+  end
+  
+  # this is a compatibility function to have the @findoptions = check_for_filters continue to work
+  def findoptions
+    findoptions = {}
+    @filteredparameters.each do |key,value|
+      if(!value.nil? and (returnvalue = self.send(key)))
+        findoptions[key.to_sym] = returnvalue
+      end
+    end
+    return findoptions
+  end
+
 
   #   # dates
   #   if(!params[:dateinterval].nil?)

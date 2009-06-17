@@ -117,7 +117,7 @@ class FeedsController < ApplicationController
     primary_content_tag_name
     feedoptions = {}
 
-    urlparams = @filteredparams.included_parameters_hash
+    urlparams = @filteredparams.option_values_hash
     urlparams.merge!({:controller => :feeds, :action => :list})
     if(@feedkey)
       urlparams.merge!({:feedkey => @feedkey})
