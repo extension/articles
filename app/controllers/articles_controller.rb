@@ -97,7 +97,7 @@ class ArticlesController < DataController
       set_titletag("#{article.title} - eXtension")
     end
     
-    @community_tags = article.tags.community
+    @community_tags = article.tags.community_content_tags
     adtag = @community_tags[0] if @community_tags and @community_tags.length > 0
     @sponsors = Advertisement.prioritized_for_tag(adtag) if adtag
     

@@ -9,6 +9,8 @@ include GroupingExtensions
 class Institution < ActiveRecord::Base
   include Logo
   serialize :additionaldata
+  
+  # entrytype
   INSTITUTION_INVALID = 0
   LANDGRANT = 1
   STATE = 2

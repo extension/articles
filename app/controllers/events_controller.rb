@@ -19,7 +19,7 @@ class EventsController < DataController
     @event = Event.find(params[:id])
     return unless @event
     @published_content = true
-    @community_tags = @event.tags.community
+    @community_tags = @event.tags.community_content_tags
     @youth = true if @topic and @topic.name == 'Youth'
     set_title("#{@event.title.titleize} - eXtension Event",  @event.title.titleize)
     set_titletag("#{@event.title.titleize} - eXtension Event")

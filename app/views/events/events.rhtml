@@ -30,7 +30,7 @@
     <dd><%= time_print(event.start) %></dd>
     <dd>
         <span class="community">Community:</span>
-        <%community_tags = event.tags.community %>
+        <%community_tags = event.tags.community_content_tags %>
         <%for community_tag in community_tags%>
             <%= link_to community_tag.content_community.public_name, site_index_url(:category => community_tag.name)%>
         <%end%>
