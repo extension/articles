@@ -46,7 +46,7 @@ class ActivityController < ApplicationController
     urlparams = @filteredparameters.included_parameters_hash.merge({:id => @showuser.id, :feedkey => @currentuser.feedkey})
     urlparams.delete(:dateinterval)
     urlparams.delete(:datefield)
-    urlparams.merge!{:controller => :feeds, :action => :showuser}
+    urlparams.merge!({:controller => :feeds, :action => :showuser})
     @feedurl = url_for(urlparams)
     @feedlink = alt_feed_link(feedtitle,@feedurl)
     respond_to do |format|
@@ -124,7 +124,7 @@ class ActivityController < ApplicationController
     urlparams = @filteredparameters.included_parameters_hash.merge({:feedkey => @currentuser.feedkey})
     urlparams.delete(:dateinterval)
     urlparams.delete(:datefield)
-    urlparams.merge!{:controller => :feeds, :action => :list}
+    urlparams.merge!({:controller => :feeds, :action => :list})
     @feedurl = url_for(urlparams)    
     @feedlink = alt_feed_link(feedtitle,@feedurl)
     
