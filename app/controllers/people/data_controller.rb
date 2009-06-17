@@ -15,27 +15,25 @@ class DataController < ApplicationController
   def activitytable
     error = false
     errors = []
-    
-    forcecacheupdate = params[:forcecacheupdate].nil? ? false : (params[:forcecacheupdate] == 'true')
-    datatype = params[:datatype].nil? ? 'hourly' : params[:datatype]
-    graphtype = params[:graphtype].nil? ? ((datatype == 'weekday' or datatype == 'hourly') ? 'column' : 'area') : params[:graphtype]
+    @filteredparams = FilterParams.new(params)
+        
+    datatype =  @filteredparams.datatype || 'hourly'
+    graphtype = @filteredparams.graphtype || ((datatype == 'weekday' or datatype == 'hourly') ? 'column' : 'area') 
      
-    tqxparams = get_tqx_params(params)
+    tqxparams = @filteredparams.tqx
     responseHandler = params[:responseHandler] || "google.visualization.Query.setResponse"
     version = 0.5
     reqId = tqxparams['reqId'] || 0
 
     comparisons = check_for_table_comparisons
     if(comparisons.blank?)
-      @filteredparams = FilterParams.new(params)
       @findoptions = @filteredparams.findoptions
-      
-      @activity = ActivityContainer.new({:findoptions => @findoptions, :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => forcecacheupdate})
+      @activity = ActivityContainer.new({:findoptions => @findoptions, :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => @filteredparams.forcecacheupdate})
       @json_data_table = @activity.table
     else
       containers = []
       comparisons.each do |comparison|
-        containers << ActivityContainer.new({:findoptions => comparison, :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => forcecacheupdate})
+        containers << ActivityContainer.new({:findoptions => comparison, :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => @filteredparams.forcecacheupdate})
       end
       normalize = params[:normalize].nil? ? false : (params[:normalize] == 'true')
       @json_data_table = ActivityContainer.comparisontable(containers,normalize)
@@ -50,6 +48,9 @@ class DataController < ApplicationController
     render :text => json_output_string
   end
   
+  #
+  # TODO: this should probably be changed to use "person" or "author" - but this has been provided to NC already
+  # 
   def publicprofile
     if(!params[:userid].nil?)
       @showuser = User.find_by_id(params[:userid])
@@ -75,20 +76,6 @@ class DataController < ApplicationController
   end
   
   protected
-  
-  def get_tqx_params(params)
-    returnhash = {}
-    if(params[:tqx].nil?)
-      return returnhash
-    end
-    
-    params[:tqx].split(';').each do |keyval|
-      key,value = keyval.split(':')
-      returnhash[:key] = value
-    end
-    
-    return returnhash
-  end
   
   def check_for_table_comparisons
     allowed_params = ['primary','secondary','tertiary','quaternary','quinary','senary','septenary']

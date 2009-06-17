@@ -49,6 +49,12 @@ class FilterParams < ParamExtensions::ParamsFilter
 
   wantsparameter :forcecacheupdate, :boolean, false
   
+  # graphing/data/gviz api related
+  wantsparameter :datatype, :string
+  wantsparameter :graphtype, :string
+  wantsparameter :tqx, :string
+  
+  
   # gdata params - some are quoted because symbols can't have dashes
   wantsparameter :author, :user
   wantsparameter 'published-min', :datetime  # note, does not validate for RFC 3339 format per spec.
@@ -136,6 +142,19 @@ class FilterParams < ParamExtensions::ParamsFilter
     end
     
     return "#{returncolumns} #{returndirection}"
+  end
+  
+  def tqx
+    if(read_parameter(:tqx).nil?)
+      return {}
+    else
+      returnhash = {}
+      read_parameter(:tqx).split(';').each do |keyval|
+        key,value = keyval.split(':')
+        returnhash[:key] = value
+      end
+      return returnhash
+    end
   end
   
   # ---------- end sanity checking for parameters ---------
