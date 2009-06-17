@@ -6,6 +6,12 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class FilterParams < ParamExtensions::ParamsFilter
+  
+  # defines
+  
+  # per specification
+  ALLOWED_GDATA_ALT_TYPES = ['atom','rss','json','json-in-script','atom-in-script','rss-in-script']
+  
   wantsparameter :community, :community
   wantsparameter :location, :location
   wantsparameter :county, :county
@@ -29,32 +35,36 @@ class FilterParams < ParamExtensions::ParamsFilter
   wantsparameter :activityapplication, :activity_application
   wantsparameter :activityentrytype, :string
   wantsparameter :activityaddress, :string
-  wantsparameter :activity
-  wantsparameter :activitygroup
+  wantsparameter :activity, :string
+  wantsparameter :activitygroup, :string
+  wantsparameter :activitydisplay, :string
+  
   
   wantsparameter :ignorecommunity, :community
   wantsparameter :communityactivity, :string
 
-  # gdata params
+  # gdata params - some are quoted because symbols can't have dashes
   wantsparameter :author, :user
-  wantsparameter 'published-min', :datetime
-  wantsparameter 'published-max', :datetime
-  wantsparameter 'updated-min', :datetime
-  wantsparameter 'updated-max', :datetime
-  
-  # TODO:
-  # alt
-  # category
-  # q
-  # prettyprint
-  # max-results
+  wantsparameter 'published-min', :datetime  # note, does not validate for RFC 3339 format per spec.
+  wantsparameter 'published-max', :datetime  # note, does not validate for RFC 3339 format per spec.
+  wantsparameter 'updated-min', :datetime # note, does not validate for RFC 3339 format per spec.
+  wantsparameter 'updated-max', :datetime # note, does not validate for RFC 3339 format per spec.
+  wantsparameter :alt, :string
+  wantsparameter 'max-results', :integer
+  wantsparameter 'start-index', :integer
+  wantsparameter :prettyprint, :boolean  # not sure that we'll actually do anything with this
+  wantsparameter :strict, :boolean  # not sure that we'll actually do anything with this
+  wantsparameter :q, :string # TODO: parse for terms and phrases, and negative values
+  wantsparameter :category, :string # TODO: parse for ANDs and ORs (ANDs = ',' ORs = | )
+
+
   
   
   
   # -----------------------------------
   # instance methods
   # -----------------------------------
-  
+
   # sanity checks provided activity string
   def activity
     if(activitycodes = Activity.activity_to_codes(read_parameter(:activity)))
@@ -72,7 +82,93 @@ class FilterParams < ParamExtensions::ParamsFilter
       return nil
     end
   end
+  
+  # sanity check of gdata 'alt' parameter
+  def alt
+    if(ALLOWED_GDATA_ALT_TYPES.include?(read_parameter(:alt)))
+      return read_parameter(:alt)
+    else
+      return nil
+    end
+  end
+  
+  def included_parameters_hash(options = {})
+    validate_wanted_parameters = (options[:validate_wanted_parameters].nil? ? true : options[:validate_wanted_parameters])
+    include_unfiltered_parameters = (options[:include_unfiltered_parameters].nil? ? false : options[:include_unfiltered_parameters])
+    returnhash = {}
     
+    if(include_unfiltered_parameters)
+      @unfilteredparameters.each do |key,value|
+        returnhash[key.to_sym] = value
+      end
+    end
+    
+    if(!validate_wanted_parameters)
+      @filteredparameters.each do |key,value|
+        if(!value.nil?)
+          returnhash[key.to_sym] = value
+        end
+      end
+    else
+      @filteredparameters.each do |key,value|
+        if(!value.nil? and (returnvalue = self.send(key)))
+          returnhash[key.to_sym] = returnvalue
+        end
+      end
+    end
+    
+    return returnhash
+  end
+  
+  # this is a compatibility function to have the @findoptions = check_for_filters continue to work
+  def findoptions
+    findoptions = {}
+    @filteredparameters.each do |key,value|
+      if(!value.nil? and (returnvalue = self.send(key)))
+        findoptions[key.to_sym] = returnvalue
+      end
+    end
+    return findoptions
+  end
+  
+  def order(defaultcolumns=nil,defaultdirection='ASC')
+    if(read_parameter(:order).nil?)
+      # check orderby and sortorder
+      tmpdirection = read_parameter(:sortorder)
+      returncolumns = read_parameter(:orderby)
+    else
+      (returncolumns,tmpdirection) = read_parameter(:order).split(' ')
+    end
+    
+    if(returncolumns.blank?)
+      if(defaultcolumns.nil?) 
+        return nil
+      else
+        returncolumns = defaultcolumns
+      end
+    end
+    
+    if(tmpdirection.blank?)
+      if(defaultdirection.nil?)
+        return nil
+      else
+        tmpdirection = defaultdirection
+      end
+    end
+    
+    # sanitycheck direction
+    if(['d','descending','desc'].include?(tmpdirection.downcase))
+      returndirection = 'DESC'
+    else
+      returndirection = defaultdirection
+    end
+    
+    return "#{returncolumns} #{returndirection}"
+  end
+  
+  # def order_from_params
+  # def additionaldata_from_params
+  
 
   #   # dates
   #   if(!params[:dateinterval].nil?)
@@ -87,6 +183,6 @@ class FilterParams < ParamExtensions::ParamsFilter
   #   end
   # 
   #   
-  # 
+  #
 
 end

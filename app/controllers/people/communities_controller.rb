@@ -154,16 +154,14 @@ class CommunitiesController < ApplicationController
   end
   
   def downloadlists
-    @findoptions = check_for_filters
-    # make dateinterval = 'all' a default
-    if(@findoptions[:dateinterval].nil?)
-      @findoptions.merge!({:dateinterval => 'all'})
+    @filteredparams = FilterParams.new(params)
+    if(@filteredparams.dateinterval.nil?)
+      @filteredparams.dateinterval = 'all'
     end
-    
-    # make 'approved' a default
-    if(@findoptions[:communitytype].nil?)
-      @findoptions.merge!({:communitytype => 'approved'})
-    end
+    if(@filteredparams.communitytype.nil?)
+      @filteredparams.communitytype = 'approved'
+    end    
+    @findoptions = @filteredparams.findoptions
     
     @communities = Community.filtered(@findoptions).displaylist
     @communitycounts = Community.userfilter_count(@findoptions)
@@ -176,30 +174,31 @@ class CommunitiesController < ApplicationController
       flash[:error] = 'That community does not exist'  
       return(redirect_to(:action => 'index'))
     end
-    
     @am_i_leader = @currentuser.is_community_leader?(@community)   
+    
+    @filteredparams = FilterParams.new(params)
+    @filteredparams.community = @community.id
+    if(@filteredparams.connectiontype.nil?)
+      @filteredparams.connectiontype = 'joined'
+    end
 
-    @findoptions = check_for_filters
-    if(@findoptions[:connectiontype].nil?)
-      # hardcoded default
-      @findoptions[:connectiontype] = 'joined'
+    if(@filteredparams.dateinterval.nil?)
+      @filteredparams.dateinterval = 'all'
     end
+
+    @findoptions = @filteredparams.findoptions
+
     
-    @findoptions.merge!({:community => @community})    
-    # make dateinterval = 'all' a default
-    if(@findoptions[:dateinterval].nil?)
-      @findoptions.merge!({:dateinterval => 'all'})
-    end
     
-    @page_title = @community.name + ': ' + Communityconnection::TYPES[@findoptions[:connectiontype]]
+    @page_title = @community.name + ': ' + Communityconnection::TYPES[@filteredparams.connectiontype]
         # download check    
     if(!params[:download].nil? and params[:download] == 'csv')
       @findoptions.merge!(:paginate => false)
-      reportusers = User.filtered(@findoptions).all(:order => order_from_params(User,'last_name,first_name'))
+      reportusers = User.filtered(@findoptions).ordered(@filteredparams.order).all
       csvfilename =  @page_title.tr(' ','_').gsub('\W','').downcase
       return community_csvuserlist(reportusers,csvfilename,@community)
     else
-      @userlist = User.filtered(@findoptions).paginate(:all,:order => order_from_params(User,'last_name,first_name'),:page => params[:page])
+      @userlist = User.filtered(@findoptions).ordered(@filteredparams.order).paginate(:all,:page => params[:page])
       if((@userlist.length) > 0)
         urloptions = @findoptions.merge(:id => params[:id], :download => 'csv')
         @csvreporturl = CGI.escapeHTML(userlist_community_url(urloptions))

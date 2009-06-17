@@ -36,12 +36,18 @@ class ActivityController < ApplicationController
       flash[:error] = 'That user does not exist'  
       return(redirect_to(:action => 'index'))
     end      
+    @filteredparameters = FilterParams.new(params)
+
 
     @activitylist = @showuser.activities.displayactivity.paginate(:all, :order => 'created_at DESC', :page => params[:page])
     @page_title = "Activity for #{@showuser.fullname}"
     feedtitle = "#{@showuser.fullname} Activity Atom Feed"
-    
-    @feedurl = alt_feed_url({:action => :showuser, :params => {:id => @showuser.id, :feedkey => @currentuser.feedkey}})
+
+    urlparams = @filteredparameters.included_parameters_hash.merge({:id => @showuser.id, :feedkey => @currentuser.feedkey})
+    urlparams.delete(:dateinterval)
+    urlparams.delete(:datefield)
+    urlparams.merge!{:controller => :feeds, :action => :showuser}
+    @feedurl = url_for(urlparams)
     @feedlink = alt_feed_link(feedtitle,@feedurl)
     respond_to do |format|
       format.html # show.html.erb
@@ -50,22 +56,22 @@ class ActivityController < ApplicationController
   end
   
   def communities
-    @order = params[:order] || 'name'
-    @findoptions = {:order => @order}
-    @findoptions.merge!(check_for_filters)
+    @filteredparams = FilterParams.new(params)
+    @filteredparams.order=@filteredparams.order('name')
+    @findoptions = @filteredparams.findoptions
     
-    @displayfilter = @findoptions[:communitytype].nil? ? 'all' : @findoptions[:communitytype]
-    @activitydisplay = params[:activitydisplay].nil? ? 'communityconnection' : params[:activitydisplay]
+    @displayfilter = @filteredparams.communitytype.nil? ? 'all' : @filteredparams.communitytype
+    @activitydisplay = @filteredparams.activitydisplay.nil? ? 'communityconnection' : @filteredparams.activitydisplay
     
     # doesn't yet accept a filtered listing
     case @displayfilter
     when 'approved'
-      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @findoptions[:order]) 
+      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED,@filteredparams.order) 
     when 'usercontributed'
-      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @findoptions[:order]) 
+      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @filteredparams.order) 
     else
-      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @findoptions[:order]) 
-      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @findoptions[:order]) 
+      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @filteredparams.order) 
+      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @filteredparams.order) 
     end
   end
   
@@ -107,15 +113,19 @@ class ActivityController < ApplicationController
   end
   
   def list
-    @order = params[:order] || 'activities.created_at DESC'
-    @findoptions = {:order => @order}
-    @findoptions.merge!(check_for_filters)  
+    @filteredparams = FilterParams.new(params)
+    @filteredparams.order=@filteredparams.order('activities.created_at','DESC')
+    @findoptions = @filteredparams.findoptions
 
     @page_title = "Activity"
     feedtitle = "Activity Atom Feed #{filter_string(@findoptions.merge({:nolink => true}))}"
     
     
-    @feedurl = alt_feed_url(@findoptions.merge({:feedkey => @currentuser.feedkey}))
+    urlparams = @filteredparameters.included_parameters_hash.merge({:feedkey => @currentuser.feedkey})
+    urlparams.delete(:dateinterval)
+    urlparams.delete(:datefield)
+    urlparams.merge!{:controller => :feeds, :action => :list}
+    @feedurl = url_for(urlparams)    
     @feedlink = alt_feed_link(feedtitle,@feedurl)
     
     # download check    
@@ -123,9 +133,10 @@ class ActivityController < ApplicationController
       # nothing
     else
       @findoptions.merge!({:paginate => true, :page => params[:page]})
-      @activitylist = Activity.filtered(@findoptions).paginate(:all, :page => params[:page], :order => @findoptions[:order])
+      @activitylist = Activity.filtered(@findoptions).paginate(:all, :page => params[:page], :order => @filteredparams.order)
       if((@activitylist.length) > 0)
-        urloptions = create_filter_params(@findoptions)
+        urloptions = @filteredparams.included_parameters_hash
+        urloptions.merge!({:paginate => true, :page => params[:page]})
         urloptions.merge!({:action => :list, :download => 'csv'})
         @csvreporturl = CGI.escapeHTML(url_for(urloptions))
       end

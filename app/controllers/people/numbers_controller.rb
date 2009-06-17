@@ -17,9 +17,9 @@ class NumbersController < ApplicationController
   end
   
   def browsecommunities
-    @order = params[:order] || 'name'
-    @findoptions = {:order => @order}
-    @findoptions.merge!(check_for_filters)
+    @filteredparams = FilterParams.new(params)
+    @filteredparams.order=@filteredparams.order('name')
+    @findoptions = @filteredparams.findoptions
 
     @displayfilter = @findoptions[:communitytype].nil? ? 'all' : @findoptions[:communitytype]
     @activitydisplay = params[:activitydisplay].nil? ? 'communityconnection' : params[:activitydisplay]
@@ -90,7 +90,9 @@ class NumbersController < ApplicationController
   
   def institutions
     @displayfilter = params[:displayfilter].nil? ? 'all' : params[:displayfilter]
-    @findoptions = check_for_filters
+    @filteredparams = FilterParams.new(params)
+    @findoptions = @filteredparams.findoptions
+    
     
     case @displayfilter
     when 'system'
@@ -125,7 +127,8 @@ class NumbersController < ApplicationController
 
 
   def locations
-    @findoptions = check_for_filters
+    @filteredparams = FilterParams.new(params)
+    @findoptions = @filteredparams.findoptions
     @locations = Location.filtered(@findoptions).displaylist
     @locationcounts = Location.userfilter_count(@findoptions)
   end
@@ -136,12 +139,15 @@ class NumbersController < ApplicationController
   end
   
   def positions
-    @findoptions = check_for_filters
+    @filteredparams = FilterParams.new(params)
+    @findoptions = @filteredparams.findoptions
     @positions = Position.filtered(@findoptions).displaylist
     @positioncounts = Position.userfilter_count(@findoptions)
   end
   
   def summary
+    @filteredparams = FilterParams.new(params)
+    
     forcecacheupdate = params[:forcecacheupdate].nil? ? false : (params[:forcecacheupdate] == 'true')
     baseoptions = {:forcecacheupdate => forcecacheupdate}
 
@@ -155,10 +161,10 @@ class NumbersController < ApplicationController
       end
     end
     
-    totaloptions = baseoptions.merge({:findoptions => check_for_filters})
+    totaloptions = baseoptions.merge({:findoptions => @filteredparams.findoptions})
     @total = NumberSummary.new(totaloptions)
             
-    lastmonthoptions = baseoptions.merge({:findoptions => check_for_filters.merge({:dateinterval => 'withinlastmonth'})})
+    lastmonthoptions = baseoptions.merge({:findoptions => @filteredparams.findoptions.merge({:dateinterval => 'withinlastmonth'})})
     lastmonthoptions[:summarydateinterval] = 'withinlastmonth'
     @lastmonth = NumberSummary.new(lastmonthoptions)
   end 
@@ -170,7 +176,8 @@ class NumbersController < ApplicationController
   
 
   def communities
-    @findoptions = check_for_filters
+    @filteredparams = FilterParams.new(params)
+    @findoptions = @filteredparams.findoptions
     @communities = Community.filtered(@findoptions).displaylist
     @communitycounts = Community.userfilter_count(@findoptions)    
   end

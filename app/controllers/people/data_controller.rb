@@ -24,7 +24,9 @@ class DataController < ApplicationController
 
     comparisons = check_for_table_comparisons
     if(comparisons.blank?)
-      @findoptions = check_for_filters 
+      @filteredparams = FilterParams.new(params)
+      @findoptions = @filteredparams.findoptions
+      
       @activity = ActivityContainer.new({:findoptions => @findoptions, :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => forcecacheupdate})
       @json_data_table = @activity.table
     else
@@ -88,7 +90,9 @@ class DataController < ApplicationController
   def check_for_table_comparisons
     allowed_params = ['primary','secondary','tertiary','quaternary','quinary','senary','septenary']
     comparisons = []
-    baseoptions = check_for_filters
+    @filteredparams = FilterParams.new(params)
+    baseoptions = @filteredparams.findoptions
+    
     
     if(params[:primary_type].nil? or params[:primary_id].nil?)
       return nil

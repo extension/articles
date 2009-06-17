@@ -111,13 +111,14 @@ class FeedsController < ApplicationController
   end
   
   def list
-    @order = params[:order] || 'activities.created_at DESC'
-    @findoptions = check_for_filters
-    
+    @filteredparams = FilterParams.new(params)
+    @filteredparams.order=@filteredparams.order('activities.created_at','DESC')
+    @findoptions = @filteredparams.findoptions
+    primary_content_tag_name
     feedoptions = {}
 
-    urlparams = {:controller => :feeds, :action => :list}
-    urlparams.merge!(create_filter_params(@findoptions))
+    urlparams = @filteredparams.included_parameters_hash
+    urlparams.merge!({:controller => :feeds, :action => :list})
     if(@feedkey)
       urlparams.merge!({:feedkey => @feedkey})
     end

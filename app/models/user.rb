@@ -8,6 +8,8 @@ require 'digest/sha1'
 
 class User < ActiveRecord::Base 
   extend ConditionExtensions
+  ordered_by :default => "last_name,first_name ASC"
+  
   STATUS_CONTRIBUTOR = 0
   STATUS_REVIEW = 1
   STATUS_CONFIRMEMAIL = 2
@@ -1184,7 +1186,7 @@ class User < ActiveRecord::Base
       elsif (value =~ /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/ )
         # looks like an email address
         return User.find_by_email(value)
-      elseif (value =~ /^[a-zA-Z]+[a-zA-Z0-9]+$/) 
+      elsif (value =~ /^[a-zA-Z]+[a-zA-Z0-9]+$/) 
         # looks like a valid extensionid 
         return User.find_by_login(value)
       else

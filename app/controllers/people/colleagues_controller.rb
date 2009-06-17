@@ -189,25 +189,25 @@ class ColleaguesController < ApplicationController
   end
 
   def list
-    @order = params[:order] || 'last_name,first_name'
-    @findoptions = {:order => @order}
-    @findoptions.merge!(check_for_filters)  
-    # make dateinterval = 'all' a default
-    if(@findoptions[:dateinterval].nil?)
-      @findoptions.merge!({:dateinterval => 'all'})
+    @filteredparams = FilterParams.new(params)
+    if(@filteredparams.dateinterval.nil?)
+      @filteredparams.dateinterval = 'all'
     end
+    @findoptions = @filteredparams.findoptions
+    
+    # compatibility
     
     @page_title = "Colleagues"
     # download check    
     if(!params[:download].nil? and params[:download] == 'csv')
       @findoptions.merge!(:paginate => false)
-      reportusers = User.filtered(@findoptions).all(:order => order_from_params(User,'last_name,first_name'))
+      reportusers = User.filtered(@findoptions).ordered(@filteredparams.order).all
       csvfilename =  @page_title.tr(' ','_').gsub('\W','').downcase
       return csvuserlist(reportusers,csvfilename,@page_title)
     else
-      @userlist = User.filtered(@findoptions).paginate(:all, :order => order_from_params(User,'last_name,first_name'), :page => params[:page])
+      @userlist = User.filtered(@findoptions).ordered(@filteredparams.order).paginate(:all, :page => params[:page])
       if((@userlist.length) > 0)
-        urloptions = create_filter_params(@findoptions)
+        urloptions = @filteredparams.included_parameters_hash
         urloptions.merge!({:controller => :colleagues, :action => :list, :download => 'csv'})
         @csvreporturl = CGI.escapeHTML(url_for(urloptions))
       end
