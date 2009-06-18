@@ -5,9 +5,9 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class AdminController < ApplicationController
+class People::AdminController < ApplicationController
   include ApplicationHelper
-  include LoggingHelper
+  include LoggingExtensions
   layout 'people'
   before_filter :admin_required
   before_filter :sudo_required, :only => [:adminevents,:adminusers, :makeadmin, :show_config, :reload_config]
@@ -107,7 +107,7 @@ class AdminController < ApplicationController
           else
             if @showuser.retire
               log_admin_event(@currentuser, AdminEvent::RETIRE_ACCOUNT,{:extensionid => @showuser.login, :reason => params[:reason]})
-              log_userevent(:etype => UserEvent::PROFILE,:user => @showuser,:description => "account retired by #{@currentuser.login}")                                              
+              UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "account retired by #{@currentuser.login}")                                              
             else
               flash.now[:failure] = 'Failed to retire user, reported status may not be correct'      
             end
@@ -138,7 +138,7 @@ class AdminController < ApplicationController
           else
             if @showuser.enable
               log_admin_event(@currentuser, AdminEvent::ENABLE_ACCOUNT,{:extensionid => @showuser.login, :reason => params[:reason]})
-              log_userevent(:etype => UserEvent::PROFILE,:user => @showuser,:description => "account enabled by #{@currentuser.login}")
+              UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "account enabled by #{@currentuser.login}")
             else
               flash.now[:failure] = 'Failed to enable user, reported status may not be correct'      
             end
@@ -169,7 +169,7 @@ class AdminController < ApplicationController
             else
               if @showuser.invalidemail
                 log_admin_event(@currentuser, AdminEvent::ACCOUNT_INVALIDEMAIL,{:extensionid => @showuser.login, :reason => params[:reason]})
-                log_userevent(:etype => UserEvent::PROFILE,:user => @showuser,:description => "email marked invalid by #{@currentuser.login}")                                                                            
+                UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "email marked invalid by #{@currentuser.login}")                                                                            
               else
                 flash.now[:failure] = 'Failed to mark email invalid, reported status may not be correct'      
               end
@@ -222,7 +222,7 @@ class AdminController < ApplicationController
             @token.destroy
             UserToken.delete_all("user_id = #{@currentuser.id} AND tokentype=#{UserToken::ADMIN_REVOKEAGREENT} AND tokendata LIKE '#{@revokeuser.login}'")            
             log_admin_event(@currentuser, AdminEvent::REVOKEAGREEMENT,@revokeuser.login)
-            log_userevent(:etype => UserEvent::AGREEMENT,:user => @revokeuser,:description => "contributor agreement revoked by #{@currentuser.login}")                                                                                        
+            UserEvent.log_event(:etype => UserEvent::AGREEMENT,:user => @revokeuser,:description => "contributor agreement revoked by #{@currentuser.login}")                                                                                        
             send_revocation_email(@currentuser,@revokeuser)
           else
             @revocationfailed = true

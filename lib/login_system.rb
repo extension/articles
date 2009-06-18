@@ -4,6 +4,8 @@ module LoginSystem
   
   protected
   
+
+  
   # overwrite this if you want to restrict access to only a few actions
   # or if you want to check if the user has the correct rights  
   def authorize?(checkuser)
@@ -138,7 +140,7 @@ module LoginSystem
   # a popup window might just close itself for instance
   def access_denied
     openid_xrds_header
-    redirect_to :controller=>:account, :action => :login
+    redirect_to login_url
   end  
   
   def access_notice

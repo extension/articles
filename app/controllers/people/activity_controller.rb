@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class ActivityController < ApplicationController
+class People::ActivityController < ApplicationController
   include ApplicationHelper
 
   layout 'people'

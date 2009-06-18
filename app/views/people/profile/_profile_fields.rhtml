@@ -23,7 +23,7 @@
 </div>
     
 <div class="form_section">
-   <%= render(:partial => 'profile/profile_position', :locals => { :positionslist => Position.geteditlist}) %>
+   <%= render(:partial => 'people/profile/profile_position', :locals => { :positionslist => Position.geteditlist}) %>
 </div>
 
 <div class="form_section">
@@ -39,7 +39,7 @@
 	</div>
 	<div id="county">
 		<% if !@countylist.nil? %>
-			<%= render(:partial => "profile/county", :locals => {:countylist => @countylist}) %>
+			<%= render(:partial => 'people/profile/county', :locals => {:countylist => @countylist}) %>
 		<% end %>
 	</div>
 </div>
@@ -48,9 +48,9 @@
 <h3>Your Institution/Affiliation</h3>
 	<div id="institution">
 		<% if @user.institution.nil? or signup %>
-			<%= render(:partial => "profile/edit_institution") %>
+			<%= render(:partial => 'people/profile/edit_institution') %>
 		<% else %>
-			<%= render(:partial => "profile/profile_field_institution", :locals => {:user => @user}) %>
+			<%= render(:partial => 'people/profile/profile_field_institution', :locals => {:user => @user}) %>
 		<% end %>
 	</div>
 </div>

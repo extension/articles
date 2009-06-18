@@ -33,7 +33,7 @@ class OpieController < ApplicationController
   layout nil
   include OpenID::Server
   include ApplicationHelper
-  include LoggingHelper
+  include LoggingExtensions
 
   #skip_before_filter :verify_authenticity_token
   before_filter(:login_required, :only => [:decision])
@@ -79,7 +79,7 @@ class OpieController < ApplicationController
         end
         # add the sreg response if requested
         self.add_sreg(opierequest, response)
-        log_userevent(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:additionaldata => opierequest,:appname => opierequest.trust_root)                  
+        UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:additionaldata => opierequest,:appname => opierequest.trust_root)                  
         log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_OPENID,:trustroot => opierequest.trust_root)                                     
       elsif opierequest.immediate
         response = opierequest.answer(false, server_url)
@@ -191,7 +191,7 @@ class OpieController < ApplicationController
         response = opierequest.answer(true,server_url)          
       end
       self.add_sreg(opierequest, response)
-      log_userevent(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:additionaldata => opierequest,:appname => opierequest.trust_root)                  
+      UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:additionaldata => opierequest,:appname => opierequest.trust_root)                  
       log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_OPENID,:trustroot => opierequest.trust_root)                                     
       session[:last_opierequest] = nil
       return self.render_response(response)

@@ -7,8 +7,8 @@
 
 class People::SignupController < ApplicationController
   include AuthCheck
+  include LoggingExtensions
   include ApplicationHelper
-  include LoggingHelper
   
   layout 'people'
   before_filter :login_required, :only => [:confirm, :reconfirm, :confirmationsent, :review]
@@ -151,7 +151,7 @@ class People::SignupController < ApplicationController
     if(!params[:institution].nil? and !params[:institution][:name].nil?)
       institutionlist = Institution.searchmatching({:order => 'entrytype ASC,name', :searchterm => params[:institution][:name],:limit => 11}) 
     end
-    render(:partial => 'profile/institutionlist', :locals => { :institutionlist => institutionlist })
+    render(:partial => 'people/profile/institutionlist', :locals => { :institutionlist => institutionlist })
   end
   
   def fetch_signup_county_and_institution

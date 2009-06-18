@@ -5,9 +5,9 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class ListsController < ApplicationController
+class People::ListsController < ApplicationController
   include ApplicationHelper
-  include LoggingHelper
+  include LoggingExtensions
   
   layout 'people'
   before_filter :login_required, :check_purgatory, :except => [:show, :postinghelp]
@@ -92,10 +92,10 @@ class ListsController < ApplicationController
     
     if(params[:moderationaction] && params[:moderationaction] == 'moderator' )
        @mylistownership = @currentuser.update_moderation_for_list(@list,true)
-       log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "set moderation for #{@list.name}")   
+       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "set moderation for #{@list.name}")   
     elsif(params[:moderationaction] && params[:moderationaction] == 'nomoderator' )
        @mylistownership = @currentuser.update_moderation_for_list(@list,false)
-       log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed moderation for #{@list.name}")
+       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed moderation for #{@list.name}")
     end
     
     @mylistsubscription = @currentuser.get_subscription_to_list(@list)
@@ -115,14 +115,14 @@ class ListsController < ApplicationController
     
     if(params[:subscribeaction] && params[:subscribeaction] == 'unsubscribe' )
       @currentuser.get_subscription_to_list(@list).destroy
-      log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "unsubscribed from #{@list.name}")
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "unsubscribed from #{@list.name}")
       @mylistsubscription = nil
     elsif(params[:subscribeaction] && params[:subscribeaction] == 'optin' )
        @mylistsubscription = @currentuser.update_notification_for_list(@list,true)
-       log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "opted-in to #{@list.name}")   
+       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "opted-in to #{@list.name}")   
     elsif(params[:subscribeaction] && params[:subscribeaction] == 'optout' )
        @mylistsubscription = @currentuser.update_notification_for_list(@list,false)
-       log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "opted-out from #{@list.name}")
+       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "opted-out from #{@list.name}")
     end
     
     @mylistownership = @currentuser.get_ownership_for_list(@list)

@@ -7,6 +7,10 @@
 
 
 module ApplicationHelper
+  
+  def selected_tab_if(tab_name)
+    'class="selected"' if @selected_tab == tab_name
+  end
     
   def county_offices_link
     return nil unless @county_link

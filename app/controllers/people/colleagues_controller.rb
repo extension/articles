@@ -6,11 +6,11 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'hpricot'
 
-class ColleaguesController < ApplicationController
+class People::ColleaguesController < ApplicationController
   layout 'people'
   include ColleaguesHelper
   include ApplicationHelper
-  include LoggingHelper
+  include LoggingExtensions
   before_filter :login_required
   before_filter :check_purgatory
   
@@ -43,8 +43,8 @@ class ColleaguesController < ApplicationController
             render :template => 'colleagues/showuser'
           else
             if(@showuser.vouch(@currentuser))
-              log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "vouched for #{@showuser.login}",:additionaldata => params[:explanation])
-              log_userevent(:etype => UserEvent::PROFILE,:user => @showuser,:description => "vouched by #{@currentuser.login}",:additionaldata => params[:explanation])
+              UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "vouched for #{@showuser.login}",:additionaldata => params[:explanation])
+              UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "vouched by #{@currentuser.login}",:additionaldata => params[:explanation])
               log_user_activity(:user => @user,:activitycode => Activity::VOUCHED_FOR, :appname => 'local',:colleague => @showuser, :additionaldata => {:explanation => params[:explanation]})              
               log_user_activity(:user => @showuser,:activitycode => Activity::VOUCHED_BY, :appname => 'local',:additionaldata => {:explanation => params[:explanation]})              
               @showuser.send_welcome(true)

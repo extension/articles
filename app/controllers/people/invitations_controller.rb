@@ -6,10 +6,10 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'hpricot'
 
-class InvitationsController < ApplicationController
+class People::InvitationsController < ApplicationController
   layout 'people'
   include ApplicationHelper
-  include LoggingHelper
+  include LoggingExtensions
   include ActivityDisplayHelper
   
   before_filter :login_required

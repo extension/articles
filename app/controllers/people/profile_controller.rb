@@ -7,7 +7,7 @@
 
 class People::ProfileController < ApplicationController
   include ApplicationHelper
-  include LoggingHelper
+  include LoggingExtensions
   layout 'people'
   before_filter :login_required, :except => [:xhr_countylist]
   
@@ -76,7 +76,7 @@ class People::ProfileController < ApplicationController
   def socialnetworks
     if request.post?      
       @currentuser.modify_social_networks(params[:socialnetworks])
-      log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "social networks updated",:additionaldata => additionaldata_from_params(params))
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "social networks updated",:additionaldata => additionaldata_from_params(params))
       log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')                    
       flash[:success] = 'Networks updated.'
       redirect_to(:controller => 'profile', :action => 'me')
@@ -89,7 +89,7 @@ class People::ProfileController < ApplicationController
   def otheremails
     if request.post?      
       @currentuser.modify_user_emails(params[:useremails])
-      log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "other emails updated",:additionaldata => additionaldata_from_params(params))
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "other emails updated",:additionaldata => additionaldata_from_params(params))
       log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')                    
       flash[:success] = 'Emails updated.'
       redirect_to(:controller => 'profile', :action => 'me')
@@ -105,7 +105,7 @@ class People::ProfileController < ApplicationController
         if request.post?
           if(@currentuser.opie_approvals.delete(@removesite))
             flash[:success] = 'Removed trusted OpenID site.'
-            log_userevent(:etype => UserEvent::OPENID,:user => @currentuser,:description => "removed trusted openid site",:additionaldata => @removesite)                                                                            
+            UserEvent.log_event(:etype => UserEvent::OPENID,:user => @currentuser,:description => "removed trusted openid site",:additionaldata => @removesite)                                                                            
           else
             flash[:failure] = 'Failed to remove trusted OpenID site.'            
           end
@@ -145,14 +145,14 @@ class People::ProfileController < ApplicationController
       announcechange = @currentuser.announcements_changed?
       
       if @currentuser.save
-        log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "profile updated",:additionaldata => additionaldata_from_params(params))
+        UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "profile updated",:additionaldata => additionaldata_from_params(params))
         log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')   
         if announcechange
           @currentuser.reload
           @currentuser.checkannouncelists
         end           
         if emailchanged
-          log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "email address change")                                                                            
+          UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "email address change")                                                                            
           if(@currentuser.account_status == User::STATUS_INVALIDEMAIL_FROM_SIGNUP)
             @currentuser.resend_signup_confirmation            
             return redirect_to(:controller => 'signup', :action => 'confirmationsent')      
@@ -246,7 +246,7 @@ class People::ProfileController < ApplicationController
   def tagedit
     if request.post?
       @currentuser.tag_myself_with(params[:tag_list].strip)
-      log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "interests updated",:additionaldata => additionaldata_from_params(params))
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "interests updated",:additionaldata => additionaldata_from_params(params))
       log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')                    
       flash[:success] = 'Interests updated.'
       redirect_to(:controller => 'profile', :action => 'me')

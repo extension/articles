@@ -17,6 +17,8 @@ ActionController::Routing::Routes.draw do |map|
   map.redirect 'news', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :category => 'all', :permanent => true
   map.redirect 'faqs', :controller => 'faq', :action => 'index', :page => '1', :order => 'heureka_published_at DESC', :category => 'all', :permanent => true
   map.redirect 'articles', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :category => 'all', :permanent => true
+  map.connect 'people', :controller => "people/welcome", :action => 'home'
+  
   
   map.connect 'admin/:action/:id', :controller => 'admin'
   map.connect 'admin/:action', :controller => 'admin'
@@ -42,7 +44,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'feeds/:action/-/*categories', :controller => 'feeds'
   map.connect 'feeds/:action/:type/*id', :controller => 'feeds'
   
-  map.connect ':controller', :action => 'index'
+  
   
   map.ask_an_expert 'expert/ask_an_expert', :controller => 'expert', :action => 'ask_an_expert'
   map.connection 'expert/:action', :controller => 'expert'
@@ -72,6 +74,11 @@ ActionController::Routing::Routes.draw do |map|
     
   map.connect 'faq/:year/:month/:day/:hour/:minute/:second', :controller => 'faq', :action => 'send_questions'
   
+  map.connect 'people/signup', :controller => 'people/signup', :action => 'new'
+  
+  map.login 'people/login', :controller => 'people/account', :action => 'login'
+  
+  map.connect ':controller', :action => 'index'
   map.connect ':controller/rest/*email', :action => 'rest'
   map.connect ':controller/:action'
   map.connect ':controller/:action/:id'

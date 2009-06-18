@@ -14,17 +14,17 @@
     
 <body>
 	<div id="pageBanners">
-		<%= render(:partial => 'partial/pageBanners', :locals => {:adminmode => admin_mode?}) %>
+		<%= render(:partial => 'people/partial/pageBanners', :locals => {:adminmode => admin_mode?}) %>
 	</div>
 	
 	<div id="pageContainer">
 		<div id="masthead">
 			<h1<%= session[:last_opierequest] ? " class='one-stop-signin'" : '' %>><%= link_to("eXtension People", "/") %></h1>
-			<%= render(:partial => 'partial/userinfo') %>
+			<%= render(:partial => 'people/partial/userinfo') %>
 		</div>
 		<% if !@currentuser.nil? %>
 		<ul id="primaryNav">
-			<%= render(:partial => 'partial/primaryNav', :locals => {:adminmode => admin_mode?}) %>
+			<%= render(:partial => 'people/partial/primaryNav', :locals => {:adminmode => admin_mode?}) %>
 		</ul>
 		<% end %>
 		<div id="pageContent">
@@ -33,10 +33,10 @@
 			</div>
 			<br class="clear" />
 		</div>
-		<%= render(:partial => 'partial/footer') %>
+		<%= render(:partial => 'people/partial/footer') %>
 	</div>
 	<!-- end #pageContainer -->
-	<%= render(:partial => 'partial/googleanalytics') %>
-	<%= render(:partial => 'partial/feedback') %>
+	<%= render(:partial => 'people/partial/googleanalytics') %>
+	<%= render(:partial => 'people/partial/feedback') %>
 </body>
 </html>

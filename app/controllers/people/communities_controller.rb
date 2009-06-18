@@ -5,9 +5,9 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class CommunitiesController < ApplicationController
+class People::CommunitiesController < ApplicationController
   include ApplicationHelper
-  include LoggingHelper
+  include LoggingExtensions
   
   layout 'people'
   before_filter :login_required
@@ -126,10 +126,10 @@ class CommunitiesController < ApplicationController
     
     if(params[:notification] && params[:notification] == 'yesiwill' )
        @currentuser.update_notification_for_community(@community,true)
-       log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "turned on community notifications for #{@community.name}")   
+       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "turned on community notifications for #{@community.name}")   
      else
       @currentuser.update_notification_for_community(@community,false)
-      log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "turned off community notifications for #{@community.name}")
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "turned off community notifications for #{@community.name}")
     end
     
     respond_to do |format|
@@ -312,7 +312,7 @@ class CommunitiesController < ApplicationController
         # tags
         @community.tag_myself_with_peoplebot_tags(params[:tag_list].strip)        
         flash[:notice] = 'Community was successfully created.'
-        log_userevent(:etype => UserEvent::COMMUNITY,:user => @currentuser,:description => "created the #{@community.name} community")   
+        UserEvent.log_event(:etype => UserEvent::COMMUNITY,:user => @currentuser,:description => "created the #{@community.name} community")   
         log_user_activity(:activitycode => Activity::CREATED_COMMUNITY,:user => @currentuser,:community => @community,:appname => 'local')   
         format.html { redirect_to(@community) }
       else

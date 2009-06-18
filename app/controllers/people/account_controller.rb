@@ -6,10 +6,10 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'uri'
 
-class AccountController < ApplicationController
+class People::AccountController < ApplicationController
   include AuthCheck
   include ApplicationHelper
-  include LoggingHelper
+  include LoggingExtensions
   
   layout 'people'
   before_filter :login_required, :except => [:login, :signup, :new_password, :set_password, :authenticate]
@@ -82,7 +82,7 @@ class AccountController < ApplicationController
           @currentuser.email_event_at = now
           @currentuser.save
           @currentuser.checklistemails
-          log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "email confirmed")              
+          UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "email confirmed")              
           flash[:success] = "Email address confirmed."
           @token.destroy
           allemailtokens = @currentuser.user_tokens.find(:all,:conditions => ["user_tokens.tokentype = ?",UserToken::EMAIL])
@@ -117,7 +117,7 @@ class AccountController < ApplicationController
         if(save)
           @currentuser.contributor_agreement_at = Time.now.utc
           @currentuser.save
-          log_userevent(:etype => UserEvent::AGREEMENT, :user => @currentuser,:description => "#{label} contributor agreement")      
+          UserEvent.log_event(:etype => UserEvent::AGREEMENT, :user => @currentuser,:description => "#{label} contributor agreement")      
           flash[:success] = "Thank you for your response"
           redirect_to :action => :contributor_agreement
         end
@@ -131,14 +131,14 @@ class AccountController < ApplicationController
       if(AUTH_SUCCESS != result[:code] and result[:localfail])
         if(result[:localfail])
           flash.now[:failure]  = explainauthresult(result[:code])
-          log_userevent(:etype => UserEvent::LOGIN_LOCAL_FAILED,:user => result[:user], :description => 'login failed ('+authlogmsg(result[:code])+')',:additionaldata => additionaldata_from_params(params))                  
+          UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_FAILED,:user => result[:user], :description => 'login failed ('+authlogmsg(result[:code])+')',:additionaldata => additionaldata_from_params(params))                  
         end
       else
         @currentuser = result[:user]
         @currentuser.update_attribute(:last_login_at,Time.now.utc)
         session[:userid] = @currentuser.id
         flash.now[:success] = "Login successful."
-        log_userevent(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login',:additionaldata => additionaldata_from_params(params))        
+        UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login',:additionaldata => additionaldata_from_params(params))        
         log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_PASSWORD, :appname => 'local')
         redirect_back_or_default(:controller => 'welcome', :action => 'home')
       end
@@ -165,11 +165,11 @@ class AccountController < ApplicationController
       else
         # hmmmmmmmmm
         if @currentuser.update_attributes(params[:user])
-          log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "changed password")                      
+          UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "changed password")                      
           flash[:success] = "Password changed."
           redirect_to(:controller => 'profile', :action => 'me')
         else
-          log_userevent(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "change password failed")                                
+          UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "change password failed")                                
           flash.now[:failure] = "Unable to change password."
         end
       end
@@ -226,13 +226,13 @@ class AccountController < ApplicationController
               session[:userid] = nil
               redirect_to :action => 'login'
             else
-              log_userevent(:etype => UserEvent::PROFILE,:user => @requestuser,:description => "set new password failed")                                              
+              UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @requestuser,:description => "set new password failed")                                              
               flash.now[:failure] = "Unable to set new password."
             end
           else
             # show the set new password form
             # logging here because otherwise it would log twice   
-            log_userevent(:etype => UserEvent::PROFILE,:user => @requestuser,:description => "confirmed new password request")                                              
+            UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @requestuser,:description => "confirmed new password request")                                              
           end          
         end
       end
