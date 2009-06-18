@@ -50,9 +50,13 @@ class User < ActiveRecord::Base
       
   belongs_to :institution
   belongs_to :position
-  # TODO: need to change up local county and location that's *in* the user model somehow to some other kind of reference.
-  has_and_belongs_to_many :counties
-  has_and_belongs_to_many :locations
+  belongs_to :location
+  belongs_to :county
+  
+  # TODO: change the below to something semantically closer to aae
+  # has_and_belongs_to_many :counties
+  # has_and_belongs_to_many :locations
+  
   attr_reader :password_confirmation
   
   has_many :social_networks, :dependent => :destroy
