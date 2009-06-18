@@ -23,9 +23,11 @@ class ApplicationController < ActionController::Base
   require 'image_size'
   
   # please do not show allowable actions
-  rescue_from ActionController::RoutingError, :with => :do_404
-  rescue_from ActionController::MethodNotAllowed, :with => :do_404
-  rescue_from ActionController::UnknownAction, :with => :do_404
+  # TODO: something better than this because I believe this is masking too many errors
+  # commented out for development
+  # rescue_from ActionController::RoutingError, :with => :do_404
+  # rescue_from ActionController::MethodNotAllowed, :with => :do_404
+  # rescue_from ActionController::UnknownAction, :with => :do_404
 
   before_filter :set_locale, :unescape_params, :disable_link_prefetching, :get_tag, :personalize, :set_default_host_and_port_for_urlwriter, :set_default_request_ip_address
     
