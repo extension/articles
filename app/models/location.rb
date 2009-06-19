@@ -21,7 +21,6 @@ class Location < ActiveRecord::Base
   # LOCATION_INSULAR = 2
   # LOCATION_OUTSIDEUS = 3
   
-  has_and_belongs_to_many :users
   has_many :counties
   has_many :institutions  
   has_many :submitted_questions

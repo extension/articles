@@ -86,8 +86,8 @@ class Ask::ExpertController < ApplicationController
   
   def assignees_by_cat_loc
     @category = Category.find(:first, :conditions => ["id = ?", params[:category]]) if params[:category] and params[:category].strip != ''
-    @location = Location.find(:first, :conditions => ["fipsid = ?", params[:location]]) if params[:location] and params[:location].strip != ''
-    @county = County.find(:first, :conditions => ["fipsid = ? and state_fipsid = ?", params[:county], @location.fipsid]) if @location and params[:county] and params[:county].strip != ''
+    @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:location]]) if params[:location] and params[:location].strip != ''
+    @county = ExpertiseCounty.find(:first, :conditions => ["fipsid = ? and state_fipsid = ?", params[:county], @location.fipsid]) if @location and params[:county] and params[:county].strip != ''
     
     setup_cat_loc
     render :partial => "search_expert", :layout => false
@@ -113,10 +113,10 @@ class Ask::ExpertController < ApplicationController
     
     #if comma or space delimited...
     if user_name.length > 1
-      @users = User.find(:all, :include => [:locations, :open_questions, :categories], :limit => 20, :conditions => ['((first_name like ? and last_name like ?) or (last_name like ? and first_name like ?)) and users.retired = false', user_name[0] + '%', user_name[1] + '%', user_name[0] + '%', user_name[1] + '%'], :order => 'first_name')
+      @users = User.find(:all, :include => [:expertise_locations, :open_questions, :categories], :limit => 20, :conditions => ['((first_name like ? and last_name like ?) or (last_name like ? and first_name like ?)) and users.retired = false', user_name[0] + '%', user_name[1] + '%', user_name[0] + '%', user_name[1] + '%'], :order => 'first_name')
     #else only a single word was typed
     else
-      @users = User.find(:all, :include => [:locations, :open_questions, :categories], :limit => 20, :conditions => ['(login like ? or first_name like ? or last_name like ?) and users.retired = false', user_name[0] + '%', user_name[0] + '%', user_name[0] + '%'], :order => 'first_name')
+      @users = User.find(:all, :include => [:expertise_locations, :open_questions, :categories], :limit => 20, :conditions => ['(login like ? or first_name like ? or last_name like ?) and users.retired = false', user_name[0] + '%', user_name[0] + '%', user_name[0] + '%'], :order => 'first_name')
     end
     
     render :template => 'expert/assignees_by_name.js.rjs', :layout => false
@@ -154,7 +154,7 @@ class Ask::ExpertController < ApplicationController
   
   def location
     if params[:id]
-      @location = Location.find(:first, :conditions => ["fipsid = ?", params[:id].to_i])
+      @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:id].to_i])
       if !@location
         flash[:failure] = "Invalid Location Entered"
         redirect_to home_url
@@ -181,7 +181,7 @@ class Ask::ExpertController < ApplicationController
       
       if @category
         @category_name = @category.name
-        @users = @category.users.find(:all, :select => "users.*", :order => "users.first_name", :include => :locations)
+        @users = @category.users.find(:all, :select => "users.*", :order => "users.first_name", :include => :expertise_locations)
         @combined_users = get_answering_users(@users) if @users.length > 0
       else
         flash[:failure] = "Invalid Category"
@@ -733,7 +733,7 @@ class Ask::ExpertController < ApplicationController
   end
   
   def setup_cat_loc
-    @location_options = [""].concat(Location.find(:all, :order => 'entrytype, name').map{|l| [l.name, l.fipsid]})
+    @location_options = [""].concat(ExpertiseLocation.find(:all, :order => 'entrytype, name').map{|l| [l.name, l.fipsid]})
     @categories = Category.root_categories
     @category_options = @categories.map{|c| [c.name,c.id]}
     

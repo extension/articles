@@ -10,7 +10,7 @@
   <div id="expert_county">
   <% if @location_fips %>
   <p><label class="hide">Browse by county</label>
-  <%= select_tag(:county, options_for_select([['All Counties', 'all']].concat(County.find(:all, :conditions => "state_fipsid = #{@location_fips} and countycode <> '0'", :order => "name").map{|c| [c.name, c.fipsid]}), @county_fips)) %>
+  <%= select_tag(:county, options_for_select([['All Counties', 'all']].concat(ExpertiseCounty.find(:all, :conditions => "state_fipsid = #{@location_fips} and countycode <> '0'", :order => "name").map{|c| [c.name, c.fipsid]}), @county_fips)) %>
   </p>
   <% end %>
   </div>

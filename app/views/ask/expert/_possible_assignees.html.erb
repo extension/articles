@@ -9,7 +9,7 @@
     <%= link_to_remote (user.get_first_last_name, {:url => {:action => 'show_profile', :id => user.id}}, 
     {:id => "user_trigger_#{user.id}", :class => 'userlink', :class => 'profile'}) %>
     
-    <%= user.locations.length > 0 ? '(' + user.locations.map{|l| l.abbreviation}.join(', ') + ')' : '' %>
+    <%= user.expertise_locations.length > 0 ? '(' + user.expertise_locations.map{|l| l.abbreviation}.join(', ') + ')' : '' %>
     </li>
 <% end %>
 </ul>
@@ -30,9 +30,9 @@
         
         <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>
         
-        <% if user.locations.length > 0 %>
+        <% if user.expertise_locations.length > 0 %>
             <h5>Expertise Locations:</h5>
-            <p><%= user.locations.map{|l| l.name + user.get_counties_in_location(l)}.join(', ') %></p>
+            <p><%= user.expertise_locations.map{|l| l.name + user.get_counties_in_location(l)}.join(', ') %></p>
         <% end %>
         
         <% if user.categories.length > 0 %>
@@ -43,7 +43,7 @@
         <% if user.categories.length == 0 %>
             <p class="none">No category expertise specified</p>
         <% end %>
-        <% if user.locations.length == 0 %>
+        <% if user.expertise_locations.length == 0 %>
             <p class="none">No geographic expertise specified</p>
         <% end %>
         

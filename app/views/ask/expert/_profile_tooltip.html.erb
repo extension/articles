@@ -11,8 +11,8 @@
 <% end %>
 
 <strong>Expertise Locations:</strong>
-<% if user_bio.locations.length > 0 %>
-    <%= user_bio.locations.map{|l| l.name + user_bio.get_counties_in_location(l)}.join(', ') %>
+<% if user_bio.expertise_locations.length > 0 %>
+    <%= user_bio.expertise_locations.map{|l| l.name + user_bio.get_counties_in_location(l)}.join(', ') %>
 <% else %>
     None Specified   
 <% end %>

@@ -60,7 +60,7 @@ class AccountController < ApplicationController
   
   #kicks off at the start of the location selection page for the user
   def location
-    @locations = Location.find(:all, :order => 'entrytype, name')
+    @locations = ExertiseLocation.find(:all, :order => 'entrytype, name')
     render :layout => 'aae'
   end
   
@@ -72,18 +72,18 @@ class AccountController < ApplicationController
     user = User.current_user
     
     if params[:location_option] and params[:location_option].strip != ''
-      @location = Location.find_by_fipsid(params[:location_option])
-      user.locations.delete(@location)
-      counties_to_delete = user.counties.find(:all, :conditions => "counties.state_fipsid = #{@location.fipsid}")
-      user.counties.delete(counties_to_delete)
+      @location = ExpertiseLocation.find_by_fipsid(params[:location_option])
+      user.expertise_locations.delete(@location)
+      counties_to_delete = user.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
+      user.expertise_counties.delete(counties_to_delete)
       @delete_location = true
     elsif params[:county_option] and params[:county_option].strip != ''
-      county = County.find_by_fipsid(params[:county_option])
+      county = ExpertiseCounty.find_by_fipsid(params[:county_option])
       @location = county.location
-      user.counties.delete(county)
-      @county_list = user.counties.find(:all, :conditions => "counties.state_fipsid = #{@location.fipsid}")
+      user.expertise_counties.delete(county)
+      @county_list = user.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
       if @county_list.length == 0
-        user.locations.delete(@location) 
+        user.expertise_locations.delete(@location) 
         @delete_location = true
       end
     end
@@ -103,28 +103,28 @@ class AccountController < ApplicationController
     if params[:location_fips]
       location_fips = params[:location_fips]
       user = User.current_user
-      @location = Location.find_by_fipsid(location_fips)
+      @location = ExpertiseLocation.find_by_fipsid(location_fips)
       
       if params[:all] and params[:all].strip != ''
         #replace existing counties for this location with the 'all county' county
-        existing_counties = user.counties.find(:all, :conditions => "counties.state_fipsid = #{@location.fipsid}")
+        existing_counties = user.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
         if existing_counties.length > 0
-          user.counties.delete(existing_counties)
+          user.expertise_counties.delete(existing_counties)
         end
         @all_counties = true  
-        county_to_add = @location.counties.find(:first, :conditions => "countycode = '0'")
+        county_to_add = @location.expertise_counties.find(:first, :conditions => "countycode = '0'")
       elsif params[:new_county_fips] and params[:new_county_fips].strip != ''
-        all_county = user.counties.find(:first, :conditions => "counties.state_fipsid = #{@location.fipsid} and counties.countycode = '0'")
-        user.counties.delete(all_county) if all_county
+        all_county = user.expertise_counties.find(:first, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid} and expertise_counties.countycode = '0'")
+        user.expertise_counties.delete(all_county) if all_county
         @new_county = true
-        county_to_add = County.find(:first, :conditions => ["counties.fipsid = ?", params[:new_county_fips]] )
+        county_to_add = ExpertiseCounty.find(:first, :conditions => ["expertise_counties.fipsid = ?", params[:new_county_fips]] )
       end
       
-      user.locations << @location if !user.locations.include?(@location)
-      user.counties << county_to_add if !user.counties.include?(county_to_add)
+      user.expertise_locations << @location if !user.expertise_locations.include?(@location)
+      user.expertise_counties << county_to_add if !user.expertise_counties.include?(county_to_add)
       user.save
       
-      @new_county_list = user.counties.find(:all, :conditions => "counties.state_fipsid = #{@location.fipsid}")
+      @new_county_list = user.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
     end
     
     respond_to do |format|
@@ -154,14 +154,14 @@ class AccountController < ApplicationController
    def show_counties
      user = User.current_user
      if params[:location_fips] and params[:location_fips].strip != ''
-       @location = Location.find_by_fipsid(params[:location_fips])
-       @selected_counties = user.counties.find(:all, :conditions => "counties.location_id = #{@location.id}", :order => "counties.name")
+       @location = ExpertiseLocation.find_by_fipsid(params[:location_fips])
+       @selected_counties = user.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{@location.id}", :order => "expertise_counties.name")
      else
-       locations = Location.find(:all, :order => 'entrytype, name')
+       locations = ExpertiseLocation.find(:all, :order => 'entrytype, name')
        if params[:edit_location_fipsid]
-         @location = Location.find_by_fipsid(params[:edit_location_fipsid])
+         @location = ExpertiseLocation.find_by_fipsid(params[:edit_location_fipsid])
          @location_selected = @location.fipsid
-         @selected_counties = user.counties.find(:all, :conditions => "counties.location_id = #{@location.id}", :order => "counties.name")
+         @selected_counties = user.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{@location.id}", :order => "expertise_counties.name")
        #if the user clicks on the add or edit a location link
        else
          @location_selected = [""]
@@ -180,10 +180,10 @@ class AccountController < ApplicationController
      user = User.current_user
      @location_array = Array.new
      
-     locations = user.locations.find(:all, :order => 'name')
+     locations = user.expertise_locations.find(:all, :order => 'name')
      
      locations.each do |l|
-       selected_counties = user.counties.find(:all, :conditions => "counties.location_id = #{l.id}", :order => "counties.name")
+       selected_counties = user.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{l.id}", :order => "expertise_counties.name")
        if selected_counties.length > 0
          @location_array << [l, selected_counties]
        end

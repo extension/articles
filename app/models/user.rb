@@ -53,9 +53,7 @@ class User < ActiveRecord::Base
   belongs_to :location
   belongs_to :county
   
-  # TODO: change the below to something semantically closer to aae
-  # has_and_belongs_to_many :counties
-  # has_and_belongs_to_many :locations
+  has_and_belongs_to_many :expertise_locations
   
   attr_reader :password_confirmation
   
@@ -1423,7 +1421,7 @@ class User < ActiveRecord::Base
 
       (filtered_users and filtered_users != '') ? user_cond = "users.id IN (#{filtered_users})" : (return [])
 
-      return User.find(:all, :include => [:locations, :counties, :open_questions, :categories], :conditions => user_cond + " and users.retired = false", :order => "users.first_name asc")
+      return User.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond + " and users.retired = false", :order => "users.first_name asc")
     end
 
     def get_expertise
@@ -1450,7 +1448,7 @@ class User < ActiveRecord::Base
     end
 
     def expertise_counties_in_location(location)
-      county_intersect = self.counties & location.counties
+      county_intersect = self.expertise_counties & location.expertise_counties
       if county_intersect and county_intersect.length > 0
         return county_intersect
       else

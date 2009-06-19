@@ -451,7 +451,7 @@ def pick_user_from_county(county, question_categories)
 end
 
 def pick_user_from_state(location, question_categories)
-  all_county_loc = location.counties.find(:first, :conditions => "countycode = '0'")
+  all_county_loc = location.expertise_counties.find(:first, :conditions => "countycode = '0'")
   all_county_loc ? all_county_users = User.narrow_by_routers(all_county_loc.users, Role::AUTO_ROUTE) : all_county_users = nil
   
   #if a location was selected for this question and there are users for this location
