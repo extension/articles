@@ -7,7 +7,7 @@
 
 class People::CommunitiesController < ApplicationController
   include ApplicationHelper
-  include LoggingExtensions
+  
   
   layout 'people'
   before_filter :login_required

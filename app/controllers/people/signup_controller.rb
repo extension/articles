@@ -7,7 +7,7 @@
 
 class People::SignupController < ApplicationController
   include AuthCheck
-  include LoggingExtensions
+  
   include ApplicationHelper
   
   layout 'people'

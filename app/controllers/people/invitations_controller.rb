@@ -9,7 +9,7 @@ require 'hpricot'
 class People::InvitationsController < ApplicationController
   layout 'people'
   include ApplicationHelper
-  include LoggingExtensions
+  
   include ActivityDisplayHelper
   
   before_filter :login_required

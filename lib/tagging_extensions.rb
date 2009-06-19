@@ -169,7 +169,7 @@ class ActiveRecord::Base #:nodoc:
       end
            
       if(!kind.nil? and kind != Tag::ALL)
-        conditions << "taggings.tag_kind = #{kind}"
+        conditions << "taggings.tag_kind = '#{kind}'"
       end
       return conditions.join(' AND ')
     end

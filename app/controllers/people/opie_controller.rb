@@ -33,7 +33,7 @@ class OpieController < ApplicationController
   layout nil
   include OpenID::Server
   include ApplicationHelper
-  include LoggingExtensions
+  
 
   #skip_before_filter :verify_authenticity_token
   before_filter(:login_required, :only => [:decision])

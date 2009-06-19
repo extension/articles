@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   include ExceptionNotifiable
   include ArrayStats
   include Logo
+  include ControllerExtensions
 
   # Scrub sensitive parameters from your log
   filter_parameter_logging :password

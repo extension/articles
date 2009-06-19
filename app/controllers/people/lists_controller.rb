@@ -7,7 +7,7 @@
 
 class People::ListsController < ApplicationController
   include ApplicationHelper
-  include LoggingExtensions
+  
   
   layout 'people'
   before_filter :login_required, :check_purgatory, :except => [:show, :postinghelp]

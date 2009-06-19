@@ -10,7 +10,7 @@ class People::ColleaguesController < ApplicationController
   layout 'people'
   include ColleaguesHelper
   include ApplicationHelper
-  include LoggingExtensions
+  
   before_filter :login_required
   before_filter :check_purgatory
   
