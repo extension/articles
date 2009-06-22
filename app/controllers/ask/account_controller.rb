@@ -17,27 +17,26 @@ class AccountController < ApplicationController
   # areas of expertise. they can also select if they want to receive uncategorized questions.
   def expertise
     @categories = Category.root_categories
-    user = User.current_user
-    @current_user_categories = user.get_expertise
+    @current_user_categories = @currentuser.get_expertise
     
     if request.post?      
       if params[:category]
         selected_category = Category.find_single_category(params[:category].strip)
         if selected_category
-          if user.categories.include?(selected_category)
-            user.categories.delete(selected_category)
-            expertise_event = ExpertiseEvent.new(:category => selected_category, :event_type => ExpertiseEvent::EVENT_DELETED, :user => user)
-            user.expertise_events << expertise_event
-            user.delete_all_subcat_expertise(selected_category)
+          if @currentuser.categories.include?(selected_category)
+            @currentuser.categories.delete(selected_category)
+            expertise_event = ExpertiseEvent.new(:category => selected_category, :event_type => ExpertiseEvent::EVENT_DELETED, :user => @currentuser)
+            @currentuser.expertise_events << expertise_event
+            @currentuser.delete_all_subcat_expertise(selected_category)
             if selected_category.is_top_level?
               deleted_top_level = true
             end
           else
-            user.categories << selected_category
-            expertise_event = ExpertiseEvent.new(:category => selected_category, :event_type => ExpertiseEvent::EVENT_ADDED, :user => user)
-            user.expertise_events << expertise_event
+            @currentuser.categories << selected_category
+            expertise_event = ExpertiseEvent.new(:category => selected_category, :event_type => ExpertiseEvent::EVENT_ADDED, :user => @currentuser)
+            @currentuser.expertise_events << expertise_event
           end
-          user.save
+          @currentuser.save
         end
       end
       
@@ -69,21 +68,19 @@ class AccountController < ApplicationController
   #if there is a county_option passed in, then just the one county needs to be removed from the user's counties, but if 
   #it is the last county for that location being removed, then the location for the user gets removed as well
   def delete_counties
-    user = User.current_user
-    
     if params[:location_option] and params[:location_option].strip != ''
       @location = ExpertiseLocation.find_by_fipsid(params[:location_option])
-      user.expertise_locations.delete(@location)
-      counties_to_delete = user.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
-      user.expertise_counties.delete(counties_to_delete)
+      @currentuser.expertise_locations.delete(@location)
+      counties_to_delete = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
+      @currentuser.expertise_counties.delete(counties_to_delete)
       @delete_location = true
     elsif params[:county_option] and params[:county_option].strip != ''
       county = ExpertiseCounty.find_by_fipsid(params[:county_option])
       @location = county.location
-      user.expertise_counties.delete(county)
-      @county_list = user.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
+      @currentuser.expertise_counties.delete(county)
+      @county_list = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
       if @county_list.length == 0
-        user.expertise_locations.delete(@location) 
+        @currentuser.expertise_locations.delete(@location) 
         @delete_location = true
       end
     end
@@ -102,29 +99,28 @@ class AccountController < ApplicationController
   def add_counties
     if params[:location_fips]
       location_fips = params[:location_fips]
-      user = User.current_user
       @location = ExpertiseLocation.find_by_fipsid(location_fips)
       
       if params[:all] and params[:all].strip != ''
         #replace existing counties for this location with the 'all county' county
-        existing_counties = user.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
+        existing_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
         if existing_counties.length > 0
-          user.expertise_counties.delete(existing_counties)
+          @currentuser.expertise_counties.delete(existing_counties)
         end
         @all_counties = true  
         county_to_add = @location.expertise_counties.find(:first, :conditions => "countycode = '0'")
       elsif params[:new_county_fips] and params[:new_county_fips].strip != ''
-        all_county = user.expertise_counties.find(:first, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid} and expertise_counties.countycode = '0'")
-        user.expertise_counties.delete(all_county) if all_county
+        all_county = @currentuser.expertise_counties.find(:first, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid} and expertise_counties.countycode = '0'")
+        @currentuser.expertise_counties.delete(all_county) if all_county
         @new_county = true
         county_to_add = ExpertiseCounty.find(:first, :conditions => ["expertise_counties.fipsid = ?", params[:new_county_fips]] )
       end
       
-      user.expertise_locations << @location if !user.expertise_locations.include?(@location)
-      user.expertise_counties << county_to_add if !user.expertise_counties.include?(county_to_add)
-      user.save
+      @currentuser.expertise_locations << @location if !@currentuser.expertise_locations.include?(@location)
+      @currentuser.expertise_counties << county_to_add if !@currentuser.expertise_counties.include?(county_to_add)
+      @currentuser.save
       
-      @new_county_list = user.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
+      @new_county_list = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
     end
     
     respond_to do |format|
@@ -152,16 +148,15 @@ class AccountController < ApplicationController
    #the params[:edit_location_fipsid] is passed in from the edit link on the location summary
    #the params[:location_fips] is passed in from the location drop down
    def show_counties
-     user = User.current_user
      if params[:location_fips] and params[:location_fips].strip != ''
        @location = ExpertiseLocation.find_by_fipsid(params[:location_fips])
-       @selected_counties = user.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{@location.id}", :order => "expertise_counties.name")
+       @selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{@location.id}", :order => "expertise_counties.name")
      else
        locations = ExpertiseLocation.find(:all, :order => 'entrytype, name')
        if params[:edit_location_fipsid]
          @location = ExpertiseLocation.find_by_fipsid(params[:edit_location_fipsid])
          @location_selected = @location.fipsid
-         @selected_counties = user.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{@location.id}", :order => "expertise_counties.name")
+         @selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{@location.id}", :order => "expertise_counties.name")
        #if the user clicks on the add or edit a location link
        else
          @location_selected = [""]
@@ -177,13 +172,12 @@ class AccountController < ApplicationController
    #this does the querying to retrieve all of the existing location and county data for the current user.
    #the initialize_locations.rjs template gets rendered when this call executes.
    def initialize_locations
-     user = User.current_user
      @location_array = Array.new
      
-     locations = user.expertise_locations.find(:all, :order => 'name')
+     locations = @currentuser.expertise_locations.find(:all, :order => 'name')
      
      locations.each do |l|
-       selected_counties = user.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{l.id}", :order => "expertise_counties.name")
+       selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{l.id}", :order => "expertise_counties.name")
        if selected_counties.length > 0
          @location_array << [l, selected_counties]
        end
@@ -210,35 +204,33 @@ class AccountController < ApplicationController
   end
    
   def widget_preferences
-    user = User.current_user
-    
     if !request.post?
       @widgets = Widget.find(:all, :order => "name")
-      @filter_widgets = UserPreference.find(:all, :conditions => "user_id = #{user.id} and name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting.to_i}
+      @filter_widgets = UserPreference.find(:all, :conditions => "user_id = #{@currentuser.id} and name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting.to_i}
       role_for_widget_routing = Role.find(:first, :conditions => "name = '#{Role::WIDGET_AUTO_ROUTE}'")
-      @auto_assign_widgets = UserRole.find(:all, :conditions => "user_id = #{user.id} and role_id = #{role_for_widget_routing.id}").collect{|role| role.widget_id}
+      @auto_assign_widgets = UserRole.find(:all, :conditions => "user_id = #{@currentuser.id} and role_id = #{role_for_widget_routing.id}").collect{|role| role.widget_id}
     else
       if params[:filter_widget_id] and params[:filter_widget_id].strip != ''
         widget = Widget.find(:first, :conditions => ["id = ?", params[:filter_widget_id].strip])
-        if user_pref = UserPreference.find(:first, :conditions => ["user_id = #{user.id} and name = '#{UserPreference::FILTER_WIDGET_ID}' and setting = ?", widget.id])
+        if user_pref = UserPreference.find(:first, :conditions => ["user_id = #{@currentuser.id} and name = '#{UserPreference::FILTER_WIDGET_ID}' and setting = ?", widget.id])
           user_pref.destroy
           # if the user has removed the widget from their filter options and still has the source filter set to filter aae questions by that widget, then remove that filter pref also
-          if aae_list_source_filter = UserPreference.find(:first, :conditions => ["user_id = #{user.id} and name = '#{UserPreference::AAE_FILTER_SOURCE}' and setting = ?", widget.id])
+          if aae_list_source_filter = UserPreference.find(:first, :conditions => ["user_id = #{@currentuser.id} and name = '#{UserPreference::AAE_FILTER_SOURCE}' and setting = ?", widget.id])
             aae_list_source_filter.destroy
           end
         else
-          user_pref = UserPreference.new(:user => user, :name => UserPreference::FILTER_WIDGET_ID, :setting => widget.id)
+          user_pref = UserPreference.new(:user => @currentuser, :name => UserPreference::FILTER_WIDGET_ID, :setting => widget.id)
           user_pref.save
         end
       elsif params[:widget_auto_assign_id] and params[:widget_auto_assign_id].strip != ''
         widget = Widget.find(:first, :conditions => ["id = ?", params[:widget_auto_assign_id].strip])
         role_for_widget_routing = Role.find(:first, :conditions => "name = '#{Role::WIDGET_AUTO_ROUTE}'")
         
-        widget_route_role = UserRole.find(:first, :conditions => ["user_id = #{user.id} and widget_id = ? and role_id = #{role_for_widget_routing.id}", widget.id])
+        widget_route_role = UserRole.find(:first, :conditions => ["user_id = #{@currentuser.id} and widget_id = ? and role_id = #{role_for_widget_routing.id}", widget.id])
         if widget_route_role
           widget_route_role.destroy
         else
-          role_to_save = UserRole.new(:user => user, :role => role_for_widget_routing, :widget => widget)
+          role_to_save = UserRole.new(:user => @currentuser, :role => role_for_widget_routing, :widget => widget)
           role_to_save.save
         end
       end
@@ -251,12 +243,10 @@ class AccountController < ApplicationController
     
   end
   
-  def get_widgets
-    user = User.current_user
-    
-    @filter_widgets = UserPreference.find(:all, :conditions => "user_id = #{user.id} and name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting.to_i}
+  def get_widgets    
+    @filter_widgets = UserPreference.find(:all, :conditions => "user_id = #{@currentuser.id} and name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting.to_i}
     role_for_widget_routing = Role.find(:first, :conditions => "name = '#{Role::WIDGET_AUTO_ROUTE}'")
-    @auto_assign_widgets = UserRole.find(:all, :conditions => "user_id = #{user.id} and role_id = #{role_for_widget_routing.id}").collect{|role| role.widget_id}
+    @auto_assign_widgets = UserRole.find(:all, :conditions => "user_id = #{@currentuser.id} and role_id = #{role_for_widget_routing.id}").collect{|role| role.widget_id}
     widget_name = params[:widget_name]
     @widgets = Widget.find(:all, :conditions => "name like '#{widget_name}%'", :order => "name")
     
@@ -265,31 +255,30 @@ class AccountController < ApplicationController
   
   def ask_an_expert_preferences
     @categories = Category.root_categories
-    user = User.current_user
     auto_route_role = Role.find_by_name(Role::AUTO_ROUTE)
     escalation_role = Role.find_by_name(Role::ESCALATION)
     uncat_role = Role.find_by_name(Role::UNCATEGORIZED_QUESTION_WRANGLER)
-    user_root_cats = user.categories.select{|c| !c.parent_id}
-    signature_pref = user.user_preferences.find_by_name('signature')
-    signature_pref ? @signature = signature_pref.setting : @signature = "-#{user.get_first_last_name}"
-    @location_only = user.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
-    @county_only = user.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
+    user_root_cats = @currentuser.categories.select{|c| !c.parent_id}
+    signature_pref = @currentuser.user_preferences.find_by_name('signature')
+    signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.get_first_last_name}"
+    @location_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
+    @county_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
 
     if request.post?
       if params[:auto_route]
-        if !auto_route_role.users.include?(user)
-          auto_route_role.users << user
+        if !auto_route_role.users.include?(@currentuser)
+          auto_route_role.users << @currentuser
         end
       else
-        if auto_route_role.users.include?(user)
-          auto_route_role.user_roles.find(:first, :conditions => "user_id = #{user.id}").destroy
-          auto_route_role.users.delete(user)
+        if auto_route_role.users.include?(@currentuser)
+          auto_route_role.user_roles.find(:first, :conditions => "user_id = #{@currentuser.id}").destroy
+          auto_route_role.users.delete(@currentuser)
         end
       end
       
       if params[:location_only]
         if !@location_only
-          user.user_preferences << UserPreference.new(:name => UserPreference::AAE_LOCATION_ONLY, :setting => 1)
+          @currentuser.user_preferences << UserPreference.new(:name => UserPreference::AAE_LOCATION_ONLY, :setting => 1)
         end
       else
         if @location_only
@@ -299,7 +288,7 @@ class AccountController < ApplicationController
       
       if params[:county_only]
         if !@county_only
-          user.user_preferences << UserPreference.new(:name => UserPreference::AAE_COUNTY_ONLY, :setting => 1)
+          @currentuser.user_preferences << UserPreference.new(:name => UserPreference::AAE_COUNTY_ONLY, :setting => 1)
         end
       else
         if @county_only
@@ -308,31 +297,31 @@ class AccountController < ApplicationController
       end
       
       if params[:auto_escalate]
-        if !escalation_role.users.include?(user)
-          escalation_role.users << user
+        if !escalation_role.users.include?(@currentuser)
+          escalation_role.users << @currentuser
         end
       else
-        if escalation_role.users.include?(user)
-          escalation_role.user_roles.find(:first, :conditions => "user_id = #{user.id}").destroy
-          escalation_role.users.delete(user)
+        if escalation_role.users.include?(@currentuser)
+          escalation_role.user_roles.find(:first, :conditions => "user_id = #{@currentuser.id}").destroy
+          escalation_role.users.delete(@currentuser)
         end
       end
       
       if params[:answer_uncat]
-        if !uncat_role.users.include?(user)
-          uncat_role.users << user
+        if !uncat_role.users.include?(@currentuser)
+          uncat_role.users << @currentuser
         end
       else
-        if uncat_role.users.include?(user)
-          uncat_role.user_roles.find(:first, :conditions => "user_id = #{user.id}").destroy
-          uncat_role.users.delete(user)
+        if uncat_role.users.include?(@currentuser)
+          uncat_role.user_roles.find(:first, :conditions => "user_id = #{@currentuser.id}").destroy
+          uncat_role.users.delete(@currentuser)
         end
       end
         
       if params[:signature]
         if signature_pref.nil?
-          user.user_preferences << UserPreference.new(:name => 'signature', :setting => params[:signature].strip)
-          if !user.save
+          @currentuser.user_preferences << UserPreference.new(:name => 'signature', :setting => params[:signature].strip)
+          if !@currentuser.save
             flash.now[:failure] = "The signature preference did not save successfully."
             return
           end
@@ -346,18 +335,18 @@ class AccountController < ApplicationController
         @signature = params[:signature].strip
       end
       
-      user.save
+      @currentuser.save
       
-      @location_only = user.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
-      @county_only = user.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
+      @location_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
+      @county_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
       
       user_msg = "Ask an Expert Preferences have been successfully updated."
       flash.now[:success] = user_msg
     end 
     
-    (auto_route_role.users.include?(user)) ? @auto_route = true : @auto_route = false
-    (escalation_role.users.include?(user)) ? @auto_escalate = true : @auto_escalate = false  
-    (uncat_role.users.include?(user)) ? @answer_uncat = true : @answer_uncat = false
+    (auto_route_role.users.include?(@currentuser)) ? @auto_route = true : @auto_route = false
+    (escalation_role.users.include?(@currentuser)) ? @auto_escalate = true : @auto_escalate = false  
+    (uncat_role.users.include?(@currentuser)) ? @answer_uncat = true : @answer_uncat = false
     
     render :layout => 'aae'   
   end
@@ -369,7 +358,7 @@ class AccountController < ApplicationController
       return
     end
     
-    @myid = User.current_user.id
+    @myid = @currentuser.id
     @user = User.find(:first, :conditions => ["login = ?", params[:id]])
    
     if @user.nil?
@@ -389,7 +378,7 @@ class AccountController < ApplicationController
       @auto_route_msg = ""   
     else
       @auto_route_msg = "*Has not indicated in prefs to receive auto-routed questions. "
-      if @user.id == User.current_user.id 
+      if @user.id == @currentuser.id 
         @auto_route_msg += "<a href='/account/ask_an_expert_preferences'>edit</a>"
       end
       @auto_route_msg = "<p>".concat(@auto_route_msg).concat("</p>")   

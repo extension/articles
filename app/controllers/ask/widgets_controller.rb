@@ -7,6 +7,8 @@
 
 class Ask::WidgetsController < ApplicationController
   
+  before_filter :login_required, :except => [:create_from_widget, :widget]
+  
   def index
     if params[:id] and params[:id] == 'inactive'
       @widgets = Widget.inactive
@@ -58,16 +60,12 @@ class Ask::WidgetsController < ApplicationController
       return
     end
     
-    #ToDo: Switch user to current user instead of using me as the default user
-    user = User.find(12)
-    
-    @widget.set_fingerprint(user)
+    @widget.set_fingerprint(@currentuser)
     @widget_url = url_for(:controller => 'ask/widgets', :action => :widget, :location => location_str, :county => county_str, :id => @widget.fingerprint, :only_path => false)  
     @widget.widget_url = @widget_url
-    @widget.author = user.login
+    @widget.author = @currentuser.login
     
-    user.widgets << @widget
-    #User.current_user.widgets << @widget  
+    @currentuser.widgets << @widget
   end
   
   def get_widgets

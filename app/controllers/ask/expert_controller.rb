@@ -13,8 +13,7 @@ class Ask::ExpertController < ApplicationController
   has_rakismet :only => [:submit_question, :widget_submit]
   
   skip_before_filter :check_authorization
-  #before_filter :login_required, :except => [:email_escalation_report, :expert_widget]
-  #before_filter :set_current_user, :except => [:email_escalation_report, :expert_widget]
+  before_filter :login_required, :except => [:email_escalation_report, :ask_an_expert, :question_confirmation, :submit_question]
   
   UNASSIGNED = "uncategorized"
   ALL = "all"
@@ -59,11 +58,11 @@ class Ask::ExpertController < ApplicationController
       
       (params[:assign_comment] and params[:assign_comment].strip != '') ? assign_comment = params[:assign_comment] : assign_comment = nil
       
-      if (previous_assignee = @submitted_question.assignee) and (User.current_user != previous_assignee)
+      if (previous_assignee = @submitted_question.assignee) and (@currentuser != previous_assignee)
         assigned_to_someone_else = true
       end
       
-      @submitted_question.assign_to(user, User.current_user, assign_comment)
+      @submitted_question.assign_to(user, @currentuser, assign_comment)
       
       # if the question is currently assigned to someone,
       # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
@@ -292,8 +291,8 @@ class Ask::ExpertController < ApplicationController
     @status = params[:status_state]
     @question = Question.find_by_id(params[:question]) if params[:question]
     @sampletext = params[:sample] if params[:sample]
-    signature_pref = User.current_user.user_preferences.find_by_name('signature')
-    signature_pref ? @signature = signature_pref.setting : @signature = "-#{User.current_user.get_first_last_name}"
+    signature_pref = @currentuser.user_preferences.find_by_name('signature')
+    signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.get_first_last_name}"
     
     if @submitted_question.get_submitter_name != SubmittedQuestion::DEFAULT_SUBMITTER_NAME
       @external_name = @submitted_question.get_submitter_name
@@ -313,7 +312,7 @@ class Ask::ExpertController < ApplicationController
       @question ? contributing_faq = @question.id : contributing_faq = nil
       (@status and @status.to_i == SubmittedQuestion::STATUS_NO_ANSWER) ? sq_status = SubmittedQuestion::STATUS_NO_ANSWER : sq_status = SubmittedQuestion::STATUS_RESOLVED
       
-      @submitted_question.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => User.current_user, :current_response => answer, :resolver_email => User.current_user.email, :current_contributing_faq => contributing_faq)  
+      @submitted_question.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => @currentuser, :current_response => answer, :resolver_email => @currentuser.email, :current_contributing_faq => contributing_faq)  
       @submitter_email = @submitted_question.external_submitter
       
       @url_var = 'http://www.extension.org'
@@ -346,7 +345,7 @@ class Ask::ExpertController < ApplicationController
       return
     end
     
-    @question = @submitted_question.to_faq(User.current_user)
+    @question = @submitted_question.to_faq(@currentuser)
     @revision = @question.revisions[0]
 
     if params[:question] && params[:answer]
@@ -404,7 +403,7 @@ class Ask::ExpertController < ApplicationController
       end
       
     else
-      @user = User.current_user
+      @user = @currentuser
     end
     
     # find questions that are marked as being currently worked on
@@ -470,7 +469,7 @@ class Ask::ExpertController < ApplicationController
         @submitted_question.categories << sub_category if sub_category
       end
       @submitted_question.save
-      SubmittedQuestionEvent.log_recategorize(@submitted_question, User.current_user, @submitted_question.category_names)
+      SubmittedQuestionEvent.log_recategorize(@submitted_question, @currentuser, @submitted_question.category_names)
     end
     
     respond_to do |format|
@@ -555,7 +554,7 @@ class Ask::ExpertController < ApplicationController
     list_view(true)
     set_filters
     @questions_status = SubmittedQuestion::STATUS_RESOLVED
-    @user = User.current_user
+    @user = @currentuser
     
     # user's resolved submitted questions filtered by submitted question filter
     @filtered_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::RESOLVED_TEXT, @category, @location, @county, @source, @user, nil, params[:page], true, false, @order)
@@ -593,7 +592,7 @@ class Ask::ExpertController < ApplicationController
         submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
         if submitted_question
           submitted_question.update_attribute(:spam, true)
-          SubmittedQuestionEvent.log_spam(submitted_question, User.current_user)       
+          SubmittedQuestionEvent.log_spam(submitted_question, @currentuser)       
           submitted_question.spam!
           flash[:success] = "Incoming question has been successfully marked as spam."
         else
@@ -614,7 +613,7 @@ class Ask::ExpertController < ApplicationController
         submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
         if submitted_question
           submitted_question.update_attribute(:spam, false)
-          SubmittedQuestionEvent.log_non_spam(submitted_question, User.current_user)
+          SubmittedQuestionEvent.log_non_spam(submitted_question, @currentuser)
           submitted_question.ham!
           flash[:success] = "Incoming question has been successfully marked as non-spam."
           redirect_to :controller => :expert, :action => :question, :id => submitted_question.id
@@ -668,7 +667,7 @@ class Ask::ExpertController < ApplicationController
           return
         end   
 
-        if @submitted_question.reject(User.current_user, message)
+        if @submitted_question.reject(@currentuser, message)
           flash[:success] = "The question has been rejected."
           redirect_to :controller => :expert, :action => :question, :id => @submitted_question
         else
@@ -686,7 +685,7 @@ class Ask::ExpertController < ApplicationController
     if request.post?
       @submitted_question = SubmittedQuestion.find_by_id(params[:id])
       @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED, :resolved_by => nil, :current_response => nil, :resolved_at => nil, :resolver_email => nil)
-      SubmittedQuestionEvent.log_reactivate(@submitted_question, User.current_user)
+      SubmittedQuestionEvent.log_reactivate(@submitted_question, @currentuser)
       flash[:success] = "Question re-activated"
       redirect_to :controller => :expert, :action => :question, :id => @submitted_question.id
     end
@@ -708,11 +707,7 @@ class Ask::ExpertController < ApplicationController
   end
   
   def set_filters
-    #user = User.current_user
-    # TODO: hack to test until we get current user working. you can modify with your own user id for testing.
-    user = User.find(12)
-    
-    source_filter_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting}.join(',')
+    source_filter_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting}.join(',')
     widgets_to_filter = Widget.find(:all, :conditions => "widgets.id IN (#{source_filter_prefs})", :order => "name") if source_filter_prefs and source_filter_prefs.strip != ''
     @source_options = [['All Sources', 'all'], ['www.extension.org', 'pubsite'], ['All Ask eXtension widgets', 'widget']]
     @source_options = @source_options.concat(widgets_to_filter.map{|w| [w.name, w.id.to_s]}) if widgets_to_filter
@@ -722,7 +717,7 @@ class Ask::ExpertController < ApplicationController
   
   def error_render(action = "new_faq")
     @tag_string = params[:tag_list].strip if params[:tag_list]
-    @user_popular_tags = User.current_user.popular_tags(10)
+    @user_popular_tags = @currentuser.popular_tags(10)
     
     @input_numbers=params['Numbers'] if params['Numbers'] and params['Numbers'].strip !=''
     @saved_reference_names = []
@@ -811,10 +806,6 @@ class Ask::ExpertController < ApplicationController
    #sets the instance variables based on parameters from views like incoming questions and resolved questions
    #if there was no category parameter, then use the category specified in the user's preferences if it exists
    def list_view(is_resolved = false)
-     #user = User.current_user
-     # TODO: hack to test until we get current user working. you can modify with your own user id for testing.
-     user = User.find(12)
-     
      (is_resolved) ? field_to_sort_on = 'resolved_at' : field_to_sort_on = 'created_at'
             
      if params[:order] and params[:order] == "asc"
@@ -831,7 +822,7 @@ class Ask::ExpertController < ApplicationController
   
        # TODO: comment out for now until we get tag scheme figured out for categories
        # filter by category if it exists
-       #if (pref = user.user_preferences.find_by_name(UserPreference::AAE_FILTER_CATEGORY))
+       #if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_CATEGORY))
          #if pref.setting == UNASSIGNED
         #   @category = UNASSIGNED
         #  else   
@@ -845,7 +836,7 @@ class Ask::ExpertController < ApplicationController
         #end  
 
         # filter by location if it exists
-        if (pref = user.user_preferences.find_by_name(UserPreference::AAE_FILTER_LOCATION))
+        if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_LOCATION))
           @location = Location.find_by_fipsid(pref.setting)
           if !@location
             flash[:failure] = "Invalid location."
@@ -855,7 +846,7 @@ class Ask::ExpertController < ApplicationController
         end
 
         # filter by county if it exists
-        if (@location) and (pref = user.user_preferences.find_by_name(UserPreference::AAE_FILTER_COUNTY))
+        if (@location) and (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_COUNTY))
           @county = County.find_by_fipsid(pref.setting)
           if !@county
             flash[:failure] = "Invalid county."
@@ -865,7 +856,7 @@ class Ask::ExpertController < ApplicationController
         end
         
         # filter by source if it exists
-        if pref = user.user_preferences.find_by_name(UserPreference::AAE_FILTER_SOURCE)
+        if pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_SOURCE)
           @source = pref.setting
         end
         
@@ -923,7 +914,7 @@ class Ask::ExpertController < ApplicationController
        # save the category, location and source prefs from the filter
 
        #save category prefs
-       #user_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_CATEGORY}'")
+       #user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_CATEGORY}'")
        #if user_prefs
        #   user_prefs.each {|up| up.destroy}
        #end
@@ -936,40 +927,40 @@ class Ask::ExpertController < ApplicationController
        #end
 
        #if cat_setting
-      #   up = UserPreference.new(:user_id => user.id, :name => UserPreference::AAE_FILTER_CATEGORY, :setting => cat_setting)
+      #   up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_CATEGORY, :setting => cat_setting)
       #   up.save
       # end
 
        #save location prefs
-       user_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_LOCATION}'")
+       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_LOCATION}'")
        if user_prefs
          user_prefs.each {|up| up.destroy}
        end
 
        if @location 
-         up = UserPreference.new(:user_id => user.id, :name => UserPreference::AAE_FILTER_LOCATION, :setting => @location.fipsid)
+         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_LOCATION, :setting => @location.fipsid)
          up.save
        end
 
        #save county prefs
-       user_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_COUNTY}'")
+       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_COUNTY}'")
        if user_prefs
          user_prefs.each {|up| up.destroy}
        end
 
        if @county 
-         up = UserPreference.new(:user_id => user.id, :name => UserPreference::AAE_FILTER_COUNTY, :setting => @county.fipsid)
+         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_COUNTY, :setting => @county.fipsid)
          up.save
        end
        
        #save source prefs
-       user_prefs = user.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_SOURCE}'")
+       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_SOURCE}'")
        if user_prefs
          user_prefs.each{ |up| up.destroy}
        end
        
        if @source
-         up = UserPreference.new(:user_id => user.id, :name => UserPreference::AAE_FILTER_SOURCE, :setting => @source)
+         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_SOURCE, :setting => @source)
          up.save
        end
        

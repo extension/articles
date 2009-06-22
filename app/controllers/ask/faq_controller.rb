@@ -18,7 +18,7 @@ class Ask::FaqController < ApplicationController
       return
     end
     
-    @question = @submitted_question.to_faq(User.current_user)
+    @question = @submitted_question.to_faq(@currentuser)
     @revision = @question.revisions[0]
 
     if params[:question] && params[:answer]
@@ -38,7 +38,7 @@ class Ask::FaqController < ApplicationController
     
     @revision = Revision.new(params[:revision])
     
-    @revision.user = User.current_user   
+    @revision.user = @currentuser   
     @question.status = Question::STATUS_DRAFT
     @question.draft_status = Question::STATUS_DRAFT
     
@@ -50,8 +50,8 @@ class Ask::FaqController < ApplicationController
     
     if @question.save
 	    if session[:watch_pref] == "1"
-        User.current_user.questions << @question
-        User.current_user.save
+        @currentuser.questions << @question
+        @currentuser.save
       end
       
       flash[:success] = "Your new FAQ has been saved"

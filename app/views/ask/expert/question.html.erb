@@ -5,13 +5,13 @@
 
 <% if !@submitted_question.spam %>
   <% if work_time_remaining = get_work_time_remaining(@submitted_question) %>
-  <% if (work_time_remaining <= 0) and (User.current_user.id != @submitted_question.assignee.id) %>
+  <% if (work_time_remaining <= 0) and (@currentuser.id != @submitted_question.assignee.id) %>
   <%= render(:partial => "expert/take_question") %>
-  <% elsif (work_time_remaining > 0) and (User.current_user.id != @submitted_question.assignee.id) %>
+  <% elsif (work_time_remaining > 0) and (@currentuser.id != @submitted_question.assignee.id) %>
   <%= render(:partial => "expert/question_alert") %>
-  <% elsif (work_time_remaining <= 0) and (User.current_user.id == @submitted_question.assignee.id) %>
+  <% elsif (work_time_remaining <= 0) and (@currentuser.id == @submitted_question.assignee.id) %>
   <%= render(:partial => "expert/my_claim") %>
-  <% elsif (work_time_remaining > 0) and (User.current_user.id == @submitted_question.assignee.id) %>
+  <% elsif (work_time_remaining > 0) and (@currentuser.id == @submitted_question.assignee.id) %>
   <%= render(:partial => "expert/my_claim_status") %>
   <% end %>
   <% end %>
@@ -132,13 +132,13 @@
 
 
 <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
-     <% if @submitted_question.assignee.id == User.current_user.id %>
+     <% if @submitted_question.assignee.id == @currentuser.id %>
        <%= render(:partial => "expert/question_resolve") %> 
      <% else %>
        <% if !(work_time_remaining and work_time_remaining > 0) %>
        <div class="aae_module">
        <h3>If you would like to answer this question, please assign it to yourself.</h3>
-       <%= button_to 'Assign me this question', :controller => :expert, :action => :assign, :id => @submitted_question.id, :assignee_login => User.current_user.login %>
+       <%= button_to 'Assign me this question', :controller => :expert, :action => :assign, :id => @submitted_question.id, :assignee_login => @currentuser.login %>
        </div>
        <% end %>
        <%= render(:partial => "expert/answer_search") %>

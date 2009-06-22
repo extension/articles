@@ -1,7 +1,7 @@
 <div id="aaemastheadwrapper" class="active">
     <div id="aaemasthead" >
     <div id="description">
-        <h3>You've got this question <em>(<%= time_ago_in_words(SubmittedQuestionEvent.work_in_progress(User.current_user.id, @submitted_question.id).latest[0].created_at + 7200) %> left)</em></h3>
+        <h3>You've got this question <em>(<%= time_ago_in_words(SubmittedQuestionEvent.work_in_progress(@currentuser.id, @submitted_question.id).latest[0].created_at + 7200) %> left)</em></h3>
         <p>If you decide you can't answer it, please assign it someone who can or hand it off to a Question Wrangler. If you do nothing, your "hold" will expire and the question will be up for grabs again. <a class="moreinfo" href="http://about.extension.org/2009/03/19/new-in-ask-an-expert-im-working-on-this/">?</a></p>
     </div>    
     </div>

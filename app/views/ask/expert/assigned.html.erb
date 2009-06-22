@@ -3,14 +3,14 @@
 
 <% if !@category and !@location and !@county and !@source %>
     <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small><span class="syndication">
-    <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => User.current_user %></span></h2>
+    <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => @currentuser %></span></h2>
 <% else %>
     <% if @category == Category::UNASSIGNED %>
          <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small> <span class="syndication">
-         <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => User.current_user, :id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source %></span></h2> 
+         <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => @currentuser, :id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source %></span></h2> 
     <% else %>
          <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small> <span class="syndication">
-         <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => User.current_user, :id => @category, :location => @location, :county => @county, :source => @source %></span></h2>
+         <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => @currentuser, :id => @category, :location => @location, :county => @county, :source => @source %></span></h2>
     <% end %>
 <% end %>
 
