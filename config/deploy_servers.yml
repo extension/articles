@@ -6,3 +6,9 @@ dev:
     host: <%= "pubsitedev.extension.org" %>
     tag: trunk
     ssh_port: 24
+demo:
+    deploy_dir: <%= "/services/apache/vhosts/#{app_host}.extension.org/railsroot" %>
+    host: <%= "#{app_host}.extension.org" %>
+    tag: trunk
+    ssh_port: 24 
+
