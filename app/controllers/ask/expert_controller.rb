@@ -139,8 +139,8 @@ class Ask::ExpertController < ApplicationController
         @submitted_question.location_id = params[:location_id]
         @submitted_question.county_id = params[:county_id]
         @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
-        @top_level_category = @submitted_question.top_level_category
-        @sub_category = @submitted_question.sub_category.id
+        @top_level_category = @submitted_question.top_level_category if @submitted_question.top_level_category
+        @sub_category = @submitted_question.sub_category.id if @submitted_question.sub_category
         
         if @top_level_category 
           @sub_category_options = [""].concat(@top_level_category.children.map{|sq| [sq.name, sq.id]})
@@ -245,15 +245,15 @@ class Ask::ExpertController < ApplicationController
     set_titletag("Search Results for Ask an Expert - eXtension")
     
     @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-    @submitted_question.location_id = params[:location_id]
-    @submitted_question.county_id = params[:county_id]
     
     unless @submitted_question.valid?
-      @locations = Location.find(:all, :order => 'entrytype, name')
-      render :action => 'ask_an_expert'
+      redirect_to :action => 'ask_an_expert', 
+                  :submitted_question => params[:submitted_question], 
+                  :location_id => params[:location_id], 
+                  :county_id => params[:county_id], 
+                  :aae_category => params[:aae_category], 
+                  :subcategory => params[:subcategory]
     end
-
-    formatted_question = params[:q].strip.upcase
   end
   
   def submit_question
