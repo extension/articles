@@ -4,12 +4,14 @@ require 'getoptlong'
 ### Program Options
 progopts = GetoptLong.new(
   [ "--environment","-e", GetoptLong::OPTIONAL_ARGUMENT ],
-  [ "--refreshall","-a", GetoptLong::NO_ARGUMENT ],
-  [ "--identitydatabase","-i", GetoptLong::OPTIONAL_ARGUMENT ]
+  [ "--refreshall","-r", GetoptLong::NO_ARGUMENT ],
+  [ "--identitydatabase","-i", GetoptLong::OPTIONAL_ARGUMENT ],
+  [ "--application","-a", GetoptLong::OPTIONAL_ARGUMENT ]
 )
 
 @environment = 'production'
 @refreshall = false
+@doapplication = 'all'
 progopts.each do |option, arg|
   case option
     when '--environment'
@@ -18,6 +20,8 @@ progopts.each do |option, arg|
       @identitydatabase = arg
     when '--refreshall'
       @refreshall = true
+    when '--application'
+      @doapplication = arg
     else
       puts "Unrecognized option #{opt}"
       exit 0
@@ -34,8 +38,10 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
 ###### go! ###########
 ActivityApplication.active.activitysources.each do |application|
-  result = application.get_activityobjects(@refreshall)
-  if(result)
-    application.get_activity(@refreshall)
+  if(@doapplication == 'all' or @doapplication.downcase == application.shortname)
+    result = application.get_activityobjects(@refreshall)
+    if(result)
+      application.get_activity(@refreshall)
+    end
   end
 end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090619160550) do
+ActiveRecord::Schema.define(:version => 20090624174721) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -47,15 +47,26 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.datetime "updated_at"
   end
 
+  create_table "activity_events", :force => true do |t|
+    t.integer  "user_id",                               :default => 0, :null => false
+    t.integer  "activity_application_id",               :default => 0, :null => false
+    t.integer  "event",                                 :default => 0, :null => false
+    t.string   "ipaddr",                  :limit => 20
+    t.text     "eventdata"
+    t.datetime "created_at"
+  end
+
   create_table "activity_objects", :force => true do |t|
-    t.integer  "activity_application_id", :default => 1
+    t.integer  "activity_application_id",                     :default => 1
     t.integer  "entrytype"
     t.integer  "namespace"
     t.integer  "foreignid"
+    t.integer  "foreignrevision",                             :default => 0
     t.string   "source"
     t.string   "sourcewidget"
     t.string   "displaytitle"
     t.text     "fulltitle"
+    t.text     "content",                 :limit => 16777215
     t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -63,6 +74,7 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
   end
 
   add_index "activity_objects", ["entrytype", "namespace", "foreignid"], :name => "recordsignature", :unique => true
+  add_index "activity_objects", ["fulltitle", "content"], :name => "title_content_full_index"
 
   create_table "admin_events", :force => true do |t|
     t.integer  "user_id",                  :default => 0, :null => false
@@ -96,6 +108,8 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.datetime "updated_at"
     t.datetime "wiki_created_at"
     t.datetime "wiki_updated_at"
+    t.text     "cached_tag_list"
+    t.integer  "average_ranking",  :limit => 10,       :precision => 10, :scale => 0
     t.string   "type"
     t.string   "original_url"
     t.text     "original_content", :limit => 16777215
@@ -164,23 +178,19 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
   add_index "chat_accounts", ["username"], :name => "username", :unique => true
 
   create_table "communities", :force => true do |t|
-    t.integer  "entrytype",               :default => 0,     :null => false
-    t.string   "name",                                       :null => false
+    t.integer  "entrytype",     :default => 0,     :null => false
+    t.string   "name",                             :null => false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "open",                    :default => false
-    t.integer  "created_by",              :default => 0
+    t.boolean  "open",          :default => false
+    t.integer  "created_by",    :default => 0
+    t.text     "taglist_cache"
     t.string   "uri"
-    t.integer  "memberfilter",            :default => 1
-    t.boolean  "ismeta",                  :default => false
-    t.boolean  "listeligible",            :default => true
+    t.integer  "memberfilter",  :default => 1
+    t.boolean  "ismeta",        :default => false
+    t.boolean  "listeligible",  :default => true
     t.string   "shortname"
-    t.string   "public_name"
-    t.text     "public_description"
-    t.boolean  "is_launched",             :default => false
-    t.integer  "public_topic_id"
-    t.text     "cached_content_tag_data"
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
@@ -232,6 +242,13 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
   add_index "counties", ["name"], :name => "name"
   add_index "counties", ["state_fipsid"], :name => "state_fipsid"
 
+  create_table "counties_users", :id => false, :force => true do |t|
+    t.integer "county_id", :default => 0, :null => false
+    t.integer "user_id",   :default => 0, :null => false
+  end
+
+  add_index "counties_users", ["user_id", "county_id"], :name => "fk_counties_users", :unique => true
+
   create_table "county_links", :force => true do |t|
     t.string  "state",       :default => "", :null => false
     t.string  "office_link", :default => "", :null => false
@@ -256,7 +273,38 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.datetime "start"
     t.integer  "duration"
     t.boolean  "deleted"
+    t.text     "cached_tag_list"
   end
+
+  create_table "expert_questions", :force => true do |t|
+    t.integer  "submitted_by"
+    t.string   "submitter_email",      :default => "",              :null => false
+    t.string   "app_string",           :default => "extension.org", :null => false
+    t.datetime "resolved_at"
+    t.string   "status",               :default => "",              :null => false
+    t.text     "asked_question",                                    :null => false
+    t.text     "answer"
+    t.boolean  "has_read",             :default => false,           :null => false
+    t.text     "reject_message"
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at"
+    t.boolean  "duplicate",            :default => false,           :null => false
+    t.integer  "faq_id"
+    t.string   "resolver_email"
+    t.text     "question_fingerprint",                              :null => false
+    t.string   "submitter_firstname",  :default => "",              :null => false
+    t.string   "submitter_lastname",   :default => "",              :null => false
+    t.integer  "location_id"
+    t.integer  "county_id"
+    t.string   "category_name"
+    t.string   "subcategory_name"
+    t.string   "zip_code"
+    t.boolean  "spam"
+  end
+
+  add_index "expert_questions", ["county_id"], :name => "fk_eq_county"
+  add_index "expert_questions", ["faq_id"], :name => "fk_faq_eq"
+  add_index "expert_questions", ["location_id"], :name => "fk_eq_location"
 
   create_table "expertise_areas", :force => true do |t|
     t.integer  "category_id", :null => false
@@ -268,12 +316,12 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
   add_index "expertise_areas", ["user_id"], :name => "index_expertise_areas_on_user_id"
 
   create_table "expertise_counties", :force => true do |t|
-    t.integer "fipsid",                                    :null => false
-    t.integer "location_id",                               :null => false
-    t.integer "state_fipsid",                              :null => false
-    t.string  "countycode",   :limit => 3, :default => "", :null => false
-    t.string  "name",                      :default => "", :null => false
-    t.string  "censusclass",  :limit => 2, :default => "", :null => false
+    t.integer "fipsid",                    :null => false
+    t.integer "location_id",               :null => false
+    t.integer "state_fipsid",              :null => false
+    t.string  "countycode",   :limit => 3, :null => false
+    t.string  "name",                      :null => false
+    t.string  "censusclass",  :limit => 2, :null => false
   end
 
   add_index "expertise_counties", ["location_id"], :name => "index_expertise_counties_on_location_id"
@@ -295,10 +343,10 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
   end
 
   create_table "expertise_locations", :force => true do |t|
-    t.integer "fipsid",                                     :null => false
-    t.integer "entrytype",                                  :null => false
-    t.string  "name",                       :default => "", :null => false
-    t.string  "abbreviation", :limit => 10, :default => "", :null => false
+    t.integer "fipsid",                     :null => false
+    t.integer "entrytype",                  :null => false
+    t.string  "name",                       :null => false
+    t.string  "abbreviation", :limit => 10, :null => false
   end
 
   add_index "expertise_locations", ["name"], :name => "index_expertise_locations_on_name", :unique => true
@@ -322,6 +370,7 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.string   "status"
     t.text     "age_ranges"
     t.text     "reference_questions"
+    t.integer  "average_ranking",      :limit => 10, :precision => 10, :scale => 0
   end
 
   create_table "feed_locations", :force => true do |t|
@@ -339,10 +388,21 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.datetime "updated_at"
   end
 
+  create_table "identity_locations", :force => true do |t|
+    t.integer  "entrytype",                  :default => 0, :null => false
+    t.string   "name",                                      :null => false
+    t.string   "abbreviation", :limit => 10,                :null => false
+    t.integer  "fipsid",                     :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "identity_locations", ["name"], :name => "NAME", :unique => true
+
   create_table "institutions", :force => true do |t|
-    t.integer  "entrytype",                           :default => 0,     :null => false
+    t.integer  "entrytype",                           :default => 0, :null => false
     t.string   "location_abbreviation", :limit => 4
-    t.string   "name",                                                   :null => false
+    t.string   "name",                                               :null => false
     t.string   "code",                  :limit => 10
     t.string   "uri"
     t.datetime "created_at"
@@ -352,14 +412,10 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.integer  "created_by",                          :default => 0
     t.string   "creatorlogin"
     t.integer  "institutionalteam_id",                :default => 0
-    t.string   "public_uri"
-    t.string   "referer_domain"
-    t.boolean  "shared_logo",                         :default => false
   end
 
   add_index "institutions", ["location_abbreviation"], :name => "STATE_ABBR"
   add_index "institutions", ["name"], :name => "NAME", :unique => true
-  add_index "institutions", ["referer_domain"], :name => "index_institutions_on_referer_domain"
 
   create_table "invitations", :force => true do |t|
     t.integer  "user_id",                      :default => 0, :null => false
@@ -449,6 +505,13 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
   add_index "locations", ["fipsid"], :name => "fipsid", :unique => true
   add_index "locations", ["name"], :name => "name", :unique => true
 
+  create_table "locations_users", :id => false, :force => true do |t|
+    t.integer "location_id", :default => 0, :null => false
+    t.integer "user_id",     :default => 0, :null => false
+  end
+
+  add_index "locations_users", ["user_id", "location_id"], :name => "fk_locations_users", :unique => true
+
   create_table "metacommunityconnections", :force => true do |t|
     t.integer  "metacommunity_id"
     t.integer  "includedcommunity_id"
@@ -516,6 +579,44 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
 
   add_index "privacy_settings", ["user_id"], :name => "index_privacy_settings_on_user_id"
 
+  create_table "pubsite_communities", :force => true do |t|
+    t.string  "title"
+    t.text    "description"
+    t.boolean "visible",     :default => true
+    t.integer "topic_id"
+    t.string  "name"
+  end
+
+  create_table "pubsite_institutions", :force => true do |t|
+    t.string  "state",       :limit => 4,  :default => "",    :null => false
+    t.integer "location_id",               :default => 0,     :null => false
+    t.string  "name",                      :default => "",    :null => false
+    t.string  "code",        :limit => 10, :default => ""
+    t.string  "uri",                       :default => ""
+    t.string  "domain",                    :default => ""
+    t.boolean "shared",                    :default => false
+  end
+
+  add_index "pubsite_institutions", ["code"], :name => "code"
+  add_index "pubsite_institutions", ["domain"], :name => "domain_idx"
+  add_index "pubsite_institutions", ["location_id"], :name => "fk_loc_id"
+  add_index "pubsite_institutions", ["name"], :name => "NAME", :unique => true
+
+  create_table "pubsite_taggings", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.datetime "created_at"
+  end
+
+  add_index "pubsite_taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "pubsite_taggings", ["taggable_id", "taggable_type"], :name => "index_taggings_on_taggable_id_and_taggable_type"
+
+  create_table "pubsite_tags", :force => true do |t|
+    t.string  "name"
+    t.integer "community_id"
+  end
+
   create_table "roles", :force => true do |t|
     t.string "name"
   end
@@ -564,7 +665,7 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.integer  "user_id"
     t.boolean  "duplicate",                :default => false, :null => false
     t.string   "external_app_id"
-    t.string   "submitter_email"
+    t.string   "external_submitter"
     t.datetime "resolved_at"
     t.integer  "external_id"
     t.datetime "question_updated_at"
@@ -581,8 +682,6 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.string   "referrer",                 :default => "",    :null => false
     t.string   "widget_name"
     t.integer  "status_state",                                :null => false
-    t.string   "zip_code"
-    t.integer  "widget_id"
   end
 
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"
@@ -601,12 +700,12 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
     t.integer  "tag_id",                                     :null => false
     t.integer  "taggable_id",                                :null => false
     t.string   "taggable_type", :limit => 32
+    t.string   "tag_kind",      :limit => 16
     t.string   "tag_display",                                :null => false
     t.integer  "owner_id",                                   :null => false
     t.integer  "weight",                      :default => 1, :null => false
     t.datetime "created_at",                                 :null => false
     t.datetime "updated_at"
-    t.integer  "tag_kind"
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tag_kind", "owner_id"], :name => "taggingindex", :unique => true
@@ -730,14 +829,12 @@ ActiveRecord::Schema.define(:version => 20090619160550) do
   end
 
   create_table "widgets", :force => true do |t|
-    t.string   "name",                          :null => false
-    t.string   "fingerprint",                   :null => false
-    t.string   "widget_url",                    :null => false
-    t.string   "author",                        :null => false
+    t.string   "name",        :null => false
+    t.string   "fingerprint", :null => false
+    t.string   "widget_url",  :null => false
+    t.string   "author",      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",      :default => true, :null => false
-    t.integer  "user_id",                       :null => false
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true
