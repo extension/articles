@@ -8,6 +8,7 @@
 class Ask::WidgetsController < ApplicationController
   
   before_filter :login_required, :except => [:create_from_widget, :widget]
+  layout 'widgets'
   
   def index
     if params[:id] and params[:id] == 'inactive'
@@ -25,6 +26,15 @@ class Ask::WidgetsController < ApplicationController
       redirect_to :action => :index
     end
     render :action => :view
+  end
+  
+  def who 
+  end
+  
+  def documentation
+  end
+  
+  def about 
   end
   
   def view

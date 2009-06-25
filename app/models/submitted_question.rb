@@ -117,6 +117,29 @@ def reject(user, message)
   end
 end
 
+def setup_categories(cat, subcat)
+  if category = Category.find_by_id(cat)
+    self.categories << category
+  end
+  
+  if category and (subcategory = Category.find_by_id_and_parent_id(subcat, category.id))
+    self.categories << subcategory
+  end
+end
+
+def top_level_category
+  return self.categories.detect{|c| c.parent_id == nil}
+end
+
+def sub_category
+  top_level_cat = self.top_level_category
+  if top_level_cat
+    return self.categories.detect{|c| c.parent_id == top_level_cat.id}
+  else
+    return nil
+  end
+end
+
 #find the date that this submitted question was assigned to the current assignee
 def assigned_date
   sqevent = self.submitted_question_events.find(:first, :conditions => "event_state = '#{SubmittedQuestionEvent::ASSIGNED_TO}'", :order => "created_at desc")

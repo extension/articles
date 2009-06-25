@@ -33,6 +33,21 @@
     <%= error_message_on "submitted_question", "submitter_email"%>
 </fieldset>
 
+<h3>Category <span class="optional">(optional)</span></h3>
+<p class="instructions">Tip: Questions can be answered more quickly when assigned to the correct community</p>
+<fieldset class="stack_labels">
+	<p>
+	<%= select_tag("aae_category", options_for_select(@categories, @submitted_question.top_level_category ? @submitted_question.top_level_category.id : '')) %>
+	</p>
+	<%= observe_field("aae_category", :update => :subcat_div, :url => { :action => :get_aae_form_subcats }, :with => "'category_id=' + value") %>
+
+    <p id="subcat_div">
+       <% if @top_level_category %>
+         <%= render(:partial => 'aae_subcats')%>
+       <% end %>
+    </p>
+</fieldset>
+
 <h3>Your location</h3>
 <p class="instructions">Enter the location where you want the question to be directed</p>
 <fieldset class="stack_labels">

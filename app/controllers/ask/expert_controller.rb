@@ -8,7 +8,8 @@
 require 'zip_code_to_state'
 
 class Ask::ExpertController < ApplicationController
-  #layout  'aae'  
+  
+  layout 'application', :only => [:ask_an_expert, :question_confirmation]
   
   has_rakismet :only => [:submit_question, :widget_submit]
   
@@ -137,10 +138,19 @@ class Ask::ExpertController < ApplicationController
         @submitted_question = SubmittedQuestion.new(params[:submitted_question])
         @submitted_question.location_id = params[:location_id]
         @submitted_question.county_id = params[:county_id]
+        @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
+        @top_level_category = @submitted_question.top_level_category
+        @sub_category = @submitted_question.sub_category.id
+        
+        if @top_level_category 
+          @sub_category_options = [""].concat(@top_level_category.children.map{|sq| [sq.name, sq.id]})
+        else
+          @sub_category_options = [""]
+        end
+        
       rescue
         @submitted_question = SubmittedQuestion.new
       end
-      @submitted_question.valid?      
     else
       # not sure yet if we'll be using the 'new_from_personal' method
       #@submitted_question = SubmittedQuestion.new_from_personal(@personal)      
@@ -149,6 +159,8 @@ class Ask::ExpertController < ApplicationController
     
     @location_options = get_location_options
     @county_options = get_county_options
+    
+    @categories = [""].concat(Category.root_categories.map{|c| [c.name, c.id]})
   end
   
   def location
@@ -248,6 +260,7 @@ class Ask::ExpertController < ApplicationController
     @submitted_question = SubmittedQuestion.new(params[:submitted_question])
     @submitted_question.location_id = params[:location_id]
     @submitted_question.county_id = params[:county_id]
+    @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
     @submitted_question.status = 'submitted'
     @submitted_question.user_ip = request.remote_ip
     @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
@@ -437,6 +450,17 @@ class Ask::ExpertController < ApplicationController
     setup_cat_loc
     
     render :layout => false
+  end
+  
+  def get_aae_form_subcats
+    parent_cat = Category.find_by_id(params[:category_id].strip) if params[:category_id] and params[:category_id].strip != '' 
+    if parent_cat 
+      @sub_category_options = [""].concat(parent_cat.children.map{|sq| [sq.name, sq.id]})
+    else
+      @sub_category_options = [""]
+    end
+    
+    render :partial => 'aae_subcats', :layout => false
   end
   
   def enable_category_change

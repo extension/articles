@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>eXtension Ask: <%= @page_title || controller.action_name %></title>
+    <%= stylesheet_link_tag 'widgets' %>
+    <%= javascript_include_tag :defaults %>
+</head>
+
+<body>
+    <div id="masthead">
+        <div class="wrapper">
+            <div id="header">
+                <h1><%= link_to("Ask eXtension", "/") %></h1>
+                <p>Experts from around the country are ready to answer your questions</p>
+            </div>
+            <div id="extension"><%= link_to(image_tag("/images/extension_logo_small.gif", :alt => "eXtension Ask"), :controller => :ask, :action => :extension ) %>
+            </div>
+            
+        </div>
+    </div>
+    <div class="wrapper">
+        <div id="content">
+        
+
+            <%= yield :layout %>
+        
+        </div>
+        <div id="sidebar">
+            <% if !session[:user] %>
+              <p class="openid"><%= link_to "Sign in", login_url %></p>
+              <% get_widget_link_message = "<br />(requires login)" %>
+            <% else %>
+              <% user = get_logged_in_user(session[:user]) %>
+              <% get_widget_link_message = "" %>
+              <% if user.nick_name and !user.nick_name.blank? %>
+    			    <p class="usericon"><%= link_to user.nick_name, user_url %> &nbsp <%= link_to "Logout", logout_url %></p>
+    		  <% else %>
+    			    <p class="usericon"><%= link_to "Profile", user_url %> &nbsp <%= link_to "Logout", logout_url %></p>
+    		  <% end %>
+
+            <% end %>
+            <ul>
+                <li><%= link_to "All Widgets", :controller => 'ask/widgets', :class => "current" %></li>
+                <li><%= link_to "About", :controller => 'ask/widgets', :action => :about %></li>
+                <li><%= link_to "Who answers the questions?", :controller => 'ask/widgets', :action => :who %></li>
+                <li><%= link_to "Get the Ask widget for your site #{get_widget_link_message}", :controller => 'ask/widgets', :action => :new %></li>
+                <li><%= link_to "Documentation", :controller => 'ask/widgets', :action => :documentation %></li>
+                
+            </ul>
+        </div>
+        <br class="clear" />
+    </div>
+    <div id="footer">
+        <div class="wrapper">
+            <div class="col">
+                <h4>what is eXtension?</h4>
+                <p>eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest land-grant university minds across America. eXtension connects knowledge consumers with knowledge providers—experts like you who know their subject matter inside out.</p> 
+                <p>copyright 2008 eXtension</p>
+            </div>
+            <div class="col">
+                <h4>eXtension resources for Extension Professionals</h4>
+                <p>You need an eXtensionID to access these sites</p>
+                <dl>
+                    <dt><a href="https://people.extension.org">People</a></dt>
+        	        <dd>Manage your eXtension profile and find colleagues</dd>
+        	        <dt><a href="http://faq.extension.org/">Frequently Asked Questions</a></dt>
+        	        <dd>Tool to find, submit, and produce answers and questions database that is published on the public site</dd>
+                    <dt><a href="http://events.extension.org">Events</a></dt>
+                    <dd>Application to post events on the public site </dd>
+        	        <dt><a href="http://cop.extension.org/">CoP Wiki</a></dt>
+        	        <dd>A wiki for professionals from the land-grant universities to collaborate on topics of interest</dd>
+        	        <dt><a href="http://about.extension.org/wiki">About Wiki</a></dt>
+        	        <dd>Organizational information, resources and updates about the eXtension initiative</dd>
+        	    </dl>
+        	    
+            </div>
+            <div class="col">
+                <h4>eXtension resources for the Public</h4>
+        	    <dl>
+        	        <dt><a href="http://about.extension.org/">About</a></dt>
+        	        <dd>General Information about eXtension for the Public</dd>
+        	        <dt><a href="http://www.extension.org/">eXtension Public Site</a></dt>
+        	        <dd>Objective, research-based, credible information and tools you can use every day to improve your life.</dd>
+        	    </dl>
+            </div>
+            <br class="clear" />
+        </div>
+    </div>
+</body>
+</html>

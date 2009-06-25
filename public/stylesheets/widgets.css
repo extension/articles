@@ -1,0 +1,167 @@
+/* the browser font-size default is 16pt. multiple by 62.5% to reset font size to 1em.
+1em is now equal to 10pt. 1.2em is 12pt, 1.6em is 16pt, etc. (unless nested) */
+body {font-size: 62.5%;}
+
+/* reset all margins, padding, and borders */
+* { margin: 0; padding: 0; }
+img { border: 0; }
+
+/* Put it back on certain elements */
+h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, fieldset, table, ul, ol {
+	margin: 0 0 1em;
+}
+.clear {clear:both;}
+
+/* default text sizes */
+p, li, dt, dd {font-size:1.3em;}
+h1 { font-size: 2.4em; color: #003073;}
+h2 { font-size: 2.0em; color: #003073;}
+h3 { font-size: 1.8em; color: #003073;}
+h4 { font-size: 1.5em; color: #003073;}
+h5 { font-size: 1.4em; color: #003073;}
+h6 { font-size: 1.3em; color: #003073;}
+
+a:link		{ color: #0047ae; }
+a:visited	{ color: #0047ae; }
+a:hover		{ color: blue;}
+
+body, html {font-family: "Arial", "sans-serif"; color: #333;}
+
+body {background: #fff url(/images/ask_bg.png) repeat-y 50% top;}
+p, li {margin: .5em 0 2em; line-height:1.4em;}
+ol {margin:1em 3em;}
+ol li {margin: 0 0 .75em;padding:0;}
+
+
+/* layout */
+
+#masthead {border-bottom:2px solid #eee; margin-bottom:2em;background: #fff url(/images/header_bg.png) repeat-x left bottom;}
+.wrapper {margin:0 auto 100px; width:800px;position:relative;/*border:1px solid #800880;*/}
+#masthead .wrapper {margin:0 auto;}
+#masthead  {border-bottom:1px solid #eee;}
+#masthead #header {margin:0 0 20px; height: 150px;border-top:1px solid #fff;}
+#masthead h1 {
+    margin:30px 0 20px;
+    padding: 0;
+    background: transparent url(/images/ask-extension-header.png) no-repeat left top;
+    height: 40px;
+    width: 350px;
+    text-indent: -5000px;
+    font-size: 3.5em;
+    }
+#masthead h1 a {display: block;height: 40px;}
+#masthead #header p {margin:0 0 20px; height: 36px;color:#3d76ba;font-size:2.0em;width:400px;line-height:1.1em;}
+#extension {position:absolute;right:10px;bottom:30px;}
+#content {float:left;width:510px;padding:20px;}
+#content dl {margin:1em;border-bottom:1px solid #ccc;padding:1em .5em;}
+#content dt {font-weight:bold;margin:0 10px .15em 0; width:80px;float:left;}
+#content dd {margin:0 0 .15em; display:inline;}
+
+#sidebar {margin-top:0;width:200px;float:left;}
+#sidebar ul {list-style:none;margin:0;padding:0;clear:both;}
+#sidebar ul li {margin:0;}
+#sidebar ul li a {line-height: 1.2em;display:block;font-size:1.2em;padding: 1em 20px;width:160px;}
+#sidebar ul li a:link,
+#sidebar ul li a:visited {color:#fff; text-decoration:none;background: #5294cc url(/images/side_nav.png) repeat-y -200px bottom;}
+#sidebar ul li a:hover {background: #5294cc url(/images/side_nav.png) repeat-y -400px bottom ;}
+#sidebar ul li a.current {color:#fff; text-decoration:none;background: #5294cc url(/images/side_nav.png) repeat-y 0 0;}
+
+#sidebar p {margin:0 0 20px; float:right;}
+.openid {
+    background: transparent url(/images/openid_icon.gif) center left no-repeat;
+    padding-left: 18px;
+}
+.openid input.easyread {font-size: 1.05em;font-family: "Lucida Grande", sans-serif;}
+.usericon {padding-left: 18px;background: transparent url(/images/user.gif) no-repeat left center;}
+
+.section {margin-top:0;float:left;width:220px;padding:0 20px 0 0;}
+.section h2 {color:#3f3f3f;font-size:1.8em;margin-bottom:1.5em;}
+.section p {color:#666;font-size:1.5em;margin-bottom:1.5em;line-height:1.5em;}
+.section ul {margin:0 0 0 3em;padding:0;}
+.section ul li {margin:0 0 1em;padding:0; font-size:1.5em;}
+hr {clear:both;border:1px solid #eee;margin:50px 0 50px;}
+#footer {color:#222;clear:both;padding:2em 0 1em;margin:50px 0 0;background: #1d50a9 url(/images/ask_footer.png) repeat-x top center ;}
+#footer {background:#bbcde2;color:#222;border-top:2px solid #ccc;}
+#footer .col {width:220px;float:left;margin:0 5px 0;background:#cdd6e2;padding:10px;}
+#footer h4 {color:#164393; font-weight:normal;border-bottom:1px solid #79a9e1;padding-bottom:.55em;font-size:1.7em;}
+/*#footer a:link, #footer a:visited {color:#3f6b9f;}*/
+#footer dl dt {margin:0 0 .25em;font-weight:bold;}
+#footer dl dd {margin:0 0 1em;}
+
+/*content*/
+h2 {font-weight:normal;font-size:2.2em;}
+h3 {font-weight:normal;font-size:1.9em;}
+
+#homeAsk {
+    padding: .8em 1em 1em;    
+}                
+              
+#widgetcode { margin:1em; padding:.5em 1.2em;}
+#widgetcode textarea {padding:.5em;font-family:monospace;font-size:1.7em;color:#0d027e;line-height:1.5em;overflow:auto;height:150px;}
+
+/* forms */
+textarea, input, select { margin: 0 0 1em;}
+textarea { padding: .3em; }
+textarea { width: 95%; }
+
+input { padding: .1em .3em; }
+              
+fieldset {
+    margin: 1em 0 .5em;
+    border:0;
+    padding:1em;
+    background:#eee;
+    width: 400px;
+}
+fieldset p {margin:0 0 .4em;}      
+label {display:block;font-weight:bold;}
+label span {display:block;font-weight:normal;color:#999;}
+
+
+/* feedback (flash) message styles
+-----------------------------------------------------------------------------*/
+.feedback_banner {
+   font-weight: bold;
+   padding: 2px 6px 2px 28px;
+   border-top: 1px solid #333;
+   border-bottom: 1px solid #333;
+   margin-bottom: 1em; }
+.feedback_banner p {
+   margin: .25em 0 .5em;
+   font-weight: normal; }
+.warning {
+   color: #000;
+   border-color: #E0BC12;
+   background: #FFF6CB url(/images/warning.gif) 6px 3px no-repeat; }
+.success {
+   color: #000;
+   border-color: #feb700;
+   background: #fcff47}
+.failure {
+   color: #d90000;
+   border-color: #d84040;
+   background: #ffebf3 url(/images/failure.gif) 4px 3px no-repeat; }
+
+#ask-to-aae {
+    margin:0 0 3em; background:#fff; text-align:center;padding:1em 0 2em;border:1px solid red;border:1px solid #888;
+}
+#ask-to-aae ol {
+    float:left;margin:0 0 1.5em;padding:0;
+}
+#ask-to-aae li{
+    text-align:left;
+    float:left;width:148px;margin:0 8px 0 12px;padding:0 0 0 0;
+    list-style-position:inside;
+    color:#ea7e1d;
+    line-height:1.1em;
+    font-size:1.5em;
+}
+#ask-to-aae li.last {
+    margin:0 8px 0 20px;width:140px;
+}
+#ask-to-aae h4 {font-weight:normal;font-size:1.9em;color:#333;}
+#resources dl {margin:0 0 2em;}
+#resources dt {font-size:1.5em;}
+
+object {margin-bottom:5em;display:block;}
+.whitespace {margin-top:4em;}
