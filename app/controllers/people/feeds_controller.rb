@@ -5,10 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class FeedsController < ApplicationController
-  include ActivityDisplayHelper
-  include ApplicationHelper
-  
+class People::FeedsController < ApplicationController
   session :off, :except => [:index,:institutions, :locations, :positions,:applications]
 
   before_filter :signin_required, :only => [:index, :institutions, :locations, :positions,:applications]

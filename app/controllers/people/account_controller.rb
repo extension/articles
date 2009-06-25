@@ -8,8 +8,6 @@ require 'uri'
 
 class People::AccountController < ApplicationController
   include AuthCheck
-  include ApplicationHelper
-  
   
   layout 'people'
   before_filter :login_required, :except => [:login, :signup, :new_password, :set_password, :authenticate]

@@ -6,8 +6,6 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class People::AdminController < ApplicationController
-  include ApplicationHelper
-  
   layout 'people'
   before_filter :admin_required
   before_filter :sudo_required, :only => [:adminevents,:adminusers, :makeadmin, :show_config, :reload_config]

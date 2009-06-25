@@ -6,9 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class People::SignupController < ApplicationController
-  include AuthCheck
-  
-  include ApplicationHelper
+  include AuthCheck  
   
   layout 'people'
   before_filter :login_required, :only => [:confirm, :reconfirm, :confirmationsent, :review]

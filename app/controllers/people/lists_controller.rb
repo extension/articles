@@ -6,9 +6,6 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class People::ListsController < ApplicationController
-  include ApplicationHelper
-  
-  
   layout 'people'
   before_filter :login_required, :check_purgatory, :except => [:show, :postinghelp]
   before_filter :login_optional, :only => [:show, :postinghelp]

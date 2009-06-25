@@ -6,8 +6,6 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class People::ProfileController < ApplicationController
-  include ApplicationHelper
-  
   layout 'people'
   before_filter :login_required, :except => [:xhr_countylist]
   
