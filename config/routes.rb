@@ -72,6 +72,12 @@ ActionController::Routing::Routes.draw do |map|
   
   map.login 'people/login', :controller => 'people/account', :action => 'login'
   
+  map.namespace :people do |people|  
+    people.resources :lists, :collection => {:showpost => :get, :all => :get, :managed => :get, :nonmanaged => :get, :postactivity => :get, :postinghelp => :get}, :member => { :posts => :get, :subscriptionlist => :get , :ownerlist => :get, }
+    people.resources :communities, :collection => { :downloadlists => :get,  :filter => :get, :newest => :get, :mine => :get, :browse => :get, :tags => :get, :findcommunity => :get},
+                              :member => {:userlist => :get, :invite => :any, :change_my_connection => :post, :modify_user_connection => :post, :xhrfinduser => :post, :editlists => :any, :describe => :any}
+    people.resources :invitations,  :collection => {:mine => :get}
+  end
   map.connect ':controller', :action => 'index'
   map.connect ':controller/rest/*email', :action => 'rest'
   map.connect ':controller/:action'

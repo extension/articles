@@ -5,5 +5,5 @@
 
 <h1>Resent Invitation!</h1>
 
-<p>Your invitation to <%= @invitation.email %> has been queued for delivery.  You can <%= link_to('invite another colleague', new_invitation_url) %>, <%= link_to('browse pending invitations', invitations_url) %>, or <%= link_to('browse and find other colleagues', :controller => 'colleagues') %></p>
+<p>Your invitation to <%= @invitation.email %> has been queued for delivery.  You can <%= link_to('invite another colleague', new_invitation_url) %>, <%= link_to('browse pending invitations', people_invitations_url) %>, or <%= link_to('browse and find other colleagues', :controller => 'colleagues') %></p>
 

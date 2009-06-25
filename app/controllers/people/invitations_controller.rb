@@ -8,10 +8,7 @@ require 'hpricot'
 
 class People::InvitationsController < ApplicationController
   layout 'people'
-  include ApplicationHelper
-  
-  include ActivityDisplayHelper
-  
+
   before_filter :login_required
   before_filter :check_purgatory
   

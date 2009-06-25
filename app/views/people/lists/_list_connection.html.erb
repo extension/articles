@@ -47,7 +47,7 @@
 	<% else %>
 		<h6>You are not subscribed to this list, and this list is not managed within People.</h6>
 	<% end %>
-	<p>Contact a <%= link_to('List Owner',ownerlist_list_url(@list.id, :type => 'idowners'))%> to manage your subscription.</p>
+	<p>Contact a <%= link_to('List Owner',ownerlist_people_list_url(@list.id, :type => 'idowners'))%> to manage your subscription.</p>
 	</div>
 <% end %>
 

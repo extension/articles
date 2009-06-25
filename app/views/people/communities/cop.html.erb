@@ -9,7 +9,7 @@
 <div id="tag_cloud">
     <ul class="tagCloud"> 
         <% @communities.each do |community| %>
-          <li><%= link_to("#{community.name}", community)%></li>
+          <li><%= link_to("#{community.name}", people_community_url(community))%></li>
         <% end %>
     </ul>
 </div>

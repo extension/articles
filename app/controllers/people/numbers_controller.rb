@@ -5,10 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class NumbersController < ApplicationController
-  include ApplicationHelper
-  include NumbersHelper
-
+class People::NumbersController < ApplicationController
   layout 'people'
   before_filter :login_optional
 

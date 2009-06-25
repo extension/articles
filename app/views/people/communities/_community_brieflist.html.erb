@@ -1,5 +1,5 @@
 <ul> 
 	<% communitylist.each do |community| %>
-    	<li><span><%= communitycounts[community.id] %> <%= connectiontype %></span> <%= link_to("#{community.name}", community)%></li>
+    	<li><span><%= communitycounts[community.id] %> <%= connectiontype %></span> <%= link_to("#{community.name}", people_community_url(community))%></li>
     <% end %>
 </ul>

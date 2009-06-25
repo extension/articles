@@ -9,7 +9,7 @@
     <div id="community_sidebar">
 		<% if @community.entrytype != Community::SYSTEM %>
       	  <% if ((@am_i_leader or admin_mode?) or @currentuser.communityopenjoins.include?(@community)) %>
-	    		<p class="button2"><%= link_to('Invite people to join this Community', invite_community_path(@community)) %></p>
+	    		<p class="button2"><%= link_to('Invite people to join this Community', invite_people_community_path(@community)) %></p>
 	    	<% end %>
 			<div id = "connectiontocommunity">
 				<%= render(:partial => 'community_connection') %>
@@ -26,7 +26,7 @@
 	    </div>
         
     	<div class="community_summary">
-    	    <h3>Community Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_community_path(@community) %></small><% end %></h3>
+    	    <h3>Community Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_people_community_path(@community) %></small><% end %></h3>
 
     	    <dl>
     	        <dt>Community Type:</dt>
@@ -47,7 +47,7 @@
     	<% if !@community.description.nil? %>
     	    <p id="description"><%= @community.description %> 
     	        <% if (@am_i_leader or admin_mode?) %>
-    	    <small class="edit"><%= link_to 'edit', edit_community_path(@community) %></small></p>
+    	    <small class="edit"><%= link_to 'edit', edit_people_community_path(@community) %></small></p>
     	    <% end %>
     	<% end %>
     	

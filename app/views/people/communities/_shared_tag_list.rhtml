@@ -1,7 +1,7 @@
 <% if @community.shared_tag_list.size > 0 %>
 	<h4>Shared tags for this community
 		<% if(@currentuser.communityjoins.include?(@community)) %>
-		<small class="edit"><%= link_to 'tag this community', describe_community_path(@community) %></small>
+		<small class="edit"><%= link_to 'tag this community', describe_people_community_path(@community) %></small>
 		<% end %>
 	</h4>
 	<p class="taglist"><%= link_shared_tags(@community.shared_tag_list.map(&:name).sort) %> <a class="tooltip-help" href="#" id="tags_trigger">?</a></p>

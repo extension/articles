@@ -1,6 +1,6 @@
 <% communitylist.each do |community| %>
 <div class="community_short">
-	<h2><%= link_to("#{community.name}", community)%></h2>
+	<h2><%= link_to("#{community.name}", people_community_url(community))%></h2>
 	<p class="description"><%= community.description.nil? ? 'No description' : community.description %></p>
 	<p><%= community.entrytype_to_s %></p>
 	<p><%= community.memberfilter_to_s %></p>

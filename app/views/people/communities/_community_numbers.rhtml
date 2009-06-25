@@ -2,27 +2,27 @@
     <caption>Community Stats</caption>
 	<% if(@community.entrytype != Community::SYSTEM)%>
     <tr>
-        <td><%= link_by_count(@community.leaders.count, 'Leaders', userlist_community_url(@community.id, :connectiontype => 'leaders')) %></td>
+        <td><%= link_by_count(@community.leaders.count, 'Leaders', userlist_people_community_url(@community.id, :connectiontype => 'leaders')) %></td>
         <td class="bignumber"><%= @community.leaders.count %></td>
     </tr>
 	<% end %>
     <tr>
-        <td><%= link_by_count(@community.members.count,'Members', userlist_community_url(@community.id, :connectiontype => 'members')) %></td>
+        <td><%= link_by_count(@community.members.count,'Members', userlist_people_community_url(@community.id, :connectiontype => 'members')) %></td>
         <td class="bignumber"><%= (@community.members.count) %></td>
     </tr>
 	<% if(@community.entrytype != Community::SYSTEM)%>
 		<% if @community.memberfilter == Community::MODERATED %>
 		    <tr>
-		        <td><%= link_by_count(@community.wantstojoin.count,'People who want to join', userlist_community_url(@community.id, :connectiontype => 'wantstojoin')) %></td>
+		        <td><%= link_by_count(@community.wantstojoin.count,'People who want to join', userlist_people_community_url(@community.id, :connectiontype => 'wantstojoin')) %></td>
 		        <td class="bignumber"><%= @community.wantstojoin.count %></td>
 		    </tr>
 		<% end %>
 		<tr>
-	        <td><%= link_by_count(@community.invited.count,'Invitations', userlist_community_url(@community.id, :connectiontype => 'invited')) %></td>
+	        <td><%= link_by_count(@community.invited.count,'Invitations', userlist_people_community_url(@community.id, :connectiontype => 'invited')) %></td>
 	        <td class="bignumber"><%=  @community.invited.count %></td>
 	    </tr>
 	    <tr>
-	        <td><%= link_by_count(@community.interest.count,'Interest', userlist_community_url(@community.id, :connectiontype => 'interest')) %></td>
+	        <td><%= link_by_count(@community.interest.count,'Interest', userlist_people_community_url(@community.id, :connectiontype => 'interest')) %></td>
 	        <td class="bignumber"><%= (@community.interest.count) %></td>
 	    </tr>
 	<% end %>

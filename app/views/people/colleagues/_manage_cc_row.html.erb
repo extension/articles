@@ -1,4 +1,4 @@
-<td><%= link_to("#{community.name}", community)%></td>
+<td><%= link_to("#{community.name}", people_community_url(community))%></td>
 <td><%= community.entrytype_to_s %></td>
 <td><%= showuser.connection_display(community) %></td>
 <% if admin_mode? or @currentuser.is_community_leader?(community) %>

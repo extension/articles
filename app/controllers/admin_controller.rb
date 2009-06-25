@@ -6,9 +6,6 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'zip_code_to_state'
 class AdminController < DataController
-  
-  include Akismet
-  
   def index
     set_title('Administration')
     set_titletag("Site Admin - eXtension")

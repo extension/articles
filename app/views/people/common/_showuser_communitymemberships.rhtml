@@ -10,7 +10,7 @@
 	%>
 		<tr>
 			<% if @showuser.is_community_leader?(community) %>
-				<td class="leader"><%= link_to("#{community.name}", community)%></td>
+				<td class="leader"><%= link_to("#{community.name}", people_community_url(community))%></td>
 				<% if @currentuser.is_community_leader?(community) or admin_mode? %>
 					<td>(<%= link_to("remove from membership", {:action => 'removecommunitymember', :communityid => community.id, :userid => @showuser.id, :view=>'showuser'}, :title=>'remove from membership') %>)</td>	
 					<td>
@@ -18,7 +18,7 @@
 					</td>
 				<% end %>
 			<% else %>
-				<td><%= link_to("#{community.name}", community)%></td>
+				<td><%= link_to("#{community.name}", people_community_url(community))%></td>
 				<% if @currentuser.is_community_leader?(community) or admin_mode? %>
 					<td>(<%= link_to("remove from membership", {:action => 'removecommunitymember', :communityid => community.id, :userid => @showuser.id, :view=>'showuser'}, :title=>'remove from membership') %>)</td>
 					<td>

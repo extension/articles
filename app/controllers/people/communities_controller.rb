@@ -6,9 +6,6 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class People::CommunitiesController < ApplicationController
-  include ApplicationHelper
-  
-  
   layout 'people'
   before_filter :login_required
   before_filter :check_purgatory
@@ -37,14 +34,14 @@ class People::CommunitiesController < ApplicationController
     # leadership check
     if(!@currentuser.is_community_leader?(@community) and !admin_mode?)
       flash[:warning] = "You are not a leader for this community."
-      return(redirect_to(community_url(@community.id)))
+      return(redirect_to(people_community_url(@community.id)))
     end
       
     begin
       @showuser = User.find_by_id(params[:userid])
     rescue ActiveRecord::RecordNotFound  
       flash[:error] = 'Unable to find user.'
-      return(redirect_to(community_url(@community.id)))
+      return(redirect_to(people_community_url(@community.id)))
     end    
     
     @ismemberchange = true
@@ -201,7 +198,7 @@ class People::CommunitiesController < ApplicationController
       @userlist = User.filtered(@findoptions).ordered(@filteredparams.order).paginate(:all,:page => params[:page])
       if((@userlist.length) > 0)
         urloptions = @findoptions.merge(:id => params[:id], :download => 'csv')
-        @csvreporturl = CGI.escapeHTML(userlist_community_url(urloptions))
+        @csvreporturl = CGI.escapeHTML(userlist_people_community_url(urloptions))
       end
     end
     
@@ -231,7 +228,7 @@ class People::CommunitiesController < ApplicationController
     @community = Community.find(params[:id])
     if(!@currentuser.is_community_leader?(@community) and !admin_mode?)
       flash[:warning] = "You are not a leader for this community."
-      return(redirect_to(community_url(@community.id)))
+      return(redirect_to(people_community_url(@community.id)))
     end
   end
   
@@ -244,7 +241,7 @@ class People::CommunitiesController < ApplicationController
     
     if(!@currentuser.is_community_leader?(@community) and !admin_mode?)
       flash[:warning] = "You are not a leader for this community."
-      return(redirect_to(community_url(@community.id)))
+      return(redirect_to(people_community_url(@community.id)))
     end
         
     respond_to do |format|
@@ -327,7 +324,7 @@ class People::CommunitiesController < ApplicationController
     @community = Community.find(params[:id])
     if(!@currentuser.is_community_leader?(@community) and !admin_mode?)
       flash[:warning] = "You are not a leader for this community."
-      return(redirect_to(community_url(@community.id)))
+      return(redirect_to(people_community_url(@community.id)))
     end
     
     respond_to do |format|
@@ -346,7 +343,7 @@ class People::CommunitiesController < ApplicationController
     @community = Community.find(params[:id])
     if(!@currentuser.communityjoins.include?(@community))
       flash[:warning] = "You are not a leader or member within this community."
-      return(redirect_to(community_url(@community.id)))
+      return(redirect_to(people_community_url(@community.id)))
     end
     
     if request.post?
@@ -364,7 +361,7 @@ class People::CommunitiesController < ApplicationController
     @community.destroy
 
     respond_to do |format|
-      format.html { redirect_to(communities_url) }
+      format.html { redirect_to(people_communities_url) }
       format.xml  { head :ok }
     end
   end
@@ -468,14 +465,14 @@ class People::CommunitiesController < ApplicationController
     # leadership check  
     if((!@currentuser.is_community_leader?(@community) and !admin_mode?) and (!(@currentuser.communityopenjoins.include?(@community))))
       flash[:warning] = "You are not able to invite others to this community."
-      return(redirect_to(community_url(@community.id)))
+      return(redirect_to(people_community_url(@community.id)))
     end
 
     begin
       @showuser = User.find_by_id(params[:userid])
     rescue ActiveRecord::RecordNotFound  
       flash[:error] = 'Unable to find user.'
-      return(redirect_to(community_url(@community.id)))
+      return(redirect_to(people_community_url(@community.id)))
     end    
 
     inviteasleader = (!params[:inviteasleader].nil? and params[:inviteasleader] == 'yesinviteleader')

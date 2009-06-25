@@ -15,7 +15,7 @@
 		communitycount += 1
 	%>
     	<tr id="communitylist_row_<%= community.id %>">
-			<td><%= link_to("#{community.name}", community)%></td>
+			<td><%= link_to("#{community.name}", people_community_url(community))%></td>
 			<td><%= community.entrytype_to_s %></td>
 			<td><%= @currentuser.connection_display(community) %></td>
 		</tr>

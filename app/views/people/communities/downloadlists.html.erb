@@ -15,10 +15,10 @@
     </tr>
     <% @communities.each do |community| %>
 	<tr>
-		<td><%= link_to("#{community.name}", community)%></td>
+		<td><%= link_to("#{community.name}", people_community_url(community))%></td>
 		<td><%= community.entrytype_to_s %></td>
 		<td><%= @communitycounts[community.id] %></td>
-		<td class='csvfile'><%= link_to('Download (csv format)',userlist_community_url(@findoptions.merge(:id => community.id, :download => 'csv'))) %></td>
+		<td class='csvfile'><%= link_to('Download (csv format)',userlist_people_community_url(@findoptions.merge(:id => community.id, :download => 'csv'))) %></td>
 	</tr>
 <% end %>
 </table>

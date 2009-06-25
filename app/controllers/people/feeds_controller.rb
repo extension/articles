@@ -146,6 +146,7 @@ class FeedsController < ApplicationController
         f.updated = (activitylist.first ? activitylist.first.created_at : Time.now.utc).xmlschema
         f.id = make_atom_feed_id()
         for activityitem in activitylist
+          # TODO refactor
           text = activity_to_s(activityitem,{:communityview => feedoptions[:communityview], :communityname => feedoptions[:communityname], :userview => feedoptions[:userview], :wantstitle => true})
           f.entries << Atom::Entry.new do |e|
             e.authors << Atom::Person.new(:name => activityitem.creator.fullname, :email => activityitem.creator.email)
