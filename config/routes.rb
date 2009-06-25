@@ -44,12 +44,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'feeds/:action/-/*categories', :controller => 'feeds'
   map.connect 'feeds/:action/:type/*id', :controller => 'feeds'
   
-  
-  
-  map.ask_an_expert 'expert/ask_an_expert', :controller => 'expert', :action => 'ask_an_expert'
-  map.connection 'expert/:action', :controller => 'expert'
-  map.connect 'expert/:action/:category', :controller => 'expert'
-
   map.category_index 'category/:category', :controller => 'main', :action => 'category'
   
   map.site_news ':category/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }

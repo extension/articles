@@ -8,16 +8,24 @@
 require 'zip_code_to_state'
 
 class Ask::ExpertController < ApplicationController
-  
-  layout 'application', :only => [:ask_an_expert, :question_confirmation]
+  layout :choose_layout
   
   has_rakismet :only => [:submit_question, :widget_submit]
   
   skip_before_filter :check_authorization
+  skip_before_filter :get_tag, :except => [:ask_an_expert, :question_confirmation]
   before_filter :login_required, :except => [:email_escalation_report, :ask_an_expert, :question_confirmation, :submit_question]
   
   UNASSIGNED = "uncategorized"
   ALL = "all"
+  
+  def choose_layout
+    if ['ask_an_expert', 'question_confirmation'].include? action_name
+      return 'application'
+    else
+      return 'aae'
+    end
+  end
   
   def assign
     if !params[:id]
@@ -845,27 +853,26 @@ class Ask::ExpertController < ApplicationController
      # if there are no filter parameters, then find saved filter options if they exist
      if !params[:category] and !params[:location] and !params[:county] and !params[:source]
   
-       # TODO: comment out for now until we get tag scheme figured out for categories
        # filter by category if it exists
-       #if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_CATEGORY))
-         #if pref.setting == UNASSIGNED
-        #   @category = UNASSIGNED
-        #  else   
-        #    @category = Category.find(pref.setting)
-        #    if !@category
-        #      flash[:failure] = "Invalid category."
-        #      redirect_to home_url
-        #      return
-        #    end
-        #  end
-        #end  
+       if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_CATEGORY))
+         if pref.setting == UNASSIGNED
+           @category = UNASSIGNED
+          else   
+            @category = Category.find(pref.setting)
+            if !@category
+              flash[:failure] = "Invalid category."
+              redirect_to :controller => "ask/expert", :action => :incoming
+              return
+            end
+          end
+        end  
 
         # filter by location if it exists
         if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_LOCATION))
           @location = Location.find_by_fipsid(pref.setting)
           if !@location
             flash[:failure] = "Invalid location."
-            redirect_to home_url
+            redirect_to :controller => "ask/expert", :action => :incoming
             return
           end
         end
@@ -875,7 +882,7 @@ class Ask::ExpertController < ApplicationController
           @county = County.find_by_fipsid(pref.setting)
           if !@county
             flash[:failure] = "Invalid county."
-            redirect_to home_url
+            redirect_to :controller => "ask/expert", :action => :incoming
             return
           end
         end
@@ -895,39 +902,38 @@ class Ask::ExpertController < ApplicationController
          @location = Location.find(:first, :conditions => ["fipsid = ?", params[:location].strip])
          if !@location
            flash[:failure] = "Invalid location."
-           redirect_to home_url
+           redirect_to :controller => "ask/expert", :action => :incoming
            return
          end
        end
 
-       # TODO: comment out for now until we get tag scheme figured out for categories
        #process county preference
-       #if params[:county] == County::ALL
-      #   @county = nil
-      # elsif params[:county] and params[:county].strip != ''
-      #   @county = County.find(:first, :conditions => ["fipsid = ?", params[:county].strip])
-      #   if !@county
-      #     flash[:failure] = "Invalid county."
-      #     redirect_to home_url
-      #     return
-      #   end
-      # end
+       if params[:county] == County::ALL
+         @county = nil
+       elsif params[:county] and params[:county].strip != ''
+         @county = County.find(:first, :conditions => ["fipsid = ?", params[:county].strip])
+         if !@county
+           flash[:failure] = "Invalid county."
+           redirect_to :controller => "ask/expert", :action => :incoming
+           return
+         end
+       end
       
       
-       # TODO: comment out for now until we get tag scheme figured out for categories
+       
        #process category preference
-       #if params[:category] == Category::UNASSIGNED
-      #   @category = Category::UNASSIGNED
-      # elsif params[:category] == Category::ALL
-      #   @category = nil
-      # elsif params[:category] and params[:category].strip != ''
-      #   @category = Category.find(:first, :conditions => ["id = ?", params[:category].strip])
-      #   if !@category
-      #     flash[:failure] = "Invalid category."
-      #     redirect_to home_url
-      #     return  
-      #   end
-      # end
+       if params[:category] == Category::UNASSIGNED
+         @category = Category::UNASSIGNED
+       elsif params[:category] == Category::ALL
+         @category = nil
+       elsif params[:category] and params[:category].strip != ''
+         @category = Category.find(:first, :conditions => ["id = ?", params[:category].strip])
+         if !@category
+           flash[:failure] = "Invalid category."
+           redirect_to :controller => "ask/expert", :action => :incoming
+           return  
+         end
+       end
        
        #process source preference
        if params[:source] == UserPreference::ALL
@@ -939,22 +945,22 @@ class Ask::ExpertController < ApplicationController
        # save the category, location and source prefs from the filter
 
        #save category prefs
-       #user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_CATEGORY}'")
-       #if user_prefs
-       #   user_prefs.each {|up| up.destroy}
-       #end
+       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_CATEGORY}'")
+       if user_prefs
+          user_prefs.each {|up| up.destroy}
+       end
        
        # TODO: comment out for now until we get tag scheme figured out for categories
-       #if @category.class == Category
-       #   cat_setting = @category.id
-       #elsif @category == Category::UNASSIGNED
-       #  cat_setting = @category
-       #end
+       if @category.class == Category
+          cat_setting = @category.id
+       elsif @category == Category::UNASSIGNED
+         cat_setting = @category
+       end
 
-       #if cat_setting
-      #   up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_CATEGORY, :setting => cat_setting)
-      #   up.save
-      # end
+       if cat_setting
+         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_CATEGORY, :setting => cat_setting)
+         up.save
+       end
 
        #save location prefs
        user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_LOCATION}'")

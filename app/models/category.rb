@@ -8,9 +8,68 @@
 
 class Category < ActiveRecord::Base
   acts_as_tree :order => 'name'
+  has_and_belongs_to_many :submitted_questions
+  
+  validates_presence_of :name
+  validates_uniqueness_of :name, :scope => :parent_id, :if => !self.parent
+  
+  UNASSIGNED = "uncategorized"
+  ALL = "all"
   
   def self.root_categories
     Category.find(:all, :conditions => 'parent_id is null', :order => 'name')
+  end
+  
+  def subcat_names
+    self.children.collect{|c| c.name}.join(',')
+  end
+  
+  # get intersection of users for aae routing
+  def get_user_intersection(users_to_intersect)
+    if users_to_intersect and users_to_intersect.length > 0
+      User.narrow_by_routers(self.users.find(:all, :conditions => "users.id IN (#{users_to_intersect.collect{|u| u.id}.join(',')})"), Role::AUTO_ROUTE)
+    else
+      return []
+    end
+  end
+  
+  def get_experts(*args)
+    users.find(:all, *args)
+  end
+  
+  def is_top_level?
+    return self.parent_id.nil?  
+  end
+  
+  def self.find_root(*args)
+    with_scope(:find => { :conditions => "parent_id is null" }) do
+      find(*args)
+    end
+  end
+   
+  def full_name
+    if parent
+      return parent.name + "/" + name
+    else
+      return name
+    end
+  end
+   
+  def self.count_users_for_rootcats
+      return self.count(:all, :joins => " join expertise_areas as ea on categories.id=ea.category_id",
+     :conditions => 'parent_id is null', :group => "categories.name", :order => 'name')
+  end 
+  
+  def self.count_users_for_rootcats_in_county(county, state)
+    locid = Location.find_by_name(state).id
+    return self.count(:all, :joins => " join expertise_areas as ea on categories.id=ea.category_id join counties_users as ctu on ctu.user_id=ea.user_id" + 
+     " join counties on counties.id=ctu.county_id", :conditions => ["parent_id is null and counties.name=? and location_id=?", county, locid], :group => "categories.name", :order => "categories.name")
+  end 
+  
+  def self.count_users_for_rootcats_in_state(statename) 
+    locid = Location.find_by_name(statename).id
+    return self.count(:all, :select => "distinct ctu.user_id", :joins => " join expertise_areas as ea on categories.id=ea.category_id join counties_users as ctu on ctu.user_id=ea.user_id" + 
+    " join counties on counties.id=ctu.county_id", :conditions => ["parent_id is null and location_id=? and categories.id is not null", locid], :group => "categories.name", :order => "categories.name")
   end
   
   

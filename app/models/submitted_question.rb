@@ -6,12 +6,11 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class SubmittedQuestion < ActiveRecord::Base
-# To Do: Need to add associations for tagging which will be treated like categories and subcategories
+
 belongs_to :county
 belongs_to :location
 belongs_to :widget
 has_many :submitted_question_events
-# TODO: take out category association. using it for testing for now...
 has_and_belongs_to_many :categories
 # TODO: need to change this
 belongs_to :contributing_faq, :class_name => "Question", :foreign_key => "current_contributing_faq"
@@ -23,8 +22,6 @@ belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
 
 validates_presence_of :asked_question
 validates_presence_of :submitter_email
-#validates_presence_of :submitter_firstname
-#validates_presence_of :submitter_lastname
 # check the format of the question submitter's email address
 validates_format_of :submitter_email, :with => /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
@@ -54,6 +51,48 @@ RESOLVED_TEXT = 'resolved'
 ANSWERED_TEXT = 'answered'
 NO_ANSWER_TEXT = 'not_answered'
 REJECTED_TEXT = 'rejected'
+
+EXPERT_DISCLAIMER = "This message for informational purposes only. " +  
+                    "It is not intended to be a substitute for personalized professional advice. For specific local information, " + 
+                    "contact your local county Cooperative Extension office or other qualified professionals." + 
+                    "eXtension Foundation does not recommend or endorse any specific tests, professional, products, procedures, opinions, or other information " + 
+                    "that may be mentioned. Reliance on any information provided by eXtension Foundation, employees, suppliers, member universities, or other " + 
+                    "third parties through eXtension is solely at the user’s own risk. All eXtension content and communication is subject to  the terms of " + 
+                    "use http://www.extension.org/main/termsofuse which may be revised at any time."
+                    
+DEFAULT_SUBMITTER_NAME = "External Submitter"
+
+DECLINE_ANSWER = "Thank you for your question for eXtension. The topic area in which you've made a request is not yet fully staffed by eXtension experts and therefore we cannot provide you with a timely answer. Instead, please consider contacting the Cooperative Extension office closest to you. Simply go to http://www.extension.org, drop in your zip code and choose the local office in your neighborhood. We apologize for this inconvenience but please come back to eXtension to check in as we grow and add experts."
+
+ALL_RESOLVED_STATII = [STATUS_RESOLVED, STATUS_REJECTED, STATUS_NO_ANSWER]
+
+# scoping it out for resolved questions
+named_scope :resolved, lambda { |join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state IN (#{ALL_RESOLVED_STATII.join(',')}) " + (cond.first || '')}}
+named_scope :answered, lambda {|join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_RESOLVED} " + (cond.first || '')}}
+named_scope :rejected, lambda {|join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_REJECTED} " + (cond.first || '')}}
+named_scope :not_answered, lambda {|join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_NO_ANSWER} " + (cond.first || '')}}
+named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_questions.resolved_at desc') }}
+
+# other submitted question scopes
+named_scope :submitted, lambda { |join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} " + (cond.first || '')}}
+
+
+#Response times named scopes for by_category report
+named_scope :named_date_resp, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " submitted_questions.created_at between ? and ? ", date1, date2] : " date_sub(curdate(), interval 90 day) <= submitted_questions.created_at" } }
+named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join categories_submitted_questions on submitted_question_id=submitted_questions.id ",
+         :conditions => [ " ( status='resolved' or status='rejected' or status='no answer') and external_app_id #{extstr} "], :group => " category_id" }  } 
+
+#Response times named scopes for by_responder_locations report
+ named_scope :count_avgs_loc, lambda { |extstr| {:select => "state, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
+     :conditions => [ " ( status='resolved' or status='rejected' or status='no answer') and external_app_id #{extstr} "], :group => " state" }  } 
+          
+   
+#activity named scopes
+named_scope :date_subs, lambda { |date1, date2| { :conditions => (date1 && date2) ? [ "submitted_questions.created_at between ? and ?", date1, date2] : ""}}
+
+
+
+
 
 # adds resolved date to submitted questions on save or update and also 
 # calls the function to log a new resolved submitted question event 
