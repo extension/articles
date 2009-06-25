@@ -147,7 +147,8 @@ class Ask::ExpertController < ApplicationController
         else
           @sub_category_options = [""]
         end
-        
+        # run validator to display any input errors
+        @submitted_question.valid?
       rescue
         @submitted_question = SubmittedQuestion.new
       end
