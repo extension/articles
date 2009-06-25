@@ -33,7 +33,7 @@
 	    <div id="listsubscriptionconnection">
 	    <%- if !@currentuser.nil? -%>
 		    <h6>You do not have a <%= @list.communityconnection_to_s(true) %> connection with the community for this list.</h6>
-		    <p>Visit the <%= link_to_community(@list.community) %> community page to make a community connection</p>
+		    <p>Visit the <%= link_to_people_community(@list.community) %> community page to make a community connection</p>
 	    <%- else -%>
 	        <h6>You are not logged in.  Please <%= link_to('login', :controller => :account, :action => :login) %> with your eXtensionID</h6>
 	        <p>Mailing lists hosted by extension.org require list members to be eligible for and have an eXtensionID.  You'll need to <%= link_to('login', :controller => :account, :action => :login) %> with your eXtensionID (or <%= link_to('signup', :controller => :signup, :action => :new) %> for one if you are eligible)</p>  <p>Once logged in, visit the <%= link_to_community(@list.community) %> community page and have a connection with the community to be receive and send email to this mailing list.</p>

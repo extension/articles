@@ -270,7 +270,7 @@ class People::CommunitiesController < ApplicationController
               log_user_activity(:activitycode => Activity::COMMUNITY_CREATED_LIST,:user => @currentuser,:community => @community,:appname => 'local')   
             else
               if(!existinglist.community.nil?)
-                @errors = "A list with that name already exists, connected to the #{link_to_community(existinglist.community)} community."
+                @errors = "A list with that name already exists, connected to the #{link_to_people_community(existinglist.community)} community."
               else
                 @errors = "A list with that name already exists."
               end

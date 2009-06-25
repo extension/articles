@@ -19,9 +19,9 @@
     	        <dd><%= @list.created_at%></dd>
 				<% if @list.managed? %>
 				    <dt>Community Connection:</dt>
-	   	        	<dd><%= link_to_community(@list.community) %></dd>
+	   	        	<dd><%= link_to_people_community(@list.community) %></dd>
 		        	<dt>Community Connection Type:</dt>
-					<dd><%= link_to_community_connection(@list.community, @list.communityconnection) %></dd>
+					<dd><%= link_to_people_community_connection(@list.community, @list.communityconnection) %></dd>
 					<% if(!@currentuser.nil? and (@currentuser.listownerships.include?(@list) or admin_mode?)) %>					
 	    	        	<dt>Community Connection Only:</dt>
 	    	        	<dd><%= @list.dropunconnected? ? 'Yes' : 'No' %></dd>

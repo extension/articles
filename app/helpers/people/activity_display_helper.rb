@@ -7,7 +7,7 @@
 
 module People::ActivityDisplayHelper
   
-  def link_to_community(community,displayna = true)
+  def link_to_people_community(community,displayna = true)
     if(!community.nil?)
       "<a href='#{community_url(community)}'>#{community.name}</a>"
     elsif(displayna)
@@ -65,7 +65,7 @@ module People::ActivityDisplayHelper
     
     if(!activity.community.nil?)
       communityname = activity.community.name
-      communitylink = nolink ? activity.community.name : link_to_community(activity.community)
+      communitylink = nolink ? activity.community.name : link_to_people_community(activity.community)
       communitytext = communityview ? "community" : "#{communitylink} community"
       translate_options[:communitytext] =  communitytext 
     else

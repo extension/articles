@@ -42,7 +42,7 @@
 	<ul>
   <%- communityids.each do |invitedcommunity_id| -%>
     <%- if(community = Community.find(invitedcommunity_id.to_i)) -%>
-      <li><%= link_to_community(community) %></li>
+      <li><%= link_to_people_community(community) %></li>
     <%- end -%> 
   <%- end -%> 
 <%- end -%> 
