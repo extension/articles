@@ -80,7 +80,7 @@ class ArticlesController < DataController
 
     # go through tags, get first one that has .community not nil
     if category
-      @community = category.community
+      @community = category.content_community
       @homage = Article.bucketed_as('homage').tagged_with_content_tag(category.name).ordered.first if @community
       @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(category.name).ordered.first if @community
       @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
