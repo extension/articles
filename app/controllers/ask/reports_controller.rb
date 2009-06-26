@@ -37,7 +37,6 @@ class Ask::ReportsController < ApplicationController
              @typelist.each do |st|
                if (@type=="State"); stuv= st.id; else; stuv=st.id.to_s; end;
                 @new[st.name]= openquestions[stuv]
-                ActiveRecord::Base::logger.debug "stuv=" + stuv.to_s + " st.name= " + st.name + ((resolved[stuv]) ? resolved[stuv].to_s : "nil")
                 @reslvd[st.name] = resolved[stuv]
                 @answ[st.name] = answered[stuv]
                 @rej[st.name] = rejected[stuv]
