@@ -179,6 +179,12 @@ def sub_category
   end
 end
 
+ def SubmittedQuestion.find_oldest_date
+   sarray=find_by_sql("Select created_at from submitted_questions group by created_at order by created_at")
+   sarray[0].created_at.to_s
+ end
+
+
 #find the date that this submitted question was assigned to the current assignee
 def assigned_date
   sqevent = self.submitted_question_events.find(:first, :conditions => "event_state = '#{SubmittedQuestionEvent::ASSIGNED_TO}'", :order => "created_at desc")
