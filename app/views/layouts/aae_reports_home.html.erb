@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <title>eXtension FAQ: <%= @page_title || controller.action_name %></title>    
+    <%= stylesheet_link_tag 'general' %>
+    <%= stylesheet_link_tag 'aae_reports_home' %>
+    <%= stylesheet_link_tag 'aae_reports' %>
+    <!--<%= stylesheet_link_tag 'date-picker' %>-->
+    <%= stylesheet_link_tag 'print', :media => 'print' %>
+    <!--[if gt IE 6]>
+        <%= stylesheet_link_tag 'ie' %>
+    <![endif]-->
+    
+
+    <%= javascript_include_tag 'prototype' %>
+    <%= javascript_include_tag 'effects' %>
+    <%= javascript_include_tag 'heureka' %>
+    <%= javascript_include_tag 'tooltip' %>
+  <!--  <%= javascript_include_tag 'date-picker' %>-->
+    
+</head>
+    
+<body <% if controller.controller_name == 'account' %>id="account"<% end %>>
+    <% if (AppConfig.configtable['app_location'] != 'production') %>
+    <div id="app_location" class="<%= AppConfig.configtable['app_location'] %>">
+        <p>You are viewing the <strong><%= AppConfig.configtable['app_location'] %></strong> site.</p>
+    </div>
+    <% end %>
+    <ul id="extensionNav">
+        <li class="begin"><a href="<%= AppConfig.configtable['events_site'] %>">Events</a></li>
+        <li><a href="<%= AppConfig.configtable['faq_site'] %>" title="FAQ / Ask an Expert Tool">FAQ/AaE</a></li>
+        <li><a href="<%= AppConfig.configtable['people_site'] %>">People</a></li>
+        <li><a href="<%= AppConfig.configtable['cop_site'] %>">CoP Wiki</a></li>
+        <li><a href="<%= AppConfig.configtable['collaborate_site'] %>">Collaborate Wiki</a></li>
+        <li><a href="<%= AppConfig.configtable['about_site'] %>">About Wiki</a></li>
+        <li><a href="<%= AppConfig.configtable['about_blog'] %>">About Blog</a></li>
+    </ul>
+
+    <div id="pageContainer">
+        <div id="masthead">
+            <ul id="app_toggle">
+                <li id="faqaae" <%= selected_tab_if(:home) %>><%= link_to "Home", home_url %></li>
+                <li id="faqhome" <% if controller.controller_name == 'questions' %> class="selected"<% end %>><%= link_to "FAQs", :controller => 'questions' %></li>
+                <li id="aaehome" ><%= link_to "Ask an Expert", :controller => 'expert', :action => 'incoming' %></li>
+            </ul>
+            <h1><%= link_to("eXtension Frequently Asked Questions", home_url) %></h1>
+            
+            
+            <ul id="userinfo">
+                <% if @help_title %>
+                    <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help:_<%= @help_title.gsub(/\s/, '_').gsub(/\W/, '') %>">Help</a></li>
+                <% elsif @page_title %>
+                    <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help:_<%= @page_title.gsub(/\s/, '_').gsub(/\W/, '') %>">Help</a></li>
+                <% else %>
+                    <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help">Help</a></li>
+                <% end%>
+            <% if !session[:user].nil? %>
+                <li><%= link_to "Reports", {:controller => "reports"} %></li>
+                <li><%= link_to 'logout', '/account/logout' %></li>
+            <% end %>
+            </ul>
+            
+            <% if !session[:user].nil? %>
+            <p id="feedlink"><%= link_to "View all available Feeds", {:controller => "main", :action => "feeds" }, :class => "feed" %></p>
+            <% end %>
+        </div>
+        
+        <div id="pageContent">
+            
+            <div id="content">
+                <%= yield :layout %>
+            </div>
+            
+            
+            <br class="clear" />
+            <br />
+            <div id="footer">
+                <p><%= link_to("Contact Us", :controller => 'help', :action => 'contactform') %>&nbsp;&nbsp; <%= link_to("Terms of Use","http://www.extension.org/main/termsofuse")%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; version <%= "#{AppVersion.version}" %></p>
+                <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/">Creative Commons Attribution-NonCommercial-ShareAlike 2.5 license</a></p>
+                <p id="copyright"><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/"><img alt="Creative Commons License" style="border-width: 0" src="/images/somerights20.png"/></a></p>
+                <!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                	<Work rdf:about="">
+                		<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/2.5/" />
+                	<dc:type rdf:resource="http://purl.org/dc/dcmitype/InteractiveResource" />
+                	</Work>
+                	<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/><permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/><requires rdf:resource="http://web.resource.org/cc/ShareAlike"/></License></rdf:RDF> -->
+            </div>
+        </div>
+        <!-- end #pageContent -->
+        
+
+    </div>
+    <!-- end #pageContainer -->
+
+<script type="text/javascript">
+   var gaJsHost = (("https:" == document.location.protocol) ?  "https://ssl." : "http://www.");
+   document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+   var pageTracker = _gat._getTracker("UA-155321-8");
+   pageTracker._initData();
+   pageTracker._trackPageview();
+</script>
+ 
+</body>
+</html>
