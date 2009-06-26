@@ -1,6 +1,6 @@
-<% @page_title = "General Statistics by #{@type}" + ((@type=="University") ? "/Affiliation" : "")%>
+<% @page_title = "General Statistics by #{@type}" + ((@type=="Institution") ? "/Affiliation" : "")%>
 
-<% genstring = "General Statistics by "+ @type + ((@type=="University") ? "/Affiliation" : "")%>
+<% genstring = "General Statistics by "+ @type + ((@type=="Institution") ? "/Affiliation" : "")%>
 
 <div id="report">
     <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "General Overview",  :action => 'activity' %> &gt; <%= @page_title %></p>

@@ -42,12 +42,7 @@ class Ask::ReportsController < ApplicationController
                 @rej[st.name] = rejected[stuv]
                 @noexp[st.name] = noexp[stuv]
               end
-          
-          if (@type=="State")
-              @repaction = "activity_by_state"     
-          else
-              @repaction = "activity_by_institution"
-          end
+          @repaction = "activity_by_#{typel}"
       end
       
       
@@ -70,7 +65,7 @@ class Ask::ReportsController < ApplicationController
      end
 
     def activity_by_institution
-      params[:type] = "University"
+      params[:type] = "Institution"
       common_display
     end
 
@@ -119,17 +114,10 @@ class Ask::ReportsController < ApplicationController
        def common_sort_columns
            typ = params[:type]; fld = params[:field] ; sortdir = params[:sdir]; report = params[:report]; params[:bysort]="y"
             if fld == 'State'
-               case typ      #if this is the 'State' fld then this is the anchor, describing by what this is organized
-                             #remake the variable lists starting over from the beginning
-               when 'University'
-                  self.send((report+"_by_institution").intern)
-               else
-                 self.send((report+"_by_#{typ.downcase}").intern)
-               end
-
+                self.send((report+"_by_#{typ.downcase}").intern)
             else
               case typ    #remake the variable lists 
-                when 'University', 'State'
+                when 'Institution', 'State'
                   self.send(("state_univ_"+report).intern)
                 else
                   self.send(("#{typ.downcase}_"+report).intern)
