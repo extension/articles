@@ -35,7 +35,12 @@
 <tr <%= ' class="shaded"' if even %>>
     <td class="left">
 		 <% if @type == 'State'%>
-		  <%= link_to x[0], :action => 'show_all_by_state', :State => x[0] %>
+	 <!--	  <%= link_to x[0], :action => 'show_all_by_state', :State => x[0] %> -->
+	         <% if !x[0] || x[0]==" " || x[0]=="" %>
+	             <% "Unknown/Unaffiliated"%>
+	         <% else%>
+	           <% x[0]%>
+	         <% end%>
 		 <% else%>
 		  <%= h(x[0]) %>	  
 		 <% end%>
