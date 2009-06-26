@@ -1,0 +1,63 @@
+<% @page_title = "General Overview" %>
+
+<div id="report">
+
+<p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= @page_title %></p>
+
+<h1>General Overview</h1>
+<!-- render partial seldates -->
+
+<table class="general_table" cellspacing="0">
+    <tr>
+        <td>Open Questions (awaiting an answer)</td>
+        <td class="count"><%= number_with_delimiter((@rept.NewQuestion({},[]))[0]) %></td>
+    </tr>
+    <tr>
+        <td>Resolved Questions</td>
+        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({},[]))[0]) %></td>
+    <tr>
+        <td>Answered</td>
+        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:status_state=> SubmittedQuestion::STATUS_RESOLVED},[]))[0]) %></td>
+    </tr>
+    
+    <tr>
+        <td>Rejected</td>
+        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]) %></td>
+    </tr>
+    <tr>
+		<td>Responded to with 'No Expertise'</td>
+		<td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:status_state => SubmittedQuestion::STATUS_NO_ANSWER}, []))[0]) %></td>
+	</tr>
+
+</table>
+
+
+<div id="browse">
+    <h3>Browse Statistics</h3>
+    <ul>
+        <li><%= link_to "General Statistics by State", { :action => 'activity_by_state', :FromDate => @dateFrom, :ToDate=> @dateTo}  %></li>
+        <li><%= link_to "General Statistics by Institution", {:action => 'activity_by_institution', :FromDate => @dateFrom, :ToDate=> @dateTo}%></li>
+       <li><% form_tag({:action => :show_active_cats, :FromDate => @dateFrom, :ToDate=> @dateTo }) do %>
+
+        <% options_array= Array.new%>
+        <%@cats.each do |stobj|
+
+              options_array << stobj.name
+
+         %>      
+        <% end %>
+
+        <%options_array.insert(0, "")%>
+            <label>General Statistics by Tag</label>
+            <select name="Category">
+            <%= options_for_select(options_array) %>
+            </select>
+<%= submit_tag "Enter" %>
+
+        <% end %>
+        </li>
+    </ul>                
+</div> 
+		
+</div>	
+	
