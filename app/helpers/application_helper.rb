@@ -53,6 +53,21 @@ module ApplicationHelper
     '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'
   end
   
+  def options_from_categories(selected = nil)
+    categories = Array.new
+
+    categories = Category.root_categories.collect { |cat| [cat.name, cat.id] }
+
+    categories.insert(0, [Category::UNASSIGNED, Category::UNASSIGNED])
+    categories.insert(0, ["All categories", Category::ALL])
+
+    if selected.kind_of? Category 
+      options_for_select(categories, selected.id)
+    else
+      options_for_select(categories, selected)
+    end    
+  end
+  
   def time_print(time)
     time.strftime("%m.%d.%y")
   end
