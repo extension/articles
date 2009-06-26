@@ -10,6 +10,8 @@ module DataImportActivity
 
 
   def retrieve_activity(options={})
+    mydatabase = self.connection.instance_variable_get("@config")[:database]
+    
     activityapplication = options[:activityapplication] || nil
     if(activityapplication.nil?)
       return false
@@ -62,10 +64,10 @@ module DataImportActivity
       when 'aae'
         case datatype
         when 'submission'
-          timestampsql = self.aae_submissions_timestamp_sql(activityapplication.activitysource)
+          timestampsql = self.aae_submissions_timestamp_sql(mydatabase)
           retrievesql = self.aae_submissions_sql(activityapplication,last_activitysource_at,refreshall)
         when 'activity'
-          timestampsql = self.aae_activity_timestamp_sql(activityapplication.activitysource)
+          timestampsql = self.aae_activity_timestamp_sql(mydatabase)
           retrievesql = self.aae_activity_sql(activityapplication,last_activitysource_at,refreshall)
         else
           return false
@@ -327,7 +329,7 @@ module DataImportActivity
 
   def aae_submissions_sql(activityapplication,last_activitysource_at=nil,refreshall=false)
       mydatabase = self.connection.instance_variable_get("@config")[:database]
-      activitydatabase = activityapplication.activitysource
+      activitydatabase = mydatabase
       system_user_id = User.systemuser.id
 
       dtc = "#{activitydatabase}.submitted_questions.external_app_id"
@@ -353,7 +355,7 @@ module DataImportActivity
 
   def aae_activity_sql(activityapplication,last_activitysource_at=nil,refreshall=false)
     mydatabase = self.connection.instance_variable_get("@config")[:database]
-    activitydatabase = activityapplication.activitysource
+    activitydatabase = mydatabase
 
     dtc = "#{activitydatabase}.submitted_question_events.event_type"
     casestatement = "CASE #{dtc} WHEN 'resolved by' THEN #{Activity::AAE_RESOLVE} WHEN 'assigned to' THEN #{Activity::AAE_ASSIGN} WHEN 'rejected by' THEN #{Activity::AAE_REJECT} WHEN 'no answer given' THEN #{Activity::AAE_NOANSWER} ELSE #{Activity::AAE_OTHER} END"

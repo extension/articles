@@ -8,9 +8,6 @@ class AddContentToActivityObjects < ActiveRecord::Migration
     execute "ALTER TABLE `activity_objects` ADD `foreignrevision` INT NULL DEFAULT '0' AFTER `foreignid`"
     # index
     execute "ALTER TABLE `activity_objects` ADD FULLTEXT `title_content_full_index` (`fulltitle`,`content`)"
-    
-    # change aae to point to myself
-    execute "UPDATE `activity_applications` SET `activitysource` = 'prod_darmok' WHERE `shortname` = 'aae'"
   end
 
   def self.down

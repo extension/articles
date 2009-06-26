@@ -9,6 +9,8 @@ include DataImportCommon
 module DataImportActivityObject
   
   def retrieve_objects(options={})
+    mydatabase = self.connection.instance_variable_get("@config")[:database]
+    
     activityapplication = options[:activityapplication] || nil
     if(activityapplication.nil?)
       return false
@@ -37,7 +39,7 @@ module DataImportActivityObject
       when 'aae'
         case datatype
         when 'submittedquestions'
-          timestampsql = self.aae_submittedquestions_timestamp_sql(activityapplication.activitysource)
+          timestampsql = self.aae_submittedquestions_timestamp_sql(mydatabase)
           retrievesql = self.aae_submittedquestions_sql(activityapplication,last_activitysource_at,refreshall)
         else
           return false
@@ -213,7 +215,7 @@ module DataImportActivityObject
 
   def aae_submittedquestions_sql(aaeapplication,last_activitysource_at=nil,refreshall=false)
       mydatabase = self.connection.instance_variable_get("@config")[:database]
-      aaedatabase = aaeapplication.activitysource
+      aaedatabase = mydatabase
 
       sql = "INSERT INTO #{mydatabase}.activity_objects (activity_application_id,entrytype,namespace,foreignid,source,displaytitle,fulltitle,content,status,created_at,updated_at,sourcewidget)"
       sql +=  " SELECT #{aaeapplication.id}, #{ActivityObject::AAE},#{ActivityObject::NS_DEFAULT},#{aaedatabase}.submitted_questions.id,#{aaedatabase}.submitted_questions.external_app_id,"
