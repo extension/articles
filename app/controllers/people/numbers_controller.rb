@@ -17,6 +17,8 @@ class People::NumbersController < ApplicationController
     @filteredparams = FilterParams.new(params)
     @filteredparams.order=@filteredparams.order('name')
     @findoptions = @filteredparams.findoptions
+    @filterstring = @filteredparams.filter_string
+    
 
     @displayfilter = @findoptions[:communitytype].nil? ? 'all' : @findoptions[:communitytype]
     @activitydisplay = params[:activitydisplay].nil? ? 'communityconnection' : params[:activitydisplay]
@@ -89,6 +91,7 @@ class People::NumbersController < ApplicationController
     @displayfilter = params[:displayfilter].nil? ? 'all' : params[:displayfilter]
     @filteredparams = FilterParams.new(params)
     @findoptions = @filteredparams.findoptions
+    @filterstring = @filteredparams.filter_string
     
     
     case @displayfilter
@@ -125,6 +128,7 @@ class People::NumbersController < ApplicationController
 
   def locations
     @filteredparams = FilterParams.new(params)
+    @filterstring = @filteredparams.filter_string
     @findoptions = @filteredparams.findoptions
     @locations = Location.filtered(@findoptions).displaylist
     @locationcounts = Location.userfilter_count(@findoptions)
@@ -144,6 +148,7 @@ class People::NumbersController < ApplicationController
   
   def summary
     @filteredparams = FilterParams.new(params)
+    @filterstring = @filteredparams.filter_string
     
     if(params[:community] and @filteredparams.community.nil?)
       flash[:error] = 'That community does not exist'  
@@ -169,6 +174,8 @@ class People::NumbersController < ApplicationController
   def communities
     @filteredparams = FilterParams.new(params)
     @findoptions = @filteredparams.findoptions
+    @filterstring = @filteredparams.filter_string
+    
     @communities = Community.filtered(@findoptions).displaylist
     @communitycounts = Community.userfilter_count(@findoptions)    
   end

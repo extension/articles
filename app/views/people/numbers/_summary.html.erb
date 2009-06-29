@@ -4,7 +4,7 @@
 
 <table class="general" cellspacing="0">
     <tr>
-		<td><%= link_to_userlist('Total Users',total.findoptions.merge({:calledfrom => 'numbersummary'}),{:title => "Users #{filter_string(total.findoptions.merge({:nolink => true}))}"}) %></td>
+		<td><%= link_to_userlist('Total Users',total.findoptions.merge({:calledfrom => 'numbersummary'}),{:title => "Users #{@filterstring}"}) %></td>
         <td class="bignumber"><%= number_with_delimiter(total.totalpeople) %></td>
     </tr>
     <tr>

@@ -191,6 +191,7 @@ class People::ColleaguesController < ApplicationController
       @filteredparams.dateinterval = 'all'
     end
     @findoptions = @filteredparams.findoptions
+    @filterstring = @filteredparams.filter_string
     
     # compatibility
     

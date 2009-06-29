@@ -209,6 +209,66 @@ class FilterParams < ParamExtensions::ParamsFilter
     end
     return findoptions
   end
+  
+  # outputs a string of filter settings
+  # TODO: refactor
+  # TODO: facilitate item linking, perhaps
+  def filter_string(options={})
+    returnarray = []
+    show_community_connection_type = options[:show_community_connection_type].nil? ? true :  options[:show_community_connection_type]
+    show_community = options[:show_community].nil? ? true :  options[:show_community_connection_type]
+
+    if(show_community and self.community)
+      returnarray << "community: #{self.community.name}"
+    end
+
+    ['institution','location','position'].each do |item|
+      if(!self.send(item).nil?)
+        returnarray << "#{item}: #{self.send(item).name}" 
+      end
+    end
+
+    if(show_community_connection_type)
+      if(self.connectiontype)
+        returnarray << "community connection: #{self.connectiontype}"
+      end
+
+      if(self.communitytype)
+        returnarray << "community type: #{self.communitytype}"
+      end
+    end
+
+    if(self.agreementstatus)
+      returnarray << "agreement status: #{self.agreementstatus}"
+    end
+
+    if(self.datefield)
+      returnarray << "date field:  #{self.agreementstatus}"
+    end
+    
+    if(self.dateinterval)
+      returnarray << "dateinterval: #{self.agreementstatus}"
+    end
+          
+    if(self.ignorecommunity)
+      returnarray << "ignore community: #{self.ignorecommunity.name}"
+    end
+
+    if(self.communityactivity)
+      returnarray << "communityactivity: #{self.communityactivity}"
+    end
+
+    if(self.activityapplication)
+      returnarray << "activity application: #{self.activityapplication}"
+    end
+
+    if(!returnarray.blank?)
+      return "Filtered by: #{returnarray.join(' | ')}"
+    else
+      return ''
+    end
+  end
+  
 
 
   #   # dates

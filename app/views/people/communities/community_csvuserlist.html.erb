@@ -1,4 +1,4 @@
-<% @filterstring = filter_string(@findoptions.merge({:nolink => true })) %><% if !@filterstring.empty? %><%= "Community Users (Filtered)\n" + @filterstring %><% else %>Community Users<% end %>
+<% if !@filterstring.empty? %><%= "Community Users (Filtered)\n" + @filterstring %><% else %>Community Users<% end %>
 
 eXtensionID,First Name,Last Name,Email,Phone,Title,Position,Institution,Location,County,Agreement Status,Connection,Account Created,Connection Created,Connection Updated,Community
 <% for showuser in @userlist %><%= makecommunityusercsvstring(showuser,@community)+"\n" %><% end %>

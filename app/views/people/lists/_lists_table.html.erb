@@ -9,7 +9,7 @@
     
     <% listoflists.each do |list| %>
         <tr id="listrow_<%= list.id %>">
-			<td><%= link_to("#{list.name}", list)%></td>
+			<td><%= link_to("#{list.name}", people_list_url(list))%></td>
         	<td><%= link_to_people_community(list.community,false) %></td>
 			<td><%= link_to_people_community_connection(list.community, list.communityconnection,'',false) %></td>
 			<td><%= list_subscriber_count(list) %>

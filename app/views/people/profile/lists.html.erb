@@ -15,7 +15,7 @@
 		communitycount += 1
 	%>
     	<tr id="list_row_<%= list.id %>">
-			<td><%= link_to("#{list.name}", list)%></td>
+			<td><%= link_to("#{list.name}", people_list_url(list))%></td>
 			<td><%= list_subscriber_count(list) %></td>
 			<td><%= list.get_posting_stats('lastmonth')[:messages] %></td>
 		</tr>

@@ -21,6 +21,7 @@ class Location < ActiveRecord::Base
   # LOCATION_INSULAR = 2
   # LOCATION_OUTSIDEUS = 3
   
+  has_many :users
   has_many :counties
   has_many :institutions  
   has_many :submitted_questions
@@ -30,6 +31,7 @@ class Location < ActiveRecord::Base
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
   
   named_scope :states, {:conditions => {:entrytype => STATE}}
+  
   
   # TODO: review heureka location reporting methods.  Justcode Issue #555  
   

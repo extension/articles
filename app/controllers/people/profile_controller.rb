@@ -61,6 +61,8 @@ class People::ProfileController < ApplicationController
   end
   
   def publicsettings
+    @openidurl = openidurl
+    
     # build the settings list - this is a little weird because we might not have all of these settings, so we are going to query for all of them
     @publicsettings = []
     PrivacySetting::KNOWN_ITEMS.each do |item|
