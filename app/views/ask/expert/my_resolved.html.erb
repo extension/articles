@@ -1,6 +1,6 @@
 <% @page_title = "Questions resolved by me" %>
 
-<h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small></h2>
+<h2><%= @page_title %> <small>(<%= @filter_string %>)</small></h2>
 
 <% if @filtered_submitted_questions.length == 0 %>
     <div class="noresults">

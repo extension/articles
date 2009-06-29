@@ -2,7 +2,7 @@
 <% @help_title = "Incoming Questions" %>
 
 <% if !@category and !@location and !@county and !@source %>
-    <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small><span class="syndication">
+    <h2><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
     <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => @currentuser %></span></h2>
 <% else %>
     <% if @category == Category::UNASSIGNED %>

@@ -15,6 +15,7 @@ class Ask::ExpertController < ApplicationController
   skip_before_filter :check_authorization
   skip_before_filter :get_tag, :except => [:ask_an_expert, :question_confirmation]
   before_filter :login_required, :except => [:email_escalation_report, :ask_an_expert, :question_confirmation, :submit_question]
+  before_filter :filter_string_helper, :only => [:incoming, :assigned, :my_resolved, :resolved]
   
   UNASSIGNED = "uncategorized"
   ALL = "all"
@@ -528,10 +529,10 @@ class Ask::ExpertController < ApplicationController
       list_view_error(err_msg)
       return
     end
+    
     #set the instance variables based on parameters
     list_view
     set_filters
-    @filter_string = filter_string_helper
     
     @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
@@ -797,7 +798,7 @@ class Ask::ExpertController < ApplicationController
   
   def filter_string_helper
     if !@category and !@location and !@county and !@source
-      return 'All'
+      @filter_string = 'All'
     else
         filter_params = Array.new
         if @category
@@ -832,7 +833,7 @@ class Ask::ExpertController < ApplicationController
           end  
         end
 
-        return filter_params.join(' + ')
+        @filter_string = filter_params.join(' + ')
     end
   end
   

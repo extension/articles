@@ -11,10 +11,7 @@
                     <p class="inc_resolved">
                         <span class="resolved">RESOLVED<%= sq.status_state == SubmittedQuestion::STATUS_RESOLVED ? "" : "(#{sq.status})" %>: 
                         </span> <%= link_to "View response", {:controller => 'expert', :action => 'question', :id => sq.id} %> 
-                        <% if sq.contributing_faq %>
-                            | <%= sq.contributing_faq ? (link_to "Related FAQ (##{sq.current_contributing_faq})", 
-                                                 {:controller => 'questions', :action => 'show', :id => sq.current_contributing_faq}) : 'None' %>
-                        <% end %>
+                    <!-- TODO: Put back in code for contributing faq here -->
                     </p>
                 <% end %>
                 <% if sq.status_state == SubmittedQuestion::STATUS_REJECTED %>
