@@ -217,9 +217,9 @@ module DataImportActivityObject
       mydatabase = self.connection.instance_variable_get("@config")[:database]
       aaedatabase = mydatabase
 
-      sql = "INSERT INTO #{mydatabase}.activity_objects (activity_application_id,entrytype,namespace,foreignid,source,displaytitle,fulltitle,content,status,created_at,updated_at,sourcewidget)"
+      sql = "INSERT INTO #{mydatabase}.activity_objects (activity_application_id,entrytype,namespace,foreignid,source,displaytitle,fulltitle,status,created_at,updated_at,sourcewidget)"
       sql +=  " SELECT #{aaeapplication.id}, #{ActivityObject::AAE},#{ActivityObject::NS_DEFAULT},#{aaedatabase}.submitted_questions.id,#{aaedatabase}.submitted_questions.external_app_id,"
-      sql += "SUBSTRING(#{aaedatabase}.submitted_questions.asked_question,1,255),#{aaedatabase}.submitted_questions.asked_question,#{aaedatabase}.submitted_questions.current_response,"
+      sql += "SUBSTRING(#{aaedatabase}.submitted_questions.asked_question,1,255),#{aaedatabase}.submitted_questions.asked_question,"
       sql += "#{aaedatabase}.submitted_questions.status,#{aaedatabase}.submitted_questions.created_at,#{aaedatabase}.submitted_questions.updated_at,#{aaedatabase}.submitted_questions.widget_name"
       sql +=  " FROM #{aaedatabase}.submitted_questions"
       if(!refreshall and !last_activitysource_at.nil?)
@@ -230,8 +230,8 @@ module DataImportActivityObject
       sql +=  "#{mydatabase}.activity_objects.status = #{aaedatabase}.submitted_questions.status,"
       sql +=  "#{mydatabase}.activity_objects.source = #{aaedatabase}.submitted_questions.external_app_id,"
       sql +=  "#{mydatabase}.activity_objects.sourcewidget = #{aaedatabase}.submitted_questions.widget_name,"
-      sql +=  "#{mydatabase}.activity_objects.displaytitle = SUBSTRING(#{aaedatabase}.submitted_questions.asked_question,1,255), #{mydatabase}.activity_objects.fulltitle = #{aaedatabase}.submitted_questions.asked_question, "
-      sql +=  "#{mydatabase}.activity_objects.content = #{aaedatabase}.submitted_questions.current_response"
+      sql +=  "#{mydatabase}.activity_objects.displaytitle = SUBSTRING(#{aaedatabase}.submitted_questions.asked_question,1,255), "
+      sql +=  "#{mydatabase}.activity_objects.fulltitle = #{aaedatabase}.submitted_questions.asked_question"
 
     return sql
   end
@@ -241,9 +241,9 @@ module DataImportActivityObject
     mydatabase = self.connection.instance_variable_get("@config")[:database]
     faqdatabase = faqapplication.activitysource
         
-    sql = "INSERT INTO #{mydatabase}.activity_objects (activity_application_id,entrytype,namespace,foreignid,foreignrevision,displaytitle,fulltitle,content,status,created_at,updated_at)"
+    sql = "INSERT INTO #{mydatabase}.activity_objects (activity_application_id,entrytype,namespace,foreignid,foreignrevision,displaytitle,fulltitle,status,created_at,updated_at)"
     sql +=  " SELECT #{faqapplication.id}, #{ActivityObject::FAQ},#{ActivityObject::NS_DEFAULT},#{faqdatabase}.questions.id,#{faqdatabase}.revisions.id,"
-    sql += "CAST((SUBSTRING(#{faqdatabase}.revisions.question_text,1,255)) AS BINARY),CAST(#{faqdatabase}.revisions.question_text AS BINARY),CAST(#{faqdatabase}.revisions.answer AS BINARY),"
+    sql += "CAST((SUBSTRING(#{faqdatabase}.revisions.question_text,1,255)) AS BINARY),CAST(#{faqdatabase}.revisions.question_text AS BINARY),"
     sql += "#{faqdatabase}.questions.status,#{faqdatabase}.questions.created_at,#{faqdatabase}.questions.updated_at"
     sql +=  " FROM #{faqdatabase}.questions, #{faqdatabase}.revisions"
     sql +=  " WHERE #{faqdatabase}.questions.current = #{faqdatabase}.revisions.id"
@@ -252,8 +252,8 @@ module DataImportActivityObject
       sql +=  " AND #{faqdatabase}.questions.updated_at >= '#{compare_time_string}'"
     end
     sql +=  " ON DUPLICATE KEY UPDATE #{mydatabase}.activity_objects.updated_at = #{faqdatabase}.questions.updated_at, #{mydatabase}.activity_objects.status = #{faqdatabase}.questions.status,"
-    sql +=  "#{mydatabase}.activity_objects.displaytitle = CAST((SUBSTRING(#{faqdatabase}.revisions.question_text,1,255)) AS BINARY), #{mydatabase}.activity_objects.fulltitle = CAST(#{faqdatabase}.revisions.question_text AS BINARY), "
-    sql +=  "#{mydatabase}.activity_objects.content = CAST(#{faqdatabase}.revisions.answer AS BINARY) "
+    sql +=  "#{mydatabase}.activity_objects.displaytitle = CAST((SUBSTRING(#{faqdatabase}.revisions.question_text,1,255)) AS BINARY), "
+    sql +=  "#{mydatabase}.activity_objects.fulltitle = CAST(#{faqdatabase}.revisions.question_text AS BINARY) "
   
     return sql
   end

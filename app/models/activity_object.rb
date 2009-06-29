@@ -56,24 +56,8 @@ class ActivityObject < ActiveRecord::Base
   named_scope :copwikipages, {:conditions => {:entrytype => COPWIKI_PAGE}}
   named_scope :events, {:conditions => {:entrytype => EVENT}}
   named_scope :faq_questions, {:conditions => {:entrytype => FAQ}}
-  
   named_scope :aae_questions, {:conditions => {:entrytype => AAE}}
-  
   named_scope :filtered, lambda {|options| filter_conditions(options)}
-  
-  
-  named_scope :full_text_search, lambda{|options|
-    query_string = options[:query_string]
-    boolean_mode = options[:boolean_mode] || false
-    if(boolean_mode)
-      match_string = "#{query_string} IN BOOLEAN MODE"
-    else
-      match_string = "#{query_string}"
-    end
-    {:select => "activity_objects.*, MATCH(content,fulltitle) AGAINST ('#{match_string}') as match_score", :conditions => ["MATCH(content,fulltitle) AGAINST ('#{match_string}')"]}
-  }
-  
-  named_scope :all_questions, {:conditions => ["entrytype IN (#{AAE},#{FAQ})"]}
     
   # -----------------------------------
   # Class-level methods

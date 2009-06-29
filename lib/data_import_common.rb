@@ -13,7 +13,7 @@ module DataImportCommon
       return false
     end
   
-    logger.info "##################### Starting #{loglabel} timestamp retrieval..."
+    ActiveRecord::Base::logger.info "##################### Starting #{loglabel} timestamp retrieval..."
         
     # execute sql 
     begin
@@ -31,7 +31,7 @@ module DataImportCommon
       return false
     end
   
-    logger.info "##################### Finished #{loglabel} timestamp retrieval  (lastupdated: #{lastupdated.to_s})..."
+    ActiveRecord::Base::logger.info "##################### Finished #{loglabel} timestamp retrieval  (lastupdated: #{lastupdated.to_s})..."
   
     return lastupdated
   end

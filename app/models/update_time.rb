@@ -15,9 +15,20 @@ class UpdateTime < ActiveRecord::Base
   class << self
     
     def find_or_create(datasource,datatype)
-      find_object = self.find(:first, :conditions => {:datasource_type => datasource.class.name,:datasource_id => datasource.id, :datatype => datatype})
+      # allow association at the class level
+      if(datasource.is_a?(Class))
+        datasource_type = datasource.name
+        findconditions = {:datasource_type => datasource_type,:datasource_id => 0, :datatype => datatype}
+        createoptions = {:datasource_type => datasource_type, :datasource_id => 0, :datatype => datatype}
+      else
+        datasource_type = datasource.class.name
+        findconditions = {:datasource_type => datasource_type,:datasource_id => datasource.id, :datatype => datatype}
+        createoptions = {:datasource => datasource, :datatype => datatype}
+      end
+        
+      find_object = self.find(:first, :conditions => findconditions)
       if(find_object.nil?)
-        find_object = create(:datasource => datasource, :datatype => datatype)
+        find_object = create(createoptions)
       end
       return find_object
     end
