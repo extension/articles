@@ -27,7 +27,7 @@ class SearchQuestion < ActiveRecord::Base
     else
       match_string = "#{query_string}"
     end
-    {:select => "activity_objects.*, MATCH(content,fulltitle) AGAINST ('#{match_string}') as match_score", :conditions => ["MATCH(content,fulltitle) AGAINST ('#{match_string}')"]}
+    {:select => "#{self.table_name}.*, MATCH(content,fulltitle) AGAINST ('#{match_string}') as match_score", :conditions => ["MATCH(content,fulltitle) AGAINST ('#{match_string}')"]}
   }
 
 
