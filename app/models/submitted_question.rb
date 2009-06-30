@@ -184,6 +184,29 @@ end
    sarray[0].created_at.to_s
  end
 
+  def self.find_questions(cat, desc, aux,  date1, date2, *args)
+   tstring = ""; cdstring = ""
+   case desc
+      when "New"
+        cdstring = "status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and category_id=#{cat.id} "
+      when "Resolved"
+          if aux
+              cdstring = "status_state=#{aux} and "
+          end
+          cdstring= cdstring +  "resolved_by > 0 and category_id=#{cat.id}"
+   end
+   if (date1 && date2)
+     case desc
+     when  "New", "Resolved"
+        tstring =" and sq.created_at between ? and  ?"
+     end
+     cdstring = [cdstring + tstring, date1, date2]
+   end
+
+   with_scope(:find => {:conditions => cdstring, :limit => 100}) do
+       paginate(*args)
+    end
+  end
 
 #find the date that this submitted question was assigned to the current assignee
 def assigned_date

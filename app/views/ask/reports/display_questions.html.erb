@@ -1,0 +1,35 @@
+<% @page_title = @pgtl %>
+
+
+
+<% if @user%>
+<p id="state_report">
+   <%= link_to "All Reports",  :controller => 'reports' %>  &gt; 
+   <%= link_to "User Report", :action => 'user', :id => @user.id, :to => @dateTo, :from => @dateFrom %> &gt; 
+   <%= @page_title %></p>
+<% else%>
+  <% if @loc%>
+    <p id="state_report">
+       <%= link_to "All Reports",  :controller => 'reports' %>  &gt; 
+       <%= link_to "Location Report",  :controller => 'reports', :action => "show_all_by_state", :to => @dateTo, :State => @loc.name, :from => @dateFrom %> &gt; <% if @type == 'County'%>
+                     <%= link_to 'Select County', :action => 'county_select', :State => @loc.name, :to => @dateTo, :from => @dateFrom%> &gt;
+                     <%= link_to "County/Parish Report" , :action => 'county', :to => @dateTo, :from => @dateFrom, :State => @loc.name, :County => @county %> &gt;
+                   <% end%>
+       <%= @page_title %></p>
+   <% end%>
+<% end%>
+
+<h1><%= @pgt %></h1>
+
+<p class="notice"><%= flash[:notice] %></p>
+
+<!-- <p>Yellow indicates that you have not viewed a FAQ since it was last updated</p> -->
+ 
+<%= render(:partial => 'paginator') %>
+ 
+<%= render(:partial => 'question_lists') %>
+<% if @questions.length > 0%>
+<%= render(:partial => 'paginator') %>
+<% end%>
+
+

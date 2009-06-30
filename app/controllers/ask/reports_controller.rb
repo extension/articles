@@ -113,7 +113,7 @@ class Ask::ReportsController < ApplicationController
        
        def common_sort_columns
            typ = params[:type]; fld = params[:field] ; sortdir = params[:sdir]; report = params[:report]; params[:bysort]="y"
-            if fld == 'State'
+            if fld == 'State'   #get the original summary back
                 self.send((report+"_by_#{typ.downcase}").intern)
             else
               case typ    #remake the variable lists 
@@ -141,5 +141,50 @@ class Ask::ReportsController < ApplicationController
               end
            end
        end
+       
+        def order_clause(order_by = "sq.question_updated_at", sort = "desc")
+           if !params[:ob].nil?
+             order_by = params[:ob]
+             if params[:ob] == "id"
+               order_by = "sq.id"
+             elsif params[:ob] == "squpdated"
+               order_by = " sq.updated_at"
+             elsif params[:ob] == "sqid"
+               order_by = "sq.id"
+             end
+           end
+
+           if params[:so] and params[:so] == 'a'
+             sort = "asc"
+           end
+
+           order_clause = order_by + " " + sort
+
+         end
+
+        def display_tag_links
+            @cat = Category.find_by_name(params[:Category])
+            @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
+            @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; aux = nil
+          #  @dateFrom = params[:from] ;  @dateTo=params[:to]
+         #   @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+            desc = params[:descriptor]; @numb = params[:num].to_i
+             if (@edits.length > 8)
+               if (@edits[0..7]=="Resolved")
+                 aux = @edits[8].chr
+                 @edits = "Resolved"
+               end
+             end
+              select_string = " sq.id squid, sq.updated_at updated_at, resolved_by, asked_question, sq.question_updated_at, sq.status status"
+              jstring = " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id "
+              (desc=="New") ? @pgt = " Newly Submitted Questions in '#{@cat.name}'  " : @pgt = " Questions Resolved from Ask an Expert for '#{@cat.name}'"
+
+              @questions = SubmittedQuestion.find_questions(@cat, @edits, aux, @date1, @date2,
+                 :all,  :select => select_string,  :joins => jstring, :order => order_clause("sq.updated_at", "desc"),
+                       :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                
+              @min = 124
+             render  :template => "ask/reports/display_questions"
+        end
+       
   
 end

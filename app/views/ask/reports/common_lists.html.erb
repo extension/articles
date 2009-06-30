@@ -6,6 +6,9 @@
     <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "General Overview",  :action => 'activity' %> &gt; <%= @page_title %></p>
     
 <h1><%= genstring %></h1>
+<% sta = SubmittedQuestion::STATUS_RESOLVED%>
+<% str = SubmittedQuestion::STATUS_REJECTED%>
+<% stn = SubmittedQuestion::STATUS_NO_ANSWER%>
 
 <table cellspacing="0" class="stats" summary="<%= genstring %>">
 	<% even = false %> 
@@ -16,7 +19,7 @@
         <th scope="col">Resolved</th>
         <th scope="col">Answered</th>
         <th scope="col">Rejected</th>
-        <th scope="col">Responded with 'No Expertise'</th>
+        <th scope="col">Responded to with 'No Expertise'</th>
  
     </tr>
  
@@ -32,45 +35,45 @@
        <td <%= ' class="empty"' if @asgn==0 %>>
 	     <!-- number of open incoming faqs in assigned state -->
 	        <% if @asgn%>
-	    <!--	<%= link_to @asgn, :action => "display_tag_links", :Category => @typename, :descriptor =>"New" , :olink => "New", :to => @dateTo, :from => @dateFrom, :num => @asgn%>
-	         -->
-	         <%= @asgn%>
+	    	<%= link_to @asgn, :action => "display_tag_links", :Category => @typename, :descriptor =>"New" , :olink => "New", :to => @dateTo, :from => @dateFrom, :num => @asgn%>
+	         
+	      <!--   <%= @asgn%>-->
 	        <% end%>
 	   </td>
 	    <% @reslvd = (@rept.ResolvedQuestion({ :catid => x.id},[]))[0]%>
 	   <td <%= ' class="empty"' if @reslvd==0 %>>
 		 <!-- number of incoming faqs that have been Resolved one way or another -->
 		    <% if @reslvd%>
-	    <!--	<%= link_to @reslvd, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved" , :olink => "Resolved", :to => @dateTo, :from => @dateFrom, :num => @reslvd%>
-			      -->
-	          <%= @reslvd%>
+	    	<%= link_to @reslvd, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved" , :olink => "Resolved", :to => @dateTo, :from => @dateFrom, :num => @reslvd%>
+			     
+	        <!--  <%= @reslvd%> -->
            <% end%>
 	   </td>
 	     <% @answ = (@rept.ResolvedQuestion({ :catid => x.id, :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]%>
 	     <td <%= ' class="empty"' if @answ==0 %>>
 			 <!-- number of incoming faqs in answered state -->
 			    <% if @answ%>
-			<!--	<%= link_to @answ, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved" , :olink => "Resolved", :to => @dateTo, :from => @dateFrom, :num => @answ%>
-				    -->
-		         <%= @answ%>
+				<%= link_to @answ, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved#{sta}" , :olink => "Resolved#{sta}", :to => @dateTo, :from => @dateFrom, :num => @answ%>
+				    
+		       <!--  <%= @answ%> -->
 		        <% end %>
 		   </td>
 		   <% @rej = (@rept.ResolvedQuestion({ :catid => x.id, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]%>
 		  <td <%= ' class="empty"' if @rej==0 %>>
 			 <!-- number of incoming faqs in in rejected state -->
 			    <% if @rej%>
-			<!--	<%= link_to @rej, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved" , :olink => "Resolved", :to => @dateTo, :from => @dateFrom, :num => @rej%>
-				     -->
-		         <%= @rej%>
+				<%= link_to @rej, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved#{str}" , :olink => "Resolved#{str}", :to => @dateTo, :from => @dateFrom, :num => @rej%>
+				    
+		      <!--   <%= @rej%> -->
 		        <% end%>
 		   </td>
 		   <% @noexp = (@rept.ResolvedQuestion({ :catid => x.id, :status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]%>
 		<td <%= ' class="empty"' if @noexp==0 %>>
 			 <!-- number of incoming faqs in no_answer state -->
 			    <% if @noexp%>
-			<!--	<%= link_to @noexp, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved" , :olink => "Resolved", :to => @dateTo, :from => @dateFrom, :num => @noexp%>-->
+				<%= link_to @noexp, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved#{stn}" , :olink => "Resolved#{stn}", :to => @dateTo, :from => @dateFrom, :num => @noexp%>
 			
-		        <%= @noexp%>
+		     <!--   <%= @noexp%> -->
 		        <%end%>
 		   </td>
 

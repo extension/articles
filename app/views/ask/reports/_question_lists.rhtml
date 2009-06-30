@@ -1,0 +1,160 @@
+
+<% if !(@comments || (@edits == "Submitted" || @edits == "ResolvedP" || @edits=="ResolvedM" || @edits=="New" || @edits=="Resolved"))%>
+  <% if (@numb > 100)%>
+    <h4><%= @limit_string%></h4>
+  <% end%>
+<%end%>
+<table id="questionlist" class="hover">
+    <tr>
+	    <% if @questions.length > 0%>
+        <th scope="col"><%= link_to "ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :loc => @loc,:ob => @idtype, :so => (params[:so] != "a") ? "a" : "d" } %></th>
+        <% else%>
+        <th scope="col">ID</th>
+        <% end%>
+       <% if @edits=="Edits"%>
+          <th scope="col">Editor: Revision</th>
+       <% end%>
+       <% if @edits == "Commenters"%>
+          <th scope="col">Commenter</th>
+       <%end%>
+       <% if @comments %>
+         <% if @edits%>
+           <th scope="col">Comment</th>
+         <% else%>
+          <th scope="col">Comment by <%= @user.first_name %> <%= @user.last_name %></th>
+         <%end%>
+       <% end%>
+       <% if @edits=="Commenters"%>
+         <th scope="col">Most Recent Question</th>
+       <% else%>
+        <th scope="col">Question</th>
+       <% end%>
+      
+      <%if @faq%>
+         <% if @questions.length > 0%>
+             <th scope="col"><%= link_to "Status", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :loc => @loc, :ob => 'status', :so => (params[:so] != "a")? "a": "d"} %></th>
+             <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @olink, :olink => @olink, :type => @type,  :loc => @loc, :ob => 'updated', :so => (params[:so] != "a") ? "a" : "d" } %></th>
+         <% else%>
+              <th scope="col">Status</th>
+              <th scope="col">Last Updated</th>
+         <% end%>
+      <% else%> 
+          <% if @questions.length > 0%>
+	         <th scope="col"><%= link_to "Converted FAQ ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink,:type => @type, :loc => @loc, :ob => 'id', :so => (params[:so] != "a")? "a": "d"} %></th>
+	        <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :loc => @loc, :ob => 'squpdated', :so => (params[:so] != "a") ? "a" : "d" } %></th>
+	       <% else%>
+	          <th scope="col">Converted FAQ ID</th>
+	          <th scope="col">Last Updated</th>
+	       <% end%>
+	    <% end%>
+        
+              
+    </tr>
+<% even = false %>
+<% 
+    @questions.each do |question|
+        row_class = "shaded" if even
+        
+       
+       %>
+        <tr <%= " class='#{row_class}'" if row_class %>>
+            <td class="num">
+	           <% if @faq%>
+                 <%= question.id %>
+               <% else%>
+                 <%= question.squid%>
+               <% end%>
+            </td>
+           <% if @comments%>
+              <td>
+	       <% else%>
+            <td class="link">
+	       <% end%>
+	
+	         <% if @comments%> 
+	           
+                <% for revision in question.revisions.reverse %>
+                  <% for review in revision.reviews %>
+                      <% if @edits && review.user_id%>
+                        <% user = User.find_by_id(review.user_id)%>        
+                      <% end%>
+                      <% if review.comments && review.comments != "" && ((@edits && review.user_id) ? ((@county) ? (user.state==@loc.abbreviation && user.county==@county): user.state==@loc.abbreviation) : review.user_id==@user.id)%>
+		        	     <%= simple_format(review.comments) + "..." + ((@edits && review.user_id) ? ("Commenter: " + user.last_name) : "")%>
+		                
+		              <% end%>		            
+		          <% end%>
+		          
+		        <% end%>
+		      
+             <% else%>
+               <% if @edits=="Edits"%>
+                  <% for revision in question.revisions%>
+                    <% user = User.find_by_id(revision.user_id)%>
+                    <% if ((@county) ? (user.state==@loc.abbreviation && user.county==@county) : ((@cat) ? true : user.state==@loc.abbreviation)) && revision.revision_number > 1%>
+                      <% if user.first_name != user.last_name%>
+                         <br><%= "#{user.first_name} #{user.last_name}: #{revision.revision_number}"%></br> 
+                      <% else%>
+                         <br><%= "#{user.last_name}: #{revision.revision_number}"%></br>
+                      <% end%>
+                    <% end%>
+                  <% end%>
+               <%else %>
+                 <% if @edits=="Commenters"%>
+                   <% for revision in question.revisions.reverse %>
+	                  <% for review in revision.reviews %>
+	                      <% if review.user_id%>
+	                        <% user = User.find_by_id(review.user_id)%>        
+	                      <% end%>
+	                      <%if ((@county) ? (user.state==@loc.abbreviation && user.county==@county) : user.state==@loc.abbreviation)%>
+	                         <%= user.last_name%>
+			                 <% fnd = 1%>
+			                 <% break%>
+			              <% end%>		            
+			          <% end%>
+			          <% if fnd == 1%>
+			            <% break%>
+			          <% end%>
+			        <% end%>
+                    
+                 <% else%> 
+                   <% if @faq%>
+                     <%= link_to strip_tags( question.current_revision.question_text ), :controller => 'questions', :action => 'show', :id =>  question.id  %>
+                   <% else%>
+                     <%= link_to strip_tags( question.asked_question), :controller => 'expert', :action => 'question', :id => question.squid  %>
+                   <% end%>
+                  <% end%>
+                 <% end%>
+               <% end%>
+             </td>
+           <% if @comments || (@edits=="Edits") || (@edits=="Commenters")%>
+              <td class="link">
+	           
+	            <%= link_to strip_tags( question.current_revision.question_text[0..@min] + "..." ), :controller => 'questions', :action => 'show', :id =>  question.id  %>
+              </td>
+            <% end%>
+            <td>
+	         <% if @faq%>
+              <% if User.current_user.publisher? %>
+                <%= question.workflow_status %>
+              <% else %>
+                <%= (question.status == 'archived') ? 'inactive' : (question.published_version_available?) ? 'draft*' : question.status %>
+              <% end %>
+             <% else%>
+               <% if question.id%>
+                 <%= link_to  question.id, :controller => 'questions', :action => 'show', :id =>  question.id  %>
+                <% end%>                    
+             <% end%>
+            </td>
+            <td class="q_age">
+                <%= time_ago_in_words((@faq) ?  question.last_revision_date : question.updated_at) %> ago
+            </td>
+            
+                      
+        </tr>
+        <% 
+        even = !even
+    %>
+        <% 
+    end 
+%>
+</table>
