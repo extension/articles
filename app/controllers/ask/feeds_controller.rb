@@ -5,9 +5,8 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class FeedsController < ApplicationController
-  skip_before_filter :login_required, :check_authorization, :set_current_user
-  session :off
+class Ask::FeedsController < ApplicationController
+  skip_before_filter :login_required
   
   ENTRY_COUNT = 25
   DATE_EXPRESSION = "date_sub(curdate(), interval 7 day)"
@@ -268,14 +267,14 @@ class FeedsController < ApplicationController
   def render_submitted_questions
     headers["Content-Type"] = "application/xml"
     respond_to do |format|
-      format.xml{render :template => 'feeds/submitted_questions', :layout => false}
+      format.xml{render :template => 'ask/feeds/submitted_questions', :layout => false}
     end
   end
   
   def render_error
     headers["Content-Type"] = "application/xml"
     respond_to do |format|
-      format.xml{render :template => 'feeds/error', :layout => false}    
+      format.xml{render :template => 'ask/feeds/error', :layout => false}    
     end
   end
   
