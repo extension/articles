@@ -93,9 +93,10 @@ class SearchQuestion < ActiveRecord::Base
         sql += "SUBSTRING(#{aaetable}.asked_question,1,255),#{aaetable}.asked_question,#{aaetable}.current_response,"
         sql += "#{aaetable}.status,#{aaetable}.created_at,#{aaetable}.updated_at"
         sql +=  " FROM #{aaetable}"
+        sql +=  " WHERE #{aaetable}.current_response IS NOT NULL"
         if(!refreshall and !last_datasourced_at.nil?)
           compare_time_string = last_datasourced_at.strftime("%Y-%m-%d %H:%M:%S")
-          sql +=  " WHERE #{aaetable}.updated_at >= '#{compare_time_string}'"
+          sql +=  " AND #{aaetable}.updated_at >= '#{compare_time_string}'"
         end
         sql +=  " ON DUPLICATE KEY UPDATE #{mytable}.updated_at = #{aaetable}.updated_at,"
         sql +=  "#{mytable}.status = #{aaetable}.status,"
