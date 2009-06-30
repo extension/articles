@@ -20,7 +20,7 @@ class SearchQuestion < ActiveRecord::Base
   named_scope :aae_questions, {:conditions => {:entrytype => AAE}}
 
   named_scope :full_text_search, lambda{|options|
-    query_string = options[:query_string]
+    query_string = options[:q]
     boolean_mode = options[:boolean_mode] || false
     if(boolean_mode)
       match_string = "#{query_string} IN BOOLEAN MODE"
