@@ -29,16 +29,16 @@
         <h3>There <%= @question_difference == 1 ? "is" : "are" %> <strong><%= @question_difference %> 
         <%= @question_difference == 1 ? "question" : "questions" %> assigned to you</strong> outside of your filter:</h3>
     </div>
-    <%= render (:partial => "submitted_questions") %>
+    <%= render(:partial => "submitted_questions") %>
     
     <% else %>
-    <%= render (:partial => "submitted_questions") %>
+    <%= render(:partial => "submitted_questions") %>
     <div class="noresults">
         <h3>There <%= @question_difference == 1 ? "is" : "are" %> <strong><%= @question_difference %> other
         <%= @question_difference == 1 ? "question" : "questions" %> assigned to you</strong> outside of your filter and are listed below.</h3>
     </div>
-    <%= render (:partial => "list_difference") %>
+    <%= render(:partial => "list_difference") %>
     <% end %>
 <% else %>
-    <%= render (:partial => "submitted_questions") %>
+    <%= render(:partial => "submitted_questions") %>
 <% end %>
