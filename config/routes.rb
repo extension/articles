@@ -68,9 +68,19 @@ ActionController::Routing::Routes.draw do |map|
     
   map.connect 'faq/:year/:month/:day/:hour/:minute/:second', :controller => 'faq', :action => 'send_questions'
   
+  #################################################################
+  ### people routes ###
   map.connect 'people/signup', :controller => 'people/signup', :action => 'new'
-  
   map.login 'people/login', :controller => 'people/account', :action => 'login'
+  map.connect 'people/invite/:invite', :controller => 'people/signup', :action => 'new'
+  #define some explicit routes until the current help pages are moved into a wiki
+  map.connect 'people/help/contactform', :controller => 'help', :action => 'contactform' #this one will probably need to stay
+
+  #set up the routes to handle help request pages
+  map.connect 'people/help/:id', :controller => 'help', :action => 'index', :requirements =>{ :id =>/[\w\d\-.:,;()@ ]*((\/[\w\d\-.:,;()@ ]*))*?/}
+
+  # token shortcuts
+  map.connect 'people/sp/:token', :controller => 'people/account', :action => 'set_password'
   
   map.namespace :people do |people|  
     people.resources :lists, :collection => {:showpost => :get, :all => :get, :managed => :get, :nonmanaged => :get, :postactivity => :get, :postinghelp => :get}, :member => { :posts => :get, :subscriptionlist => :get , :ownerlist => :get, }
@@ -78,6 +88,24 @@ ActionController::Routing::Routes.draw do |map|
                               :member => {:userlist => :get, :invite => :any, :change_my_connection => :post, :modify_user_connection => :post, :xhrfinduser => :post, :editlists => :any, :describe => :any}
     people.resources :invitations,  :collection => {:mine => :get}
   end
+  
+  # TODO - is this necessary?
+  #map.connect 'colleagues/listing/:listtype/:id', :controller => 'colleagues', :action => 'listing'
+
+  map.connect 'activity/:action/:id/:filter', :controller => 'activity'
+  map.connect 'feeds/community/:id/:filter', :controller => 'feeds', :action => 'community'
+
+  map.connect 'openid/xrds', :controller => 'opie', :action => 'idp_xrds'
+  map.connect 'people/openid/:extensionid', :controller => 'opie', :action => 'user'
+  map.connect 'people/openid/:extensionid/xrds', :controller => 'opie', :action => 'user_xrds'
+
+  map.connect 'people/:extensionid', :controller => 'opie', :action => 'user'
+  map.connect 'people/:extensionid/xrds', :controller => 'opie', :action => 'user_xrds'
+  #################################################################
+
+  # catch requests to find
+  map.connect 'find/:action/:id', :controller => 'colleagues'
+  
   map.connect ':controller', :action => 'index'
   map.connect ':controller/rest/*email', :action => 'rest'
   map.connect ':controller/:action'
