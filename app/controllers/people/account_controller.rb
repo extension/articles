@@ -142,7 +142,7 @@ class People::AccountController < ApplicationController
       end
     else
       if(!@currentuser.nil?)
-        redirect_to('/')
+        redirect_to(:controller => 'welcome', :action => 'home')
       end
     end
   end
