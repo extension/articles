@@ -35,7 +35,7 @@ class OpieController < ApplicationController
   include ApplicationHelper
   
 
-  #skip_before_filter :verify_authenticity_token
+  skip_before_filter :verify_authenticity_token
   before_filter(:login_required, :only => [:decision])
   before_filter(:check_purgatory, :only => [:decision])
   
@@ -118,7 +118,7 @@ class OpieController < ApplicationController
           session[:userid] = nil
           session[:last_opierequest] = opierequest
           session[:return_to] = url_for(:controller=>"opie", :action =>"index", :returnfrom => 'login')
-          return(redirect_to(:controller=>"account", :action =>"login"))
+          return(redirect_to login_url)
         end
         return
       end
