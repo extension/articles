@@ -109,7 +109,6 @@ class User < ActiveRecord::Base
   # TODO: this should be changed to something like .assigned_questions.open
   #has_many :open_questions, :class_name => "SubmittedQuestion", :foreign_key => "user_id", :conditions => "status_state = #{SubmittedQuestion::STATUS_SUBMITTED}"
   has_many :resolved_questions, :class_name => "SubmittedQuestion", :foreign_key => "resolved_by"
-  #has_and_belongs_to_many :categories
   has_many :expertise_areas
   has_many :categories, :through => :expertise_areas
   has_many :expertise_events

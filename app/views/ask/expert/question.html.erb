@@ -6,13 +6,13 @@
 <% if !@submitted_question.spam %>
   <% if work_time_remaining = get_work_time_remaining(@submitted_question) %>
   <% if (work_time_remaining <= 0) and (@currentuser.id != @submitted_question.assignee.id) %>
-  <%= render(:partial => "expert/take_question") %>
+  <%= render(:partial => "ask/expert/take_question") %>
   <% elsif (work_time_remaining > 0) and (@currentuser.id != @submitted_question.assignee.id) %>
-  <%= render(:partial => "expert/question_alert") %>
+  <%= render(:partial => "ask/expert/question_alert") %>
   <% elsif (work_time_remaining <= 0) and (@currentuser.id == @submitted_question.assignee.id) %>
-  <%= render(:partial => "expert/my_claim") %>
+  <%= render(:partial => "ask/expert/my_claim") %>
   <% elsif (work_time_remaining > 0) and (@currentuser.id == @submitted_question.assignee.id) %>
-  <%= render(:partial => "expert/my_claim_status") %>
+  <%= render(:partial => "ask/expert/my_claim_status") %>
   <% end %>
   <% end %>
 <% end %>
@@ -34,7 +34,7 @@
     
     <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
         <div id="recat_<%= @submitted_question.id %>" style="display:none;" class="recat">
-        <%= render(:partial => "category_form") %>
+        <%= render(:partial => "ask/expert/category_form") %>
         </div>
     <% end %>
     
@@ -60,11 +60,9 @@
 	        <p>
         	    <strong>Resolved by:</strong> <%= link_to @submitted_question.resolved_by.get_first_last_name, {:controller => 'account', :action => 'profile', :id => @submitted_question.resolved_by.login}, :class => "profile" %>
         	</p>
-	        <p><strong>Date: </strong><%= humane_date(z(@submitted_question.resolved_at)) %></p>
+	        <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
 	        
-	        <% if @submitted_question.current_contributing_faq %>
-    	        <p><strong>This question was answered with <%= link_to "FAQ # #{@submitted_question.current_contributing_faq}", :controller => 'questions', :action => 'show', :id => @submitted_question.current_contributing_faq, :submitted_question => @submitted_question.id %></strong></p>
-    	    <% end %>
+	        <!-- ToDo: Add back in contributing faq code -->
 
 		    <% if response = @submitted_question.current_response %>
 		        <p><strong>Response <%= @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED ? '(no email sent):' : '(emailed):' %></strong></p>
@@ -82,7 +80,7 @@
     <ul id="question_history">
     <% submit_history = "Submitted by <strong>#{@submitter_name}</strong> from <strong>#{@submitted_question.external_app_id}</strong>" %>  
         <li><%= submit_history %> <% if @submitted_question.widget_name %> (<%= @submitted_question.widget_name %>)<% end %>
-        <span><%= humane_date(z(@submitted_question.created_at)) %></span></li>
+        <span><%= humane_date(@submitted_question.created_at) %></span></li>
         <% @submitted_question.submitted_question_events.each do |event| %>
             <li><%= stringify_submitted_question_event(event) %></li>
         <% end %>
@@ -122,26 +120,26 @@
         
         
         <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED%>
-          <%= button_to 'Reactivate Question', :controller => :expert, :action => :reactivate, :id => @submitted_question.id %>
+          <%= button_to 'Reactivate Question', :controller => 'ask/expert', :action => :reactivate, :id => @submitted_question.id %>
         <% end %>
     <% end %>
     
 <% if @submitted_question.status_state != SubmittedQuestion::STATUS_RESOLVED and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER %>
-  <%= render(:partial => 'expert/manual_assign', :locals => { :work_time_remaining => work_time_remaining }) %>
+  <%= render(:partial => 'ask/expert/manual_assign', :locals => { :work_time_remaining => work_time_remaining }) %>
 <% end %>
 
 
 <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
      <% if @submitted_question.assignee.id == @currentuser.id %>
-       <%= render(:partial => "expert/question_resolve") %> 
+       <%= render(:partial => "ask/expert/question_resolve") %> 
      <% else %>
        <% if !(work_time_remaining and work_time_remaining > 0) %>
        <div class="aae_module">
        <h3>If you would like to answer this question, please assign it to yourself.</h3>
-       <%= button_to 'Assign me this question', :controller => :expert, :action => :assign, :id => @submitted_question.id, :assignee_login => @currentuser.login %>
+       <%= button_to 'Assign me this question', :controller => 'ask/expert', :action => :assign, :id => @submitted_question.id, :assignee_login => @currentuser.login %>
        </div>
        <% end %>
-       <%= render(:partial => "expert/answer_search") %>
+       <%= render(:partial => "ask/expert/answer_search") %>
      <% end %>
 <% end %>
 

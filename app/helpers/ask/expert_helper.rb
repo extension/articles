@@ -16,27 +16,27 @@ def stringify_submitted_question_event(sq_event)
       initiated_by_full_name = sq_event.initiated_by.get_first_last_name
     end
 
-    reassign_msg = "Assigned to <strong><a href='/account/aaeprofile/#{sq_event.subject_user.login}'>#{sq_event.subject_user.get_first_last_name}</a></strong> by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(z(sq_event.created_at))}</span>"
+    reassign_msg = "Assigned to <strong><a href='/account/aaeprofile/#{sq_event.subject_user.login}'>#{sq_event.subject_user.get_first_last_name}</a></strong> by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
     reassign_msg = reassign_msg + " <span>Comments: #{sq_event.response}</span>" if sq_event.response
     return reassign_msg 
   when SubmittedQuestionEvent::RESOLVED 
-    return "Resolved by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "Resolved by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::NO_ANSWER
-    return "No answer available was sent from <strong>#{sq_event.initiated_by.get_first_last_name}</strong><span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "No answer available was sent from <strong>#{sq_event.initiated_by.get_first_last_name}</strong><span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::MARKED_SPAM
-    return "Marked as spam by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "Marked as spam by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::MARKED_NON_SPAM
-    return "Marked as non-spam by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "Marked as non-spam by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::REJECTED
-    return "Question Rejected by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "Question Rejected by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::REACTIVATE
-    return "Question Reactivated by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "Question Reactivated by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::RECATEGORIZED
-    return "Question Recategorized by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "Question Recategorized by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::WORKING_ON
-    return "Question worked on by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "Question worked on by <strong>#{sq_event.initiated_by.get_first_last_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   else
-    return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.subject_user) ? sq_event.subject_user.get_first_last_name : '')} by #{sq_event.initiated_by.get_first_last_name} <span> #{humane_date(z(sq_event.created_at))}</span>"
+    return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.subject_user) ? sq_event.subject_user.get_first_last_name : '')} by #{sq_event.initiated_by.get_first_last_name} <span> #{humane_date(sq_event.created_at)}</span>"
   end
 end
 

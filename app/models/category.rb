@@ -10,6 +10,10 @@ class Category < ActiveRecord::Base
   acts_as_tree :order => 'name'
   has_and_belongs_to_many :submitted_questions
   
+  has_many :expertise_areas
+  has_many :users, :through => :expertise_areas
+  has_many :expertise_events
+  
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => :parent_id, :if => !self.parent
   

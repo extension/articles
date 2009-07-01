@@ -386,24 +386,24 @@ class Ask::ExpertController < ApplicationController
       return
     end
     
-    #@categories = Category.root_categories
-    #@category_options = @categories.map{|c| [c.name,c.id]}
+    @categories = Category.root_categories
+    @category_options = @categories.map{|c| [c.name,c.id]}
       
     @submitter_name = @submitted_question.get_submitter_name
       
-    #if @submitted_question.categories and @submitted_question.categories.length > 0
-    #  @category = @submitted_question.categories.first
-    #  @category = @category.parent if @category.parent
-    #  @category_id = @category.id
-    #  @users = @category.users.find(:all, :select => "users.*", :order => "users.first_name")
+    if @submitted_question.categories and @submitted_question.categories.length > 0
+      @category = @submitted_question.categories.first
+      @category = @category.parent if @category.parent
+      @category_id = @category.id
+      @users = @category.users.find(:all, :select => "users.*", :order => "users.first_name")
     # find subcategories
-    #  @sub_category_options = [""].concat(@category.children.map{|sq| [sq.name, sq.id]})
-    #  if subcategory = @submitted_question.categories.find(:first, :conditions => "parent_id IS NOT NULL")
-    #    @sub_category_id = subcategory.id
-    #  end
-    #else
-    #  @sub_category_options = [""]    
-    #end
+      @sub_category_options = [""].concat(@category.children.map{|sq| [sq.name, sq.id]})
+      if subcategory = @submitted_question.categories.find(:first, :conditions => "parent_id IS NOT NULL")
+        @sub_category_id = subcategory.id
+      end
+    else
+      @sub_category_options = [""]    
+    end
   end
 
   def assigned
