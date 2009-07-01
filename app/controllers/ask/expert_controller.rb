@@ -376,6 +376,34 @@ class Ask::ExpertController < ApplicationController
       @revision.answer = params[:answer]  
     end
   end
+  
+  def reserve_question
+    if request.post?
+      if params[:sq_id] and @submitted_question = SubmittedQuestion.find_by_id(params[:sq_id].strip) 
+        if @submitted_question.resolved?
+          flash[:failure] = "This question has already been resolved"
+          redirect_to :action => :question, :id => @submitted_question.id
+          return
+        end
+        if @currentuser.id != @submitted_question.assignee.id
+          previous_assignee_email = @submitted_question.assignee.email
+          @submitted_question.assign_to(@currentuser, @currentuser, nil) 
+          # if the question is currently assigned to someone,
+          # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
+          AskMailer.deliver_assigned(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), request.host)
+          AskMailer.deliver_reassign_notification(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), previous_assignee_email, request.host) 
+        end
+        SubmittedQuestionEvent.log_working_on(@submitted_question, @currentuser)
+        redirect_to :action => :question, :id => @submitted_question.id
+      else
+        flash[:failure] = "Invalid submitted question number."
+        redirect_to :action => :incoming
+      end
+    else
+      do_404
+      return
+    end
+  end
 
   # Detail page for an ask an expert question
   def question

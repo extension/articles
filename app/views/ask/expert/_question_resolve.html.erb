@@ -1,4 +1,4 @@
-<%= render(:partial => "expert/answer_search") %>
+<%= render(:partial => "ask/expert/answer_search") %>
 
 <div class="aae_module">
     <h3>Answer</h3>
@@ -10,20 +10,20 @@
 <div class="aae_module">
 <h3>Respond with no answer available</h3>
 <p class="button2">
-<%= link_to 'No Answer Response', {:controller => :expert, :action => :answer_question, :squid => @submitted_question.id, :status_state => SubmittedQuestion::STATUS_NO_ANSWER} %>
+<%= link_to 'No Answer Response', { :action => :answer_question, :squid => @submitted_question.id, :status_state => SubmittedQuestion::STATUS_NO_ANSWER} %>
 </p>
 
 <p class="clear">Please don't reject valid questions. If no one can answer this question, respond and suggest their local office.
 <%= link_to_function 'Sample response text', "Effect.toggle('sample_response','blind', { duration: .4});", :class => "sample" %></p>
-<p id="sample_response" style="display:none;"><%= link_to 'Copy this to the reply form', { :controller => :expert, :action => :answer_question, :squid => @submitted_question.id, :sample => SubmittedQuestion::DECLINE_ANSWER, :status_state => SubmittedQuestion::STATUS_NO_ANSWER } %><%= SubmittedQuestion::DECLINE_ANSWER %></p>
+<p id="sample_response" style="display:none;"><%= link_to 'Copy this to the reply form', { :action => :answer_question, :squid => @submitted_question.id, :sample => SubmittedQuestion::DECLINE_ANSWER, :status_state => SubmittedQuestion::STATUS_NO_ANSWER } %><%= SubmittedQuestion::DECLINE_ANSWER %></p>
 </div>
 
 <div class="aae_module">
 <h3>Moderate this Question</h3>
-<p><%= link_to 'Reject', {:controller => :expert, :action => :reject, :id => @submitted_question.id} %> (inappropriate or duplicate questions)</p>
+<p><%= link_to 'Reject', {:action => :reject, :id => @submitted_question.id} %> (inappropriate or duplicate questions)</p>
 
 <% if !@submitted_question.asked_question.index("http://").nil? %>
-<p><%= link_to "Report as Spam", {:controller => :expert, :action => :report_spam, :id => @submitted_question.id}, 
+<p><%= link_to "Report as Spam", {:action => :report_spam, :id => @submitted_question.id}, 
                                :confirm => "Are you sure you want to report this question as spam?", :method => :post %></p>
 <% end %>
 </div>
