@@ -7,12 +7,6 @@
 
 class AskMailer < ActionMailer::Base
   
-  if !AppConfig.configtable['send_aae_emails']
-    ActionMailer::Base.perform_deliveries = false
-  else
-    ActionMailer::Base.perform_deliveries = true
-  end
-
   def assigned(submitted_question, url, host = 'www.extension.org', sent_at = Time.now)
     @subject    =  host.to_s + ': Incoming question assigned to you'
     @body["submitted_question"] = submitted_question
