@@ -18,6 +18,9 @@ class Ask::WidgetsController < ApplicationController
     end
   end
   
+  def home
+  end
+  
   def admin
     if params[:id] and @widget = Widget.find(params[:id])
       @widget_iframe_code = @widget.get_iframe_code
