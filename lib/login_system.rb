@@ -170,11 +170,11 @@ module LoginSystem
   def openid_xrds_header(openiduser=nil)
     proto = request.ssl? ? 'https://' : 'http://'
     if(!openiduser.nil?)
-      xrds_url = url_for(:controller=>'opie', :action=> 'xrds', :extensionid=>openiduser.login.downcase, :protocol => proto)
+      xrds_url = url_for(:controller=>'/opie', :action=> 'xrds', :extensionid=>openiduser.login.downcase, :protocol => proto)
     else
-      xrds_url = url_for(:controller=>'opie', :action=> 'idp_xrds', :protocol => proto)
+      xrds_url = url_for(:controller=>'/opie', :action=> 'idp_xrds', :protocol => proto)
     end
-    response.headers['X-XRDS-Location'] = url_for(:controller => :opie, :action => :idp_xrds, :protocol => proto)
+    response.headers['X-XRDS-Location'] = url_for(:controller => '/opie', :action => :idp_xrds, :protocol => proto)
     return xrds_url
   end
   
@@ -182,7 +182,7 @@ module LoginSystem
     proto = request.ssl? ? 'https://' : 'http://'
     xrds_url = openid_xrds_header(openiduser)
     @openidmeta = '<meta http-equiv="X-XRDS-Location" content="'+xrds_url+'" />'+"\n"
-    @openidmeta += '<link rel="openid.server" href="'+url_for(:controller => :opie, :action => :index, :protocol => proto)+'" />'
+    @openidmeta += '<link rel="openid.server" href="'+url_for(:controller => '/opie', :action => :index, :protocol => proto)+'" />'
   end
 
 end
