@@ -7,7 +7,7 @@
 ActionController::Base.session = {
   :key         => '_pubsite_session',
   :secret      => AppConfig.configtable['sessionsecret'],
-  :expire_after => 2.days
+  :expire_after => 2.days,
 }
 
 # Use the database for sessions instead of the cookie-based default,

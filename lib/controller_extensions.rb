@@ -38,15 +38,9 @@ module ControllerExtensions
   def check_openidurl_foruser(user,checkurl)
     proto = request.ssl? ? 'https://' : 'http://'
     allowedurls = Array.new
-    
     allowedurls << url_for(:controller => 'opie', :action => 'user', :extensionid => user.login.downcase, :protocol => proto)
     # trailing slash
     allowedurls << url_for(:controller => 'opie', :action => 'user', :extensionid => user.login.downcase, :protocol => proto)+'/'
-
-    # old style 
-    allowedurls << url_for(:controller => 'openid', :action => user.login.downcase, :protocol => proto)
-    allowedurls << url_for(:controller => 'openid', :action => user.login.downcase, :protocol => proto)+'/'
-    
     return allowedurls.include?(checkurl)
   end
     

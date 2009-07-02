@@ -47,9 +47,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'feeds/community/:id/:filter', :controller => 'feeds', :action => 'community'
 
   map.connect 'openid/xrds', :controller => 'opie', :action => 'idp_xrds'
-  map.connect 'people/openid/:extensionid', :controller => 'opie', :action => 'user'
-  map.connect 'people/openid/:extensionid/xrds', :controller => 'opie', :action => 'user_xrds'
-
   map.connect 'people/:extensionid', :controller => 'opie', :action => 'user'
   map.connect 'people/:extensionid/xrds', :controller => 'opie', :action => 'user_xrds'
   map.connect 'opie/:action', :controller => 'opie'
