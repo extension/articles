@@ -22,13 +22,6 @@ class Ask::WidgetsController < ApplicationController
   end
   
   def admin
-    if params[:id] and @widget = Widget.find(params[:id])
-      @widget_iframe_code = @widget.get_iframe_code
-    else
-      flash[:failure] = "You must specify a valid widget"
-      redirect_to :action => :index
-    end
-    render :action => :view
   end
   
   def who 
@@ -44,6 +37,8 @@ class Ask::WidgetsController < ApplicationController
     if !(params[:id] and @widget = Widget.find(params[:id]))
       flash[:failure] = "You must specify a valid widget"
       redirect_to :action => :index
+    else
+      @widget_iframe_code = @widget.get_iframe_code
     end
   end
   

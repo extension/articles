@@ -8,9 +8,9 @@
     <h2>For Extension Agents</h2>
     <p>Use Ask an Expert to receive questions from your local public through your own county website.</p>
     <ul>
-        <li><%= link_to "Learn more", :controller => :ask, :action => :about %></li>
-        <li><%= link_to "Get the Ask widget", :controller => 'ask', :action => 'get_widget' %></li>
-        <li><%= link_to "Answer questions through the eXtension FAQ site", 'http://faq.extension.org/expert/incoming' %></li>
+        <li><%= link_to "Learn more", :controller => 'ask/widgets', :action => :about %></li>
+        <li><%= link_to "Get the Ask widget", :controller => 'ask/widgets', :action => :new %></li>
+        <li><%= link_to "Answer questions through the eXtension FAQ site", :controller => 'ask/expert', :action => :incoming %></li>
     </ul>
     </div>
     

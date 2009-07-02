@@ -1,20 +1,11 @@
-<h1 class="title">Ask an Expert Widget <%= @widget.name %> </h1>
+<p><%= link_to "All widgets", :controller => 'ask/widgets' %> > Widget Summary</p>
 
-<ul id="nav">
-    <li><%= link_to_unless_current "Summary", :controller => :widgets, :action => :view, :id => @widget.id %></li>
-    <li><%= link_to_unless_current "Admin", :controller => :widgets, :action => :admin, :id => @widget.id %></li>
-</ul>
+<h2><%= @widget.name %></h2>
 
-<p>Name: <%= @widget.name %></p>
-<p>Administrator: <%= @widget.author %></p>
+<p>Administrator: <strong><%= @widget.author %></strong></p>
 <p>Active: <span id="widget_active"><%= @widget.active? ? "yes" : "no" %></span></p>
-<p>Date Created: <%= @widget.created_at %></p>
+<p class="inline" id="<%= @widget.name %>"> <%= check_box_tag "widget_#{@widget.id}", @widget.id, @widget.active? %> <%= label_tag "widget_#{@widget.id}", 'Active' %>
 
-<% if controller.action_name == 'admin' %>
-<p>Widget iFrame Code:<br /><%= h(@widget_iframe_code) %></p>
-
-<p id="<%= @widget.name %>"><%= label_tag "widget_#{@widget.id}", 'Active' %>
-<%= check_box_tag "widget_#{@widget.id}", @widget.id, @widget.active? %>
 <div id="loading_widget_<%= @widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </div></p>
 
 <%= observe_field("widget_#{@widget.id}",
@@ -22,10 +13,16 @@
                       :with      => "'widget_id=#{@widget.id}'",
                       :loading => "Element.show('loading_widget_#{@widget.id}')",
                       :complete    => "Element.hide('loading_widget_#{@widget.id}')") %>
-<% end %>
+<p>Date Created: <%= @widget.created_at %></p>
 
-<br />
-<div id="history">
+
+
+<h4>Widget iFrame Code</h4>
+<div id="widgetcode"><textarea><%= h(@widget_iframe_code) %></textarea></div>
+
+
+
+
+
 <%= render(:partial => 'widget_history') %>
-</div>
 

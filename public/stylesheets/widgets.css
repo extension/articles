@@ -1,19 +1,48 @@
+/* === COPYRIGHT:
+  Copyright (c) 2005-2009 North Carolina State University
+  Developed with funding for the National eXtension Initiative.
+ === LICENSE:
+  BSD(-compatible)
+  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+*/
+
+/* reset styles v1.0 | 20080212 */
+
+html, body, div, span, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td {margin: 0;padding: 0;border: 0;outline: 0;vertical-align: baseline;background: transparent;}
+body {line-height: 1;}
+ol, ul {list-style: none;}
+blockquote, q {quotes: none;}
+blockquote:before, blockquote:after,
+q:before, q:after {content: '';content: none;}
+
+/* remember to define focus styles! */
+:focus {outline: 0;}
+
+/* remember to highlight inserts somehow! */
+ins {text-decoration: none;background: #95ff4d;padding:.2em; margin:.2em;}
+del {text-decoration: line-through;color: red;background: #ffdadb;padding:.2em; margin:.2em;}
+
+
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {border-collapse: collapse;border-spacing: 0;}
+
+/* Put it back on certain elements */
+h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, fieldset, table, ol, ul, dl {
+	margin: 0 0 1em;
+}
+
+/* end reset styles */
+
+
 /* the browser font-size default is 16pt. multiple by 62.5% to reset font size to 1em.
 1em is now equal to 10pt. 1.2em is 12pt, 1.6em is 16pt, etc. (unless nested) */
 body {font-size: 62.5%;}
 
-/* reset all margins, padding, and borders */
-* { margin: 0; padding: 0; }
-img { border: 0; }
-
-/* Put it back on certain elements */
-h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, fieldset, table, ul, ol {
-	margin: 0 0 1em;
-}
 .clear {clear:both;}
 
 /* default text sizes */
-p, li, dt, dd {font-size:1.3em;}
+p, li, dt, dd, td, th {font-size:1.3em;}
 h1 { font-size: 2.4em; color: #003073;}
 h2 { font-size: 2.0em; color: #003073;}
 h3 { font-size: 1.8em; color: #003073;}
@@ -27,8 +56,8 @@ a:hover		{ color: blue;}
 
 body, html {font-family: "Arial", "sans-serif"; color: #333;}
 
-body {background: #fff url(/images/ask_bg.png) repeat-y 50% top;}
-p, li {margin: .5em 0 2em; line-height:1.4em;}
+body {background: #fff url(/images/ask/ask_bg.png) repeat-y 50% top;}
+p, li, th, td {margin: .5em 0 2em; line-height:1.4em;}
 ol {margin:1em 3em;}
 ol li {margin: 0 0 .75em;padding:0;}
 
@@ -98,8 +127,8 @@ h3 {font-weight:normal;font-size:1.9em;}
     padding: .8em 1em 1em;    
 }                
               
-#widgetcode { margin:1em; padding:.5em 1.2em;}
-#widgetcode textarea {padding:.5em;font-family:monospace;font-size:1.7em;color:#0d027e;line-height:1.5em;overflow:auto;height:150px;}
+#widgetcode { margin:1em 0; padding:.5em 0;}
+#widgetcode textarea {padding:.5em;font-family:monospace;font-size:1.7em;color:#0d027e;line-height:1.5em;overflow:auto;height:100px;}
 
 /* forms */
 textarea, input, select { margin: 0 0 1em;}
@@ -167,3 +196,62 @@ label span {display:block;font-weight:normal;color:#999;}
 
 object {margin-bottom:5em;display:block;}
 .whitespace {margin-top:4em;}
+
+
+#nav {
+    float: left;
+    width: 100%;
+    margin: 0 0 1em;
+    padding: 0 0 .25em 0;
+    list-style: none;
+    border-bottom: 1px solid #ddd;
+    color: #000;
+}
+#nav li {
+    float: left;
+    margin: 0;
+    padding: .5em;
+    border-right: 1px solid #ccc;
+    list-style: none;
+}
+
+
+
+
+/* Tables
+-----------------------------------------------------------------------------*/
+table { 
+	width: 100%;
+	color: #222;
+	border: 1px solid #ddd;
+	margin: 0 0 1.5em;
+}
+
+th {
+	margin: 0;
+	padding: .1em .5em;
+	text-align: left;
+	white-space: nowrap;
+	background: #eee;
+	color: #555;
+	font-weight: normal;
+	border: 1px solid #ddd;
+	border-bottom:  1px solid #ccc;
+}
+td {
+	margin: 0;
+	padding: 0.1em .5em;
+	text-align: left;
+	font-weight: normal;
+	border-bottom:  1px solid #a9c9e5;
+	vertical-align:middle;
+}
+
+tr.shaded {background: #e9f1ff;}
+table.hover tr:hover { background: #dbe8ff;color: #000;}
+table.hover tr.shaded:hover {background: #dbe8ff;color: #000;}
+
+table td a          {color: blue; text-decoration: none; display: block; padding: .5em .75em;}
+table td a:link     {color: #00356e;}
+table td a:visited  {color: #00356e;}
+table td a:hover    {color: blue; text-decoration: underline;}

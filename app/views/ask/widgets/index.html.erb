@@ -1,10 +1,10 @@
 <% @selected_tab = :all %>
 
-<h1 class="title">Ask an Expert Widgets</h1>
+<h2>Ask an Expert Widgets</h2>
 
 <ul id="nav">
-    <li><%= link_to_unless_current "Active", :controller => :widgets, :action => :index %></li>
-    <li><%= link_to_unless_current "In-Active", :controller => :widgets, :action => :index, :id => 'inactive' %></li>
+    <li><%= link_to "Active", :controller => :widgets, :action => :index %></li>
+    <li><%= link_to "In-Active", :controller => :widgets, :action => :index, :id => 'inactive' %></li>
 </ul>
 
 <br class="clear"/>
