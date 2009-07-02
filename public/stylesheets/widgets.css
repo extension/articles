@@ -35,7 +35,7 @@ ol li {margin: 0 0 .75em;padding:0;}
 
 /* layout */
 
-#masthead {border-bottom:2px solid #eee; margin-bottom:2em;background: #fff url(/images/header_bg.png) repeat-x left bottom;}
+#masthead {border-bottom:2px solid #eee; margin-bottom:2em;background: #fff url(/images/ask/header_bg.png) repeat-x left bottom;}
 .wrapper {margin:0 auto 100px; width:800px;position:relative;/*border:1px solid #800880;*/}
 #masthead .wrapper {margin:0 auto;}
 #masthead  {border-bottom:1px solid #eee;}
@@ -43,13 +43,14 @@ ol li {margin: 0 0 .75em;padding:0;}
 #masthead h1 {
     margin:30px 0 20px;
     padding: 0;
-    background: transparent url(/images/ask-extension-header.png) no-repeat left top;
+    background: transparent url(/images/ask/ask-extension-header.png) no-repeat left top;
     height: 40px;
     width: 350px;
     text-indent: -5000px;
     font-size: 3.5em;
+    overflow:hidden;
     }
-#masthead h1 a {display: block;height: 40px;}
+#masthead h1 a {display: block;height: 40px; }
 #masthead #header p {margin:0 0 20px; height: 36px;color:#3d76ba;font-size:2.0em;width:400px;line-height:1.1em;}
 #extension {position:absolute;right:10px;bottom:30px;}
 #content {float:left;width:510px;padding:20px;}
@@ -62,9 +63,11 @@ ol li {margin: 0 0 .75em;padding:0;}
 #sidebar ul li {margin:0;}
 #sidebar ul li a {line-height: 1.2em;display:block;font-size:1.2em;padding: 1em 20px;width:160px;}
 #sidebar ul li a:link,
-#sidebar ul li a:visited {color:#fff; text-decoration:none;background: #5294cc url(/images/side_nav.png) repeat-y -200px bottom;}
+#sidebar ul li a:visited {color:#fff; text-decoration:none;background: #5294cc url(/images/ask/side_nav.png) repeat-y -200px bottom;}
 #sidebar ul li a:hover {background: #5294cc url(/images/side_nav.png) repeat-y -400px bottom ;}
-#sidebar ul li a.current {color:#fff; text-decoration:none;background: #5294cc url(/images/side_nav.png) repeat-y 0 0;}
+#sidebar ul li.selected a {color:#fff; text-decoration:none;background: #5294cc url(/images/ask/side_nav.png) repeat-y 0 0;}
+
+#sidebar ul li a em {font-size:.8em; font-style:normal;}
 
 #sidebar p {margin:0 0 20px; float:right;}
 .openid {
@@ -80,8 +83,7 @@ ol li {margin: 0 0 .75em;padding:0;}
 .section ul {margin:0 0 0 3em;padding:0;}
 .section ul li {margin:0 0 1em;padding:0; font-size:1.5em;}
 hr {clear:both;border:1px solid #eee;margin:50px 0 50px;}
-#footer {color:#222;clear:both;padding:2em 0 1em;margin:50px 0 0;background: #1d50a9 url(/images/ask_footer.png) repeat-x top center ;}
-#footer {background:#bbcde2;color:#222;border-top:2px solid #ccc;}
+#footer {color:#222;clear:both;padding:2em 0 1em;margin:50px 0 0;background:#bbcde2;color:#222;border-top:2px solid #ccc;}
 #footer .col {width:220px;float:left;margin:0 5px 0;background:#cdd6e2;padding:10px;}
 #footer h4 {color:#164393; font-weight:normal;border-bottom:1px solid #79a9e1;padding-bottom:.55em;font-size:1.7em;}
 /*#footer a:link, #footer a:visited {color:#3f6b9f;}*/

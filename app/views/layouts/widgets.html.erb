@@ -14,10 +14,10 @@
     <div id="masthead">
         <div class="wrapper">
             <div id="header">
-                <h1><%= link_to("Ask eXtension", "/") %></h1>
+                <h1><%= link_to("Ask eXtension", :controller => 'ask/widgets', :action => :home ) %></h1>
                 <p>Experts from around the country are ready to answer your questions</p>
             </div>
-            <div id="extension"><%= link_to(image_tag("/images/extension_logo_small.gif", :alt => "eXtension Ask"), :controller => :ask, :action => :extension ) %>
+            <div id="extension"><%= image_tag("/images/extension_logo_small.gif", :alt => "eXtension - more mind reach") %>
             </div>
             
         </div>
@@ -32,7 +32,7 @@
         <div id="sidebar">
             <% if !session[:user] %>
               <p class="openid"><%= link_to "Sign in", login_url %></p>
-              <% get_widget_link_message = "<br />(requires login)" %>
+              <% get_widget_link_message = "<em>(requires login)</em>" %>
             <% else %>
               <% user = get_logged_in_user(session[:user]) %>
               <% get_widget_link_message = "" %>
@@ -44,11 +44,12 @@
 
             <% end %>
             <ul>
-                <li><%= link_to "All Widgets", :controller => 'ask/widgets', :class => "current" %></li>
-                <li><%= link_to "About", :controller => 'ask/widgets', :action => :about %></li>
-                <li><%= link_to "Who answers the questions?", :controller => 'ask/widgets', :action => :who %></li>
-                <li><%= link_to "Get the Ask widget for your site #{get_widget_link_message}", :controller => 'ask/widgets', :action => :new %></li>
-                <li><%= link_to "Documentation", :controller => 'ask/widgets', :action => :documentation %></li>
+                <li <%= selected_tab_if(:welcome) %>><%= link_to("Home", {:controller => 'ask/widgets', :action => :home}) %></li>
+                <li <%= selected_tab_if(:about) %>><%= link_to "About", :controller => 'ask/widgets', :action => :about %></li>
+                <li <%= selected_tab_if(:who) %>><%= link_to "Who answers the questions?", :controller => 'ask/widgets', :action => :who %></li>
+                <li <%= selected_tab_if(:get) %>><%= link_to "Get the Ask widget for your site #{get_widget_link_message}", :controller => 'ask/widgets', :action => :new %></li>
+                <li <%= selected_tab_if(:documentation) %>><%= link_to "Documentation", :controller => 'ask/widgets', :action => :documentation %></li>
+                <li <%= selected_tab_if(:all) %>><%= link_to "All Widgets", :controller => 'ask/widgets'%></li>
                 
             </ul>
         </div>
