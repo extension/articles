@@ -1,0 +1,49 @@
+<table summary="Faq and AaE Search Results" class="hover" cellspacing="0">
+
+    <tr>
+        <th scope="col">Type</th>
+        <th scope="col">Status</th>
+        <th scope="col">Question</th>
+        <th scope="col">ID</th>
+        
+        <th scope="col">Last Updated</th>
+    </tr>
+
+
+
+<%  
+    even = true 
+    @aae_search_results.each do |question|
+%>   
+
+    
+    <tr <%= ' class="shaded"' if even %>>
+        <td>
+            <%= (question.entrytype == SearchQuestion::FAQ) ? 'Faq' : 'AaE' %>
+        </td>
+        <td>
+            <%= question.status %>
+        </td>
+        <td>
+            <%= link_to strip_tags(question.displaytitle), :controller => 'expert', :action => 'show_faq', :id => question.id, :squid => @submitted_question.id, :query => params[:query] %>
+        </td> 
+        <td>
+            <%= question.id %>    
+        </td>
+        
+        
+        <td>
+            <%= time_ago_in_words(question.updated_at) %> ago
+        </td>
+        
+    </tr>
+    
+    <% 
+       if even
+         even = false
+       else
+         even = true
+       end 
+    %>
+<% end %>
+</table>

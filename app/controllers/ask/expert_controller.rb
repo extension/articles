@@ -433,6 +433,22 @@ class Ask::ExpertController < ApplicationController
       @sub_category_options = [""]    
     end
   end
+  
+  def search_answers
+    if params[:squid] and @submitted_question = SubmittedQuestion.find_by_id(params[:squid])    
+      if params[:q] and params[:q].strip != ''
+        @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score', :limit => 30)
+      else
+        flash[:failure] = "You must enter valid text into the search field." 
+        redirect_to :action => :question, :id => @submitted_question.id
+        return
+      end
+    else
+      flash[:failure] = "The question specified does not exist."
+      redirect_to :action => :incoming
+      return
+    end
+  end
 
   def assigned
     if err_msg = params_errors
