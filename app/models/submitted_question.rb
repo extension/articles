@@ -28,10 +28,9 @@ validates_format_of :submitter_email, :with => /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.
 validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
 
 before_update :add_resolution
-#TODO: need to convert to tags
-#after_save :assign_parent_categories
-#ToDo: re-enable auto routing
-#after_create :auto_assign_by_preference
+
+after_save :assign_parent_categories
+after_create :auto_assign_by_preference
 
 has_rakismet :author_email => :external_submitter,
              :comment_type => "ask an expert question",
@@ -125,16 +124,6 @@ def category_names
       return self.categories[0].name 
     end
   end
-end
-
-def to_faq(user)
-  question = Question.new
-  revision = Revision.new(:user => user)
-  
-  question.revisions << revision
-  revision.question_text = asked_question
-  
-  return question
 end
 
 def resolved?
@@ -238,56 +227,49 @@ def auto_assign_by_preference
   end
 end
 
-# TODO: replace categories commented out for tags
 def auto_assign
   assignee = nil
   # first, check to see if it's from a named widget 
   # and route accordingly
-  if widget_name = self.widget_name
-    widget = Widget.find_by_name(widget_name)  
-    if widget
-      assignee = pick_user_from_list(widget.assignees)
-    end
+  if widget = self.widget
+    assignee = pick_user_from_list(widget.assignees)
   end
   
   if !assignee
-    #if !self.categories || self.categories.length == 0
-    #  question_categories = nil
-    #else
-    #  question_categories = self.categories
-    #  parent_category = question_categories.detect{|c| !c.parent_id}
-    #end
+    if !self.categories || self.categories.length == 0
+      question_categories = nil
+    else
+      question_categories = self.categories
+      parent_category = question_categories.detect{|c| !c.parent_id}
+    end
   
     # if a state and county were provided when the question was asked
     # update: if there is location data supplied and there is not a category 
     # associated with the question, then route to the uncategorized question wranglers 
     # that chose that location or county in their location preferences
     if self.county and self.location
-      assignee = pick_user_from_county(self.county) 
-      #assignee = pick_user_from_county(self.county, question_categories) 
+      assignee = pick_user_from_county(self.county, question_categories) 
     #if a state and no county were provided when the question was asked
     elsif self.location
-      assignee = pick_user_from_state(self.location)
-      #assignee = pick_user_from_state(self.location, question_categories)
+      assignee = pick_user_from_state(self.location, question_categories)
     end
   end
   
   # if a user cannot be found yet...
   if !assignee
-    #if !question_categories
+    if !question_categories
       # if no category, wrangle it
       assignee = pick_user_from_list(User.uncategorized_wrangler_routers)
-    #else
+    else
       # got category, first, look for a user with specified category
-    #  assignee = pick_user_from_category(question_categories)
+      assignee = pick_user_from_category(question_categories)
       # still ain't got no one? send to the wranglers to wrangle
-    #  assignee = pick_user_from_list(User.uncategorized_wrangler_routers) if not assignee
-    #end
-      
+      assignee = pick_user_from_list(User.uncategorized_wrangler_routers) if not assignee
+    end  
   end
   
   if assignee
-    faq_bot_user = User.find_by_login('faq_bot')
+    faq_bot_user = User.find_by_login('people_bot')
     assign_to(assignee, faq_bot_user, nil)
   else
     return
