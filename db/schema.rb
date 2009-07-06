@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090629200005) do
+ActiveRecord::Schema.define(:version => 20090706182040) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -570,7 +570,7 @@ ActiveRecord::Schema.define(:version => 20090629200005) do
     t.integer  "subject_user"
     t.datetime "created_at"
     t.text     "response"
-    t.integer  "contributing_faq"
+    t.integer  "contributing_question"
     t.string   "category"
     t.integer  "event_state",           :null => false
   end
@@ -581,14 +581,14 @@ ActiveRecord::Schema.define(:version => 20090629200005) do
 
   create_table "submitted_questions", :force => true do |t|
     t.integer  "resolved_by"
-    t.integer  "submitted_by",             :default => 0,     :null => false
-    t.integer  "current_contributing_faq"
-    t.string   "status",                   :default => "",    :null => false
-    t.text     "asked_question",                              :null => false
+    t.integer  "submitted_by",                  :default => 0,     :null => false
+    t.integer  "current_contributing_question"
+    t.string   "status",                        :default => "",    :null => false
+    t.text     "asked_question",                                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.boolean  "duplicate",                :default => false, :null => false
+    t.boolean  "duplicate",                     :default => false, :null => false
     t.string   "external_app_id"
     t.string   "submitter_email"
     t.datetime "resolved_at"
@@ -596,24 +596,24 @@ ActiveRecord::Schema.define(:version => 20090629200005) do
     t.datetime "question_updated_at"
     t.text     "current_response"
     t.string   "resolver_email"
-    t.string   "question_fingerprint",     :default => "",    :null => false
-    t.string   "submitter_firstname",      :default => "",    :null => false
-    t.string   "submitter_lastname",       :default => "",    :null => false
+    t.string   "question_fingerprint",          :default => "",    :null => false
+    t.string   "submitter_firstname",           :default => "",    :null => false
+    t.string   "submitter_lastname",            :default => "",    :null => false
     t.integer  "county_id"
     t.integer  "location_id"
-    t.boolean  "spam",                     :default => false, :null => false
-    t.string   "user_ip",                  :default => "",    :null => false
-    t.string   "user_agent",               :default => "",    :null => false
-    t.string   "referrer",                 :default => "",    :null => false
+    t.boolean  "spam",                          :default => false, :null => false
+    t.string   "user_ip",                       :default => "",    :null => false
+    t.string   "user_agent",                    :default => "",    :null => false
+    t.string   "referrer",                      :default => "",    :null => false
     t.string   "widget_name"
-    t.integer  "status_state",                                :null => false
+    t.integer  "status_state",                                     :null => false
     t.string   "zip_code"
     t.integer  "widget_id"
   end
 
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"
   add_index "submitted_questions", ["created_at"], :name => "created_at_idx"
-  add_index "submitted_questions", ["current_contributing_faq"], :name => "fk_qu_sq"
+  add_index "submitted_questions", ["current_contributing_question"], :name => "fk_qu_sq"
   add_index "submitted_questions", ["location_id"], :name => "fk_sq_location"
   add_index "submitted_questions", ["question_fingerprint"], :name => "index_submitted_questions_on_question_fingerprint"
   add_index "submitted_questions", ["resolved_at"], :name => "resolved_at_idx"

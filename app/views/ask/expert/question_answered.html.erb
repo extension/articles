@@ -10,8 +10,8 @@
 
 <p>
    <% form_tag({:controller => 'ask/faq', :action => 'new_faq'}) do %>
-     <%= hidden_field_tag(:question, @revision.question_text) %>
-     <%= hidden_field_tag(:answer, @revision.answer) %>
+     <%= hidden_field_tag(:question, @submitted_question.asked_question) %>
+     <%= hidden_field_tag(:answer, @submitted_question.current_response) %>
      <%= hidden_field_tag(:squid, @submitted_question.id) %>
      <%= submit_tag 'Convert your response into a FAQ' %>
      <p>(you can edit on the next screen)</p>
@@ -20,5 +20,5 @@
 
 <br/>
 <p>Don't want to create an FAQ right now? No problem, you can always do it later.
-    <br />Other options: <%= link_to "View the resolved question page", {:controller => 'expert', :action => 'question', :id => @submitted_question.id} %> or <%= link_to "Look at other incoming questions", {:controller => 'expert', :action => 'incoming'} %>.
+    <br />Other options: <%= link_to "View the resolved question page", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %> or <%= link_to "Look at other incoming questions", {:controller => 'ask/expert', :action => 'incoming'} %>.
     </div>

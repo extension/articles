@@ -1,6 +1,6 @@
 <%= render(:partial => "partial/flashmessages") %>
 
-<h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'expert', :action => 'question', :id => @submitted_question.id} %></h3>
+<h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %></h3>
 <h1>Write an Answer</h1>
 
 <div id="response_form">
@@ -25,7 +25,7 @@
             <p><label for="current_response">Answer:</label>
             
             <% if (@sampletext || @question) %>
-                <% @answer = (@sampletext ? @sampletext : @question.current_revision.answer)%>
+                <% @answer = (@sampletext ? @sampletext : @question.content)%>
             <% end %>
             
             <%= text_area_tag 'current_response', @answer ? @answer : nil, 

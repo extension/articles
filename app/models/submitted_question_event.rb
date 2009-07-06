@@ -58,7 +58,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   end
   
   def self.log_resolution(question)
-    question.current_contributing_faq ? contributing_faq = question.current_contributing_faq : contributing_faq = nil
+    question.current_contributing_question ? contributing_question = question.current_contributing_question : contributing_question = nil
     
     SubmittedQuestionEvent.create(
       :submitted_question => question,
@@ -66,7 +66,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
       :event_type => RESOLVED_TEXT,
       :event_state => RESOLVED,
       :response => question.current_response,
-      :contributing_faq => contributing_faq)
+      :contributing_question => contributing_question)
   end
   
   def self.log_no_answer(question)

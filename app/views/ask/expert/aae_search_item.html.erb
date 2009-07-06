@@ -1,0 +1,25 @@
+<% @page_title = "Resolve with an existing answer" %>
+<div id="inc_body">
+    
+    <h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'ask/expert', :action => :question, :id => @submitted_question.id} %> > Resolve using this Answer</h3>
+    
+    <h2 class="inc_question"><span><%= @submitted_question.asked_question %></span></h2>
+    <br class="clear" />
+    
+    <p class="inc_descriptive"><strong><%= @submitted_question.get_submitter_name %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+
+
+<% if @submitted_question.assignee.id == @currentuser.id %>
+	<p class="button2">
+        <%= link_to "This is a relevant answer. Use it to write my response.", :controller => 'ask/expert', :action => 'answer_question', :question => @aae_search_item, 
+        :squid => @submitted_question %>
+    </p>
+<% else %>
+        <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %>.</h3>
+<% end %>
+    <p class="clear"><strong><%= link_to "Return to search results", :controller => 'ask/expert', :action => 'search_answers', :squid => @submitted_question, :q => params[:q] %></strong></p>
+
+
+<%= render(:partial => "ask/expert/question") %>
+
+</div>

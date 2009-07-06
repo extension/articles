@@ -49,4 +49,23 @@ class AskMailer < ActionMailer::Base
     end
     @headers = {}
   end
+  
+  def response_email(emailVar, expert_question, external_name, url_var, signature)
+    @subject = "[Message from eXtension] Your question has been answered by one of our experts."
+    @body["answer"] = expert_question.current_response
+    @body["question"] = expert_question.asked_question
+    @body["external_name"] = external_name
+    @body["url_var"] = url_var
+    @body["signature"] = signature
+    @body["disclaimer"] = SubmittedQuestion::EXPERT_DISCLAIMER
+    @recipients = emailVar
+    @from = 'noreplies@extension.org'
+    @headers["Organization"] = "eXtension Initiative"
+    
+    if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
+      @bcc            = AppConfig.configtable['mail_system_bcc']
+    end
+  end
+  
+  
 end

@@ -25,7 +25,7 @@
             <%= question.status %>
         </td>
         <td>
-            <%= link_to strip_tags(question.displaytitle), :controller => 'expert', :action => 'show_faq', :id => question.id, :squid => @submitted_question.id, :query => params[:query] %>
+            <%= link_to strip_tags(question.displaytitle), :controller => 'expert', :action => 'aae_search_item', :id => question.id, :squid => @submitted_question.id, :q => params[:q] %>
         </td> 
         <td>
             <%= question.id %>    

@@ -104,7 +104,7 @@
         <h3>This question has been resolved</h3>
         <% end %>
         <p><%= link_to("Skip to resolution details", "#question_resolution") %></p>
-        <% if !@submitted_question.contributing_faq and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER %>
+        <% if !@submitted_question.contributing_question and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER %>
         <br/> 
 
         

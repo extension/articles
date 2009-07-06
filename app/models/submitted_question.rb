@@ -13,9 +13,10 @@ belongs_to :widget
 has_many :submitted_question_events
 has_and_belongs_to_many :categories
 # TODO: need to change this
-belongs_to :contributing_faq, :class_name => "Question", :foreign_key => "current_contributing_faq"
+belongs_to :contributing_question, :class_name => "SearchQuestion", :foreign_key => "current_contributing_question"
 belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
 belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
+
 
 # currently, no need to cache, we don't fulltext search tags
 # has_many :cached_tags, :as => :tagcacheable

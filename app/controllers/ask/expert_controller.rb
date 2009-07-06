@@ -295,24 +295,24 @@ class Ask::ExpertController < ApplicationController
     end
   end
    
-  # Show the expert form to answer an external question
+  # Show the expert form to answer a question
   def answer_question
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
     
     if !@submitted_question
       flash[:failure] = "Invalid question."
-      go_back
+      redirect_to :action => :incoming
       return
     end
     
     if @submitted_question.resolved?
       flash[:failure] = "This question has already been resolved.<br />It could have been resolved while you were working on it.<br />We appreciate your help in resolving these questions!"
-      redirect_to :controller => :expert, :action => :question, :id => @submitted_question.id
+      redirect_to :action => :question, :id => @submitted_question.id
       return
     end
     
     @status = params[:status_state]
-    @question = Question.find_by_id(params[:question]) if params[:question]
+    @question = SearchQuestion.find_by_id(params[:question]) if params[:question]
     @sampletext = params[:sample] if params[:sample]
     signature_pref = @currentuser.user_preferences.find_by_name('signature')
     signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.get_first_last_name}"
@@ -332,11 +332,11 @@ class Ask::ExpertController < ApplicationController
         return
       end
       
-      @question ? contributing_faq = @question.id : contributing_faq = nil
+      @question ? contributing_question = @question.id : contributing_question = nil
       (@status and @status.to_i == SubmittedQuestion::STATUS_NO_ANSWER) ? sq_status = SubmittedQuestion::STATUS_NO_ANSWER : sq_status = SubmittedQuestion::STATUS_RESOLVED
       
-      @submitted_question.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => @currentuser, :current_response => answer, :resolver_email => @currentuser.email, :current_contributing_faq => contributing_faq)  
-      @submitter_email = @submitted_question.external_submitter
+      @submitted_question.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => @currentuser, :current_response => answer, :resolver_email => @currentuser.email, :current_contributing_question => contributing_question)  
+      @submitter_email = @submitted_question.submitter_email
       
       @url_var = 'http://www.extension.org'
       
@@ -346,10 +346,12 @@ class Ask::ExpertController < ApplicationController
         @signature = nil
       end
       
-      email = FaqMailer.create_response_email(@submitter_email, @submitted_question, @external_name, @url_var, @signature)      
-      email.set_content_type("text/plain")
-      FaqMailer.deliver(email)  
-  	  
+      if(AppConfig.configtable['send_aae_emails'])
+        email = AskMailer.create_response_email(@submitter_email, @submitted_question, @external_name, @url_var, @signature)      
+        email.set_content_type("text/plain")
+        AskMailer.deliver(email)  
+  	  end
+  	    
       flash[:success] = "Your answer has been sent to the person who asked the question.<br />
                         You can now save the question as an FAQ, or exit this screen without saving."
         
@@ -364,17 +366,10 @@ class Ask::ExpertController < ApplicationController
     
     if !@submitted_question
       flash[:failure] = "Invalid question."
-      go_back
+      redirect_to :action => :incoming
       return
     end
     
-    @question = @submitted_question.to_faq(@currentuser)
-    @revision = @question.revisions[0]
-
-    if params[:question] && params[:answer]
-      @revision.question_text = params[:question]
-      @revision.answer = params[:answer]  
-    end
   end
   
   def reserve_question
@@ -445,6 +440,18 @@ class Ask::ExpertController < ApplicationController
       end
     else
       flash[:failure] = "The question specified does not exist."
+      redirect_to :action => :incoming
+      return
+    end
+  end
+  
+  def aae_search_item
+    @aae_search_item = SearchQuestion.find(params[:id])
+    @submitted_question = SubmittedQuestion.find(params[:squid])
+    @aae_search_item.entrytype == SearchQuestion::AAE ? @type = 'Ask an Expert Question' : @type = 'Faq'
+  
+    if !(@aae_search_item and @submitted_question)
+      flash[:failure] = "Invalid input"
       redirect_to :action => :incoming
       return
     end

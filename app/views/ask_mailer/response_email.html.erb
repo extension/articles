@@ -1,0 +1,28 @@
+<% if @external_name %>
+Hello <%= @external_name %>,
+<% else %>
+Hello,
+<% end %>
+
+A question you asked via eXtension's 'Ask an Expert' tool has been answered! 
+
+Question asked:
+<%= @question %>
+
+Answer:
+<%= @answer %>
+
+<% if @signature %>
+<%= @signature %>
+<% end %>
+
+<% if @external_name %>
+Looking for more? See what's new at the eXtension public site:
+<%= @url_var %>
+<% end %>
+
+Thank you for using our 'Ask an Expert' system.
+
+***PLEASE DO NOT REPLY TO THIS MESSAGE***
+
+<%= @disclaimer %>

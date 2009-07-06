@@ -39,7 +39,7 @@
     
     <h4>Search again</h4>
     <p>
-        <%= text_field_tag "query", params[:query], :size => 30 %>
+        <%= text_field_tag "q", params[:q], :size => 30 %>
         <%= submit_tag "Search" %>
         <%= hidden_field_tag(:squid, @submitted_question.id) %>
     </p>
