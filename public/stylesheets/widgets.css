@@ -265,11 +265,7 @@ table td a:hover    {color: blue; text-decoration: underline;}
 
 /* Forms 
 -----------------------------------------------------------------------------*/
-form {
-    border:2px solid #ccc;
-    padding:1em 2em;
-    background:#fefecb;
-}
+
 form p {
     margin:0 0 .5em;
 }
@@ -287,6 +283,7 @@ label em {
     font-style:normal;
     font-size:.9em;
 }
+select {display:block;}
 
 .inline {display:inline;}
 .float-spinner {display:inline;}
