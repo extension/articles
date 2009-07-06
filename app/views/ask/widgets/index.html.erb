@@ -1,17 +1,19 @@
-<% @selected_tab = :all %>
+<% @page_title = "Ask an Expert Widget List"%>
 
 <h2>Ask an Expert Widgets</h2>
 
 <ul id="nav">
-    <li><%= link_to "Active", :controller => :widgets, :action => :index %></li>
-    <li><%= link_to "In-Active", :controller => :widgets, :action => :index, :id => 'inactive' %></li>
+    <li <%= selected_tab_if(:all) %>><%= link_to "Active", :controller => :widgets, :action => :index %></li>
+    <li <%= selected_tab_if(:inactive) %>><%= link_to "In-Active", :controller => :widgets, :action => :index, :id => 'inactive' %></li>
 </ul>
 
 <br class="clear"/>
 
 <p>
-    <%= label_tag 'widget_name', 'By Name (start typing to filter widgets)' %>
-    <%= text_field_tag('widget_name') %>
+    <label>Search by Name
+	    <%= text_field_tag('widget_name') %>
+	    <em>Start typing to filter widgets</em>
+	</label>
 </p>
 
 <%= observe_field(:widget_name,

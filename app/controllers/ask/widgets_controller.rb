@@ -13,7 +13,9 @@ class Ask::WidgetsController < ApplicationController
   def index
     if params[:id] and params[:id] == 'inactive'
       @widgets = Widget.inactive
+      @selected_tab = :inactive
     else
+      @selected_tab = :all
       @widgets = Widget.active
     end
   end
@@ -96,7 +98,7 @@ class Ask::WidgetsController < ApplicationController
         
         render :update do |page|
           page.visual_effect :highlight, @widget.name
-          page.replace_html :widget_active, @widget.active? ? "yes" : "no"
+          page.replace_html :widget_active, @widget.active? ? "Active" : "Inactive"
           page.replace_html :history, :partial => 'widget_history'
         end        
       end

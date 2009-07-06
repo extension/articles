@@ -131,7 +131,7 @@ h3 {font-weight:normal;font-size:1.9em;}
 #widgetcode textarea {padding:.5em;font-family:monospace;font-size:1.7em;color:#0d027e;line-height:1.5em;overflow:auto;height:100px;}
 
 /* forms */
-textarea, input, select { margin: 0 0 1em;}
+/*textarea, input, select { margin: 0 0 1em;}*/
 textarea { padding: .3em; }
 textarea { width: 95%; }
 
@@ -202,7 +202,7 @@ object {margin-bottom:5em;display:block;}
     float: left;
     width: 100%;
     margin: 0 0 1em;
-    padding: 0 0 .25em 0;
+    padding: 0;
     list-style: none;
     border-bottom: 1px solid #ddd;
     color: #000;
@@ -210,13 +210,17 @@ object {margin-bottom:5em;display:block;}
 #nav li {
     float: left;
     margin: 0;
-    padding: .5em;
-    border-right: 1px solid #ccc;
+    padding: 0;
+    border: 1px solid #ccc;
     list-style: none;
+    background:#fff;
+    border-bottom:0;
 }
 
+#nav li.selected {border:1px solid #81b5ff;background:#dbeaff;border-bottom:0;}
 
-
+#nav li a {display:block;padding: .5em .85em;text-decoration:none;}
+#nav li a:hover {text-decoration:underline;}
 
 /* Tables
 -----------------------------------------------------------------------------*/
@@ -255,3 +259,42 @@ table td a          {color: blue; text-decoration: none; display: block; padding
 table td a:link     {color: #00356e;}
 table td a:visited  {color: #00356e;}
 table td a:hover    {color: blue; text-decoration: underline;}
+
+
+
+
+/* Forms 
+-----------------------------------------------------------------------------*/
+form {
+    border:2px solid #ccc;
+    padding:1em 2em;
+    background:#fefecb;
+}
+form p {
+    margin:0 0 .5em;
+}
+label {
+    display:block;
+    font-weight:bold;
+}
+label input {
+    display:block;
+    width:20em;
+}
+label em {
+    color:#666; 
+    font-weight:normal;
+    font-style:normal;
+    font-size:.9em;
+}
+
+.inline {display:inline;}
+.float-spinner {display:inline;}
+.active-status {padding:1em; background:#eee; margin:1em 0 3em;}
+.active-status.active {background:#d3ebcb;}
+.widget-history li {border-bottom:1px solid #eee;padding:.75em 0;margin:0;}
+
+.detailpage p {margin:.75em 0;}
+.detailpage h4 {margin:2em 0 .5em;}
+
+.detailpage #widgetcode textarea {background:#d7e3f2;border:0;color:#000;}

@@ -1,28 +1,34 @@
-<p><%= link_to "All widgets", :controller => 'ask/widgets' %> > Widget Summary</p>
+<div class="detailpage">
+
+<p><%= link_to "All widgets", :controller => 'ask/widgets' %> > Widget Information</p>
 
 <h2><%= @widget.name %></h2>
 
 <p>Administrator: <strong><%= @widget.author %></strong></p>
-<p>Active: <span id="widget_active"><%= @widget.active? ? "yes" : "no" %></span></p>
-<p class="inline" id="<%= @widget.name %>"> <%= check_box_tag "widget_#{@widget.id}", @widget.id, @widget.active? %> <%= label_tag "widget_#{@widget.id}", 'Active' %>
 
-<div id="loading_widget_<%= @widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </div></p>
+<p>Date Created: <strong><%= @widget.created_at %></strong></p>
+
+<h4>Widget Status</h4>
+<div class="active-status">
+    <p>This widget is currently <strong id="widget_active"><%= @widget.active? ? "Active" : "Inactive" %></strong></p>
+    <p id="<%= @widget.name %>">
+        <%= check_box_tag "widget_#{@widget.id}", @widget.id, @widget.active?, :class => "inline" %>
+        <%= label_tag "widget_#{@widget.id}", 'Active', :class => "inline" %>
+        <span id="loading_widget_<%= @widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
+    </p>
+    <p>When a widget is inactive, questions can not be submitted from it. The widget code should be removed from any web page.</p>
+</div>
 
 <%= observe_field("widget_#{@widget.id}",
                       :url       => { :action => :toggle_activation },
                       :with      => "'widget_id=#{@widget.id}'",
                       :loading => "Element.show('loading_widget_#{@widget.id}')",
                       :complete    => "Element.hide('loading_widget_#{@widget.id}')") %>
-<p>Date Created: <%= @widget.created_at %></p>
-
 
 
 <h4>Widget iFrame Code</h4>
 <div id="widgetcode"><textarea><%= h(@widget_iframe_code) %></textarea></div>
 
-
-
-
-
 <%= render(:partial => 'widget_history') %>
 
+</div>
