@@ -74,11 +74,13 @@ class Ask::ExpertController < ApplicationController
       
       @submitted_question.assign_to(user, @currentuser, assign_comment)
       
-      # if the question is currently assigned to someone,
-      # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
-      ExpertMailer.deliver_assigned(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), request.host)
-      ExpertMailer.deliver_reassign_notification(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), previous_assignee.email, request.host) if assigned_to_someone_else
-            
+      if(AppConfig.configtable['send_aae_emails'])
+        # if the question is currently assigned to someone,
+        # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
+        AskMailer.deliver_assigned(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), request.host)
+        AskMailer.deliver_reassign_notification(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), previous_assignee.email, request.host) if assigned_to_someone_else
+      end
+              
       redirect_to :action => 'question', :id => @submitted_question
     end
   end
@@ -227,10 +229,12 @@ class Ask::ExpertController < ApplicationController
         emails = escalation_users_for_category.collect{|eu| eu.email} if escalation_users_for_category
       end
       
-      if emails
-        email = ExpertMailer.create_escalation(emails, submitted_questions, url_for(:controller => 'expert', :action => 'escalation_report', :id => category), request.host)
-        email.set_content_type("text/plain")
-        ExpertMailer.deliver(email)
+      if(AppConfig.configtable['send_aae_emails'])
+        if emails
+          email = AskMailer.create_escalation(emails, submitted_questions, url_for(:controller => 'expert', :action => 'escalation_report', :id => category), request.host)
+          email.set_content_type("text/plain")
+          AskMailer.deliver(email)
+        end
       end
     end
     
