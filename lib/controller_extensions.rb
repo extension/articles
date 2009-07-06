@@ -29,24 +29,13 @@ module ControllerExtensions
   def log_admin_event(user, event, data = nil)
     AdminEvent.log_event(user, event, request.env["REMOTE_ADDR"], data)
   end
-  
-  def openidurl
-    proto = request.ssl? ? 'https://' : 'http://'
-    url_for(:controller => 'opie', :action => 'user', :extensionid => @currentuser.login.downcase, :protocol => proto)
-  end
-  
-  def check_openidurl_foruser(user,checkurl)
-    proto = request.ssl? ? 'https://' : 'http://'
-    allowedurls = Array.new
-    allowedurls << url_for(:controller => 'opie', :action => 'user', :extensionid => user.login.downcase, :protocol => proto)
-    # trailing slash
-    allowedurls << url_for(:controller => 'opie', :action => 'user', :extensionid => user.login.downcase, :protocol => proto)+'/'
-    return allowedurls.include?(checkurl)
-  end
     
-  def openidurlforuser(user)
-    proto = request.ssl? ? 'https://' : 'http://'
-    url_for(:controller => 'opie', :action => 'user', :extensionid => user.login.downcase, :protocol => proto)
+  def check_openidurl_foruser(user,checkurl)
+    if(user.openid_url == checkurl or user.openid_url == checkurl +'/')
+      return true
+    else
+      return false
+    end
   end
   
 end

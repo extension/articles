@@ -73,9 +73,9 @@ class OpieController < ApplicationController
       
       if self.is_authorized(opierequest.id_select,opierequest.identity, opierequest.trust_root)
         if(opierequest.id_select)
-          response = opierequest.answer(true,server_url,openidurl)
+          response = opierequest.answer(true,server_url,@currentuser.openid_url)
         else
-          response = opierequest.answer(true,server_url)          
+          response = opierequest.answer(true,server_url,@currentuser.openid_url)          
         end
         # add the sreg response if requested
         self.add_sreg(opierequest, response)
@@ -186,9 +186,9 @@ class OpieController < ApplicationController
       proto = request.ssl? ? 'https://' : 'http://'
       server_url = url_for(:action => 'index', :protocol => proto)
       if(opierequest.id_select)
-        response = opierequest.answer(true,server_url,openidurl)
+        response = opierequest.answer(true,server_url,@currentuser.openid_url)
       else
-        response = opierequest.answer(true,server_url)          
+        response = opierequest.answer(true,server_url,@currentuser.openid_url)          
       end
       self.add_sreg(opierequest, response)
       UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:additionaldata => opierequest,:appname => opierequest.trust_root)                  
@@ -218,7 +218,7 @@ class OpieController < ApplicationController
           @currentuser = checkuser
           return true
         else
-          flash[:failure] = "The OpenID you used (#{identity}) doesn't match the OpenID for your account.  Please use your back button and enter your OpenID: #{openidurlforuser(checkuser)}"
+          flash[:failure] = "The OpenID you used (#{identity}) doesn't match the OpenID for your account.  Please use your back button and enter your OpenID: #{checkuser.openid_url}"
           return false
         end
       end

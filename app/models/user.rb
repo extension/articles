@@ -167,6 +167,10 @@ class User < ActiveRecord::Base
     write_attribute(:email, emailstring.mb_chars.downcase)
   end
   
+  def openid_url
+    return "#{AppConfig.configtable['openid_url_prefix']}/#{self.login.downcase}"
+  end  
+  
   # returns a hash of public attributes
   def public_attributes
     returnhash = {}

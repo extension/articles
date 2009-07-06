@@ -17,7 +17,7 @@
     <div id="ex_tools">
         <h3>OpenID URL</h3>
         <p class="directions">You can use this with any OpenID website. <%= link_to('Learn more...', {:action => :openid}) %></p>
-        <p class="openid easyread"><%= @openidurl %></p>
+        <p class="openid easyread"><%= @currentuser.openid_url %></p>
     </div>
 
 </div>

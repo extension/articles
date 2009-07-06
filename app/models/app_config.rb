@@ -19,6 +19,9 @@ class AppConfig
     @@configtable['sudoers'] = Hash.new
     @@configtable['mail_label'] = "localdev"
     
+    # possibly return different ones for demo?
+    @@configtable['openid_url_prefix'] = 'https://people.extension.org'
+    
     @@configtable['mail_errors_to'] = "eXtensionAppErrors@extension.org"
     # TODO: may need multiple bcc addresses per functional area
     @@configtable['mail_system_bcc'] = ''

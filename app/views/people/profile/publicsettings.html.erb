@@ -6,7 +6,7 @@
 <h1>Your eXtension Public Profile</h1>
 
 <p class="introtext">Your <%= link_to "Personal Profile", :controller => "profile", :action => 'me' %> is viewable by anyone logged into this application. If you would like to make your information more accessible, you may choose to enable the settings below and create a Public Profile that is viewable by anyone.</p>
-<p class="introtext pubprofile"><%= link_to("View your Public Profile", @openidurl) %></p>
+<p class="introtext pubprofile"><%= link_to("View your Public Profile", @currentuser.openid_url) %></p>
 
 
 <h3>Personal Information and Interests</h3>

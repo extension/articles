@@ -10,15 +10,12 @@ class People::ProfileController < ApplicationController
   before_filter :login_required, :except => [:xhr_countylist]
   
   def me
-    @openidurl = openidurl
   end
   
   def account
-    @openidurl = openidurl
   end
   
   def allevents
-    @openidurl = openidurl
     @events = UserEvent.paginate(:all, :order => 'created_at desc', :conditions => ['login = :login or login = :email', { :login => @currentuser.login, :email => @currentuser.email }], :page => params[:page])
   end
   
@@ -27,7 +24,6 @@ class People::ProfileController < ApplicationController
   end
   
   def openid
-    @openidurl = openidurl
   end
   
   def change_privacy_setting
@@ -60,9 +56,7 @@ class People::ProfileController < ApplicationController
     end
   end
   
-  def publicsettings
-    @openidurl = openidurl
-    
+  def publicsettings  
     # build the settings list - this is a little weird because we might not have all of these settings, so we are going to query for all of them
     @publicsettings = []
     PrivacySetting::KNOWN_ITEMS.each do |item|
