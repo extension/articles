@@ -452,7 +452,7 @@ class Ask::ExpertController < ApplicationController
   def aae_search_item
     @aae_search_item = SearchQuestion.find(params[:id])
     @submitted_question = SubmittedQuestion.find(params[:squid])
-    @aae_search_item.entrytype == SearchQuestion::AAE ? @type = 'Ask an Expert Question' : @type = 'Faq'
+    @aae_search_item.entrytype == SearchQuestion::AAE ? @type = 'Ask an Expert Question' : @type = 'FAQ'
   
     if !(@aae_search_item and @submitted_question)
       flash[:failure] = "Invalid input"

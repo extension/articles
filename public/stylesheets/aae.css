@@ -466,8 +466,11 @@ div.question h2,
 div.answer h2 {
     color:#fff;margin:0;
 }
-#inc_to_FAQ {border: 3px solid #01466f;padding: .8em 1em 1em;margin-right:1em;color:#3a4fa2;
-background: transparent url(/images/extensionNav_bg2.jpg) repeat-x;}
+#inc_to_FAQ {padding: .8em 1em 1em;margin-right:1em;color:#3a4fa2;clear:both;margin-top:3em;}
+
+#inc_to_FAQ h2 {border-bottom:1px solid #ccc;padding:.15em 0;margin-bottom:.75em;color:#000;clear:both;margin-top:3em;}
+#inc_to_FAQ .question p {clear:both; font-size:1.6em;}
+
 #response_form {
     display: block;
     clear:both;
@@ -1155,3 +1158,5 @@ fieldset#add_location h3 {font-size:1.4em;}
 .moreinfo {padding:1px .3em;color:#eee;}
 a.moreinfo:link, a.moreinfo:visited {color:#ccc;font-size:.9em;}
 a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
+
+.clearing {clear:both;}
