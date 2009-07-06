@@ -36,6 +36,19 @@ class ApplicationController < ActionController::Base
     AppConfig.configtable['urlwriter_host'] = !request.nil? && !request.host.nil? ? request.host : AppConfig.configtable['default_host']
     AppConfig.configtable['urlwriter_port'] = !request.nil? && !request.port.nil? ? request.port : AppConfig.configtable['default_port']
     AppConfig.configtable['urlwriter_protocol'] = !request.nil? && !request.protocol.nil? ? request.protocol : AppConfig.configtable['default_protocol']
+    # is this local development? then set the openid url prefix appropriately
+    set_openid_url_from_urlwriter_or_default
+  end
+  
+  def set_openid_url_from_urlwriter_or_default
+    peoplecontroller = 'people'
+    location = AppConfig.configtable['app_location']
+    
+    if(AppConfig.configtable['openid_url_prefix_defaults'][location].nil? or AppConfig.configtable['openid_url_prefix_defaults'][location] == 'urlwriter')
+      AppConfig.configtable['openid_url_prefix'] = "#{AppConfig.configtable['urlwriter_protocol']}#{AppConfig.configtable['urlwriter_host']}:#{AppConfig.configtable['urlwriter_port']}/#{peoplecontroller}"
+    else
+      AppConfig.configtable['openid_url_prefix'] = AppConfig.configtable['openid_url_prefix_defaults'][location]
+    end
   end
   
   def get_location_options

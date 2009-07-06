@@ -1,4 +1,4 @@
-page.replace_html "primaryNav", :partial => 'partial/primaryNav', :locals => { :adminmode => @mode == "on" }
+page.replace_html "primaryNav", :partial => 'people/partial/primaryNav', :locals => { :adminmode => @mode == "on" }
 page.replace_html "admin_mode_block", admin_mode_text(@mode)
 page.visual_effect :highlight, "admin_mode_block"
 page.redirect_to("#{@refreshuri}")

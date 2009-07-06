@@ -170,7 +170,7 @@ module LoginSystem
   def openid_xrds_header(openiduser=nil)
     proto = request.ssl? ? 'https://' : 'http://'
     if(!openiduser.nil?)
-      xrds_url = url_for(:controller=>'/opie', :action=> 'xrds', :extensionid=>openiduser.login.downcase, :protocol => proto)
+      xrds_url = url_for(:controller=>'/opie', :action=> 'user_xrds', :extensionid=>openiduser.login.downcase, :protocol => proto)
     else
       xrds_url = url_for(:controller=>'/opie', :action=> 'idp_xrds', :protocol => proto)
     end

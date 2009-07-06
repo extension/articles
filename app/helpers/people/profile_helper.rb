@@ -35,4 +35,30 @@ module People::ProfileHelper
     SocialNetwork::NETWORKS.keys.include?(social_network.network) ? "<span class=\"directions\">#{SocialNetwork::NETWORKS[social_network.network][:urlformatnotice]}</span>" : ''
   end
   
+  def social_network_link(social_network)
+    if(!social_network.accounturl.blank?)
+      begin
+        accounturi = URI.parse(URI.escape(social_network.accounturl))
+      rescue
+        return social_network.accountid
+      end
+      if(accounturi.scheme.nil?)
+        uristring = 'http://'+social_network.accounturl
+      else
+        uristring = social_network.accounturl
+      end
+      return "<a href=\"#{uristring}\">#{social_network.accountid}</a>"
+    else
+      return social_network.accountid
+    end
+  end
+  
+  def social_network_name(social_network)
+    SocialNetwork::NETWORKS.keys.include?(social_network.network) ? SocialNetwork::NETWORKS[social_network.network][:displayname] : social_network.displayname
+  end
+  
+  def social_network_class(networkname)
+    SocialNetwork::NETWORKS.keys.include?(networkname) ? networkname : 'other'
+  end
+  
 end

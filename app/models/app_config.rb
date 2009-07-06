@@ -20,7 +20,13 @@ class AppConfig
     @@configtable['mail_label'] = "localdev"
     
     # possibly return different ones for demo?
-    @@configtable['openid_url_prefix'] = 'https://people.extension.org'
+    @@configtable['openid_url_prefix_defaults'] = {}
+    @@configtable['openid_url_prefix_defaults']['production'] = 'https://people.extension.org'
+    @@configtable['openid_url_prefix_defaults']['demo'] = 'http://people.demo.extension.org'
+    @@configtable['openid_url_prefix_defaults']['localdev'] = 'urlwriter'
+
+    @@configtable['openid_url_prefix'] = 'urlwriter'
+
     
     @@configtable['mail_errors_to'] = "eXtensionAppErrors@extension.org"
     # TODO: may need multiple bcc addresses per functional area

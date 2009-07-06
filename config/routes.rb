@@ -21,6 +21,7 @@ ActionController::Routing::Routes.draw do |map|
   #################################################################
   ### people routes ###
   map.connect 'people', :controller => "people/welcome", :action => 'home'
+  map.connect 'people/admin/:action', :controller => 'people/admin'
   map.connect 'people/signup', :controller => 'people/signup', :action => 'new'
   map.login 'people/login', :controller => 'people/account', :action => 'login'
   map.connect 'people/invite/:invite', :controller => 'people/signup', :action => 'new'
