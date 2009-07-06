@@ -60,7 +60,7 @@ body {background: #fff url(/images/ask/ask_bg.png) repeat-y 50% top;}
 p, li, th, td {margin: .5em 0 2em; line-height:1.4em;}
 ol {margin:1em 3em;}
 ol li {margin: 0 0 .75em;padding:0;}
-
+#content li {list-style:disc;}
 
 /* layout */
 
@@ -123,9 +123,8 @@ hr {clear:both;border:1px solid #eee;margin:50px 0 50px;}
 h2 {font-weight:normal;font-size:2.2em;}
 h3 {font-weight:normal;font-size:1.9em;}
 
-#homeAsk {
-    padding: .8em 1em 1em;    
-}                
+#homeAsk {padding: .8em 1em 1em;}
+
               
 #widgetcode { margin:1em 0; padding:.5em 0;}
 #widgetcode textarea {padding:.5em;font-family:monospace;font-size:1.7em;color:#0d027e;line-height:1.5em;overflow:auto;height:100px;}
@@ -289,9 +288,15 @@ select {display:block;}
 .float-spinner {display:inline;}
 .active-status {padding:1em; background:#eee; margin:1em 0 3em;}
 .active-status.active {background:#d3ebcb;}
-.widget-history li {border-bottom:1px solid #eee;padding:.75em 0;margin:0;}
+.widget-history li {border-bottom:1px solid #eee;padding:.75em 0;margin:0;list-style:none !important;}
 
 .detailpage p {margin:.75em 0;}
 .detailpage h4 {margin:2em 0 .5em;}
 
 .detailpage #widgetcode textarea {background:#d7e3f2;border:0;color:#000;}
+
+#errorExplanation {color:red;}
+#errorExplanation h2 {color:red;margin:0 0 .5em;}
+#errorExplanation p {margin:0 0 .5em;}
+#errorExplanation ul {padding:0 2em 2em;}
+#errorExplanation li {padding:0 .5em; list-style:disc; margin:0;}
