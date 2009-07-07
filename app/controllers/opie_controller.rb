@@ -73,7 +73,7 @@ class OpieController < ApplicationController
       
       if self.is_authorized(opierequest.id_select,opierequest.identity, opierequest.trust_root)
         if(opierequest.id_select)
-          response = opierequest.answer(true)
+          response = opierequest.answer(true,nil,@currentuser.openid_url(true))
         else
           response = opierequest.answer(true)          
         end
@@ -235,7 +235,7 @@ EOS
       # proto = request.ssl? ? 'https://' : 'http://'
       # server_url = url_for(:action => 'index', :protocol => proto)
       if(opierequest.id_select)
-        response = opierequest.answer(true)
+        response = opierequest.answer(true,nil,@currentuser.openid_url(true))
       else
         response = opierequest.answer(true)          
       end
@@ -278,7 +278,7 @@ EOS
 
   def server
     if @server.nil?
-      endpoint = url_for(:action => 'opie', :only_path => false)
+      endpoint = url_for(:action => 'index', :only_path => false)
       store = ActiveRecordStore.new
       @server = Server.new(store,endpoint)
     end
