@@ -80,7 +80,6 @@ class Category < ActiveRecord::Base
   
   def Category.category_conditions(options=nil)
      if(options.nil?)
-        ActiveRecord::Base::logger.debug 'options were nil'
         options = {}
       end
       
