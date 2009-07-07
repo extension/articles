@@ -12,9 +12,8 @@
 </div>
 
 <div class="clearing">
-    <% if @submitted_question.assignee.id == @currentuser.id %>
-    <% else %>
-            <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %>.</h3>
+    <% if @submitted_question.assignee.id != @currentuser.id %>
+    <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %>.</h3>
     <% end %>
 </div>
 

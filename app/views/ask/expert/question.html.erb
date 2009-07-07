@@ -61,8 +61,23 @@
         	    <strong>Resolved by:</strong> <%= link_to @submitted_question.resolved_by.get_first_last_name, {:controller => 'account', :action => 'profile', :id => @submitted_question.resolved_by.login}, :class => "profile" %>
         	</p>
 	        <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
-	        
-	        <!-- ToDo: Add back in contributing faq code -->
+            
+            <% if @contributing_question %>
+    	        <p><strong>This question was answered with 
+    	        <% if @type == 'FAQ' %>
+    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", 
+    	          :controller => 'ask/expert', 
+    	          :action => 'view_question', 
+    	          :qid => @contributing_question.foreignid, 
+    	          :type => @contributing_question.entrytype %>
+    	        <% else %>
+    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", 
+    	          :controller => 'ask/expert', 
+    	          :action => 'question', 
+    	          :id => @contributing_question.foreignid %>
+    	        <% end %>
+    	        </strong></p>
+    	    <% end %>	        
 
 		    <% if response = @submitted_question.current_response %>
 		        <p><strong>Response <%= @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED ? '(no email sent):' : '(emailed):' %></strong></p>

@@ -413,6 +413,11 @@ class Ask::ExpertController < ApplicationController
       return
     end
     
+    @contributing_question = @submitted_question.contributing_question
+    if @contributing_question
+      @contributing_question.entrytype == SearchQuestion::FAQ ? @type = 'FAQ' : @type = 'AaE Question'
+    end
+    
     @categories = Category.root_categories
     @category_options = @categories.map{|c| [c.name,c.id]}
       
@@ -459,6 +464,17 @@ class Ask::ExpertController < ApplicationController
       redirect_to :action => :incoming
       return
     end
+  end
+  
+  def view_question
+    @aae_search_item = SearchQuestion.find_by_entrytype_and_foreignid(params[:type], params[:qid])
+    if !@aae_search_item
+      flash[:failure] = "Invalid question parameters"
+      redirect_to :action => :incoming
+      return
+    end
+    
+    @aae_search_item.entrytype == SearchQuestion::AAE ? @type = 'Ask an Expert Question' : @type = 'FAQ'
   end
 
   def assigned

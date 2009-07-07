@@ -1,20 +1,34 @@
 <div id="inc_to_FAQ">
-    <% if @submitted_question.assignee.id == @currentuser.id %>
-    	<p class="button2">
-            <%= link_to "#{@type} ##{@aae_search_item.id} is a relevant answer. Use it to write my response.", :controller => 'ask/expert', :action => 'answer_question', :question => @aae_search_item, 
+
+<% if params[:q] %>
+  <% if @submitted_question.assignee.id == @currentuser.id %>
+        	<p class="button2">
+            <%= link_to "#{@type} ##{@aae_search_item.id} is a relevant answer. Use it to write my response.", 
+            :controller => 'ask/expert', 
+            :action => 'answer_question', 
+            :question => @aae_search_item, 
             :squid => @submitted_question %>
-        </p>
-        <p class="clear"><strong><%= link_to "Return to search results", :controller => 'ask/expert', :action => 'search_answers', :squid => @submitted_question, :q => params[:q] %></strong></p>
+            </p>
+            <p class="clear">
+            <strong>
+            <%= link_to "Return to search results", 
+            :controller => 'ask/expert', 
+            :action => 'search_answers', 
+            :squid => @submitted_question, 
+            :q => params[:q] %>
+            </strong>
+            </p>
     <% end %>
+<% end %>
 
-
-    <h2><span><%= @type %> #<%= @aae_search_item.id %></span></h2>    
+<h2><span><%= @type %> #<%= @aae_search_item.foreignid %></span></h2>    
     
-    <div class="question">
-        <p><%= h @aae_search_item.fulltitle %></p>
-    </div>
+<div class="question">
+    <p><%= h @aae_search_item.fulltitle %></p>
+</div>
 
-    <div class="answer">
-        <%= simple_format(@aae_search_item.content) %>
-    </div>
+<div class="answer">
+    <%= simple_format(@aae_search_item.content) %>
+</div>
+
 </div>
