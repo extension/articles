@@ -31,12 +31,11 @@ class Event < ActiveRecord::Base
   # Get all events within x number of days from the given date
   named_scope :within, lambda { |interval, date| { :conditions => ['start >= ? AND start < ?', date, date + interval] } }
   
-  #-- Older stuff
-  
+  # so that we can generate URLs out of the model, not completely sure why - was marked as "-- Older stuff"
   include ActionController::UrlWriter
-  default_url_options[:host] = AppConfig.configtable['urlwriter_host']
-  default_url_options[:port] = AppConfig.configtable['urlwriter_port'] unless AppConfig.configtable['urlwriter_port'] == 80
-    
+  default_url_options[:host] = AppConfig.configtable['url_options']['host']
+  default_url_options[:port] = AppConfig.get_url_port
+  
   def self.from_hash(hash)
     item = self.find_by_id(hash['id']) || self.new
     

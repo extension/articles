@@ -30,24 +30,13 @@ class ApplicationController < ActionController::Base
   # rescue_from ActionController::MethodNotAllowed, :with => :do_404
   # rescue_from ActionController::UnknownAction, :with => :do_404
 
-  before_filter :set_locale, :unescape_params, :disable_link_prefetching, :get_tag, :personalize, :set_default_host_and_port_for_urlwriter, :set_default_request_ip_address
+  before_filter :set_locale, :unescape_params, :disable_link_prefetching, :get_tag, :personalize, :set_request_url_options, :set_default_request_ip_address
     
-  def set_default_host_and_port_for_urlwriter
-    AppConfig.configtable['urlwriter_host'] = !request.nil? && !request.host.nil? ? request.host : AppConfig.configtable['default_host']
-    AppConfig.configtable['urlwriter_port'] = !request.nil? && !request.port.nil? ? request.port : AppConfig.configtable['default_port']
-    AppConfig.configtable['urlwriter_protocol'] = !request.nil? && !request.protocol.nil? ? request.protocol : AppConfig.configtable['default_protocol']
-    # is this local development? then set the openid url prefix appropriately
-    set_openid_url_from_urlwriter_or_default
-  end
-  
-  def set_openid_url_from_urlwriter_or_default
-    peoplecontroller = 'people'
-    location = AppConfig.configtable['app_location']
-    
-    if(AppConfig.configtable['openid_url_prefix_defaults'][location].nil? or AppConfig.configtable['openid_url_prefix_defaults'][location] == 'urlwriter')
-      AppConfig.configtable['openid_url_prefix'] = "#{AppConfig.configtable['urlwriter_protocol']}#{AppConfig.configtable['urlwriter_host']}:#{AppConfig.configtable['urlwriter_port']}/#{peoplecontroller}"
-    else
-      AppConfig.configtable['openid_url_prefix'] = AppConfig.configtable['openid_url_prefix_defaults'][location]
+  def set_request_url_options
+    if(!request.nil?)
+      AppConfig.configtable['url_options']['host'] = request.host unless (request.host.nil?)
+      AppConfig.configtable['url_options']['protocol'] = request.protocol unless (request.protocol.nil?)
+      AppConfig.configtable['url_options']['port'] = request.port unless (request.port.nil?)
     end
   end
   

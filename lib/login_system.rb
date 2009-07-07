@@ -181,8 +181,12 @@ module LoginSystem
   def openidmeta(openiduser=nil)
     proto = request.ssl? ? 'https://' : 'http://'
     xrds_url = openid_xrds_header(openiduser)
-    @openidmeta = '<meta http-equiv="X-XRDS-Location" content="'+xrds_url+'" />'+"\n"
-    @openidmeta += '<link rel="openid.server" href="'+url_for(:controller => '/opie', :action => :index, :protocol => proto)+'" />'
+    returnstring = '<meta http-equiv="X-XRDS-Location" content="'+xrds_url+'" />'+"\n"
+    returnstring += '<link rel="openid2.provider openid.server" href="'+url_for(:controller => '/opie', :action => :index, :protocol => proto)+'" />'
+    if(!openiduser.nil?)
+      returnstring += '<link rel="openid2.local_id openid.delegate" href="'+openiduser.openid_url+'" />'
+    end
+    return returnstring
   end
 
 end

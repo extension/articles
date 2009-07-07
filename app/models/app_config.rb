@@ -21,11 +21,11 @@ class AppConfig
     
     # possibly return different ones for demo?
     @@configtable['openid_url_prefix_defaults'] = {}
-    @@configtable['openid_url_prefix_defaults']['production'] = 'https://people.extension.org'
-    @@configtable['openid_url_prefix_defaults']['demo'] = 'http://people.demo.extension.org'
-    @@configtable['openid_url_prefix_defaults']['localdev'] = 'urlwriter'
+    @@configtable['openid_url_prefix_defaults']['production'] = 'request_url'
+    @@configtable['openid_url_prefix_defaults']['demo'] = 'request_url'
+    @@configtable['openid_url_prefix_defaults']['localdev'] = 'request_url'
 
-    @@configtable['openid_url_prefix'] = 'urlwriter'
+    @@configtable['openid_url_prefix'] = 'request_url'
 
     
     @@configtable['mail_errors_to'] = "eXtensionAppErrors@extension.org"
@@ -68,19 +68,7 @@ class AppConfig
     # tag related
     @@configtable['systemuser_sharedtag_weight'] = 2
 
-    # TODO: review these!!!
-    # used to push URL down into the models, for the email crons
-    #@@configtable['default_host'] = 'people.extension.org'
-    #@@configtable['default_port'] = 443
-    #@@configtable['default_protocol'] = 'https'
-    #@@configtable['urlwriter_host'] = 'people.extension.org'
-    #@@configtable['urlwriter_port'] = 443
-    #@@configtable['urlwriter_protocol'] = 'https'
-
-    @@configtable['default_host'] = 'www.extension.org'
-    @@configtable['default_port'] = 80
-    @@configtable['urlwriter_host'] = 'www.extension.org'
-    @@configtable['urlwriter_port'] = 80
+    @@configtable['url_options'] = {'host' => 'www.extension.org', 'port' => 80, 'protocol' => 'http://'}
     
     # used to push IP Address down into the models, for the email crons
     @@configtable['default_request_ip'] = '127.0.0.1'
@@ -113,8 +101,26 @@ class AppConfig
     @@configtable['auto_assign_incoming_questions'] = true
     @@configtable['send_escalation_report'] = true
     @@configtable['send_aae_emails'] = true
-          
   end
+  
+  def AppConfig.get_url_port
+    if(@@configtable['url_options']['port'] == 80 and @@configtable['url_options']['protocol'] == 'http://')
+      return nil
+    elsif(@@configtable['url_options']['port'] == 443 and @@configtable['url_options']['protocol'] == 'https://')
+      return nil
+    else
+      return @@configtable['url_options']['port']
+    end
+  end
+    
+  def AppConfig.url_port_string
+    if(port = self.get_url_port)
+      return ":#{@@configtable['url_options']['port']}"
+    else
+      return ''
+    end
+  end
+  
   
   def AppConfig.load_config
     self.default_config

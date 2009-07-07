@@ -16,11 +16,11 @@ class Faq < ActiveRecord::Base
   ordered_by :orderings => {'Newest to oldest'=> 'heureka_published_at DESC'},
              :default => "#{quoted_table_name}.heureka_published_at DESC"
   
-  #-- 'legacy'
+  # so that we can generate URLs out of the model, not completely sure why - was marked as "-- 'legacy'"
   include ActionController::UrlWriter
-  default_url_options[:host] = AppConfig.configtable['urlwriter_host']
-  default_url_options[:port] = AppConfig.configtable['urlwriter_port'] unless AppConfig.configtable['urlwriter_port'] == 80
-  
+  default_url_options[:host] = AppConfig.configtable['url_options']['host']
+  default_url_options[:port] = AppConfig.get_url_port
+    
   has_many :expert_questions
   
   PUBLISHED = "published"

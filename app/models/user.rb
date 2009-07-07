@@ -167,7 +167,14 @@ class User < ActiveRecord::Base
     write_attribute(:email, emailstring.mb_chars.downcase)
   end
   
-  def openid_url
+  def openid_url    
+    peoplecontroller = 'people'
+    location = AppConfig.configtable['app_location']
+    if(AppConfig.configtable['openid_url_prefix_defaults'][location].nil? or AppConfig.configtable['openid_url_prefix_defaults'][location] == 'request_url')
+      AppConfig.configtable['openid_url_prefix'] = "#{AppConfig.configtable['url_options']['protocol']}#{AppConfig.configtable['url_options']['host']}#{AppConfig.url_port_string}/#{peoplecontroller}"
+    else
+      AppConfig.configtable['openid_url_prefix'] = AppConfig.configtable['openid_url_prefix_defaults'][location]
+    end
     return "#{AppConfig.configtable['openid_url_prefix']}/#{self.login.downcase}"
   end  
   

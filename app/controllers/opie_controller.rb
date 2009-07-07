@@ -131,36 +131,81 @@ class OpieController < ApplicationController
   end
 
   def user
+    @openiduser = User.find_by_login(params[:extensionid])
     # Yadis content-negotiation: we want to return the xrds if asked for.
     accept = request.env['HTTP_ACCEPT']
     
     # This is not technically correct, and should eventually be updated
     # to do real Accept header parsing and logic.  Though I expect it will work
     # 99% of the time.
-    if accept and accept.include?('application/xrds+xml')
+    if (accept and accept.include?('application/xrds+xml') and !@openiduser.nil?)
       return user_xrds
     end
 
     # content negotiation failed, so just render the user page 
-    @openiduser = User.find_by_login(params[:extensionid])
     if(@openiduser.nil?)
       flash.now[:failure] = 'No user by that name here.'
     else
       @openidmeta = openidmeta(@openiduser)
       @publicattributes = @openiduser.public_attributes
     end
-    
     render(:layout => 'people')
   end
 
   def idp_xrds
     types = [OpenID::OPENID_IDP_2_0_TYPE]
-    return render_xrds(types)
+    types_string = ''
+    types.each do |type|
+      types_string += "<Type>#{type}</Type>\n"
+    end
+
+    yadis = <<EOS
+<?xml version="1.0" encoding="UTF-8"?>
+<xrds:XRDS
+    xmlns:xrds="xri://$xrds"
+    xmlns="xri://$xrd*($v*2.0)">
+  <XRD>
+    <Service priority="1">
+      #{types_string}
+      <URI>#{url_for(:controller => 'opie',:protocol => request.protocol)}</URI>
+    </Service>
+  </XRD>
+</xrds:XRDS>
+EOS
+
+    response.headers['content-type'] = 'application/xrds+xml'
+    render(:text => yadis)
   end 
 
   def user_xrds
+    @openiduser = User.find_by_login(params[:extensionid])
+    if(@openiduser.nil?)
+      redirect_to(:action => 'user')
+    end
+    
     types = [OpenID::OPENID_2_0_TYPE, OpenID::OPENID_1_0_TYPE,OpenID::SREG_URI]
-    render_xrds(types)
+    types_string = ''
+    types.each do |type|
+      types_string += "<Type>#{type}</Type>\n"
+    end
+
+    yadis = <<EOS
+<?xml version="1.0" encoding="UTF-8"?>
+<xrds:XRDS
+    xmlns:xrds="xri://$xrds"
+    xmlns="xri://$xrd*($v*2.0)">
+  <XRD>
+    <Service priority="1">
+      #{types_string}
+      <URI>#{url_for(:controller => 'opie',:protocol => request.protocol)}</URI>
+      <LocalID>#{@openiduser.openid_url}</LocalID>
+    </Service>
+  </XRD>
+</xrds:XRDS>
+EOS
+
+    response.headers['content-type'] = 'application/xrds+xml'
+    render(:text => yadis)
   end
 
   def decision
@@ -299,33 +344,7 @@ class OpieController < ApplicationController
   
   protected
   
-  def render_xrds(types)
-    types_string = ''
-    types.each do |uri|
-      types_string += "<Type>#{uri}</Type>\n"
-    end
 
-    if request.ssl?
-      proto = 'https://'
-    else
-      proto = 'http://'
-    end
   
-    yadis = <<EOS
-<?xml version="1.0" encoding="UTF-8"?>
-<xrds:XRDS
-    xmlns:xrds="xri://$xrds"
-    xmlns="xri://$xrd*($v*2.0)">
-  <XRD>
-    <Service priority="1">
-      #{types_string}
-      <URI>#{url_for(:controller => 'opie',:protocol => proto)}</URI>
-    </Service>
-  </XRD>
-</xrds:XRDS>
-EOS
-
-    response.headers['content-type'] = 'application/xrds+xml'
-    render(:text => yadis)
-  end
+  
 end

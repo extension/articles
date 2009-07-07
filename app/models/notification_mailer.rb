@@ -7,9 +7,9 @@
 
 class NotificationMailer < ActionMailer::Base
   include ActionController::UrlWriter
-  default_url_options[:host] = AppConfig.configtable['urlwriter_host']
-  default_url_options[:protocol] = AppConfig.configtable['urlwriter_protocol']
-  default_url_options[:port] = AppConfig.configtable['urlwriter_port'] unless ((AppConfig.configtable['urlwriter_port'] == 80 and AppConfig.configtable['urlwriter_protocol'] == 'http' ) or (AppConfig.configtable['urlwriter_port'] == 443 and AppConfig.configtable['urlwriter_protocol'] =~ /^https/))
+  default_url_options[:host] = AppConfig.configtable['url_options']['host']
+  default_url_options[:protocol] = AppConfig.configtable['url_options']['protocol']
+  default_url_options[:port] = AppConfig.get_url_port
 
 
   

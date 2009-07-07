@@ -22,11 +22,11 @@ class Article < ActiveRecord::Base
   has_many :article_buckets
   has_many :content_buckets, :through => :article_buckets
   
-  #-- Pre Rails 2.1 stuff
+  # so that we can generate URLs out of the model, not completely sure why - was marked as "pre Rails 2.1 stuff"
   include ActionController::UrlWriter
-  default_url_options[:host] = AppConfig.configtable['urlwriter_host']
-  default_url_options[:port] = AppConfig.configtable['urlwriter_port'] unless AppConfig.configtable['urlwriter_port'] == 80
-  
+  default_url_options[:host] = AppConfig.configtable['url_options']['host']
+  default_url_options[:port] = AppConfig.get_url_port
+
   named_scope :bucketed_as, lambda{|bucketname|
     {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
