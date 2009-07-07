@@ -73,7 +73,7 @@ class OpieController < ApplicationController
       
       if self.is_authorized(opierequest.id_select,opierequest.identity, opierequest.trust_root)
         if(opierequest.id_select)
-          response = opierequest.answer(true,nil,@currentuser.openid_url(true))
+          response = opierequest.answer(true,nil,@currentuser.openid_url(true),@currentuser.openidurl)
         else
           response = opierequest.answer(true)          
         end
@@ -198,15 +198,15 @@ EOS
     yadis += "<LocalID>#{@openiduser.openid_url}</LocalID>\n"
     yadis += "</Service>\n"
     yadis += "</XRD>\n"
-    if(@openiduser.openid_url != @openiduser.openid_url(true))
-      yadis += "<XRD>\n"
-      yadis += '<Service priority="0">' + "\n"
-      yadis += "#{types_string}\n"
-      yadis += "<URI>#{url_for(:controller => 'opie',:protocol => request.protocol)}</URI>\n"
-      yadis += "<LocalID>#{@openiduser.openid_url(true)}</LocalID>\n"
-      yadis += "</Service>\n"
-      yadis += "</XRD>\n"
-    end
+    # if(@openiduser.openid_url != @openiduser.openid_url(true))
+    #   yadis += "<XRD>\n"
+    #   yadis += '<Service priority="10">' + "\n"
+    #   yadis += "#{types_string}\n"
+    #   yadis += "<URI>#{url_for(:controller => 'opie',:protocol => request.protocol)}</URI>\n"
+    #   yadis += "<LocalID>#{@openiduser.openid_url(true)}</LocalID>\n"
+    #   yadis += "</Service>\n"
+    #   yadis += "</XRD>\n"
+    # end
     yadis += "</xrds:XRDS>\n"
     response.headers['content-type'] = 'application/xrds+xml'
     render(:text => yadis)
@@ -235,7 +235,7 @@ EOS
       # proto = request.ssl? ? 'https://' : 'http://'
       # server_url = url_for(:action => 'index', :protocol => proto)
       if(opierequest.id_select)
-        response = opierequest.answer(true,nil,@currentuser.openid_url(true))
+        response = opierequest.answer(true,nil,@currentuser.openid_url(true),@currentuser.openidurl)
       else
         response = opierequest.answer(true)          
       end
