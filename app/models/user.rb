@@ -1524,6 +1524,13 @@ class User < ActiveRecord::Base
       return resolved_questions.count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED})")
     end
     
+    def self.get_answerers_in_category(catid)
+       find_by_sql(["Select distinct users.id, users.first_name, users.last_name, users.login, roles.name, roles.id as rid  from users join expertise_areas as ea on users.id=ea.user_id " +
+         " left join user_roles on user_roles.user_id=users.id left join roles on user_roles.role_id=roles.id " +
+         " where ea.category_id=? order by users.last_name", catid ])
+     end
+    
+    
     # end faq user model
 
      #returns the name of a university logo

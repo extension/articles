@@ -8,6 +8,8 @@ class Ask::ReportsController < ApplicationController
        @locs = Location.find(:all, :order => "entrytype, name")
      end
 
+
+    ##Activity Reports
     def activity
        @oldest_date = SubmittedQuestion.find_oldest_date
        @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; 
@@ -75,6 +77,7 @@ class Ask::ReportsController < ApplicationController
        end  
 
        def show_active_cats
+         @filteredparams = FilterParams.new(params)  #...can this be useful here?
            @typename = params[:Category]
             cat = Category.find_by_name(params[:Category]) 
             @type = "Category" ; @typel="category"; @typet="Tag"
@@ -185,6 +188,209 @@ class Ask::ReportsController < ApplicationController
               @min = 124
              render  :template => "ask/reports/display_questions"
         end
+        
+        
+        ## Expertise Report
+        def answerers
+         @cats = Category.find(:all, :conditions => "parent_id is null", :order => 'name')
+         @csize = @cats.size
+         @catcnt = Category.count_users_for_rootcats
+         @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
+         @lsize = @locs.size 
+         #@locsum=ExpertiseLocation.count_answerers_by_state
+         @locsum = ExpertiseLocation.count(:joins => " join expertise_locations_users as elu on expertise_locations.id=elu.location_id join users on users.id=elu.user_id",
+                 :group => "users.location_id", :order => "entrytype, name")
+        end
+
+        def state_answerers
+       #   @filteredparams = FilterParams.new(params)  ...would need to make this work for :category...
+      #     @filteredoptions = @filteredparams.findoptions 
+          if params[:id]
+            @catname = Category.find_by_id(params[:id]).name
+            catid = params[:id]
+          else
+            if params[:Category]
+              @catname=params[:Category]
+              catid = Category.find_by_name(@catname).id
+            end
+          end 
+          if (@catname  && @catname != "")
+            @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
+            @loccnt = ExpertiseLocation.count_answerers_for_states_in_category(@catname)
+           # @loccnt = ExpertiseLocation.expert_loc_userfilter_count(@filteredparams)
+            @userlist = consolidate(User.get_answerers_in_category(catid))
+            @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
+            @lsize = @locs.size
+            @usize = @userlist.size
+          else
+            redirect_to :action => 'answerers'
+          end
+        end
+
+        def category_county
+            #An example using People's general techniques as much as possible
+           @filteredparams=FilterParams.new(params)
+           @filteredoptions = @filteredparams.findoptions
+        #    @filterstring = @filteredparams.filter_string   ...why do I need this?
+             @cats = Category.find(:all, :conditions => "parent_id is null", :order => "name")
+             @csize = @cats.size ; @statename = ExpertiseLocation.find_by_id(params[:location])
+             @cnties = ExpertiseCounty.find(:all,  :conditions => "location_id = #{params[:location]}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
+             @ysize = @cnties.size
+           #  @locations = ExpertiseCounty.filtered(@findoptions).displaylist
+             @catcnt = Category.catuserfilter_count(@filteredoptions)
+             @cntycnt = ExpertiseCounty.expert_county_userfilter_count(@filteredoptions)
+             @userlist = consolidate(ExpertiseLocation.get_users_in_state(params[:location]))
+             @usize = @userlist.size ; @locid = params[:location]
+             @statename = ExpertiseLocation.find_by_id(params[:location]).name
+             
+              # heureka's way....translated to darmok, that works
+       #   if params[:State]
+      #      @statename = params[:State]
+      #    end
+      #    if (@statename && @statename != "")
+      #       @cats = Category.find(:all, :conditions => "parent_id is null", :order => 'name')
+      #       @csize = @cats.size
+      #       @catcnt = Category.count_users_for_rootcats_in_state(@statename)
+      #       @cnties = ExpertiseCounty.find(:all,  :conditions => "location_id = #{ExpertiseLocation.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
+      #       @ysize = @cnties.size
+      #     #  @cntycnt = County.count_answerers_for_county(@statename)
+      #       @cntycnt = ExpertiseCounty.count(:all,:select => "ecu.user_id", :joins => " join expertise_counties_users as ecu on ecu.county_id=expertise_counties.id " + 
+      #          "join users on ecu.user_id=users.id join expertise_areas as ea on ecu.user_id=ea.user_id join categories as c on ea.category_id=c.id",
+      #          :conditions =>  ["expertise_counties.location_id=? and c.parent_id is null", ExpertiseLocation.find_by_name(@statename).id],
+      #          :group => "expertise_counties.name", :distinct => "true")
+      #          
+      #      #  userlist = ExpertiseLocation.find_by_sql(["Select distinct users.id, users.first_name, users.last_name, users.login, roles.name, roles.id as rid from expertise_locations join expertise_locations_users as lu on lu.location_id=expertise_locations.id " +
+      #               "  join users on lu.user_id=users.id left join user_roles on users.id=user_roles.user_id left join roles on user_roles.role_id=roles.id " +
+      #               " where expertise_locations.id=? order by users.last_name",ExpertiseLocation.find_by_name(@statename).id ])
+      #      @userlist = consolidate(ExpertiseLocation.get_users_in_state(@statename))
+      #        @userlist = consolidate(userlist)
+      #       @usize = @userlist.size
+      #   end
+        end
+
+        def category_users
+           @filteredparams=FilterParams.new(params)
+           @filteredoptions = @filteredparams.findoptions
+          if params[:State]
+             @statename = params[:State]
+             @locid = ExpertiseLocation.find_by_name(@statename)
+          end
+          if params[:County]
+            @county = params[:County]
+          end
+          if (@statename && @county && @statename != "" && @county != "")
+             @cats = Category.find(:all, :conditions => "parent_id is null ", :order => 'name')
+             @csize = @cats.size
+          #   @ctycnt = Category.count_users_for_rootcats_in_county(@county, @statename)
+             @ctycnt = Category.catuserfilter_count(@filteredoptions)
+             @userlist= consolidate(ExpertiseCounty.get_users_for_cats_in_county(params[:county]))
+             @usize = @userlist.size
+          end
+        end
+
+        def category_county_users
+          if params[:State]
+            @statename = params[:State]
+            @locid = ExpertiseLocation.find_by_name(@statename)
+          end
+          if params[:County]
+            @county = params[:County]
+          end
+          if params[:Category]
+            @catname = params[:Category]
+          end
+          if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
+            @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
+            countyid = County.find(:first, :conditions => ["location_id=#{Location.find_by_name(@statename).id} and name=?", @county]).id
+            @userlist = consolidate(ExpertiseCounty.get_users_for_counties(countyid, @statename, @catname))
+            @usize = @userlist.size
+          end
+        end
+
+        def consolidate(uarray)
+          # if more than one of the same userid appears with different roles, consolidate 
+           newarr = Array.new
+           len = uarray.length
+           i = 0
+           while i < len do
+             if ((i == 0) || (uarray[i].id != uarray[i-1].id))
+               wrangsymb = " "; autorsymb = " "
+               if uarray[i].rid == "3"
+                 wrangsymb = "+"
+               end  
+               if uarray[i].rid == "4"
+                  autorsymb = "*"
+                end 
+               newarr << [ uarray[i].id, uarray[i].first_name, uarray[i].last_name, uarray[i].login, uarray[i].name, uarray[i].rid , autorsymb, wrangsymb]  
+             else
+               if uarray[i].rid == "3"
+                 newarr[newarr.length() - 1][7] = "+"     
+               else
+                 if uarray[i].rid == "4"
+                   newarr[newarr.length() -1][6]= "*"
+                 end
+               end
+             end
+             i = i + 1
+           end
+           newarr
+        end
+
+        def county_answerers
+          if params[:id]
+             @statename = ExpertiseLocation.find_by_id(params[:id]).name
+             @locid = params[:id]
+          else
+            if params[:State]
+              @statename = params[:State]
+              @locid = ExpertiseLocation.find_by_name(@statename).id
+              ActiveRecord::Base::logger.debug "@locid= " + ((@locid) ? @locid.to_s : "nil")
+            end
+          end
+          @catname = params[:Category]
+          if (!@catname || @catname == "")
+              redirect_to :action => 'answerers'
+          end
+          if params[:dir]
+            @dir = params[:dir]
+          end
+          if (@statename && @statename != "")
+            @cnties = ExpertiseCounty.find(:all,  :conditions => "location_id = #{Location.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}
+            @cntycnt = ExpertiseCounty.count_answerers_for_county_and_category(@catname, @statename)
+            @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
+            @userlist = consolidate(ExpertiseCounty.get_users_for_counties(nil, @statename, @catname))
+            @csize = @cnties.size
+            @usize = @userlist.size
+          else
+            redirect_to :action => 'state_answerers', :Category => @catname
+          end  
+        end
+
+        def answerers_lists
+          @statename = params[:State]
+          @catname = params[:Category]
+          @county = params[:County]
+          if params[:dir]
+            @dir=params[:dir]
+          end
+          if (!@catname || @catname=="")
+            redirect_to :action => 'answerers'
+          end
+          if (!@statename || @statename =="") 
+            redirect_to :action => 'state_answerers', :Category => @catname
+          end
+          if (@county)
+            countyid = County.find(:first, :conditions => ["location_id=#{Location.find_by_name(@statename).id} and name=?", @county]).id
+            @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
+          # form array of users for selected county
+            @userlist = consolidate(ExpertiseCounty.get_users_for_counties(countyid, @statename, @catname))
+            @usize = @userlist.size
+          else
+            redirect_to :action => 'county_answerers', :State => @statename, :Category => @catname
+          end
+        # ActiveRecord::Base::logger.debug "counties = " + ((@counties) ? @counties.collect { |nm| nm}.join(' ') : "")
+        end
+        
        
   
 end
