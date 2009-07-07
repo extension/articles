@@ -65,17 +65,17 @@ class OpieController < ApplicationController
       render(:text => "This is an OpenID server endpoint.")
       return
     end
-    
-    proto = request.ssl? ? 'https://' : 'http://'
-    server_url = url_for(:action => 'index', :protocol => proto)
+    # 
+    # proto = request.ssl? ? 'https://' : 'http://'
+    # server_url = url_for(:action => 'index', :protocol => proto)
     
     if opierequest.kind_of?(CheckIDRequest)
       
       if self.is_authorized(opierequest.id_select,opierequest.identity, opierequest.trust_root)
         if(opierequest.id_select)
-          response = opierequest.answer(true,server_url,@currentuser.openid_url)
+          response = opierequest.answer(true)
         else
-          response = opierequest.answer(true,server_url,@currentuser.openid_url)          
+          response = opierequest.answer(true)          
         end
         # add the sreg response if requested
         self.add_sreg(opierequest, response)
@@ -232,12 +232,12 @@ EOS
       if(!self.approved(opierequest.trust_root))
         @currentuser.opie_approvals.create(:trust_root => opierequest.trust_root)
       end
-      proto = request.ssl? ? 'https://' : 'http://'
-      server_url = url_for(:action => 'index', :protocol => proto)
+      # proto = request.ssl? ? 'https://' : 'http://'
+      # server_url = url_for(:action => 'index', :protocol => proto)
       if(opierequest.id_select)
-        response = opierequest.answer(true,server_url,@currentuser.openid_url)
+        response = opierequest.answer(true)
       else
-        response = opierequest.answer(true,server_url,@currentuser.openid_url)          
+        response = opierequest.answer(true)          
       end
       self.add_sreg(opierequest, response)
       UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:additionaldata => opierequest,:appname => opierequest.trust_root)                  
