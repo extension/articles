@@ -1,0 +1,43 @@
+<% @page_title = "Answering Individuals List Report for State=" + @statename + " and County= " + @county %>
+
+ <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "Ask an Expert Volunteers", :action => 'answerers'%> &gt; <%= link_to  @statename,  :action => 'category_county', :State => @statename, :location => @locid %> &gt; <%= @county %></p>
+
+<div id="answerers">
+<h1><%= @statename %>, <%= @county%></h1>
+
+<div>
+    <h3>All Volunteers</h3>		   
+    <% if @usize && @usize > 0%>
+        <%= render(:partial => 'usrlst') %>
+	<% end %>
+</div>
+
+<% if @ctycnt.size > 0%>
+<h3>by category...</h3>
+<table id="reports_left" cellspacing="0" summary="Counts of Answering Individuals by County and by Category">
+   <!-- <caption><h1>Counts of Answering Individuals per County/Parish with counts greater than zero<h1></caption>-->
+	<tr>
+	<th scope="col">Category</th>
+	<th scope="col">Total</th>
+    </tr>
+
+ <% i = 0 %>
+
+	 <% while i < @csize do %>
+	     <% if @ctycnt[@cats[i].name]%>
+	        <tr>
+	       	<td><%=  link_to @cats[i].name, :action => "category_county_users", :State => @statename, :County =>  @county , :Category => @cats[i].name%></td>
+		    <td><%= @ctycnt[@cats[i].name]%></td>
+		    </tr>
+		 
+		 <%end%>
+		  <% i = i + 1%>
+	 <% end%>	
+ </table>	
+
+
+<% else%>
+    <h2>There are no users volunteering here</h2>
+<%end%>
+
+</div>
