@@ -189,21 +189,25 @@ EOS
       types_string += "<Type>#{type}</Type>\n"
     end
 
-    yadis = <<EOS
-<?xml version="1.0" encoding="UTF-8"?>
-<xrds:XRDS
-    xmlns:xrds="xri://$xrds"
-    xmlns="xri://$xrd*($v*2.0)">
-  <XRD>
-    <Service priority="1">
-      #{types_string}
-      <URI>#{url_for(:controller => 'opie',:protocol => request.protocol)}</URI>
-      <LocalID>#{@openiduser.openid_url}</LocalID>
-    </Service>
-  </XRD>
-</xrds:XRDS>
-EOS
-
+    yadis = '<?xml version="1.0" encoding="UTF-8"?>'+"\n"
+    yadis += '<xrds:XRDS xmlns:xrds="xri://$xrds" xmlns="xri://$xrd*($v*2.0)">'+"\n"
+    yadis += "<XRD>\n"
+    yadis += '<Service priority="0">' + "\n"
+    yadis += "#{types_string}\n"
+    yadis += "<URI>#{url_for(:controller => 'opie',:protocol => request.protocol)}</URI>\n"
+    yadis += "<LocalID>#{@openiduser.openid_url}</LocalID>\n"
+    yadis += "</Service>\n"
+    yadis += "</XRD>\n"
+    if(@openiduser.openid_url != @openiduser.openid_url(true))
+      yadis += "<XRD>\n"
+      yadis += '<Service priority="0">' + "\n"
+      yadis += "#{types_string}\n"
+      yadis += "<URI>#{url_for(:controller => 'opie',:protocol => request.protocol)}</URI>\n"
+      yadis += "<LocalID>#{@openiduser.openid_url(true)}</LocalID>\n"
+      yadis += "</Service>\n"
+      yadis += "</XRD>\n"
+    end
+    yadis += "</xrds:XRDS>\n"
     response.headers['content-type'] = 'application/xrds+xml'
     render(:text => yadis)
   end

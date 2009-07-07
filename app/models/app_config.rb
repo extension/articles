@@ -20,12 +20,10 @@ class AppConfig
     @@configtable['mail_label'] = "localdev"
     
     # possibly return different ones for demo?
-    @@configtable['openid_url_prefix_defaults'] = {}
-    @@configtable['openid_url_prefix_defaults']['production'] = 'request_url'
-    @@configtable['openid_url_prefix_defaults']['demo'] = 'request_url'
-    @@configtable['openid_url_prefix_defaults']['localdev'] = 'request_url'
-
-    @@configtable['openid_url_prefix'] = 'request_url'
+    @@configtable['openid_url_display_prefix'] = {}
+    @@configtable['openid_url_display_prefix']['production'] = 'https://people.extension.org'
+    @@configtable['openid_url_display_prefix']['demo'] = 'http://people.demo.extension.org'
+    @@configtable['openid_url_display_prefix']['localdev'] = 'request_url'
 
     
     @@configtable['mail_errors_to'] = "eXtensionAppErrors@extension.org"

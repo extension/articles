@@ -19,7 +19,7 @@
     <h2>Your eXtensionID-based OpenID URL</h2>
     <div id="youropenid">
     <p class="directions">Use this string of text to sign-in to any OpenID-accepting website.</p>
-    <p class="openid easyread"><%= @currentuser.openid_url %></p>
+    <p class="openid easyread"><%= @currentuser.openid_url(true) %></p>
     </div>
 
 <% if !@currentuser.opie_approvals.empty? %>

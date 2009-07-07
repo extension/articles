@@ -167,15 +167,20 @@ class User < ActiveRecord::Base
     write_attribute(:email, emailstring.mb_chars.downcase)
   end
   
-  def openid_url    
+  def openid_url(displayurl=false)
     peoplecontroller = 'people'
     location = AppConfig.configtable['app_location']
-    if(AppConfig.configtable['openid_url_prefix_defaults'][location].nil? or AppConfig.configtable['openid_url_prefix_defaults'][location] == 'request_url')
-      AppConfig.configtable['openid_url_prefix'] = "#{AppConfig.configtable['url_options']['protocol']}#{AppConfig.configtable['url_options']['host']}#{AppConfig.url_port_string}/#{peoplecontroller}"
+    
+    if(displayurl)    
+      if(AppConfig.configtable['openid_url_display_prefix'][location].nil? or AppConfig.configtable['openid_url_display_prefix'][location] == 'request_url')
+        openid_url_prefix = "#{AppConfig.configtable['url_options']['protocol']}#{AppConfig.configtable['url_options']['host']}#{AppConfig.url_port_string}/#{peoplecontroller}"
+      else
+        openid_url_prefix = AppConfig.configtable['openid_url_display_prefix'][location]
+      end
     else
-      AppConfig.configtable['openid_url_prefix'] = AppConfig.configtable['openid_url_prefix_defaults'][location]
+      openid_url_prefix = "#{AppConfig.configtable['url_options']['protocol']}#{AppConfig.configtable['url_options']['host']}#{AppConfig.url_port_string}/#{peoplecontroller}"
     end
-    return "#{AppConfig.configtable['openid_url_prefix']}/#{self.login.downcase}"
+    return "#{openid_url_prefix}/#{self.login.downcase}"
   end  
   
   # returns a hash of public attributes
