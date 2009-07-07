@@ -387,10 +387,12 @@ class Ask::ExpertController < ApplicationController
         if @currentuser.id != @submitted_question.assignee.id
           previous_assignee_email = @submitted_question.assignee.email
           @submitted_question.assign_to(@currentuser, @currentuser, nil) 
-          # if the question is currently assigned to someone,
-          # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
-          AskMailer.deliver_assigned(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), request.host)
-          AskMailer.deliver_reassign_notification(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), previous_assignee_email, request.host) 
+          if(AppConfig.configtable['send_aae_emails'])
+            # if the question is currently assigned to someone,
+            # send a notification email to the user it's assigned to to let them know the question has been assigned to someone else to reduce duplication of efforts
+            AskMailer.deliver_assigned(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), request.host)
+            AskMailer.deliver_reassign_notification(@submitted_question, url_for(:controller => 'expert', :action => 'question', :id => @submitted_question), previous_assignee_email, request.host) 
+          end
         end
         SubmittedQuestionEvent.log_working_on(@submitted_question, @currentuser)
         redirect_to :action => :question, :id => @submitted_question.id
