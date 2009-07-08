@@ -55,6 +55,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'people/:extensionid', :controller => 'opie', :action => 'user'
   map.connect 'people/:extensionid/xrds', :controller => 'opie', :action => 'user_xrds'
   map.connect 'opie/:action', :controller => 'opie'
+  
+  map.connect 'opie/delegate/:extensionid', :controller => 'opie', :action => 'delegate'
 
   #################################################################
   

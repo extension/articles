@@ -39,6 +39,11 @@ class OpieController < ApplicationController
   before_filter(:login_required, :only => [:decision])
   before_filter(:check_purgatory, :only => [:decision])
   
+  def delegate
+    @openiduser = User.find_by_login(params[:extensionid])
+    render(:layout => 'delegate')
+  end
+  
   def index
     # first thing, if we came back here from a login - get the request out of the session
     if(!params[:returnfrom].nil? and params[:returnfrom] == 'login')
