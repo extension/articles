@@ -21,7 +21,7 @@ class Ask::FaqController < ApplicationController
     end
   end
   
-  # Save the new FAQ used to resolve an "ask an expert" question
+  # Save the new FAQ created from the ask an expert question
   def create
     submitted_question = SubmittedQuestion.find(params[:squid])
     
@@ -36,19 +36,22 @@ class Ask::FaqController < ApplicationController
       return
     end
     
-    url = URI.parse("#{AppConfig.configtable['faq_site']}/expert/create_faq")
-    http = Net::HTTP.new(url.host, url.port)
-    response = http.post(url.path, "question=#{params[:question]}&answer=#{params[:answer]}&squid=#{submitted_question.id}&userlogin=#{@currentuser.login}")
-    # ToDo: dev setup
+    if Rails.env == 'production'
+      url = URI.parse("#{AppConfig.configtable['faq_site']}/expert/create_faq")
+      http = Net::HTTP.new(url.host, url.port)
+      response = http.post(url.path, "question=#{params[:question]}&answer=#{params[:answer]}&squid=#{submitted_question.id}&userlogin=#{@currentuser.login}")
     
-    if response.class == Net::HTTPOK
-      flash[:success] = "Faq has been successfully saved in the faq system at http://faq.extension.org."
-      redirect_to :controller => 'ask/expert', :action => :question, :id => submitted_question.id
+      if response.class == Net::HTTPOK
+        flash[:success] = "Faq has been successfully saved in the faq system at http://faq.extension.org."
+        redirect_to :controller => 'ask/expert', :action => :question, :id => submitted_question.id
+      else
+        flash[:failure] = "Something went wrong saving your faq. Please try entering it again or check back at another time."
+        redirect_to :action => :new_faq, :squid => submitted_question.id
+      end
     else
-      flash[:failure] = "Something went wrong saving your faq. Please try entering it again or check back at another time."
+      flash[:failure] = "A new faq has not been created as you are in development mode. Please uncomment the necessary code and add in your local faq host into the config in order to get this to work."
       redirect_to :action => :new_faq, :squid => submitted_question.id
     end
-    
   end    
   
 end
