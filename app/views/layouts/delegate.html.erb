@@ -3,10 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link rel="openid2.provider openid.server" href="http://pubsitedev.extension.org/opie" />
-    <% if !@openiduser.nil? %>
-        <link rel="openid2.local_id openid.delegate" href="http://pubsitedev.extension.org/people/<%= @openiduser.login %>" />
-    <% end %>
+    <% if !@openidmeta.nil? %><%= @openidmeta %><% end %>
 	
     <title><%= @page_title || controller.action_name %> - eXtension People</title>
     <%= stylesheet_link_tag 'identity' %>

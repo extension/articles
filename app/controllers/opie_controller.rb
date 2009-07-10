@@ -41,6 +41,7 @@ class OpieController < ApplicationController
   
   def delegate
     @openiduser = User.find_by_login(params[:extensionid])
+    @openidmeta = openidmeta(@openiduser)
     render(:layout => 'delegate')
   end
   
