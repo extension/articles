@@ -296,7 +296,7 @@ div#gsfn_search_widget div.gsfn_content p.gsfn_summary { margin-top: 2px }
 	font-size: 150%;
 	color: #000b53 !important;
 	text-indent: -9000px;
-	background: url(/images/header_faq.gif) 0 0 no-repeat;
+/*	background: url(/images/header_faq.gif) 0 0 no-repeat; */
 	overflow: hidden;
 /*    border: 1px solid red;*/
 }
