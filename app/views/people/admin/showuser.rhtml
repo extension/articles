@@ -7,7 +7,7 @@
 <% else %>
   <%= render(:partial => 'showuser_info') %>
   <p><%= link_to("More information available in the colleague profile", :controller => 'colleagues', :action => 'showuser', :id => @showuser.login) %></p>
-  <%= render(:partial => 'common/showuser_profile', :locals => {:showuser => @showuser}) %>
+  <%= render(:partial => 'people/common/showuser_profile', :locals => {:showuser => @showuser}) %>
   <%= render(:partial => 'showuser_events') %>
 <% end %>
 

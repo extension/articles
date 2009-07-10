@@ -46,7 +46,7 @@ class People::ActivityController < ApplicationController
     urlparams.delete(:datefield)
     urlparams.merge!({:controller => :feeds, :action => :showuser})
     @feedurl = url_for(urlparams)
-    @feedlink = alt_feed_link(feedtitle,@feedurl)
+    @feedlink = "<link rel='alternate' type='application/atom+xml' href='#{@feedurl}', title='#{feedtitle}' />"
     respond_to do |format|
       format.html # show.html.erb
     end
@@ -114,17 +114,19 @@ class People::ActivityController < ApplicationController
     @filteredparams = FilterParams.new(params)
     @filteredparams.order=@filteredparams.order('activities.created_at','DESC')
     @findoptions = @filteredparams.findoptions
+    @filterstring = @filteredparams.filter_string
 
     @page_title = "Activity"
-    feedtitle = "Activity Atom Feed #{filter_string(@findoptions.merge({:nolink => true}))}"
+    feedtitle = "Activity Atom Feed #{@filterstring}"
     
     
-    urlparams = @filteredparameters.option_values_hash.merge({:feedkey => @currentuser.feedkey})
+    urlparams = @filteredparams.option_values_hash.merge({:feedkey => @currentuser.feedkey})
     urlparams.delete(:dateinterval)
     urlparams.delete(:datefield)
     urlparams.merge!({:controller => :feeds, :action => :list})
     @feedurl = url_for(urlparams)    
-    @feedlink = alt_feed_link(feedtitle,@feedurl)
+    @feedlink = "<link rel='alternate' type='application/atom+xml' href='#{@feedurl}', title='#{feedtitle}' />"
+    
     
     # download check    
     if(!params[:download].nil? and params[:download] == 'csv')

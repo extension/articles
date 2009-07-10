@@ -6,5 +6,5 @@
 
 <h1><%= @page_title %></h1>
 <p><em>Experimental:  Search for colleagues with any or all of a <strong>set</strong> of interests using the <%= link_to("Interest Query Builder",{:action => :tagquerybuilder}) %></em></p>
-<%= render(:partial => 'tags/tagcloud', :locals => { :title => 'Popular interests from all colleagues', :listoftags => @all_peer_popular_tags}) %>
-<%= render(:partial => 'tags/tagcloud', :locals => { :title => 'All interests from colleagues', :listoftags => @tagcloud}) %>
+<%= render(:partial => 'people/tags/tagcloud', :locals => { :title => 'Popular interests from all colleagues', :listoftags => @all_peer_popular_tags}) %>
+<%= render(:partial => 'people/tags/tagcloud', :locals => { :title => 'All interests from colleagues', :listoftags => @tagcloud}) %>

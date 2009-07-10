@@ -540,7 +540,7 @@ class People::AdminController < ApplicationController
       @userlist = userlist
       response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
       response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
-      render :template => 'colleagues/csvuserlist', :layout => false
+      render :template => 'people/colleagues/csvuserlist', :layout => false
   end
    
   def userlist(onlyvalid,action,labels,findopts=nil,otherparams=nil) 

@@ -412,7 +412,7 @@ class People::CommunitiesController < ApplicationController
   
   def tags
     taglist = params[:taglist].strip
-    @communitylist = Community.tagged_with_any(Community.tag_cast_to_string(taglist),{:getfrequency => true,:minweight => 2}).uniq
+    @communitylist = Community.tagged_with_any(Tag.castlist_to_array(taglist),{:getfrequency => true,:minweight => 2}).uniq
     @page_title = "Communities tagged with <em>#{taglist}</em>"
     respond_to do |format|
       format.html

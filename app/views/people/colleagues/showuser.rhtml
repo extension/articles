@@ -30,18 +30,18 @@
 	<% if admin_mode? %>
   		<p>See also the information in the <%= link_to("administrative user profile",:controller => :admin, :action => :showuser, :id => @showuser.login) %></p>
 	<% end %>
-  	<%= render(:partial => 'common/showuser_profile', :locals => {:showuser => @showuser}) %>
+  	<%= render(:partial => 'people/common/showuser_profile', :locals => {:showuser => @showuser}) %>
   	<% if @showuser.vouched? %>
 		<% if !@showuser.tags.empty? %>
 			<div id="showuser_tags">
 				<h2>Areas of Interest</h2>
-		  		<%= render(:partial => 'common/showuser_tags',:locals => { :showuser => @showuser}) %>
+		  		<%= render(:partial => 'people/common/showuser_tags',:locals => { :showuser => @showuser}) %>
 			</div>
 		<% end %>
 		<% if !@showuser.social_networks.empty? %>
 			<div id="showuser_socialnetworks">
 				<h2>Social Network Identities</h2>
-		  		<%= render(:partial => 'common/showuser_socialnetworks',:locals => { :showuser => @showuser}) %>
+		  		<%= render(:partial => 'people/common/showuser_socialnetworks',:locals => { :showuser => @showuser}) %>
 			</div>
 		<% end %>
 		<div id="showuser_communities">

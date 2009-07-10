@@ -7,7 +7,7 @@
     <% communitylist.each do |community| %>
     	<tr>
             <td><%= link_to_item(community,"community",filtered)%></td>
-            <td><%= link_number_to_userlist(community.usercount,findoptions.merge({:community => community}),{:title => "Community Users #{filter_string(findoptions.merge({:nolink => true, :community => community}))}"}) %></td>
+            <td><%= link_number_to_userlist(community.usercount,findoptions.merge({:community => community}),{:title => "Community Users #{@filterstring}))}"}) %></td>
         </tr>
     <% end%>
 </table>

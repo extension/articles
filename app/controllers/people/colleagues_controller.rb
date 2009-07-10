@@ -37,7 +37,7 @@ class People::ColleaguesController < ApplicationController
         if request.post?
           if params[:explanation].nil? or params[:explanation].empty?
             flash.now[:failure] = 'An explanation for vouching for this eXtensionID is required'      
-            render :template => 'colleagues/showuser'
+            render :template => 'people/colleagues/showuser'
           else
             if(@showuser.vouch(@currentuser))
               UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "vouched for #{@showuser.login}",:additionaldata => params[:explanation])
@@ -49,25 +49,25 @@ class People::ColleaguesController < ApplicationController
             else
               flash.now[:failure] = 'Failed to vouch for user, reported status may not be correct'      
             end
-            render :template => 'colleagues/showuser'
+            render :template => 'people/colleagues/showuser'
           end
         else
           # show form
         end
       else
         flash.now[:warning] = 'User not found.'      
-        render :template => 'colleagues/showuser'
+        render :template => 'people/colleagues/showuser'
       end
     else
       flash.now[:warning] = 'Missing user.'      
-      render :template => 'colleagues/showuser'
+      render :template => 'people/colleagues/showuser'
     end        
   end
   
   def vouchlist
     @userlist = User.paginate(:all,:order => 'updated_at desc', :conditions => ["vouched = 0 AND retired = 0 AND account_status != #{User::STATUS_SIGNUP} and emailconfirmed=1"],:page => params[:page])
     @page_title = "Users pending review"
-    render :template => 'colleagues/users'
+    render :template => 'people/colleagues/users'
   end
     
   def institutions
@@ -165,24 +165,24 @@ class People::ColleaguesController < ApplicationController
     end
       
     match = (!params[:match].nil? and params[:match] == 'matchany') ? 'matchany' : 'matchall'
-    findtags = User.tag_cast_to_string(taglist)
+    findtags = Tag.castlist_to_array(taglist)
     
     label = (match == 'matchall') ? "and" : "or"
     @page_title = "Colleagues interested in #{findtags.join(" #{label} ")}"
     @backto = {:label => "back to Interests List", :url => url_for(:controller => :colleagues, :action => :tagcloud)}
 
     if(!params[:downloadreport].nil? and params[:downloadreport] == 'csv')
-      reportusers = User.validusers.tagged_with_any(User.tag_cast_to_string(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name'})
+      reportusers = User.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name'})
       csvfilename =  @page_title.tr(' ','_').gsub('\W','').downcase
       return csvuserlist(reportusers,csvfilename, @page_title)
     else
-      @userlist =  User.validusers.tagged_with_any(User.tag_cast_to_string(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name', :paginate => true, :page => params[:page]})
+      @userlist =  User.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name', :paginate => true, :page => params[:page]})
       if((@userlist.length) > 0)
         @csvreporturl = url_for(:controller => :colleagues, :action => :tags, :taglist => taglist, :match => match, :downloadreport => 'csv')
       end
     end
 
-    render :template => 'colleagues/users'   
+    render :template => 'people/colleagues/users'   
   end
 
   def list
@@ -465,7 +465,7 @@ class People::ColleaguesController < ApplicationController
       @userlist = userlist
       response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
       response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
-      render :template => 'common/csvuserlist', :layout => false
+      render :template => 'people/common/csvuserlist', :layout => false
   end
   
 end

@@ -7,6 +7,18 @@
 
 module People::ActivityDisplayHelper
   
+  def link_to_object_action(linkobject,includefeedkey=false)
+    if(linkobject.is_a?(Community))
+      urlparams = {:action => :list, :community => linkobject.id, :communityactivity => 'all'}
+    else
+      urlparams = {:action => :list, linkobject.class.name.downcase.to_sym => linkobject.id, :communityactivity => 'all'}
+    end
+    if(includefeedkey)
+      urlparams[:feedkey] = @currentuser.feedkey
+    end
+    return link_to(linkobject.name, url_for(urlparams))
+  end
+  
   def link_to_people_community(community,displayna = true)
     if(!community.nil?)
       "<a href='#{people_community_url(community.id)}'>#{community.name}</a>"
