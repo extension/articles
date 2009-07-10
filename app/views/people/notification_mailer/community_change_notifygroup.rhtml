@@ -9,7 +9,7 @@ Information about <%= @oncolleague.first_name %>:
  <%= @oncolleague.email %>
  <%= @urls['oncolleague']%>
 
-<% if !@bycolleague.is_peoplebot? %>
+<% if !@bycolleague.is_systemuser? %>
 The colleague that performed this action is:
 
  <%= @bycolleague.fullname %>

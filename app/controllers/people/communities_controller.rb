@@ -307,11 +307,11 @@ class People::CommunitiesController < ApplicationController
           @community.creator.join_community_as_leader(@community)
         end
         # tags
-        @community.tag_myself_with_peoplebot_tags(params[:tag_list].strip)        
+        @community.tag_myself_with_systemuser_tags(params[:tag_list].strip)        
         flash[:notice] = 'Community was successfully created.'
         UserEvent.log_event(:etype => UserEvent::COMMUNITY,:user => @currentuser,:description => "created the #{@community.name} community")   
         log_user_activity(:activitycode => Activity::CREATED_COMMUNITY,:user => @currentuser,:community => @community,:appname => 'local')   
-        format.html { redirect_to(@community) }
+        format.html { redirect_to(people_community_url(@community.id)) }
       else
         format.html { render :action => "new" }
       end
@@ -329,10 +329,10 @@ class People::CommunitiesController < ApplicationController
     
     respond_to do |format|
       if @community.update_attributes(params[:community])
-        @community.tag_myself_with_peoplebot_tags(params[:tag_list].strip)        
+        @community.tag_myself_with_systemuser_tags(params[:tag_list].strip)        
         flash[:notice] = 'Community was successfully updated.'
         log_user_activity(:activitycode => Activity::COMMUNITY_UPDATE_INFORMATION,:user => @currentuser,:community => @community,:appname => 'local')   
-        format.html { redirect_to(@community) }
+        format.html { redirect_to(people_community_url(@community.id)) }
       else
         format.html { render :action => "edit" }
       end
@@ -350,7 +350,7 @@ class People::CommunitiesController < ApplicationController
       @community.update_user_tags(params[:tag_list].strip,@currentuser)              
       log_user_activity(:activitycode => Activity::COMMUNITY_TAGGED,:user => @currentuser,:community => @community,:appname => 'local')   
       flash[:notice] = 'Your tags for this community were successfully updated.'
-      return redirect_to(@community)
+      return redirect_to(people_community_url(@community.id))
     end
   end
 

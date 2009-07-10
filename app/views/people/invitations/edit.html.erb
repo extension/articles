@@ -7,7 +7,7 @@
 
 
 <%= error_messages_for 'invitation' %>
-<% form_for @invitation do |i| %>
+<% form_for :invitation, :url => {:controller => 'people/invitations'} do |i| %>
 <div class="form_section">
 	<% if @invitation.status == Invitation::INVALID_EMAIL %>
 		<p>

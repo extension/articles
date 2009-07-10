@@ -165,6 +165,14 @@ class ApplicationController < ActionController::Base
     @title_tag = ERB::Util::html_escape(main)
   end
   
+  def admin_mode?
+    if(!@currentuser.nil? && @currentuser.is_admin? && session[:adminmode] == @currentuser.id.to_s)
+      return true
+    else
+      return false
+    end
+  end
+  
 end
 
 

@@ -179,7 +179,7 @@ class Community < ActiveRecord::Base
   end
   
   def update_user_tags(taglist,owner)
-    self.tag_with_and_cache(taglist,owner,Tag::USER)
+    self.tag_with_and_cache(taglist,owner.id,Tag::USER)
   end
   
   def remove_user_tags(owner)
@@ -191,7 +191,7 @@ class Community < ActiveRecord::Base
   end
   
   def tag_myself_with_systemuser_tags(taglist)
-    self.tag_with_and_cache(taglist,User.systemuser,Tag::SHARED,AppConfig::configtable['systemuser_sharedtag_weight'])
+    self.tag_with_and_cache(taglist,User.systemuserid,Tag::SHARED,AppConfig::configtable['systemuser_sharedtag_weight'])
   end
   
   def shared_tag_list_to_s(limit=10)

@@ -9,7 +9,7 @@ module People::ActivityDisplayHelper
   
   def link_to_people_community(community,displayna = true)
     if(!community.nil?)
-      "<a href='#{community_url(community)}'>#{community.name}</a>"
+      "<a href='#{people_community_url(community.id)}'>#{community.name}</a>"
     elsif(displayna)
       "none"
     else
@@ -19,12 +19,12 @@ module People::ActivityDisplayHelper
   
   def link_to_user(user,opts = {})
     show_unknown = opts.delete(:show_unknown) || false
-    show_peoplebot = opts.delete(:show_peoplebot) || false
+    show_systemuser = opts.delete(:show_systemuser) || false
     nolink = opts.delete(:nolink) || false
     
     if user.nil?
       show_unknown ? 'Unknown' : 'System'
-    elsif(user.id == 1 and !show_peoplebot)
+    elsif(user.id == 1 and !show_systemuser)
       'System' 
     elsif(nolink)
       "#{user.fullname}"

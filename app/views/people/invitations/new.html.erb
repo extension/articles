@@ -8,7 +8,7 @@
 <p>Please enter the email address of a colleague that you would like to invite to have an eXtensionID.  They'll be sent an email inviting them to sign up for an eXtensionID and their account will be automatically approved after signup and email confirmation.</p>
 
 <%= error_messages_for 'invitation' %>
-<% form_for @invitation do |i| %>
+<% form_for :invitation, :url => {:controller => 'people/invitations'} do |i| %>
 <div class="form_section">
 	<p>
 		<label for="invitation_email" class="helptext">Enter a valid email address for your colleague:</label> 

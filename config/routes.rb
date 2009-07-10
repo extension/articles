@@ -24,6 +24,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'people/admin/:action', :controller => 'people/admin'
   map.connect 'people/colleagues/:action', :controller => 'people/colleagues'
   map.connect 'people/activity/:action', :controller => 'people/activity'
+  map.connect 'people/activity/:action/:id/:filter', :controller => 'people/activity'
   map.connect 'people/numbers/:action', :controller => 'people/numbers'
 
   map.connect 'people/signup', :controller => 'people/signup', :action => 'new'
@@ -47,9 +48,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # TODO - is this necessary?
   #map.connect 'colleagues/listing/:listtype/:id', :controller => 'colleagues', :action => 'listing'
-
-  map.connect 'activity/:action/:id/:filter', :controller => 'activity'
-  map.connect 'feeds/community/:id/:filter', :controller => 'feeds', :action => 'community'
+  #map.connect 'feeds/community/:id/:filter', :controller => 'feeds', :action => 'community'
 
   map.connect 'openid/xrds', :controller => 'opie', :action => 'idp_xrds'
   map.connect 'people/:extensionid', :controller => 'opie', :action => 'user'

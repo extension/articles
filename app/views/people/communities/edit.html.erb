@@ -1,9 +1,9 @@
 <h1>Edit this Community</h1>
-<p><%= link_to 'View Community', @community %></p>
+<p><%= link_to 'View Community', people_community_url(@community.id) %></p>
 
 <%= error_messages_for :community %>
 
-<% form_for(@community) do |community| %>
+<% form_for :community, :url => {:controller => 'people/communities'} do |community| %>
     <fieldset>
 	    <p class="wide">
 	        <label for="community_name">Community Name:<em class="required">*</em>
@@ -44,7 +44,7 @@
 
 	 <p>
 	     <label for="community_tag_list">Provide some initial tags for this community: 
-	     <%= text_area_tag(:tag_list,@community.peoplebot_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
+	     <%= text_area_tag(:tag_list,@community.system_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
 	     <em>Separate tags with commas or spaces.  Create multi-word tags with double quotes (ie. learning "sharing information" education )</em>
 	     </label>
 	 </p>
