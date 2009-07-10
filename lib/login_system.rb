@@ -137,7 +137,6 @@ module LoginSystem
   # example use :
   # a popup window might just close itself for instance
   def access_denied
-    openid_xrds_header
     redirect_to login_url
   end  
   
