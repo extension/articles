@@ -19,12 +19,21 @@ class AppConfig
     @@configtable['sudoers'] = Hash.new
     @@configtable['mail_label'] = "localdev"
     
-    # possibly return different ones for demo?
-    @@configtable['openid_url_display_prefix'] = {}
-    @@configtable['openid_url_display_prefix']['production'] = 'https://people.extension.org'
-    @@configtable['openid_url_display_prefix']['demo'] = 'http://people.demo.extension.org'
-    @@configtable['openid_url_display_prefix']['localdev'] = 'request_url'
-
+    # possibly return different ones for demo?    
+    @@configtable['openid_url_prefix'] = {}
+    @@configtable['openid_url_prefix']['production'] = {}
+    @@configtable['openid_url_prefix']['production']['claimed'] = 'https://people.extension.org'
+    @@configtable['openid_url_prefix']['production']['local'] = 'https://www.extension.org/people'
+    @@configtable['openid_url_prefix']['demo'] = {}
+    @@configtable['openid_url_prefix']['demo']['claimed'] = 'https://people.demo.extension.org'
+    @@configtable['openid_url_prefix']['demo']['local'] = 'https://pubsitedev.extension.org/people'
+    @@configtable['openid_url_prefix']['localdev'] = 'request_url'
+    
+    @@configtable['openid_endpoint'] = {}
+    @@configtable['openid_endpoint']['production'] = 'https://www.extension.org/opie'
+    @@configtable['openid_endpoint']['demo']= 'https://pubsitedev.extension.org/people'
+    @@configtable['openid_endpoint']['localdev'] = 'request_url'
+    
     
     @@configtable['mail_errors_to'] = "eXtensionAppErrors@extension.org"
     # TODO: may need multiple bcc addresses per functional area
@@ -116,6 +125,15 @@ class AppConfig
       return ":#{@@configtable['url_options']['port']}"
     else
       return ''
+    end
+  end
+  
+  def AppConfig.openid_endpoint
+    location = @@configtable['app_location']      
+    if(@@configtable['openid_endpoint'][location].nil? or @@configtable['openid_endpoint'][location] == 'request_url')
+      return "#{@@configtable['url_options']['protocol']}#{@@configtable['url_options']['host']}#{AppConfig.url_port_string}/opie"
+    else
+      return @@configtable['openid_endpoint'][location]
     end
   end
   

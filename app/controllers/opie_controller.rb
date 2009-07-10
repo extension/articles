@@ -273,7 +273,7 @@ EOS
           @currentuser = checkuser
           return true
         else
-          flash[:failure] = "The OpenID you used (#{identity}) doesn't match the OpenID for your account.  Please use your back button and enter your OpenID: #{checkuser.openid_url}"
+          flash[:failure] = "The OpenID you used doesn't match the OpenID for your account.  Please use your back button and enter your OpenID: #{checkuser.openid_url(true)}"
           return false
         end
       end

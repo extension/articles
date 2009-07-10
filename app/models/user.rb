@@ -167,19 +167,22 @@ class User < ActiveRecord::Base
     write_attribute(:email, emailstring.mb_chars.downcase)
   end
   
-  def openid_url(displayurl=false)
+  def openid_url(claimed=false)
     peoplecontroller = 'people'
     location = AppConfig.configtable['app_location']
     
-    if(displayurl)    
-      if(AppConfig.configtable['openid_url_display_prefix'][location].nil? or AppConfig.configtable['openid_url_display_prefix'][location] == 'request_url')
-        openid_url_prefix = "#{AppConfig.configtable['url_options']['protocol']}#{AppConfig.configtable['url_options']['host']}#{AppConfig.url_port_string}/#{peoplecontroller}"
+    if(AppConfig.configtable['openid_url_prefix'][location].nil? or AppConfig.configtable['openid_url_prefix'][location] == 'request_url')
+      openid_url_prefix = "#{AppConfig.configtable['url_options']['protocol']}#{AppConfig.configtable['url_options']['host']}#{AppConfig.url_port_string}/#{peoplecontroller}"
+    elsif(AppConfig.configtable['openid_url_prefix'][location].is_a?(Hash))
+      if(claimed)          
+        openid_url_prefix = AppConfig.configtable['openid_url_prefix'][location]['claimed']
       else
-        openid_url_prefix = AppConfig.configtable['openid_url_display_prefix'][location]
+        openid_url_prefix = AppConfig.configtable['openid_url_prefix'][location]['local']
       end
     else
-      openid_url_prefix = "#{AppConfig.configtable['url_options']['protocol']}#{AppConfig.configtable['url_options']['host']}#{AppConfig.url_port_string}/#{peoplecontroller}"
+      openid_url_prefix = AppConfig.configtable['openid_url_prefix'][location]
     end
+    
     return "#{openid_url_prefix}/#{self.login.downcase}"
   end  
   

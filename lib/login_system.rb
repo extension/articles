@@ -114,8 +114,6 @@ module LoginSystem
   
 
   def sudo_required
-
-
      if session[:userid]
         checkuser = User.find_by_id(session[:userid])
         if (sudoer?(checkuser))
@@ -182,7 +180,7 @@ module LoginSystem
     proto = request.ssl? ? 'https://' : 'http://'
     xrds_url = openid_xrds_header(openiduser)
     returnstring = '<meta http-equiv="X-XRDS-Location" content="'+xrds_url+'" />'+"\n"
-    returnstring += '<link rel="openid2.provider openid.server" href="'+url_for(:controller => '/opie', :action => :index, :protocol => proto)+'" />'
+    returnstring += '<link rel="openid2.provider openid.server" href="'+AppConfig.openid_endpoint+'" />'
     if(!openiduser.nil?)
       returnstring += '<link rel="openid2.local_id openid.delegate" href="'+openiduser.openid_url+'" />'
     end
