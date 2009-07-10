@@ -177,8 +177,7 @@ module LoginSystem
   # end
   
   def openidmeta(openiduser=nil)
-    proto = request.ssl? ? 'https://' : 'http://'
-    returnstring += '<link rel="openid2.provider openid.server" href="'+AppConfig.openid_endpoint+'" />'
+    returnstring = '<link rel="openid2.provider openid.server" href="'+AppConfig.openid_endpoint+'" />'
     if(!openiduser.nil?)
       returnstring += '<link rel="openid2.local_id openid.delegate" href="'+openiduser.openid_url+'" />'
     end
