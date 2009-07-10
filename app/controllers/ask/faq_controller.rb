@@ -7,100 +7,48 @@
 
 class Ask::FaqController < ApplicationController
   
+  layout 'aae'
+  before_filter :login_required
+  protect_from_forgery :except => [:create] 
   
   # Display the "new FAQ form" when resolving an "ask an expert" question
   def new_faq
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
-    
     if !@submitted_question
       flash[:failure] = "Invalid question."
-      go_back
+      redirect_to :controller => 'ask/expert', :action => :resolved
       return
-    end
-    
-    @question = @submitted_question.to_faq(@currentuser)
-    @revision = @question.revisions[0]
-
-    if params[:question] && params[:answer]
-      @revision.question_text = params[:question]
-      @revision.answer = params[:answer]  
     end
   end
   
   # Save the new FAQ used to resolve an "ask an expert" question
   def create
-    @submitted_question = SubmittedQuestion.find(params[:squid])
-
-    @question = Question.new(params[:question])
+    submitted_question = SubmittedQuestion.find(params[:squid])
     
-    #remove all whitespace in questions and answers before putting into db.
-    params[:revision].collect{|key, val| params[:revision][key] = val.strip}
-    
-    @revision = Revision.new(params[:revision])
-    
-    @revision.user = @currentuser   
-    @question.status = Question::STATUS_DRAFT
-    @question.draft_status = Question::STATUS_DRAFT
-    
-    if !valid_ref_question?
-      flash[:failure] = "Invalid question number entered."
-      error_render("new_faq")
+    if !submitted_question
+      flash[:failure] = "Invalid question entered"
+      redirect_to :controller => 'ask/expert', :action => :resolved
+      return
+    end
+    if !params[:question] or params[:question].strip == '' or !params[:answer] or params[:answer].strip == ''
+      flash[:failure] = "Please enter both a question and an answer."
+      redirect_to :action => :new_faq, :squid => submitted_question.id
       return
     end
     
-    if @question.save
-	    if session[:watch_pref] == "1"
-        @currentuser.questions << @question
-        @currentuser.save
-      end
-      
-      flash[:success] = "Your new FAQ has been saved"
-      # remove any list context in the session so that return to list, next question, etc. 
-      # will not show up when viewing the newly created faq
-      session[:context] = nil
-      redirect_to :controller => 'questions', :action => 'show', :id => @question.id
+    url = URI.parse("#{AppConfig.configtable['faq_site']}/expert/create_faq")
+    http = Net::HTTP.new(url.host, url.port)
+    response = http.post(url.path, "question=#{params[:question]}&answer=#{params[:answer]}&squid=#{submitted_question.id}&userlogin=#{@currentuser.login}")
+    # ToDo: dev setup
+    
+    if response.class == Net::HTTPOK
+      flash[:success] = "Faq has been successfully saved in the faq system at http://faq.extension.org."
+      redirect_to :controller => 'ask/expert', :action => :question, :id => submitted_question.id
     else
-      flash[:failure] = "There was an error saving the new faq. Please try again."
-      error_render("new_faq")
-    end	      
-  end # end create
-  
-  def show_faq
-    @question = Question.find_by_id(params[:id])
-    @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
-    
-    if !@question or !@submitted_question
-      go_back
-      return
-    end
-  end
-  
-  # Show a list of possible FAQs that could be used to resolve an ask an expert question
-  def show_duplicates
-    @errors = []
-    @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
-    if !@submitted_question
-      flash[:failure] = "Please specify a valid question."
-      redirect_to home_url
-      return
-    end
-
-    if params[:query].nil? || params[:query].strip.length == 0
-      flash[:failure] = 'You must enter some search terms.'
-      redirect_to :controller => :expert, :action => :question, :id => @submitted_question.id
-      return
+      flash[:failure] = "Something went wrong saving your faq. Please try entering it again or check back at another time."
+      redirect_to :action => :new_faq, :squid => submitted_question.id
     end
     
-    keywords = params[:query]
-    
-    begin
-      @search_results = Question.full_text_search(keywords, 1, 'and')
-    rescue Exception => e
-      flash[:failure] = "The search could not be successfully completed.e" + e.message
-      email_search_error(request.host, params[:query], e.message)
-      redirect_to :action => :question, :query => params[:query], :id => params[:squid]
-      return
-    end
-  end
+  end    
   
 end

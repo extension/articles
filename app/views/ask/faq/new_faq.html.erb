@@ -7,17 +7,18 @@
 <form action="create" name="faq_form" id="faq_form" method="post">
   <%= hidden_field_tag("squid", @submitted_question.id) %>
 
-  <%= render(:partial => 'questions/form') %>
+  <div class="form_section textarea_group">
+      <fieldset>
+          <p><label for="question">Question</label>
+          <%= text_area_tag 'question', @submitted_question.asked_question, :rows => 3, :class => 'entry', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)" %></p>
+      </fieldset>
 
-<div class="form_section textarea_group">
-    <h3>Questions for Reference</h3>
-    <p>
-        <label>Numbers
-        <%= text_field_tag('Numbers', @input_numbers)%>
-        <br />(Separated by spaces, for example: 2366 1 23665)
-        </label>
-    </p>
-</div>
+      <fieldset>
+          <p><label for="answer">Answer</label>
+          <%= text_area_tag 'answer', @submitted_question.current_response, :rows => 8, :class => 'entry', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)" %>
+          </p>
+      </fieldset>  
+  </div>
 
-<p><%= submit_tag "Save New Question" %></p>
+<p><%= submit_tag "Save New Question", :disable_with => "Saving..." %></p>
 </form>
