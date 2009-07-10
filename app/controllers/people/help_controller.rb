@@ -36,7 +36,7 @@ class HelpController < ApplicationController
         send_contact_email(@contact)
       end
       flash[:success] = "Thank you for your comments, we'll respond soon!"
-      redirect_to(:controller => 'welcome', :action => 'home')
+      redirect_to(welcome_url)
     end
   end
 

@@ -54,7 +54,7 @@ class People::AccountController < ApplicationController
 
     if (@currentuser.emailconfirmed? and params[:force].nil?)
       flash[:warning] = "Your email address is already confirmed."
-      return redirect_to(:controller => 'welcome', :action => 'home') 
+      return redirect_to(welcome_url) 
     end
 
     if params[:token] != nil
@@ -87,7 +87,7 @@ class People::AccountController < ApplicationController
           @currentuser.user_tokens.delete(allemailtokens) if allemailtokens                  
           if (@currentuser.vouched?)
             @currentuser.send_welcome            
-            return redirect_to(:controller => 'welcome', :action => 'home')
+            return redirect_to(welcome_url)
           else
             @currentuser.send_review_request
             return redirect_to(:controller => 'account', :action => 'review')
@@ -138,11 +138,11 @@ class People::AccountController < ApplicationController
         flash.now[:success] = "Login successful."
         UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login',:additionaldata => additionaldata_from_params(params))        
         log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_PASSWORD, :appname => 'local')
-        redirect_back_or_default(:controller => 'welcome', :action => 'home')
+        redirect_back_or_default(welcome_url)
       end
     else
       if(!@currentuser.nil?)
-        redirect_to(:controller => 'welcome', :action => 'home')
+        redirect_to(welcome_url)
       end
     end
   end
@@ -179,6 +179,7 @@ class People::AccountController < ApplicationController
     @currentuser = nil
     session[:userid] = nil
     session[:adminmode] = 0
+    session[:last_opierequest] = nil
   end
     
   def new_password

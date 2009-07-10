@@ -254,7 +254,7 @@ class NotificationMailer < ActionMailer::Base
       @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
-      urls['home'] = url_for(:controller=>:welcome, :action =>:home)
+      urls['home'] = url_for(welcome_url)
       urls['directurl'] = url_for(:controller => :account, :action => :confirmemail, :token => token.token)
       urls['manualurl'] = url_for(:controller => :account, :action => :confirmemail)        
       urls['newtoken'] = url_for(:controller => :account, :action => :confirmemail, :token => 'send')        
@@ -268,7 +268,7 @@ class NotificationMailer < ActionMailer::Base
       @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
-      urls['home'] = url_for(:controller=>:welcome, :action =>:home)
+      urls['home'] = url_for(welcome_url)
       urls['directurl'] = url_for(:controller => :signup, :action => :confirm, :token => token.token)
       urls['manualurl'] = url_for(:controller => :signup, :action => :confirm)        
       urls['newtoken'] = url_for(:controller => :signup, :action => :confirm, :token => 'send')        

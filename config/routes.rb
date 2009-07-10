@@ -20,7 +20,7 @@ ActionController::Routing::Routes.draw do |map|
   
   #################################################################
   ### people routes ###
-  map.connect 'people', :controller => "people/welcome", :action => 'home'
+  map.welcome 'people', :controller => "people/welcome", :action => 'home'
   map.connect 'people/admin/:action', :controller => 'people/admin'
   map.connect 'people/colleagues/:action', :controller => 'people/colleagues'
   map.connect 'people/activity/:action', :controller => 'people/activity'

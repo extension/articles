@@ -59,7 +59,7 @@ class OpenidsessionsController < ApplicationController
     cookies.delete :auth_token
     reset_session
     flash[:notice] = "You have been logged out."
-    redirect_back_or_default(:controller => 'welcome', :action => 'home')
+    redirect_back_or_default(welcome_url)
   end
 
   def access_denied
@@ -93,7 +93,7 @@ class OpenidsessionsController < ApplicationController
   private
 
     def successful_login
-      redirect_back_or_default(:controller => 'welcome', :action => 'home')
+      redirect_back_or_default(welcome_url)
       flash[:notice] = "Logged in successfully"
     end
 

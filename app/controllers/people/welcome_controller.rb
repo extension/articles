@@ -14,12 +14,14 @@ class People::WelcomeController < ApplicationController
   
   def home
     @openidmeta = openidmeta(@openiduser)
+    # if we get here for some reason, clear last_opierequest
+    session[:last_opierequest] = nil
   end
   
   def notice
     result = statuscheck(@currentuser)
     if(AUTH_SUCCESS == result[:code])
-      redirect_to(:controller=>:welcome, :action =>:home)
+      redirect_to(welcome_url)
     else
       @notice = explainauthresult(result[:code])
     end

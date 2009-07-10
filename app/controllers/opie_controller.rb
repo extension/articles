@@ -51,7 +51,7 @@ class OpieController < ApplicationController
       opierequest = session[:last_opierequest]
       if(opierequest.nil?)
         flash[:failure] = "An error occurred during your OpenID login.  Please return to the site you were using and try again."
-        return redirect_to(:controller => "welcome", :action => 'home')
+        return redirect_to(welcome_url)
       else
         # clear it out of the session
         session[:last_opierequest] = nil
@@ -227,7 +227,7 @@ EOS
       else
         # intentionally crash it
         flash[:failure] = "An error occurred during your OpenID login.  Please return to the site you were using and try again."
-        return redirect_to(:controller => "welcome", :action => 'home')
+        return redirect_to(welcome_url)
       end
     end
 
