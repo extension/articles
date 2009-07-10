@@ -31,7 +31,7 @@ class AppConfig
     
     @@configtable['openid_endpoint'] = {}
     @@configtable['openid_endpoint']['production'] = 'https://www.extension.org/opie'
-    @@configtable['openid_endpoint']['demo']= 'https://pubsitedev.extension.org/people'
+    @@configtable['openid_endpoint']['demo']= 'https://pubsitedev.extension.org/opie'
     @@configtable['openid_endpoint']['localdev'] = 'request_url'
     
     
