@@ -155,13 +155,15 @@ module ApplicationHelper
     selected_arr = []
     for topic in topics
       if community
-        selected_arr.push(topic.id) if community.topic_id == topic.id
+        if !community.topic.nil?
+          selected_arr.push(topic.id) if community.public_topic_id == topic.id
+        end
       end
     end
     topic_mapping = topics.map {|t| [t.name,t.id]}
     topic_mapping.unshift(['',''])
     option_html = options_for_select(topic_mapping, selected_arr)
-    select_tag('community[topic_id]', option_html, {})
+    select_tag('community[public_topic_id]', option_html, {})
   end
   
   def incomplete_profile(action)

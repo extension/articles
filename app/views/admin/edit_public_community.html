@@ -37,29 +37,5 @@
         </p>
         </fieldset>
     <% end %>
-
-    <h3><%= @community.name %> tags/categories</h3>
     
-<% form_tag( {:action => 'add_tag', :id => @community}) do %>
-    <fieldset class="stacked">
-        <ul>
-            <%for tag in @community.tags%>
-                <li>
-                    <%= tag.name%>
-                    <%= link_to '(Remove tag)', :action => 'remove_tag', :tag_id => tag.id, :id => @community%>
-                </li>
-            <%end%>
-        </ul>
-    
-	
-	<p>
-	    <label>Add tag</label>
-	    <%= select_tag_for_community%>
-    </p>
-    <p>
-        <%= submit_tag 'Add Tag' %>
-    </p>
-	</fieldset>
-<% end %>
-
 </div>

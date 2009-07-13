@@ -12,13 +12,6 @@
         <li><%= link_to 'Manage External Feed sources', feed_locations_url %></li>
     </ul>
     
-    <h3>People</h3>
-    <ul>
-    <li><%= link_to 'Browse Accounts', :action => 'users' %></li>
-    <!-- <li><%= link_to 'Browse Admins', :action => 'admins' %></li> -->
-    <!-- <li><%= link_to 'Browse Community leaders', :action => 'leaders' %></li> -->
-    </ul>
-
     <% if !AppConfig.configtable['production_site'] %>
     <h3>Jobs</h3>
     <ul>

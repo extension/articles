@@ -116,11 +116,11 @@ class AdminController < DataController
     redirect_to :action => :manage_communities
   end
     
-  def edit_community
+  def edit_public_community
     @right_column = false
-    set_title('Edit Community')
-    set_titletag("Edit Community - eXtension Site Admin")
-    @community = Community.find(params[:id], :include => :tags)
+    set_title('Edit Community Public Options')
+    set_titletag("Edit Community Public Options- eXtension Site Admin")
+    @community = Community.find(params[:id])
   end
   
   def retrieve_wikis
