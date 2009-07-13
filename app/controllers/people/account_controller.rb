@@ -180,6 +180,11 @@ class People::AccountController < ApplicationController
     session[:userid] = nil
     session[:adminmode] = 0
     session[:last_opierequest] = nil
+    session[:via_conduita] = nil; session[:via_conduitb] = nil
+    session[:first_set]= nil; session[:sec_set] = nil
+    session[:left_set] = nil; session[:right_set] = nil
+    session[:set1] = nil; session[:set2] = nil
+    
   end
     
   def new_password

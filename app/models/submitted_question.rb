@@ -83,8 +83,8 @@ named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(tim
          :conditions => [ " ( status='resolved' or status='rejected' or status='no answer') and external_app_id #{extstr} "], :group => " category_id" }  } 
 
 #Response times named scopes for by_responder_locations report
- named_scope :count_avgs_loc, lambda { |extstr| {:select => "state, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
-     :conditions => [ " ( status='resolved' or status='rejected' or status='no answer') and external_app_id #{extstr} "], :group => " state" }  } 
+ named_scope :count_avgs_loc, lambda { |extstr| {:select => "users.location_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
+     :conditions => [ " ( status='resolved' or status='rejected' or status='no answer') and external_app_id #{extstr} "], :group => " users.location_id" }  } 
           
    
 #activity named scopes
@@ -432,6 +432,121 @@ def self.find_with_category(category, *args)
     find(*args)
   end
 end
+
+def SubmittedQuestion.get_extapp_qual( pub, wgt)
+   extstr = " IS NOT NULL "
+   if (pub && !wgt)
+     extstr = " = 'www.extension.org'"
+   end
+   if (wgt && !pub)
+     extstr = " = 'widget'"
+   end   
+   if (!pub && !wgt)
+     extstr = " IS NULL"
+   end
+   return extstr
+ end
+
+def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
+   extstr = get_extapp_qual(pub, wgt)
+   if extstr == " IS NULL";  return 0; end
+   if (date1 && date2)
+     return self.count(:all,
+      :conditions => ["status='submitted' and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2])
+   else
+     return self.count(:all,
+     :conditions => "status='submitted' and external_app_id #{extstr}")
+   end
+ end
+ 
+ def SubmittedQuestion.find_once_externally_submitted(date1, date2, pub, wgt)
+    extstr = get_extapp_qual(pub, wgt)
+     if extstr == " IS NULL";  return 0; end
+     if (date1 && date2)
+       return self.count(:all,
+        :conditions => [" (status='submitted' || status='resolved' || status='rejected' || status='no answer' ) and external_app_id #{extstr} and created_at between ? and ?", date1, date2])
+     else
+       return self.count(:all,
+       :conditions => " ( status='submitted' || status='resolved' || status='rejected' || status='no answer' ) and external_app_id #{extstr}")
+     end
+ end
+ 
+ def SubmittedQuestion.get_avg_response_time(date1, date2, pub, wgt)
+    extstr = get_extapp_qual(pub, wgt) 
+    if extstr == " IS NULL"; return 0; end
+    where_clause = " (status='resolved' or status='rejected' or status='no answer' ) and external_app_id #{extstr}"
+    if (date1 && date2)
+      where_clause = [where_clause + " and created_at >= ? and created_at <= ?", date1, date2]
+    end
+    avg_time_in_hours = find(:all, :select => " avg(timestampdiff(hour, created_at, resolved_at)) as ra",   :conditions => where_clause)
+    avg_time_in_hours[0].ra.to_i
+  end
+  
+  def SubmittedQuestion.get_avg_open_time(date1, date2, dateTo, pub, wgt)
+     extstr = get_extapp_qual(pub, wgt)
+     if extstr == " IS NULL";  return 0; end
+     where_clause = " status='submitted' and external_app_id #{extstr}" 
+     select_clause = " avg(timestampdiff(hour, created_at, now())) as cw "
+     if (date1 && date2)
+       where_clause = ["( status='submitted' || ((status='resolved' || status='rejected' || status='no answer') and resolved_at >= ? and resolved_at <= ?)) and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2, date1, date2]
+       select_clause = " avg(timestampdiff(hour, created_at, '#{dateTo}')) as cw"
+     end
+     avg_open_times = find(:all, :select => select_clause, :conditions => where_clause)
+     avg_open_times[0].cw.to_i
+  end   
+    
+  def SubmittedQuestion.get_noq(date1, date2, extstr)
+    noqr =SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on resolved_by=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id") 
+    noqu = SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on submitted_questions.user_id=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id")
+    noq = self.add_vals(noqr, noqu)
+    noq
+  end
+
+    
+  def self.add_vals(noqr, noqu)
+    # merge and add the resolved and the assigned counts
+    maxlen = [noqr, noqu].max { |a, b| a.size <=> b.size}; n1 = noqr.size
+    if n1==maxlen; lrg = noqr; sml = noqu; else; lrg=noqu; sml = noqr; end
+    noq = {}
+    lrg.each do |id, val|
+       if sml[id]
+         noq[id]= val + sml[id]
+       else
+         noq[id]= val
+       end
+    end
+    sml.each do |id, val|
+      if !lrg[id]
+        noq[id] = val
+      end
+    end
+    noq
+  end
+ 
+  
+  def SubmittedQuestion.get_avg_response_time_past30(date1, date2, pub, wgt, nodays)
+    extstr = get_extapp_qual(pub, wgt)
+    if extstr == " IS NULL";  return 0; end
+    where_clause = " date_sub(curdate(),interval #{nodays} day) <= resolved_at and (status='resolved' || status='rejected' || status='no answer') and external_app_id #{extstr}"
+    if (date1 && date2)
+      where_clause = [" date_sub(?, interval #{nodays} day) <= resolved_at and (status='resolved' || status='rejected' || status='no answer') and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date2, date1, date2]
+    end
+    avg_time_in_hours=find(:all, :select => "avg(timestampdiff(hour, created_at, resolved_at)) as ra", :conditions => where_clause) 
+    avg_time_in_hours[0].ra.to_i
+  end
+  
+  #use a bit of reflection to
+   # make hashes forthe different types...state, category, university
+   def self.makehash(sqlarray, objfield, scale)
+     h = Hash.new
+     x = 0; lim = sqlarray.length
+     while x < lim
+         h[sqlarray[x].send(objfield.intern)]=(sqlarray[x].ra.to_f)/scale  
+         x = x + 1
+     end
+     h
+   end
+ 
 
 
 private

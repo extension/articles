@@ -139,8 +139,8 @@ class Ask::ReportsController < ApplicationController
               case report
               when 'activity'
                  render :template=>'ask/reports/common_sorted_lists'
-            #  when 'response_times'
-            #     render :template => 'reports/common_resptimes_lists'
+              when 'response_times'
+                 render :template => 'ask/reports/common_resptimes_lists'
               end
            end
        end
@@ -188,7 +188,91 @@ class Ask::ReportsController < ApplicationController
               @min = 124
              render  :template => "ask/reports/display_questions"
         end
-        
+         
+         ####  Date handling ###
+         def valid_date()
+           dateFrom = params["dateFrom"]["to_s"] if (params["dateFrom"] && params["dateFrom"]["to_s"]) 
+           date1 = date_valid(dateFrom)
+           dateTo = params["dateTo"]["to_s"] if (params["dateTo"] && params["dateTo"]["to_s"]) 
+           date2 = date_valid(dateTo)
+           [date1, date2, dateFrom, dateTo]
+         end
+
+          def valid_compare_date()
+            dateFrom = params["datecFrom"]["to_s"] if (params["datecFrom"] && params["datecFrom"]["to_s"]) 
+            date1 = date_valid(dateFrom)
+            dateTo = params["datecTo"]["to_s"] if (params["datecTo"] && params["datecTo"]["to_s"]) 
+            date2 = date_valid(dateTo)
+            [date1, date2, dateFrom, dateTo]
+          end
+
+          def date_valid(yyyymmdd)
+              #yyyymmdd = yyyy-mm-dd
+              return nil if !yyyymmdd || yyyymmdd=="" 
+              return Time.parse(yyyymmdd)
+          end
+
+          def errchk(datef,datet, dateFrom, dateTo)
+           if ((datef && datet) && (datet - datef < 0))
+              #   flash.now[:notice] = "From Date is not before To Date."
+                temp =datet; tmps = dateTo    #if flipped, flip 'em
+                datet = datef; dateTo = dateFrom
+                datef = temp; dateFrom = tmps
+           end
+          [datef, datet, dateFrom, dateTo]
+          end
+
+          def parmcheck
+              if params[:bysort] !="y"
+                if params[:FromDate]
+                  dateFrom = params[:FromDate]
+                else
+                  dateFrom = params["dateFrom"]["to_s"] if (params["dateFrom"] && params["dateFrom"]["to_s"])
+                end
+                date1 = date_valid(dateFrom)
+                if params[:ToDate]
+                  dateTo=params[:ToDate]
+                else
+                  dateTo = params["dateTo"]["to_s"] if (params["dateTo"] && params["dateTo"]["to_s"])
+                end
+                date2 = date_valid(dateTo)
+              else
+                dateFrom = params[:from]
+                dateTo=params[:to]
+                date1 = date_valid(dateFrom)
+                date2 = date_valid(dateTo)
+              end
+
+              (date1, date2, dateFrom, dateTo)= errchk(date1,date2,dateFrom,dateTo)
+              [date1, date2, dateFrom, dateTo]
+          end    
+
+          def parmccheck
+            if params[:bysort] !="y"
+              if params[:FromcDate]
+                dateFrom = params[:FromcDate]
+              else
+                dateFrom = params["datecFrom"]["to_s"] if (params["datecFrom"] && params["datecFrom"]["to_s"])
+              end
+              date1 = date_valid(dateFrom)
+              if params[:TocDate]
+                dateTo=params[:TocDate]
+              else
+                dateTo = params["datecTo"]["to_s"] if (params["datecTo"] && params["datecTo"]["to_s"])
+              end
+              date2 = date_valid(dateTo)
+            else
+              dateFrom = params[:fromc]
+              dateTo=params[:toc]
+              date1 = date_valid(dateFrom)
+              date2 = date_valid(dateTo)
+            end
+
+            (date1, date2, dateFrom, dateTo)= errchk(date1,date2,dateFrom,dateTo)
+            [date1, date2, dateFrom, dateTo]
+          end
+
+         ##### end date handling ##### 
         
         ## Expertise Report
         def answerers
@@ -233,7 +317,7 @@ class Ask::ReportsController < ApplicationController
            @filteredoptions = @filteredparams.findoptions
         #    @filterstring = @filteredparams.filter_string   ...why do I need this?
              @cats = Category.find(:all, :conditions => "parent_id is null", :order => "name")
-             @csize = @cats.size ; @statename = ExpertiseLocation.find_by_id(params[:location])
+             @csize = @cats.size 
              @cnties = ExpertiseCounty.find(:all,  :conditions => "location_id = #{params[:location]}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
              @ysize = @cnties.size
            #  @locations = ExpertiseCounty.filtered(@findoptions).displaylist
@@ -301,7 +385,7 @@ class Ask::ReportsController < ApplicationController
           end
           if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
-            countyid = County.find(:first, :conditions => ["location_id=#{Location.find_by_name(@statename).id} and name=?", @county]).id
+            countyid = ExpertiseCounty.find(:first, :conditions => ["location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             @userlist = consolidate(ExpertiseCounty.get_users_for_counties(countyid, @statename, @catname))
             @usize = @userlist.size
           end
@@ -344,7 +428,6 @@ class Ask::ReportsController < ApplicationController
             if params[:State]
               @statename = params[:State]
               @locid = ExpertiseLocation.find_by_name(@statename).id
-              ActiveRecord::Base::logger.debug "@locid= " + ((@locid) ? @locid.to_s : "nil")
             end
           end
           @catname = params[:Category]
@@ -380,7 +463,7 @@ class Ask::ReportsController < ApplicationController
             redirect_to :action => 'state_answerers', :Category => @catname
           end
           if (@county)
-            countyid = County.find(:first, :conditions => ["location_id=#{Location.find_by_name(@statename).id} and name=?", @county]).id
+            countyid = ExpertiseCounty.find(:first, :conditions => ["location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
           # form array of users for selected county
             @userlist = consolidate(ExpertiseCounty.get_users_for_counties(countyid, @statename, @catname))
@@ -388,9 +471,290 @@ class Ask::ReportsController < ApplicationController
           else
             redirect_to :action => 'county_answerers', :State => @statename, :Category => @catname
           end
-        # ActiveRecord::Base::logger.debug "counties = " + ((@counties) ? @counties.collect { |nm| nm}.join(' ') : "")
         end
         
+    ##  End of Expertise Report
+    
+    
+    ##  Response Times Report
+    
+    def response_checkbox_setup(parmdate, public_source, widget_source, via_conduit)
+        #initially make sure checkboxes retain what was last in them
+        ActiveRecord::Base::logger.debug "in response_checkbox_setup"
+       if !session[via_conduit]
+         pub = true; widget = true
+       else
+         pub = session[via_conduit][0]; widget = session[via_conduit][1]
+       end
+        #change the qualifiers acording to the checkbox change
+        if params[parmdate]
+          if params[public_source]
+             pub = params[public_source] 
+          else
+             pub = false
+          end
+          if params[widget_source] 
+             widget = params[widget_source]
+          else
+             widget = false
+          end 
+          if session[via_conduit]
+             session[via_conduit]= [pub, widget]
+           end
+        end
+        return [pub, widget]  
+     end
+
+
+     def response_dates_upper(repaction)
+           ActiveRecord::Base::logger.debug "in response_dates_upper"
+           (public1, widget1)= response_checkbox_setup(:dateTo, :public_sourcea, :widget_sourcea, :via_conduita)
+           #Retain other part of page and modify this section as appropriate
+           ActiveRecord::Base::logger.debug  "back from response_checkbox_setup"
+           @date1 = params[:dat1]; @date2 = params[:dat2]; @dateFrom = params[:datF]; @dateTo=params[:datT]
+            if params[:dateTo]
+               @first_set="y"
+               if params[:commit]=="Clear" || params[:commit]=="Show all" || params[:commit]=="Last 90 days"
+                 @clear1 = "y"
+               end
+            end
+            if !@date1 && @clear1=="n"
+              if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
+                (@date1, @date2, @dateFrom, @dateTo) = parmcheck()
+              else
+                (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+                (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+              end
+              if (@date1 && @date2)
+                @unselected=nil
+                @nodays=(@date2.to_i - @date1.to_i)/(3600*24) 
+                if @nodays > 30 ; @nodays=30; end
+              end
+            else
+              if @clear1 != "y"
+                @date1 = date_valid(@dateFrom); @date2 = date_valid(@dateTo)
+                if (@date1 && @date2)
+                  @unselected=nil
+                  @nodays=(@date2.to_i - @date1.to_i)/(3600*24.0) 
+                  if @nodays > 30 ; @nodays=30; end
+                end
+              else
+                @date1 = nil; @unselected="y"
+              end
+            end
+            ActiveRecord::Base::logger.debug "about to leave response_dates_upper"
+           [@date1, @date2, public1, widget1, @nodays]
+     end      
+
+     def response_avgs_upper(public1, widget1)
+            @number_questions = SubmittedQuestion.find_once_externally_submitted(@date1, @date2, public1, widget1)
+            @avg_response_time = SubmittedQuestion.get_avg_response_time(@date1, @date2, public1, widget1)
+            @avg_resp_past30 = SubmittedQuestion.get_avg_response_time_past30(@date1, @date2, public1, widget1, @nodays)
+            @avg_still_open = SubmittedQuestion.find_externally_submitted(@date1, @date2, public1, widget1)
+            if (params[:dateTo])
+                 session[:first_set]= "y"
+            end
+     end
+
+     def response_dates_lower(repaction)
+        #make sure we read what was last in the checkboxes and retain it
+        (public2, widget2) = response_checkbox_setup(:datecTo, :public_sourceb, :widget_sourceb, :via_conduitb)
+        if params[:datecTo]
+          @sec_set="y"
+          if params[:commit]=="Clear" || params[:commit]=="Show all" || params[:commit]=="remove"
+            @clear2 = "y"
+          end
+         end
+        #retain fields from upper as we change the lower as appropriate
+         @datec1 = params[:compd1]; @datec2=params[:compd2] ; @datecTo = params[:compds]; @datecFrom = params[:compdf]
+          if !@datec1 && @clear2=="n"
+            if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
+               (@datec1, @datec2, @datecFrom, @datecTo) = parmccheck()
+            else
+              (@datec1,@datec2,@datecFrom,@datecTo)=valid_compare_date()
+              (@datec1,@datec2,@datecFrom,@datecTo)= errchk(@datec1,@datec2,@datecFrom,@datecTo)
+            end
+            if (@datec1 && @datec2)
+              @unselectedc=nil
+              @nocdays=(@datec2.to_i - @datec1.to_i)/(3600*24.0) 
+              if @nocdays >= 30 ; @nocdays=30; end
+            end
+          else
+             if @clear2 != "y"
+               @datec1 = date_valid(@datecFrom); @datec2 = date_valid(@datecTo)
+                if (@datec1 && @datec2)
+                   @unselectedc=nil
+                   @nocdays=(@datec2.to_i - @datec1.to_i)/(3600*24.0) 
+                   if @nocdays >= 30 ; @nocdays=30; end
+                end
+             else
+               @datec1 = nil; @unselectedc="y"
+             end
+           end
+          [@datec1, @datec2, public2, widget2, @nocdays]
+     end
+
+     def response_avgs_lower(public2, widget2)
+         @numbc_questions = SubmittedQuestion.find_once_externally_submitted(@datec1, @datec2, public2, widget2)
+         @avgc_response_time = SubmittedQuestion.get_avg_response_time(@datec1, @datec2, public2, widget2)
+         @avgc_resp_past30 = SubmittedQuestion.get_avg_response_time_past30(@datec1, @datec2, public2, widget2, @nocdays)
+         @avgc_still_open = SubmittedQuestion.find_externally_submitted(@datec1, @datec2, public2, widget2)
+          if (params[:datecTo])
+               session[:sec_set]= "y"
+          end
+     end
+
+
+     def response_times
+       @sec_set = nil; @first_set= nil; @clear1="n"; @clear2="n"
+       @first_set = session[:first_set] if session[:first_set]
+       @sec_set = session[:sec_set] if session[:sec_set]
+       @oldest_date = SubmittedQuestion.find_oldest_date
+       @repaction = 'response_times'
+       @nodays = 30; @nocdays = 30
+       @number_questions_all = SubmittedQuestion.find_externally_submitted(nil, nil, true, true )
+       @avg_response_time_all = SubmittedQuestion.get_avg_response_time(nil, nil, true, true)
+       @avg_resp_past30_all = SubmittedQuestion.get_avg_response_time_past30(nil, nil, true, true, @nodays)
+       @avg_open_time_all = SubmittedQuestion.get_avg_open_time(nil, nil,nil, true, true)
+       (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
+       response_avgs_upper(public1, widget1)
+       (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
+       response_avgs_lower(public2, widget2)
+     end  
+    
+    
+    def get_responses_by_category(date1, date2, pub, wgt)
+       extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) ; avgrh = {}
+       if extstr == " IS NULL";  return [ {}, {}, {}]; end
+       noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " external_app_id #{extstr} ", :group => "category_id")
+      # avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr), "category_id",1.0)
+      avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr)).map { |avgs| avgrh[avgs.category_id] = avgs.ra.to_f}
+     #  avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "category")
+       noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " status = 'submitted' and external_app_id #{extstr} ", :group => 'category_id')
+       # used to be [noq, avg4, avg30, noopen]
+       [noq, avgr, noopen]
+     end
+
+
+     def category_response_times
+       @typelist = []; @nof= {}; @var1={}; @var2={}; @var3={}
+       @nos1={}; @nostopn1={}; @p301 = {}; @ppd1 = {}; @avgchg = {} ; @nos2={}; @nostopn2={}; @p302 = {}; @ppd2 = {}
+       @first_set = nil; @sec_set= nil; @clear1="n"; @clear2="n"
+       @first_set = session[:left_set] if session[:left_set]
+       @sec_set = session[:right_set] if session[:right_set]
+       t= Time.now - 90*24*60*60
+       @prior90th = t.to_s
+       @repaction = 'response_times_by_category'; @pagetype=" Category"; rslts = {}
+        #set up defaults   #note, old avg_30_reponses once was in here...(no_questions, avg_responses, avg_30_responses, avg_waiting)
+        (rslts[:no_questions],rslts[:avg_responses], rslts[:avg_waiting]) = get_responses_by_category(nil, nil, true, true)
+           # deal with date data
+         (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
+           # selected dates upper
+           (rslts[:nos1_questions], rslts[:avg1_responses],rslts[:avg1_still_open])= get_responses_by_category(@date1, @date2, public1, widget1)
+             if (params[:dateTo])
+               session[:left_set]= "y"
+             end
+         (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
+            # selected dates lower
+            (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_category(@datec1, @datec2,  public2, widget2)
+            if (params[:datecTo])
+              session[:right_set]= "y"
+            end
+       @type = "Category"
+        @typelist= Category.find(:all,  :order => 'name')
+        response_times_summary(rslts)
+     end
+
+     def response_times_by_category
+        @unselected = "y"; @unselectedc="y"
+        category_response_times
+        params[:sdir]="a"
+        @typelist = transform_typelist(@typelist)
+        render :template=>'ask/reports/common_resptimes_lists'
+     end
+
+     def get_responses_by_location(date1, date2, pub, wgt)
+       extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) ; avgrh = {}
+        if extstr == " IS NULL";  return [ {}, {}, {}]; end
+         noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => " join users on (submitted_questions.resolved_by=users.id or submitted_questions.user_id=users.id) ",
+              :conditions =>  " external_app_id #{extstr} ", :group => "users.location_id")
+       #  noq = SubmittedQuestion.get_noq(date1, date2, extstr)    ##NOTE: THIS STATEMENT WILL SPLIT THE JOIN AND WORK
+         avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr), "location_id",1.0)
+       #  avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr)).map { |avgs| avgrh[avgs.location_id] = avgs.ra.to_f}
+       # avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "location")
+        
+         noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => "join users on submitted_questions.user_id=users.id", 
+              :conditions =>  " status = 'submitted' and external_app_id #{extstr} ", :group => "users.location_id")
+        ActiveRecord::Base::logger.debug "about to return noq, avgr, noopen"
+        # [noq, avgr, avg30, noopen]
+        [noq, avgr, noopen]
+      end
+
+      def response_times_summary(results_hash)
+        stuv = nil
+        @typelist.each do |st|
+           stuv = st.id
+           @nof[st.name]= results_hash[:no_questions][stuv] ; @nos1[st.name]=@nof[st.name]
+           @var1[st.name]= results_hash[:avg_responses][stuv]; @ppd1[st.name]= @var1[st.name]
+        #   @var2[st.name]= avg_30_responses[st.abbreviation] 
+           @var3[st.name]= results_hash[:avg_waiting][stuv]; @nostopn1[st.name]= @var3[st.name]
+           if (@date1 && @date2)
+              @nos1[st.name]= results_hash[:nos1_questions][stuv]
+              @ppd1[st.name]= results_hash[:avg1_responses][stuv]
+              @nostopn1[st.name]= results_hash[:avg1_still_open][stuv]
+           end
+           if (@datec1 && @datec2)
+              @nos2[st.name] = results_hash[:nos2_questions][stuv]
+              @ppd2[st.name] = results_hash[:avg2_responses][stuv]
+              @nostopn2[st.name] = results_hash[:avg2_still_open][stuv]
+           end
+            if (@ppd1[st.name] && @ppd2[st.name] && @ppd1[st.name] > 0 )
+              @avgchg[st.name]= (@ppd2[st.name]- @ppd1[st.name]).to_f/@ppd1[st.name] * 100
+            else
+              @avgchg[st.name]= nil
+            end
+        end
+
+      end
+
+      def location_response_times      
+         @typelist = []; @nof= {}; @var1={}; @var2={}; @var3={}
+         @nos1={}; @nostopn1={}; @p301 = {}; @ppd1 = {}; @avgchg={};  @nos2={}; @nostopn2={}; @p302 = {}; @ppd2 = {}
+         @first_set = nil; @sec_set= nil; @clear1="n"; @clear2="n"
+         @first_set = session[:set1] if session[:set1]
+         @sec_set = session[:set2] if session[:set2]
+         t= Time.now - 90*24*60*60
+         @prior90th = t.to_s; 
+         @repaction = 'response_times_by_location' ; rslts={}
+          #set up defaults   #note....(no_questions, avg_responses, avg_30_responses, avg_waiting)...old example
+          (rslts[:no_questions],rslts[:avg_responses],rslts[:avg_waiting]) = get_responses_by_location(nil, nil,  true, true)
+             # deal with date data
+           (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
+             # selected dates upper
+             ActiveRecord::Base::logger.debug "got to actually getting the first upper dates responses"
+             (rslts[:nos1_questions], rslts[:avg1_responses], rslts[:avg1_still_open])= get_responses_by_location(@date1, @date2,  public1, widget1)
+               if (params[:dateTo])
+                 session[:set1]= "y"
+               end
+           (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
+              # selected dates lower
+              (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_location(@datec1, @datec2,  public2, widget2)
+              if (params[:datecTo])
+                session[:set2]= "y"
+              end
+         @type = "Location"; @pagetype="Responder Location"
+          @typelist= Location.find(:all,  :order => 'entrytype, name') 
+          response_times_summary(rslts)
+       end
+
+       def response_times_by_location
+          @unselected = "y"; @unselectedc="y"
+          location_response_times
+          params[:sdir]="a"
+          @typelist = transform_typelist(@typelist)
+          render :template=>'ask/reports/common_resptimes_lists'
+       end
        
+       ## end of Response Times Report   
   
 end
