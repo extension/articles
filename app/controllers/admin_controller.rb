@@ -6,18 +6,14 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'zip_code_to_state'
 class AdminController < DataController
+  before_filter :admin_required
+  before_filter :check_purgatory
+  
+  
   def index
     set_title('Administration')
-    set_titletag("Site Admin - eXtension")
-    @valid_key = has_verified_akismet_key?
+    set_titletag("eXtension Public Site Administration")
     @right_column = false    
-  end
-  
-  def add_admin
-    set_title('Add an Admin')
-    set_titletag("Add an Admin - eXtension Site Admin")
-    @users = User.find(:all, :include => :roles)
-    @right_column = false
   end
   
   def add_tag
@@ -39,10 +35,6 @@ class AdminController < DataController
     redirect_to :action => :edit_community, :id => params[:id]
   end
   
-  # def remove_community
-  #   Community.find(params[:id]).destroy
-  #   redirect_to :action => :manage_communities
-  # end
   
   def toggle_admin
     @user = User.find(params[:id])
@@ -90,10 +82,9 @@ class AdminController < DataController
   
   def manage_communities
     @right_column = false
-    set_title('Manage Communities', 'Update a communities description')
-    set_titletag("Manage Communities - eXtension Site Admin")
-    @communities =  Community.find_all_sorted
-    @tags = Tag.find :all, :conditions => 'community_id is NULL', :order => 'name'    
+    set_title('Manage Public Communities')
+    set_titletag("Manage Communities - eXtension Site Admin")    
+    @approved_communities =  Community.approved.all(:order => 'name')
   end
   
   def create_community
@@ -179,46 +170,8 @@ class AdminController < DataController
     end 
   end 
   
-  def edit_roles
-    set_title('Edit Roles')
-    set_titletag("Edit User Roles - eXtension Site Admin")
-    @user = User.find(params[:id], :include => :roles)
-    @roles =  Role.find(:all)
-    @right_column = false
-    
-    # do extra processing if this is a form submission
-    if request.post?
-      
-      # if no checkboxes are checked, no values will be submitted, so give the submission a blank array of role ids
-      new_roles = params[:user].nil? ? [] : params[:user][:role_ids]
-      
-      # an admin cannot strip himself of the admin role
-      puts new_roles.inspect
-      if (current_user == @user) and (!new_roles.include? Role.find_by_name('Administrator').id.to_s)
-        @user.roles = [ Role.find_by_name("Administrator") ]
-        flash[:notice] = "You may not remove your own administrative role."
-      else # zero out roles and add them back in from the submitted parameters
-        flash[:notice] = "Roles successfully saved."
-        @user.roles = []
-      end
-      
-      # add roles to user's roles collection proxy
-      new_roles.each do |role_id|
-        @user.roles << Role.find(role_id)
-      end
-    end
-  end
+
   
-  def add_role
-    @user = User.find(params[:id])
-    if(@user.nil?)
-      return redirect_to(:action => 'users')
-    end
-      
-    @role = Role.find(params[:role_id])
-    @user.roles << @role
-    redirect_to :action => 'edit_roles', :id => @user.id
-  end
   
   private
 
@@ -236,9 +189,4 @@ class AdminController < DataController
     redirect_to :action => "index"
   end
   
-  protected
-      
-  def check_self_demotion user_in_question
-    (user_in_question == current_user and user_in_question.is_admin?)
-  end  
 end

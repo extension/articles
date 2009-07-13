@@ -1,4 +1,0 @@
-<td><%= @user.full_name %></td>
-<td><%= check_box "user", "admin", 
-		{'checked' => @user.is_admin?, 'onclick' => "$(this).parentNode.previous().innerHTML = 'saving...'; new Ajax.Updater('checkbox_user_"+@user.id.to_s+"', '/admin/toggle_admin/"+@user.id.to_s+"', {asynchronous:true, evalScripts:true})"}  %>
-</td>

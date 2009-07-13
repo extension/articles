@@ -580,6 +580,6 @@ class People::AdminController < ApplicationController
     end
     
     # view variables
-    render :template => 'admin/users'       
+    render :template => 'people/admin/users'       
   end  
 end

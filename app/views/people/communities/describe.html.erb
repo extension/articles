@@ -2,7 +2,7 @@
 <% @selected_tab = :communities %>
 
 <h1>Describe this Community</h1>
-<p><%= link_to 'View Community', @community %></p>
+<p><%= link_to 'View Community', people_community_url(@community.id) %></p>
 
 <%= render(:partial => 'partial/flashmessages') %>
 <p>Tags are words and phrases that describe the areas of interest, expertise, and activities of this community. </p>
@@ -27,6 +27,6 @@
 	    </ul>
 	<% end %>
 	
-        <p><%= submit_tag 'Save' %> or <%= link_to 'Cancel', @community %></p>
+        <p><%= submit_tag 'Save' %> or <%= link_to 'Cancel', people_community_url(@community.id) %></p>
 	</fieldset>
 <% end %>

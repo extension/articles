@@ -24,7 +24,7 @@ class CreateContentBucket < ActiveRecord::Migration
     values_string = bucketlist.map{|name| "('#{name}','#{insert_time}')"}.join(',')
     execute "INSERT IGNORE INTO content_buckets (name,created_at) VALUES #{values_string}"
     
-    # go through the bucketlist and insert a crapton of entries into the article_buckets table.
+    # go through the bucketlist and insert a whole bunch of entries into the article_buckets table.
     bucketlist.each do|bucketname|
       # get the content bucket id 
       bucketid = ContentBucket.find_by_name(bucketname).id

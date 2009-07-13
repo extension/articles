@@ -4,45 +4,27 @@
   
   <div id="left_col">
   <h3>Communities</h3>
-      <%for community in @communities%>
-    <dl>
-        <dt><%= link_to community.name, :action => 'edit_community', :id => community.id%></dt>
-        <dd><%= community.description %></dd>
-        <dd>tags: <%=community.tags.collect{|t| t.name}.join(', ')%></dd>
-    </dl>
-      <%end%>
-    </div>
-    <div id="right_col">
-  <% form_tag( {:action => 'create_community'} ) do %>
-	<fieldset id="loginform" class="stack_labels">
-	  <h3>Create a New Community</h3>
-		<p>
-		  <label for="community[name]">Community Name:</label>
-		  <%= text_field_tag 'community[name]', ''%>
-		</p>
-		<p>
-		  <label for="tag_id">Tag:</label>
-			<%= select_tag_for_community%>
-		</p>
-		<p>
-		  <label for="community[topic_id]">Topic:</label>
-			<%= select_tag_for_topic%>
-		</p>
-		<p>
-		  <label for="community[description]">Description:</label>
-		  <%= text_field_tag 'community[description]', ''%>
-		</p>
-		<p>
-		  <label for="community[visible]">Visible:</label>
-		  <%= check_box_tag 'community[visible]', true, true %>
-		</p>
-		
-		<p class="submit">
-		  <input type="submit" value="Create" />
-		</p>
-	</fieldset>
-  <% end %>
   
+  <table cellspacing="0" border="1">
+      <tr>
+          <th>&nbsp;</th>
+          <th>Live</th>
+          <th>Community Name</th>
+          <th>Public Community Name</th>
+          <th>Topic</th>
+          <th>Content Tag</th>
+      </tr>
+
+      <% @approved_communities.each do |community|%>
+      <tr>
+          <td>edit</td>
+          <td><%= community.is_launched %></td>
+          <td><%= community.name %></td>
+          <td><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
+          <td><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
+          <td><%= community.cached_content_tags(true).blank? ? 'not set' : community.cached_content_tags.join(',') %></td>
+      <% end%>
+  </table>
   </div>
 
   

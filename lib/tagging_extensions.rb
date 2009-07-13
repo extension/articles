@@ -36,8 +36,22 @@ class ActiveRecord::Base #:nodoc:
       end))
       end
 
-    # Replace the existing tags on <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
+    # Replace or add the existing tags on <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
+    def replace_tags(list,ownerid=User.systemuserid,kind=self.default_tag_kind,weight=1)    
+      add_and_or_remove_tags({:taglist => list, :ownerid => ownerid, :kind => kind, :weight => weight, :replacetags => true})
+    end
+    
     def tag_with(list,ownerid=User.systemuserid,kind=self.default_tag_kind,weight=1)    
+      add_and_or_remove_tags({:taglist => list, :ownerid => ownerid, :kind => kind, :weight => weight, :replacetags => false})
+    end
+    
+    def add_and_or_remove_tags(options)    
+      list = options[:taglist]
+      ownerid = options[:ownerid] || User.systemuserid
+      kind = options[:kind] || self.default_tag_kind
+      weight = options[:weight] || 1
+      replacetags = options[:replacetags].nil? ? 'true' : options[:replacetags]
+      
       taggable?(true)
       tagarray = Tag.castlist_to_array(list,false)  # do not normalize the list
            
@@ -45,12 +59,15 @@ class ActiveRecord::Base #:nodoc:
       Tag.transaction do 
         current_tags = tags_by_ownerid_and_kind(ownerid,kind).map(&:name)
         # because tag array is not normalized, this will likely have dups, but won't create duplicate records
-        _add_tags(tagarray - current_tags,ownerid,kind,weight)  
-        _remove_tags(current_tags - (tagarray.map{|tag| Tag.normalizename(tag)}),ownerid,kind)
+        _add_tags(tagarray - current_tags,ownerid,kind,weight)
+        if(replacetags)  
+          _remove_tags(current_tags - (tagarray.map{|tag| Tag.normalizename(tag)}),ownerid,kind)
+        end
       end
       
       self
     end
+
     
     def remove_tags_and_update_cache(taglist,ownerid,kind)
       _remove_tags(taglist,ownerid,kind)

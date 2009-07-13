@@ -744,7 +744,7 @@ class User < ActiveRecord::Base
   end
   
   def tag_myself_with(taglist)
-    self.tag_with(taglist,self,Tag::USER)
+    self.replace_tags(taglist,self,Tag::USER)
   end
   
   def modify_user_emails(otheruseremails)
