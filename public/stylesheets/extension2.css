@@ -536,15 +536,12 @@ wrap the "a" element with <p class="button2"> to style as button
 #content_css_reset dl dd {font-size:1.2em;}
 #content_css_reset dl dd dd {font-size:inherit;}
 #content_css_reset table,
-#report table,
-#admin table {font-size: 1.2em;border:1px solid #888;border-collapse:collapse;}
+#report table {font-size: 1.2em;border:1px solid #888;border-collapse:collapse;}
 #content_css_reset table caption {font-weight:bold;font-size:1em}
 #content_css_reset table th,
 #content_css_reset table td,
 #report table td,
-#report table th,
-#admin table td,
-#admin table th {margin:0;border:1px solid #aaa;padding:.3em .5em;}
+#report table th {margin:0;border:1px solid #aaa;padding:.3em .5em;}
 #content_css_reset table th {color:#222;}
 #content_css_reset table th {background:#ededed;}
 
@@ -899,3 +896,51 @@ p.textcounter span.charcount-warning {color:#ff0000;font-weight:bold;}
 p.textcounter span.charcount-makeaware {color:#888;}
 
 .primarycolumn {width:400px;}
+
+/* Tables
+-----------------------------------------------------------------------------*/
+#admin table { 
+	width: 100%;
+	color: #222;
+/*  border: 1px solid #888;*/
+	margin: 0 0 1.5em;
+}
+
+#admin th {
+	margin: 0;
+	padding: .1em .5em;
+	text-align: left;
+	white-space: nowrap;
+	background: #eee;
+	color: #555;
+	font-weight: bold;
+  border: 1px solid #ddd;
+	border-bottom:  1px solid #ccc;
+}
+#admin td {
+	margin: 0;
+	padding: 0.1em .5em;
+	text-align: left;
+	font-weight: normal;
+	border-bottom:  1px solid #a9c9e5;
+	vertical-align:middle;
+	border:0;
+}
+
+#admin tr.shaded {background: #e9f1ff;}
+#admin table.hover tr:hover { background: #dbe8ff;color: #000;}
+#admin table.hover tr.shaded:hover {background: #dbe8ff;color: #000;}
+
+#admin table td a          {color: blue; text-decoration: none; display: block; padding: .5em .75em;}
+#admin table td a:link     {color: #00356e;}
+#admin table td a:visited  {color: #00356e;}
+#admin table td a:hover    {color: blue; text-decoration: underline;}
+
+
+#admin table {font-size: 1.2em;border:1px solid #888;border-collapse:collapse;}
+#admin table td,
+#admin table th {margin:0;border-bottom:1px solid #ccc;padding:.3em .5em;}
+#admin table tr.true {background:#edfbff;}
+#admin table tr .islive {text-indent:-5000px;}
+#admin table tr.true .islive {background: #edfbff url(/images/pubsite/green_dot.png) 50% 50% no-repeat;}
+#admin table td.notset {color:#aaa;}
