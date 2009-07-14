@@ -205,6 +205,20 @@ class Ask::ReportsController < ApplicationController
             date2 = date_valid(dateTo)
             [date1, date2, dateFrom, dateTo]
           end
+          
+          def valid_compare_date_calselct()
+            dateFrom = params["datecFrom"] if (params["datecFrom"] ) 
+            if dateFrom
+              dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
+            end
+            date1 = date_valid(dateFrom)
+            dateTo = params["datecTo"] if (params["datecTo"] )
+            if dateTo
+              dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
+            end
+            date2 = date_valid(dateTo)
+            [date1, date2, dateFrom, dateTo]
+          end
 
           def date_valid(yyyymmdd)
               #yyyymmdd = yyyy-mm-dd
@@ -480,7 +494,6 @@ class Ask::ReportsController < ApplicationController
     
     def response_checkbox_setup(parmdate, public_source, widget_source, via_conduit)
         #initially make sure checkboxes retain what was last in them
-        ActiveRecord::Base::logger.debug "in response_checkbox_setup"
        if !session[via_conduit]
          pub = true; widget = true
        else
@@ -507,10 +520,8 @@ class Ask::ReportsController < ApplicationController
 
 
      def response_dates_upper(repaction)
-           ActiveRecord::Base::logger.debug "in response_dates_upper"
            (public1, widget1)= response_checkbox_setup(:dateTo, :public_sourcea, :widget_sourcea, :via_conduita)
            #Retain other part of page and modify this section as appropriate
-           ActiveRecord::Base::logger.debug  "back from response_checkbox_setup"
            @date1 = params[:dat1]; @date2 = params[:dat2]; @dateFrom = params[:datF]; @dateTo=params[:datT]
             if params[:dateTo]
                @first_set="y"
@@ -542,7 +553,6 @@ class Ask::ReportsController < ApplicationController
                 @date1 = nil; @unselected="y"
               end
             end
-            ActiveRecord::Base::logger.debug "about to leave response_dates_upper"
            [@date1, @date2, public1, widget1, @nodays]
      end      
 
@@ -571,7 +581,7 @@ class Ask::ReportsController < ApplicationController
             if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
                (@datec1, @datec2, @datecFrom, @datecTo) = parmccheck()
             else
-              (@datec1,@datec2,@datecFrom,@datecTo)=valid_compare_date()
+              (@datec1,@datec2,@datecFrom,@datecTo)=valid_compare_date_calselct()
               (@datec1,@datec2,@datecFrom,@datecTo)= errchk(@datec1,@datec2,@datecFrom,@datecTo)
             end
             if (@datec1 && @datec2)
@@ -676,16 +686,15 @@ class Ask::ReportsController < ApplicationController
      def get_responses_by_location(date1, date2, pub, wgt)
        extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) ; avgrh = {}
         if extstr == " IS NULL";  return [ {}, {}, {}]; end
-         noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => " join users on (submitted_questions.resolved_by=users.id or submitted_questions.user_id=users.id) ",
-              :conditions =>  " external_app_id #{extstr} ", :group => "users.location_id")
-       #  noq = SubmittedQuestion.get_noq(date1, date2, extstr)    ##NOTE: THIS STATEMENT WILL SPLIT THE JOIN AND WORK
+       #  noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => " join users on (submitted_questions.resolved_by=users.id or submitted_questions.user_id=users.id) ",
+      #        :conditions =>  " external_app_id #{extstr} ", :group => "users.location_id")  ##THIS STATEMENT GOES TO NEVER_NEVER LAND
+         noq = SubmittedQuestion.get_noq(date1, date2, extstr)    ##NOTE: THIS STATEMENT WILL SPLIT THE JOIN AND WORK
          avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr), "location_id",1.0)
        #  avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr)).map { |avgs| avgrh[avgs.location_id] = avgs.ra.to_f}
        # avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "location")
         
          noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => "join users on submitted_questions.user_id=users.id", 
               :conditions =>  " status = 'submitted' and external_app_id #{extstr} ", :group => "users.location_id")
-        ActiveRecord::Base::logger.debug "about to return noq, avgr, noopen"
         # [noq, avgr, avg30, noopen]
         [noq, avgr, noopen]
       end
@@ -731,7 +740,6 @@ class Ask::ReportsController < ApplicationController
              # deal with date data
            (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
              # selected dates upper
-             ActiveRecord::Base::logger.debug "got to actually getting the first upper dates responses"
              (rslts[:nos1_questions], rslts[:avg1_responses], rslts[:avg1_still_open])= get_responses_by_location(@date1, @date2,  public1, widget1)
                if (params[:dateTo])
                  session[:set1]= "y"
