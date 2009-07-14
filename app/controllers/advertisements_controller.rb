@@ -19,8 +19,7 @@ class AdvertisementsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    set_title('Manage Sponsors - Site Admin - eXtension', 'Images')
-    set_titletag('Manage Sponsors - eXtension Site Admin')
+    set_titletag('Manage Sponsors - Pubsite Admin')
     # @advertisements = Advertisement.paginate(:per_page => 8, :page => params[:page])
     @advertisements = Advertisement.find(:all, :order => 'position')
     @right_column = false

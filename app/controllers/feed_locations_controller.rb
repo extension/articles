@@ -2,6 +2,8 @@ class FeedLocationsController < ApplicationController
 
   def index
     @feed_locations = FeedLocation.all
+    set_titletag("External Feeds Management - Pubsite Admin")
+    @right_column = false
   end
 
   def edit

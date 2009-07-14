@@ -1,4 +1,10 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+
 <h1>Manage External Feed Sources</h1>
+
+<p><%= link_to 'Create a new external feed source', new_feed_location_path %></p>
+
 <table>
   <tr>	
 	<th>Feed URL</th>
@@ -15,6 +21,6 @@
 <% end %>
 </table>
 
-<br />
 
-<%= link_to 'Create a new external feed source', new_feed_location_path %>
+
+</div>

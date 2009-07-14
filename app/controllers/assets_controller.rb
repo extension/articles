@@ -8,6 +8,7 @@ class AssetsController < ApplicationController
   # GET /assets
   # GET /assets.xml
   def index
+    set_titletag('Manage Advertising Graphics - Pubsite Admin')
     @assets = Asset.find(:all, :conditions => { :parent_id => nil }, :order => 'created_at DESC')
     @right_column = false
     respond_to do |format|

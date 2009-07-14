@@ -4,6 +4,8 @@ class CountyLinksController < ApplicationController
 
   def index
     @county_links = CountyLink.find(:all)
+    set_titletag("County Links Management - Pubsite Admin")
+    @right_column = false
   end
 
   def show
@@ -16,10 +18,14 @@ class CountyLinksController < ApplicationController
 
   def new
     @county_link = CountyLink.new
+    set_titletag("Create New County Link - Pubsite Admin")
+    @right_column = false
   end
 
   def edit
     @county_link = CountyLink.find(params[:id])
+    set_titletag("Edit County Link - Pubsite Admin")
+    @right_column = false
   end
 
   def create

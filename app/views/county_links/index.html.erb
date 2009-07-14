@@ -1,6 +1,9 @@
 <div id="admin">
     <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
-    <h2>County Links Management</h2>
+    <h1>County Links Management</h1>
+    
+    <p><%= link_to 'Create a new county link', new_county_link_path %></p>
+    
     <table>
         <tr>
             <th scope="col">URL</th>
@@ -19,4 +22,3 @@
 <% end %>
 </table>
 
-<p><%= link_to 'Create a new county link', new_county_link_path %></p>

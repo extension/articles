@@ -1,4 +1,6 @@
-<h1>Upload file</h1>
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+    <h1>Upload file</h1>
 
 <%= error_messages_for :asset %>
 
@@ -13,4 +15,4 @@
   </p>
 <% end -%>
 
-<%= link_to 'Back', assets_path %>
+</div>

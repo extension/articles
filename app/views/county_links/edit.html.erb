@@ -1,4 +1,6 @@
-<h1>Edit a county link</h1>
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+    <h1>Edit a county link</h1>
 
 <%= error_messages_for :county_link %>
 
@@ -9,6 +11,6 @@
   </p>
 <% end %>
 
-<%= link_to 'Destroy', @county_link, :confirm => 'Are you sure?', :method => :delete %> |
+<p><%= link_to 'Delete', @county_link, :confirm => 'Are you sure?', :method => :delete, :class => "delete" %></p>
 
-<%= link_to 'Back', county_links_path %>
+</div>

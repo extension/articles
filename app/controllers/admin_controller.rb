@@ -11,8 +11,7 @@ class AdminController < DataController
   
   
   def index
-    set_title('Administration')
-    set_titletag("eXtension Public Site Administration")
+    set_titletag("eXtension Pubsite Admin")
     @right_column = false    
   end
   
@@ -65,8 +64,7 @@ class AdminController < DataController
   
   def manage_topics
     @right_column = false
-    set_title('Manage Topics')
-    set_titletag("Manage Topics - eXtension Site Admin")
+    set_titletag("Manage Topics - Pubsite Admin")
     @topics = Topic.find(:all)
   end
   
@@ -82,8 +80,7 @@ class AdminController < DataController
   
   def manage_communities
     @right_column = false
-    set_title('Manage Public Communities')
-    set_titletag("Manage Communities - eXtension Site Admin")    
+    set_titletag("Manage Communities - Pubsite Admin")    
     @approved_communities =  Community.approved.all(:order => 'name')
   end
   
@@ -119,7 +116,7 @@ class AdminController < DataController
   def edit_public_community
     @right_column = false
     set_title('Edit Community Public Options')
-    set_titletag("Edit Community Public Options- eXtension Site Admin")
+    set_titletag("Edit Community - Pubsite Admin")
     @community = Community.find(params[:id])
   end
   

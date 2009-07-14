@@ -1,16 +1,16 @@
 <div id="admin">
-    <p><%= link_to 'Admin home', :action => 'index' %>, <%= link_to 'All Communities', :action => 'manage_communities' %></p>
-    <h2>Edit Community Details</h2>
+    <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Communities', :action => 'manage_communities' %></p>
+    <h1>Edit Community Details</h1>
     
 
-    <h3><%= @community.name %></h3>
+    <h2><%= @community.name %></h2>
     
   
     <% form_tag( {:action => 'update_community_description', :id => @community}) do %>
         <fieldset class="stacked">
             <h3>Edit details</h3>
         <p>
-            <label>Name:</label>
+            <label>Public Name:</label>
             <%= text_field_tag 'community[public_name]', @community.public_name %>
             <span class="instructions">This will show up for links to this community.</span>
         </p>
