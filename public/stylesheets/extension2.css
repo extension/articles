@@ -715,17 +715,6 @@ br.clear {clear: both;}
 }
 .skip a:hover {cursor: default}
 
-/* server location visual indicator */
-div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:5px;font-size: 1.1em;}
-div#app_location.localdev {background: #ccc;border:1px solid #aaa;color:#222;}
-div#app_location.demo {background: #561d65;}
-div#app_location.test {background: #1b652e;}
-div#app_location.preview {background: #229ec0;}
-div#app_location a {color:#fff; text-decoration:underline; padding:0 .5em;}
-div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5em;}
-div#app_location a:visited {color:#fff; text-decoration:underline;}
-div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
-/*div#app_location {display:none;}*/
 
 #admin h2, h3 {
     color:#333;

@@ -7,10 +7,16 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>eXtension Ask: <%= @page_title || controller.action_name %></title>
     <%= stylesheet_link_tag 'widgets' %>
+    <%= stylesheet_link_tag 'common' %>
     <%= javascript_include_tag :defaults %>
 </head>
 
 <body>
+    <% if (AppConfig.configtable['app_location'] != 'production') %>
+    <div id="app_location" class="<%= AppConfig.configtable['app_location'] %>">
+        <p>You are viewing the <strong><%= AppConfig.configtable['app_location'] %></strong> site.</p>
+    </div>
+    <% end %>
     <div id="masthead">
         <div class="wrapper">
             <div id="header">

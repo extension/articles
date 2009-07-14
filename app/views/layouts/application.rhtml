@@ -20,7 +20,7 @@
     	<%= stylesheet_link_tag 'extension2' %>
     	<%= stylesheet_link_tag 'extension2', :media => 'print' %>
 	<% end %>
-  
+    <%= stylesheet_link_tag 'common' %>
   <% if @youth %>
      <%= stylesheet_link_tag 'youth' %>
   <% end %>
@@ -68,11 +68,8 @@
    </script>
 </head>
 <body>
-    
-    <% if (AppConfig.configtable['site_label'] != 'production' and AppConfig.configtable['site_label'] != 'shownav') %> 
-    <div id="app_location" class="<%= AppConfig.configtable['site_label'] %>">
-        You are viewing the <strong><%= AppConfig.configtable['site_label'] %></strong> site. <%= link_to("Say what?", "http://about.extension.org/wiki/Pubsite/Testing") %>
-    </div>
+    <% if(AppConfig.configtable['app_location'] != 'production' and AppConfig.configtable['app_location'] != 'shownav' )%>
+    	<div id="app_location" class="<%= AppConfig.configtable['app_location'] %>"><p>You are viewing the <strong><%= AppConfig.configtable['app_location'] %></strong> site. <%= link_to("more info", "http://about.extension.org/wiki/Pubsite/Testing") %></p></div>
     <% end %>
     
     <ul id="skiplist">

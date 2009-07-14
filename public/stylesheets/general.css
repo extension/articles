@@ -459,12 +459,3 @@ div.pagination {font-size:1.3em; line-height: 140%;}
   color: #000;
 }
 
-/* server location visual indicator */
-div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:8px;}
-div#app_location p {margin:0;line-height:1em;}
-div#app_location.localdev {background: #ccc;border:1px solid #aaa;color:#444;padding:4px;}
-div#app_location.demo {background: #ff00ff;border:1px solid #000;color:#222;}
-div#app_location a {color:#fff; text-decoration:underline; padding:0 .5em;}
-div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5em;}
-div#app_location a:visited {color:#fff; text-decoration:underline;}
-div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}

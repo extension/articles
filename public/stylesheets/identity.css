@@ -58,20 +58,7 @@ h1 em {color:#000;}
 /*#content li {list-style:disc;line-height:1.8em;}*/
 #content ul {margin:2em;}
 
-/* Location div for development
------------------------------------------------------------------------------*/
-div#app_location {
-	text-align: center;
-	color: #fff;
-	background: #dfffcb;
-	padding: 4px;
-	border-bottom: 1px solid #666;
-}
-div#app_location p {margin:0;padding:0;}
-div#app_location.localdev {background: #888;}
-div#app_location.demo {background: #561d65;}
-div#app_location.test {background: #1b652e;}
-div#app_location.preview {background: #229ec0;}
+
 
 /* Nav bar to other eXtension apps
 -----------------------------------------------------------------------------*/

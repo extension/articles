@@ -1,5 +1,5 @@
 <% if(AppConfig.configtable['app_location'] != 'production' and AppConfig.configtable['app_location'] != 'shownav' )%>
-	<div id="app_location" class="<%= AppConfig.configtable['app_location'] %>"><p>Location Reminder: You are viewing the eXtension <strong><%= AppConfig.configtable['app_location'] %></strong> site</p></div>
+	<div id="app_location" class="<%= AppConfig.configtable['app_location'] %>"><p>You are viewing the <strong><%= AppConfig.configtable['app_location'] %></strong> site</p></div>
 <% end %>
 <ul id="extensionNav">
     <li class="begin"><a href="<%= AppConfig.configtable['events_site'] %>">Events</a></li>
