@@ -3,7 +3,8 @@
 
 <%= error_messages_for :community %>
 
-<% form_for :community, :url => {:controller => 'people/communities'} do |community| %>
+
+<% form_for :community, @community, :url => people_community_path(@community), :html => { :method => :put } do |community| %>
     <fieldset>
 	    <p class="wide">
 	        <label for="community_name">Community Name:<em class="required">*</em>
