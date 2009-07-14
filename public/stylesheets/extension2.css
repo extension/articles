@@ -719,8 +719,8 @@ br.clear {clear: both;}
 #admin h2, h3 {
     color:#333;
 }
-#admin h2 {
-    font-size:1.9em;
+#admin h1 {
+    font-size:2em;
     color:#555;
     margin: 1em 0;
     border-bottom:1px solid #ccc;
@@ -809,6 +809,8 @@ br.clear {clear: both;}
     font-size:1.2em;
 }
 #admin dt { font-size:1.5em;}
+#admin p {font-size:1.3em;}
+
 /*border:1px solid red;*/
 #user_roles {padding:1em;border: #cae0fb 2px solid !important;}
 #user_roles fieldset {border:1px solid #fff;margin:0;padding:0;}

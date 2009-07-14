@@ -1,7 +1,7 @@
 <div id="admin">
-    <h2>Public Site Administration</h2>
+    <h1>Public Site Administration</h1>
     
-    <h3>Content Management</h3>
+    <h2>Content Management</h2>
     <ul>
         <li><%= link_to 'Manage Communities', :action => 'manage_communities' %></li>
         <li><%= link_to 'Manage Topics', :action => 'manage_topics' %></li>
@@ -13,7 +13,7 @@
     </ul>
     
     <% if !AppConfig.configtable['production_site'] %>
-    <h3>Jobs</h3>
+    <h2>Jobs</h2>
     <ul>
             <li><%= link_to 'Retrieve Wiki Articles', :action => 'retrieve_wikis' %></li>
             <li><%= link_to 'Retrieve FAQs', :action => 'retrieve_faqs' %></li>
