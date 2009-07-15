@@ -69,6 +69,8 @@ class ExternalArticle < Article
     'article'
   end
   
+  
+  
   private
   
   # Can only be done after we have a pk

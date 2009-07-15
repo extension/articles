@@ -7,6 +7,10 @@
 
 require 'uri'
 class Article < ActiveRecord::Base
+  extend DataImportContent  # utility functions for importing content
+  # constants for tracking delete/updates/adds
+
+  
   # currently, no need to cache, we don't fulltext search article tags
   # has_many :cached_tags, :as => :tagcacheable
   
@@ -31,9 +35,10 @@ class Article < ActiveRecord::Base
     {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
   
-  def put_in_buckets(namelist)
+  def put_in_buckets(categoryarray)
+    logger.info "categoryarray = #{categoryarray.inspect}"
     namearray = []
-    namelist.split(',').each do |name|
+    categoryarray.each do |name|
       namearray << ContentBucket.normalizename(name)
     end
     
@@ -41,69 +46,104 @@ class Article < ActiveRecord::Base
     self.content_buckets = buckets
   end
   
-  class << self
+  def self.create_or_update_from_atom_entry(entry)
+    article = find_by_original_url(entry.link) || self.new
     
-    def from_atom_entry(entry)
-      article = find_by_original_url(entry.link) || self.new
-      
-      if entry.updated.nil?
-        updated = Time.now.utc
-      else
-        updated = Time.parse(entry.updated)
-      end
-      
-      # if article.wiki_updated_at
-      #   if article.wiki_updated_at > updated
-      #     # if ours is newer, skip this update
-      #     return
-      #   end
-      # end
-      article.wiki_updated_at = updated
-      
-      if entry.published.nil?
-        pubdate = Time.now.utc
-      else
-        pubdate = Time.parse(entry.published)
-      end
-      article.wiki_created_at = pubdate
-      
-      article.taggings.each { |t| t.destroy }
-      article.tag_list = []
-      
-      if entry.categories and entry.categories.include?('delete')
-        article.destroy
-        return
-      end
-      
-      article.title = entry.title
-      article.url = entry.link if article.url.blank?
-      article.author = entry.author.name
-      article.original_content = entry.content
-    
-      assign_tags(article, entry)
-      article.save
-      article
+    if entry.updated.nil?
+      updated = Time.now.utc
+    else
+      updated = Time.parse(entry.updated)
     end
+    
+    # if article.wiki_updated_at
+    #   if article.wiki_updated_at > updated
+    #     # if ours is newer, skip this update
+    #     return
+    #   end
+    # end
+    article.wiki_updated_at = updated
+    
+    if entry.published.nil?
+      pubdate = Time.now.utc
+    else
+      pubdate = Time.parse(entry.published)
+    end
+    article.wiki_created_at = pubdate
+      
+    if entry.categories and entry.categories.include?('delete')
+      returndata = [article.wiki_updated_at, 'deleted', nil]
+      article.destroy
+      return returndata
+    end
+    
+    article.title = entry.title
+    article.url = entry.link if article.url.blank?
+    article.author = entry.author.name
+    article.original_content = entry.content
+  
+    if(article.new_record?)
+      returndata = [article.wiki_updated_at, 'added']
+    else
+      returndata = [article.wiki_updated_at, 'updated']
+    end  
+    article.save
+    if(!entry.categories.blank?)
+      article.replace_tags(entry.categories,User.systemuserid,Tag::CONTENT)
+      article.put_in_buckets(entry.categories)    
+    end
+    returndata << article
+    return returndata
   end
+  
+  def self.retrieve_deletes(options = {})
+     current_time = Time.now.utc
+     refresh_all = (options[:refresh_all].nil? ? false : options[:refresh_all])
+     update_retrieve_time = (options[:update_retrieve_time].nil? ? true : options[:update_retrieve_time])
+     feed_url = (options[:feed_url].nil? ? AppConfig.configtable['changes_feed_wiki'] : options[:feed_url])
+     updatetime = UpdateTime.find_or_create(self,'changes')
+     
+     if(refresh_all)
+       refresh_since = (options[:refresh_since].nil? ? AppConfig.configtable['changes_feed_refresh_since'] : options[:refresh_since])
+     else
+       refresh_since = updatetime.last_datasourced_at
+     end
+     
+     fetch_url = self.build_feed_url(feed_url,refresh_since,true)
+     
+    
+    # will raise errors on failure
+    xmlcontent = self.fetch_url_content(fetch_url)
 
-  def self.from_changes_entry(entry)
-    article = nil
-    if entry.id == AppConfig.configtable['host_wikiarticle'] + "/wiki/Special:Log/delete"
-      matches = entry.summary.match(/title=\"(.*)\"/)
-      if matches
-        title = matches[1]
-        article = Article.find_by_title(title) || nil
-        if article
-          removed_time = Time.parse(entry.updated)
-          if article.wiki_updated_at > removed_time
-            # if article is newer than delete record, then keep it
-            article = nil
-          end
-        end
-      end
-    end
-
-    article
+    # create new objects from the atom entries
+    deleted_items = 0
+    last_updated_item_time = refresh_since
+    atom_entries =  AtomEntry.entries_from_xml(xmlcontent)
+    if(!atom_entries.blank?)
+      atom_entries.each do |entry|
+        if entry.id == AppConfig.configtable['host_wikiarticle'] + "/wiki/Special:Log/delete"
+          matches = entry.summary.match(/title=\"(.*)\"/)
+          if matches
+          title = matches[1]
+            article = Article.find_by_title(title)
+            if(!article.nil?)
+              removed_time = Time.parse(entry.updated)
+              # if article is newer than delete record, then keep it
+              if article.wiki_updated_at <= removed_time
+                article.destroy
+                deleted_items += 1
+                if(removed_time > last_updated_item_time )
+                  last_updated_item_time = removed_time
+                end
+              end 
+            end
+          end # matched title
+        end # deleted entry check
+      end # atom_entries array
+    end # had atom entries
+      
+    # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
+    updatetime.update_attribute(:last_datasourced_at,last_updated_item_time + 1)
+    return {:deleted => deleted_items, :last_updated_item_time => last_updated_item_time}
   end
   
   def id_and_link
@@ -152,12 +192,7 @@ class Article < ActiveRecord::Base
   end
   
   private
-  
-  #TODO: Change for Tags
-  def self.assign_tags(article, feed_item)
-    article.tag_list.add(*feed_item.categories)
-  end
-  
+    
   def store_original_url
     self.original_url = self.url if !self.url.blank? and self.original_url.blank?
   end

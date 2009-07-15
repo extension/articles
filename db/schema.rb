@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090706182040) do
+ActiveRecord::Schema.define(:version => 20090715141254) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -334,10 +334,11 @@ ActiveRecord::Schema.define(:version => 20090706182040) do
   end
 
   create_table "feed_locations", :force => true do |t|
-    t.text     "uri",                          :null => false
-    t.boolean  "active",     :default => true
+    t.text     "uri",                                   :null => false
+    t.boolean  "active",             :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "retrieve_with_time", :default => false
   end
 
   create_table "help_feeds", :force => true do |t|
