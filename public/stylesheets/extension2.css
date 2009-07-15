@@ -312,6 +312,7 @@ div#slider2.home_slider .contentdiv {background: url(/images/layout/featurebgnd_
 div#slider2.cop_slider .contentdiv {background: url(/images/layout/cop_featurebgnd_top.gif) no-repeat top center;}
 
 .pagination {font-size:1.2em;margin:0; padding:2px; width: 610px;}
+#admin {margin-bottom:150px;}
 #admin .pagination {margin:0 0 1.35em;text-align:left;float:left;}
 #admin .pagination a:link, #admin .pagination a:visited {color:blue;text-decoration:underline;}
 #admin .pagination a:hover {background:none;}
@@ -790,6 +791,11 @@ br.clear {clear: both;}
 }
 .delete {background:#fa9293; padding: .2em .5em;font-weight:normal;color:#fff !important;}
 .delete:hover {background:red;}
+.right {float:right;}
+.cancel {margin-left:1em;}
+a.cancel {color:#888;}
+a.cancel:hover {color:#000;}
+
 #admin dl {
     margin-bottom:1em;
 }

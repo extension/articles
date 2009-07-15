@@ -1,17 +1,17 @@
 <div id="admin">
-    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %> > <%= link_to 'Feed Locations', :controller => "admin", :action => "feed_locations"  %></p>
     
     <h1>Update feed source</h1>
 
     <%= error_messages_for :feed_location %>
 
-<% form_for(@feed_location) do |f| %>
-  <%= render :partial => 'form', :locals => { :feed_location => @feed_location } %>	
-  <p>
-    <%= f.submit "Update" %>
-  </p>
-<% end %>
-
-<p><%= link_to 'delete', @feed_location, :confirm => 'Are you sure?', :method => :delete, :class => "delete" %></p>
+    <% form_for(@feed_location) do |f| %>
+        <%= render :partial => 'form', :locals => { :feed_location => @feed_location } %>	
+        <p>
+            <%= f.submit "Update" %> 
+            <%= link_to 'cancel', {:controller => "admin", :action => "feed_locations"}, {:class => "cancel"}  %> 
+            <%= link_to 'delete', @feed_location, :confirm => 'Are you sure?', :method => :delete, :class => "delete right" %> 
+        </p>
+    <% end %>
 
 </div>

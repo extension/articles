@@ -1,5 +1,5 @@
 <div id="admin">
-    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %> > <%= link_to 'County Links', :controller => "admin", :action => "county_links"  %></p>
     <h1>Edit a county link</h1>
 
 <%= error_messages_for :county_link %>
@@ -7,10 +7,12 @@
 <% form_for(@county_link) do |f| %>
   <%= render :partial => 'form', :locals => { :county_link => @county_link } %>
   <p>
-    <%= f.submit "Update" %>
+    <%= f.submit "Update" %> 
+    <%= link_to 'cancel', {:controller => "admin", :action => "county_links"}, {:class => "cancel"}  %> 
+    <%= link_to 'Delete', @county_link, :confirm => 'Are you sure?', :method => :delete, :class => "delete right" %>
   </p>
 <% end %>
 
-<p><%= link_to 'Delete', @county_link, :confirm => 'Are you sure?', :method => :delete, :class => "delete" %></p>
+
 
 </div>

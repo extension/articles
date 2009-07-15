@@ -8,6 +8,8 @@ class FeedLocationsController < ApplicationController
 
   def edit
     @feed_location = FeedLocation.find(params[:id])
+    set_titletag("Edit Feed Source - Pubsite Admin")
+    @right_column = false
   end
 
   def update
@@ -23,6 +25,8 @@ class FeedLocationsController < ApplicationController
   
   def new
     @feed_location = FeedLocation.new
+    set_titletag("New Feed Source - Pubsite Admin")
+    @right_column = false
   end
 
   def create
