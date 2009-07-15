@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class ArticlesController < DataController
+class ArticlesController < ApplicationController
   
   def index
     set_title('Articles', "Don't just read. Learn.")

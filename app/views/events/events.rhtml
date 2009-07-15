@@ -17,7 +17,7 @@
             </p>
         </fieldset>
     </form>
-  <p class="months"><span>Month</span>: <%=month_select(get_month, false, @category, params[:state])%></p>
+  <p class="months"><span>Month</span>: <%=month_select(get_calendar_month, false, @category, params[:state])%></p>
 </div>
 
 <%if @results.length == 0%>

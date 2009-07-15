@@ -5,18 +5,14 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class MainController < DataController
+class MainController < ApplicationController
   protect_from_forgery :except => :find_institution
   skip_before_filter :disable_link_prefetching, :get_tag, :only => :find_institution
 
   def index
      set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
      set_titletag('eXtension - Objective. Research-based. Credible.')
-     
-     # TODO These need to go
-     get_month
-     get_date
-     
+        
      @sponsors = Advertisement.prioritized_for_tag(Tag.find_by_name('all'))
      
      @in_the_news = Article.bucketed_as('news').ordered.limit(4)
@@ -29,7 +25,7 @@ class MainController < DataController
      @latest_article = @latest_activities[0]
      @second_latest = @latest_activities[1]
      
-     date_conditions = ['start >= ? AND start < ?', @date, @date+5]
+     date_conditions = ['start >= ? AND start < ?', get_calendar_date, get_calendar_date+5]
      @calendar_events = Event.find(:all, :conditions => date_conditions, :order => 'date ASC')
 
      @latest_learning_lesson = Article.bucketed_as('learning lessons').ordered.first     
@@ -40,10 +36,7 @@ class MainController < DataController
       render(:file => 'public/404.html', :layout => false) 
       return
     end
-
-    get_month
-    get_date
-    
+  
     if @community
       set_title(@community.name,@community.public_description)
       set_titletag("#{@community.public_name} - eXtension")
@@ -70,7 +63,7 @@ class MainController < DataController
       @news = Article.bucketed_as('news').ordered.limit(3)
       @recent_learning_lessons = Article.bucketed_as('learning lessons').ordered(Article.orderings['Newest to oldest']).limit(3)
       @faqs = Faq.limit(3).ordered
-      @calendar_events = Event.ordered.within(3, @date)
+      @calendar_events = Event.ordered.within(3, get_calendar_date)
       @articles = Article.ordered(Article.orderings['Newest to oldest']).limit(3)
       
     else
@@ -80,7 +73,7 @@ class MainController < DataController
         Article.bucketed_as('learning lessons').tagged_with_content_tag(params[:category]).ordered(Article.orderings['Newest to oldest']).limit(3)
           
       @faqs = Faq.tagged_with_content_tag(@category.name).ordered.limit(3)
-      @calendar_events =  Event.tagged_with_content_tag(@category.name).ordered.limit(5).after(@date)
+      @calendar_events =  Event.tagged_with_content_tag(@category.name).ordered.limit(5).after(get_calendar_date)
     
       @articles = Article.tagged_with_content_tag(params[:category]).
           ordered(Article.orderings['Newest to oldest']).limit(8) unless @community
@@ -234,5 +227,18 @@ class MainController < DataController
       return false
     end
   end
+  
+  def get_calendar_date
+    if params[:year] && params[:month] && params[:date]
+      date = Date.civil(params[:year].to_i, params[:month].to_i, params[:date].to_i)
+    elsif params[:year] && params[:month]
+      date = Date.civil(params[:year].to_i, params[:month].to_i, 1)
+    else
+      date = Time.now.to_date
+    end
+    
+    return date
+  end
+  
   
 end

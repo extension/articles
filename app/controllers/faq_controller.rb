@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class FaqController < DataController
+class FaqController < ApplicationController
   
   def index
     set_title('Answered Questions from Our Experts', "Frequently asked questions from our resource area experts.")

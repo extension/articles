@@ -4,7 +4,6 @@
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
-require 'zip_code_to_state'
 class AdminController < ApplicationController
   before_filter :admin_required
   before_filter :check_purgatory
