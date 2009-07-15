@@ -10,7 +10,7 @@
     <div class = "headline left">
         <h1 class="title"><%= @event.title %></h1>
         <p class="caption">
-            <%= render (:partial => '/data/created_by',  :locals => { :community_tags => @community_tags}) if @community_tags %>
+            <%= render (:partial => 'shared/created_by',  :locals => { :community_tags => @community_tags}) if @community_tags %>
         </p>
         <p class="view-as-web-page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
     </div>

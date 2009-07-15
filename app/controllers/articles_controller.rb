@@ -13,7 +13,7 @@ class ArticlesController < ApplicationController
     return do_404 unless Article.orderings.has_value?(params[:order])
     articles = Article.tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'data/index', :locals => { :items => articles, :klass => Article }, :layout => true
+    render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true
   end
   
   def page
@@ -113,7 +113,7 @@ class ArticlesController < ApplicationController
     return do_404 unless Article.orderings.has_value?(params[:order])
     @news = Article.bucketed_as('news').tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'data/index', :locals => { :items => @news, :klass => Article }, :layout => true
+    render :partial => 'shared/dataitems', :locals => { :items => @news, :klass => Article }, :layout => true
   end
   
   def learning_lessons
@@ -122,7 +122,7 @@ class ArticlesController < ApplicationController
     return do_404 unless Article.orderings.has_value?(params[:order])
     @learning_lessons = Article.bucketed_as('learning lessons').tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'data/index', :locals => { :items => @learning_lessons, :klass => Article }, :layout => true
+    render :partial => 'shared/dataitems', :locals => { :items => @learning_lessons, :klass => Article }, :layout => true
   end
   
   private

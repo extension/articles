@@ -13,7 +13,7 @@ class FaqController < ApplicationController
     return do_404 unless Faq.orderings.has_value?(params[:order])
     @faqs = Faq.tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'data/index', :locals => { :items => @faqs, :klass => Faq }, :layout => true
+    render :partial => 'shared/dataitems', :locals => { :items => @faqs, :klass => Faq }, :layout => true
   end
   
   def detail
