@@ -5,7 +5,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :assets, :path_prefix => '/admin', :except => :show
   map.resources :county_links, :path_prefix => '/admin'
   map.resources :institutions, :path_prefix => '/admin'
-  map.resources :feed_locations, :path_prefix => '/admin'
+  
+  map.namespace :admin do |admin|
+    admin.resources :feed_locations
+  end
   
   map.asset 'admin/asset/:file', :controller => "assets", :action => "show"
   map.connect 'admin/asset/:file.:format', :controller => "assets", :action => "show"

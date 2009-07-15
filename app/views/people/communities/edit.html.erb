@@ -28,21 +28,6 @@
 	        </div>
 		<% end %>
 
-	<% if(admin_mode? and @community.entrytype != Community::SYSTEM)%>
-	    <p>
-		    <label for="community_entrytype">Community Type<em class="required">*</em></label>
-			<%= select(:community, :entrytype, get_communitytypes_for_select, :include_blank => false) %> 
-		</p>
-	<% end %>
-	
-	<% if(admin_mode?)%>
-		<p>
-		    <label for="community_shortname">Community Shortname:
-		    	<%= community.text_field(:shortname) %>
-        	</label>		
-		</p>
-	<% end %>	
-
 	 <p>
 	     <label for="community_tag_list">Provide some initial tags for this community: 
 	     <%= text_area_tag(:tag_list,@community.system_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
@@ -50,8 +35,34 @@
 	     </label>
 	 </p>
 	
-        <p><%= submit_tag 'Update' %> or <%= link_to 'Cancel', :controller => :communities, :action => :index %></p>
     </fieldset>
+    
+    <% if(admin_mode?)%>
+	    <fieldset>
+            <legend>Administrative Options:</legend>
+    	<% if(@community.entrytype != Community::SYSTEM)%>
+    	    <p>
+    		    <label for="community_entrytype">Community Type<em class="required">*</em></label>
+    			<%= select(:community, :entrytype, get_communitytypes_for_select, :include_blank => false) %> 
+    		</p>
+    	<% end %>
+	
+		<p>
+		    <label for="community_shortname">Community Shortname:
+		    	<%= community.text_field(:shortname) %>
+        	</label>		
+		</p>
+		
+		<p>
+	        <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
+	         <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
+	    </p>
+	    </fieldset>
+        
+	<% end %>
+
+	<p><%= submit_tag 'Update' %> or <%= link_to 'Cancel', :controller => :communities, :action => :index %></p>
+    
  <% end %>
 
  <script type="text/javascript">

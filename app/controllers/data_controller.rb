@@ -2,20 +2,12 @@ require 'zip_code_to_state'
 
 class DataController < ApplicationController
   
-  before_filter :get_community
   
   helper_method :get_month
   
   private
   
-  def get_community
-    @community = nil
-    if @category && @category.name != 'all' && @category.content_community
-      @community = @category.content_community
-    end
-    @personal[:community] = @community
-    @topic = @community.topic if @community and @community.topic
-  end
+
   
   def get_class
     nil
@@ -34,10 +26,6 @@ class DataController < ApplicationController
       @month = Date.civil(todays_date.year, todays_date.month, 1)
     end
     @month
-  end
-  
-  def no_right_column
-    @right_column = false
   end
   
   def get_date

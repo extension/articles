@@ -1,15 +1,14 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2006 North Carolina State University
+#  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'zip_code_to_state'
-class AdminController < DataController
+class AdminController < ApplicationController
   before_filter :admin_required
   before_filter :check_purgatory
-  
-  
+
   def index
     set_titletag("eXtension Pubsite Admin")
     @right_column = false    
@@ -82,23 +81,10 @@ class AdminController < DataController
     @right_column = false
     set_titletag("Manage Communities - Pubsite Admin")    
     @approved_communities =  Community.approved.all(:order => 'name')
+    @other_public_communities = Community.usercontributed.public_list.all(:order => 'name')
   end
-  
-  def create_community
-    @right_column = false
-    @community = Community.new params['community']
-    if @community.save
-      tag = Tag.find(params['tag_id'])
-      tag.community_id = @community.id
-      tag.save
-      flash[:notice] = 'Community Created'
-    else
-      flash[:notice] = 'Error updating community'
-    end
-    redirect_to :action => :manage_communities
-  end
-  
-  def update_community_description
+    
+  def update_public_community
     @community =  Community.find(params['id'])
     @community.public_topic_id = params['community']['public_topic_id']
     @community.public_description = params['community']['public_description']

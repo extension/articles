@@ -2,8 +2,9 @@
     <p><%= link_to 'Admin home', :action => :index%></p>
     <h1>Manage Communities</h1>  
   <div>
-  <p>This list reflects the "eXtension Community of Practice" communities created in the <%= link_to('People application', :controller => 'people', :action => 'communities') %>. To add a community to this page (and the Public Site), please create a community in People.</p>
+  <p>This list reflects the "eXtension Community of Practice" and other public communities created in the <%= link_to('People application', :controller => 'people', :action => 'communities') %>. To add a community to this page (and the Public Site), please create a community in People.</p>
   
+  <h2>eXtension Communities of Practice</h2>
   <table cellspacing="0">
       <tr>
           <th>&nbsp;</th>
@@ -24,6 +25,32 @@
           <td <%= community.cached_content_tags(true).blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags(true).blank? ? 'not set' : community.cached_content_tags.join(',') %></td>
       <% end%>
   </table>
+  
+  <% if @other_public_communities.size > 0 %>
+  <h2>Other Public Communities</h2>
+  <table cellspacing="0">
+      <tr>
+          <th>&nbsp;</th>
+          <th>Live</th>
+          <th>Community Name</th>
+          <th>Public Community Name</th>
+          <th>Topic</th>
+          <th>Content Tag</th>
+      </tr>
+
+      <% @other_public_communities.each do |community|%>
+      <tr class="<%= community.is_launched %>">
+          <td><%= link_to('edit', :action => 'edit_public_community', :id => community.id)%></td>
+          <td class="islive"><%= community.is_launched %></td>
+          <td><%= community.name %></td>
+          <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
+          <td <%= community.topic.nil? ? 'class="notset"' : '' %>><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
+          <td <%= community.cached_content_tags(true).blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags(true).blank? ? 'not set' : community.cached_content_tags.join(',') %></td>
+      <% end%>
+  </table>
+  <% end%>
+  
+  
   </div>
 
   

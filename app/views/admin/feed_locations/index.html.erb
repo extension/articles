@@ -1,0 +1,30 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %></p>
+
+<h1>Manage External Feed Sources</h1>
+
+<p><%= link_to 'Create a new external feed source', new_admin_feed_location_path %></p>
+
+<table>
+  <tr>	
+  	<th>Feed Name</th>
+	<th>Feed URL</th>
+	<th>Active?</th>
+	<th>Add Update Time to URL?</th>
+	<th>Manage</th>
+  </tr>
+
+<% for feed in @feed_locations %>
+  <tr>
+  	<td><%= feed.name %></td>
+	<td><%= h feed.uri %></td>
+	<td><%= feed.active? ? 'yes' : 'no' %></td>
+	<td><%= feed.retrieve_with_time? ? 'yes' : 'no' %></td>
+    <td><%= link_to 'Edit', edit_admin_feed_location_path(feed) %></td>
+  </tr>
+<% end %>
+</table>
+
+
+
+</div>

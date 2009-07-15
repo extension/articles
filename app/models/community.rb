@@ -108,10 +108,12 @@ class Community < ActiveRecord::Base
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
   
   named_scope :launched, {:conditions => {:is_launched => true}}
+  named_scope :public_list, {:conditions => ["show_in_public_list = 1 or is_launched = 1"]}
+  
   named_scope :ordered_by_topic, {:include => :topic, :order => 'topics.name ASC, communities.public_name ASC'}
    
-  before_create :clean_description_and_shortname
-  before_update :clean_description_and_shortname
+  before_create :clean_description_and_shortname, :show_in_public_if_approved
+  before_update :clean_description_and_shortname, :show_in_public_if_approved
 
   def primary_content_tag_name
     self.cached_content_tags[0]
@@ -142,6 +144,12 @@ class Community < ActiveRecord::Base
       self.shortname = self.shortname.gsub(/\W/,'').downcase
     end
     
+  end
+  
+  def show_in_public_if_approved
+    if(self.entrytype == APPROVED)
+      self.show_in_public_list = true
+    end
   end
   
   def entrytype_to_s

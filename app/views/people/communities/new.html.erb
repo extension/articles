@@ -2,7 +2,7 @@
 
 <%= error_messages_for :community %>
 
-<% form_for :community, @community, :url => people_community_path(@community), :html => { :method => :post } do |community| %>
+<% form_for :community, @community, :url => new_people_communities_url  do |community| %>
     <fieldset>
         <p class="wide">
             <label for="community_name">Community Name <em class="required">*</em>
@@ -23,13 +23,6 @@
             <p id="tooltip_hook"><strong>Open:</strong> allows anyone to become a member by clicking a "Join" button. <strong>Moderated:</strong> anyone can indicate that they want to join the community, but they have to be approved by a community leader to become members. <strong>Invitation Only:</strong> members can only be invited to join the community</p>
         </div>
 
-	<% if(admin_mode?)%>
-	    <p>
-		    <label for="community_entrytype">Community Type <em class="required">*</em></label>
-    			<%= select(:community, :entrytype, get_communitytypes_for_select, {:include_blank => "Select type"}) %>
-		</p>
-	<% end %>
-
 	 <p>
 	     <label for="community_tag_list">Provide some initial tags for this community: 
 	     <%= text_area_tag(:tag_list,params[:tag_list],{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
@@ -37,8 +30,34 @@
 	     </label>
 	 </p>
 	
-    <p><%= submit_tag 'Create' %> or <%= link_to 'Cancel', :controller => :communities, :action => :index %></p>
     </fieldset>
+    
+    <% if(admin_mode?)%>
+	    <fieldset>
+            <legend>Administrative Options:</legend>
+            
+            <p>
+    		    <label for="community_entrytype">Community Type <em class="required">*</em></label>
+        			<%= select(:community, :entrytype, get_communitytypes_for_select, {:include_blank => "Select type"}) %>
+    		</p>
+    		
+	
+    		<p>
+    		    <label for="community_shortname">Community Shortname:
+    		    	<%= community.text_field(:shortname) %>
+            	</label>		
+    		</p>
+		
+    		<p>
+    	        <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
+    	         <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
+    	    </p>
+	    </fieldset>
+        
+	<% end %>
+	
+	<p><%= submit_tag 'Create' %> or <%= link_to 'Cancel', :controller => :communities, :action => :index %></p>
+    
  <% end %>
 
  <script type="text/javascript">
