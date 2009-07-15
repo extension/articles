@@ -9,9 +9,8 @@ require 'cgi'
 require 'mofo'
 
 class Event < ActiveRecord::Base
-  # currently, no need to cache, we don't fulltext search tags
-  # has_many :cached_tags, :as => :tagcacheable
-    
+  extend DataImportContent  # utility functions for importing event content
+      
   #-- Rails 2.1 dependent stuff
   include HasStates
   has_content_tags
@@ -31,19 +30,16 @@ class Event < ActiveRecord::Base
   # Get all events within x number of days from the given date
   named_scope :within, lambda { |interval, date| { :conditions => ['start >= ? AND start < ?', date, date + interval] } }
   
-  # so that we can generate URLs out of the model, not completely sure why - was marked as "-- Older stuff"
+  # so that we can generate URLs out of the model to convert it to an atom entry
   include ActionController::UrlWriter
   default_url_options[:host] = AppConfig.configtable['url_options']['host']
   default_url_options[:port] = AppConfig.get_url_port
   
-  def self.from_hash(hash)
-    item = self.find_by_id(hash['id']) || self.new
-    
-    hash.keys.each { | key | item.set_attribute(key, hash[key]) }
-    item
-  end
   
-  def self.from_atom_entry(entry)
+  # in the event we do a refreshall
+  
+  
+  def self.create_or_update_from_atom_entry(entry)
     vevent = hCalendar.find(:first => {:text => entry.content})
     item = self.find_by_id(vevent.uid) || self.new
     
@@ -70,8 +66,6 @@ class Event < ActiveRecord::Base
     #     :url => :url, :location => [ HCard, Adr, Geo, String ]
     
     item.id = vevent.uid
-    item.taggings.each { |t| t.destroy }
-    item.cached_tag_list = []
     
     item.title = vevent.summary
     item.description = CGI.unescapeHTML(vevent.description)
@@ -96,18 +90,24 @@ class Event < ActiveRecord::Base
     item.location = loco[0]
     item.coverage = loco[1]
     item.state_abbreviations = loco[2]
-    
-    assign_tags(item, entry)
-    item.deleted = 0
-    
+        
     if vevent.properties.include?('status')
       if vevent.status == 'CANCELLED'
-        item.deleted = 1
+        returndata = [item.xcal_updated_at, 'delete', nil]
+        item.destroy
+        return returndata
       end
     end
     
+    if(item.new_record?)
+      returndata = [item.xcal_updated_at, 'add']
+    else
+      returndata = [item.xcal_updated_at, 'update']
+    end
     item.save!
-    item
+    item.tag_with(entry.categories,User.systemuserid,Tag::CONTENT)
+    returndata << item
+    return returndata
   end
   
   def id_and_link
@@ -150,15 +150,7 @@ class Event < ActiveRecord::Base
       true
     end
   end
-  
-  def set_attribute(attribute, value)
-    if (attribute == 'updated_at')
-      self.send("xcal_#{attribute}=", value)  
-    else
-      set_standard_attribute(attribute, value)
-    end
-  end
-  
+    
   def local_to?(state)
     return true if state_abbreviations.include? state 
     return true if location && location.include?(state)
@@ -166,23 +158,58 @@ class Event < ActiveRecord::Base
     false
   end
   
-  private
-  
-   def add_tags_from_value(value)
-     tags = Community.generate_tags_and_communities(value)
-     tag_list.add(*tags) #tags have already been created, we are just linking to them
-   end
+     
+    # -----------------------------------
+    # Class-level methods
+    # -----------------------------------
 
-   def set_standard_attribute(attribute, value)     
-     if attribute == "categories"
-       add_tags_from_value(value)
-     else
-       self.send("#{attribute}=", value)  
-     end
-   end
-   
-   def self.assign_tags(event, feed_item)
-     event.tag_list.add(*feed_item.categories)
-   end
+
+    def self.retrieve_content(options = {})
+       current_time = Time.now.utc
+       
+       refresh_all = (options[:refresh_all].nil? ? false : options[:refresh_all])
+       feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_events'] : options[:feed_url])
+
+       updatetime = UpdateTime.find_or_create(self,'content')
+       if(refresh_all)
+         refresh_since = (options[:refresh_since].nil? ? AppConfig.configtable['content_feed_refresh_since'] : options[:refresh_since])
+       else    
+         refresh_since = updatetime.last_datasourced_at
+       end
+      
+      # will raise errors on failure
+      xmlcontent = self.fetch_url_content(self.build_feed_url(feed_url,refresh_since,false))
+
+      # create new Events from the atom entries
+      added_events = 0
+      updated_events = 0
+      deleted_events = 0
+      last_updated_event_time = refresh_since
+      
+      atom_entries =  AtomEntry.entries_from_xml(xmlcontent)
+      if(!atom_entries.blank?)
+        atom_entries.each do |entry|
+          (object_update_time, object_op, object) = self.create_or_update_from_atom_entry(entry)
+          # get smart about the last updated time
+          if(object_update_time > last_updated_event_time )
+            last_updated_event_time = object_update_time
+          end
+        
+          case object_op
+          when 'delete'
+            deleted_events += 1
+          when 'update'
+            updated_events += 1
+          when 'add'
+            added_events += 1
+          end
+        end
+      
+        # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
+        updatetime.update_attribute(:last_datasourced_at,last_updated_event_time + 1)
+      end
+      
+      return {:added => added_events, :deleted => deleted_events, :updated => updated_events}
+    end
    
 end

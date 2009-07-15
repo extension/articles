@@ -175,4 +175,6 @@ class ApplicationController < ActionController::Base
   
 end
 
-
+# custom error classes
+class ContentRetrievalError < StandardError
+end

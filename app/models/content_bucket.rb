@@ -5,8 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-# The Tag model. This model is automatically generated and added to your app if you run the tagging generator included with has_many_polymorphs.
-
 class ContentBucket < ActiveRecord::Base
   has_many :article_buckets
   has_many :articles, :through => :article_buckets

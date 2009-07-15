@@ -141,15 +141,7 @@ class AdminController < DataController
   rescue Exception => e
     handle_feed_error(e, Heureka)
   end
-    
-  #get updated list of subcategories from internal faq application
-  def retrieve_subcats
-    Category.import_subcats
-    finished_retrieving("Subcategory")
-  rescue Exception => e
-    handle_feed_error(e, Category)
-  end
-  
+      
   def retrieve_external_articles
     ExternalArticleFeed.retrieve_feeds
     finished_retrieving("External Feed")

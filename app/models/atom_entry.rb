@@ -10,6 +10,8 @@ class AtomEntry
   attr_accessor :id, :title, :updated, :author, :content, :link, :summary,
     :categories, :contributors, :published, :rights
     
+
+        
   def self.entries_from_xml(xml)
     entries = []
     

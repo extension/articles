@@ -12,7 +12,7 @@ class Activity < ActiveRecord::Base
   extend GoogleVisualization
   extend DataImportActivity
 
-  EARLIEST_TRACKED_ACTIVITY_DATE = '2005-12-01 00:00:00'
+  EARLIEST_TRACKED_ACTIVITY_DATE = '2005-11-01 00:00:00'
   
   #### PRIVACY SETTINGS
   
