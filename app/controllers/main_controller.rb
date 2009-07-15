@@ -56,6 +56,8 @@ class MainController < DataController
       @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(params[:category]).ordered.first
       @community_highlights = Article.bucketed_as('feature').tagged_with_content_tag(params[:category]).ordered.limit(8)
       @youth = true if @topic and @topic.name == 'Youth'
+      
+      flash.now[:googleanalytics] = "/" + @category.name.gsub(' ','_')
           
     else
       set_title("Content tagged with:", @category.name.titleize)
