@@ -7,10 +7,11 @@
 
 class Ask::WidgetsController < ApplicationController
   
-  before_filter :login_required, :except => [:create_from_widget, :widget]
+  before_filter :login_required, :except => [:create_from_widget, :widget, :index, :about, :documentation, :who]
+  before_filter :login_optional, :only => [:index, :about, :documentation, :who]
   layout 'widgets'
   
-  def index
+  def list
     if params[:id] and params[:id] == 'inactive'
       @widgets = Widget.inactive
       @selected_tab = :inactive
@@ -20,7 +21,8 @@ class Ask::WidgetsController < ApplicationController
     end
   end
   
-  def home
+  def index
+    
   end
   
   def admin

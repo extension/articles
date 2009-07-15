@@ -1,0 +1,28 @@
+<% @page_title = "Ask an Expert Widget List"%>
+
+<h2>Ask an Expert Widgets</h2>
+
+<ul id="nav">
+    <li <%= selected_tab_if(:all) %>><%= link_to "Active", :controller => :widgets, :action => :list %></li>
+    <li <%= selected_tab_if(:inactive) %>><%= link_to "In-Active", :controller => :widgets, :action => :list, :id => 'inactive' %></li>
+</ul>
+
+<br class="clear"/>
+
+<p>
+    <label>Search by Name
+	    <%= text_field_tag('widget_name') %>
+	    <em>Start typing to filter widgets</em>
+	</label>
+</p>
+
+<%= observe_field(:widget_name,
+                  :url       => { :controller => :widgets, :action => :get_widgets, :id => params[:id] },
+                  :update    => :widget_list,
+                  :frequency => 0.6,
+                  :with      => "'widget_name=' + value")
+%>
+
+<div id="widget_list">
+<%= render(:partial => 'widget_list') %>
+</div>

@@ -1,28 +1,23 @@
-<% @page_title = "Ask an Expert Widget List"%>
+<% @page_title = "Welcome" %>
+<% @selected_tab = :welcome %>
 
-<h2>Ask an Expert Widgets</h2>
+<%= error_messages_for 'submitted_question' %>
 
-<ul id="nav">
-    <li <%= selected_tab_if(:all) %>><%= link_to "Active", :controller => :widgets, :action => :index %></li>
-    <li <%= selected_tab_if(:inactive) %>><%= link_to "In-Active", :controller => :widgets, :action => :index, :id => 'inactive' %></li>
-</ul>
+<div id="homeAsk">
+    <div class="section">
+    <h2>For Extension Agents</h2>
+    <p>Use Ask an Expert to receive questions from your local public through your own county website.</p>
+    <ul>
+        <li><%= link_to "Learn more", :controller => 'ask/widgets', :action => :about %></li>
+        <li><%= link_to "Get the Ask widget", :controller => 'ask/widgets', :action => :new %></li>
+        <li><%= link_to "Answer questions through the eXtension FAQ site", :controller => 'ask/expert', :action => :incoming %></li>
+    </ul>
+    </div>
+    
+    <div class="section">
+    <h2>For the Public</h2>
+    <p>eXtension connects you to experts in Extension offices and Universities around the country.</p>
+    <p>Visit the <%= link_to "eXtension public site", "/" %>.</p>
+    </div>
 
-<br class="clear"/>
-
-<p>
-    <label>Search by Name
-	    <%= text_field_tag('widget_name') %>
-	    <em>Start typing to filter widgets</em>
-	</label>
-</p>
-
-<%= observe_field(:widget_name,
-                  :url       => { :controller => :widgets, :action => :get_widgets, :id => params[:id] },
-                  :update    => :widget_list,
-                  :frequency => 0.6,
-                  :with      => "'widget_name=' + value")
-%>
-
-<div id="widget_list">
-<%= render(:partial => 'widget_list') %>
 </div>
