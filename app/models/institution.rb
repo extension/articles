@@ -42,6 +42,7 @@ class Institution < ActiveRecord::Base
 
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
+  named_scope :public_list, {:conditions => {:show_in_public_list => true}}
 
 
   def normalizemyname

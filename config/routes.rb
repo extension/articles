@@ -3,8 +3,6 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'main'
   
   map.resources :assets, :path_prefix => '/admin', :except => :show
-  map.resources :county_links, :path_prefix => '/admin'
-  map.resources :institutions, :path_prefix => '/admin'
   
   map.namespace :admin do |admin|
     admin.resources :feed_locations

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090715204608) do
+ActiveRecord::Schema.define(:version => 20090716164046) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -242,12 +242,6 @@ ActiveRecord::Schema.define(:version => 20090715204608) do
   add_index "counties", ["name"], :name => "name"
   add_index "counties", ["state_fipsid"], :name => "state_fipsid"
 
-  create_table "county_links", :force => true do |t|
-    t.string  "state",       :default => "", :null => false
-    t.string  "office_link", :default => "", :null => false
-    t.integer "location_id", :default => 0
-  end
-
   create_table "db_files", :force => true do |t|
     t.binary "data", :limit => 2147483647
   end
@@ -367,6 +361,7 @@ ActiveRecord::Schema.define(:version => 20090715204608) do
     t.string   "public_uri"
     t.string   "referer_domain"
     t.boolean  "shared_logo",                         :default => false
+    t.boolean  "show_in_public_list",                 :default => false
   end
 
   add_index "institutions", ["location_abbreviation"], :name => "STATE_ABBR"
@@ -456,6 +451,7 @@ ActiveRecord::Schema.define(:version => 20090715204608) do
     t.integer "entrytype",                  :default => 0,  :null => false
     t.string  "name",                       :default => "", :null => false
     t.string  "abbreviation", :limit => 10, :default => "", :null => false
+    t.string  "office_link"
   end
 
   add_index "locations", ["fipsid"], :name => "fipsid", :unique => true

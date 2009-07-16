@@ -11,7 +11,7 @@
     </h1>
     <div class="institution_actions_wrapper">
         <ul id="institution_actions">
-            <li><%=link_to 'Local Extension offices near you', @personal[:location].county_link.office_link if @personal[:location] and @personal[:location].county_link %></li>
+            <li><%=link_to 'Local Extension offices near you', @personal[:location].office_link if @personal[:location] and !@personal[:location].office_link.blank? %></li>
             <li><%=link_to 'Learn more about this institution', @personal[:institution].public_uri if @personal[:institution] %></li>                 
             <li class="changeint"><%= link_to_function 'Select a different institution', "Effect.toggle('institution_picker','blind', { duration: .4}); setTimeout(set_select_focus, 500);", :class => "sample" %></li>
         </ul>
@@ -24,7 +24,7 @@
           <li class="changeint"><%= link_to_function 'Select a different institution', "Effect.toggle('institution_picker','blind', { duration: .4}); setTimeout(set_select_focus, 500);", :class => "sample" %></li>
        </ul>
        <div class="institution_actions_wrapper">
-           <p><%=link_to 'Local Extension offices near you', @personal[:location].county_link.office_link if @personal[:location] and @personal[:location].county_link %></p>
+           <p><%=link_to 'Local Extension offices near you', @personal[:location].office_link if @personal[:location] and !@personal[:location].office_link.blank? %></p>
        </div>
    </div>
 <%end%>

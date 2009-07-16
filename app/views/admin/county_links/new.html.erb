@@ -1,10 +1,10 @@
 <div id="admin">
-    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %> > <%= link_to 'County Links', :controller => "admin", :action => "county_links"  %></p>
+    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %> > <%= link_to('County Links',admin_county_links_url)  %></p>    
     <h1>Create a new county link</h1>
 
     <%= error_messages_for :county_link %>
 
-<% form_for(@county_link) do |f| %>
+<% form_for :county_link, @county_link, :url => admin_county_links_url do |f| %>
   <%= render :partial => 'form', :locals => { :county_link => @county_link } %>	
   <p>
     <%= f.submit "Create" %>

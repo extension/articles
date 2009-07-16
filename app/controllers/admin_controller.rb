@@ -7,59 +7,12 @@
 class AdminController < ApplicationController
   before_filter :admin_required
   before_filter :check_purgatory
+  before_filter :turn_off_right_column
 
   def index
     set_titletag("eXtension Pubsite Admin")
-    @right_column = false    
   end
-  
-  def add_tag
-    community = Community.find(params[:id])
-    community.tags << Tag.find(params[:tag_id])
-    redirect_to :action => :edit_community, :id => params[:id]
-  end
-  
-  def remove_tag
-    community = Community.find(params[:id])
-    # can't delete the last tag
-    if(community.tags.length == 1)
-      flash[:warning] = "Each community must have at least one tag.  You can't delete the last tag."
-      redirect_to :action => :edit_community, :id => params[:id]
-      return
-    end
-    tag = Tag.find(params[:tag_id])
-    community.tags.delete(tag)
-    redirect_to :action => :edit_community, :id => params[:id]
-  end
-  
-  
-  def toggle_admin
-    @user = User.find(params[:id])
-    @user.toggle_admin
-    render :partial => 'toggle_admin'
-  end
-  
-  def users
-    @term = params[:term]
-    unless @term.nil? or @term.blank?
-      conditions = ["(full_name RLIKE :term or email RLIKE :term or identity_url RLIKE :term)"]
-      conditions << { :term => @term }
-    end
-    @right_column = false
-    set_title('User List')
-    set_titletag("Public Site User List - eXtension Site Admin")
-    @users = User.paginate(:order => 'full_name', :conditions => conditions,
-                           :per_page => params[:per_page] || 50, :page => params[:page] || 1)
-  end
-  
-  def user
-    if !params[:id] || !(@user = User.find_by_id(params[:id]))
-      flash[:warning] = 'No such user.'
-      request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to :action => 'users')
-      return
-    end
-  end
-  
+    
   def manage_topics
     @right_column = false
     set_titletag("Manage Topics - Pubsite Admin")
@@ -77,10 +30,25 @@ class AdminController < ApplicationController
   end
   
   def manage_communities
-    @right_column = false
     set_titletag("Manage Communities - Pubsite Admin")    
     @approved_communities =  Community.approved.all(:order => 'name')
     @other_public_communities = Community.usercontributed.public_list.all(:order => 'name')
+  end
+  
+  def manage_institutions
+    set_titletag("Manage Institutions - Pubsite Admin")    
+    @landgrant_institutions =  Institution.public_list.all(:order => 'location_abbreviation')
+  end
+    
+  def manage_location_office_link
+    set_titletag("Manage Office Links - Pubsite Admin")    
+    @locations =  Location.displaylist
+  end
+  
+  def edit_location_office_link
+    set_title('Edit Location Office Link')
+    set_titletag("Edit Location Office Link - Pubsite Admin")
+    @location = Location.find(params[:id])    
   end
     
   def update_public_community
@@ -99,10 +67,28 @@ class AdminController < ApplicationController
   end
     
   def edit_public_community
-    @right_column = false
     set_title('Edit Community Public Options')
     set_titletag("Edit Community - Pubsite Admin")
     @community = Community.find(params[:id])
+  end
+  
+  def update_public_institution
+    @institution =  Institution.find(params['id'])
+    @institution.referrer_domain = params['institution']['referrer_domain']
+    @institution.public_uri = params['institution']['public_uri']
+
+    if @institution.save
+      flash[:notice] = 'Institution Updated'
+    else
+      flash[:notice] = 'Error updating institution'
+    end
+    redirect_to :action => :manage_institutions
+  end
+    
+  def edit_public_institution
+    set_title('Edit Institution Public Options')
+    set_titletag("Edit Institution - Pubsite Admin")
+    @institution = Institution.find(params[:id])
   end
   
   def retrieve_wikis
@@ -137,18 +123,11 @@ class AdminController < ApplicationController
     redirect_to :action => "index"
   end
     
-  def check_authorization 
-    if current_user == :false || ! has_right?(current_user)
-      bounce_unauthorized_user
-      return false 
-    end 
-  end 
-  
-
-  
-  
   private
-
+  
+  def turn_off_right_column
+    @right_column = false    
+  end
 
   def finished_retrieving(what)
     ActiveRecord::Base::logger.debug "Imported #{what} at: " + Time.now.to_s    

@@ -12,12 +12,6 @@ module ApplicationHelper
     'class="selected"' if @selected_tab == tab_name
   end
     
-  def county_offices_link
-    return nil unless @county_link
-    
-    "<p class=\"description\">#{link_to 'Contact your local extension office &raquo', @county_link.office_link}</p>"
-  end
-  
   #old time print
   def micro_time_print(time, class_name)
     return "" unless time

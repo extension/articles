@@ -1,0 +1,32 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :action => 'index' %> ><%= link_to 'All Institutions', :action => 'manage_institutions' %></p>
+    <h1>Edit Institution Details</h1>
+
+    <h2><%= @institution.name %></h2>
+
+    <% form_tag( {:action => 'update_public_institution', :id => @institution.id}) do %>
+        <fieldset class="stacked">
+            <h3>Edit details</h3>
+        <p>
+            <label>Referer Domain</label>
+            <%= text_field_tag 'community[referer_domain]', @institution.referer_domain %>
+            <span class="instructions">Used for logo display when following a link from the referring domain.</span>
+        </p>
+
+        <p>
+            <label>URL ("about this institution" link)</label>
+            <%= text_field_tag 'community[public_uri]', @institution.public_uri %>
+        </p>
+
+        <p>
+            <input type="submit" value="Update"> 
+            <%= link_to 'cancel', {:controller => "admin", :action => "manage_institutions"}, {:class => "cancel"}  %> 
+        </p>
+        </fieldset>
+    <% end %>
+
+</div>    
+    
+    
+    
+

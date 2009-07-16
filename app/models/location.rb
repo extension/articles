@@ -25,7 +25,6 @@ class Location < ActiveRecord::Base
   has_many :counties
   has_many :institutions  
   has_many :submitted_questions
-  has_one :county_link
   
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}

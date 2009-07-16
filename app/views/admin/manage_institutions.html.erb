@@ -1,6 +1,6 @@
 <div id="admin">
     <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
-    <h2>Institution Management</h2>
+    <h2>Institution Management - Public Attributes</h2>
     <table>
         <tr>
             <th scope="col">State</th>	
@@ -10,21 +10,14 @@
             <th scope="col">edit</th>
         </tr>
 
-        <% for institution in @institutions %>
+        <% for institution in @landgrant_institutions %>
             <tr>
-                <td><%= institution.state %></td>
+                <td><%= institution.location.abbreviation %></td>
 	            <td><%= institution.name %></td>
 	            <td><%= link_to institution.public_uri, institution.public_uri %></td>
 	            <td><%= institution.referer_domain %></td>
-                <td><%= link_to 'edit', edit_institution_path(institution) %></td>
+                <td><%= link_to('edit', :action => 'edit_public_institution', :id => institution.id)%></td>
             </tr>
         <% end %>
     </table>
-
-<!--
-<br />
-
-<%= link_to 'Create a new institution', new_institution_path %>
-
--->
 </div>
