@@ -40,10 +40,10 @@
 
     <div id="pageContainer">
         <div id="masthead">
-            <h1><%= link_to("eXtension Frequently Asked Questions", home_url) %></h1>
+            <h1><%= link_to("eXtension Ask an Expert", :controller => 'expert', :action => 'incoming') %></h1>
             <ul id="app_toggle">
-                <li id="faqaae" ><%= link_to "Home" %></li>
-                <li id="faqhome" ><%= link_to "FAQs" %></li>
+                <li id="faqaae" ><%= link_to "Home", "http://faq.extension.org/" %></li>
+                <li id="faqhome" ><%= link_to "FAQs", "http://faq.extension.org/questions" %></li>
                 <li id="aaehome" class="selected"><%= link_to "Ask an Expert", :controller => 'expert', :action => 'incoming' %></li>
             </ul>
         </div>
@@ -70,12 +70,12 @@
                 <% else %>
                     <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help">Help</a></li>
                 <% end%>
-            <% if !session[:user].nil? %>
+
                 <li><%= link_to "Reports", {:controller => "reports"} %></li>
-                <li class="user_icon"><%= link_to(User.current_user.login, {:controller => 'account', :action => 'aaeprofile', :id => User.current_user.login}) %></li>
+                <li><%= link_to(@currentuser.login, {:controller => 'account', :action => 'aaeprofile', :id => @currentuser.login}, {:class => "usericon"}) %></li>
                 <li id="prefs"><%= link_to "preferences", :controller => 'account', :action => 'ask_an_expert_preferences' %></li>
-                <li><%= link_to 'logout', '/account/logout' %></li>
-            <% end %>
+                <li><%= link_to "Logout", :controller => 'people/account', :action => :logout %></li>
+
             </ul>
             <div id="content" <%= 'class="narrow"' if @menu_partial_to_display %>>
                 <%= yield :layout %>

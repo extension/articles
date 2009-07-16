@@ -42,7 +42,7 @@
             <% else %>
               <% get_widget_link_message = "" %>
     		  <p class="usericon">
-    		  <%= link_to @currentuser.login, :controller => 'people/profile', :action => :me %> &nbsp <%= link_to "Logout", :controller => 'people/account', :action => :logout %>
+    		  <%= link_to @currentuser.login, :controller => 'people/profile', :action => :me %> &nbsp; <%= link_to "Logout", :controller => 'people/account', :action => :logout %>
     		  </p>
     		  
             <% end %>

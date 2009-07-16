@@ -10,3 +10,5 @@ div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5
 div#app_location a:visited {color:#222; text-decoration:underline;}
 div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
 
+
+.usericon {padding-left: 18px;background: transparent url(/images/common/user.gif) no-repeat left center;}
