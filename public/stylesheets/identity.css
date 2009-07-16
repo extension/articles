@@ -510,8 +510,8 @@ div.auto_complete ul strong.highlight {color: #800;margin:0;padding:0;
 .multi_col_list li label {/*border:1px solid blue; */display:block;float:left;line-height:1.4em;width:80%;}
 .col1, .col2, .col3 {/*border:1px solid red;*/}
 
-.syndication {float: none;padding-left: 18px;background: #fff url(/images/people/feed-icon-12x12.gif) left 50% no-repeat;}
-h3 .feed a {float:none; margin-left:1em;width:auto;padding-left: 18px;background: #fff url(/images/people/feed-icon-12x12.gif) left 50% no-repeat;font-size:.7em;}
+.syndication {float: none;padding-left: 18px;background: #fff url(/images/common/feed-icon-12x12.gif) left 50% no-repeat;}
+h3 .feed a {float:none; margin-left:1em;width:auto;padding-left: 18px;background: #fff url(/images/common/feed-icon-12x12.gif) left 50% no-repeat;font-size:.7em;}
 .section {clear:left;}
 .event  {border-bottom:1px solid #e5dfee;padding-bottom:.45em;margin-bottom:.55em;clear:left;float:left;width:100%;font-size:.95em;}
 

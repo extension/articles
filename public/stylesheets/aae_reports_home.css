@@ -88,7 +88,7 @@
 }
 a.feed {
   padding-right: 16px;
-  background: transparent url(/images/feed-icon-12x12.gif) right 50% no-repeat;
+  background: transparent url(/images/common/feed-icon-12x12.gif) right 50% no-repeat;
 }
 
 #search_parameters {
@@ -114,7 +114,7 @@ a.feed {
     margin-right:1em;
     margin-bottom: 2em;
     /*background: #fff url(/images/sidebar_bg_green.jpg) repeat-x;*/
-    background: transparent url(/images/global_nav_green.jpg) repeat-x;
+    background: transparent url(/images/aae/global_nav_green.jpg) repeat-x;
 }
 #homeFAQ h2,
 #homeAAE h2 {
@@ -314,7 +314,7 @@ h2 a {
 }
 #answerers ul.users li {
 padding-left: 20px;
-background:url(/images/user.gif) no-repeat #fff;
+background:url(/images/common/user.gif) no-repeat #fff;
 }
 #answerers div table{
     border:0;

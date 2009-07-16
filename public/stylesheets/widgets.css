@@ -99,12 +99,8 @@ ol li {margin: 0 0 .75em;padding:0;}
 #sidebar ul li a em {font-size:.8em; font-style:normal;}
 
 #sidebar p {margin:0 0 20px; float:right;}
-.openid {
-    background: transparent url(/images/openid_icon.gif) center left no-repeat;
-    padding-left: 18px;
-}
-.openid input.easyread {font-size: 1.05em;font-family: "Lucida Grande", sans-serif;}
-.usericon {padding-left: 18px;background: transparent url(/images/user.gif) no-repeat left center;}
+
+.usericon {padding-left: 18px;background: transparent url(/images/common/user.gif) no-repeat left center;}
 
 .section {margin-top:0;float:left;width:220px;padding:0 20px 0 0;}
 .section h2 {color:#3f3f3f;font-size:1.8em;margin-bottom:1.5em;}

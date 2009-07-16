@@ -42,7 +42,7 @@ h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, fieldset, table, ol, ul, dl {
 1.2em is 12pt, 1.6em is 16pt, etc. (unless nested) */
 body {font-size: 62.5%;}
 
-body {font-family: Arial, Helvetica, sans-serif;color: #222; background: #919294 url(/images/page_bg.jpg) repeat-x;}
+body {font-family: Arial, Helvetica, sans-serif;color: #222; background: #919294 url(/images/aae/page_bg.jpg) repeat-x;}
 
 
 .clear {clear: both;}
@@ -182,7 +182,7 @@ wrap the "a" element with <p class="button2"> to style as button
 	background: #fff;
 	color: #111 !important;
 	text-decoration: none;
-	background: transparent url(/images/grey_button.gif) 1px bottom repeat-x;
+	background: transparent url(/images/common/grey_button.gif) 1px bottom repeat-x;
 }
 .button2 a:hover {text-decoration: underline;}
 
@@ -244,10 +244,6 @@ wrap the "a" element with <p class="button2"> to style as button
 	padding: 0;
 	margin: 0;
 	background: #d5e7f5;
-}
-#sidebarBg {
-	background: #d5e7f5 url(/images/sidebar_bg.jpg) repeat-x top right;
-	height: 229px;
 }
 
 /* styles for contact form */
@@ -361,7 +357,7 @@ div#gsfn_search_widget div.gsfn_content p.gsfn_summary { margin-top: 2px }
 #app_toggle li#aaehome.selected a {color:#fff;}
 #app_toggle li#faqaae.selected {background: #333;}
 #app_toggle li#faqhome.selected {background: #01466f url(/images/faq_tab.jpg) repeat-x;}
-#app_toggle li#aaehome.selected {background: #007135 url(/images/global_nav_green.jpg) repeat-x;}
+#app_toggle li#aaehome.selected {background: #007135 url(/images/aae/global_nav_green.jpg) repeat-x;}
 
 
 
@@ -485,7 +481,7 @@ h2 {color:#365591;font-size:1.8em;}
     margin-bottom:.5em;
     color:#365591;
     padding: .2em .75em .2em 18px;
-    background: transparent url(/images/magnifier.png) 0 50% no-repeat;
+    background: transparent url(/images/aae/magnifier.png) 0 50% no-repeat;
 }
 #list_filter select {
     margin-bottom: .65em;
@@ -589,10 +585,7 @@ ul#aaelinks li a span {
 
 
 #aae #masthead {
-	background: #fff url(/images/masthead_bg_green.jpg) repeat-y top right;	
-}
-#aae #sidebarBg {
-	background: #d5e7f5 url(/images/sidebar_bg_green.jpg) repeat-x top right;
+	background: #fff url(/images/aae/masthead_bg_green.jpg) repeat-y top right;	
 }
 #aae #sidebar {
 	background: #d6f4e8;
@@ -602,7 +595,7 @@ ul#aaelinks li a span {
 }
 
 #aae #footer {
-	background: #004830 url(/images/footer_bg_green.jpg) center top repeat-y;
+	background: #004830 url(/images/aae/footer_bg_green.jpg) center top repeat-y;
 }
 #aae .inc_question a {
     color: #053868 !important;
@@ -614,7 +607,7 @@ ul#aaelinks li a span {
 }
 #aae h2.inc_question {
     color: #006747 !important;
-    background: url(/images/bubble_quote_green.gif) -130px bottom no-repeat #edffee;
+    background: url(/images/aae/bubble_quote_green.gif) -130px bottom no-repeat #edffee;
 
 }
 #aae h2.inc_question span {
@@ -707,7 +700,7 @@ td.inc a {
 }
 p.inc_assigned a {
     padding-left: 16px;
-    background:url(/images/user.gif) no-repeat #fff;
+    background:url(/images/common/user.gif) no-repeat #fff;
 }
 p.inc_assigned span {
     color: #333;
@@ -719,7 +712,7 @@ p.inc_assigned span {
     right: 0;
     font-size: 1.1em;
     padding-right: 24px;
-    background:url(/images/map.png) no-repeat right 50%;
+    background:url(/images/aae/map.png) no-repeat right 50%;
 }
 #inc_body {
     width: 54%;
@@ -731,7 +724,7 @@ p.inc_assigned span {
 #inc_body .inc_location {
     position: static;
     padding-left: 22px;
-    background:url(/images/map.png) no-repeat left 50%;
+    background:url(/images/aae/map.png) no-repeat left 50%;
 }
 
 #inc_other {
@@ -739,11 +732,11 @@ p.inc_assigned span {
 }
 a.profile {
     padding-left: 18px !important;
-    background:url(/images/user.gif) left 50% no-repeat transparent;
+    background:url(/images/common/user.gif) left 50% no-repeat transparent;
 }
 .profile {
     padding-left: 16px !important;
-    background:url(/images/user.gif) no-repeat transparent;
+    background:url(/images/common/user.gif) no-repeat transparent;
 }
 .resolved {
     color: #333;
@@ -900,7 +893,7 @@ h2 small {font-weight:normal;}
   font-weight:normal;
   line-height: 16px;
   padding-left: 18px;
-  background: #fff url(/images/feed-icon-12x12.gif) left 50% no-repeat;
+  background: #fff url(/images/common/feed-icon-12x12.gif) left 50% no-repeat;
 }
 
 .question p {  
@@ -1178,7 +1171,7 @@ div#user_list li em {
 /* Nav bar to other eXtension apps
 -----------------------------------------------------------------------------*/
 #aae #extensionNav {
-	background: #628f64 url(/images/global_nav_light_green.jpg) repeat-x;
+	background: #628f64 url(/images/aae/global_nav_light_green.jpg) repeat-x;
 }
 
 #user_actions {
@@ -1435,7 +1428,7 @@ h1, h2 {
 #sample_response {background:#fff;padding:1em;}
 #sample_response a {display:block;margin-bottom:1em;background: transparent url(/images/page_copy.png) left 50% no-repeat;padding-left:22px;font-family:Arial;}
 
-.sample {background: transparent url(/images/email_edit.png) left 50% no-repeat;padding-left:22px;font-family:Arial;}
+.sample {background: transparent url(/images/aae/email_edit.png) left 50% no-repeat;padding-left:22px;font-family:Arial;}
 .bekind a{display:block;}
 .rejectpage {border:2px solid #ccc;}
 /*.recat {border:1px solid red;}*/
@@ -1594,11 +1587,11 @@ fieldset#add_location h3 {font-size:1.4em;}
 
 #aaebigbutton a:link {color:#fff;}
 #aaebigbutton a:hover {cursor:pointer;}
-#aaebigbutton a strong {display:block;padding:.7em 8px .3em;font-size:1.25em;font-family: 'Lucida Grande', Arial, Sans-Serif;background: transparent url(/images/aaebutton-3.gif) left top no-repeat;}
-#aaebigbutton a:hover strong {color:#fff;background: transparent url(/images/aaebutton-3.gif) right top no-repeat;}
+#aaebigbutton a strong {display:block;padding:.7em 8px .3em;font-size:1.25em;font-family: 'Lucida Grande', Arial, Sans-Serif;background: transparent url(/images/aae/aaebutton-3.gif) left top no-repeat;}
+#aaebigbutton a:hover strong {color:#fff;background: transparent url(/images/aae/aaebutton-3.gif) right top no-repeat;}
 
-#aaebigbutton a span {display:block;width:219px;background: transparent url(/images/aaebutton-3.gif) bottom left no-repeat;padding:0 8px .8em;}
-#aaebigbutton a:hover span {background: transparent url(/images/aaebutton-3.gif) bottom right no-repeat;}
+#aaebigbutton a span {display:block;width:219px;background: transparent url(/images/aae/aaebutton-3.gif) bottom left no-repeat;padding:0 8px .8em;}
+#aaebigbutton a:hover span {background: transparent url(/images/aae/aaebutton-3.gif) bottom right no-repeat;}
 
 #aaemastheadwrapper.active {background:#2c50b5;}
 #aaemastheadwrapper.active #description em {color:yellow;font-style:normal;}

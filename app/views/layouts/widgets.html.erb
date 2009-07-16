@@ -23,7 +23,7 @@
                 <h1><%= link_to("Ask eXtension", :controller => 'ask/widgets') %></h1>
                 <p>Experts from around the country are ready to answer your questions</p>
             </div>
-            <div id="extension"><%= image_tag("/images/extension_logo_small.gif", :alt => "eXtension - more mind reach") %>
+            <div id="extension"><%= image_tag("/images/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %>
             </div>
             
         </div>
@@ -37,7 +37,7 @@
         </div>
         <div id="sidebar">
             <% if !@currentuser %>
-              <p class="openid"><%= link_to "Sign in", :controller => 'people/account', :action => :login %></p>
+              <p><%= link_to "Sign in", :controller => 'people/account', :action => :login %></p>
               <% get_widget_link_message = "<em>(requires login)</em>" %>
             <% else %>
               <% get_widget_link_message = "" %>
