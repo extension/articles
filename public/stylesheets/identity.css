@@ -569,7 +569,7 @@ h3 {clear:left;}
     margin: 0;
 	padding: 0 !important;
 	width: 250px !important;
-	background: transparent url(/images/people/soft_shadow.png) left bottom no-repeat;
+	background: transparent url(/images/common/soft_shadow.png) left bottom no-repeat;
 	position:relative;
 }
 #tooltip_hook {

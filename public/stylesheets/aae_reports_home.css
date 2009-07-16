@@ -1,3 +1,5 @@
+#masthead {background: #fff;}
+
 #sidebar {display:none;}
 
 #content {
@@ -184,7 +186,7 @@ h2 small{
 -----------------------------------------------------------------------------*/
 #extensionNav {
 	text-align: center;
-	background: #777 url(/images/global_nav_light_gray.jpg) repeat-x;
+	background: #777 url(/images/aae/global_nav_light_gray.jpg) repeat-x;
 	clear: both;
 	padding: .15em 0;
 	margin: 0;

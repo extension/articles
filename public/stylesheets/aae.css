@@ -190,7 +190,7 @@ wrap the "a" element with <p class="button2"> to style as button
 /* app banner */
 #extensionNav {
 	text-align: center;
-	background: #01466f url(/images/global_nav_light_blue.jpg) repeat-x;
+	background: #628f64 url(/images/aae/global_nav_light_green.jpg) repeat-x;
 	padding: .15em 0;
 	margin: 0;
 	border-top: 1px solid #001e36;
@@ -281,7 +281,7 @@ div#gsfn_search_widget div.gsfn_content p.gsfn_summary { margin-top: 2px }
 	display: block;
 	float:left;
 	width:100%;
-	background: #fff url(/images/masthead_bg.jpg) repeat-y top right;
+	background: #fff url(/images/aae/masthead_bg_green.jpg) repeat-y top right;	
 }
 #masthead h1 {
 	margin: 0;
@@ -302,7 +302,7 @@ div#gsfn_search_widget div.gsfn_content p.gsfn_summary { margin-top: 2px }
 
 /* Footer
 -----------------------------------------------------------------------------*/
-#footer {position: relative;float:left;padding: 1em 0;margin-bottom: 2em;text-align: right;width:100%;background: #002e48 url(/images/footer_bg.jpg) center top repeat-y;}
+#footer {position: relative;float:left;padding: 1em 0;margin-bottom: 2em;text-align: right;width:100%; background: #004830 url(/images/aae/footer_bg_green.jpg) center top repeat-y;}
 #footer a:link	{color: #ccc;}
 #footer a:hover	{color: #eee;}
 #footer a {color:#fff;}
@@ -594,9 +594,7 @@ ul#aaelinks li a span {
 	background: #86cfa5 url(/images/nav_on.gif) 15px 50% no-repeat;
 }
 
-#aae #footer {
-	background: #004830 url(/images/aae/footer_bg_green.jpg) center top repeat-y;
-}
+
 #aae .inc_question a {
     color: #053868 !important;
     background: #edf3ff;
@@ -654,12 +652,9 @@ h2.inc_question {
     padding: 0 0 25px 0 !important;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: normal;
-/*    font-size: 140%;*/
     line-height: 1.5em;
     float: left;
     color: #053868 !important;
-    background: url(/images/bubble_quote.gif) -130px bottom no-repeat #edf3ff;
-
 }
 h2.inc_question span {
     padding: .3em .8em .3em .5em;
@@ -1019,7 +1014,7 @@ div.answer h2 {
     margin: 0;
 	padding: 0 !important;
 	width: 250px !important;
-	background: transparent url(/images/soft_shadow.png) left bottom no-repeat;
+	background: transparent url(/images/common/soft_shadow.png) left bottom no-repeat;
 	position:relative;
 }
 #tooltip_hook {
@@ -1035,7 +1030,7 @@ div.answer h2 {
     margin: 0;
 	padding: 0 !important;
 	width: 300px !important;
-	background: transparent url(/images/soft_shadow.png) left bottom no-repeat;
+	background: transparent url(/images/common/soft_shadow.png) left bottom no-repeat;
 	position:relative;
 }
 #usertooltip_hook {
@@ -1170,9 +1165,6 @@ div#user_list li em {
 
 /* Nav bar to other eXtension apps
 -----------------------------------------------------------------------------*/
-#aae #extensionNav {
-	background: #628f64 url(/images/aae/global_nav_light_green.jpg) repeat-x;
-}
 
 #user_actions {
     float: right;
