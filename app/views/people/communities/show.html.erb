@@ -19,7 +19,9 @@
     	<div id="sharedtaglist">
     		<%= render(:partial => 'shared_tag_list') %>
     	</div>
-    	
+    </div>
+    
+    <div id="community_sidebar">
     	<% if @community.entrytype != Community::SYSTEM %>
       	  <% if ((@am_i_leader or admin_mode?) or @currentuser.communityopenjoins.include?(@community)) %>
 	    		<p class="button2"><%= link_to('Invite people to join this Community', invite_people_community_path(@community)) %></p>
@@ -52,14 +54,6 @@
     	        <dd><%= @community.memberfilter_to_s %></dd>
     	    </dl>
 	    </div>
-    	
-    	
-
-		
-
-
-		
-
 
 	</div>
 
