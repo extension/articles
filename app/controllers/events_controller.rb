@@ -6,6 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class EventsController < ApplicationController
+  before_filter :get_community
   
   def index    
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')

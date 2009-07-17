@@ -8,6 +8,7 @@
 class MainController < ApplicationController
   protect_from_forgery :except => :find_institution
   skip_before_filter :disable_link_prefetching, :get_tag, :only => :find_institution
+  before_filter :get_community
 
   def index
      set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
@@ -106,11 +107,7 @@ class MainController < ApplicationController
     end
     render(:layout => false)
   end
-  
-  def bork
-    MrBork.find(:all, :include => :all_borken_ness)
-  end
-  
+    
   def about
     set_title('About', "Read about our origins and what we have to offer online.")
     set_titletag('About eXtension - Our origins and what we have to offer')

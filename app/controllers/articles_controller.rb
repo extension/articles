@@ -6,6 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ArticlesController < ApplicationController
+  before_filter :get_community
   
   def index
     set_title('Articles', "Don't just read. Learn.")
