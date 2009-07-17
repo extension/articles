@@ -1,0 +1,19 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+    <h2>Location Management - Public Attributes</h2>
+    <table>
+        <tr>
+            <th scope="col">Location</th>	
+            <th scope="col">Office Link</th>
+            <th scope="col">edit</th>
+        </tr>
+
+        <% for location in @locations %>
+            <tr>
+	            <td><%= location.name %></td>
+	            <td><%= location.office_link.blank? ? 'not set' : link_to(location.office_link, location.office_link) %></td>
+                <td><%= link_to('edit', :action => 'edit_location_office_link', :id => location.id)%></td>
+            </tr>
+        <% end %>
+    </table>
+</div>

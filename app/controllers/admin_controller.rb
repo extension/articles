@@ -40,7 +40,7 @@ class AdminController < ApplicationController
     @landgrant_institutions =  Institution.public_list.all(:order => 'location_abbreviation')
   end
     
-  def manage_location_office_link
+  def manage_locations_office_links
     set_titletag("Manage Office Links - Pubsite Admin")    
     @locations =  Location.displaylist
   end
@@ -49,6 +49,19 @@ class AdminController < ApplicationController
     set_title('Edit Location Office Link')
     set_titletag("Edit Location Office Link - Pubsite Admin")
     @location = Location.find(params[:id])    
+  end
+  
+  def update_location_office_link
+    @location =  Location.find(params['id'])
+    @location.office_link = params['location']['office_link']
+
+    if @location.save
+      flash[:notice] = 'Location Updated'
+    else
+      flash[:notice] = 'Error updating location'
+    end
+    redirect_to :action => :manage_locations_office_links
+
   end
     
   def update_public_community
@@ -107,10 +120,10 @@ class AdminController < ApplicationController
   end
   
   def retrieve_faqs
-    Heureka.retrieve_faqs
-    finished_retrieving("FAQs")
-  rescue Exception => e
-    handle_feed_error(e, Heureka)
+  #   Heureka.retrieve_faqs
+  #   finished_retrieving("FAQs")
+  # rescue Exception => e
+  #   handle_feed_error(e, Heureka)
   end
       
   def retrieve_external_articles

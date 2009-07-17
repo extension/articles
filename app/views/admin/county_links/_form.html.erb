@@ -1,8 +1,0 @@
-<p>
-	<%= label(:county_link, :location_id, "Location") %>
-	<%= select('county_link', 'location_id', Location.find(:all).collect { |l| [l.name, l.id] }) %>
-</p>
-<p>
-	<%= label(:county_link, :office_link, "URL") %>
-	<%= text_field :county_link, :office_link, :size => 50 %>
-</p>
