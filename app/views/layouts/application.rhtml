@@ -11,16 +11,16 @@
 	<% end %>
 	
 	<title><%= @title_tag %></title>
-	
 	<% if params[:print] %>
 	    <%= stylesheet_link_tag 'print-for-screen' %>
 	    <%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
 	    <%= stylesheet_link_tag 'print', :media => 'print' %>
 	<% else %>
+	    <%= stylesheet_link_tag 'common' %>
     	<%= stylesheet_link_tag 'extension2' %>
     	<%= stylesheet_link_tag 'extension2', :media => 'print' %>
 	<% end %>
-    <%= stylesheet_link_tag 'common' %>
+    
   <% if @youth %>
      <%= stylesheet_link_tag 'youth' %>
   <% end %>

@@ -1,12 +1,6 @@
 /* GLOBAL STYLES */
 
-/* reset the font size to 1em.
-1em is equal to 10pt (the new default), 
-1.2em is 12pt, 1.6em is 16pt, etc. (unless nested) */
-body {font-size: 62.5%;}
 
-/* reset padding and margins on basic elements. this will be added to later. */
-dl, dt, dd {margin:0;padding:0;}
 
 ul li {font-size:1.2em;}
 ul li ul li {font-size: 1em !important;}

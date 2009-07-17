@@ -1,3 +1,62 @@
+/* === COPYRIGHT:
+  Copyright (c) 2005-2009 North Carolina State University
+  Developed with funding for the National eXtension Initiative.
+ === LICENSE:
+  BSD(-compatible)
+  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+*/
+
+/* reset styles v1.0 | 20080212 */
+
+html, body, div, span, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td {margin: 0;padding: 0;border: 0;outline: 0;vertical-align: baseline;background: transparent;}
+body {line-height: 1;}
+ol, ul {list-style: none;}
+blockquote, q {quotes: none;}
+blockquote:before, blockquote:after,
+q:before, q:after {content: '';content: none;}
+
+/* remember to define focus styles! */
+:focus {outline: 0;}
+
+/* remember to highlight inserts somehow! */
+ins {text-decoration:none; background:#95ff4d;}
+del {text-decoration:line-through; color: red; background:#ffdadb;}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {border-collapse: collapse;border-spacing: 0;}
+
+/* Put it back on certain elements */
+h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, fieldset, table, ol, ul, dl {
+	margin: 0 0 1em;
+}
+
+/* end reset styles */
+
+/* reset the font size to 1em.
+background: the browser font-size default is 16pt. multiple by 62.5% to reset font size to 1em.
+1em is now equal to 10pt. 1.2em is 12pt, 1.6em is 16pt, etc. (unless nested) */
+body {font-size: 62.5%;}
+
+
+/* default text sizes
+-----------------------------------------------------------------------------*/
+p, li, dt, dd, td, th {font-size:1.3em; line-height: 140%;}
+p input {font-size:1em;}
+
+td p {font-size:inherit; line-height: 140%;}
+td li {font-size:1em;}
+
+li * {font-size:inherit;}
+h1 { font-size: 2.4em;}
+h2 { font-size: 2.0em;}
+h3 { font-size: 1.8em;}
+h4 { font-size: 1.5em;}
+h5 { font-size: 1.4em;}
+h6 { font-size: 1.3em;}
+
+h1, h2, h3, h4, h5, h6 {margin: .5em 0 .5em 0; line-height: 140%;}
+
+
 /* Server location visual indicator
 -----------------------------------------------------------------------------*/
 div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:8px;text-align:left;}
@@ -12,3 +71,7 @@ div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
 
 
 .usericon {padding-left: 18px;background: transparent url(/images/common/user.gif) no-repeat left center;}
+
+.clear {clear: both;}
+.hide {display:none;}
+.nowrap {white-space: nowrap;}
