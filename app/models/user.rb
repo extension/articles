@@ -1533,6 +1533,25 @@ class User < ActiveRecord::Base
          " where ea.category_id=? order by users.last_name", catid ])
      end
     
+     def get_avg_resp_time(date1, date2)
+       statuses = [ "", " and status='resolved'", "and status='rejected'","and status='no answer'"]
+       n = statuses.size; i = 0; results=[]
+       while i < n do
+           if (date1 && date2)
+              avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as stdev from users join
+                submitted_questions on submitted_questions.resolved_by=users.id where users.id=#{self.id} and
+                submitted_questions.created_at  between ? and ? #{statuses[i]}",  date1, date2])
+            else
+              avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as stdev from users join
+              submitted_questions on submitted_questions.resolved_by=users.id where users.id=#{self.id} #{statuses[i]}"])
+            end
+         results[i] = [avgstd[0].ra, avgstd[0].stdev, avgstd[0].count_all]
+         i = i + 1
+       end
+       results
+     end
+
+    
     
     # end faq user model
 

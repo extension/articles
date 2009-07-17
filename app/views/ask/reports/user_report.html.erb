@@ -1,0 +1,16 @@
+<% @page_title = "Get User Report" %>
+
+<p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= @page_title %></p>
+
+<!-- <h1>User Report</h1> -->
+
+  <p>
+    <% form_tag({:controller => 'reports', :action => 'locate'}, {:method => "get"}) do %>
+      <label for="username">Enter User Login Name</label>
+      <input type="text" name="u" size="30" value="<%= @user_name %>" />
+      <%= submit_tag "Enter" %>
+    <% end %>
+  </p>
+	
+	
+	

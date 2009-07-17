@@ -188,6 +188,67 @@ class Ask::ReportsController < ApplicationController
               @min = 124
              render  :template => "ask/reports/display_questions"
         end
+        
+        def user_report
+
+        end
+         
+         def locate
+            if params[:u].nil?
+              flash[:failure] = "No Username entered."
+              # needs to be changed to go "back"
+              redirect_to :controller => 'main', :action => 'welcome'
+              return
+            elsif params[:u].strip == ''
+              flash[:failure] = "No Username entered."
+              redirect_to :controller => 'main', :action => 'welcome'
+              return
+            end
+
+            #if there are any alpha characters, look up in users table
+
+            user = nil
+
+            if params[:u] =~ /^[0-9]+$/
+              user = User.find_by_id(params[:u])
+           end
+
+            if !user.nil?
+              redirect_to :action => 'user', :id => user.id
+            else
+              user = User.find_by_login(params[:u])
+              if !user.nil?
+                redirect_to :action => 'user', :id=>user.id
+              else
+                flash[:failure] = "Username unrecognized."   
+                redirect_to :controller => 'reports', :action => 'user_report'
+              end   
+            end
+          end
+          
+        
+        def user
+     #     if (params[:from] && params[:to])
+    #        @dateFrom = params[:from] ;  @dateTo=params[:to]
+    #        @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+    #      else
+    #        (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+    #        (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+    #      end
+          @date1 = nil; @date2 = nil
+          @oldest_date = SubmittedQuestion.find_oldest_date
+          @user = User.find_by_id(params[:id])
+       
+          @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
+          @usubmitted = SubmittedQuestion.date_subs(@date1,@date2).count(:conditions => " submitted_by=#{@user.id}")
+          @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
+       #   @myid = @currentuser
+          if @user.nil? #|| @myid.nil?
+            redirect_to :controller => 'reports', :action => 'user_report'
+          end
+          @repaction = "user"
+        end
+        
          
          ####  Date handling ###
          def valid_date()
@@ -764,5 +825,37 @@ class Ask::ReportsController < ApplicationController
        end
        
        ## end of Response Times Report   
+  
+    #### Start of Responders by Category Report ####
+       def resolved_responders_by_category
+         @noresponders = Hash.new; @responderslist = Hash.new
+         @typelist = Category.find(:all, :conditions => "parent_id is null", :order => 'name')
+          @typelist.each do |cat|
+            userarray = SubmittedQuestion.resolved_submitted_questions_by_category_users(cat.id)
+            @noresponders[cat.name]= userarray[1]
+            @responderslist[cat.name]=userarray[2]
+          end
+       end
+
+       def display_discrete_responded
+          @cat = Category.find_by_name(params[:cat]); @resolver=User.find_by_id(params[:id])
+          @olink = params[:olink]; @comments=nil; @edits="Resolved"; @idtype='id'
+          @dateFrom = params[:from] ;  @dateTo=params[:to]; desc = "Resolver" ; aux = @resolver.id.to_s
+          @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+          @numb = params[:num].to_i
+            select_string = " sq.id squid, sq.updated_at, resolved_by, asked_question, status status  "
+            jstring = " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id  "
+            @pgt = " Questions Resolved by #{@resolver.first_name} #{@resolver.last_name} for '#{@cat.name}'"
+            @faq = nil; @idtype='sqid'
+
+            @questions = SubmittedQuestion.find_questions(@cat, desc, aux,  @date1, @date2,
+               :all,  :select => select_string,  :joins => jstring, :order => order_clause("sq.updated_at", "desc"),
+                     :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                          
+
+       #    set_navigation_context('list', @questions, 'reports')
+            @min = 124
+           render  :template => "ask/reports/display_questions"
+       end
+   ####   End of Responders by Category Report ###
   
 end

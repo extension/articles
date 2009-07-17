@@ -1,0 +1,79 @@
+<% @page_title = "User Report" %>
+
+<div id="report">
+    
+<p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= @page_title %></p>
+
+<h1><%= (@user.first_name) ? @user.first_name : ""%>  <%= @user.last_name%> <small>(FAQ and Ask an Expert activity)</small></h1>
+
+<h2 id="additional">Additional information available on this user's 
+<%= link_to ("FAQ profile", {:controller => 'account', :action => 'profile', :id => @user.login}) %>
+ or <%= link_to ("Ask an Expert profile", {:controller => 'account', :action => 'aaeprofile', :id => @user.login}) %></h2>
+
+
+ 
+<h3>User Details <small>(pulled from people.extension.org)</small></h3>
+<dl class="report">
+    <dt>Title</dt>
+    <dd><%= @user.title %></dd>
+    <dt>Email</dt>
+    <dd><%= @user.email %></dd>
+    <dt>State</dt>
+    <dd><%= Location.find_by_id(@user.location_id).name%></dd>
+    <dt>County of University</dt>
+    <dd><%= County.find_by_id(@user.county_id).name %></dd>
+    <dt>University</dt>
+    <dd><%= Institution.find_by_id(@user.institution_id).name %></dd>
+</dl>
+
+<br class="clear"/>
+<h3>User Contributions</h3>
+<!--<%= render(:partial => 'seldates')%>-->
+
+<dl class="report">
+   
+   <dt>Questions answered from the Public (Ask an Expert)</dt>
+    <dd><%= link_to @uresolved, :action => "display_questions", :user => @user.id, :descriptor => "Answered as an Expert" , :olink => "Answered as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uresolved %></dd>
+     <!--  <% if @usubmitted > 0 %>
+        <dt>Questions Submitted to Ask a Peer <em>(deprecated)</em></dt>
+        <dd><%= link_to @usubmitted, :action => "display_expert_questions", :user => @user.id, :descriptor => "Submitted to Ask a Peer" , :olink =>"Submitted to Ask a Peer", :to => @dateTo, :from => @dateFrom, :num => @usubmitted%></dd>
+    <% end %>-->
+     
+</dl>	
+<br class="clear"/>
+<h3>Response Times in Hours</h3>
+  <table cellspacing="0"  summary="user_response_stats">
+	<th scope="col"> </th>
+	<th scope="col">Average</th>
+	<th scope="col">Standard Deviation </th>
+	<th scope="col">N</th>
+	
+	 <tr>
+		<td>Overall</td>
+		<td><%=@avgstdresults[0][0]%></td>
+		<td><%= @avgstdresults[0][1]%></td>
+		<td><%= @avgstdresults[0][2]%></td>
+	  </tr>
+	  <tr>
+		<td>Resolved</td>
+		<td><%= @avgstdresults[1][0]%></td>
+		<td><%= @avgstdresults[1][1]%></td>
+		<td><%= @avgstdresults[1][2]%></td>
+	  </tr>
+	    <tr>
+	  	<td>Rejected</td>
+			<td><%= @avgstdresults[2][0]%></td>
+			<td><%= @avgstdresults[2][1]%></td>
+			<td><%= @avgstdresults[2][2]%></td>
+	    </tr>
+	   	<tr>
+			<td>Answered that eXtension does not have this Expertise</td>
+			<td><%= @avgstdresults[3][0]%></td>
+			<td><%= @avgstdresults[3][1]%></td>
+			<td><%= @avgstdresults[3][2]%></td>
+	    </tr>
+		
+  </table>
+
+	
+</div>

@@ -184,6 +184,12 @@ end
               cdstring = "status_state=#{aux} and "
           end
           cdstring= cdstring +  "resolved_by > 0 and category_id=#{cat.id}"
+      when "Resolver"
+            if aux
+              cdstring = " resolved_by = #{aux.to_i} and category_id=#{cat.id} "
+            else
+              cdstring= cdstring +  " resolved_by > 0 and category_id=#{cat.id} "
+            end
    end
    if (date1 && date2)
      case desc
@@ -547,6 +553,26 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
      h
    end
  
+   def SubmittedQuestion.resolved_submitted_questions_by_category_users(catid)
+
+      qarray=self.count(:all, 
+          :joins => " join categories_submitted_questions as csq on csq.submitted_question_id=submitted_questions.id " +
+               "join categories on csq.category_id=categories.id " , 
+          :conditions => [" (status='resolved' || status='rejected') and external_app_id IS NOT NULL and category_id=? ", catid],
+          :group => " resolved_by")
+     total_resolved = self.count(:all, 
+           :joins => " join categories_submitted_questions as csq on csq.submitted_question_id=submitted_questions.id " +
+                 "join categories on csq.category_id=categories.id " , 
+            :conditions => [" (status='resolved' || status='rejected') and external_app_id IS NOT NULL and category_id=? ", catid])
+      qarray = qarray.find_all { |k,v| k != "a"}  #turn into an array rather than a hash
+      i = 0; n = qarray.size
+      while i < n
+        qarray[i][0] = User.find_by_id((qarray[i][0]).to_i).login
+        i = i + 1
+      end     
+       [Category.find_by_id(catid).name, total_resolved, qarray]
+
+    end
 
 
 private
