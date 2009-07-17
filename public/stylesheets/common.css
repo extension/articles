@@ -73,6 +73,7 @@ div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
 .usericon {padding-left: 18px;background: transparent url(/images/common/user.gif) no-repeat left center;}
 
 .clear {clear: both;}
+.clearing {clear:both;}
 .hide {display:none;}
 .nowrap {white-space: nowrap;}
 

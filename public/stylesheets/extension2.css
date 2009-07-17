@@ -172,13 +172,7 @@ h3.headerdescription {text-transform:none !important;}
 
 
 /* PAGE HEADER */
-#signin { margin-top:.4em; background:#fff; float:right;}
-
-#signin-bar {width:963px; padding:.75em 0; margin:0 auto 1em;border-bottom:1px solid #bfbfbf;overflow:hidden;}
-#signin-bar p {margin:0;padding:0;}
-.aboutex {float:left;color:#e07432;font-weight:bold;}
-
-
+.aboutex {padding:.65em 0; margin:0 auto 1em;color:#e07432;font-weight:bold;text-align:left;border-bottom:1px solid #bfbfbf;}
 
 #masthead-wrap {padding:0; background:#fff; margin:0 0 32px;border-bottom: 1px solid #e6e6e6;overflow:auto;}
 #institution_picker {padding:0; background:#fff; margin:0 0 32px;border-top: 1px solid #e6e6e6;width:963px;margin:0 auto;text-align:left;clear:both;}
@@ -247,11 +241,6 @@ h1.logo {padding:0;margin:0; float:left;height:80px;}
 
 .searchbar { float: right; padding-left: 0px; padding-top: 4px; padding-right: 10px; padding-bottom: 0px; border: 0px solid #000;  }
 .searchbar .searchfield {width: 190px; font-size: 1.2em;}
-
-
-.comment_warning { color:red; }
-.comment_notice { color:green; font-size: 1.5em !important;background:#d9ffcb;padding:.25em;}
-
 
 
 #FLASH_NOTICE {
@@ -334,13 +323,6 @@ div#slider2.cop_slider dl {background: url(/images/layout/cop_featurebgnd_bottom
 }
 
 
-.cop_slider2 {background: url(/images/layout/cop_featurebgnd.gif) no-repeat; width: 610px; height: 240px; border: 0}
-
-
-.cophighlight {width: 170px; margin: 10px; margin-top: 20px; border: 1px solid #000; overflow: hidden}
-.cophighlighttext {color: #333; width: 350px; padding-top: 15px; margin-left: 20px} 
-
-
 .calendarboxfirst {background: #fff; border: 0px solid #bbb; width: 126px; float: left}
 .calendarbox {background: #fff; border: 0px solid #bbb; border-left: none; width: 126px;  float: left}
 .calendardate {border-bottom: 1px solid #bbb; padding-left: 5px; padding-top: 20px; text-transform: uppercase}
@@ -353,11 +335,6 @@ div#slider2.cop_slider dl {background: url(/images/layout/cop_featurebgnd_bottom
 .communitylist {margin: 0 0 2em;}
 .communitylist ul {padding:0 0 0 3em !important;margin:0;}
 .communitylist li {font-size: 1.4em;margin-bottom:.25em;margin:0 !important;padding:0 !important;}
-	
-/* COMMUNITY OF PRACTICE */
-
-.communityfeature {background: #d0e4fa; border: 0px solid #9dbcde; padding: 10px}
-.communityfeaturecontent {background: url(/images/layout/homepagefeaturecontentbgnd.gif); border: 0px solid #9dbcde; padding: 10px}
 
 
 /* SEARCH RESULTS */
@@ -406,9 +383,6 @@ table.calendar td {
 
 table.dottedtable { border-width: 1px 1px 1px 1px; border-spacing: 0px; border-style: solid solid solid solid; border-color: #dedede; border-collapse: collapse; } table.dottedtable th { border-width: 1px 1px 1px 1px; padding: 3px 3px 3px 3px; border-style: solid solid solid solid; border-color: #dedede; -moz-border-radius: 0px 0px 0px 0px; text-align: left; font-weight: 400; color: #878787; background: #F1F1F1; } table.dottedtable td { border-width: 1px 1px 1px 1px; padding: 3px 3px 3px 3px; border-style: solid solid solid solid; border-color: #dedede; background-color: white; -moz-border-radius: 0px 0px 0px 0px; }
 
-
-.calendarresultinfo {color: #bcbcbc; width: 350px; padding-top: 3px; border: 0px solid #000; padding-bottom: 30px}
-
 /* CONTENT */
 
 
@@ -438,9 +412,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 .caption {color: #afafaf; margin: 0 0 1.2em;line-height:1.2em;}
 .warning {color: #9F0000; font-size:1.2em;}
 
-.whatsnewboxicon {float: left}
-.whatsnewtext {float: left; padding-left: 0px; width: 280px}
-.infobox {border: 1px dotted #bbb; background: #f4f4f4; padding: 10px; margin: 10px; margin-left: 0px}
+
 .images {padding: 3px; border: 1px solid #ebebeb; margin: 5px}
 
 .calloutbox {font-size:1.2em; padding:.7em; margin:0; border: 1px solid #ccc; background:#fffff2;}
@@ -536,7 +508,6 @@ blockquote {font-size:1.2em;}
 #second_column_content {padding: 0; margin: 10px 0  0; width: 240px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
 /* UTILITY STYLES */
 
-.clearing {clear: both;}
 
 .gray a:link {cursor: pointer; text-decoration: none; color: #386292}
 .gray a:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}

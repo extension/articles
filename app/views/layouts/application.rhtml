@@ -79,9 +79,7 @@
 
     <div id="masthead-wrap">
         <div id="masthead">
-            <div id="signin-bar">
-                <p class="aboutex">These resources are brought to you by the Cooperative Extension System and your Local Institution</p>                
-            </div>
+            <p class="aboutex">These resources are brought to you by the Cooperative Extension System and your Local Institution</p>
             
             <% if @personal[:institution] and ['KY', 'TX'].include?(@personal[:institution].location.abbreviation) %>
                <div class="branding_wrapper doublewide">
