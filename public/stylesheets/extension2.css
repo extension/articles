@@ -1,6 +1,10 @@
-/* GLOBAL STYLES */
-
-
+/* === COPYRIGHT:
+  Copyright (c) 2005-2009 North Carolina State University
+  Developed with funding for the National eXtension Initiative.
+ === LICENSE:
+  BSD(-compatible)
+  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+*/
 
 ul li {font-size:1.2em;}
 ul li ul li {font-size: 1em !important;}
@@ -135,11 +139,6 @@ label em.required {
 .rightcolumn .sidenote {margin-top: 10px; color: #696969; font-size: 1.2em;}
 
 /* SUBHEADERS */
-
-.subheaders1 { border: 1px solid #486a0e; padding: 5px; background: url(/images/layout/subheaderbgnd.gif); color: #fff; margin-bottom: 10px }
-.subheaders2 {color: #000}
-.subheaders3 { border: 1px solid #cbc3a9; background: #e5dfcd; color: #000; padding: 5px; margin-bottom: 3px}
-.subheaders4 {color: #333; border-bottom: 1px solid #ebebeb; padding-bottom: 5px}
 .sortbox {padding: 10px; background: url(/images/layout/homepagefeaturecontentbgnd.gif); border: 1px solid #ebebeb; margin-bottom: 10px;overflow:auto;}
 
 .sortbox h3 {color:#829500;font-weight:normal;margin:0 0 .65em;}
@@ -168,11 +167,6 @@ label em.required {
 .months a, .sortbox .months strong {margin:0 .4em;}
 .months span {font-weight:bold;}
 
-.featuretabheader {border-bottom: 1px solid #a08764; margin-top: 20px}
-.featuretab {padding: 5px; background: #a08764; color: #fff; width: 210px }
-
-.featureheader {color: #000; padding-bottom: 5px}
-.mainheader {color: #000; padding-bottom: 2px}
 .headerdescription {color: #7f7f7f}
 h3.headerdescription {text-transform:none !important;}
 
@@ -183,8 +177,6 @@ h3.headerdescription {text-transform:none !important;}
 #signin-bar {width:963px; padding:.75em 0; margin:0 auto 1em;border-bottom:1px solid #bfbfbf;overflow:hidden;}
 #signin-bar p {margin:0;padding:0;}
 .aboutex {float:left;color:#e07432;font-weight:bold;}
-.login-options {float:right;}
-.login-options a {margin-left:1em;}
 
 
 
@@ -256,10 +248,6 @@ h1.logo {padding:0;margin:0; float:left;height:80px;}
 .searchbar { float: right; padding-left: 0px; padding-top: 4px; padding-right: 10px; padding-bottom: 0px; border: 0px solid #000;  }
 .searchbar .searchfield {width: 190px; font-size: 1.2em;}
 
-.registernotice { background: url(/images/layout/sitetitlebgnd.gif) left top no-repeat #7baa21; padding-left: 10px; margin-bottom: 0px; color: #f2dcc0; text-align: left; border-top: 1px solid #3e570d; border-bottom: 1px solid #3e570d}
-.registernotice a { text-decoration: none; padding: 10px; color: #fff }
-.registernotice a:hover { color: #000; cursor: pointer; background: none; text-decoration: none }
-.registernotice a:visited:hover { color: #000; cursor: pointer; background: none; text-decoration: none }
 
 .comment_warning { color:red; }
 .comment_notice { color:green; font-size: 1.5em !important;background:#d9ffcb;padding:.25em;}
@@ -423,21 +411,16 @@ table.dottedtable { border-width: 1px 1px 1px 1px; border-spacing: 0px; border-s
 
 /* CONTENT */
 
-.currentscore {padding: 5px; border:1px solid #efdb95; background: #fff0bb; text-align: center;}
+
 .headline {padding-left: 0px; width: 500px;}
 .related {padding:.75em; border:1px solid #bbb; background:#ebebeb; text-align:left;}
 .related h4 {margin:0;padding:0;}
 .related p {font-size:1.2em;}
 .subheads {font-weight: bold}
 
-.commentbox {padding: 5px; border:1px solid #ebebeb; background: #fff; text-align: left; margin-top: 3px}
-.commentbuttons {padding: 5px; border: 1px solid #ebebeb; border-top: 0; background: url(/images/layout/homepagefeaturecontentbgnd.gif); color: #ebebeb}
-.formbackground {padding: 5px; border:1px solid #ebebeb; background: url(/images/layout/homepagefeaturecontentbgnd.gif); text-align: left; margin-bottom: 20px; margin-top: 3px}
+
 .inputbox input {font-size: 150%; width: 225px; margin: 5px; margin-left: 0}
 
-.article_subhead {font-weight: normal;border: 1px solid #486a0e;font-size: 1.6em;margin:1em 0 .5em;color:#fff; background: url(/images/layout/subheaderbgnd.gif);padding:.2em;}
-
-.article_subhead2 {font-weight: normal;border-bottom: 2px solid #ccc;font-size: 1.6em;margin:1em 0 .5em;color:#555;padding:.2em; background: url(/images/layout/homepagefeaturecontentbgnd.gif);}
 
 #aae_pitch {width:100px;padding: 5px; border:1px solid #efdb95; background: #fff0bb; text-align: center;margin:-10px 0 0;color:#C09F2C;}
 #aae_pitch a {display:block;padding:.25em 0;}
@@ -447,14 +430,7 @@ table.dottedtable { border-width: 1px 1px 1px 1px; border-spacing: 0px; border-s
 #aae_plug a {text-decoration:underline;}
 
 .feedlink {padding-left: 17px; background: url(/images/common/feed-icon-12x12.gif) no-repeat;}
-.comment_box {margin:0 1em; padding:1em 2em;}
-.comment_box h5 {margin:0 0 .4em;}
-.comment_box h5 span {display:inline; font-size: 1.3em;}
-.comment_box h5 span.date {color:#bbb;font-weight:normal;font-size: 1.2em;}
 .comment, .comment * {font-size: 1.2em !important; margin: 0 0 .5em;}
-.comment_form {margin:1em 0 1em;padding:.5em 2em 1em;background: url(/images/layout/homepagefeaturecontentbgnd.gif);}
-.comment_form label {display:block;padding-right:.5em;font-size: 1em;font-weight:bold;}
-.comment_form label small {display:inline;color:#aaa;font-size:1em;font-weight:normal;}
 
 .instructions {color: #829500; padding-bottom: 10px}
 h3.instructions {color: #829500; font-weight:normal;}
@@ -624,17 +600,6 @@ br.clear {clear: both;}
 .errorcontent {border: 8px solid #ebebeb; padding: 20px; width: 640px; margin-left: auto; margin-right: auto; margin-top: 20px; height: 300px; background: #fff; text-align: left}
 .errorcontent p {font-size: 1.68em;}
 
-#loginform fieldset {border:0;padding:0;margin-bottom:1.75em;}
-#loginform h1 {font-size:2.1em;font-weight:normal;color: #df7432; line-height: 130%;margin-left:20px;}
-#loginform h3 {font-size:1.68em;font-weight:normal;border-bottom:#ebebeb 1px solid;padding-bottom:.35em;margin-bottom:0;color:#333;}
-#loginform.editform h1 {margin-left:0;}
-#loginform p label {width:6em;display:block;float:left;text-align:right;margin-right:.6em;padding:.25em}
-#loginform .stacklabels label {width:auto;float:none;text-align:left;padding:0 0 .15em;font-size:1em;}
-#loginform input{padding:.25em;font-size:1.1em;}
-#loginform input[type=text] {width: 18em;}
-#loginform .submit {margin-left:4em;}
-#loginform label .optional {color:#aaa;}
-#loginform ul {list-style:none;margin:0;padding:0;}
 
 .stacklabels table tr td {font-size:1.2em;}
 .openid input {font-size: 150%; width: 300px; margin: 5px; margin-left: 0}
@@ -642,19 +607,9 @@ br.clear {clear: both;}
 .loginright {float:right;width: 270px; border-left: 1px solid #bbb; padding: 0 20px 0 20px;}
 .loginright p {line-height:1.5em;}
 
-#loginform dl {margin:0 0 2em 4em;}
-#loginform dt {font-size:1.68em;margin:0 0 .2em;}
-#loginform dd {font-size:1.2em;line-height:1.6em;}
 
-#loginform .openidform {margin-bottom:4em;}
-#loginform .openidform label {display:block;background:url(/images/layout/openid.gif) no-repeat left center; line-height: 30px;padding: 0 0 0 34px; text-align:left;margin-bottom:.2em;}
 .directions {position:relative;display:block;color:#999;padding:0;margin:0;}
 
-#loginform .openidform #openid_url {display:block;width:28em;padding:.25em; margin-right:5px;font-size:1em;margin-bottom:.4em;clear:both;}
-#loginform .opensubmit {margin-left:0}
-#loginform .opensubmit .submit {margin-left:0;padding-left:1em;padding-right:1em;margin-right:.6em;}
-
-#loginform .token input {width: 30em;}
 .tip {margin:1em 0 1em;color:#000;line-height: 1.2em;border-bottom:1px solid #ddd;border-top:1px solid #ddd;padding:.4em;background:#fffecf;}
 .tip strong {margin-right:.5em;margin-bottom:.5em;color:#000;padding: .2em;font-size:100%;float:left;text-transform:uppercase;}
 .tip a {display:block;}
@@ -669,13 +624,6 @@ br.clear {clear: both;}
     font-weight:bold;
 }
 #admin h2 {clear:both;margin-bottom:20px !important;}
-.comment_status {color:#000;padding:.1em .35em;letter-spacing:0.1em;text-transform:uppercase;font-size:.95em;}
-.comment_status.pending {background:#666;color:#fff;}
-.comment_status.approved {background:#c2ff8c;color:#57af2d;}
-.comment_status.question {background:#c2ff8c;color:#57af2d;}
-.comment_status.rejected {background:#ff8c8c;color:#ff1717;}
-.comment_status.spam {background:#000;color:#fff;}
-
 
 
 /* skip to content */
@@ -782,24 +730,6 @@ a.cancel:hover {color:#000;}
 #admin dt { font-size:1.5em;}
 #admin p {font-size:1.3em;}
 
-/*border:1px solid red;*/
-#user_roles {padding:1em;border: #cae0fb 2px solid !important;}
-#user_roles fieldset {border:1px solid #fff;margin:0;padding:0;}
-#user_roles legend {font-size: 1.7em;margin:0 0 0;padding:0 0 1em;color:#222;}
-#user_roles p {margin:0 0 1.75em !important;padding:0 !important;float:left;width:30em;}
-#user_roles p label {margin:0 !important;padding:0 0 0 20px!important;text-align:left;font-weight:bold;width:30em;}
-#user_roles p input {float:left;margin:0 .5em 0 -20px;}
-#user_roles p em {display:block !important;font-weight:normal;font-style:normal;color:#666;}
-#user_roles p.submit input {margin:0 !important;}
-#user_search {margin:-10px 0 60px;padding:0;}
-#user_search form {border:0 !important;}
-#user_search p {font-weight:bold;}
-#user_search em {float:left;font-size:.9em;padding:.5em 0;color:#c05412;font-weight:normal;}
-#user_search input {margin-right:10px;}
-.children  {margin:1em 1em 1em !important; padding:0 !important;clear:both;float:left;border-bottom: 1px solid #eee;}
-.children dt {font-size:1.4em;font-weight:bold;}
-.children dd, .children dt {float:left !important;width:8em !important;}
-
 
 h1.title {color:#333;font-weight:normal;font-size:2.1em;margin-bottom:.35em;}
 
@@ -861,33 +791,7 @@ p.textcounter span.charcount-makeaware {color:#888;}
 
 /* Tables
 -----------------------------------------------------------------------------*/
-#admin table { 
-	width: 100%;
-	color: #222;
-/*  border: 1px solid #888;*/
-	margin: 0 0 1.5em;
-}
 
-#admin th {
-	margin: 0;
-	padding: .1em .5em;
-	text-align: left;
-	white-space: nowrap;
-	background: #eee;
-	color: #555;
-	font-weight: bold;
-  border: 1px solid #ddd;
-	border-bottom:  1px solid #ccc;
-}
-#admin td {
-	margin: 0;
-	padding: 0.1em .5em;
-	text-align: left;
-	font-weight: normal;
-	border-bottom:  1px solid #a9c9e5;
-	vertical-align:middle;
-	border:0;
-}
 
 #admin tr.shaded {background: #e9f1ff;}
 #admin table.hover tr:hover { background: #dbe8ff;color: #000;}
@@ -899,7 +803,7 @@ p.textcounter span.charcount-makeaware {color:#888;}
 #admin table td a:hover    {color: blue; text-decoration: underline;}
 
 
-#admin table {font-size: 1.2em;border:1px solid #888;border-collapse:collapse;}
+#admin table {border:1px solid #888;border-collapse:collapse;}
 #admin table td,
 #admin table th {margin:0;border-bottom:1px solid #ccc;padding:.3em .5em;}
 #admin table tr.true {background:#edfbff;}

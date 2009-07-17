@@ -9,24 +9,6 @@
 body {font-family: Arial, Helvetica, sans-serif;color: #222; background: #919294 url(/images/aae/page_bg.jpg) repeat-x;}
 
 
-/* default text sizes
------------------------------------------------------------------------------*/
-p, li, dt, dd, td, th {font-size:1.3em; line-height: 140%;}
-p input {font-size:1em;}
-
-td p {font-size:inherit; line-height: 140%;}
-td li {font-size:1em;}
-
-li * {font-size:inherit;}
-h1 { font-size: 2.4em;}
-h2 { font-size: 2.0em;}
-h3 { font-size: 1.8em;}
-h4 { font-size: 1.5em;}
-h5 { font-size: 1.4em;}
-h6 { font-size: 1.3em;}
-
-h1, h2, h3, h4, h5, h6 {margin: .5em 0 .5em 0; line-height: 140%;}
-
 /*lists*/
 
 #content ul, ol {margin:1em 2em;}
@@ -41,45 +23,6 @@ a:hover		{ color: #0000ff;}
 
 
 a.actionlink {color: #0000ff;}
-/*a.actionlink:hover {color: #0000ff;}*/
-
-/* Tables
------------------------------------------------------------------------------*/
-table { 
-	width: 100%;
-	color: #222;
-	border: 1px solid #ddd;
-	margin: 0 0 1.5em;
-}
-
-th {
-	margin: 0;
-	padding: .1em .5em;
-	text-align: left;
-	white-space: nowrap;
-	background: #eee;
-	color: #555;
-	font-weight: normal;
-	border: 1px solid #ddd;
-	border-bottom:  1px solid #ccc;
-}
-td {
-	margin: 0;
-	padding: 0.1em .5em;
-	text-align: left;
-	font-weight: normal;
-	border-bottom:  1px solid #a9c9e5;
-	vertical-align:middle;
-}
-
-tr.shaded {background: #e9f1ff;}
-table.hover tr:hover { background: #dbe8ff;color: #000;}
-table.hover tr.shaded:hover {background: #dbe8ff;color: #000;}
-
-table td a          {color: blue; text-decoration: none; display: block; padding: .5em .75em;}
-table td a:link     {color: #00356e;}
-table td a:visited  {color: #00356e;}
-table td a:hover    {color: blue; text-decoration: underline;}
 
 
 /* Form elements

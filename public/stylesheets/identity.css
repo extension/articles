@@ -1,9 +1,10 @@
-
-
-/* Put margins back on certain elements */
-h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, fieldset, table, ol, ul, dl {
-	margin: 0 0 1em;
-}
+/* === COPYRIGHT:
+  Copyright (c) 2005-2009 North Carolina State University
+  Developed with funding for the National eXtension Initiative.
+ === LICENSE:
+  BSD(-compatible)
+  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+*/
 
 body {
     font-family: "Arial", "sans-serif";
@@ -235,28 +236,7 @@ a.action:hover {text-decoration:none !important; background:#efb85b;color:#111 !
 #admintoggle strong {color:#680706;}
 #admintoggle strong.on {background:#e2babb;padding:.1em .3em;color:#000;}
 #admintoggle strong.off {background:#ddd;padding:.1em .3em;color:#000;}
-table {
-    width:100%;
-	color: #222;
-	border: 1px solid #eee;
-	margin: 0 0 1.5em;
-}
 
-th {
-	margin: 0;
-	padding: .1em 6px;
-	text-align: left;
-	white-space: nowrap;
-	background: #eee;
-	border: 1px solid #ddd;
-	border-bottom:  1px solid #ccc;
-}
-td {
-	padding: 0.3em 6px;
-	text-align: left;
-	font-weight: normal;
-	border-bottom:  1px solid #a9c9e5;
-}
 h3 {margin:1em 0 .5em;padding-bottom:.3em;border-bottom:1px solid #ccc;}
 
 
@@ -439,10 +419,8 @@ a.delete {color:#888;}
 
 
 
-table {border:1px solid #ddd;}
 table td {color:#000;border-bottom:1px solid #ccc;padding:.3em 1em;}
 table th {text-align:left;border-bottom: 1px solid #ccc;border-left:1px solid #ccc;padding:.3em 1em;line-height:1.75em;background:#f9fcfe;}
-table caption {font-size:1.4em; line-height:2em;font-weight:bold;color: #12396e;margin: .35em 0 0 0;padding:0;caption-side:top;text-align:left;}
 
 .community_stats {width:auto; border:2px solid #d5e7f5; font-family: "Trebuchet MS",Verdana,Arial,Helvetica,sans-serif; font-size:1.1em;}
 
