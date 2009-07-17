@@ -30,9 +30,17 @@ class ApplicationController < ActionController::Base
   # rescue_from ActionController::MethodNotAllowed, :with => :do_404
   # rescue_from ActionController::UnknownAction, :with => :do_404
 
-  before_filter :set_locale, :unescape_params, :disable_link_prefetching, :get_tag, :personalize, :set_request_url_options, :set_default_request_ip_address
+  before_filter :set_locale
+  before_filter :unescape_params
+  before_filter :disable_link_prefetching
+  before_filter :get_tag
+  before_filter :personalize
+  before_filter :set_request_url_options
+  before_filter :set_default_request_ip_address
     
   def set_request_url_options
+    ActiveRecord::Base::logger.info "Hello - we are inside set request"  
+    
     if(!request.nil?)
       AppConfig.configtable['url_options']['host'] = request.host unless (request.host.nil?)
       AppConfig.configtable['url_options']['protocol'] = request.protocol unless (request.protocol.nil?)

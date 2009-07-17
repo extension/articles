@@ -7,6 +7,8 @@
 
 require 'uri'
 class Article < ActiveRecord::Base
+  include ActionController::UrlWriter # so that we can generate URLs out of the model
+  
   extend DataImportContent  # utility functions for importing content
   # constants for tracking delete/updates/adds
 
@@ -26,11 +28,6 @@ class Article < ActiveRecord::Base
   has_many :article_buckets
   has_many :content_buckets, :through => :article_buckets
   
-  # so that we can generate URLs out of the model, not completely sure why - was marked as "pre Rails 2.1 stuff"
-  include ActionController::UrlWriter
-  default_url_options[:host] = AppConfig.configtable['url_options']['host']
-  default_url_options[:port] = AppConfig.get_url_port
-
   named_scope :bucketed_as, lambda{|bucketname|
     {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
@@ -147,6 +144,8 @@ class Article < ActiveRecord::Base
   end
   
   def id_and_link
+    default_url_options[:host] = AppConfig.configtable['url_options']['host']
+    default_url_options[:port] = AppConfig.get_url_port
     wiki_page_url(:title => self.title_url)
   end
   

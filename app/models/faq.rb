@@ -8,6 +8,7 @@
 require 'rexml/document'
 
 class Faq < ActiveRecord::Base
+  include ActionController::UrlWriter  # so that we can generate URLs out of the model
   # currently, no need to cache, we don't fulltext search tags
   # has_many :cached_tags, :as => :tagcacheable
     
@@ -16,11 +17,6 @@ class Faq < ActiveRecord::Base
   ordered_by :orderings => {'Newest to oldest'=> 'heureka_published_at DESC'},
              :default => "#{quoted_table_name}.heureka_published_at DESC"
   
-  # so that we can generate URLs out of the model, not completely sure why - was marked as "-- 'legacy'"
-  include ActionController::UrlWriter
-  default_url_options[:host] = AppConfig.configtable['url_options']['host']
-  default_url_options[:port] = AppConfig.get_url_port
-    
   has_many :expert_questions
   
   PUBLISHED = "published"
@@ -67,6 +63,8 @@ class Faq < ActiveRecord::Base
   end
   
   def id_and_link
+    default_url_options[:host] = AppConfig.configtable['url_options']['host']
+    default_url_options[:port] = AppConfig.get_url_port
     faq_page_url(:id => self.id.to_s)
   end
   

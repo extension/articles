@@ -9,6 +9,7 @@ require 'cgi'
 require 'mofo'
 
 class Event < ActiveRecord::Base
+  include ActionController::UrlWriter # so that we can generate URLs out of the model to convert it to an atom entry
   extend DataImportContent  # utility functions for importing event content
 
   #-- Rails 2.1 dependent stuff
@@ -30,15 +31,7 @@ class Event < ActiveRecord::Base
   # Get all events within x number of days from the given date
   named_scope :within, lambda { |interval, date| { :conditions => ['start >= ? AND start < ?', date, date + interval] } }
   
-  # so that we can generate URLs out of the model to convert it to an atom entry
-  include ActionController::UrlWriter
-  default_url_options[:host] = AppConfig.configtable['url_options']['host']
-  default_url_options[:port] = AppConfig.get_url_port
-  
-  
-  # in the event we do a refreshall
-  
-  
+    
   def self.create_or_update_from_atom_entry(entry)
     vevent = hCalendar.find(:first => {:text => entry.content})
     item = self.find_by_id(vevent.uid) || self.new
@@ -111,6 +104,8 @@ class Event < ActiveRecord::Base
   end
   
   def id_and_link
+    default_url_options[:host] = AppConfig.configtable['url_options']['host']
+    default_url_options[:port] = AppConfig.get_url_port
     events_page_url(:id => self.id.to_s)
   end
   
