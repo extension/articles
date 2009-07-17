@@ -3,7 +3,17 @@
 <div id="report_home">
     <p id="activity_report">All Reports</p>
     <h1>Select a Report</h1>
+	  <h2>Individual Reports</h2>
+	    <ul>
+	<li class="complex"><label>Individual user reports</label>
+	    <% form_tag({:controller => 'reports', :action => 'locate'}, {:method => "get"}) do %>
 
+	      <input type="text" name="u" size="15" value="<%= @user_name %>" />
+	      <%= submit_tag "go" %>
+	    <% end %>
+	    (type in the user's login name)
+	</li>
+	</ul>
     <h2>Ask an Expert Activity</h2>
     
     <ul>

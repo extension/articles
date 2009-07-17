@@ -249,6 +249,32 @@ class Ask::ReportsController < ApplicationController
           @repaction = "user"
         end
         
+        def display_questions
+           @user = User.find_by_id(params[:user]);
+           @olink = params[:olink];  @comments=nil; @edits=nil; 
+           @dateFrom = params[:from] ;  @dateTo=params[:to]
+           @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+           desc = params[:descriptor]; @numb = params[:num].to_i
+
+             select_string = " sq.current_contributing_question question_id, sq.user_id, sq.id squid,  resolved_by, " +
+                " sq.status status, sq.created_at, sq.updated_at updated_at, asked_question " 
+            
+             @pgt = "Questions #{@user.first_name} #{@user.last_name} #{desc} "
+             @faq = nil; @idtype='sqid'
+        
+        
+             @questions = SubmittedQuestion.find_questions(@user, desc,nil, @date1, @date2,
+                                                            :all,
+                                                            :select => select_string,
+                                                            :joins => " as sq ",
+                                                            :order => order_clause("sq.updated_at", "desc"),
+                                                            :page => params[:page],
+                                                            :per_page => AppConfig.configtable['items_per_page'])
+    
+
+         #   set_navigation_context('list', @questions, 'reports')
+
+        end
          
          ####  Date handling ###
          def valid_date()

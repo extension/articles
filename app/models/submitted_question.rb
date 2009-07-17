@@ -190,10 +190,12 @@ end
             else
               cdstring= cdstring +  " resolved_by > 0 and category_id=#{cat.id} "
             end
+     when "Answered as an Expert"
+          cdstring = " sq.resolved_by = #{cat.id}"
    end
    if (date1 && date2)
      case desc
-     when  "New", "Resolved"
+     when  "New", "Resolved", "Resolver", "Answered as an Expert"
         tstring =" and sq.created_at between ? and  ?"
      end
      cdstring = [cdstring + tstring, date1, date2]
