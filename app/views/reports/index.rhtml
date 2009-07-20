@@ -1,23 +1,22 @@
 <h1>Reports</h1>
-<em>Public site reports are currently in transition, check back later for more data and information about published content</em>
 
 <h3>Published Item Count</h3>
-<div id='report'>
-    <table cellspacing="0" summary="Item Counts" class="report">
-	 <tr>
-		    <th scope="col">Item</th> 
-		    <th scope="col">Published Count</th>
-	   </tr>
-	   <tr>
-	       <td>Articles</td>
-	       <td><%= Article.all.count %></td>
-       </tr>
-           <td>Faqs</td>
-           <td><%= Faq.all.count %></td>
-       <tr>
-       </tr>
-           <td>Events</td>
-           <td><%= Event.all.count %></td>
-       <tr>
-    </table>
-</div>
+
+<table cellspacing="0" summary="Item Counts"o>
+    <tr>
+        <th scope="col">Item</th> 
+        <th scope="col">Published Count</th>
+    </tr>
+    <tr>
+        <td>Articles</td>
+        <td><%= Article.all.count %></td>
+    </tr>
+        <td>Faqs</td>
+        <td><%= Faq.all.count %></td>
+    <tr>
+    </tr>
+        <td>Events</td>
+       <td><%= Event.all.count %></td>
+    <tr>
+</table>
+

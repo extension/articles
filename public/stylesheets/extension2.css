@@ -22,19 +22,10 @@ body { text-align: center }
 	position: relative;
 	min-height: 100%;
 }
-.topbar {height: 15px; background: #363636; width: 100%; position: fixed; z-index: 100}
 
 /* RIGHT COLUMN */
 .fullwidth {/*border:1px solid red;*/float:left;}
-.rightcolumnheadertext {padding-top: 6px; padding-left: 10px; text-transform: capitalize; color: #4d5707}
 
-.rightcolumncontent {padding-left: 20px}
-.rightcolumncontent a:link {cursor: pointer; text-decoration: none; color: #386292}
-.rightcolumncontent a:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
-.rightcolumncontent a:visited {cursor: pointer; text-decoration: none; color: #386292 }
-.rightcolumncontent a:visited:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
-.rightcolumncontent ul {margin: 0; padding-left: 20px; color: #909090}
-.rightcolumncontent.sponsor {padding: 12px 0; margin: 0;text-align:center;}
 
 #homage { width: 240px; margin-top: .5em; margin-left: 10px; color: white; background-color: black; padding: 5px;font-size:1.2em;}
 #homage p {font-size:1em; display:inline;padding:0;margin:0; line-height:1.2em;}
@@ -47,7 +38,6 @@ body { text-align: center }
 
 .zipcode {margin-top:10px;}
 
-code {font-size:1.1em;}
 
 /* FOOTER */
 #footer { clear:both; width: 100%; position: relative; margin-top: 6em; background: #ea7b37; color: #fff; padding-top: 40px; padding-bottom: 10px; border-top: 1px solid #b54a09;}
@@ -62,7 +52,7 @@ code {font-size:1.1em;}
 
 /* COLUMN SETUP */
 
-.leftcolumn {float: left; margin-right: 0px; width: 658px; padding: 15px; margin-top: 0px; background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;  border-left: 1px solid #ebebeb}
+.leftcolumn {float: left; margin-right: 0px; width: 658px; padding: 15px 15px 150px; margin-top: 0px; background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;  border-left: 1px solid #ebebeb}
 .rightcolumn {float: left; margin-right: 0px; width: 273px; margin-top: 0px;/*padding-top:1em;*/}
 .leftcolumn.fullwidth {width:932px;}
 
@@ -73,18 +63,12 @@ a:link {cursor: pointer; text-decoration: none; color: #386292}
 a:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
 a:visited {cursor: pointer; text-decoration: none; color: #386292 }
 a:visited:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
-
-a img { border: 0px; }
+a img {border: 0;}
 
 .pagelinks {font-weight: bold; padding: 7px; color: #000;clear:both;margin-bottom:1em;}
 .pagelinks a:link {font-weight: 400; text-decoration: none; padding: 5px; background: #FFFCD2; border: 1px #D6CA3D solid; color: #244A9F; margin-right: 3px; margin-left: 3px}
 .pagelinks a:visited {font-weight: 400; text-decoration: none; padding: 5px; background: #FFFCD2; border: 1px #D6CA3D solid; color: #244A9F; margin-right: 3px; margin-left: 3px}
 .pagelinks a:hover {text-decoration: none; background: #aed5f6}
-
-.featurelink a:link {cursor: pointer; text-decoration: none; color: #0e5ea1}
-.featurelink a:hover {color: #000; text-decoration: none; cursor: pointer; background: none}
-.featurelink a:visited {cursor: pointer; text-decoration: none; color: #0e5ea1 }
-.featurelink a:visited:hover {color: #000; text-decoration: none; cursor: pointer; background: none}
 
 
 /* DEFAULT TEXT STYLES */
@@ -98,8 +82,6 @@ h5 {font-size:1.1em;}  /* displayed at 11px */
 h6 {font-size:1em;}  /* displayed at 10px */
 
 
-
-/*label {font-size:1.2em;}*/
 label em.required {
         color: red;
         font-style: normal;
@@ -135,7 +117,7 @@ label em.required {
 .rightcolumn dl {margin-bottom:18px;line-height:1.2em;}
 .rightcolumn h3 {font-weight:normal;font-size:1.6em;margin: 0 0 .6em 0;color:#000;}
 .rightcolumn ul {margin:0 10px 1em 20px;padding:0 10px 0 20px;}
-.rightcolumn li {color:#909090;margin: 0 10px .5em .6em;line-height:1.1em;}
+.rightcolumn li {color:#909090;margin: 0 10px .5em .6em;line-height:1.1em; list-style:disc;}
 .rightcolumn .sidenote {margin-top: 10px; color: #696969; font-size: 1.2em;}
 
 /* SUBHEADERS */
@@ -200,7 +182,7 @@ h1.logo {padding:0;margin:0; float:left;height:80px;}
 
 .institution_actions_wrapper {height:80px;position:relative;float:left;width:360px;margin-left:24px;}
 #institution_actions {padding:0;margin:0;position:absolute; bottom:0;left:0;}
-#institution_actions li {text-align:left;list-style:none;margin:0;font-weight:bold;}
+#institution_actions li {text-align:left;list-style:none;margin:0;font-weight:bold;line-height:1.1em;}
 #institution_actions li.changeint {margin-top:1em;font-weight:normal;}
 
 .doublewide .institution_actions_wrapper {height:auto;position:static;width:963px;overflow:auto;}
@@ -243,30 +225,11 @@ h1.logo {padding:0;margin:0; float:left;height:80px;}
 .searchbar .searchfield {width: 190px; font-size: 1.2em;}
 
 
-#FLASH_NOTICE {
-  list-style-type: none;
-  text-align: left;
-  padding: 0;
-  margin: 0 0 .5em;
-  font-size:1.2em;
-}
-#FLASH_NOTICE p {padding: .3em .5em;margin:0;}
-#FLASH_NOTICE.notice {
-    color: #000;
-    background: #deff5c;
-    border-top: 3px solid #bedc51;
-    border-bottom: 3px solid #bedc51;
-}
+#flash_notice {list-style: none; text-align: left; padding: 0; margin: 0 0 .5em;font-size:1.2em;}
+#flash_notice p {padding: .3em .5em;margin:0;}
+#flash_notice.notice {color: #000;background: #deff5c;border-top: 3px solid #bedc51;border-bottom: 3px solid #bedc51;}
+#flash_notice.warning {color: red;background: #f4f4f4;border-top: 1px solid red;border-bottom: 1px solid red;}
 
-#FLASH_NOTICE.warning {
-	color: red;
-	background: #f4f4f4;
-	border-top: 1px solid red;
-    border-bottom: 1px solid red;
-	}
-
-
-.loginbox {background: #fffbe4; border: 1px solid #f8edaf; padding: 10px; margin-top: 5px; margin-right: 10px; color: #7c7550}
 
 .mission {margin-top: 5px; margin-bottom: 20px}
 h1.missionstatement {font-size: 2.1em;margin-bottom:.5em;}
@@ -292,6 +255,8 @@ div#slider2.cop_slider .contentdiv {background: url(/images/layout/cop_featurebg
 #slider2 dl {float:left;width:610px;margin:0 0 0;padding: 0 0 30px;height: 18em;}
 div#slider2.home_slider dl {background: url(/images/layout/featurebgnd_bottom.gif) no-repeat 50% bottom;}
 div#slider2.cop_slider dl {background: url(/images/layout/cop_featurebgnd_bottom.gif) no-repeat 50% bottom;}
+
+#slider2 dt {line-height:125%;}
 #slider2 dt,
 #slider2 dd {
     float:right;
@@ -323,65 +288,24 @@ div#slider2.cop_slider dl {background: url(/images/layout/cop_featurebgnd_bottom
 }
 
 
-.calendarboxfirst {background: #fff; border: 0px solid #bbb; width: 126px; float: left}
-.calendarbox {background: #fff; border: 0px solid #bbb; border-left: none; width: 126px;  float: left}
-.calendardate {border-bottom: 1px solid #bbb; padding-left: 5px; padding-top: 20px; text-transform: uppercase}
-.calendarcontent {padding: 5px; color: #333; border: 1px solid #bbb; border-left: 0px; height: 120px; overflow: hidden }
-.calendarcontentfirst {padding: 5px; color: #333; border: 1px solid #bbb; height: 120px; overflow: hidden }
-.event_listings li {margin-bottom: 10px;}
+ul.event_listings {padding:1em 1em .5em 3em;}
+.event_listings li {margin-bottom: 10px; list-style:disc;}
 
 .whatsnewbox { padding: 10px; color: #333}
 
 .communitylist {margin: 0 0 2em;}
-.communitylist ul {padding:0 0 0 3em !important;margin:0;}
+.communitylist ul {padding:0 0 0 3em;margin:0; list-style:disc;}
 .communitylist li {font-size: 1.4em;margin-bottom:.25em;margin:0 !important;padding:0 !important;}
 
 
 /* SEARCH RESULTS */
-.searchnumbers {float: left; padding: 5px; border: 0px solid #000}
+
 .searchresult {width: 570px; border: 0px solid #000;padding:0 1em 0 6em;margin:0;}
 .searchresult li {margin:0 0 2em;font-size:1.4em;}
 .searchresult li span {display:block;color:#999;font-size:.85em;}
 
-
-
 .askanexpert {font-size:1.4em;margin-top:2em;}
 
-.searchresultinfo {color: #bcbcbc; width: 570px; padding-top: 3px; border: 0px solid #000; padding-bottom: 30px}
-.searchstars {float: left; width: 80px}
-.searchcommunityname {float: left; width: 490px; padding-top: 2px}
-
-
-/* TABLES */
-table.calendar {
-	border-width: 0px 0px 0px 0px;
-	border-spacing: 0px;
-	border-style: solid solid solid solid;
-	border-color: #dedede;
-	border-collapse: collapse;
-	width: 500px
-}
-
-table.calendar th {
-	border-width: 1px 1px 1px 1px;
-	padding: 3px 3px 3px 3px;
-	border-style: solid solid solid solid;
-	border-color: #dedede;
-	-moz-border-radius: 0px 0px 0px 0px;
-	text-align: left;
-	font-weight: 400;
-	color: #878787;
-	background: #F1F1F1;
-}
-table.calendar td {
-	border-width: 1px 1px 1px 1px;
-	padding: 3px 3px 3px 3px;
-	border-style: solid solid solid solid;
-	border-color: #ebebeb;
-	-moz-border-radius: 0px 0px 0px 0px;
-}
-
-table.dottedtable { border-width: 1px 1px 1px 1px; border-spacing: 0px; border-style: solid solid solid solid; border-color: #dedede; border-collapse: collapse; } table.dottedtable th { border-width: 1px 1px 1px 1px; padding: 3px 3px 3px 3px; border-style: solid solid solid solid; border-color: #dedede; -moz-border-radius: 0px 0px 0px 0px; text-align: left; font-weight: 400; color: #878787; background: #F1F1F1; } table.dottedtable td { border-width: 1px 1px 1px 1px; padding: 3px 3px 3px 3px; border-style: solid solid solid solid; border-color: #dedede; background-color: white; -moz-border-radius: 0px 0px 0px 0px; }
 
 /* CONTENT */
 
@@ -391,9 +315,6 @@ table.dottedtable { border-width: 1px 1px 1px 1px; border-spacing: 0px; border-s
 .related h4 {margin:0;padding:0;}
 .related p {font-size:1.2em;}
 .subheads {font-weight: bold}
-
-
-.inputbox input {font-size: 150%; width: 225px; margin: 5px; margin-left: 0}
 
 
 #aae_pitch {width:100px;padding: 5px; border:1px solid #efdb95; background: #fff0bb; text-align: center;margin:-10px 0 0;color:#C09F2C;}
@@ -411,9 +332,6 @@ h3.instructions {color: #829500; font-weight:normal;}
 .dates {color: #bbb; padding-bottom: 3px}
 .caption {color: #afafaf; margin: 0 0 1.2em;line-height:1.2em;}
 .warning {color: #9F0000; font-size:1.2em;}
-
-
-.images {padding: 3px; border: 1px solid #ebebeb; margin: 5px}
 
 .calloutbox {font-size:1.2em; padding:.7em; margin:0; border: 1px solid #ccc; background:#fffff2;}
 .calloutbox p {padding: 0; margin: 0 0 .9em;}
@@ -479,32 +397,28 @@ wrap the "a" element with <p class="button2"> to style as button
 #content_css_reset dl dd {font-size:1.2em;}
 #content_css_reset dl dd dd {font-size:inherit;}
 #content_css_reset table,
-#report table {font-size: 1.2em;border:1px solid #888;border-collapse:collapse;}
 #content_css_reset table caption {font-weight:bold;font-size:1em}
 #content_css_reset table th,
 #content_css_reset table td,
-#report table td,
-#report table th {margin:0;border:1px solid #aaa;padding:.3em .5em;}
 #content_css_reset table th {color:#222;}
 #content_css_reset table th {background:#ededed;}
 
-#article.contactus {margin-top:3em !important;}
-#article.contactus h2 {margin:1em 0 .5em !important;}
-#article.contactus p {margin:0 0 .25em  !important;}
+#content_css_reset ul {padding:0 1.5em 0;overflow:auto;margin:0 0 1em;}
+#content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;}
 
-#content_css_reset ul {padding:0 1.5em 0;overflow:auto;margin:0;}
-#content_css_reset li {margin:0 0 .5em 1.5em; padding:0;}
-blockquote {font-size:1.2em;}
-
+#article.contactus {margin-top:3em;}
+#article.contactus h2 {margin:1em 0 .5em;}
+#article.contactus p {margin:0 0 1.5em;}
 
 
-#extension_articles h1{font-size:2.1em;margin-bottom:.5em;}
-#extension_articles h2{font-size:1.6em;}
+
+#extension_articles h1{font-size:2.1em; margin-bottom:.5em;}
+#extension_articles h2{font-size:1.6em; margin-bottom:.5em;}
 
 #contentfooter {font-size:.9em; line-height:1.5em; margin-top:4em;border-top:1px solid #ccc;}
 /* RIGHT COLUMN */
 
-.localextension {padding: 10px; text-align: left; color: #000; margin-right: 10px}
+
 #second_column_content {padding: 0; margin: 10px 0  0; width: 240px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
 /* UTILITY STYLES */
 
@@ -517,7 +431,6 @@ blockquote {font-size:1.2em;}
 .left {float: left}
 .right {float: right; clear:right;}
 
-form {margin: 0px}
 
 /*ask and expert*/
 .aae h3 {font-weight:normal;font-size:1.68em;margin:0 0 .25em;}
@@ -529,20 +442,12 @@ form {margin: 0px}
 .aae .formError {font-size:1.2em;margin:0 0 0 .5em;float:left;line-height:2em;}
 .aae fieldset.stack_labels p label {width:20em;display:block;}
 
-/* Justin added for template columns */
-div.partnerlogocontainer {
-	background:#FFFFFF none repeat scroll 0%;
-	border:medium double #000000;
-	float:right;
-	margin:3px 0pt 20px 20px;
-	padding:10px;
-	text-align:center;
-	width:180px;
-}
-.hiddenStructure {position:absolute;left:-5000px;display:hidden;}
-#second_column_content ul {padding-left:20px;}
-
 .formError {/*display: inline; */color: red;}
+
+/* .hiddenStructure is pulled over from CoP wiki templates */
+.hiddenStructure {position:absolute;left:-5000px;display:hidden;} 
+
+#second_column_content ul {padding-left:20px;}
 
 
 .multipage {background: #fff0bb; padding:0 1em;margin:0;}
@@ -568,32 +473,9 @@ br.clear {clear: both;}
 #table_of_contents h3 {padding:0 .5em;margin:.5em;}
 #table_of_contents h3 a {font-weight:normal}
 
-.errorcontent {border: 8px solid #ebebeb; padding: 20px; width: 640px; margin-left: auto; margin-right: auto; margin-top: 20px; height: 300px; background: #fff; text-align: left}
-.errorcontent p {font-size: 1.68em;}
-
-
-.stacklabels table tr td {font-size:1.2em;}
-.openid input {font-size: 150%; width: 300px; margin: 5px; margin-left: 0}
-.loginleft {width: 555px; float:left; border: 0px solid #000; padding: 0 20px;}
-.loginright {float:right;width: 270px; border-left: 1px solid #bbb; padding: 0 20px 0 20px;}
-.loginright p {line-height:1.5em;}
-
-
-.directions {position:relative;display:block;color:#999;padding:0;margin:0;}
-
-.tip {margin:1em 0 1em;color:#000;line-height: 1.2em;border-bottom:1px solid #ddd;border-top:1px solid #ddd;padding:.4em;background:#fffecf;}
-.tip strong {margin-right:.5em;margin-bottom:.5em;color:#000;padding: .2em;font-size:100%;float:left;text-transform:uppercase;}
-.tip a {display:block;}
-
-
 /*admin*/
 
 .date {color: #666;font-size:1.1em;display:block;margin:0;}
-.user {
-    padding-left: 17px;
-    background:url(/images/common/user.gif) no-repeat #fff;
-    font-weight:bold;
-}
 #admin h2 {clear:both;margin-bottom:20px !important;}
 
 
@@ -636,9 +518,6 @@ br.clear {clear: both;}
 #admin fieldset label input {display:block;margin-top:.25em; width:10em;}
 #admin ul li {font-size:1.3em;}
 
-
-.ver2 {border:none !important;}
-.ver2 .short {width:3em !important;}
 #admin fieldset input[type=text],
 #admin fieldset select {
     width: 280px;
@@ -718,17 +597,10 @@ table.ad-graphics td {padding:1em !important;}
 .ad-actions span {float:left;}
 .ad-actions span strong {font-size:1.2em;}
 
-.sponsor {margin:1em 0;border-top:1px solid #ddd;width:650px;float:left;padding:3em 0 2em;text-align:left;}
-.sponsor h3 {padding:0;margin:0 0 .5em;font-size:2em;font-weight:normal;}
-.sponsor p.logo {float:right;width:320px;overflow:hidden;}
-.sponsor img {padding:20px; border:1px solid #eee;}
-.sponsor p {float:left;width:305px;clear:left;margin:0 0 1em;padding-right:10px;}
-
-
 .homesection {padding-top: 20px;clear:both;}
 .homesection h2 {float:left;color: #000;font-size:2.1em;margin-bottom:.25em;}
 .homesection p.months {padding-right: 20px; color: #ebebeb; padding-top: 6px;margin:0;}
-.homesection h3 {border-bottom: 1px solid #bbb; padding-left: 5px; padding-top: 20px; text-transform: uppercase;font-weight:normal;}
+.homesection h3 {border-bottom: 1px solid #bbb; padding: 0 0 0 5px; text-transform: uppercase;font-weight:normal;clear:both;}
 
 .homesection.half {width: 300px; margin-right: 20px; padding:0;clear:none;}
 .whatsnewbox p, .whatsnewbox dt, .whatsnewbox dd, .whatsnewbox li {clear:both;font-size:1.4em;}

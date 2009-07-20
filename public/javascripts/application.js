@@ -61,7 +61,7 @@ function startmeup() {
 Event.observe(window, 'load', startmeup)
 
 function findInstitution(city, state) {
-   new Ajax.Updater({ success:'logo', failure:'FLASH_NOTICE' },
+   new Ajax.Updater({ success:'logo', failure:'flash_notice' },
                     '/main/find_institution',
                     {
                       method: 'post',
@@ -78,7 +78,7 @@ function findInstitution(city, state) {
 }
 
 function processFlash() {
-	fn = $('FLASH_NOTICE')
+	fn = $('flash_notice')
 	if(!fn) return;
 	if(fn.innerHTML == '') return;
 	

@@ -2,9 +2,21 @@
 <p><%= @deploy['version'] %></p>
 
 <h3>Deploy Information</h3>
-<table class="dottedtable">
-<tr><td>date</td> <td><%= @deploy['date'] %></td></tr>
-<tr><td>userid</td> <td><%= @deploy['userid'] %> (<%= @deploy['username']%>)</td></tr>
-<tr><td>REV</td> <td><%= @deploy['revision'] %></td></tr>
-<tr><td>Latest Migration Version</td> <td><%= @deploy['schema_version'] %></td></tr>
+<table>
+    <tr>
+        <td>date</td>
+        <td><%= @deploy['date'] %></td>
+    </tr>
+    <tr>
+        <td>userid</td>
+        <td><%= @deploy['userid'] %> (<%= @deploy['username']%>)</td>
+    </tr>
+    <tr>
+        <td>REV</td>
+        <td><%= @deploy['revision'] %></td>
+    </tr>
+    <tr>
+        <td>Latest Migration Version</td>
+        <td><%= @deploy['schema_version'] %></td>
+    </tr>
 </table>

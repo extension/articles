@@ -136,7 +136,7 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
        <% flash_names = [:notice, :warning, :message, :error]
           flash_names.each do |flash_type| 
              if flash[flash_type] %>
-        <div id='FLASH_NOTICE' class='<%= flash[:notice]? "notice" : "warning" %>'>
+        <div id='flash_notice' class='<%= flash[:notice]? "notice" : "warning" %>'>
             <p><%= flash[flash_type] %></p>
         </div>
           <% end %>

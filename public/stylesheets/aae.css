@@ -225,14 +225,6 @@ div#gsfn_search_widget div.gsfn_content p.gsfn_summary { margin-top: 2px }
 	top: 15px;
 }
 
-#resultQualifier {
-	position: relative;
-	color: #222;
-	background: #eee;
-	padding: 0 5px;
-	top: -1em;
-	font-size: 95%;
-}
 
 
 /* Big tabs to separate apps
