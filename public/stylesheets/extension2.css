@@ -6,6 +6,24 @@
   see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 */
 
+
+/* Accesibility - skip to content
+-----------------------------------------------------------------------------*/
+#skiplist {margin: 0; padding: 0; text-align:left;}
+.skip {text-align: center; margin: 0; padding: 0; position: absolute;}
+.skip a {z-index: 2; font-size: 130%; padding: 0.2em 0.5em; display: inline; text-decoration:none; position: absolute; width: 8em; left: -200em}
+.skip a:focus, 
+.skip a:active {
+    position: absolute;
+    left: 0.5em;
+    border: solid #333 2px;
+    color: #fff;
+    background: #ea7b37;
+}
+.skip a:hover {cursor: default}
+
+
+
 ul li {font-size:1.2em;}
 ul li ul li {font-size: 1em !important;}
 ul li ul li ul li {font-size: 1em !important}
@@ -246,12 +264,7 @@ div#slider2.home_slider .contentdiv {background: url(/images/layout/featurebgnd_
 div#slider2.cop_slider .contentdiv {background: url(/images/layout/cop_featurebgnd_top.gif) no-repeat top center;}
 
 .pagination {font-size:1.2em;margin:0; padding:2px; width: 610px;}
-#admin {margin-bottom:150px;}
-#admin .pagination {margin:0 0 1.35em;text-align:left;float:left;}
-#admin .pagination a:link, #admin .pagination a:visited {color:blue;text-decoration:underline;}
-#admin .pagination a:hover {background:none;}
-#admin .pagination strong {float:left;margin-right:.5em;}
-#admin .pagination .prevnext {float:left;}
+
 #slider2 dl {float:left;width:610px;margin:0 0 0;padding: 0 0 30px;height: 18em;}
 div#slider2.home_slider dl {background: url(/images/layout/featurebgnd_bottom.gif) no-repeat 50% bottom;}
 div#slider2.cop_slider dl {background: url(/images/layout/cop_featurebgnd_bottom.gif) no-repeat 50% bottom;}
@@ -307,10 +320,6 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 
 
 
-
-
-
-
 /* CONTENT */
 
 
@@ -341,13 +350,13 @@ h3.instructions {color: #829500; font-weight:normal;}
 
 /* Classes and IDs originating from CoP Wiki templates
 -----------------------------------------------------------------------------*/
+/* .hiddenStructure is pulled over from CoP wiki templates */
+.hiddenStructure {position:absolute;left:-5000px;display:hidden;}
+
 /* Template:calloutbox */
 .calloutbox {font-size:1.2em; padding:.7em; margin:0; border: 1px solid #ccc; background:#fffff2;}
 .calloutbox p {padding: 0; margin: 0 0 .9em;}
 .calloutbox * {font-size:inherit !important;}
-
-/* .hiddenStructure is pulled over from CoP wiki templates */
-.hiddenStructure {position:absolute;left:-5000px;display:hidden;}
 
 /* Template:multipage */
 .multipage {background: #fff0bb; padding:0 1em;margin:0;}
@@ -364,8 +373,15 @@ h3.instructions {color: #829500; font-weight:normal;}
 .singleimage.center div {margin-left:auto;margin-right:auto;}
 .singleimage.center img {display:block;float:none;margin-left:auto;margin-right:auto;}
 
+/* Template:footer */
+#contentfooter {font-size:.9em; line-height:1.5em; margin-top:4em;border-top:1px solid #ccc;}
 
 
+/* Classes and IDs that are manipulated by javascript at load time
+-----------------------------------------------------------------------------*/
+#second_column_content {padding: 0; margin: 10px 0  0; width: 240px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
+#second_column_content ul {padding-left:20px;}
+.primarycolumn {width:400px;}
 
 
 /*this was added to allow content to be cleared below images without clearing the rightsidebar*/
@@ -405,15 +421,9 @@ h3.instructions {color: #829500; font-weight:normal;}
 #article.contactus h2 {margin:1em 0 .5em;}
 #article.contactus p {margin:0 0 1.5em;}
 
-
-
 #extension_articles h1{font-size:2.1em; margin-bottom:.5em;}
 #extension_articles h2{font-size:1.6em; margin-bottom:.5em;}
 
-#contentfooter {font-size:.9em; line-height:1.5em; margin-top:4em;border-top:1px solid #ccc;}
-
-
-#second_column_content {padding: 0; margin: 10px 0  0; width: 240px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
 
 #table_of_contents {padding-right: 20px; margin-bottom: 10px; margin-top: 10px; border: solid 1px #ebebeb;width:368px;}
 #table_of_contents p {margin: 0px; padding: 3px;  margin-bottom: 5px}
@@ -424,16 +434,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 #table_of_contents h3 a {font-weight:normal}
 
 
-/* UTILITY STYLES */
 
-
-.gray a:link {cursor: pointer; text-decoration: none; color: #386292}
-.gray a:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
-.gray a:visited {cursor: pointer; text-decoration: none; color: #386292 }
-.gray a:visited:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
-
-.left {float: left}
-.right {float: right; clear:right;}
 
 
 /*ask and expert*/
@@ -449,77 +450,26 @@ h3.instructions {color: #829500; font-weight:normal;}
 .formError {/*display: inline; */color: red;}
 
 
-
-#second_column_content ul {padding-left:20px;}
-
-
-
 .printme {display: none;}
 
 #summary.printme {display:block; font-size:1.2em;padding:.5em;color:#444;background:#eee;margin-bottom:1.6em;}
 
-
-
-
-
-
-
 /*admin*/
 
-/*
-wrap the "a" element with <p class="button2"> to style as button
-*/
-.button2,
-.button {
-	list-style-type: none;
-	margin: 0 20px 0 0;
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #666;
-	border-right: 1px solid #555;
-	border-left: 1px solid #ccc;
-	float: left;
-	background: #fff;
-	color: #222;
-	text-decoration: none;
-	margin-bottom: 4px;
-}
-.button2 a,
-.button a {
-	margin: 0;
-	padding: 2px 8px;
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #666;
-	border-right: 1px solid #555;
-	border-left: 1px solid #ccc;
-	border: 1px solid #fff;
-	float: left;
-	background: #fff;
-	color: #111 !important;
-	text-decoration: none;
-	background: transparent url(/images/common/grey_button.gif) 1px bottom repeat-x;
-}
-.button2 a:hover {text-decoration: underline;}
-
-
 .date {color: #666;font-size:1.1em;display:block;margin:0;}
+
+
+
+
+
+#admin {margin-bottom:150px;}
+#admin .pagination {margin:0 0 1.35em;text-align:left;float:left;}
+#admin .pagination a:link, #admin .pagination a:visited {color:blue;text-decoration:underline;}
+#admin .pagination a:hover {background:none;}
+#admin .pagination strong {float:left;margin-right:.5em;}
+#admin .pagination .prevnext {float:left;}
+
 #admin h2 {clear:both;margin-bottom:20px !important;}
-
-
-/* skip to content */
-#skiplist {margin: 0; padding: 0; text-align:left;}
-.skip {text-align: center; margin: 0; padding: 0; position: absolute;}
-.skip a {z-index: 2; font-size: 130%; padding: 0.2em 0.5em; display: inline; text-decoration:none; position: absolute; width: 8em; left: -200em}
-.skip a:focus, 
-.skip a:active {
-    position: absolute;
-    left: 0.5em;
-    border: solid #333 2px;
-    color: #fff;
-    background: #ea7b37;
-}
-.skip a:hover {cursor: default}
-
-
 #admin h2, h3 {
     color:#333;
 }
@@ -534,11 +484,7 @@ wrap the "a" element with <p class="button2"> to style as button
     border:0;
     width: 600px;
 }
-#admin fieldset {
-    margin:0;padding:0;
-/*    border:1px solid #a3adbb;*/
-/*    float:left;*/
-}
+#admin fieldset {margin:0;padding:0;}
 #admin fieldset {border:0;}
 #admin fieldset label {display:block; font-weight:bold;}
 #admin fieldset label input {display:block;margin-top:.25em; width:10em;}
@@ -567,14 +513,6 @@ wrap the "a" element with <p class="button2"> to style as button
 /*    letter-spacing: 0.1em;*/
     font-weight:normal;
 }
-#left_col {
-    width: 400px;
-    float:left;
-}
-#right_col {
-    width: 510px;
-    float:right;
-}
 #admin fieldset.stacked label {
    float:none;
    width:100%;
@@ -591,7 +529,6 @@ wrap the "a" element with <p class="button2"> to style as button
 }
 .delete {background:#fa9293; padding: .2em .5em;font-weight:normal;color:#fff !important;}
 .delete:hover {background:red;}
-.right {float:right;}
 .cancel {margin-left:1em;}
 a.cancel {color:#888;}
 a.cancel:hover {color:#000;}
@@ -605,6 +542,28 @@ a.cancel:hover {color:#000;}
 }
 #admin dt { font-size:1.5em;}
 #admin p {font-size:1.3em;}
+
+#admin tr.shaded {background: #e9f1ff;}
+#admin table.hover tr:hover { background: #dbe8ff;color: #000;}
+#admin table.hover tr.shaded:hover {background: #dbe8ff;color: #000;}
+
+#admin table td a          {color: blue; text-decoration: none; display: block; padding: .5em .75em;}
+#admin table td a:link     {color: #00356e;}
+#admin table td a:visited  {color: #00356e;}
+#admin table td a:hover    {color: blue; text-decoration: underline;}
+
+
+#admin table {border:1px solid #888;border-collapse:collapse;}
+#admin table td,
+#admin table th {margin:0;border-bottom:1px solid #ccc;padding:.3em .5em;}
+#admin table tr.true {background:#edfbff;}
+#admin table tr .islive {text-indent:-5000px;}
+#admin table tr.true .islive {background: #edfbff url(/images/pubsite/green_dot.png) 50% 50% no-repeat;}
+#admin table td.notset {color:#aaa;}
+
+
+
+
 
 
 h1.title {color:#333;font-weight:normal;font-size:2.1em;margin-bottom:.35em;}
@@ -656,24 +615,7 @@ p.textcounter span.charcount-limit {background:#ff0000;font-weight:bold;color:#f
 p.textcounter span.charcount-warning {color:#ff0000;font-weight:bold;}
 p.textcounter span.charcount-makeaware {color:#888;}
 
-.primarycolumn {width:400px;}
 
 
 
-#admin tr.shaded {background: #e9f1ff;}
-#admin table.hover tr:hover { background: #dbe8ff;color: #000;}
-#admin table.hover tr.shaded:hover {background: #dbe8ff;color: #000;}
 
-#admin table td a          {color: blue; text-decoration: none; display: block; padding: .5em .75em;}
-#admin table td a:link     {color: #00356e;}
-#admin table td a:visited  {color: #00356e;}
-#admin table td a:hover    {color: blue; text-decoration: underline;}
-
-
-#admin table {border:1px solid #888;border-collapse:collapse;}
-#admin table td,
-#admin table th {margin:0;border-bottom:1px solid #ccc;padding:.3em .5em;}
-#admin table tr.true {background:#edfbff;}
-#admin table tr .islive {text-indent:-5000px;}
-#admin table tr.true .islive {background: #edfbff url(/images/pubsite/green_dot.png) 50% 50% no-repeat;}
-#admin table td.notset {color:#aaa;}

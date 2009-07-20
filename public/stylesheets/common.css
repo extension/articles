@@ -73,6 +73,8 @@ div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
 .usericon {padding-left: 18px;background: transparent url(/images/common/user.gif) no-repeat left center;}
 
 .clear, .clearing {clear: both;}
+.left {float: left}
+.right {float: right;}
 .hide {display:none;}
 .nowrap {white-space: nowrap;}
 
@@ -114,3 +116,57 @@ table td a:visited  {color: #00356e;}
 table td a:hover    {color: blue; text-decoration: underline;}
 
 table caption {font-size:1.4em; line-height:2em;font-weight:bold;color: #12396e;margin: .35em 0 0 0;padding:0;caption-side:top;text-align:left;}
+
+
+
+/* Link styled as a button
+use this markup:
+<p class="button2"><a href="">Button Text</a></p>
+-----------------------------------------------------------------------------*/
+.button2,
+.button {
+	list-style-type: none;
+	margin: 0 20px 0 0;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #666;
+	border-right: 1px solid #555;
+	border-left: 1px solid #ccc;
+	float: left;
+	background: #fff;
+	color: #222;
+	text-decoration: none;
+	margin-bottom: 4px;
+}
+.button2 a,
+.button a {
+	margin: 0;
+	padding: 2px 8px;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #666;
+	border-right: 1px solid #555;
+	border-left: 1px solid #ccc;
+	border: 1px solid #fff;
+	float: left;
+	background: #fff;
+	color: #111 !important;
+	text-decoration: none;
+	background: transparent url(/images/common/grey_button.gif) 1px bottom repeat-x;
+}
+.button2 a:hover {text-decoration: underline;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

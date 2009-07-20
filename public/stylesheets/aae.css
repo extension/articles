@@ -54,40 +54,6 @@ input.submit[class] {  /* IE ignores [class] */
     width: auto;  /* cancel margin fix for other browsers */
 }
 
-/*
-wrap the "a" element with <p class="button2"> to style as button
-*/
-.button2,
-.button {
-	list-style-type: none !important;
-	margin: 0 20px 0 0;
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #666;
-	border-right: 1px solid #555;
-	border-left: 1px solid #ccc;
-	float: left;
-	background: #fff;
-	color: #222;
-	text-decoration: none;
-	margin-bottom: 4px;
-}
-.button2 a,
-.button a {
-	margin: 0;
-	padding: 2px 8px;
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #666;
-	border-right: 1px solid #555;
-	border-left: 1px solid #ccc;
-	border: 1px solid #fff;
-	float: left;
-	background: #fff;
-	color: #111 !important;
-	text-decoration: none;
-	background: transparent url(/images/common/grey_button.gif) 1px bottom repeat-x;
-}
-.button2 a:hover {text-decoration: underline;}
-
 
 /* app banner */
 #extensionNav {
