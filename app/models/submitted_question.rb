@@ -205,6 +205,65 @@ end
        paginate(*args)
     end
   end
+  
+  def self.get_delineated_string(desc, cdstr)
+      aux = desc
+      if desc.length > 9
+        case desc[9].chr
+        when "a"
+          cdstr = cdstr + " and status_state=#{SubmittedQuestion::STATUS_RESOLVED} "
+        when "r"
+           cdstr = cdstr + " and status_state=#{SubmittedQuestion::STATUS_REJECTED} "
+        when "n"
+           cdstr = cdstr + " and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER} "
+        end
+        aux = desc[0..8]
+      end
+      [cdstr, aux]
+   end
+  
+   def self.find_state_questions(loc, county, desc, date1, date2,  *args)
+     rphrase = ""; tstring = ""; descaux = desc
+     if (county)
+       ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
+     end
+     if (desc != "Submitted")
+       cdstring =  " users.location_id='#{loc.id}'"
+       if (county )
+        cdstring = cdstring + "and users.county_id=#{ctyid[0].id}"
+       end
+     end
+     case desc
+      when "Submitted", "ResolvedP", "ResolvedPa", "ResolvedPr", "ResolvedPn"
+        rphrase = " sq.location_id=#{loc.id}  "
+        if (county)
+          rphrase = rphrase + " and sq.county_id=#{ctyid[0].id}"
+        end
+        case desc
+          when "Submitted"
+             cdstring = " and sq.status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"
+          else
+             cdstring = " and resolved_by > 0" 
+             (cdstring, descaux) = get_delineated_string(desc, cdstring)
+          end
+      when "ResolvedM", "ResolvedMa", "ResolvedMr", "ResolvedMn"
+         rphrase = " resolved_by > 0 and "
+         (cdstring, descaux) = get_delineated_string(desc, cdstring)
+      end     
+     cdstring= rphrase + cdstring
+     if (date1 && date2)
+        case descaux
+        when "Submitted", "ResolvedP", "ResolvedM"
+           tstring = " and sq.created_at > ? and sq.created_at < ?"
+        end
+        cdstring =[cdstring + tstring, date1, date2]
+     end
+     with_scope(:find => { :conditions => cdstring , :limit => 100}) do
+        paginate(*args)
+     end
+     
+  end
+  
 
 #find the date that this submitted question was assigned to the current assignee
 def assigned_date
@@ -591,6 +650,46 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
        [Category.find_by_id(catid).name, total_resolved, qarray]
 
     end
+    
+      def SubmittedQuestion.get_answered_question_by_state_persp(bywhat, stateobj, date1, date2)
+           statuses = ["", " and status_state=#{STATUS_RESOLVED}", " and status_state=#{STATUS_REJECTED}", " and status_state=#{STATUS_NO_ANSWER}"]
+            results = Array.new; i = 0; cond_string = " and submitted_questions.created_at between ? and ?" ;  n = statuses.size
+            if (bywhat == "member")
+              bywhatstr = " users.location_id='#{stateobj.id}' "
+            else
+              bywhatstr = " location_id=#{stateobj.id} "
+            end
+            while i < n do
+              cond = " resolved_by >=1 and " + bywhatstr + statuses[i]
+              if (date1 && date2)
+                cond = cond +  cond_string   
+              end 
+              results[i] = SubmittedQuestion.count(:all,  :joins => ((bywhat=="member") ? [:resolved_by] : nil),
+                :conditions => ((date1 && date2) ? [cond, date1, date2] : cond))
+              i = i + 1
+            end  
+            return [results[0], results[1], results[2], results[3]]
+       end
+    
+    
+     def SubmittedQuestion.get_answered_question_by_county_persp(bywhat, countyobj, date1, date2)
+          statuses = ["", " and status_state=#{STATUS_RESOLVED}", " and status_state=#{STATUS_REJECTED}", " and status_state=#{STATUS_NO_ANSWER}"]
+           results = Array.new; i = 0; cond_string = " and submitted_questions.created_at between ? and ?" ; n = statuses.size
+           if (bywhat == "member")
+             bywhatstr = " users.location_id=#{countyobj.location_id} and users.county_id=#{countyobj.id} "
+           else
+             bywhatstr = " county_id=#{countyobj.id} "
+           end
+           while i < n do
+             cond = " resolved_by >=1 and " + bywhatstr + statuses[i]
+             if (date1 && date2)
+               cond = cond +  cond_string   
+             end 
+             results[i] = SubmittedQuestion.count(:all, :joins => ((bywhat=="member") ? [:resolved_by] : nil),:conditions => ((date1 && date2) ? [cond, date1, date2] : cond))
+             i = i + 1
+           end  
+           return [results[0], results[1], results[2], results[3]]
+      end
 
 
 private

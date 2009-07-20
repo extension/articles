@@ -1,0 +1,25 @@
+<% @page_title = "Select County in " + @statename %>
+
+ <p id="activity_report"><%= link_to "All Reports",  :controller => 'ask/reports' %> <%= @page_title %> </p>
+
+<% form_tag({:action => :county, :State => @statename, :to => @dateTo, :from => @dateFrom} ) do %>
+
+<h2>Select County/Parish in <%= @statename%></h2>
+
+<% options_array= Array.new%>
+<% @counties.each do |county| %>
+    <% options_array <<  county.name %>
+<% end%>    
+
+  <label>County/Parish</label>
+ 
+       <select name="County">
+  	 <%= options_for_select(options_array) %>
+      </select><br /><br />
+
+
+<p>
+    
+    <%= submit_tag "Enter" %>
+</p>
+<% end %>

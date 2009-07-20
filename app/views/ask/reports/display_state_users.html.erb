@@ -1,0 +1,58 @@
+ <% @page_title = " Users in " + ((@type=='County') ? @county + " county/parish in " : "") + "#{@loc.name}"%>
+
+<p >
+      <%= link_to "All Reports",  :controller => 'reports' %>  &gt; 
+      <%= link_to "Location Report",  :controller => 'reports', :action => "show_all_by_state", :to => @dateTo, :State => @loc.name, :from => @dateFrom %> &gt; <% if @type == 'County'%>
+                     <%= link_to 'Select County', :action => 'county_select', :State => @loc.name, :to => @dateTo, :from => @dateFrom%> &gt;
+                     <%= link_to "County/Parish Report" , :action => 'county', :to => @dateTo, :from => @dateFrom, :State => @loc.name, :County => @county %> &gt;
+                   <% end%>
+      <%= @page_title %></p>
+
+<% if @users.length > 0 %>
+    <p class="display_results">Displaying <strong><%= @users.offset + 1 %>-<%= @users.offset + @users.length %></strong> of <strong><%= @users.total_entries %></strong> 
+<% else %>
+    <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong> 
+    
+<% end %>
+
+<h1>Users in <%= @typename %></h1>
+<div id="report_inline">
+<table>
+	<% i = 0%>
+	<% n = @users.size%>
+    <tr>
+	    <th scope="col">Name</th> 
+	    <th scope="col">Affiliation</th>
+	   <% if @type != 'County'%>
+	    <th scope="col">County</th>
+	   <% end%>
+	</tr>
+	<% while i < n do %>
+	   
+	   <tr>
+		<!--<td><%= link_to "#{@users[i].first_name} #{@users[i].last_name}",  :action => 'user', :id => @users[i].id %></td>-->
+		<td><%= @users[i].first_name%> <%= @users[i].last_name%></td>
+		 <% if @users[i].institution_id && Institution.find_by_id(@users[i].institution_id)%>
+		<td> <%= Institution.find_by_id(@users[i].institution_id).name%></td>
+		  <% else%>
+		   <td></td>
+		  <%end%>
+		<% if @type != 'County'%>
+		  <% if @users[i].county_id  && County.find_by_id(@users[i].county_id)%>
+		<td> <%= County.find_by_id(@users[i].county_id).name%></td>
+		  <% else%>
+		     <td></td>
+		   <% end%>
+		<% end%>
+	   </tr>
+	<% i = i + 1%>
+    <% end%>
+    
+</table>
+</div>
+
+
+
+<% if @users.length > 0 %>
+    <%= will_paginate @users %>
+<% end %>

@@ -157,6 +157,8 @@ class User < ActiveRecord::Base
   named_scope :missingtags,  :joins => "LEFT JOIN taggings ON (users.id = taggings.taggable_id AND taggings.taggable_type = 'User')",  :conditions => 'taggings.id IS NULL'
   named_scope :missingnetworks,  :joins => "LEFT JOIN social_networks ON users.id = social_networks.user_id",  :conditions => 'social_networks.id IS NULL'
       
+  named_scope :date_users, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " users.created_at between ? and ?", date1, date2] : "true" } }
+  
   # override login write
   def login=(loginstring)
     write_attribute(:login, loginstring.mb_chars.downcase)
@@ -1551,6 +1553,19 @@ class User < ActiveRecord::Base
        results
      end
 
+     def self.find_state_users(loc, county, date1, date2, *args)
+        cdstring= " location_id=#{loc.id}"
+        if (county)
+          ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
+          cdstring = cdstring + " and county_id=#{ctyid[0].id} "
+        end
+        if (date1 && date2)
+            cdstring = [cdstring + " and created_at > ? and created_at < ?", date1, date2]
+        end
+        @users=User.with_scope(:find => { :conditions => cdstring, :limit => 100}) do
+          paginate(*args)
+        end
+     end
     
     
     # end faq user model

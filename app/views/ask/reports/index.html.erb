@@ -3,7 +3,7 @@
 <div id="report_home">
     <p id="activity_report">All Reports</p>
     <h1>Select a Report</h1>
-	  <h2>Individual Reports</h2>
+	  <h2>Ask an Expert Individual Reports</h2>
 	    <ul>
 	<li class="complex"><label>Individual user reports</label>
 	    <% form_tag({:controller => 'reports', :action => 'locate'}, {:method => "get"}) do %>
@@ -12,6 +12,38 @@
 	      <%= submit_tag "go" %>
 	    <% end %>
 	    (type in the user's login name)
+	</li>
+	<li class="complex">
+	<% form_tag({:controller => 'reports', :action => :show_all_by_state }, {:method => "get"}) do %>
+	<% options_array= Array.new%>
+	<% @locs.each do |stobj|
+	      options_array << stobj.name
+	 %>      
+	<% end %>
+	<%options_array.insert(0, "")%>
+	<label>Individual state reports</label>
+
+	<select name="State">
+	   <%= options_for_select(options_array) %>
+	   </select>
+	   <%= submit_tag "go" %>
+	<% end %>
+	</li>
+	<li class="complex">
+	<% form_tag({:controller => 'reports', :action => :county_select }, {:method => "get"}) do %>
+	<% options_array= Array.new%>
+	<% @locs.each do |stobj|
+	      options_array << stobj.name
+	 %>      
+	<% end %>
+	<%options_array.insert(0, "")%>
+	<label>Individual county reports</label>
+
+	<select name="State">
+	   <%= options_for_select(options_array) %>
+	   </select>
+	   <%= submit_tag "go" %>
+	<% end %>
 	</li>
 	</ul>
     <h2>Ask an Expert Activity</h2>

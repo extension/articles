@@ -189,6 +189,8 @@ class Ask::ReportsController < ApplicationController
              render  :template => "ask/reports/display_questions"
         end
         
+        ######   User Report of Ask an Expert Activity #####
+        
         def user_report
 
         end
@@ -275,6 +277,8 @@ class Ask::ReportsController < ApplicationController
          #   set_navigation_context('list', @questions, 'reports')
 
         end
+        
+        ####   end of User Report for Ask an Expert Activity #####
          
          ####  Date handling ###
          def valid_date()
@@ -576,6 +580,172 @@ class Ask::ReportsController < ApplicationController
         
     ##  End of Expertise Report
     
+    
+    ####   State Report for Ask an Expert  #####
+    
+    def state_report
+
+    end
+    
+    
+    def show_all_by_state
+       if (params[:from] && params[:to])
+         @dateFrom = params[:from] ;  @dateTo=params[:to]
+          @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+       else
+         (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+         (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+       end
+       @typename = params[:State]; 
+       if (@typename && @typename != "") 
+         @typeobj = Location.find_by_name(params[:State]) 
+         @type = "State" ; @typel="state" ;  @oldest_date = SubmittedQuestion.find_oldest_date
+         locabbr=@typeobj.abbreviation; locid = @typeobj.id
+     
+         if !@typeobj.nil?  
+      
+           @reguser = User.date_users(@date1, @date2).count(:conditions => "location_id=#{locid}")
+        
+           @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@typeobj.id}")
+           @answp = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions => " resolved_by >=1 and location_id= #{locid} ")
+           (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_state_persp("pertaining",@typeobj, @date1, @date2)
+           @answm = SubmittedQuestion.date_subs(@date1, @date2).count(:joins => [:resolved_by], :conditions => " resolved_by >=1 and users.location_id=#{locid}")
+           (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp("member", @typeobj, @date1, @date2)
+       
+           @repaction = "show_all_by_state"      
+           render :template=>'ask/reports/state'
+
+         else
+           redirect_to :controller => 'ask/reports', :action => 'state_report'
+         end
+       else
+         redirect_to :controller => 'ask/reports', :action => 'index'
+       end
+     end
+     
+     def display_state_links
+         @type = params[:type]
+         if (@type == 'State')
+            @loc = Location.find_by_id(params[:loc]); @county = nil; @typename = @loc.name; @statename = @loc.name
+         else
+            @loc = Location.find_by_name(params[:State]) ; @county = params[:County]; @typename = @county ; @statename = params[:State]
+         end
+         @olink = params[:olink]; @comments=nil;  @edits=params[:descriptor]; @numb = params[:num].to_i
+         if (@edits.length > 9)
+           if (@edits[0..7]=="Resolved")
+             @edits = @edits[0..8]
+           end
+         end
+         @dateFrom = params[:from] ;  @dateTo=params[:to] ; @oldest_date = SubmittedQuestion.find_oldest_date
+         @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+         
+         @limit_string = "Only up to 100 are shown."
+        
+         
+             (@edits[0..7]== "Resolved") ?  jrestring = " join users on sq.resolved_by=users.id " :  jrestring=""
+             select_string = "sq.user_id, sq.id squid, resolved_by, sq.location_id, current_contributing_question question_id,  " +
+                " sq.status status, sq.created_at, sq.updated_at updated_at, asked_question " 
+            
+              jstring= " as sq #{jrestring}"
+             if @edits == 'Submitted'
+               @pgt = "Submitted Questions pertaining to #{@typename}"
+             else
+               (@edits[8].chr=="P") ? @pgt = "Resolved Questions pertaining to #{@typename}" : @pgt="Questions Resolved by a member in #{@typename}" 
+             end
+             @faq = nil; @idtype = 'sqid'  
+        
+
+                 
+           @questions = SubmittedQuestion.find_state_questions(@loc, @county, params[:descriptor], @date1, @date2,
+                        :all,
+                        :select =>select_string,
+                        :joins => jstring,
+                        :order => (@edits=="Submitted" || @edits[0..7]=="Resolved") ? order_clause("sq.updated_at", "desc") : order_clause,
+                        :page => params[:page],
+                        :per_page => AppConfig.configtable['items_per_page'])
+         
+         
+          @pgtl = @pgt
+          if (@type=='County')
+            @pgtl = @pgt + " county/parish in #{@loc.name}"
+          end
+      #    set_navigation_context('list', @questions, 'reports')
+          @min = 124
+          render  :template => "ask/reports/display_questions"
+      end
+
+      def display_state_users
+         @type = params[:type]
+         if (@type == 'State')
+           @loc = Location.find_by_id(params[:loc]); @county = nil; @typename = @loc.name
+         else
+           @loc = Location.find_by_name(params[:State]); @county = params[:County]; @typename = @county
+         end
+         @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i
+         @dateFrom = params[:from] ;  @dateTo=params[:to] ;
+         @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+         @users=User.find_state_users(@loc, @county, @date1, @date2,
+           :all, :select => " id, first_name, last_name, login, email, institution_id, county_id", :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])
+
+      end
+     
+     
+      ####  County Report for Ask an Expert ####
+
+     def county_select
+       @date1=nil; @date2=nil; @dateFrom=nil; @dateTo=nil
+       if (params[:from] && params[:to])
+         @dateFrom = params[:from] ;  @dateTo=params[:to]
+         @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+       end
+       if params[:State]
+           @statename = params[:State]
+       end
+       if (@statename && @statename != "")
+         @counties= County.find(:all,  :conditions => "location_id = #{Location.find_by_name(@statename).id} and name<>'All'", :order => 'countycode, name')
+       else
+         redirect_to :controller => 'ask/reports', :action => 'index'
+       end
+     end
+
+
+     def county
+       if (params[:from] && params[:to])
+         @dateFrom = params[:from] ;  @dateTo=params[:to]
+         @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+       else
+         (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+         (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+       end
+       @county = params[:County]; @typename = @county
+       @statename=params[:State]
+       if (@county && @statename && @statename!="")
+         loc=Location.find_by_name(@statename) 
+         locabbr = loc.abbreviation
+        
+         @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])
+         @type="County"; @typel="county" ;   @oldest_date = SubmittedQuestion.find_oldest_date
+         if !@typeobj.nil? 
+       
+           @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
+         
+          @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id}")
+          @answp = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions => " resolved_by >=1 and county_id= #{@typeobj.id} ")
+          (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp("pertaining",@typeobj, @date1, @date2)
+          @answm = SubmittedQuestion.date_subs(@date1, @date2).count(:joins => [:resolved_by], :conditions => " resolved_by >=1 and users.county_id=#{@typeobj.id} and users.location_id=#{loc.id}") 
+          (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp("member",@typeobj, @date1, @date2)   
+          
+           @repaction = 'county'
+           render :template => 'ask/reports/state'
+        else
+          redirect_to :controller => 'ask/reports', :action => 'county_select', :State => @statename
+        end
+      else
+         redirect_to :controller => 'ask/reports', :action => 'index'
+      end
+    end  
+    
+    ##### end of County Report for Ask an Expert ####
     
     ##  Response Times Report
     
