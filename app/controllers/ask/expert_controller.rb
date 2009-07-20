@@ -997,7 +997,6 @@ class Ask::ExpertController < ApplicationController
           user_prefs.each {|up| up.destroy}
        end
        
-       # TODO: comment out for now until we get tag scheme figured out for categories
        if @category.class == Category
           cat_setting = @category.id
        elsif @category == Category::UNASSIGNED
