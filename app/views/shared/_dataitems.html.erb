@@ -13,7 +13,7 @@
 <%= render :partial => "shared/will_paginator", :locals => { :collection => items } %>
 
 <% index_start = (items.current_page - 1) * items.per_page + 1 %>
-<ol class="searchresult" start="<%= index_start %>;">
+<ol class="articlelist" start="<%= index_start %>;">
 <% items.each_with_index do |item, i| %>
     <li>
         <%= link_to_page item %>

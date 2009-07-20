@@ -298,13 +298,17 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 .communitylist li {font-size: 1.4em;margin-bottom:.25em;margin:0 !important;padding:0 !important;}
 
 
-/* SEARCH RESULTS */
 
-.searchresult {width: 570px; border: 0px solid #000;padding:0 1em 0 6em;margin:0;}
-.searchresult li {margin:0 0 2em;font-size:1.4em;}
-.searchresult li span {display:block;color:#999;font-size:.85em;}
+/* Browse articles by type and category
+-----------------------------------------------------------------------------*/
+.articlelist {width: 570px; padding:0 1em 0 6em; margin:0;}
+.articlelist li {margin:0 0 1.5em;font-size:1.4em; list-style:decimal;}
+.articlelist li span {display:block;color:#999;font-size:.85em;}
 
-.askanexpert {font-size:1.4em;margin-top:2em;}
+
+
+
+
 
 
 /* CONTENT */
@@ -323,9 +327,10 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 #aae_plug h4 {font-size: 1.7em;margin:0 0 .2em;}
 #aae_plug p {margin:0 0 .5em;}
 #aae_plug a {text-decoration:underline;}
+.askanexpert {font-size:1.4em;margin-top:2em;}
+.callout {font-size: 1.6em;}
+.aae-options {background:#e8f2fd;padding:.5em 1.5em;float:left;width:90%;margin-bottom:1.5em;}
 
-.feedlink {padding-left: 17px; background: url(/images/common/feed-icon-12x12.gif) no-repeat;}
-.comment, .comment * {font-size: 1.2em !important; margin: 0 0 .5em;}
 
 .instructions {color: #829500; padding-bottom: 10px}
 h3.instructions {color: #829500; font-weight:normal;}
@@ -333,13 +338,133 @@ h3.instructions {color: #829500; font-weight:normal;}
 .caption {color: #afafaf; margin: 0 0 1.2em;line-height:1.2em;}
 .warning {color: #9F0000; font-size:1.2em;}
 
+
+/* Classes and IDs originating from CoP Wiki templates
+-----------------------------------------------------------------------------*/
+/* Template:calloutbox */
 .calloutbox {font-size:1.2em; padding:.7em; margin:0; border: 1px solid #ccc; background:#fffff2;}
 .calloutbox p {padding: 0; margin: 0 0 .9em;}
 .calloutbox * {font-size:inherit !important;}
 
-.callout {font-size: 1.6em;}
+/* .hiddenStructure is pulled over from CoP wiki templates */
+.hiddenStructure {position:absolute;left:-5000px;display:hidden;}
 
-.aae-options {background:#e8f2fd;padding:.5em 1.5em;float:left;width:90%;margin-bottom:1.5em;}
+/* Template:multipage */
+.multipage {background: #fff0bb; padding:0 1em;margin:0;}
+.multipage .nextpage {float:right; padding:0;margin:0;}
+
+/* Template:photomontage */
+.photocontainercenter {text-align: center; background: #fff; border: 1px solid #ebebeb; padding: 10px;}
+.photocontainercenter .heading {text-align: left; font-weight: bold; font-size:1.4em;padding:0;margin:0;}
+
+/* Template:image */
+.singleimage {padding: 3px; margin: 5px; border: 1px solid #ebebeb; float:left;}
+.singleimage.right {float:right;}
+.singleimage.center {clear:both;float:none;}
+.singleimage.center div {margin-left:auto;margin-right:auto;}
+.singleimage.center img {display:block;float:none;margin-left:auto;margin-right:auto;}
+
+
+
+
+
+/*this was added to allow content to be cleared below images without clearing the rightsidebar*/
+#article {float:left;line-height: 1.8em;}
+#article p {font-size:1.3em;}
+.content {width: 600px}
+.faq {width: 600px}
+
+
+/* Resest all styles for articles imported from the wiki
+-----------------------------------------------------------------------------*/
+#content_css_reset {margin:0;padding:0;width:653px;}
+#content_css_reset h1,
+#content_css_reset h2,
+#content_css_reset h3,
+#content_css_reset h4,
+#content_css_reset h5,
+#content_css_reset h6 {color:#333;}
+#content_css_reset h1 {margin-bottom:.5em;}
+#content_css_reset h2 {font-size:1.8em;}
+#content_css_reset dl {margin:1em;}
+#content_css_reset dl dt {font-size:1.2em !important;}
+#content_css_reset dl dt dt {font-size:inherit;}
+#content_css_reset dl dd {font-size:1.2em;}
+#content_css_reset dl dd dd {font-size:inherit;}
+#content_css_reset table,
+#content_css_reset table caption {font-weight:bold;font-size:1em}
+#content_css_reset table th,
+#content_css_reset table td,
+#content_css_reset table th {color:#222;}
+#content_css_reset table th {background:#ededed;}
+
+#content_css_reset ul {padding:0 1.5em 0;overflow:auto;margin:0 0 1em;}
+#content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;}
+
+#article.contactus {margin-top:3em;}
+#article.contactus h2 {margin:1em 0 .5em;}
+#article.contactus p {margin:0 0 1.5em;}
+
+
+
+#extension_articles h1{font-size:2.1em; margin-bottom:.5em;}
+#extension_articles h2{font-size:1.6em; margin-bottom:.5em;}
+
+#contentfooter {font-size:.9em; line-height:1.5em; margin-top:4em;border-top:1px solid #ccc;}
+
+
+#second_column_content {padding: 0; margin: 10px 0  0; width: 240px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
+
+#table_of_contents {padding-right: 20px; margin-bottom: 10px; margin-top: 10px; border: solid 1px #ebebeb;width:368px;}
+#table_of_contents p {margin: 0px; padding: 3px;  margin-bottom: 5px}
+#table_of_contents ul {margin: 0 0 0 15px; padding: 0 0 1em 10px;}
+#table_of_contents li {font-size:1.2em;}
+#table_of_contents li li {font-size:1em;}
+#table_of_contents h3 {padding:0 .5em;margin:.5em;}
+#table_of_contents h3 a {font-weight:normal}
+
+
+/* UTILITY STYLES */
+
+
+.gray a:link {cursor: pointer; text-decoration: none; color: #386292}
+.gray a:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
+.gray a:visited {cursor: pointer; text-decoration: none; color: #386292 }
+.gray a:visited:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
+
+.left {float: left}
+.right {float: right; clear:right;}
+
+
+/*ask and expert*/
+.aae h3 {font-weight:normal;font-size:1.68em;margin:0 0 .25em;}
+.aae fieldset {padding: .5em; border:1px solid #ebebeb; background: url(/images/layout/homepagefeaturecontentbgnd.gif); text-align: left; margin: 0 0 2em;}
+.aae fieldset p.simplefield {margin:.3em .55em .8em;padding:0;line-height:1.2em;float:left;}
+.aae fieldset p.simplefield label {width:7em;display:block;float:left;line-height:1.2em;}
+.aae fieldset p.simplefield input {width:18em;}
+.aae .instructions {margin:0;padding:0;}
+.aae .formError {font-size:1.2em;margin:0 0 0 .5em;float:left;line-height:2em;}
+.aae fieldset.stack_labels p label {width:20em;display:block;}
+
+.formError {/*display: inline; */color: red;}
+
+
+
+#second_column_content ul {padding-left:20px;}
+
+
+
+.printme {display: none;}
+
+#summary.printme {display:block; font-size:1.2em;padding:.5em;color:#444;background:#eee;margin-bottom:1.6em;}
+
+
+
+
+
+
+
+/*admin*/
 
 /*
 wrap the "a" element with <p class="button2"> to style as button
@@ -375,105 +500,6 @@ wrap the "a" element with <p class="button2"> to style as button
 }
 .button2 a:hover {text-decoration: underline;}
 
-/*this was added to allow content to be cleared below images without clearing the rightsidebar*/
-#article {float:left;line-height: 1.8em;}
-#article p {font-size:1.3em;}
-.content {width: 600px}
-.faq {width: 600px}
-
-/* wiki article styles */
-#content_css_reset {margin:0;padding:0;width:653px;}
-#content_css_reset h1,
-#content_css_reset h2,
-#content_css_reset h3,
-#content_css_reset h4,
-#content_css_reset h5,
-#content_css_reset h6 {color:#333;}
-#content_css_reset h1 {margin-bottom:.5em;}
-#content_css_reset h2 {font-size:1.8em;}
-#content_css_reset dl {margin:1em;}
-#content_css_reset dl dt {font-size:1.2em !important;}
-#content_css_reset dl dt dt {font-size:inherit;}
-#content_css_reset dl dd {font-size:1.2em;}
-#content_css_reset dl dd dd {font-size:inherit;}
-#content_css_reset table,
-#content_css_reset table caption {font-weight:bold;font-size:1em}
-#content_css_reset table th,
-#content_css_reset table td,
-#content_css_reset table th {color:#222;}
-#content_css_reset table th {background:#ededed;}
-
-#content_css_reset ul {padding:0 1.5em 0;overflow:auto;margin:0 0 1em;}
-#content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;}
-
-#article.contactus {margin-top:3em;}
-#article.contactus h2 {margin:1em 0 .5em;}
-#article.contactus p {margin:0 0 1.5em;}
-
-
-
-#extension_articles h1{font-size:2.1em; margin-bottom:.5em;}
-#extension_articles h2{font-size:1.6em; margin-bottom:.5em;}
-
-#contentfooter {font-size:.9em; line-height:1.5em; margin-top:4em;border-top:1px solid #ccc;}
-/* RIGHT COLUMN */
-
-
-#second_column_content {padding: 0; margin: 10px 0  0; width: 240px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
-/* UTILITY STYLES */
-
-
-.gray a:link {cursor: pointer; text-decoration: none; color: #386292}
-.gray a:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
-.gray a:visited {cursor: pointer; text-decoration: none; color: #386292 }
-.gray a:visited:hover {color: #f47b29; text-decoration: none; cursor: pointer; background: none}
-
-.left {float: left}
-.right {float: right; clear:right;}
-
-
-/*ask and expert*/
-.aae h3 {font-weight:normal;font-size:1.68em;margin:0 0 .25em;}
-.aae fieldset {padding: .5em; border:1px solid #ebebeb; background: url(/images/layout/homepagefeaturecontentbgnd.gif); text-align: left; margin: 0 0 2em;}
-.aae fieldset p.simplefield {margin:.3em .55em .8em;padding:0;line-height:1.2em;float:left;}
-.aae fieldset p.simplefield label {width:7em;display:block;float:left;line-height:1.2em;}
-.aae fieldset p.simplefield input {width:18em;}
-.aae .instructions {margin:0;padding:0;}
-.aae .formError {font-size:1.2em;margin:0 0 0 .5em;float:left;line-height:2em;}
-.aae fieldset.stack_labels p label {width:20em;display:block;}
-
-.formError {/*display: inline; */color: red;}
-
-/* .hiddenStructure is pulled over from CoP wiki templates */
-.hiddenStructure {position:absolute;left:-5000px;display:hidden;} 
-
-#second_column_content ul {padding-left:20px;}
-
-
-.multipage {background: #fff0bb; padding:0 1em;margin:0;}
-.multipage .nextpage {float:right; padding:0;margin:0;}
-.printme {display: none;}
-br.clear {clear: both;}
-.clear {clear: both;}
-#summary.printme {display:block; font-size:1.2em;padding:.5em;color:#444;background:#eee;margin-bottom:1.6em;}
-.photocontainercenter {text-align: center; background: #fff; border: 1px solid #ebebeb; padding: 10px;}
-.photocontainercenter .heading {text-align: left; font-weight: bold; font-size:1.4em;padding:0;margin:0;}
-.singleimage {padding: 3px; margin: 5px; border: 1px solid #ebebeb; float:left;}
-.singleimage.right {float:right;}
-.singleimage.center {clear:both;float:none;}
-.singleimage.center div {margin-left:auto;margin-right:auto;}
-.singleimage.center img {display:block;float:none;margin-left:auto;margin-right:auto;}
-
-
-#table_of_contents {padding-right: 20px; margin-bottom: 10px; margin-top: 10px; border: solid 1px #ebebeb;width:368px;}
-#table_of_contents p {margin: 0px; padding: 3px;  margin-bottom: 5px}
-#table_of_contents ul {margin: 0 0 0 15px; padding: 0 0 1em 10px;}
-#table_of_contents li {font-size:1.2em;}
-#table_of_contents li li {font-size:1em;}
-#table_of_contents h3 {padding:0 .5em;margin:.5em;}
-#table_of_contents h3 a {font-weight:normal}
-
-/*admin*/
 
 .date {color: #666;font-size:1.1em;display:block;margin:0;}
 #admin h2 {clear:both;margin-bottom:20px !important;}
@@ -632,8 +658,6 @@ p.textcounter span.charcount-makeaware {color:#888;}
 
 .primarycolumn {width:400px;}
 
-/* Tables
------------------------------------------------------------------------------*/
 
 
 #admin tr.shaded {background: #e9f1ff;}
