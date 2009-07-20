@@ -16,9 +16,9 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
 
   @users.each do |user|
     xml.entry do
-      xml.author  { xml.name(user.get_first_last_name) }
+      xml.author  { xml.name(user..fullname) }
       xml.title   "type" => "html" do
-      	xml.text! "#{user.get_first_last_name} added #{@category.name} to expertise."
+      	xml.text! "#{user..fullname} added #{@category.name} to expertise."
       end
       
       xml.link    "rel" => "alternate", "href" => url_for(:only_path => false, :controller => 'account', :action => 'aaeprofile', :id => user.login)
@@ -26,7 +26,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
       xml.updated date_format(user.added_at.to_time)
       
       xml.content "type" => "html" do
-      	xml.text! "#{user.get_first_last_name} added #{@category.name} to expertise."
+      	xml.text! "#{user..fullname} added #{@category.name} to expertise."
       end
     end
   end

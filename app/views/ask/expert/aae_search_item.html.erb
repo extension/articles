@@ -8,7 +8,7 @@
     <h2 class="inc_question"><span><%= @submitted_question.asked_question %></span></h2>
     <br class="clear" />
     
-    <p class="inc_descriptive"><strong><%= @submitted_question.get_submitter_name %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+    <p class="inc_descriptive"><strong><%= @submitted_question.submitter_fullname %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
 </div>
 
 <div class="clearing">

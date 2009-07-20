@@ -308,16 +308,11 @@ class Ask::ExpertController < ApplicationController
     end
     
     @status = params[:status_state]
-    @question = SearchQuestion.find_by_id(params[:question]) if params[:question]
+    @question = SearchQuestion.find_by_id(params[:question]) if params[:question] # TODO:  - why is this search question? - jayoung
     @sampletext = params[:sample] if params[:sample]
     signature_pref = @currentuser.user_preferences.find_by_name('signature')
-    signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.get_first_last_name}"
+    signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser..fullname}"
     
-    if @submitted_question.get_submitter_name != SubmittedQuestion::DEFAULT_SUBMITTER_NAME
-      @external_name = @submitted_question.get_submitter_name
-    else
-      @extenal_name = nil
-    end
   
     if request.post?
       answer = params[:current_response]
@@ -332,22 +327,14 @@ class Ask::ExpertController < ApplicationController
       (@status and @status.to_i == SubmittedQuestion::STATUS_NO_ANSWER) ? sq_status = SubmittedQuestion::STATUS_NO_ANSWER : sq_status = SubmittedQuestion::STATUS_RESOLVED
       
       @submitted_question.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => @currentuser, :current_response => answer, :resolver_email => @currentuser.email, :current_contributing_question => contributing_question)  
-      @submitter_email = @submitted_question.submitter_email
-      
-      @url_var = 'http://www.extension.org'
-      
+          
       if params[:signature] and params[:signature].strip != ''
         @signature = params[:signature]
       else
-        @signature = nil
+        @signature = ''
       end
       
-      #       if(AppConfig.configtable['send_aae_emails'])
-      #         email = AskMailer.create_response_email(@submitter_email, @submitted_question, @external_name, @url_var, @signature)      
-      #         email.set_content_type("text/plain")
-      #         AskMailer.deliver(email)  
-      # end
-  	    
+      Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :user => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
       flash[:success] = "Your answer has been sent to the person who asked the question.<br />
                         You can now save the question as an FAQ, or exit this screen without saving."
         
@@ -409,7 +396,7 @@ class Ask::ExpertController < ApplicationController
     @categories = Category.root_categories
     @category_options = @categories.map{|c| [c.name,c.id]}
       
-    @submitter_name = @submitted_question.get_submitter_name
+    @submitter_name = @submitted_question.submitter_fullname
       
     if @submitted_question.categories and @submitted_question.categories.length > 0
       @category = @submitted_question.categories.first
@@ -738,7 +725,7 @@ class Ask::ExpertController < ApplicationController
   
   def reject    
     @submitted_question = SubmittedQuestion.find_by_id(params[:id])
-    @submitter_name = @submitted_question.get_submitter_name
+    @submitter_name = @submitted_question.submitter_fullname
     if @submitted_question  
       if @submitted_question.resolved?
         flash[:failure] = "This question has already been resolved."

@@ -1417,10 +1417,6 @@ class User < ActiveRecord::Base
       pref && pref.setting == "1"
     end
 
-    def get_first_last_name
-      self.first_name + " " + self.last_name
-    end
-
     def self.find_by_cat_loc(category, location, county)
       if category
         filtered_users = category.users.collect{|cu| cu.id}.join(',')

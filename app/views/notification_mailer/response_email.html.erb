@@ -1,5 +1,5 @@
-<% if @external_name %>
-Hello <%= @external_name %>,
+<% if (!@submitted_question.submitter_fullname.blank? and @submitted_question.submitter_fullname != SubmittedQuestion::DEFAULT_SUBMITTER_NAME )%>
+Hello <%= @@submitted_question.submitter_fullname %>,
 <% else %>
 Hello,
 <% end %>
@@ -7,22 +7,17 @@ Hello,
 A question you asked via eXtension's 'Ask an Expert' tool has been answered! 
 
 Question asked:
-<%= @question %>
+<%= @submitted_question.asked_question %>
 
 Answer:
-<%= @answer %>
+<%= @submitted_question.current_response %>
 
-<% if @signature %>
+<% if !@signature.blank? %>
 <%= @signature %>
-<% end %>
-
-<% if @external_name %>
-Looking for more? See what's new at the eXtension public site:
-<%= @url_var %>
 <% end %>
 
 Thank you for using our 'Ask an Expert' system.
 
 ***PLEASE DO NOT REPLY TO THIS MESSAGE***
 
-<%= @disclaimer %>
+<%= SubmittedQuestion::EXPERT_DISCLAIMER %>

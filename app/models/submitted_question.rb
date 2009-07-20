@@ -276,8 +276,8 @@ def assigned_date
   end
 end
 
-def get_submitter_name
-  return self.submitter_firstname + ' ' + self.submitter_lastname
+def submitter_fullname
+  return "#{self.submitter_firstname} #{self.submitter_lastname}"
 end
 
 def auto_assign_by_preference

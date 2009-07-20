@@ -32,7 +32,8 @@ class NotificationMailer < ActionMailer::Base
     if(!AppConfig.configtable['emailsettings'][emailsettings_label]['bcc'].blank?)
       @bcc            = AppConfig.configtable['emailsettings'][emailsettings_label]['bcc']
     end
-    @headers        = {}    
+    @headers        = {}
+    @headers["Organization"] = "eXtension Initiative"    
   end
   
   
@@ -338,25 +339,28 @@ class NotificationMailer < ActionMailer::Base
        @bcc            = AppConfig.configtable['mail_system_bcc']
      end
      @headers = {}
+     
+     # base parameters for the email
+     self.base_email(notification)     
+     @subject        = @subjectlabel+'Incoming question reassigned'
+     @recipients     = notification.user.email
+     assigned_at = @sent_on
+     urls = Hash.new
+     urls['question'] = url_for(:controller => 'ask/expert', :action => 'question', :id => submitted_question.id)
+     # TODO: fix contact us URL
+     urls['contactus'] = url_for(:controller => '/')
+     @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
+     
    end
 
 
 
-   def response_email(emailVar, expert_question, external_name, url_var, signature)
-     @subject = "[Message from eXtension] Your question has been answered by one of our experts."
-     @body["answer"] = expert_question.current_response
-     @body["question"] = expert_question.asked_question
-     @body["external_name"] = external_name
-     @body["url_var"] = url_var
-     @body["signature"] = signature
-     @body["disclaimer"] = SubmittedQuestion::EXPERT_DISCLAIMER
-     @recipients = emailVar
-     @from = 'noreplies@extension.org'
-     @headers["Organization"] = "eXtension Initiative"
-
-     if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
-       @bcc            = AppConfig.configtable['mail_system_bcc']
-     end
+   def response_email(notification, submitted_question, signature)
+     # base parameters for the email
+     self.base_email(notification)
+     @subject = "[Message from eXtension] Your question has been answered by one of our experts."          
+     @recipients     = submitted_question.submitter_email
+     @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :signature => signature, :urls => urls }
    end
    
    
