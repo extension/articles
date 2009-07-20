@@ -10,9 +10,8 @@ class NotificationMailer < ActionMailer::Base
   default_url_options[:host] = AppConfig.configtable['url_options']['host']
   default_url_options[:protocol] = AppConfig.configtable['url_options']['protocol']
   default_url_options[:port] = AppConfig.get_url_port
-
-
-  def base_email(notification)
+    
+  def base_email(emailsettings_label = 'default')
     @sent_on  = Time.now
     if(AppConfig.configtable['mail_label'] == 'production')
       @isdemo = false
@@ -23,7 +22,6 @@ class NotificationMailer < ActionMailer::Base
     end
     
     # set up the reply, bcc, and from name based on the notification type
-    emailsettings_label = notification.notifytype_to_s
     if(emailsettings_label.nil? or emailsettings_label == 'none')
       emailsettings_label = 'default'
     end
@@ -34,8 +32,7 @@ class NotificationMailer < ActionMailer::Base
     end
     @headers        = {}
     @headers["Organization"] = "eXtension Initiative"    
-  end
-  
+  end  
   
   # -----------------------------------
   #  Emails sent to community leaders
@@ -46,7 +43,7 @@ class NotificationMailer < ActionMailer::Base
     bycolleague = notification.user
 
     # base parameters for the email
-    self.base_email(notification)
+    self.base_email(notification.notifytype_to_s)
     @recipients     = community.notifyleaders.map(&:email).join(',')
     
     # special case for no recipients
@@ -102,7 +99,7 @@ class NotificationMailer < ActionMailer::Base
     oncolleague = notification.user
     
     # base parameters for the email
-    self.base_email(notification)
+    self.base_email(notification.notifytype_to_s)
     @recipients     = community.notifyleaders.map(&:email).join(',')
     
     # special case for no recipients
@@ -165,7 +162,7 @@ class NotificationMailer < ActionMailer::Base
     oncolleague = notification.user
 
     # base parameters for the email
-    self.base_email(notification)
+    self.base_email(notification.notifytype_to_s)
     @recipients     = oncolleague.email
     # don't cc systemuser
     if(!bycolleague.is_systemuser?)
@@ -256,7 +253,7 @@ class NotificationMailer < ActionMailer::Base
   
   def confirm_email(notification,token)
      # base parameters for the email
-     self.base_email(notification)
+     self.base_email(notification.notifytype_to_s)
      @recipients     = token.user.email
      @subject        = @subjectlabel+'Please confirm your email address'
      urls = Hash.new
@@ -269,7 +266,7 @@ class NotificationMailer < ActionMailer::Base
    
    def reconfirm_email(notification,token)
       # base parameters for the email
-      self.base_email(notification)
+      self.base_email(notification.notifytype_to_s)
       @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
@@ -283,7 +280,7 @@ class NotificationMailer < ActionMailer::Base
   
    def reconfirm_signup(notification,token)
       # base parameters for the email
-      self.base_email(notification)
+      self.base_email(notification.notifytype_to_s)
       @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
@@ -302,7 +299,7 @@ class NotificationMailer < ActionMailer::Base
    
    def assigned(notification,submitted_question)
      # base parameters for the email
-     self.base_email(notification)     
+     self.base_email(notification.notifytype_to_s)     
      @subject        = @subjectlabel+'Incoming question assigned to you'
      @recipients     = notification.user.email
      assigned_at = @sent_on
@@ -316,7 +313,7 @@ class NotificationMailer < ActionMailer::Base
  
    def reassigned(notification,submitted_question)
      # base parameters for the email
-     self.base_email(notification)     
+     self.base_email(notification.notifytype_to_s)     
      @subject        = @subjectlabel+'Incoming question reassigned'
      @recipients     = notification.user.email
      assigned_at = @sent_on
@@ -326,42 +323,37 @@ class NotificationMailer < ActionMailer::Base
      urls['contactus'] = url_for(:controller => '/')
      @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
    end
-
-   def escalation(recipients, submitted_questions, report_url, host = 'faq.extension.org', sent_at = Time.now)
-     @subject = host.to_s + ': Ask an Expert Escalation Report'
-     @body["submitted_questions"] = submitted_questions
-     @body["report_url"] = report_url
-     @body["host"] = host
-     @recipients = recipients
-     @from = "noreplies@extension.org"
-     @sent_on = sent_at
-     if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
-       @bcc            = AppConfig.configtable['mail_system_bcc']
-     end
-     @headers = {}
-     
-     # base parameters for the email
-     self.base_email(notification)     
-     @subject        = @subjectlabel+'Incoming question reassigned'
-     @recipients     = notification.user.email
-     assigned_at = @sent_on
-     urls = Hash.new
-     urls['question'] = url_for(:controller => 'ask/expert', :action => 'question', :id => submitted_question.id)
-     # TODO: fix contact us URL
-     urls['contactus'] = url_for(:controller => '/')
-     @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
-     
-   end
-
-
 
    def response_email(notification, submitted_question, signature)
      # base parameters for the email
-     self.base_email(notification)
+     self.base_email(notification.notifytype_to_s)
      @subject = "[Message from eXtension] Your question has been answered by one of our experts."          
      @recipients     = submitted_question.submitter_email
      @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :signature => signature, :urls => urls }
    end
    
+   
+   ### NOTE: not based on a notification
+   def aae_escalation_for_category(category, sincehours)
+     # base parameters for the email
+     self.base_email('aae_internal')     
+     @subject        = @subjectlabel+'Ask an Expert Escalation Report'
+     
+       
+     submitted_questions_list = SubmittedQuestion.escalated(sincehours,category)
+     if(escalation_users_for_category = SubmittedQuestion.question_escalators_by_category(category))
+       @recipients = escalation_users_for_category.collect{|eu| eu.email}
+     else
+       # TODO: should this be the extension leadership? question wranglers?
+       @recipients = AppConfig.configtable['emailsettings']['aae_internal']['bcc']
+     end
+     
+     urls = Hash.new
+     urls['escalation_report'] = url_for(:controller => 'ask/expert', :action => 'escalation_report', :id => category.id)
+     # TODO: fix contact us URL
+     urls['contactus'] = url_for(:controller => '/')
+     @body           = {:isdemo => @isdemo, :submitted_questions_list => submitted_questions_list, :sincehours => sincehours, :urls => urls }
+   end
+      
    
 end

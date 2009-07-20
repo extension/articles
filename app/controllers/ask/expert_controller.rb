@@ -14,7 +14,7 @@ class Ask::ExpertController < ApplicationController
   
   skip_before_filter :check_authorization
   skip_before_filter :get_tag, :except => [:ask_an_expert, :question_confirmation]
-  before_filter :login_required, :except => [:email_escalation_report, :ask_an_expert, :question_confirmation, :submit_question]
+  before_filter :login_required, :except => [:ask_an_expert, :question_confirmation, :submit_question]
   before_filter :filter_string_helper, :only => [:incoming, :assigned, :my_resolved, :resolved]
   
   UNASSIGNED = "uncategorized"
@@ -208,29 +208,6 @@ class Ask::ExpertController < ApplicationController
       request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
       return
     end
-  end
-  
-  def email_escalation_report
-    cutoff_date = Time.new - (24 * 60 * 60 * 2) # two days
-
-    Category.root_categories.each do |category|
-      submitted_questions = SubmittedQuestion.find_with_category(category, :all, :conditions => ["external_app_id IS NOT NULL and spam = false and status_state = ? and submitted_questions.created_at < ?", SubmittedQuestion::STATUS_SUBMITTED, cutoff_date], :order => 'submitted_questions.created_at asc')
-      
-      if submitted_questions.length > 0
-        escalation_users_for_category = SubmittedQuestion.question_escalators_by_category(category)
-        emails = escalation_users_for_category.collect{|eu| eu.email} if escalation_users_for_category
-      end
-      
-      # if(AppConfig.configtable['send_aae_emails'])
-      #   if emails
-      #     email = AskMailer.create_escalation(emails, submitted_questions, url_for(:controller => 'expert', :action => 'escalation_report', :id => category), request.host)
-      #     email.set_content_type("text/plain")
-      #     AskMailer.deliver(email)
-      #   end
-      # end
-    end
-    
-    render :text => "Email sent.", :layout => false
   end
  
   # Get counties for location selected for aae question filtering

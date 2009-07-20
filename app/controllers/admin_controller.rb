@@ -132,7 +132,7 @@ class AdminController < ApplicationController
   rescue Exception => e
     backtrace = e.backtrace.join("\n")
     flash[:error] = "Unsucessfully retrieved items from the feed."
-    MainMailer.deliver_feed_error("External feed", "#{e}\n #{backtrace}")
+    #MainMailer.deliver_feed_error("External feed", "#{e}\n #{backtrace}")
     redirect_to :action => "index"
   end
     
@@ -151,7 +151,7 @@ class AdminController < ApplicationController
   def handle_feed_error(e, feed)
     backtrace = e.backtrace.join("\n")
     flash[:error] = "Unsucessfully retrieved items from the feed."
-    MainMailer.deliver_feed_error(feed.full_url, "#{e}\n #{backtrace}")
+    #MainMailer.deliver_feed_error(feed.full_url, "#{e}\n #{backtrace}")
     redirect_to :action => "index"
   end
   

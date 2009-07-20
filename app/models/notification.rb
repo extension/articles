@@ -84,9 +84,9 @@ class Notification < ActiveRecord::Base
     elsif(self.notifytype >= NOTIFICATION_PEOPLE_START[0] and self.notifytype <= NOTIFICATION_PEOPLE_START[1])
       return 'people'
     elsif(self.notifytype >= NOTIFICATION_AAE_INTERNAL[0] and self.notifytype <= NOTIFICATION_AAE_INTERNAL[1])
-      return 'aae-internal'
+      return 'aae_internal'
     elsif(self.notifytype >= NOTIFICATION_AAE_PUBLIC[0] and self.notifytype <= NOTIFICATION_AAE_PUBLIC[1])
-      return 'aae-public'
+      return 'aae_public'
     else
       return nil
     end

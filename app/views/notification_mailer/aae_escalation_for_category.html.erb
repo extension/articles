@@ -1,12 +1,12 @@
-The questions below were submitted more than 48 hours ago and have not
+The questions below were submitted more than <%= @sincehours%> hours ago and have not
 yet been resolved. To view this list within the FAQ application, please
 go to the following URL:
 
-<%= @report_url %>
+<%= @urls['escalation_report'] %>
 
-<% @submitted_questions.each do |question| %>
+<% @submitted_questions_list.each do |question| %>
 ** Please visit the question page before you start working. **
-Link: <%= url_for(:host => 'faq.extension.org', :controller => :expert, :action => :question, :id => question.id, :only_path => false) %>
+Link: <%= url_for(:controller => 'ask/expert', :action => :question, :id => question.id, :only_path => false) %>
 
 The question is:
 "<%= question.asked_question %>"

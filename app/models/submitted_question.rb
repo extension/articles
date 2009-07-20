@@ -77,6 +77,7 @@ named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_qu
 named_scope :submitted, lambda { |join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} " + (cond.first || '')}}
 
 
+
 #Response times named scopes for by_category report
 named_scope :named_date_resp, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " submitted_questions.created_at between ? and ? ", date1, date2] : " date_sub(curdate(), interval 90 day) <= submitted_questions.created_at" } }
 named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join categories_submitted_questions on submitted_question_id=submitted_questions.id ",
@@ -91,7 +92,23 @@ named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(tim
 named_scope :date_subs, lambda { |date1, date2| { :conditions => (date1 && date2) ? [ "submitted_questions.created_at between ? and ?", date1, date2] : ""}}
 
 
-
+# escalated
+named_scope :escalated, lambda { |sincehours,category|
+  created_before = Time.now.utc - (sincehours).hours 
+  conditionsarray = []
+  if(!category.nil?)
+    conditionsarray << "(category_id = #{category.id} or categories.parent_id = #{category.id})"
+  end
+  conditionsarray << "external_app_id IS NOT NULL"
+  conditionsarray << "spam = FALSE"
+  conditionsarray << "status_state = #{SubmittedQuestion::STATUS_SUBMITTED}"
+  conditionsarray << "submitted_questions.created_at < '#{created_before.to_s(:db)}'"
+  if(!category.nil?)
+    {:joins => :categories, :conditions => ["#{conditionsarray.join(' AND ')}"], :order => "#{table_name}.created_at ASC"}
+  else
+    {:conditions => ["#{conditionsarray.join(' AND ')}"], :order => "#{table_name}.created_at ASC"}
+  end
+}
 
 
 # adds resolved date to submitted questions on save or update and also 
@@ -515,6 +532,8 @@ def self.find_with_category(category, *args)
     find(*args)
   end
 end
+
+
 
 def SubmittedQuestion.get_extapp_qual( pub, wgt)
    extstr = " IS NOT NULL "
