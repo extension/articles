@@ -224,7 +224,7 @@ end
 def auto_assign_by_preference
   if existing_sq = SubmittedQuestion.find(:first, :conditions => ["id != #{self.id} and asked_question = ? and submitter_email = '#{self.submitter_email}'", self.asked_question])
     reject_msg = "This question was a duplicate of incoming question ##{existing_sq.id}"
-    if !self.reject(User.find_by_login('faq_bot'), reject_msg)
+    if !self.reject(User.systemuser, reject_msg)
       logger.error("Submitted Question #{self.id} did not get properly saved on rejection.")
     end
     return
@@ -277,8 +277,8 @@ def auto_assign
   end
   
   if assignee
-    faq_bot_user = User.find_by_login('people_bot')
-    assign_to(assignee, faq_bot_user, nil)
+    systemuser = User.systemuser
+    assign_to(assignee, systemuser, nil)
   else
     return
   end
@@ -289,9 +289,25 @@ end
 # them.
 def assign_to(user, assigned_by, comment)
   raise ArgumentError unless user and user.instance_of?(User)
-  return if assignee and user.id == assignee.id
+  # don't bother doing anything if this is assignment to the person already assigned
+  return true if assignee and user.id == assignee.id
+  
+  if(!self.assignee.nil? and (assigned_by != self.assignee))
+    is_reassign = true
+    previously_assigned_to = self.assignee
+  else
+    is_reassign = false
+  end
+    
+  # update and log
   update_attributes(:assignee => user, :current_response => comment)
   SubmittedQuestionEvent.log_assignment(self, user, assigned_by, comment)
+  
+  # create notifications
+  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment})
+  if(is_reassign)
+    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :user => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment})
+  end
 end
 
 ##Class Methods##

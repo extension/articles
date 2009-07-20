@@ -33,7 +33,7 @@ def notify_of_action_byuser(notification)
   puts "Notifying Community Leaders of a user action..."
   
   # send an email to the community leaders
-  leaderemail = NotificationMailer.create_community_user(notification.notifytype,notification.community,notification.user)
+  leaderemail = NotificationMailer.create_community_user(notification)
   begin 
     NotificationMailer.deliver(leaderemail)
   rescue
@@ -47,8 +47,8 @@ end
 def notify_of_action_byleader(notification)
   puts "Notifying Community Leaders and the user of a leader action..."
   
-  leaderemail = NotificationMailer.create_community_change_notifygroup(notification.notifytype,notification.community,notification.creator,notification.user)
-  useremail = NotificationMailer.create_community_change_notifyuser(notification.notifytype,notification.community,notification.creator,notification.user)
+  leaderemail = NotificationMailer.create_community_change_notifygroup(notification)
+  useremail = NotificationMailer.create_community_change_notifyuser(notification)
  
   begin 
     NotificationMailer.deliver(leaderemail)
@@ -100,7 +100,7 @@ end
 def notify_emailconfirmation(notification)
   puts "Sending email confirmation..."
 
-  emailconfirmation = NotificationMailer.create_confirm_email(UserToken.find(notification.additionaldata[:token_id]))
+  emailconfirmation = NotificationMailer.create_confirm_email(notification,UserToken.find(notification.additionaldata[:token_id]))
  
   begin 
     NotificationMailer.deliver(emailconfirmation)
@@ -115,7 +115,7 @@ end
 def notify_emailreconfirmation(notification)
   puts "Sending email re-confirmation..."
 
-  emailreconfirmation = NotificationMailer.create_reconfirm_email(UserToken.find(notification.additionaldata[:token_id]))
+  emailreconfirmation = NotificationMailer.create_reconfirm_email(notification,UserToken.find(notification.additionaldata[:token_id]))
  
   begin 
     NotificationMailer.deliver(emailreconfirmation)
@@ -130,7 +130,7 @@ end
 def notify_signupreconfirmation(notification)
   puts "Sending signup re-confirmation..."
 
-  email = NotificationMailer.create_reconfirm_signup(UserToken.find(notification.additionaldata[:token_id]))
+  email = NotificationMailer.create_reconfirm_signup(notification,UserToken.find(notification.additionaldata[:token_id]))
  
   begin 
     NotificationMailer.deliver(email)

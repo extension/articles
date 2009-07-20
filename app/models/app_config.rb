@@ -45,23 +45,35 @@ class AppConfig
     @@configtable['changes_feed_wiki'] = 'http://pubwiki.extension.org/wiki/Special:Recentchanges?limit=500&feed=atom&ignore='
     @@configtable['changes_feed_refresh_since'] = Time.parse('2005-11-01 00:00:00 UTC')
     
+      
+    
+    @@configtable['emailsettings'] = {}
+    @@configtable['emailsettings']['errors'] = 'eXtensionAppErrors@extension.org'
+    
+    # address, from string, and bcc for various functional areas
+    @@configtable['emailsettings']['aae-public'] = {'address' => 'ask-an-expert@extension.org', 'name' => 'eXtension Ask an Expert Response - Do Not Reply', 'bcc' => 'aaepublic.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['aae-internal'] = {'address' => 'aaenotify@extension.org', 'name' => 'eXtension Ask an Expert Notification - Do Not Reply', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['people'] = {'address' => 'peoplemail@extension.org', 'name' => 'eXtension People Notification - Do Not Reply', 'bcc' => 'people.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['default'] = {'address' => 'noreply@extension.org', 'name' => 'eXtension Notification - Do Not Reply', 'bcc' => 'default.bcc.mirror@extension.org'}
     
     
-    
-    
-    @@configtable['mail_errors_to'] = "eXtensionAppErrors@extension.org"
-    # TODO: may need multiple bcc addresses per functional area
-    @@configtable['mail_system_bcc'] = ''
-    # TODO: may need multiple noreply addresses per functional area
-    @@configtable['mail_system_noreply'] = "pubsite-noreply@extension.org"
-    @@configtable['mail_system_noreply_name'] = "eXtension Public Site Notification - Do Not Reply"
+  
   
     #TODO : review these additional settings
     #@@configtable['mail_system_from'] = "eXtensionHelp@extension.org"
     #@@configtable['mail_system_to'] = "eXtensionHelp@extension.org"
-    #@@configtable['mail_to_feedback'] = "feedback@extension.org"
     #@@configtable['mail_to_help'] = "eXtensionHelp@extension.org"
     
+    
+    # @@configtable['mail_errors_to'] = "eXtensionAppErrors@extension.org"
+    # @@configtable['mail_system_from'] = "eXtensionHelp@extension.org"
+    # @@configtable['mail_system_to'] = "eXtensionHelp@extension.org"
+    # @@configtable['mail_system_bcc'] = ''
+    # @@configtable['mail_to_help'] = "eXtensionHelp@extension.org"
+    # @@configtable['mail_to_bugs'] = "eXtensionBugs@extension.org"
+    # @@configtable['mail_system_noreply'] = "peoplemail@extension.org"
+    # @@configtable['mail_system_noreply_name'] = "eXtension People Notification - Do Not Reply"
+    # 
   
     #Default sites
     @@configtable['faq_site'] = 'http://faq.extension.org'
@@ -72,6 +84,9 @@ class AppConfig
     @@configtable['about_site'] = 'http://about.extension.org/wiki'
     @@configtable['about_blog'] = 'http://about.extension.org/'
     @@configtable['help_wiki'] = 'http://docs.extension.org/wiki/' 
+
+
+
 
     # token timeouts are in days
     @@configtable['token_timeout_email'] = 7

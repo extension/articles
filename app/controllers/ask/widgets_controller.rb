@@ -167,7 +167,7 @@ class Ask::WidgetsController < ApplicationController
         if @submitted_question.save
           if @submitted_question.assignee
             if(AppConfig.configtable['send_aae_emails'])
-              AskMailer.deliver_assigned(@submitted_question, url_for(:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id), request.host)
+              #AskMailer.deliver_assigned(@submitted_question, url_for(:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id), request.host)
             end
           end
           render :layout => false

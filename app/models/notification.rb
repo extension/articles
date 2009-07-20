@@ -9,7 +9,13 @@ class Notification < ActiveRecord::Base
   
   NONE = 1
   # notifytypes
-
+  
+  
+  ###############################
+  #  People Notifications
+  
+  NOTIFICATION_PEOPLE = [100,999]   # 'people'
+  
   COMMUNITY_USER_JOIN = 101
   COMMUNITY_USER_WANTSTOJOIN = 102
   COMMUNITY_USER_LEFT= 103
@@ -39,12 +45,26 @@ class Notification < ActiveRecord::Base
   CONFIRM_EMAIL = 501
   RECONFIRM_EMAIL = 502
   RECONFIRM_SIGNUP = 503
-    
   
-    
   ## Other User actions
   # new account created
   
+  ##########################################
+  #  Ask an Expert Notifications - Internal
+
+  NOTIFICATION_AAE_INTERNAL = [1000,1999]   # 'aae-internal'
+  AAE_ASSIGNMENT = 1001  # assignment notification
+  AAE_REASSIGNMENT = 1002  # reassignment notification
+  AAE_ESCALATION = 1003  # escalation notification
+  
+    
+  ##########################################
+  #  Ask an Expert Notifications - Public
+  
+  NOTIFICATION_AAE_PUBLIC = [2000,2999]   # 'aae-public'
+  AAE_PUBLIC_EXPERT_RESPONSE = 2001  # notification of an expert response, also "A Space Odyssey"
+  
+
   belongs_to :user
   belongs_to :community # for many of the notification types
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
@@ -53,6 +73,25 @@ class Notification < ActiveRecord::Base
   before_create :createnotification?
   
   named_scope :tosend, :conditions => {:sent_email => false,:send_error => false}, :order => "created_at ASC"
+  named_scope :aae_internal, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_AAE_INTERNAL[0]} and #{NOTIFICATION_AAE_INTERNAL[1]})"]
+  named_scope :aae_public, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_AAE_PUBLIC[0]} and #{NOTIFICATION_AAE_PUBLIC[1]})"] 
+  named_scope :people, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_PEOPLE[0]} and #{NOTIFICATION_PEOPLE[1]})"] 
+  
+  
+  def notifytype_to_s
+    if(self.notifytype == NONE)
+      return 'none'
+    elsif(self.notifytype >= NOTIFICATION_PEOPLE_START[0] and self.notifytype <= NOTIFICATION_PEOPLE_START[1])
+      return 'people'
+    elsif(self.notifytype >= NOTIFICATION_AAE_INTERNAL[0] and self.notifytype <= NOTIFICATION_AAE_INTERNAL[1])
+      return 'aae-internal'
+    elsif(self.notifytype >= NOTIFICATION_AAE_PUBLIC[0] and self.notifytype <= NOTIFICATION_AAE_PUBLIC[1])
+      return 'aae-public'
+    else
+      return nil
+    end
+  end
+  
   
   def createnotification?
     case self.notifytype

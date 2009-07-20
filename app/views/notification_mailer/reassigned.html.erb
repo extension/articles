@@ -1,4 +1,5 @@
-Hello,
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+Hello <%= @notification.user.first_name %>,
 
 One of the questions assigned to you in the Ask an Expert system has been assigned to 
 another expert. 
@@ -16,3 +17,10 @@ Thank you for your help, and we encourage you to continue to participate in answ
 incoming questions at: http://faq.extension.org/expert/incoming
 
 ***PLEASE DO NOT REPLY TO THIS MESSAGE***
+--
+eXtension Staff
+http://about.extension.org
+
+Replies to this email address are not monitored. If you have questions please contact us at: 
+ 
+ <%= @urls['contactus']%>

@@ -7,37 +7,15 @@
 
 #require 'account_helper'
 
-class HelpController < ApplicationController
+class People::HelpController < ApplicationController
   layout 'people'
   
   def index
-     @page = params[:id]
-     if !@page.nil?
-       @feed_text = HelpFeed.fetch_feed(@page)
-     else
-       @feed_text = ""
-     end
-   end
+    redirect_to(:action => :contactform)
+  end
 
   def contactform
     @isloggedin = checklogin
-        
-    if request.post?
-      @contact = Contact.new(params[:contact])
-      if(@isloggedin)
-        @contact.loggedin = true
-        @contact.login = @currentuser.login
-        @contact.name = @currentuser.first_name+' '+@currentuser.last_name
-        @contact.email = @currentuser.email
-      else
-        @contact.loggedin = false
-      end
-      if (@contact.valid?)
-        send_contact_email(@contact)
-      end
-      flash[:success] = "Thank you for your comments, we'll respond soon!"
-      redirect_to(welcome_url)
-    end
   end
 
   private
@@ -55,23 +33,5 @@ class HelpController < ApplicationController
       return false
     end
   end
-  
-  def send_contact_email(contact)
-    addinfo = Hash.new
-    addinfo['remoteaddr'] = request.env["REMOTE_ADDR"]
-    addinfo['useragent'] = request.env["HTTP_USER_AGENT"]
-    addinfo['version'] = AppVersion.version
 
-    if contact.loggedin
-      addinfo['reviewurl'] = url_for(:controller => 'admin', :action => 'showuser', :id => contact.login)
-    end
-    email = HelpMailer.create_contact_email(contact,addinfo)
-    begin
-      HelpMailer.deliver(email)    
-    rescue
-      logger.error("Unable to deliver contact email.");
-      return false
-    end
-    return true    
-  end
 end

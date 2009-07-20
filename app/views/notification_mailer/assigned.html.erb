@@ -1,4 +1,5 @@
-Hi there,
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+Hello <%= @notification.user.first_name %>,
 
 A question is assigned to you at the eXtension Ask an Expert site.
 
@@ -8,7 +9,7 @@ Read about this change: http://tinyurl.com/ddb82b
 
 Please visit the question page and click the BIG, 
 green button before you start working. thanks!
-<%= @question_url %>
+<%= @urls['question']%>  
 
 The question is:
 "<%= @submitted_question.asked_question %>"
@@ -24,7 +25,7 @@ We need your help. Please either
 3) Reject it (but only if it's a duplicate submission or inappropriate)
 
 Please resolve this question before 
-<%= (@assigned_at + (60 * 60 * 24 * 2)).strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00). 
+<%= @respond_by.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00). 
 
 Thanks for your help!
 
@@ -37,3 +38,10 @@ question page before you start working.
 The question was assigned to you <%= @assigned_at.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00).
 
 ***PLEASE DO NOT REPLY TO THIS MESSAGE***
+--
+eXtension Staff
+http://about.extension.org
+
+Replies to this email address are not monitored. If you have questions please contact us at: 
+ 
+ <%= @urls['contactus']%>

@@ -1,5 +1,5 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2008 North Carolina State University
+#  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
@@ -12,8 +12,7 @@ class NotificationMailer < ActionMailer::Base
   default_url_options[:port] = AppConfig.get_url_port
 
 
-  
-  def base_email
+  def base_email(notification)
     @sent_on  = Time.now
     if(AppConfig.configtable['mail_label'] == 'production')
       @isdemo = false
@@ -22,9 +21,16 @@ class NotificationMailer < ActionMailer::Base
       @isdemo = true
       @subjectlabel = "eXtension Initiative (#{AppConfig.configtable['mail_label']}): "
     end
-    @from           = %("#{AppConfig.configtable['mail_system_noreply_name']}" <#{AppConfig.configtable['mail_system_noreply']}>)
-    if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
-      @bcc            = AppConfig.configtable['mail_system_bcc']
+    
+    # set up the reply, bcc, and from name based on the notification type
+    emailsettings_label = notification.notifytype_to_s
+    if(emailsettings_label.nil? or emailsettings_label == 'none')
+      emailsettings_label = 'default'
+    end
+    
+    @from           = %("#{AppConfig.configtable['emailsettings'][emailsettings_label]['name']}" <#{AppConfig.configtable['emailsettings'][emailsettings_label]['address']}>)
+    if(!AppConfig.configtable['emailsettings'][emailsettings_label]['bcc'].blank?)
+      @bcc            = AppConfig.configtable['emailsettings'][emailsettings_label]['bcc']
     end
     @headers        = {}    
   end
@@ -34,17 +40,20 @@ class NotificationMailer < ActionMailer::Base
   #  Emails sent to community leaders
   # -----------------------------------
 
-  def community_user(notifytype,community,bycolleague)
+  def community_user(notification)
+    community = notification.community
+    bycolleague = notification.user
+
     # base parameters for the email
-    self.base_email
+    self.base_email(notification)
     @recipients     = community.notifyleaders.map(&:email).join(',')
     
     # special case for no recipients
     if(@recipients.nil? or @recipients == '')
-      @recipients = AppConfig.configtable['mail_system_bcc']
+      @recipients = AppConfig.configtable['emailsettings']['people']['bcc']
     end
     
-    case notifytype
+    case notification.notifytype
     when Notification::COMMUNITY_USER_LEFT
       subjectaction = 'Left Community Notification'
       actionstring = 'has indicated in our people application that they are no longer interested in the community.'
@@ -85,17 +94,22 @@ class NotificationMailer < ActionMailer::Base
     @body           = {:isdemo => @isdemo, :community => community, :bycolleague => bycolleague, :urls => urls,:actionstring => actionstring}
   end
   
-  def community_change_notifygroup(notifytype,community,bycolleague,oncolleague)
+  def community_change_notifygroup(notification)
+    # setting variables for backwards compatibility
+    community = notification.community
+    bycolleague = notification.creator
+    oncolleague = notification.user
+    
     # base parameters for the email
-    self.base_email
+    self.base_email(notification)
     @recipients     = community.notifyleaders.map(&:email).join(',')
     
     # special case for no recipients
     if(@recipients.nil? or @recipients == '')
-      @recipients = AppConfig.configtable['mail_system_bcc']
+      @recipients = AppConfig.configtable['emailsettings']['people']['bcc']
     end
     
-    case notifytype
+    case notification.notifytype
     when Notification::COMMUNITY_LEADER_REMOVELEADER
       subjectaction = 'Community Leadership Change'
       actionstring = '%s has been removed from the Community Leadership.'
@@ -143,10 +157,14 @@ class NotificationMailer < ActionMailer::Base
   #  Emails sent to users
   # -----------------------------------
 
-  def community_change_notifyuser(notifytype,community,bycolleague,oncolleague)
+  def community_change_notifyuser(notification)
+    # setting variables for backwards compatibility
+    community = notification.community
+    bycolleague = notification.creator
+    oncolleague = notification.user
 
     # base parameters for the email
-    self.base_email
+    self.base_email(notification)
     @recipients     = oncolleague.email
     # don't cc systemuser
     if(!bycolleague.is_systemuser?)
@@ -156,7 +174,7 @@ class NotificationMailer < ActionMailer::Base
     # default
     responsestring = "You can see more information about the #{community.name} community at:"
       
-    case notifytype
+    case notification.notifytype
     when Notification::COMMUNITY_LEADER_REMOVELEADER
       subjectaction = 'Removed from Community Leadership'
       actionstring = "You have been removed from the leadership in the #{community.name} community"
@@ -235,9 +253,9 @@ class NotificationMailer < ActionMailer::Base
   #  email/signup confirmation
   # -----------------------------------
   
-  def confirm_email(token)
+  def confirm_email(notification,token)
      # base parameters for the email
-     self.base_email
+     self.base_email(notification)
      @recipients     = token.user.email
      @subject        = @subjectlabel+'Please confirm your email address'
      urls = Hash.new
@@ -248,9 +266,9 @@ class NotificationMailer < ActionMailer::Base
      @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
    
-   def reconfirm_email(token)
+   def reconfirm_email(notification,token)
       # base parameters for the email
-      self.base_email
+      self.base_email(notification)
       @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
@@ -262,9 +280,9 @@ class NotificationMailer < ActionMailer::Base
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
   
-   def reconfirm_signup(token)
+   def reconfirm_signup(notification,token)
       # base parameters for the email
-      self.base_email
+      self.base_email(notification)
       @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
@@ -275,4 +293,71 @@ class NotificationMailer < ActionMailer::Base
       urls['contactus'] = url_for(:controller => :help, :action => :contactform)
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
+   
+   
+   # -----------------------------------
+   #  Ask an Expert
+   # -----------------------------------
+   
+   def assigned(notification,submitted_question)
+     # base parameters for the email
+     self.base_email(notification)     
+     @subject        = @subjectlabel+'Incoming question assigned to you'
+     @recipients     = notification.user.email
+     assigned_at = @sent_on
+     respond_by = assigned_at +  48.hours
+     urls = Hash.new
+     urls['question'] = url_for(:controller => 'ask/expert', :action => 'question', :id => submitted_question.id)
+     # TODO: fix contact us URL
+     urls['contactus'] = url_for(:controller => '/')
+     @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
+   end
+ 
+   def reassigned(notification,submitted_question)
+     # base parameters for the email
+     self.base_email(notification)     
+     @subject        = @subjectlabel+'Incoming question reassigned'
+     @recipients     = notification.user.email
+     assigned_at = @sent_on
+     urls = Hash.new
+     urls['question'] = url_for(:controller => 'ask/expert', :action => 'question', :id => submitted_question.id)
+     # TODO: fix contact us URL
+     urls['contactus'] = url_for(:controller => '/')
+     @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
+   end
+
+   def escalation(recipients, submitted_questions, report_url, host = 'faq.extension.org', sent_at = Time.now)
+     @subject = host.to_s + ': Ask an Expert Escalation Report'
+     @body["submitted_questions"] = submitted_questions
+     @body["report_url"] = report_url
+     @body["host"] = host
+     @recipients = recipients
+     @from = "noreplies@extension.org"
+     @sent_on = sent_at
+     if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
+       @bcc            = AppConfig.configtable['mail_system_bcc']
+     end
+     @headers = {}
+   end
+
+
+
+   def response_email(emailVar, expert_question, external_name, url_var, signature)
+     @subject = "[Message from eXtension] Your question has been answered by one of our experts."
+     @body["answer"] = expert_question.current_response
+     @body["question"] = expert_question.asked_question
+     @body["external_name"] = external_name
+     @body["url_var"] = url_var
+     @body["signature"] = signature
+     @body["disclaimer"] = SubmittedQuestion::EXPERT_DISCLAIMER
+     @recipients = emailVar
+     @from = 'noreplies@extension.org'
+     @headers["Organization"] = "eXtension Initiative"
+
+     if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
+       @bcc            = AppConfig.configtable['mail_system_bcc']
+     end
+   end
+   
+   
 end
