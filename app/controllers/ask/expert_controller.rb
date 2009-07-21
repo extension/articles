@@ -285,7 +285,9 @@ class Ask::ExpertController < ApplicationController
     end
     
     @status = params[:status_state]
-    @question = SearchQuestion.find_by_id(params[:question]) if params[:question] # TODO:  - why is this search question? - jayoung
+    # if expert chose a SearchQuestion to answer this with, find that so that we can 
+    # attach that to the submitted question as a contributing question
+    @question = SearchQuestion.find_by_id(params[:question]) if params[:question]
     @sampletext = params[:sample] if params[:sample]
     signature_pref = @currentuser.user_preferences.find_by_name('signature')
     signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser..fullname}"
