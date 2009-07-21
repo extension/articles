@@ -7,7 +7,7 @@
 <table id="questionlist" class="hover">
     <tr>
 	    <% if @questions.length > 0%>
-        <th scope="col"><%= link_to "ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :loc => @loc,:ob => @idtype, :so => (params[:so] != "a") ? "a" : "d" } %></th>
+        <th scope="col"><%= link_to "ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :Category => @catname, :loc => @loc,:ob => @idtype, :so => (params[:so] != "a") ? "a" : "d" } %></th>
         <% else%>
         <th scope="col">ID</th>
         <% end%>
@@ -40,8 +40,8 @@
          <% end%>
       <% else%> 
           <% if @questions.length > 0%>
-	         <th scope="col"><%= link_to "Converted FAQ ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink,:type => @type, :loc => @loc, :ob => 'id', :so => (params[:so] != "a")? "a": "d"} %></th>
-	        <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :loc => @loc, :ob => 'squpdated', :so => (params[:so] != "a") ? "a" : "d" } %></th>
+	         <th scope="col"><%= link_to "Converted FAQ ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink,:type => @type, :loc => @loc, :Category => @catname, :ob => 'id', :so => (params[:so] != "a")? "a": "d"} %></th>
+	        <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :loc => @loc, :Category => @catname, :ob => 'squpdated', :so => (params[:so] != "a") ? "a" : "d" } %></th>
 	       <% else%>
 	          <th scope="col">Converted FAQ ID</th>
 	          <th scope="col">Last Updated</th>

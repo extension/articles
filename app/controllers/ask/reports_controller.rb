@@ -168,7 +168,7 @@ class Ask::ReportsController < ApplicationController
         def display_tag_links
             @cat = Category.find_by_name(params[:Category])
             @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
-            @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; aux = nil
+            @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; aux = nil ; @catname = params[:Category]
           #  @dateFrom = params[:from] ;  @dateTo=params[:to]
          #   @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
             desc = params[:descriptor]; @numb = params[:num].to_i
