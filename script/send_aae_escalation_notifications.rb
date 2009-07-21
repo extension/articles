@@ -46,7 +46,9 @@ Category.root_categories.each do |category|
      begin
        NotificationMailer.deliver_aae_escalation_for_category(category,@hours)
      rescue
-       # TODO:
+       puts "AaE Escalation Email:  Unable to deliver escalation email for category #{category.name}"
      end
    end
 end
+
+#TODO: need to send email to Question Wranglers list

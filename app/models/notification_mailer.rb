@@ -297,7 +297,8 @@ class NotificationMailer < ActionMailer::Base
    #  Ask an Expert
    # -----------------------------------
    
-   def assigned(notification,submitted_question)
+   def aae_assigned(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
      @subject        = @subjectlabel+'Incoming question assigned to you'
@@ -311,7 +312,8 @@ class NotificationMailer < ActionMailer::Base
      @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
    end
  
-   def reassigned(notification,submitted_question)
+   def aae_reassigned(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
      @subject        = @subjectlabel+'Incoming question reassigned'
@@ -324,7 +326,9 @@ class NotificationMailer < ActionMailer::Base
      @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
    end
 
-   def response_email(notification, submitted_question, signature)
+   def aae_public_response(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     signature = notification.additionaldata[:signature]
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
      @subject = "[Message from eXtension] Your question has been answered by one of our experts."          
@@ -341,8 +345,9 @@ class NotificationMailer < ActionMailer::Base
      
        
      submitted_questions_list = SubmittedQuestion.escalated(sincehours,category)
-     if(escalation_users_for_category = SubmittedQuestion.question_escalators_by_category(category))
-       @recipients = escalation_users_for_category.collect{|eu| eu.email}
+     escalation_users_for_category = Users.validusers.escalators_by_category(category)
+     if(escalation_emails = Users.validusers.escalators_by_category(category))
+       @recipients = escalation_users_for_category.map(&:email).join(',')
      else
        # TODO: should this be the extension leadership? question wranglers?
        @recipients = AppConfig.configtable['emailsettings']['aae_internal']['bcc']

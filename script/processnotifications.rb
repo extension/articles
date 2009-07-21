@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+#TODO: refactor this script
 require 'getoptlong'
 
 ### Program Options
@@ -142,6 +143,43 @@ def notify_signupreconfirmation(notification)
   return true
 end
 
+
+def notify_aae_assignment(notification)
+  puts "Sending aae assignment notification..."
+  email = NotificationMailer.create_aae_assigned(notification)
+  begin 
+    NotificationMailer.deliver(email)
+  rescue
+    puts "ERROR: Unable to deliver aae assignment notification."
+    return false
+  end 
+  return true
+end
+
+def notify_aae_reassignment(notification)
+  puts "Sending aae reassignment notification..."
+  email = NotificationMailer.create_aae_reassigned(notification)
+  begin 
+    NotificationMailer.deliver(email)
+  rescue
+    puts "ERROR: Unable to deliver aae reassignment notification."
+    return false
+  end 
+  return true
+end
+
+def notify_aae_public_response(notification)
+  puts "Sending aae response to public..."
+  email = NotificationMailer.create_aae_public_response(notification)
+  begin 
+    NotificationMailer.deliver(email)
+  rescue
+    puts "ERROR: Unable to deliver aae response to public."
+    return false
+  end 
+  return true
+end
+
 # main
 notifications = Notification.tosend.find(:all, :limit => @limit)
 @notificationcount = notifications.size
@@ -197,6 +235,12 @@ notifications.each do |notification|
     notificationresult = notify_emailreconfirmation(notification)
   when Notification::RECONFIRM_SIGNUP
     notificationresult = notify_signupreconfirmation(notification)
+  when Notification::AAE_ASSIGNMENT
+    notificationresult = notify_aae_assignment(notification)
+  when Notification::AAE_REASSIGNMENT
+    notificationresult = notify_aae_reassignment(notification)  
+  when Notification::AAE_PUBLIC_EXPERT_RESPONSE
+    notificationresult = notify_aae_public_response(notification)    
   else
     # nothing
   end
