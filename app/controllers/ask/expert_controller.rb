@@ -127,6 +127,7 @@ class Ask::ExpertController < ApplicationController
   end
   
   def ask_an_expert
+    @right_column = false
     session[:return_to] = params[:redirect_to]
     flash.now[:googleanalytics] = '/ask-an-expert-form'
     
