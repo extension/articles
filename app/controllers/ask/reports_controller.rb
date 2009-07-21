@@ -838,7 +838,7 @@ class Ask::ReportsController < ApplicationController
             if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
                (@datec1, @datec2, @datecFrom, @datecTo) = parmccheck()
             else
-              (@datec1,@datec2,@datecFrom,@datecTo)=valid_compare_date_calselct()
+              (@datec1,@datec2,@datecFrom,@datecTo)=valid_compare_date()  #not valid_compare_date_selct() until that's got more javascript
               (@datec1,@datec2,@datecFrom,@datecTo)= errchk(@datec1,@datec2,@datecFrom,@datecTo)
             end
             if (@datec1 && @datec2)
