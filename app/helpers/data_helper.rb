@@ -17,7 +17,7 @@ module DataHelper
     return txt+'</select>'
   end
   
-  def link_to_community(community)
+  def link_to_public_community(community)
     if community.tags.empty?
       return community.public_name
     else
