@@ -1572,26 +1572,8 @@ class User < ActiveRecord::Base
     
     
     # end faq user model
-
-     #returns the name of a university logo
-     def logo_image_name
-       if university_for_logo
-         existing_university_logo(university_for_logo.code)
-       else
-         nil
-       end
-     end
   
   protected
-
-  def university_for_logo
-    return institution if institution 
-    return nil unless location
-
-    institutions = location.institutions
-    return nil unless institutions.length == 1
-    institutions.first
-  end
   
   def check_status
     logger.debug "Account Status = #{self.account_status}"
