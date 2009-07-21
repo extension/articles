@@ -388,26 +388,6 @@ end
 
 ##Class Methods##
 
-# given the category, get all of the users who 
-# have expertise in that category and have opted 
-# to receive escalation emails for their areas of expertise
-def self.question_escalators_by_category(category)
-  escalation_role = Role.find_by_name(Role::ESCALATION)
-  escalation_user_ids = escalation_role.users.find(:all, :conditions => "users.retired = false").uniq.collect{|u| u.id}.join(',')
-
-  if (escalation_user_ids and escalation_user_ids.strip != '')
-    users = category.users.find(:all, 
-                                :conditions => "users.id IN (#{escalation_user_ids})")
-  end
-  
-  if users and not users.empty? 
-    return users 
-  else
-    return nil
-  end
-
-end
-
 #finds submitted_questions for views like incoming questions and resolved questions
 def self.find_submitted_questions(sq_query_method, category = nil, location = nil, county = nil, source = nil, user = nil, assignee = nil, page_number = nil, paginated = true, is_spam = false, result_order = nil)
 

@@ -193,11 +193,11 @@ class MainController < ApplicationController
     
   def find_institution
     @personal[:location] = Location.find_by_abbreviation(params[:state])
-    if(@personal[:location] && @personal[:location].institutions.length > 0)
-      if @personal[:location].institutions[0].shared_logo or
-         @personal[:location].institutions.length == 1
+    if(@personal[:location] && @personal[:location].institutions.public_list.length > 0)
+      if @personal[:location].institutions.public_list[0].shared_logo or
+         @personal[:location].institutions.public_list.length == 1
         @personal[:state] = params[:state]
-        @personal[:institution] = @personal[:location].institutions[0]
+        @personal[:institution] = @personal[:location].institutions.public_list[0]
         cookies[:institution_id] = {:value => @personal[:institution].id.to_s, :expires => 1.month.from_now}
         session[:multistate] = nil
       else

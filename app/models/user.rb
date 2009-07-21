@@ -113,6 +113,7 @@ class User < ActiveRecord::Base
   has_many :categories, :through => :expertise_areas
   has_many :expertise_events
   has_many :user_roles
+  has_many :roles, :through => :user_roles
   has_many :assignment_widgets, :source => :widget, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id}" 
 
   #has_many :listmemberships, :dependent => :destroy
@@ -158,6 +159,10 @@ class User < ActiveRecord::Base
   named_scope :missingnetworks,  :joins => "LEFT JOIN social_networks ON users.id = social_networks.user_id",  :conditions => 'social_networks.id IS NULL'
       
   named_scope :date_users, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " users.created_at between ? and ?", date1, date2] : "true" } }
+  
+  named_scope :escalators_by_category, lambda {|category|
+    {:joins => [:roles, :categories], :conditions => ["roles.name = '#{Role::ESCALATION}' AND categories.name = '#{category.name}'"] }
+  }
   
   # override login write
   def login=(loginstring)
@@ -1181,7 +1186,9 @@ class User < ActiveRecord::Base
     
     return displaystring
   end
-   
+  
+  
+
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
@@ -1624,5 +1631,8 @@ class User < ActiveRecord::Base
       self.feedkey = Digest::SHA1.hexdigest(self.password + 'feedkey!feedkey!feedkey!' + Time.now.to_s)
     end
   end
+  
+  
+  
   
 end
