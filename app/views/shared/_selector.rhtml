@@ -1,7 +1,7 @@
 <% form_tag do %>
     <fieldset class="resource_selector">
         <p>
-            <%=community_select(@content_tag.content_community)%> <%= link_to 'Show All', {:content_tag => 'all'} %> 
+            <%=community_select(@community)%> <%= link_to 'Show All', {:content_tag => 'all'} %> 
         </p>
     </fieldset>
 <% end %>

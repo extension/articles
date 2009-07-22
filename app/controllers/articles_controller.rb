@@ -121,13 +121,13 @@ class ArticlesController < ApplicationController
     set_title('News', "Check out the news from the land grant university in your area.")
     if(!@content_tag.nil?)
       set_titletag("News - #{@content_tag.name} - eXtension")
-      articles = Article..bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      articles = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
     else
       set_titletag("News - all - eXtension")
       articles = Article.bucketed_as('news').ordered(params[:order]).paginate(:page => params[:page])
     end    
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'shared/dataitems', :locals => { :items => @news, :klass => Article }, :layout => true
+    render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true
   end
  
   def learning_lessons
@@ -137,13 +137,13 @@ class ArticlesController < ApplicationController
     set_titletag('Learning Lessons - eXtension')
     if(!@content_tag.nil?)
       set_titletag("Learning Lessons - #{@content_tag.name} - eXtension")
-      articles = Article..bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      articles = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
     else
       set_titletag("Learning Lessons - all - eXtension")
       articles = Article.bucketed_as('learning lessons').ordered(params[:order]).paginate(:page => params[:page])
     end    
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'shared/dataitems', :locals => { :items => @learning_lessons, :klass => Article }, :layout => true
+    render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true
   end
     
   private
