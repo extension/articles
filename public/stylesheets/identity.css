@@ -329,15 +329,15 @@ h3 a {font-size:.8em;margin-left:1em;}
 .warning {
 	color: #666;
 	border-color: #E0BC12;
-	background: #FFF6CB url(/images/people/warning.gif) 4px 3px no-repeat; }
+	background: #FFF6CB url(/images/common/warning.gif) 4px 3px no-repeat; }
 .success {
 	color: #006420;
 	border-color: #67d846;
-	background: #e4ffe4 url(/images/people/success.gif) 4px 3px no-repeat; }
+	background: #e4ffe4 url(/images/common/success.gif) 4px 3px no-repeat; }
 .failure {
 	color: #d90000;
 	border-color: #d84040;
-	background: #ffebf3 url(/images/people/failure.gif) 4px 3px no-repeat; }
+	background: #ffebf3 url(/images/common/failure.gif) 4px 3px no-repeat; }
 
 textarea {display:block;width:90%;padding:.65em;}
 #tags em {font-weight:normal;}

@@ -262,7 +262,7 @@ div.pagination {font-size:1.3em; line-height: 140%;}
 .warning {
 	color: #666;
 	border-color: #E0BC12;
-	background: #FFF6CB url(/images/warning.gif) 6px 3px no-repeat; }
+	background: #FFF6CB url(/images/common/warning.gif) 6px 3px no-repeat; }
 .success {
 	color: #000;
 	border-color: #feb700;
@@ -270,7 +270,7 @@ div.pagination {font-size:1.3em; line-height: 140%;}
 .failure {
 	color: #d90000;
 	border-color: #d84040;
-	background: #ffebf3 url(/images/failure.gif) 4px 3px no-repeat; }
+	background: #ffebf3 url(/images/common/failure.gif) 4px 3px no-repeat; }
 
 
 .errorExplanation {
@@ -287,7 +287,7 @@ div.pagination {font-size:1.3em; line-height: 140%;}
   border-top: 1px solid #d84040;
   border-bottom: 1px solid #d84040;
   padding: .25em .5em .25em 26px;
-  background: #ffebf3 url(/images/failure.gif) 5px 50% no-repeat;
+  background: #ffebf3 url(/images/common/failure.gif) 5px 50% no-repeat;
 }
 #errorExplanation {
   background: #ffebf3;
@@ -298,7 +298,7 @@ div.pagination {font-size:1.3em; line-height: 140%;}
   margin: 0;
   padding: .25em .5em .25em 26px;
   font-size: 100%;
-  background: #ffebf3 url(/images/failure.gif) 5px 50% no-repeat;
+  background: #ffebf3 url(/images/common/failure.gif) 5px 50% no-repeat;
 }
 #errorExplanation p {
   margin-bottom: 0;
