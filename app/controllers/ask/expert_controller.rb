@@ -12,7 +12,6 @@ class Ask::ExpertController < ApplicationController
   
   has_rakismet :only => [:submit_question, :widget_submit]
   
-  skip_before_filter :check_authorization
   skip_before_filter :get_tag, :except => [:ask_an_expert, :question_confirmation]
   before_filter :login_required, :except => [:ask_an_expert, :question_confirmation, :submit_question]
   before_filter :filter_string_helper, :only => [:incoming, :assigned, :my_resolved, :resolved]

@@ -6,11 +6,11 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 
-class AccountController < ApplicationController
+class Ask::PrefsController < ApplicationController
   layout 'aae'
   
-  before_filter :login_required, :set_current_user
-  skip_before_filter :check_authorization
+  before_filter :login_required
+  skip_before_filter :get_tag
 
   # the user can specify their areas of expertise by category/subcategory and 
   # select if they want escalations and incoming questions sent to them based on their 

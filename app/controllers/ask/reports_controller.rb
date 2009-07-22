@@ -1,7 +1,6 @@
 class Ask::ReportsController < ApplicationController
   
    layout  'aae_reports_home'  
-     skip_before_filter :check_authorization
    
 
      def index

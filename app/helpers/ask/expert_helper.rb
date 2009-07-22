@@ -11,8 +11,7 @@ def stringify_submitted_question_event(sq_event)
   case sq_event.event_state
   when SubmittedQuestionEvent::ASSIGNED_TO 
     if sq_event.initiated_by == User.systemuser
-      # TODO:  this aaeprofile thing is broken?
-      initiated_by_full_name = "<a href='/account/aaeprofile/faq_bot'>ASK-bot</a>"
+      initiated_by_full_name = "System"
     else
       initiated_by_full_name = sq_event.initiated_by..fullname
     end
