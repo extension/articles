@@ -10,6 +10,8 @@ class Ask::ReportsController < ApplicationController
 
     ##Activity Reports
     def activity
+      # (@date1,@date2, @dateFrom,@dateTo)= valid_date()
+      # (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
        @oldest_date = SubmittedQuestion.find_oldest_date
        @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; 
        @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
@@ -21,6 +23,7 @@ class Ask::ReportsController < ApplicationController
      def state_univ_activity
       @typelist = [];  @new={}; @reslvd={}; @answ={}; @rej={}; @noexp={}
         @type = params[:type]; @oldest_date = SubmittedQuestion.find_oldest_date
+       #   (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
         if (@type=="State")
           @typelist  = Location.find(:all, :order => "entrytype, name")
         else
@@ -80,9 +83,9 @@ class Ask::ReportsController < ApplicationController
            @typename = params[:Category]
             cat = Category.find_by_name(params[:Category]) 
             @type = "Category" ; @typel="category"; @typet="Tag"
-        #    (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
             @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; 
          #   @oldest_date = SubmittedQuestion.find_oldest_date
+      #   (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
             @typelist = [cat]
             if !cat.nil?
                 #tagname = Tag.normalize_tag(cat.name)
@@ -606,9 +609,7 @@ class Ask::ReportsController < ApplicationController
            @reguser = User.date_users(@date1, @date2).count(:conditions => "location_id=#{locid}")
         
            @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@typeobj.id}")
-           @answp = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions => " resolved_by >=1 and location_id= #{locid} ")
            (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_state_persp("pertaining",@typeobj, @date1, @date2)
-           @answm = SubmittedQuestion.date_subs(@date1, @date2).count(:joins => [:resolved_by], :conditions => " resolved_by >=1 and users.location_id=#{locid}")
            (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp("member", @typeobj, @date1, @date2)
        
            @repaction = "show_all_by_state"      
@@ -729,9 +730,7 @@ class Ask::ReportsController < ApplicationController
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
          
           @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id}")
-          @answp = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions => " resolved_by >=1 and county_id= #{@typeobj.id} ")
           (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp("pertaining",@typeobj, @date1, @date2)
-          @answm = SubmittedQuestion.date_subs(@date1, @date2).count(:joins => [:resolved_by], :conditions => " resolved_by >=1 and users.county_id=#{@typeobj.id} and users.location_id=#{loc.id}") 
           (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp("member",@typeobj, @date1, @date2)   
           
            @repaction = 'county'
