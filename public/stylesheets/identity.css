@@ -213,7 +213,7 @@ ul.your_comms li {margin:0 0 .5em;}
 .your_comms span {font-size: .75em;color:#999;margin-left:.35em;}
 .your_comms a {text-decoration:none;}
 #userconnection {color:#ccc;}
-#cvs {float:right;background: url(/images/people/page_excel.png) no-repeat left 50%;padding-left:20px;clear:right;}
+#cvs {float:right;background: url(/images/common/page_excel.png) no-repeat left 50%;padding-left:20px;clear:right;}
 ul#usertypes {float:left;margin:0;padding:0;}
 #usertypes li {float:left;list-style:none;margin:0 1em 0 0;padding:0 0 .5em;}
 ul#invitationtypes {float:left;margin:0;padding:0;}
@@ -221,7 +221,7 @@ ul#invitationtypes {float:left;margin:0;padding:0;}
 
 table {clear:left;}
 
-.csvfile {background: url(/images/people/page_excel.png) no-repeat left 50%;padding-left:20px;}
+.csvfile {background: url(/images/common/page_excel.png) no-repeat left 50%;padding-left:20px;}
 
 .connectionactions {text-align:center;margin:0;padding:4px 4px 0;vertical-align: top;}
 .connectionactions a, 
@@ -405,7 +405,7 @@ code {color:#000;background:#eee;padding:0 5px;font-size:1.3em;}
 /*#communityuserconnection h3 {padding:0;margin:0;}*/
 /*#communitynotification {background:#fff;padding:1em;clear:both;}*/
 .delete {background: transparent; /*padding-left:18px;text-align:right;padding-top:2px;padding-bottom:2px;*/}
-a:hover.delete {/*background: transparent url(/images/people/delete.png) left top no-repeat !important;*/ color:red;}
+a:hover.delete {color:red;}
 a.delete {color:#888;}
 
 .userinvite h2 {margin:0;padding:0;}
@@ -589,7 +589,7 @@ ul.tagCloud {float:left;padding:0;margin:0 0 2.5em!important;width:100%;}
 .twitter    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/twitter.png) 0 0 no-repeat;}
 .yahooim    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/yahooim.png) 0 0 no-repeat;}
 .youtube    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/youtube.png) 0 0 no-repeat;}
-.mailto      {padding:0 0 0 26px; background: url(/images/people/email.png) 0 0 no-repeat;}
+.mailto      {padding:0 0 0 26px; background: url(/images/common/email.png) 0 0 no-repeat;}
 
 
 .user-service {clear:both;padding-bottom:1.25em;border-top:1px solid #ddd;padding-top:1.25em;margin-bottom:0;overflow:auto;}

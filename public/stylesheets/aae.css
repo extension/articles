@@ -94,7 +94,7 @@ input.submit[class] {  /* IE ignores [class] */
 	float: left; }
 
 #pageContent {
-	background: #fff;/* url(/images/sidebar_col.gif) repeat-y 0 0*/
+	background: #fff;
 	clear:both;
     border:1px solid #003762;
     border-top:8px solid #003762;
@@ -450,9 +450,6 @@ ul#aaelinks li a span {
 #aae #sidebar {
 	background: #d6f4e8;
 }
-#aae #sidebar #primaryNav li.selected a {
-	background: #86cfa5 url(/images/nav_on.gif) 15px 50% no-repeat;
-}
 
 
 #aae .inc_question a {
@@ -791,7 +788,7 @@ div.answer h2 {
     clear:both;
     padding-left: 24px;
     font-size:1.4em;
-    background: #fff url(/images/email.png) left 50% no-repeat;
+    background: #fff url(/images/common/email.png) left 50% no-repeat;
 }
 #email_content {
     width: 60em;
