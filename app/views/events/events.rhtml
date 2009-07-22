@@ -8,7 +8,7 @@
     <form>
         <fieldset>
             <p>
-                <label>Filter by Resource Area: <%= link_to 'Start Over', site_events_url(:category => 'all') %> <%=community_select(@category)%></label>
+                <label>Filter by Resource Area: <%= link_to 'Start Over', site_events_url(:content_tag => 'all') %> <%=community_select(@community)%></label>
             </p>
         </fieldset>
         <fieldset>
@@ -17,7 +17,7 @@
             </p>
         </fieldset>
     </form>
-  <p class="months"><span>Month</span>: <%=month_select(get_calendar_month, false, @category, params[:state])%></p>
+  <p class="months"><span>Month</span>: <%=month_select(get_calendar_month, false, @content_tag, params[:state])%></p>
 </div>
 
 <%if @results.length == 0%>
@@ -32,7 +32,7 @@
         <span class="community">Community:</span>
         <%community_tags = event.tags.community_content_tags %>
         <%for community_tag in community_tags%>
-            <%= link_to community_tag.content_community.public_name, site_index_url(:category => community_tag.name)%>
+            <%= link_to community_tag.content_community.public_name, site_index_url(:content_tag => community_tag.name)%>
         <%end%>
     </dd>
     <dd>

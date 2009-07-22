@@ -7,14 +7,14 @@
 
 class MainController < ApplicationController
   protect_from_forgery :except => :find_institution
-  skip_before_filter :disable_link_prefetching, :get_tag, :only => :find_institution
-  before_filter :get_community
+  skip_before_filter :disable_link_prefetching, :only => :find_institution
+  before_filter :set_community_topic_and_content_tag
 
   def index
      set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
      set_titletag('eXtension - Objective. Research-based. Credible.')
         
-     @sponsors = Advertisement.prioritized_for_tag(Tag.find_by_name('all'))
+     @sponsors = Advertisement.find(:all, :order => 'position')
      
      @in_the_news = Article.bucketed_as('news').ordered.limit(4)
      
@@ -32,13 +32,8 @@ class MainController < ApplicationController
      @latest_learning_lesson = Article.bucketed_as('learning lessons').ordered.first     
   end
 
-  def category
-    if !@category
-      render(:file => 'public/404.html', :layout => false) 
-      return
-    end
-  
-    if @community
+  def content_tag
+    if(!@community.nil?)
       set_title(@community.name,@community.public_description)
       set_titletag("#{@community.public_name} - eXtension")
       # TODO: write a helper method to get the content tags
@@ -46,44 +41,34 @@ class MainController < ApplicationController
       adtag = @community_tags[0] if @community_tags and @community_tags.length > 0
       @sponsors = Advertisement.prioritized_for_tag(adtag) if adtag
       
-      @homage = Article.bucketed_as('homage').tagged_with_content_tag(params[:category]).ordered.first
-      @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(params[:category]).ordered.first
-      @community_highlights = Article.bucketed_as('feature').tagged_with_content_tag(params[:category]).ordered.limit(8)
+      @homage = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered.first
+      @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered.first
+      @community_highlights = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).ordered.limit(8)
       @youth = true if @topic and @topic.name == 'Youth'
-      
-      flash.now[:googleanalytics] = "/" + @category.name.gsub(' ','_')
-          
+      flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
+    elsif(!@content_tag.nil?)
+      set_title("Content tagged with:", @content_tag.name.titleize)
+      set_titletag("Content tagged with '#{@content_tag.name}'  - eXtension")
+      @youth = true if @content_tag.name == 'youth'
     else
-      set_title("Content tagged with:", @category.name.titleize)
-      set_titletag("Content tagged with '#{@category.name}'  - eXtension")
-      @youth = true if @category.name == 'youth'
+      set_title("All Content")
+      set_titletag("All Content - eXtension")  
     end
     
-    if @category.name == 'all'
-      
+    if(@content_tag.nil?)
       @news = Article.bucketed_as('news').ordered.limit(3)
       @recent_learning_lessons = Article.bucketed_as('learning lessons').ordered(Article.orderings['Newest to oldest']).limit(3)
       @faqs = Faq.limit(3).ordered
       @calendar_events = Event.ordered.within(3, get_calendar_date)
       @articles = Article.ordered(Article.orderings['Newest to oldest']).limit(3)
-      
     else
-      
-      @news = Article.bucketed_as('news').tagged_with_content_tag(params[:category]).ordered.limit(3)
-      @recent_learning_lessons = 
-        Article.bucketed_as('learning lessons').tagged_with_content_tag(params[:category]).ordered(Article.orderings['Newest to oldest']).limit(3)
-          
-      @faqs = Faq.tagged_with_content_tag(@category.name).ordered.limit(3)
-      @calendar_events =  Event.tagged_with_content_tag(@category.name).ordered.limit(5).after(get_calendar_date)
-    
-      @articles = Article.tagged_with_content_tag(params[:category]).
-          ordered(Article.orderings['Newest to oldest']).limit(8) unless @community
-        
-      @recent_articles = Article.tagged_with_content_tag(params[:category]).
-              ordered.limit(3) unless @in_this_section
-      
+      @news = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered.limit(3)
+      @recent_learning_lessons = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(Article.orderings['Newest to oldest']).limit(3)
+      @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered.limit(3)
+      @calendar_events =  Event.tagged_with_content_tag(@content_tag.name).ordered.limit(5).after(get_calendar_date)
+      @articles = Article.tagged_with_content_tag(@content_tag.name).ordered(Article.orderings['Newest to oldest']).limit(8) unless @community
+      @recent_articles = Article.tagged_with_content_tag(@content_tag.name).ordered.limit(3) unless @in_this_section
     end
-        
   end
   
   def search
@@ -186,7 +171,7 @@ class MainController < ApplicationController
   end
   
   def set_institution
-    cookies[:institution_id] = {:value => params[:institution_id], :expires => 1.month.from_now}
+    session[:institution_id] = params[:institution_id]
     session[:multistate] = nil
     request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url) 
   end
@@ -198,7 +183,7 @@ class MainController < ApplicationController
          @personal[:location].institutions.public_list.length == 1
         @personal[:state] = params[:state]
         @personal[:institution] = @personal[:location].institutions.public_list[0]
-        cookies[:institution_id] = {:value => @personal[:institution].id.to_s, :expires => 1.month.from_now}
+        session[:institution_id] = @personal[:institution].id.to_s
         session[:multistate] = nil
       else
         session[:multistate] = params[:state]

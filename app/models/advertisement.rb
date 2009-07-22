@@ -14,11 +14,7 @@ class Advertisement < ActiveRecord::Base
   end
     
   # returns a collection of advertisements, ordered based on the position field
-  def self.prioritized_for_tag(tag = nil)
-    if tag.nil?
-      Advertisement.find(:all, :order => 'position')
-    else
-      Advertisement.find_all_by_tag_id(tag.id, :order => 'position')
-    end
+  def self.prioritized_for_tag(tag)
+    Advertisement.find_all_by_tag_id(tag.id, :order => 'position')
   end
 end

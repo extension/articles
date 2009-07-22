@@ -14,8 +14,10 @@ class ActiveRecord::Base #:nodoc:
     def _add_tags(tagarray,ownerid,kind,weight)
       taggable?(true)
       tagarray.each do |tag_name|
+        normalized_tag_name = Tag.normalizename(tag_name)
+        next if Tag::BLACKLIST.include?(normalized_tag_name)
         begin
-          tag = Tag.find_or_create_by_name(Tag.normalizename(tag_name))
+          tag = Tag.find_or_create_by_name(normalized_tag_name)
           raise Tag::Error, "tag could not be saved: #{tag_name}" if tag.new_record?
           Tagging.create(:tag => tag, :taggable => self, :tag_kind => kind, :tag_display => tag_name, :owner_id => ownerid, :weight => weight)          
         rescue ActiveRecord::StatementInvalid => e

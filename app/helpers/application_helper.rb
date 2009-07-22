@@ -43,6 +43,14 @@ module ApplicationHelper
     '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'
   end
   
+  def with_content_tag?
+    if(!@content_tag.nil?)
+      return {:content_tag => @content_tag.name}
+    else
+      return {:content_tag => 'all'}
+    end
+  end
+  
   def options_from_categories(selected = nil)
     categories = Array.new
 

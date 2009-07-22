@@ -21,7 +21,7 @@ module DataHelper
     if community.tags.empty?
       return community.public_name
     else
-      return link_to(h(community.public_name), site_index_url(:category => community.primary_content_tag_name))
+      return link_to(h(community.public_name), site_index_url(:content_tag => community.primary_content_tag_name))
     end
   end
   
@@ -34,9 +34,13 @@ module DataHelper
     link_to result.title, url
   end
   
-  def month_select(date, link_to_current = false, category = nil, state = nil)
+  def month_select(date, link_to_current = false, content_tag = nil, state = nil)
     url_params = {}
-    url_params.update({:category => category.name}) if category
+    if(!content_tag.nil?)
+      url_params.update({:content_tag => content_tag.name})
+    else
+      url_params.update({:content_tag => 'all'})
+    end
     url_params.update({:state => state}) if state
     
     if Time.now.year < date.year
@@ -62,21 +66,7 @@ module DataHelper
     txt += link_to((date.year+1).to_s, site_events_month_url(url_params))
     txt
   end
-  
-  #this might not be used anymore
-  def communities_links(faq)
-    cats = faq.categories.split(',')
-    result = ''
-    result = 'Community:' if cats.length == 1
-    result = 'Communities:' if cats.length > 1
     
-    for cat in cats
-      result += ' ' +link_to(cat.strip , category_index_url(:category => cat.strip))
-    end
-    
-    result
-  end
-  
   def state_select(name, params)
     select(name, :state, Location.displaylist.collect{|l| [l.name, l.abbreviation]}.unshift(['All', '']), {:selected => params[:state]},{ :onchange => 'update_state(this.value)'})
   end

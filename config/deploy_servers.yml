@@ -1,11 +1,6 @@
 # Define deployment targets.
 # Required keys are deploy_dir and host.
 # Optional keys are tag and ssh_port
-dev:
-    deploy_dir: <%= "/services/apache/vhosts/pubsitedev.extension.org/railsroot" %>
-    host: <%= "pubsitedev.extension.org" %>
-    tag: trunk
-    ssh_port: 24
 demo:
     deploy_dir: <%= "/services/apache/vhosts/#{app_host}.demo.extension.org/railsroot" %>
     host: <%= "#{app_host}.demo.extension.org" %>

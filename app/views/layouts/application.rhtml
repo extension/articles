@@ -27,8 +27,8 @@
   
 	<%= javascript_include_tag :defaults %>
 	<%= javascript_include_tag 'charcount' %>
-	<% if cookies[:institution_id].nil? or
-	     (cookies[:institution_id] and cookies[:institution_id].empty?) %>
+	<% if session[:institution_id].nil? or
+	     (session[:institution_id] and session[:institution_id].empty?) %>
 	<script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
 	<script type="text/javascript">
 	// -- docs say u need to load a module, but my testing says not. @JER
@@ -48,9 +48,7 @@
       }
    });
    </script>
-   <% else
-        cookies[:institution_id] = {:value => cookies[:institution_id], :expires => 1.month.from_now} 
-      end %>
+   <% end %>
 	<link rel="stylesheet" type="text/css" href="/stylesheets/contentslider.css" />
 	<!--[if lt IE 7]>
 	    <%= stylesheet_link_tag 'ie6.css' %>
@@ -118,10 +116,10 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
            <li class="home"><a href = "/">Home</a></li>
            <li class="about"><a href = "/main/about">About</a></li>
            <li class="topics"><a href = "/main/communities">Resource Areas</a></li>
-           <li class="news"><%= link_to 'News', site_news_url(:category => @category.name)%></li>
-           <li class="answers"><%= link_to 'Answers', site_faqs_url(:category => @category.name)%></li>
-           <li class="calendar"><%= link_to 'Calendar', site_events_url(:category => @category.name)%></li>
-           <li class="lessons"><%= link_to 'Self Learning', site_learning_lessons_url(:category => @category.name)%></li>
+           <li class="news"><%= link_to 'News', site_news_url(with_content_tag?)%></li>
+           <li class="answers"><%= link_to 'Answers', site_faqs_url(with_content_tag?)%></li>
+           <li class="calendar"><%= link_to 'Calendar', site_events_url(with_content_tag?)%></li>
+           <li class="lessons"><%= link_to 'Self Learning', site_learning_lessons_url(with_content_tag?)%></li>
            <li class="feeds"><a href = "/feeds">Feeds</a></li>
          </ul>
      </div>

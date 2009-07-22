@@ -1,7 +1,7 @@
 <div class="homesection">
     <h2>Calendar</h2>
     <div class="whatsnewbox">
-    <p class="months right"><%=month_select(get_calendar_month, true, @category)%></p>
+    <p class="months right"><%=month_select(get_calendar_month, true, @content_tag)%></p>
 
     <%last_date = nil%>
     <%while @calendar_events.length > 0

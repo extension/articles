@@ -41,7 +41,7 @@
   	  <br class="clearing" />
 
   <%   
-      related = article.tags.collect{|cat| cat.name unless @blacklist.include?(cat.name) }
+      related = article.tags.collect{|cat| cat.name unless Tag::CONTENTBLACKLIST.include?(cat.name) }
          related.compact!
          keywords = related.collect{|tag| link_to tag, site_index_url(tag) }
   	if keywords.length > 0

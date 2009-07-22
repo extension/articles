@@ -94,17 +94,17 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'feeds/:action/-/*categories', :controller => 'feeds'
   map.connect 'feeds/:action/:type/*id', :controller => 'feeds'
   
-  map.category_index 'category/:category', :controller => 'main', :action => 'category'
+  map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
   
-  map.site_news ':category/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_faqs ':category/faqs/:order/:page', :controller => 'faq', :action => 'index', :page => '1', :order => 'heureka_published_at DESC', :requirements => { :page => /\d+/ }
-  map.site_articles ':category/articles/:order/:page', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_events ':category/events/:state', :controller => 'events', :action => 'index', :state => ''
-  map.site_events_month ':category/events/:year/:month/:state', :controller => 'events', :action => 'index', :state => ''
+  map.site_news ':content_tag/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_faqs ':content_tag/faqs/:order/:page', :controller => 'faq', :action => 'index', :page => '1', :order => 'heureka_published_at DESC', :requirements => { :page => /\d+/ }
+  map.site_articles ':content_tag/articles/:order/:page', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_events ':content_tag/events/:state', :controller => 'events', :action => 'index', :state => ''
+  map.site_events_month ':content_tag/events/:year/:month/:state', :controller => 'events', :action => 'index', :state => ''
   
-  map.site_learning_lessons ':category/learning_lessons/:order/:page', :controller => 'articles', :action => 'learning_lessons', :page => '1',:order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_learning_lessons ':content_tag/learning_lessons/:order/:page', :controller => 'articles', :action => 'learning_lessons', :page => '1',:order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
   
-  map.site_index ':category', :controller => 'main', :action => 'category'
+  map.site_index ':content_tag', :controller => 'main', :action => 'content_tag'
 
   map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
   map.article_page 'article/:id', :controller => 'articles', :action => 'page', :requirements => { :id => /\d+/ }

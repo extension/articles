@@ -6,13 +6,20 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ArticlesController < ApplicationController
-  before_filter :get_community
+  before_filter :set_community_topic_and_content_tag
   
   def index
-    set_title('Articles', "Don't just read. Learn.")
-    set_titletag("Articles - #{@category.name} - eXtension")
+    # validate order
     return do_404 unless Article.orderings.has_value?(params[:order])
-    articles = Article.tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
+    
+    set_title('Articles', "Don't just read. Learn.")
+    if(!@content_tag.nil?)
+      set_titletag("Articles - #{@content_tag.name} - eXtension")
+      articles = Article.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+    else
+      set_titletag("Articles - all - eXtension")
+      articles = Article.all.ordered(params[:order]).paginate(:page => params[:page])
+    end
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true
   end
@@ -20,7 +27,7 @@ class ArticlesController < ApplicationController
   def page
     # folks chop off the page name and expect the url to give them something
     if not (params[:title] or params[:id])
-      redirect_to site_articles_url(:category => session[:category]), :status=>301
+      redirect_to site_articles_url(with_content_tag?), :status=>301
       return
     end
     
@@ -46,7 +53,7 @@ class ArticlesController < ApplicationController
     
       if title_to_lookup =~ /Category\:(.+)/
         category = $1.gsub(/_/, ' ')
-        redirect_to category_index_url(:category => category), :status=>301
+        redirect_to content_tag_index_url(with_content_tag?), :status=>301
         return
       end
     
@@ -109,23 +116,36 @@ class ArticlesController < ApplicationController
   end
   
   def news
-    set_title('News', "Check out the news from the land grant university in your area.")
-    set_titletag('News - eXtension')
+    # validate order
     return do_404 unless Article.orderings.has_value?(params[:order])
-    @news = Article.bucketed_as('news').tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
+    set_title('News', "Check out the news from the land grant university in your area.")
+    if(!@content_tag.nil?)
+      set_titletag("News - #{@content_tag.name} - eXtension")
+      articles = Article..bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+    else
+      set_titletag("News - all - eXtension")
+      articles = Article.bucketed_as('news').ordered(params[:order]).paginate(:page => params[:page])
+    end    
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => @news, :klass => Article }, :layout => true
   end
-  
+ 
   def learning_lessons
+    # validate order
+    return do_404 unless Article.orderings.has_value?(params[:order])
     set_title('Learning Lessons', "Don't just read. Learn.")
     set_titletag('Learning Lessons - eXtension')
-    return do_404 unless Article.orderings.has_value?(params[:order])
-    @learning_lessons = Article.bucketed_as('learning lessons').tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
+    if(!@content_tag.nil?)
+      set_titletag("Learning Lessons - #{@content_tag.name} - eXtension")
+      articles = Article..bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+    else
+      set_titletag("Learning Lessons - all - eXtension")
+      articles = Article.bucketed_as('learning lessons').ordered(params[:order]).paginate(:page => params[:page])
+    end    
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => @learning_lessons, :klass => Article }, :layout => true
   end
-  
+    
   private
   
   def get_article_by_title(title_to_lookup)

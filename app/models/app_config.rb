@@ -26,12 +26,12 @@ class AppConfig
     @@configtable['openid_url_prefix']['production']['local'] = 'https://www.extension.org/people'
     @@configtable['openid_url_prefix']['demo'] = {}
     @@configtable['openid_url_prefix']['demo']['claimed'] = 'https://people.demo.extension.org'
-    @@configtable['openid_url_prefix']['demo']['local'] = 'https://pubsitedev.extension.org/people'
+    @@configtable['openid_url_prefix']['demo']['local'] = 'https://www.demo.extension.org/people'
     @@configtable['openid_url_prefix']['localdev'] = 'request_url'
     
     @@configtable['openid_endpoint'] = {}
     @@configtable['openid_endpoint']['production'] = 'https://www.extension.org/opie'
-    @@configtable['openid_endpoint']['demo']= 'https://pubsitedev.extension.org/opie'
+    @@configtable['openid_endpoint']['demo']= 'https://www.demo.extension.org/opie'
     @@configtable['openid_endpoint']['localdev'] = 'request_url'
     
     # content feeds and times

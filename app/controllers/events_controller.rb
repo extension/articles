@@ -6,14 +6,19 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class EventsController < ApplicationController
-  before_filter :get_community
+  before_filter :set_community_topic_and_content_tag
   
   def index    
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
-    set_titletag('eXtension - Calendar of Events')    
-    @results  =  Event.monthly(get_calendar_month).ordered.in_states(params[:state]).tagged_with_content_tag(@category.name)
+    if(!@content_tag.nil?)
+      set_titletag("eXtension - #{@content_tag.name} - Calendar of Events")
+      @results  =  Event.monthly(get_calendar_month).ordered.in_states(params[:state]).tagged_with_content_tag(@content_tag.name)      
+    else
+      set_titletag('eXtension - all - Calendar of Events')
+      @results  =  Event.monthly(get_calendar_month).ordered.in_states(params[:state]).all
+    end    
     @youth = true if @topic and @topic.name == 'Youth'
-    render :action => 'events'
+    render :action => 'events'    
   end
 
   def detail

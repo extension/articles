@@ -29,4 +29,8 @@ class StatusController < ApplicationController
     render(:layout => false,:template => 'status/version')
   end
   
+  def debug
+    
+  end
+  
 end

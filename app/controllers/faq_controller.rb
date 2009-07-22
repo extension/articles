@@ -6,13 +6,19 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class FaqController < ApplicationController
-  before_filter :get_community
+  before_filter :set_community_topic_and_content_tag
   
   def index
-    set_title('Answered Questions from Our Experts', "Frequently asked questions from our resource area experts.")
-    set_titletag('Answered Questions from Our Experts - eXtension')
+    # validate ordering
     return do_404 unless Faq.orderings.has_value?(params[:order])
-    @faqs = Faq.tagged_with_content_tag(@category.name).ordered(params[:order]).paginate(:page => params[:page])
+    set_title('Answered Questions from Our Experts', "Frequently asked questions from our resource area experts.")
+    if(!@content_tag.nil?)
+      set_titletag("Answered Questions from Our Experts - #{@content_tag.name} - eXtension")      
+      @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+    else
+      set_titletag('Answered Questions from Our Experts - all - eXtension')
+      @faqs = Faq.all.ordered(params[:order]).paginate(:page => params[:page])
+    end  
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => @faqs, :klass => Faq }, :layout => true
   end

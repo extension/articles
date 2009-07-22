@@ -33,14 +33,11 @@ class ApplicationController < ActionController::Base
   before_filter :set_locale
   before_filter :unescape_params
   before_filter :disable_link_prefetching
-  before_filter :get_tag
   before_filter :personalize
   before_filter :set_request_url_options
   before_filter :set_default_request_ip_address
     
   def set_request_url_options
-    ActiveRecord::Base::logger.info "Hello - we are inside set request"  
-    
     if(!request.nil?)
       AppConfig.configtable['url_options']['host'] = request.host unless (request.host.nil?)
       AppConfig.configtable['url_options']['protocol'] = request.protocol unless (request.protocol.nil?)
@@ -88,7 +85,7 @@ class ApplicationController < ActionController::Base
   # Account for the double encoding occuring at the webserver level by
   # decoding known trouble params again.
   def unescape_params
-    [:category, :order].each do |param|
+    [:content_tag, :order].each do |param|
       params[param] = CGI.unescape(params[param]) if params[param]      
     end
     if params[:categories] and params[:categories].class == Array
@@ -97,41 +94,11 @@ class ApplicationController < ActionController::Base
   end
     
   def do_404
-    get_tag if not @category
     personalize if not @personal
     @page_title_text = 'Status 404 - Page Not Found'
     render :template => "/shared/404", :status => "404"
   end
-  
-  def get_tag
-    @blacklist = ['article', 'contents', 'dpl', 'events', 'faq', 'feature',
-                  'highlight', 'homage', 'youth', 'learning lessons',
-                  'learning lessons home', 'main', 'news', 'beano']
-                 
-    if params[:category] == 'all'
-      @category = Tag.new(:name => 'all')
-    elsif params[:category]
-      params[:category] = params[:category].strip.downcase.gsub(/_/, ' ')
-      
-      @category = Tag.find_by_name(params[:category])
-      unless @category
-        @category = Tag.new(:name => 'all')
-        flash.now[:notice] = "The category '"+params[:category]+"' does not exist."
-      end
-      
-    elsif session[:category]
     
-      if session[:category] == 'all'
-        @category = Tag.new(:name => 'all')
-      else
-        @category = Tag.find_by_name(session[:category]) 
-      end
-    else
-      @category = Tag.new(:name => 'all')
-    end
-    session[:category] = @category.name if @category
-  end
-  
   private
   
   def disable_link_prefetching
@@ -145,23 +112,22 @@ class ApplicationController < ActionController::Base
   def personalize
     @personal = {}
     
-    if cookies[:institution_id]
+    if session[:institution_id]
       begin
-        inst = Institution.find(cookies[:institution_id])
+        inst = Institution.find(session[:institution_id])
       rescue
-        cookies[:institution_id] = nil
+        session[:institution_id] = nil
       end
       @personal[:institution] = inst if inst
       if (inst and @personal[:location].nil?)
         @personal[:location] = @personal[:institution].location
       end
     elsif(refering_institution = Institution.find_by_referer(request.referer))
-      cookies[:institution_id] = {:value => refering_institution.id.to_s, :expires => 1.month.from_now}
+      session[:institution_id] = {:value => refering_institution.id.to_s, :expires => 1.month.from_now}
       @personal[:institution] = refering_institution
       @personal[:location] = refering_institution.location
     end
         
-    @personal[:tag] = @category
   end
   
   def set_title(main, sub = nil)
@@ -181,13 +147,48 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def get_community
-    @community = nil
-    if @category && @category.name != 'all' && @category.content_community
-      @community = @category.content_community
+  def set_content_tag
+    @content_tag = nil
+    
+    if(!params[:content_tag].nil?)
+      content_tag_name = params[:content_tag]
+    elsif(!session[:content_tag].nil?)
+      content_tag_name = session[:content_tag]
+    else
+      return @content_tag
     end
-    @personal[:community] = @community
-    @topic = @community.topic if @community and @community.topic
+    
+    if(!Tag::BLACKLIST.include?(content_tag_name))
+      ActiveRecord::Base::logger.info "content tag name is #{content_tag_name}..."
+      if(@content_tag = Tag.content_tags.find_by_name(Tag.normalizename(content_tag_name)))
+        session[:content_tag] = @content_tag.name
+      end
+    end
+    
+    return @content_tag
+  end
+  
+  def set_community(content_tag)
+    @community = nil
+    if(!content_tag.nil?)
+      @community = content_tag.content_community 
+    end
+    
+    return @community
+  end
+  
+  def set_topic(community)
+    @topic = nil
+    if(!community.nil?)
+      @topic = community.topic
+    end
+    
+    return @topic
+  end
+  
+  # sets @content_tag, @community and @topic for callers
+  def set_community_topic_and_content_tag
+    set_topic(set_community(set_content_tag))
   end
   
 end

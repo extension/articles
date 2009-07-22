@@ -18,6 +18,14 @@ class Tag < ActiveRecord::Base
  
   SPLITTER = Regexp.new(/\s*,\s*/)
   JOINER = "," 
+  
+  # terms that can't be used as tags
+  BLACKLIST = ['all']
+  
+  # terms that can be used as tags, but have special meaning
+  CONTENTBLACKLIST = ['article', 'contents', 'dpl', 'events', 'faq', 'feature',
+                    'highlight', 'homage', 'youth', 'learning lessons',
+                    'learning lessons home', 'main', 'news', 'beano']
 
   # If database speed becomes an issue, you could remove these validations and rescue the ActiveRecord database constraint errors instead.
   validates_presence_of :name
@@ -42,81 +50,78 @@ class Tag < ActiveRecord::Base
     self.name = self.class.normalizename(self.name)
   end
   
+  named_scope :community_content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggable_type = 'Community'"}
+  named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}"}
+  
   # TODO: review.  This is kind of a hack that might should be done differently
   def content_community
     communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
   end
-  
-  named_scope :community_content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggable_type = 'Community'"}
-    
-  
-  class << self
-  
-    # normalize tag names 
-    # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces)   
-    def normalizename(name)
-      # make an initial downcased copy - don't want to modify name as a side effect
-      returnstring = name.downcase
-      # now, use the replacement versions of gsub and strip on returnstring
-      returnstring.gsub!('_',' ')
-      returnstring.gsub!(/[^\w\s:-]/,'')
-      returnstring.gsub!(/\s+/,' ')
-      returnstring.strip!
-      returnstring
-    end
 
-    def castlist_to_array(obj,normalizestring=true,processnots=false)      
-      returnarray = []
-      if(processnots)
-        returnnotarray = []
-      end 
-      
-      case obj
-        when Array
-          obj.each do |item|
-            case item
-              when /^\d+$/, Fixnum then returnarray << Tag.find(item).name # This will be slow if you use ids a lot.
-              when Tag then returnarray << item.name
-              when String                
-                if(processnots and item.starts_with?('!'))
-                  returnnotarray << (normalizestring ? Tag.normalizename(item) : item.strip)
-                else
-                  returnarray << (normalizestring ? Tag.normalizename(item) : item.strip)
-                end
+  # normalize tag names 
+  # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces)   
+  def self.normalizename(name)
+    # make an initial downcased copy - don't want to modify name as a side effect
+    returnstring = name.downcase
+    # now, use the replacement versions of gsub and strip on returnstring
+    returnstring.gsub!('_',' ')
+    returnstring.gsub!(/[^\w\s:-]/,'')
+    returnstring.gsub!(/\s+/,' ')
+    returnstring.strip!
+    returnstring
+  end
+
+  def self.castlist_to_array(obj,normalizestring=true,processnots=false)      
+    returnarray = []
+    if(processnots)
+      returnnotarray = []
+    end 
+    
+    case obj
+      when Array
+        obj.each do |item|
+          case item
+            when /^\d+$/, Fixnum then returnarray << Tag.find(item).name # This will be slow if you use ids a lot.
+            when Tag then returnarray << item.name
+            when String                
+              if(processnots and item.starts_with?('!'))
+                returnnotarray << (normalizestring ? Tag.normalizename(item) : item.strip)
               else
-                raise "Invalid type"
-            end
-          end              
-        when String          
-          obj.split(Tag::SPLITTER).each do |tag_name| 
-            if(!tag_name.empty?)
-              if(processnots and tag_name.starts_with?('!'))
-                returnnotarray << (normalizestring ? Tag.normalizename(tag_name) : tag_name.strip)
-              else
-                returnarray << (normalizestring ? Tag.normalizename(tag_name) : tag_name.strip)
+                returnarray << (normalizestring ? Tag.normalizename(item) : item.strip)
               end
+            else
+              raise "Invalid type"
+          end
+        end              
+      when String          
+        obj.split(Tag::SPLITTER).each do |tag_name| 
+          if(!tag_name.empty?)
+            if(processnots and tag_name.starts_with?('!'))
+              returnnotarray << (normalizestring ? Tag.normalizename(tag_name) : tag_name.strip)
+            else
+              returnarray << (normalizestring ? Tag.normalizename(tag_name) : tag_name.strip)
             end
           end
-        else
-          raise "Invalid object of class #{obj.class} as tagging method parameter"
-      end
-      
-      returnarray.flatten!
-      returnarray.compact!
-      returnarray.uniq!
-      
-      
-      if(processnots)
-        returnnotarray.flatten!
-        returnnotarray.compact!
-        returnnotarray.uniq!
-        return [returnarray,returnnotarray]
+        end
       else
-        return returnarray
-      end
+        raise "Invalid object of class #{obj.class} as tagging method parameter"
     end
     
+    returnarray.flatten!
+    returnarray.compact!
+    returnarray.uniq!
+    
+    
+    if(processnots)
+      returnnotarray.flatten!
+      returnnotarray.compact!
+      returnnotarray.uniq!
+      return [returnarray,returnnotarray]
+    else
+      return returnarray
+    end
   end
+    
     
   # Tag::Error class. Raised by ActiveRecord::Base::TaggingExtensions if something goes wrong.
   class Error < StandardError
