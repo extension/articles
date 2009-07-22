@@ -44,8 +44,8 @@ class Ask::AdminController < ApplicationController
       return
     end    
         
-    if user.user_roles.detect { |ur| ur.role == role and (!ur.category or ur.category == category) }
-      flash[:failure] = user.login + " is already assigned to this role."
+    if user.user_roles.detect { |ur| ur.role == role }
+      flash[:failure] = user.fullname + " is already assigned to this role."
       redirect_to :action => 'role', :id => role
       return
     end
@@ -55,33 +55,31 @@ class Ask::AdminController < ApplicationController
     user_role.role = role
 
     if user_role.save
-      flash[:success] = "Role assigned to user."
+      flash[:success] = "Role assigned to #{user.fullname}"
       redirect_to :action => 'role', :id => role
     else
-      flash[:failure] = "Failed to assign user to role."
+      flash[:failure] = "Failed to assign role to #{user.fullname}."
       redirect_to :action => 'role', :id => role
     end
   end
   
   def delete_assignment
-    if !params[:id] or !UserRole.find_by_id(params[:id])
+    if !params[:id] or !(user_role = UserRole.find_by_id(params[:id]))
       flash[:failure] = "Invalid user role."
       redirect_to :action => 'roles'
       return
     end
-    
-    user_role = UserRole.find(params[:id])
-    
+        
     role = user_role.role
     user = user_role.user
     
     user_role.destroy
   
-    flash[:success] = user.login + " no longer assigned to the " + role.name + " role."
+    flash[:success] = user.fullname + " no longer assigned to the " + role.name + " role."
     
     #if you revoke your own admin privileges
-    if User.current_user.id == user.id
-      redirect_to home_url
+    if @currentuser.id == user.id
+      redirect_to :controller => 'ask/expert', :action => 'incoming'
     else
       redirect_to :action => 'role', :id => role
     end

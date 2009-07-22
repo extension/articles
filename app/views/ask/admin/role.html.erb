@@ -1,0 +1,44 @@
+<% @page_title = @role.name %>
+<% @help_title = "Roles" %>
+
+<p><%= link_to 'Admin Home', :action => 'index' %> | <%= link_to 'Back to Role List', :action => 'roles' %></p>
+
+<h2>Roles: <%= @page_title %></h2>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<% if @role.name == "Administrator" %>
+    <p>Administrators have permission to:</p>
+        <ul>
+            <li>Assign <em>Administrators</em></li>
+            <li>Create new categories</li>
+            <li>Create subcategories for categories</li>
+        </ul>
+<% end %>
+
+<% if @role.user_roles.length > 0 %>
+    <h3>Users with this role:</h3>
+    <table id="list-table" class="hover" cellspacing="0">
+      <tr>
+          <th>Name</th>
+          <th>Username (profile)</th>
+          <th>Remove</th>
+      </tr>
+        <% @role.user_roles.each do |user_role| %>
+            <tr>
+                <td class="list"><%= user_role.user.fullname %> <% if user_role.category %>for <%= user_role.category.name %><% end %></td>
+                <td class="list"><%= link_to user_role.user.login, :controller => 'account', :action => 'profile', :id => user_role.user.login %></td>
+                <td class="list"><%= link_to "remove role", :action => "delete_assignment", :id => user_role.id %></td>
+            </tr>
+        <% end %>
+    </table>
+<% end %>
+
+<% form_tag :action => "assign_role" do %>
+    <%= hidden_field_tag(:role, params[:id]) %>
+    <p><strong>Assign a user to this role:</strong></p>
+    
+    <p>User name: <%= text_field_tag(:user, params[:user], :size => 25) %></p>
+
+    <%= submit_tag %>
+<% end %>
