@@ -51,7 +51,7 @@ ol li {margin: 0 0 .75em;padding:0;}
 #sidebar ul li a {line-height: 1.2em;display:block;font-size:1.2em;padding: 1em 20px;width:160px;}
 #sidebar ul li a:link,
 #sidebar ul li a:visited {color:#fff; text-decoration:none;background: #5294cc url(/images/ask/side_nav.png) repeat-y -200px bottom;}
-#sidebar ul li a:hover {background: #5294cc url(/images/side_nav.png) repeat-y -400px bottom ;}
+#sidebar ul li a:hover {background: #5294cc url(/images/ask/side_nav.png) repeat-y -400px bottom ;}
 #sidebar ul li.selected a {color:#fff; text-decoration:none;background: #5294cc url(/images/ask/side_nav.png) repeat-y 0 0;}
 
 #sidebar ul li a em {font-size:.8em; font-style:normal;}
