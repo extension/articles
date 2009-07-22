@@ -1,0 +1,12 @@
+<% @page_title = "Add Category" %>
+
+<p><%= link_to 'Admin Home', :action => 'index' %> | <%= link_to 'Back to the Category List', :action => 'categories' %></p>
+
+<h2><%= @page_title %></h2>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<% form_tag :action => 'add_category' do %>
+  <%= render(:partial => 'category_form') %>
+  <%= submit_tag "Save" %>
+<% end %>
