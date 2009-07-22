@@ -1,7 +1,7 @@
 <div id="assignment">
     <% if @submitted_question.assignee %>
         <p>Assigned to 
-                <%= link_to (@submitted_question.assignee..fullname, 
+                <%= link_to (@submitted_question.assignee.fullname, 
             {:controller => 'account', :action => 'aaeprofile', :id => @submitted_question.assignee.login}, :title => "view user profile") %>
             
             <!-- Show the assigned date of the submitted question if it exists and is valid -->
@@ -9,7 +9,7 @@
         </p>
         
         <% if (work_time_remaining and work_time_remaining > 0) and (@currentuser.id != @submitted_question.assignee.id) %>
-        <p class="working-on-it"><%= @submitted_question.assignee..fullname %> is working on this question right now, so it's probably not a good idea  to reassign it.</p>
+        <p class="working-on-it"><%= @submitted_question.assignee.fullname %> is working on this question right now, so it's probably not a good idea  to reassign it.</p>
         <% end %>
         
         <div id="assign_container">

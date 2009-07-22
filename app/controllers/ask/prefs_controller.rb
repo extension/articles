@@ -260,7 +260,7 @@ class Ask::PrefsController < ApplicationController
     uncat_role = Role.find_by_name(Role::UNCATEGORIZED_QUESTION_WRANGLER)
     user_root_cats = @currentuser.categories.select{|c| !c.parent_id}
     signature_pref = @currentuser.user_preferences.find_by_name('signature')
-    signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser..fullname}"
+    signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.fullname}"
     @location_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
     @county_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
 

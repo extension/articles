@@ -10,7 +10,7 @@
       </tr>
   <% @widget_assignees.each do |user| %>
     <tr>
-      <td><%= link_to (user..fullname, {:controller => :account, :action => :aaeprofile, :id => user.login}, {:class => "profile"}) %></td>
+      <td><%= link_to (user.fullname, {:controller => :account, :action => :aaeprofile, :id => user.login}, {:class => "profile"}) %></td>
     </tr>
   <% end %>
   </table>

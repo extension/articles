@@ -6,7 +6,7 @@
 <ul>
 <% users.each do |user| %>
     <li>
-    <%= link_to_remote (user..fullname, {:url => {:action => 'show_profile', :id => user.id}}, 
+    <%= link_to_remote (user.fullname, {:url => {:action => 'show_profile', :id => user.id}}, 
     {:id => "user_trigger_#{user.id}", :class => 'userlink', :class => 'profile'}) %>
     
     <%= user.expertise_locations.length > 0 ? '(' + user.expertise_locations.map{|l| l.abbreviation}.join(', ') + ')' : '' %>

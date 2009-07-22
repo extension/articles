@@ -290,7 +290,7 @@ class Ask::ExpertController < ApplicationController
     @question = SearchQuestion.find_by_id(params[:question]) if params[:question]
     @sampletext = params[:sample] if params[:sample]
     signature_pref = @currentuser.user_preferences.find_by_name('signature')
-    signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser..fullname}"
+    signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.fullname}"
     
   
     if request.post?
