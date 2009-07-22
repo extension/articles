@@ -78,7 +78,7 @@ module DataHelper
   end
   
   def state_select(name, params)
-    select(name, :state, Location.states.all.collect {|l| [l.name, l.abbreviation]}, {:selected => params[:state]},{ :onchange => 'update_state(this.value)'})
+    select(name, :state, Location.displaylist.collect{|l| [l.name, l.abbreviation]}.unshift(['All', '']), {:selected => params[:state]},{ :onchange => 'update_state(this.value)'})
   end
   
   def first_image(content)

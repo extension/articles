@@ -28,10 +28,7 @@ class Location < ActiveRecord::Base
   
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
-  
-  named_scope :states, {:conditions => {:entrytype => STATE}}
-  
-  
+    
   # TODO: review heureka location reporting methods.  Justcode Issue #555  
   
 end
