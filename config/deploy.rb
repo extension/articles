@@ -5,7 +5,7 @@ require 'yaml'
 # <i>Should</i> only have to edit these two vars for standard eXtension deployments
 
 set :application, "darmok"
-set :app_host, 'www.demo'
+set :app_host, 'www'
 
 #------------------------------
 
