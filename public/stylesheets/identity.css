@@ -633,35 +633,18 @@ ul.tagCloud {float:left;padding:0;margin:0 0 2.5em!important;width:100%;}
 .simplebutton {padding: .15em .35em;overflow: visible;}
 #advancedtagwrapper {z-index:5;position:relative;width:300px;}
 
-#contact_col_one {
-    width:48%;
-    margin-right:8%;
-    float:left;
-}
-#contact_col_two {
-    width:40%;
-    float:left;
-}
+
 
 ul.simplelist {line-height:2em;}
 
-/* Styles from Get Satisfaction */
-div#gsfn_search_widget img { border: none; }
-div#gsfn_search_widget { font-size: 12px; width: 100%; border: 6px solid #DDD; padding: 10px;}
-div#gsfn_search_widget a.widget_title { color: #000; display: block; margin-bottom: 10px; font-weight: bold; }
-div#gsfn_search_widget .powered_by { margin-top: 8px; padding-top: 8px; border-top: 1px solid #DDD; } 
-div#gsfn_search_widget .powered_by a { color: #333; font-size: 90%; }      
-div#gsfn_search_widget form { margin-bottom: 8px; }
-div#gsfn_search_widget form label { margin-bottom: 5px; display: block; }
-div#gsfn_search_widget form #gsfn_search_query { width: 60%; }
-div#gsfn_search_widget div.gsfn_content { }
-div#gsfn_search_widget div.gsfn_content li { text-align:left; margin-bottom:6px; font-size: 12px;}
-div#gsfn_search_widget div.gsfn_content a.gsfn_link { line-height: 1; }
-div#gsfn_search_widget div.gsfn_content span.time { font-size: 90%; padding-left: 3px; }
-div#gsfn_search_widget div.gsfn_content p.gsfn_summary { margin-top: 2px }
+
 
 .publiccol {width:40px; text-align:right;}
 .introtext {width:45em; font-size:1.6em !important;}
 .pubprofile {margin-bottom:3em;}
 
 #footnotes_debug {background:#fff;}
+
+#contact_us ul li {list-style:disc; margin-bottom:1em;}
+#contact_col_one {width:48%;margin-right:8%;float:left;}
+#contact_col_two {width:25%;float:left;}

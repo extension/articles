@@ -252,3 +252,7 @@ select {display:block;}
 #errorExplanation p {margin:0 0 .5em;}
 #errorExplanation ul {padding:0 2em 2em;}
 #errorExplanation li {padding:0 .5em; list-style:disc; margin:0;}
+
+div#gsfn_search_widget {width:450px;}
+#contact_us ul {padding:.75em 1em 1em 2em;}
+#contact_us ul li {list-style:disc; margin-bottom:1em;}

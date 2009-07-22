@@ -155,7 +155,20 @@ use this markup:
 .button2 a:hover {text-decoration: underline;}
 
 
-
+/* Styles from Get Satisfaction */
+div#gsfn_search_widget img { border:none;}
+div#gsfn_search_widget { font-size: 12px; width: 100%; border: 6px solid #DDD; padding: 10px;}
+div#gsfn_search_widget a.widget_title { color: #000; display: block; margin-bottom: 10px; font-weight: bold; }
+div#gsfn_search_widget .powered_by { margin-top: 8px; padding-top: 8px; border-top: 1px solid #DDD; } 
+div#gsfn_search_widget .powered_by a { color: #333; font-size: 90%; }      
+div#gsfn_search_widget form { margin-bottom: 8px; }
+div#gsfn_search_widget form label { margin-bottom: 5px; display: block; }
+div#gsfn_search_widget form #gsfn_search_query { width: 60%; }
+div#gsfn_search_widget div.gsfn_content { }
+div#gsfn_search_widget div.gsfn_content li { text-align:left; margin-bottom:6px; font-size: 12px;}
+div#gsfn_search_widget div.gsfn_content a.gsfn_link { line-height: 1; }
+div#gsfn_search_widget div.gsfn_content span.time { font-size: 90%; padding-left: 3px; }
+div#gsfn_search_widget div.gsfn_content p.gsfn_summary { margin-top: 2px }
 
 
 
