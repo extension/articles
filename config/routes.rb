@@ -32,7 +32,7 @@ ActionController::Routing::Routes.draw do |map|
   map.login 'people/login', :controller => 'people/account', :action => 'login'
   map.connect 'people/invite/:invite', :controller => 'people/signup', :action => 'new'
   #define some explicit routes until the current help pages are moved into a wiki
-  map.connect 'people/help/contactform', :controller => 'help', :action => 'contactform' #this one will probably need to stay
+  map.connect 'people/help', :controller => 'people/help', :action => 'help'
 
   #set up the routes to handle help request pages
   map.connect 'people/help/:id', :controller => 'help', :action => 'index', :requirements =>{ :id =>/[\w\d\-.:,;()@ ]*((\/[\w\d\-.:,;()@ ]*))*?/}
@@ -82,6 +82,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'ask/who', :controller => 'ask/widgets', :action => 'who'
   map.connect 'ask/about', :controller => 'ask/widgets', :action => 'about'
   map.connect 'ask/documentation', :controller => 'ask/widgets', :action => 'documentation'
+  map.connect 'ask/help', :controller => 'ask/widgets', :action => 'help'
   ################################################################
   
   map.connect 'sitemap_index', :controller => 'feeds', :action => 'sitemap_index'

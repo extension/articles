@@ -37,6 +37,10 @@ class Ask::WidgetsController < ApplicationController
   def about 
   end
   
+  def help
+    render :template => 'help/contactform.html.erb'
+  end
+  
   def view
     if !(params[:id] and @widget = Widget.find(params[:id]))
       flash[:failure] = "You must specify a valid widget"

@@ -10,8 +10,8 @@
 class People::HelpController < ApplicationController
   layout 'people'
   
-  def index
-    redirect_to(:action => :contactform)
+  def help
+    render :template => 'help/contactform.html.erb'
   end
 
   def contactform

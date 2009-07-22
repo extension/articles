@@ -76,6 +76,10 @@ class Ask::ExpertController < ApplicationController
     end
   end
   
+  def help
+    render :template => 'help/contactform.html.erb'
+  end
+  
   def profile_tooltip
     @user = User.find_by_login(params[:login])
     
