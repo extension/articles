@@ -1,5 +1,10 @@
+# === COPYRIGHT:
+#  Copyright (c) 2005-2009 North Carolina State University
+#  Developed with funding for the National eXtension Initiative.
+# === LICENSE:
+#  BSD(-compatible)
+#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'csv'
-require 'ar-extensions'
 
 class ZipCode < ActiveRecord::Base
   def self.find_location_and_institution(zip_code)
@@ -41,18 +46,18 @@ class ZipCode < ActiveRecord::Base
                       :time_zone, :elevation, :county_fips, :day_light_savings ]
 
 
-    def import_zipcodes(file, purge = false)
-      ZipCode.delete_all if purge
-    
-      # For performance reasons we're going to try and add in chunking here
-      chunked_import(file, :zipcode) do |row_chunk|
-        values = CSV::Reader.parse(row_chunk).collect {|row| zipcode_props_from_csv(row)}.compact
-      
-      
-        # This is MySQL specific bulk-insert using ar-extensions...
-        ZipCode.import @@csv_cols, values #, :ignore => true
-      end
-    end
+    # def import_zipcodes(file, purge = false)
+    #   ZipCode.delete_all if purge
+    # 
+    #   # For performance reasons we're going to try and add in chunking here
+    #   chunked_import(file, :zipcode) do |row_chunk|
+    #     values = CSV::Reader.parse(row_chunk).collect {|row| zipcode_props_from_csv(row)}.compact
+    #   
+    #   
+    #     # This is MySQL specific bulk-insert using ar-extensions...
+    #     ZipCode.import @@csv_cols, values #, :ignore => true
+    #   end
+    # end
    
     private
   
