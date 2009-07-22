@@ -58,7 +58,7 @@
         
 	    <div id="answered_FAQ">
 	        <p>
-        	    <strong>Resolved by:</strong> <%= link_to @submitted_question.resolved_by..fullname, {:controller => 'account', :action => 'profile', :id => @submitted_question.resolved_by.login}, :class => "profile" %>
+        	    <strong>Resolved by:</strong> <%= link_to @submitted_question.resolved_by.fullname, {:controller => 'account', :action => 'profile', :id => @submitted_question.resolved_by.login}, :class => "profile" %>
         	</p>
 	        <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
             
