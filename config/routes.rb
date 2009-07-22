@@ -65,6 +65,9 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect 'main/:action', :controller => 'main'
   
+  ################################################################
+  ### AaE routes ###
+  
   # Routes for widgets that are named and tracked
   map.connect 'widget/tracking/:id/:location/:county', :controller => 'ask/widgets', :action => 'widget'
   map.connect 'widget/tracking/:id/:location', :controller => 'ask/widgets', :action => 'widget'
@@ -74,6 +77,12 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widget/:location/:county', :controller => 'ask/widgets', :action => 'widget'
   map.connect 'widget/:location', :controller => 'ask/widgets', :action => 'widget'
   map.connect 'widget', :controller => 'ask/widgets', :action => 'widget'  
+  
+  map.connect 'ask', :controller => 'ask/widgets', :action => 'index'
+  map.connect 'ask/who', :controller => 'ask/widgets', :action => 'who'
+  map.connect 'ask/about', :controller => 'ask/widgets', :action => 'about'
+  map.connect 'ask/documentation', :controller => 'ask/widgets', :action => 'documentation'
+  ################################################################
   
   map.connect 'sitemap_index', :controller => 'feeds', :action => 'sitemap_index'
   map.connect 'sitemap_communities', :controller => 'feeds', :action => 'sitemap_communities'
