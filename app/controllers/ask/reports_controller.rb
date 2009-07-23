@@ -21,7 +21,7 @@ class Ask::ReportsController < ApplicationController
     end
 
      def state_univ_activity
-      @typelist = [];  @new={}; @reslvd={}; @answ={}; @rej={}; @noexp={}
+      @typelist = [];  @new={}; @reslvd={}; @answ={}; @rej={}; @noexp={} ; openquestions={}
         @type = params[:type]; @oldest_date = SubmittedQuestion.find_oldest_date
        #   (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
         if (@type=="State")
@@ -32,7 +32,9 @@ class Ask::ReportsController < ApplicationController
          @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; typel= @type.downcase
          @rept = Aaereport.new(:name => "ActivityGroup")
          
+         if @type=="State"
           openquestions = (@rept.NewQuestion({:g => typel},[]))[0] 
+         end
           resolved = (@rept.ResolvedQuestion({:g => typel},[]))[0]
           answered = (@rept.ResolvedQuestion({:g => typel, :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]
           rejected = (@rept.ResolvedQuestion({:g => typel, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]

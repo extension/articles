@@ -40,8 +40,8 @@ class Aaereport < ActiveRecord::Base
         case p[:g]
         when "state"
           return  [:location]
-        when "institution"
-            return  "join users on submitted_by=users.id"
+     #   when "institution"
+     #        return  "join users on submitted_by=users.id"  ...not used anymore
         end
       end
    end
@@ -69,7 +69,7 @@ class Aaereport < ActiveRecord::Base
         when "state"
           return "submitted_questions.location_id"
         when "institution"
-          return "institution_id"
+            return "institution_id"
        end
       end
     end

@@ -203,9 +203,9 @@ end
           cdstring= cdstring +  "resolved_by > 0 and category_id=#{cat.id}"
       when "Resolver"
             if aux
-              cdstring = " resolved_by = #{aux.to_i} and category_id=#{cat.id} "
+              cdstring = " resolved_by = #{aux.to_i} and category_id=#{cat.id} and external_app_id IS NOT NULL "
             else
-              cdstring= cdstring +  " resolved_by > 0 and category_id=#{cat.id} "
+              cdstring= cdstring +  " resolved_by > 0 and category_id=#{cat.id} and external_app_id IS NOT NULL "
             end
      when "Answered as an Expert"
           cdstring = " sq.resolved_by = #{cat.id}"
@@ -634,12 +634,12 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
       qarray=self.count(:all, 
           :joins => " join categories_submitted_questions as csq on csq.submitted_question_id=submitted_questions.id " +
                "join categories on csq.category_id=categories.id " , 
-          :conditions => [" (status='resolved' || status='rejected') and external_app_id IS NOT NULL and category_id=? ", catid],
+          :conditions => [" (resolved_by > 0) and external_app_id IS NOT NULL and category_id=? ", catid],
           :group => " resolved_by")
      total_resolved = self.count(:all, 
            :joins => " join categories_submitted_questions as csq on csq.submitted_question_id=submitted_questions.id " +
                  "join categories on csq.category_id=categories.id " , 
-            :conditions => [" (status='resolved' || status='rejected') and external_app_id IS NOT NULL and category_id=? ", catid])
+            :conditions => [" (resolved_by > 0) and external_app_id IS NOT NULL and category_id=? ", catid])
       qarray = qarray.find_all { |k,v| k != "a"}  #turn into an array rather than a hash
       i = 0; n = qarray.size
       while i < n

@@ -18,7 +18,7 @@
         <th scope="col"><%= link_to "Resolved",{ :action => 'common_sort_columns', :field=>'reslvd' ,:type => @type, :report => 'activity', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>
          <th scope="col"><%= link_to "Answered",{ :action => 'common_sort_columns', :field=>'answ' ,:type => @type, :report => 'activity', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>
           <th scope="col"><%= link_to "Rejected",{ :action => 'common_sort_columns', :field=>'rej' ,:type => @type, :report => 'activity', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>
-           <th scope="col"><%= link_to "Responded with 'No Expertise'",{ :action => 'common_sort_columns', :field=>'noexp' ,:type => @type, :report => 'activity', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>
+           <th scope="col"><%= link_to "Responded to with 'No Expertise'",{ :action => 'common_sort_columns', :field=>'noexp' ,:type => @type, :report => 'activity', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>
      </tr>
 
 <% if @typelist%>
@@ -38,7 +38,11 @@
 	 <!--	  <%= link_to x[0], :action => 'show_all_by_state', :State => x[0] %> -->
 	          <%= h(x[0])%>
 		 <% else%>
-		      <%= h(x[0]) %>	  
+		     <% if (x[0] == "" || ((x[0]) && (x[0].index(".com") || x[0].index("She Asked"))) ) %>
+		      <% next%>
+	         <% else%>
+		      <%= h(x[0]) %>
+		     <% end%>	  
 		 <% end%>
      </td>
     

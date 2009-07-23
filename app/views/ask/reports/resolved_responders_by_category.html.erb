@@ -13,7 +13,7 @@
     <% even = false %>
     <% @typelist.each do |x| %>
         <h2><%= x.name %></h2>
-        <p><strong><%= @noresponders[x.name] %></strong> AaE questions answered <em>(resolved or rejected)</em></p>
+        <p><strong><%= @noresponders[x.name] %></strong> AaE questions answered <em>(resolved, rejected, or answered with 'no expertise')</em></p>
         
         <table cellspace="0" class="stats" summary="Users Count">
 	     <tr>
