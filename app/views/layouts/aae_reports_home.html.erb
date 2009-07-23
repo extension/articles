@@ -82,15 +82,11 @@
             </div>
 
             <div id="footer">
-                <p><%= link_to("Contact Us", :controller => 'ask/expert', :action => 'help') %>&nbsp;&nbsp; <%= link_to("Terms of Use","http://www.extension.org/main/termsofuse")%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; version <%= "#{AppVersion.version}" %></p>
-                <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/">Creative Commons Attribution-NonCommercial-ShareAlike 2.5 license</a></p>
-                <p id="copyright"><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/2.5/"><img alt="Creative Commons License" style="border-width: 0" src="/images/common/somerights20.png"/></a></p>
-                <!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                	<Work rdf:about="">
-                		<license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/2.5/" />
-                	<dc:type rdf:resource="http://purl.org/dc/dcmitype/InteractiveResource" />
-                	</Work>
-                	<License rdf:about="http://creativecommons.org/licenses/by-nc-sa/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/><permits rdf:resource="http://web.resource.org/cc/DerivativeWorks"/><requires rdf:resource="http://web.resource.org/cc/ShareAlike"/></License></rdf:RDF> -->
+                <ul>
+                    <li><%= link_to("Contact Us", :controller => 'ask/expert', :action => 'help') %></li>
+                    <li><%= link_to("Terms of Use","http://www.extension.org/main/termsofuse")%></li>
+                    <li>version <%= "#{AppVersion.version}" %></li>
+                </ul>
             </div>
         </div>
         <!-- end #pageContent -->

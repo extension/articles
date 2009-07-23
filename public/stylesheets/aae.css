@@ -22,9 +22,6 @@ a:visited	{ color: #006296; }
 a:hover		{ color: #0000ff;}
 
 
-a.actionlink {color: #0000ff;}
-
-
 /* Form elements
 -----------------------------------------------------------------------------*/
 
@@ -154,27 +151,10 @@ input.submit[class] {  /* IE ignores [class] */
 
 /* Footer
 -----------------------------------------------------------------------------*/
-#footer {position: relative;float:left;padding: 1em 0;margin-bottom: 2em;text-align: right;width:100%; background: #004830 url(/images/aae/footer_bg_green.jpg) center top repeat-y;}
-#footer a:link	{color: #ccc;}
-#footer a:hover	{color: #eee;}
+#footer {position: relative;float:left;padding: 1em 0;margin-bottom: 2em;text-align: right;width:100%; background: #004830 url(/images/aae/footer_bg_green.jpg) center top repeat-y;color:#fff;}
 #footer a {color:#fff;}
-
-#footer p {
-	position: relative;
-	margin: 0 0 0 100px;
-	padding: 0 2em .15em;
-	color: #fff;
-}
-.feedback {
-	padding: 0 0 2px 0;
-}
-#footer p#copyright {
-	position: absolute;
-	margin: 0;
-	left: 0;
-	top: 15px;
-}
-
+#footer a:link	{color: #ccc;}
+#footer ul li {display:inline; padding-right:.65em;}
 
 
 /* Big tabs to separate apps
@@ -225,12 +205,6 @@ input.submit[class] {  /* IE ignores [class] */
 #search form {padding: 0;margin: 0;}
 
 div.pagination {font-size:1.3em; line-height: 140%;}
-
-.tagCloud {margin: .2em 0 1em !important;padding:0 !important;font-size: 1.9em;}
-.tagCloud li {display:inline;margin:0 !important;padding:0 !important;/*border:1px solid lime;*/line-height:0 !important;}
-.tagCloud li a {line-height: 1.5em;text-decoration:none;/*border:1px solid red;*/padding:0;}
-.tagCloud li a:hover {text-decoration:underline;}
-
 
 
 /* Error handling and feedback
