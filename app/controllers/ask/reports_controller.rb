@@ -396,21 +396,21 @@ class Ask::ReportsController < ApplicationController
         end
 
         def state_answerers
-       #   @filteredparams = FilterParams.new(params)  ...would need to make this work for :category...
-      #     @filteredoptions = @filteredparams.findoptions 
+         @filteredparams = FilterParams.new(params) 
+         @filteredoptions = @filteredparams.findoptions 
           if params[:id]
             @catname = Category.find_by_id(params[:id]).name
             catid = params[:id]
           else
-            if params[:Category]
-              @catname=params[:Category]
+            if params[:category]
+              @catname=params[:category]
               catid = Category.find_by_name(@catname).id
             end
           end 
           if (@catname  && @catname != "")
             @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
-            @loccnt = ExpertiseLocation.count_answerers_for_states_in_category(@catname)
-           # @loccnt = ExpertiseLocation.expert_loc_userfilter_count(@filteredparams)
+           # @loccnt = ExpertiseLocation.count_answerers_for_states_in_category(@catname)
+            @loccnt = ExpertiseLocation.expert_loc_userfilter_count(@filteredoptions)
             @userlist = consolidate(User.get_answerers_in_category(catid))
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             @lsize = @locs.size

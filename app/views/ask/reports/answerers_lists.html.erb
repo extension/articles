@@ -6,7 +6,7 @@
 <p id="activity_report">
     <%= link_to "All Reports",  :controller => 'reports' %> &gt; 
     <%= link_to "Ask an Expert Volunteers", :action => 'answerers' %> &gt; 
-    <%= link_to @catname, :action => 'state_answerers', :Category => @catname%> &gt; 
+    <%= link_to @catname, :action => 'state_answerers', :category => @catname%> &gt; 
     <%= link_to @statename,  :action => 'county_answerers', :State => @statename, :Category => @catname , :dir => @dir%> &gt; All counties</p>
 <%else%>
 <p id="activity_report">

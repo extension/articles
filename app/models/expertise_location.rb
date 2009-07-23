@@ -35,8 +35,8 @@ class ExpertiseLocation < ActiveRecord::Base
         # conditions << build_date_condition(options)
       #  conditions << build_entrytype_condition(options)
          if options[:category]
-            joins << " join expertise_locations_users as lu on expertise_locations.id=lu.location_id join expertise_areas as ea on lu.user_id=ea.user_id"
-            conditions << "category_id= #{params[:category].id} "
+            joins << " join expertise_locations_users as lu on expertise_locations.id=lu.location_id join expertise_areas as ea on lu.user_id=ea.user_id " 
+            conditions << "category_id= #{Category.find_by_name(options[:category]).id} "
          end
 
          return {:joins => joins.compact, :conditions => conditions.compact.join(' AND ')}

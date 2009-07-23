@@ -16,7 +16,7 @@
 	 <% i = 0 %>
 	  <% while i < @csize do %>
 	    <tr>
-	       	<td><%= link_to @cats[i].name, :action => "state_answerers", :id => @cats[i].id %></td>
+	       	<td><%= link_to @cats[i].name, :action => "state_answerers", :id => @cats[i].id , :category => @cats[i].name%></td>
 		    <td class="count"><%= @catcnt[@cats[i].name]%></td>
 		 </tr>
 		<% i = i + 1%>
