@@ -160,21 +160,9 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
         <li class="last"><%= link_to_unless_current "terms of use", :controller => "main", :action => "termsofuse" %></li>
     </ul>
 </div>
+<%= render(:partial => '/partial/googleanalytics') %>
 
-   <script type="text/javascript">
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-   </script>
-   <script type="text/javascript">
-      var pageTracker = _gat._getTracker("UA-155321-2");
-      pageTracker._initData();
-      <% if !flash[:googleanalytics].nil? %>
-      pageTracker._trackPageview("<%= flash[:googleanalytics] %>");
-      <% else  %>
-      pageTracker._trackPageview();
-      <% end %>
-   </script>
-   <img src="http://app.bronto.com/public/?q=stream_view&fn=Key&id=awozosrxassdqgvqcuoijaslcwrabnn" width="0" height="0" border="0" alt=""/>
+<img src="http://app.bronto.com/public/?q=stream_view&fn=Key&id=awozosrxassdqgvqcuoijaslcwrabnn" width="0" height="0" border="0" alt=""/>
    
    <% if params[:print] %>
         <p id="pageurl">View this page: <script type="text/javascript">document.write(location.href.replace(/\/print(\/)?$/, ''));</script></p>
