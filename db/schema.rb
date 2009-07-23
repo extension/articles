@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090716164046) do
+ActiveRecord::Schema.define(:version => 20090723160910) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -307,11 +307,11 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "expertise_locations", ["name"], :name => "index_expertise_locations_on_name", :unique => true
 
   create_table "expertise_locations_users", :id => false, :force => true do |t|
-    t.integer "location_id", :default => 0, :null => false
-    t.integer "user_id",     :default => 0, :null => false
+    t.integer "expertise_location_id", :default => 0, :null => false
+    t.integer "user_id",               :default => 0, :null => false
   end
 
-  add_index "expertise_locations_users", ["user_id", "location_id"], :name => "fk_locations_users", :unique => true
+  add_index "expertise_locations_users", ["user_id", "expertise_location_id"], :name => "fk_locations_users", :unique => true
 
   create_table "faqs", :force => true do |t|
     t.text     "question"

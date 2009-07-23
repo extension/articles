@@ -1,0 +1,49 @@
+<% @page_title = "Preferences for Ask an Expert Expertise" %>
+
+<a name="top"></a>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<ul id="nav">
+    <li><%= link_to_unless_current "General Preferences", :action => 'ask_an_expert_preferences' %></li>
+    <li><%= link_to_unless_current "Areas of Expertise", :action => 'expertise' %></li>
+    <li><%= link_to_unless_current "Geographic Regions", :action => 'location' %></li>
+    <li><%= link_to_unless_current "Widget Preferences", :action => 'widget_preferences' %></li>
+</ul>
+<br class="clear"/>
+
+<h2>Areas of Expertise</h2>
+    
+    <div id="areas_of_expertise">
+        <p>Please indicate your areas of expertise.</p>
+    <ul id="expertiselist">
+    <% @categories.each do |cat| %>
+        <li id="<%= cat.id %>"><%= check_box_tag "areas_of_expertise[]", cat.id, @current_user_categories.include?(cat), { :id => "areas_of_expertise#{cat.id}"} %> 
+        <%= link_to cat.name, {:controller => 'ask/expert', :action => 'category', :id => cat.id } %>
+            
+            <% if cat.children.length > 0 %>
+                <em> - <%= cat.children.length %> subcategories</em>
+            <% end %>
+        
+        <span class="syndication"><%= link_to 'feed', :controller => 'ask/feeds', :action => 'expertise', :id => cat.id %></span>
+        <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
+        
+        <%= observe_field("areas_of_expertise#{cat.id}",
+                          :url       => { :action => :expertise },
+                          :with      => "'category=#{cat.id}'",
+                          :loading => "Element.show('loading_#{cat.id}')",
+                          :complete    => "Element.hide('loading_#{cat.id}')") %>
+        
+        <ul class="aoe_subcat" id="subcategory_div<%= cat.id %>" >
+          <% if @current_user_categories.include?(cat) and cat.children.length > 0 %>
+             <%= render(:partial => "subcategories", :locals => {:top_level_category => cat}) %>
+          <% end %>
+        </ul>
+        
+        </li>
+    <% end %>
+</ul>
+</div>
+
+
+<br class="clear"/>

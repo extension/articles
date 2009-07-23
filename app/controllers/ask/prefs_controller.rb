@@ -11,17 +11,16 @@ class Ask::PrefsController < ApplicationController
   
   before_filter :login_required
   skip_before_filter :get_tag
+  skip_before_filter :unescape_params
 
-  # the user can specify their areas of expertise by category/subcategory and 
-  # select if they want escalations and incoming questions sent to them based on their 
-  # areas of expertise. they can also select if they want to receive uncategorized questions.
+  # they can specify their areas of expertise by category/subcategory 
   def expertise
     @categories = Category.root_categories
     @current_user_categories = @currentuser.get_expertise
     
     if request.post?      
       if params[:category]
-        selected_category = Category.find_single_category(params[:category].strip)
+        selected_category = Category.find_by_id(params[:category].strip)
         if selected_category
           if @currentuser.categories.include?(selected_category)
             @currentuser.categories.delete(selected_category)
@@ -33,6 +32,10 @@ class Ask::PrefsController < ApplicationController
             end
           else
             @currentuser.categories << selected_category
+            
+            # add people tags
+            @currentuser.tag_with(selected_category.name, @currentuser.id)
+            
             expertise_event = ExpertiseEvent.new(:category => selected_category, :event_type => ExpertiseEvent::EVENT_ADDED, :user => @currentuser)
             @currentuser.expertise_events << expertise_event
           end
@@ -42,7 +45,8 @@ class Ask::PrefsController < ApplicationController
       
       render :update do |page|
         page.visual_effect :highlight, selected_category.id
-        page.replace "subcats_of_#{selected_category.id}", :partial => 'subcategories', :locals => {:top_level_category => selected_category} if !selected_category.is_top_level?
+        #page.replace "subcats_of_#{selected_category.parent.id}", :partial => 'subcategories', :locals => {:top_level_category => selected_category} if !selected_category.is_top_level?
+        page.replace_html "subcategory_div#{selected_category.parent.id}", :partial => 'subcategories', :locals => {:top_level_category => selected_category.parent} if !selected_category.is_top_level?     
         if selected_category.is_top_level?
           if deleted_top_level
             page.replace_html "subcategory_div#{selected_category.id}", '' 

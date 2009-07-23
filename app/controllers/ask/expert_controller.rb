@@ -200,7 +200,7 @@ class Ask::ExpertController < ApplicationController
       
       if @category
         @category_name = @category.name
-        @users = @category.users.find(:all, :select => "users.*", :order => "users.first_name", :include => :expertise_locations)
+        @users = @category.users
         @combined_users = get_answering_users(@users) if @users.length > 0
       else
         flash[:failure] = "Invalid Category"

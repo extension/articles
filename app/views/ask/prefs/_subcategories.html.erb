@@ -1,0 +1,17 @@
+<div id="subcats_of_<%= top_level_category.id %>">
+
+<% top_level_category.children.each do |sub_cat| %>
+    <li id="<%= sub_cat.id %>">
+    <%= check_box_tag "areas_of_expertise[]", sub_cat.id, @currentuser.get_expertise.include?(sub_cat), { :id => "areas_of_expertise#{sub_cat.id}"} %> 
+    <%= sub_cat.name %>
+    </li>
+    <div id="loading_<%= sub_cat.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </div>
+
+    <%= observe_field("areas_of_expertise#{sub_cat.id}",
+                      :url       => { :action => :expertise },
+                      :with      => "'category=#{sub_cat.id}'",
+                      :loading => "Element.show('loading_#{sub_cat.id}')",
+                      :complete    => "Element.hide('loading_#{sub_cat.id}')") %>
+                      
+<% end %>
+</div>

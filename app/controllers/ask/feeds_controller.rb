@@ -12,13 +12,13 @@ class Ask::FeedsController < ApplicationController
   DATE_EXPRESSION = "date_sub(curdate(), interval 7 day)"
   
   def expertise
-    @category = Category.find_single_category(params[:id])
+    @category = Category.find_by_id(params[:id])
     if !@category
       @error_message = "Invalid category identifier"
       render_error
       return
     end
-    @alternate_link = url_for(:controller => 'expert', :action => 'category', :id => @category.id, :only_path => false)
+    @alternate_link = url_for(:controller => 'ask/expert', :action => 'category', :id => @category.id, :only_path => false)
     @users = @category.get_experts(:select => "users.*, expertise_areas.created_at as added_at", 
                                    :order => "expertise_areas.created_at desc", 
                                    :conditions => "expertise_areas.created_at > #{DATE_EXPRESSION}" )
@@ -27,7 +27,7 @@ class Ask::FeedsController < ApplicationController
     headers["Content-Type"] = "application/xml"
   
     respond_to do |format|
-      format.xml{render :template => 'feeds/expertise', :layout => false}
+      format.xml{render :template => 'ask/feeds/expertise', :layout => false}
     end
   end
   

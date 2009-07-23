@@ -1,0 +1,27 @@
+<h1>Area of Expertise: <%= @category_name %></h1>
+<table id="aoe_table">
+    <tr>
+        <th>User</th>
+        <th>Geographic region</th>
+        <th>Signed up to be automatically assigned <strong><%= @category_name %></strong> questions?</th>
+    </tr>
+<% @users.each do |user| %>
+    <tr>
+        <td><%= link_to (user.fullname, {:controller => 'account', :action => 'aaeprofile', :id => user.login}, {:class => "profile"}) %></td>
+        <td>
+        <% if user.expertise_locations.length > 0 %>    
+          <% user.expertise_locations.each do |l| %>
+            <%= link_to (l.abbreviation, {:controller => :expert, :action => :location, :id => l.fipsid}) %> 
+          <% end %>
+        <% end %>
+        </td>
+        <td>
+        <% if @combined_users and !@combined_users.include?(user) %>
+          no
+        <% else %>
+        yes - signed up to receive questions
+        <% end %>
+        </td>
+    </tr>
+<% end %>
+</table>
