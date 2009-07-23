@@ -1,5 +1,5 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2006 North Carolina State University
+#  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
@@ -53,10 +53,10 @@ class FaqController < ApplicationController
       @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
     end
     
-    @community_tags = @faq.tags.community_content_tags
+    @community_tags = (Tag.community_content_tags & @faq.tags)
     adtag = @community_tags[0] if @community_tags and @community_tags.length > 0
     @sponsors = Advertisement.prioritized_for_tag(adtag) if adtag
-    flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.category }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
+    flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
   end
   
   #feed for questions asked via the ask an expert tool to be consumed by the faq application

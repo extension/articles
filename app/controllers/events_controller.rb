@@ -25,12 +25,12 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     return unless @event
     @published_content = true
-    @community_tags = @event.tags.community_content_tags
+    @community_tags = (Tag.community_content_tags & @event.tags)
     @youth = true if @topic and @topic.name == 'Youth'
     set_title("#{@event.title.titleize} - eXtension Event",  @event.title.titleize)
     set_titletag("#{@event.title.titleize} - eXtension Event")
     
-    flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.category }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
+    flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
   end
   
   private

@@ -82,14 +82,13 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   end
 
   create_table "advertisements", :force => true do |t|
-    t.integer "tag_id"
     t.integer "image_id"
     t.integer "position"
   end
 
   create_table "article_buckets", :force => true do |t|
-    t.string   "article_id",        :default => "", :null => false
-    t.string   "content_bucket_id", :default => "", :null => false
+    t.string   "article_id",        :null => false
+    t.string   "content_bucket_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -161,12 +160,12 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "categories_submitted_questions", ["submitted_question_id"], :name => "fk_csq_subquestion"
 
   create_table "chat_accounts", :force => true do |t|
-    t.integer  "user_id",    :default => 0,  :null => false
-    t.string   "username",   :default => "", :null => false
-    t.string   "password",   :default => "", :null => false
-    t.string   "name",       :default => "", :null => false
-    t.string   "email",      :default => "", :null => false
-    t.datetime "created_at",                 :null => false
+    t.integer  "user_id",    :default => 0, :null => false
+    t.string   "username",                  :null => false
+    t.string   "password",                  :null => false
+    t.string   "name",                      :null => false
+    t.string   "email",                     :null => false
+    t.datetime "created_at",                :null => false
     t.datetime "updated_at"
   end
 
@@ -174,7 +173,7 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
 
   create_table "communities", :force => true do |t|
     t.integer  "entrytype",               :default => 0,     :null => false
-    t.string   "name",                    :default => "",    :null => false
+    t.string   "name",                                       :null => false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -222,8 +221,8 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "communitylistconnections", ["list_id", "community_id"], :name => "list_community", :unique => true
 
   create_table "content_buckets", :force => true do |t|
-    t.string   "name",       :default => "", :null => false
-    t.datetime "created_at",                 :null => false
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
   end
 
   add_index "content_buckets", ["name"], :name => "index_content_buckets_on_name", :unique => true
@@ -272,12 +271,12 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "expertise_areas", ["user_id"], :name => "index_expertise_areas_on_user_id"
 
   create_table "expertise_counties", :force => true do |t|
-    t.integer "fipsid",                                    :null => false
-    t.integer "location_id",                               :null => false
-    t.integer "state_fipsid",                              :null => false
-    t.string  "countycode",   :limit => 3, :default => "", :null => false
-    t.string  "name",                      :default => "", :null => false
-    t.string  "censusclass",  :limit => 2, :default => "", :null => false
+    t.integer "fipsid",                    :null => false
+    t.integer "location_id",               :null => false
+    t.integer "state_fipsid",              :null => false
+    t.string  "countycode",   :limit => 3, :null => false
+    t.string  "name",                      :null => false
+    t.string  "censusclass",  :limit => 2, :null => false
   end
 
   add_index "expertise_counties", ["location_id"], :name => "index_expertise_counties_on_location_id"
@@ -291,18 +290,18 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "expertise_counties_users", ["user_id", "county_id"], :name => "fk_counties_users", :unique => true
 
   create_table "expertise_events", :force => true do |t|
-    t.integer  "expertise_id",                 :null => false
-    t.integer  "user_id",                      :null => false
-    t.string   "event_type",   :default => "", :null => false
+    t.integer  "expertise_id", :null => false
+    t.integer  "user_id",      :null => false
+    t.string   "event_type",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "expertise_locations", :force => true do |t|
-    t.integer "fipsid",                                     :null => false
-    t.integer "entrytype",                                  :null => false
-    t.string  "name",                       :default => "", :null => false
-    t.string  "abbreviation", :limit => 10, :default => "", :null => false
+    t.integer "fipsid",                     :null => false
+    t.integer "entrytype",                  :null => false
+    t.string  "name",                       :null => false
+    t.string  "abbreviation", :limit => 10, :null => false
   end
 
   add_index "expertise_locations", ["name"], :name => "index_expertise_locations_on_name", :unique => true
@@ -348,7 +347,7 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   create_table "institutions", :force => true do |t|
     t.integer  "entrytype",                           :default => 0,     :null => false
     t.string   "location_abbreviation", :limit => 4
-    t.string   "name",                                :default => "",    :null => false
+    t.string   "name",                                                   :null => false
     t.string   "code",                  :limit => 10
     t.string   "uri"
     t.datetime "created_at"
@@ -361,6 +360,7 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
     t.string   "public_uri"
     t.string   "referer_domain"
     t.boolean  "shared_logo",                         :default => false
+    t.boolean  "show_in_public_list",                 :default => false
   end
 
   add_index "institutions", ["location_abbreviation"], :name => "STATE_ABBR"
@@ -368,10 +368,10 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "institutions", ["referer_domain"], :name => "index_institutions_on_referer_domain"
 
   create_table "invitations", :force => true do |t|
-    t.integer  "user_id",                      :default => 0,  :null => false
-    t.string   "token",          :limit => 40, :default => "", :null => false
-    t.string   "email",                        :default => "", :null => false
-    t.datetime "created_at",                                   :null => false
+    t.integer  "user_id",                      :default => 0, :null => false
+    t.string   "token",          :limit => 40,                :null => false
+    t.string   "email",                                       :null => false
+    t.datetime "created_at",                                  :null => false
     t.datetime "accepted_at"
     t.integer  "colleague_id",                 :default => 0
     t.datetime "reminder_at"
@@ -484,29 +484,29 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "notifications", ["sent_email"], :name => "index_notifications_on_sent_email"
 
   create_table "open_id_associations", :force => true do |t|
-    t.binary  "server_url",                 :null => false
-    t.string  "handle",     :default => "", :null => false
-    t.binary  "secret",                     :null => false
-    t.integer "issued",                     :null => false
-    t.integer "lifetime",                   :null => false
-    t.string  "assoc_type", :default => "", :null => false
+    t.binary  "server_url", :null => false
+    t.string  "handle",     :null => false
+    t.binary  "secret",     :null => false
+    t.integer "issued",     :null => false
+    t.integer "lifetime",   :null => false
+    t.string  "assoc_type", :null => false
   end
 
   create_table "open_id_nonces", :force => true do |t|
-    t.string  "server_url", :default => "", :null => false
-    t.integer "timestamp",                  :null => false
-    t.string  "salt",       :default => "", :null => false
+    t.string  "server_url", :null => false
+    t.integer "timestamp",  :null => false
+    t.string  "salt",       :null => false
   end
 
   create_table "opie_approvals", :force => true do |t|
-    t.integer  "user_id",    :default => 0,  :null => false
-    t.string   "trust_root", :default => "", :null => false
-    t.datetime "created_at",                 :null => false
+    t.integer  "user_id",    :default => 0, :null => false
+    t.string   "trust_root",                :null => false
+    t.datetime "created_at",                :null => false
   end
 
   create_table "positions", :force => true do |t|
-    t.integer  "entrytype",  :default => 0,  :null => false
-    t.string   "name",       :default => "", :null => false
+    t.integer  "entrytype",  :default => 0, :null => false
+    t.string   "name",                      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -594,7 +594,7 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
     t.datetime "question_updated_at"
     t.text     "current_response"
     t.string   "resolver_email"
-    t.string   "question_fingerprint",          :default => "",    :null => false
+    t.string   "question_fingerprint",                             :null => false
     t.string   "submitter_firstname",           :default => "",    :null => false
     t.string   "submitter_lastname",            :default => "",    :null => false
     t.integer  "county_id"
@@ -622,13 +622,13 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "submitted_questions", ["widget_name"], :name => "index_submitted_questions_on_widget_name"
 
   create_table "taggings", :force => true do |t|
-    t.integer  "tag_id",                                      :null => false
-    t.integer  "taggable_id",                                 :null => false
+    t.integer  "tag_id",                                     :null => false
+    t.integer  "taggable_id",                                :null => false
     t.string   "taggable_type", :limit => 32
-    t.string   "tag_display",                 :default => "", :null => false
-    t.integer  "owner_id",                                    :null => false
-    t.integer  "weight",                      :default => 1,  :null => false
-    t.datetime "created_at",                                  :null => false
+    t.string   "tag_display",                                :null => false
+    t.integer  "owner_id",                                   :null => false
+    t.integer  "weight",                      :default => 1, :null => false
+    t.datetime "created_at",                                 :null => false
     t.datetime "updated_at"
     t.integer  "tag_kind"
   end
@@ -636,8 +636,8 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tag_kind", "owner_id"], :name => "taggingindex", :unique => true
 
   create_table "tags", :force => true do |t|
-    t.string   "name",       :default => "", :null => false
-    t.datetime "created_at",                 :null => false
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
   end
 
   add_index "tags", ["name"], :name => "index_tags_on_name", :unique => true
@@ -669,7 +669,7 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "user_emails", ["user_id"], :name => "index_user_emails_on_user_id"
 
   create_table "user_events", :force => true do |t|
-    t.string   "login",                        :default => "", :null => false
+    t.string   "login",                                       :null => false
     t.string   "description"
     t.string   "ip",             :limit => 20
     t.datetime "created_at"
@@ -698,12 +698,12 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   end
 
   create_table "user_tokens", :force => true do |t|
-    t.integer  "user_id",                      :default => 0,  :null => false
-    t.integer  "tokentype",                    :default => 0,  :null => false
-    t.string   "token",          :limit => 40, :default => "", :null => false
+    t.integer  "user_id",                      :default => 0, :null => false
+    t.integer  "tokentype",                    :default => 0, :null => false
+    t.string   "token",          :limit => 40,                :null => false
     t.text     "tokendata"
-    t.datetime "created_at",                                   :null => false
-    t.datetime "expires_at",                                   :null => false
+    t.datetime "created_at",                                  :null => false
+    t.datetime "expires_at",                                  :null => false
     t.datetime "extended_at"
     t.integer  "extended_count",               :default => 0
   end
@@ -711,10 +711,10 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "user_tokens", ["token"], :name => "tokenlookup"
 
   create_table "users", :force => true do |t|
-    t.string   "login",                    :limit => 80, :default => "",    :null => false
-    t.string   "password",                 :limit => 40, :default => "",    :null => false
-    t.string   "first_name",                             :default => "",    :null => false
-    t.string   "last_name",                              :default => "",    :null => false
+    t.string   "login",                    :limit => 80,                    :null => false
+    t.string   "password",                 :limit => 40,                    :null => false
+    t.string   "first_name",                                                :null => false
+    t.string   "last_name",                                                 :null => false
     t.string   "email",                    :limit => 96
     t.string   "title"
     t.datetime "email_event_at"
@@ -746,18 +746,18 @@ ActiveRecord::Schema.define(:version => 20090716164046) do
   add_index "users", ["vouched", "retired"], :name => "index_users_on_vouched_and_retired"
 
   create_table "widget_events", :force => true do |t|
-    t.integer  "widget_id",                  :null => false
-    t.integer  "user_id",                    :null => false
-    t.string   "event",      :default => "", :null => false
+    t.integer  "widget_id",  :null => false
+    t.integer  "user_id",    :null => false
+    t.string   "event",      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "widgets", :force => true do |t|
-    t.string   "name",        :default => "",   :null => false
-    t.string   "fingerprint", :default => "",   :null => false
-    t.string   "widget_url",  :default => "",   :null => false
-    t.string   "author",      :default => "",   :null => false
+    t.string   "name",                          :null => false
+    t.string   "fingerprint",                   :null => false
+    t.string   "widget_url",                    :null => false
+    t.string   "author",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active",      :default => true, :null => false

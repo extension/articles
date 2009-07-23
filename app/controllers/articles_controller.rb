@@ -105,11 +105,11 @@ class ArticlesController < ApplicationController
       set_titletag("#{article.title} - eXtension")
     end
     
-    @community_tags = article.tags.community_content_tags
+    @community_tags = (Tag.community_content_tags & article.tags)
     adtag = @community_tags[0] if @community_tags and @community_tags.length > 0
     @sponsors = Advertisement.prioritized_for_tag(adtag) if adtag
     
-    flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.category }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
+    flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
     
     # Specify view since we want sub class (external articles) to go here too
     render :template => 'articles/page', :locals => { :article => article }
