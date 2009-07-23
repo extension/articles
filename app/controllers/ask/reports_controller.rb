@@ -246,7 +246,6 @@ class Ask::ReportsController < ApplicationController
           @user = User.find_by_id(params[:id])
        
           @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
-          @usubmitted = SubmittedQuestion.date_subs(@date1,@date2).count(:conditions => " submitted_by=#{@user.id}")
           @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
        #   @myid = @currentuser
           if @user.nil? #|| @myid.nil?

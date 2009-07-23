@@ -34,10 +34,7 @@
    
    <dt>Questions answered from the Public (Ask an Expert)</dt>
     <dd><%= link_to @uresolved, :action => "display_questions", :user => @user.id, :descriptor => "Answered as an Expert" , :olink => "Answered as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uresolved %></dd>
-     <!--  <% if @usubmitted > 0 %>
-        <dt>Questions Submitted to Ask a Peer <em>(deprecated)</em></dt>
-        <dd><%= link_to @usubmitted, :action => "display_expert_questions", :user => @user.id, :descriptor => "Submitted to Ask a Peer" , :olink =>"Submitted to Ask a Peer", :to => @dateTo, :from => @dateFrom, :num => @usubmitted%></dd>
-    <% end %>-->
+    
      
 </dl>	
 <br class="clear"/>
