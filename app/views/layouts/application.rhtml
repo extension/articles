@@ -151,7 +151,7 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
 
 <div id="footer">
     <p><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is an educational partnership of 74 universities in the United States.</p>
-    <p class="copyright">&copy; 2008 eXtension. All rights reserved.</p>
+    <p class="copyright">&copy; <%= Time.new.year %> eXtension. All rights reserved.</p>
     <ul>
         <li><%= link_to_unless_current "partners", :controller => "main", :action => "partners" %></li>
         <li><%= link_to_unless_current "privacy", :controller => "main", :action => "privacy" %></li>
