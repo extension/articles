@@ -630,9 +630,9 @@ class Community < ActiveRecord::Base
       findvalues = {
         :findname => searchterm,
         :findtext => searchterm,
-        :findtag => Tag.normalizename(searchterm)
       }
-      conditions = ["name rlike :findname or description rlike :findtext or taglist_cache rlike :findtag",findvalues]
+      #TODO: bring back tag searching
+      conditions = ["name rlike :findname or description rlike :findtext",findvalues]
       
       finder_opts = {:conditions => conditions}
       
