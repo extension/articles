@@ -1,0 +1,31 @@
+<% @page_title = "Widget Preferences" %>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<div id="user_pref">
+    <ul id="nav">
+        <li><%= link_to_unless_current "General Preferences", :controller => 'ask/prefs', :action => 'ask_an_expert_preferences' %></li>
+        <li><%= link_to_unless_current "Areas of Expertise", :action => 'expertise' %></li>
+        <li><%= link_to_unless_current "Geographic Regions", :action => 'location' %></li>
+        <li><%= link_to_unless_current "Widget Preferences", :action => 'widget_preferences' %></li>
+    </ul>
+<br class="clear"/>
+</div>
+
+<h2><%= @page_title %></h2>
+
+<p>
+    <%= label_tag 'widget_name', 'By Name (start typing to filter widgets)' %>
+    <%= text_field_tag('widget_name') %>
+</p>
+
+<%= observe_field(:widget_name,
+                  :url       => { :controller => 'ask/prefs', :action => :get_widgets },
+                  :update    => :aae_pref_section,
+                  :frequency => 0.6,
+                  :with      => "'widget_name=' + value")
+%>
+
+<div id="aae_pref_section">
+<%= render(:partial => 'widget_list') %>
+</div>

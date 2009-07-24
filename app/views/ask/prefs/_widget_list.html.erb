@@ -1,0 +1,34 @@
+<table>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Add to my filter list</th>
+        <th scope="col">Auto-assign me these questions</th>
+        <th scope="col">Date Created</th>
+    </tr>
+
+<% @widgets.each do |widget| %>
+    <tr id="<%= widget.name %>">
+        <td><%= link_to(widget.name, :controller => 'ask/widgets', :action => :view, :id => widget.id) %></td>
+        
+        <td><%= check_box_tag "filter_widget_#{widget.id}", widget.id, @filter_widgets.include?(widget.id) %>
+            <div id="loading_filter_<%= widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </div></td>
+        <td><%= check_box_tag "widget_auto_assign_#{widget.id}", widget.id, @auto_assign_widgets.include?(widget.id) %>
+            <div id="loading_assign_<%= widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </div></td>
+        <td><%= widget.created_at %></td>
+    </tr>
+    
+    <%= observe_field("filter_widget_#{widget.id}",
+                      :url       => { :action => :widget_preferences },
+                      :with      => "'filter_widget_id=#{widget.id}'",
+                      :loading => "Element.show('loading_filter_#{widget.id}')",
+                      :complete    => "Element.hide('loading_filter_#{widget.id}')") %>
+    
+    <%= observe_field("widget_auto_assign_#{widget.id}",
+                      :url       => { :action => :widget_preferences },
+                      :with      => "'widget_auto_assign_id=#{widget.id}'",
+                      :loading => "Element.show('loading_assign_#{widget.id}')",
+                      :complete    => "Element.hide('loading_assign_#{widget.id}')") %>
+        
+<% end %>
+
+</table>
