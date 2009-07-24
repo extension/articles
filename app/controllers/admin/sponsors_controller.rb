@@ -40,7 +40,6 @@ class Admin::SponsorsController < ApplicationController
 
   def new
     @sponsor = Sponsor.new
-    @community_tags = Sponsor.tags.collect{|c| [c.name, c.id]}
     @assets =  Asset.find(:all)
     # TODO: remove assets from collection which are already assigned to advertisements?
   end
@@ -57,8 +56,6 @@ class Admin::SponsorsController < ApplicationController
 
   def edit
     @sponsor = Sponsor.find(params[:id])
-    @community_tags = Sponsor.tags.collect{|c| [c.name, c.id]}
-    @community_tags.insert(0, ["", ""])
   end
 
   def update

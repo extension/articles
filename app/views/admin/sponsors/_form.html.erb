@@ -3,14 +3,10 @@
 <!--[form:sponsor]-->
 <p>
 <%= label :sponsor, :logo_id, "Which graphic will this ad use?" %>
-	<%= select :sponsor, :logo_id, Asset.find(:all).collect { |a| [a.filename, a.id] }.delete_if { |a| a[0].include? "_thumb." } %>
+	<%= select :sponsor, :logo_id, Logo.find(:all).collect { |a| [a.filename, a.id] }.delete_if { |a| a[0].include? "_thumb." } %>
 </p>
 <p>
-	<%= label :sponsor, :tag_id, "On what pages will this ad be displayed?" %>
 	<span>"main" displays ad only on the eXtension homepage. Other options display ad on the homepage and any page that includes the content tag.</span>
-	<%= select_tag("advertisement[tag_id]", @community_tags.nil? ? [] : options_for_select(@community_tags, 
-                 (@sponsor ? @sponsor.tag_id : nil)  ) )
-	%>
 </p>
 <!--[eoform:sponsor]-->
 

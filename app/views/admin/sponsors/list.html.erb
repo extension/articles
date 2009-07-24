@@ -1,7 +1,7 @@
 <div id="admin">
     <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %></p>
     <h1>Sponsors</h1>
-    <p><%= link_to 'Add a new sponsor', :action => 'new' %> | <%= link_to 'Manage Sponsor Logo', assets_path %></p>
+    <p><%= link_to 'Add a new sponsor', :action => 'new' %> | <%= link_to('Manage sponsor logos', admin_logos_url) %></p>
     <h2>Drag and drop sponsors to change the display order</h2>
     <p>The sponsors will be displayed in this order on the eXtension homepage.</p>
     <div id="sponsor_list">
@@ -13,7 +13,7 @@
                     <%= link_to "edit", :action => 'edit', :id => sponsor.id %>
                     <%= link_to 'delete', { :action => 'destroy', :id => sponsor.id }, :confirm => 'Are you sure?', :method => :post %>
                 </span>
-                <%= render_inline_logo(sponsor.image, true) %>
+                <%= render_inline_logo(sponsor.logo, true) %>
                 
             </li>
         <% end %>
