@@ -1,0 +1,57 @@
+#if there is already a location selected and the options are ready (ie. if someone clicks the edit on the summary)
+if @location_options and @location_selected
+  rep_html = "<div id='blah'>" +
+  "<p><label>Select a location</label></p>" +
+  content_tag(:span, select_tag (:location_option, options_for_select(@location_options, @location_selected),
+              :onchange => remote_function(:url => {:controller => 'ask/prefs', :action => :show_counties }, :with => "'location_fips=' + value"))) +
+  "<div id='selected_locations' style='display:none;'></div></div>"
+  
+  page.replace_html "current_view", rep_html
+  page.replace_html "add_edit_link", "Add or Edit a Location"
+  page.replace_html "view_link", content_tag(:span, link_to_remote ("View Your Locations", :url => {:controller => 'ask/prefs', :action => :initialize_locations}))
+end
+
+#if a location has been selected
+if @location
+  rep_html = "<div id='location_scope'>"
+  rep_html = rep_html + content_tag(:p, link_to_remote ("Add all counties", :url => {:controller => 'ask/prefs', :action => :add_counties, :location_fips => @location.fipsid, :all => true}, :method => :post))
+  
+  #gives a drop down for the county field and a list in that drop down of counties within this location that have been selected
+  if @location.expertise_counties.length > 1
+    rep_html = rep_html + content_tag(:p, link_to_function("Pick individual counties", "((this.innerHTML == 'Pick individual counties') ? this.innerHTML = 'Close county picker': this.innerHTML = 'Pick individual counties'); Effect.toggle('county_selector','blind', { duration: .4});"))  
+  end
+
+  rep_html = rep_html + "<div id='county_selector' style='display:none;'><p><label>Start typing a few letters and <br />choose from the list that appears</label>" +    
+  content_tag("input", '', :id => 'county', :type => 'text', :autocomplete => 'off', :onkeyup => remote_function(:url => { :controller => 'ask/prefs', :action => :list_counties, :location_option => @location.fipsid }, :with => "'county=' + value", :update => 'county_list')) +
+  "</p><div id='county_list'></div>" +
+  "</div><p>" + link_to_remote ("I'm done", :url => {:controller => 'ask/prefs', :action => 'initialize_locations'}) + "</p></div><div id='location_selection'>" +
+  "<p id='counties'>" 
+  
+  #Do not show the 'Remove Location' link if no counties have been selected within this location
+  if @selected_counties and @selected_counties.length > 0
+    rep_html = rep_html + "<h3>#{@location.name}</h3>"  
+    rep_html = rep_html + content_tag(:p, link_to_remote("[remove location]", :url => {:controller => 'ask/prefs', :action => :delete_counties, :location_option => @location.fipsid}, :method => :post))
+    if @selected_counties.length == 1 and @selected_counties[0].countycode == '0'
+      rep_html = rep_html + "<p>All counties " +
+      content_tag(:span, link_to_remote ("remove", :url => {:controller => 'ask/prefs', :action => :delete_counties, :county_option => @selected_counties[0].fipsid}, :with => "'location_selected=' + $('location_option').value", :method => :post)) + "</p"
+    else  
+      @selected_counties.each do |sc|
+        rep_html = rep_html + "<p>" + sc.name + " " +
+        content_tag(:span, link_to_remote ("remove", :url => {:controller => 'ask/prefs', :action => :delete_counties, :county_option => sc.fipsid}, :with => "'location_selected=' + $('location_option').value", :method => :post)) + "</p"
+        "<br />"
+      end
+    end
+  else
+    rep_html = rep_html + "<h3 class=\"localert\">What part of #{@location.name}?</h3> <h4>Please choose the entire state or pick individual counties.</h4>"
+  end
+  
+  rep_html = rep_html
+  
+  rep_html = rep_html + "</div>"
+  page.replace_html "selected_locations", rep_html
+  page.show "selected_locations"
+else
+  #if no location, then collapse everything below the location select box
+  page.replace_html "selected_locations", ""
+  page.hide "selected_locations"
+end

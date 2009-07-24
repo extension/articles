@@ -1,0 +1,26 @@
+rep_html = "<div id='current_locations'>"
+
+if @location_array.length == 0
+  rep_html = rep_html + "<h2 class=\"initial\">We'd like to show you a list of your locations, but you haven't defined any yet.</h2><h2>" + link_to_remote ("Ready to add a location?", :url => {:controller => 'ask/prefs', :action => :show_counties}) + "</h2>"
+#location_array is an array that for each element has an array with a first element for 
+#the location object and the second element as another array containing the county elements.
+else
+  @location_array.each do |l_pair|
+    rep_html = rep_html + "<dl><dt>#{l_pair[0].name} &nbsp" + content_tag(:span, link_to_remote("edit", :url => {:controller => 'ask/prefs', :action => :show_counties, :edit_location_fipsid => l_pair[0].fipsid}, :method => :post)) + "</dt>"
+    if l_pair[1].length == 1 and l_pair[1][0].countycode == "0"
+      rep_html = rep_html + "<dd>All counties</dd>"
+    else
+      l_pair[1].each do |county|
+        rep_html = rep_html + "<dd>#{county.name}</dd>"
+      end
+    end
+    rep_html = rep_html + "</dl>"
+  end
+end
+
+rep_html = rep_html + "</div>"
+
+page.replace_html "current_view", rep_html 
+page.replace_html "view_link", "View Your Locations"
+page.replace_html "add_edit_link", content_tag(:span, link_to_remote ("Add or Edit a Location", :url => {:controller => 'ask/prefs', :action => :show_counties}, :method => :post))
+

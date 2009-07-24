@@ -54,6 +54,7 @@ class User < ActiveRecord::Base
   belongs_to :county
   
   has_and_belongs_to_many :expertise_locations
+  has_and_belongs_to_many :expertise_counties
   
   attr_reader :password_confirmation
   

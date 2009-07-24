@@ -58,13 +58,11 @@ class Ask::PrefsController < ApplicationController
       return
     end
     
-    render :layout => 'aae'
   end
   
   #kicks off at the start of the location selection page for the user
   def location
-    @locations = ExertiseLocation.find(:all, :order => 'entrytype, name')
-    render :layout => 'aae'
+    @locations = ExpertiseLocation.find(:all, :order => 'entrytype, name')
   end
   
   #this will fire when a single county is removed or all counties for a user's location are removed
@@ -80,7 +78,7 @@ class Ask::PrefsController < ApplicationController
       @delete_location = true
     elsif params[:county_option] and params[:county_option].strip != ''
       county = ExpertiseCounty.find_by_fipsid(params[:county_option])
-      @location = county.location
+      @location = county.expertise_location
       @currentuser.expertise_counties.delete(county)
       @county_list = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
       if @county_list.length == 0
@@ -154,13 +152,13 @@ class Ask::PrefsController < ApplicationController
    def show_counties
      if params[:location_fips] and params[:location_fips].strip != ''
        @location = ExpertiseLocation.find_by_fipsid(params[:location_fips])
-       @selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{@location.id}", :order => "expertise_counties.name")
+       @selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.expertise_location_id = #{@location.id}", :order => "expertise_counties.name")
      else
        locations = ExpertiseLocation.find(:all, :order => 'entrytype, name')
        if params[:edit_location_fipsid]
          @location = ExpertiseLocation.find_by_fipsid(params[:edit_location_fipsid])
          @location_selected = @location.fipsid
-         @selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{@location.id}", :order => "expertise_counties.name")
+         @selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.expertise_location_id = #{@location.id}", :order => "expertise_counties.name")
        #if the user clicks on the add or edit a location link
        else
          @location_selected = [""]
@@ -181,7 +179,7 @@ class Ask::PrefsController < ApplicationController
      locations = @currentuser.expertise_locations.find(:all, :order => 'name')
      
      locations.each do |l|
-       selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.location_id = #{l.id}", :order => "expertise_counties.name")
+       selected_counties = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.expertise_location_id = #{l.id}", :order => "expertise_counties.name")
        if selected_counties.length > 0
          @location_array << [l, selected_counties]
        end

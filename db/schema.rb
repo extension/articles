@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090723173235) do
+ActiveRecord::Schema.define(:version => 20090724024724) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -272,23 +272,23 @@ ActiveRecord::Schema.define(:version => 20090723173235) do
   add_index "expertise_areas", ["user_id"], :name => "index_expertise_areas_on_user_id"
 
   create_table "expertise_counties", :force => true do |t|
-    t.integer "fipsid",                                    :null => false
-    t.integer "location_id",                               :null => false
-    t.integer "state_fipsid",                              :null => false
-    t.string  "countycode",   :limit => 3, :default => "", :null => false
-    t.string  "name",                      :default => "", :null => false
-    t.string  "censusclass",  :limit => 2, :default => "", :null => false
+    t.integer "fipsid",                                             :null => false
+    t.integer "expertise_location_id",                              :null => false
+    t.integer "state_fipsid",                                       :null => false
+    t.string  "countycode",            :limit => 3, :default => "", :null => false
+    t.string  "name",                               :default => "", :null => false
+    t.string  "censusclass",           :limit => 2, :default => "", :null => false
   end
 
-  add_index "expertise_counties", ["location_id"], :name => "index_expertise_counties_on_location_id"
+  add_index "expertise_counties", ["expertise_location_id"], :name => "index_expertise_counties_on_location_id"
   add_index "expertise_counties", ["name"], :name => "index_expertise_counties_on_name"
 
   create_table "expertise_counties_users", :id => false, :force => true do |t|
-    t.integer "county_id", :default => 0, :null => false
-    t.integer "user_id",   :default => 0, :null => false
+    t.integer "expertise_county_id", :default => 0, :null => false
+    t.integer "user_id",             :default => 0, :null => false
   end
 
-  add_index "expertise_counties_users", ["user_id", "county_id"], :name => "fk_counties_users", :unique => true
+  add_index "expertise_counties_users", ["user_id", "expertise_county_id"], :name => "fk_counties_users", :unique => true
 
   create_table "expertise_events", :force => true do |t|
     t.integer  "expertise_id",                 :null => false

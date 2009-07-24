@@ -1,0 +1,9 @@
+<ul>
+<% @counties.each do |c| %>
+  <li><%= link_to_function(c.name + " <span>add</span>", remote_function(:url => {:controller => 'ask/prefs', :action => :add_counties, :new_county_fips => c.fipsid, :location_fips => params[:location_option]}, :method => :post)) %> </li>
+<% end %>
+<% if @counties.length == 0 and params[:county].strip != '' %>
+<li class="alert">There are no counties in this state that start with '<%= params[:county] %>'.</li>
+<% end %>
+</ul>
+
