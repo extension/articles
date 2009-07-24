@@ -9,7 +9,7 @@
         </p>
         
         <% if (work_time_remaining and work_time_remaining > 0) and (@currentuser.id != @submitted_question.assignee.id) %>
-        <p class="working-on-it"><%= @submitted_question.assignee.fullname %> is working on this question right now, so it's probably not a good idea  to reassign it.</p>
+        <p class="working_on_it"><%= @submitted_question.assignee.fullname %> is working on this question right now, so it's probably not a good idea  to reassign it.</p>
         <% end %>
         
         <div id="assign_container">

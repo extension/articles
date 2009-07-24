@@ -21,7 +21,7 @@
     </div>
     <br class="clearing" />
 </div>
-<p class="view-as-web-page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
+<p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
 <div id="content_css_reset">
     <div id="article" class="faq">
     <%= simple_format @faq.answer %>

@@ -27,7 +27,7 @@
         <%= render(:partial => 'shared/created_by',  :locals => { :community_tags => @community_tags }) if @community_tags%>
       </p>
       
-      <p class="view-as-web-page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
+      <p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
     </div>
     <br class="clearing" />
 

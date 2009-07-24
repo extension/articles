@@ -3,7 +3,7 @@
 <p class="type"><%= community.memberfilter_to_s %></p>
 <% if showuser.connection_with_community(community) == 'none' or showuser.connection_with_community(community) == 'interest' or showuser.connection_with_community(community) == 'nointerest' %>
           <p id="community_<%= community.id %>_showuser_<%= showuser.id %>_connection"> <%= link_to_function 'invitation options', "Effect.toggle('community_#{community.id}_showuser_#{showuser.id}_manageform_block','blind', { duration: .4});" %></p>
-	<div id="community_<%= community.id %>_showuser_<%= showuser.id %>_manageform_block" style="display:none;" class="invite-actions">
+	<div id="community_<%= community.id %>_showuser_<%= showuser.id %>_manageform_block" style="display:none;" class="invite_actions">
 		<% form_remote_tag(:url => {:controller => :colleagues, :action => :xhrcommunityinvite, :id => showuser.id, :communityid => community.id}, :html => {:id => "community_#{community.id}_showuser_#{showuser.id}_manage_form"}) do %>
 		
 		<fieldset>

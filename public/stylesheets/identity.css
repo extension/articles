@@ -196,8 +196,8 @@ legend {font-size:1.3em;font-weight:bold;}
 #listhome dt {margin:1em 0 .25em;}
 .list_description {}
 .list_type {font-style:italic;color:#777;}
-#listhome-sidebar {float:right;width:30%;background:#f1f2f3 url(/images/people/welcome-sidebar.png) no-repeat left top;border-right:#cccfd0 solid 1px;border-bottom:#cccfd0 solid 1px;}
-#listhome-sidebar h4 {font-weight:normal;padding:1.45em 1.4em 1.2em;margin:0;color:#111;}
+#listhome_sidebar {float:right;width:30%;background:#f1f2f3 url(/images/people/welcome-sidebar.png) no-repeat left top;border-right:#cccfd0 solid 1px;border-bottom:#cccfd0 solid 1px;}
+#listhome_sidebar h4 {font-weight:normal;padding:1.45em 1.4em 1.2em;margin:0;color:#111;}
 
 
 #comm_search {background:none;border:0;padding:0;}
@@ -251,8 +251,8 @@ form{clear:left;}
 /*#welcome p {width:45em;}*/
 #welcome ul {list-style-type:disc;}
 #welcome li {line-height:1.2em;margin-bottom:1em;}
-#welcome-sidebar {float:right;width:30%;background:#f1f2f3 url(/images/people/welcome-sidebar.png) no-repeat left top;border-right:#cccfd0 solid 1px;border-bottom:#cccfd0 solid 1px;}
-#welcome-sidebar h4 {font-weight:normal;padding:1.45em 1.4em 1.2em;margin:0;color:#111;}
+#welcome_sidebar {float:right;width:30%;background:#f1f2f3 url(/images/people/welcome-sidebar.png) no-repeat left top;border-right:#cccfd0 solid 1px;border-bottom:#cccfd0 solid 1px;}
+#welcome_sidebar h4 {font-weight:normal;padding:1.45em 1.4em 1.2em;margin:0;color:#111;}
 
 /* Profiles/Vcards
 -----------------------------------------------------------------------------*/
@@ -357,14 +357,14 @@ td.bignumbercontainer {text-align:right;}
 .communityinvite h2 {margin:0 1em 0 0;float:left;}
 .communityinvite p {margin:0;float:left;}
 .communityinvite p.type {margin:0;float:right;}
-.invite-actions fieldset {padding-bottom:1em;}
-.invite-actions {/*border:1px solid lime;*/ clear:both;margin: 10px 20px 30px;}
-.invite-actions p {float:none; margin:1em;}
+.invite_actions fieldset {padding-bottom:1em;}
+.invite_actions {/*border:1px solid lime;*/ clear:both;margin: 10px 20px 30px;}
+.invite_actions p {float:none; margin:1em;}
 
-.invite-actions h3 {padding:0;margin:0 0 1em;}
+.invite_actions h3 {padding:0;margin:0 0 1em;}
 .communityinvite fieldset {/*border:1px solid orange;*/}
-.invite-actions p input[type="checkbox"] {float:left;margin-right:1em;}
-.invite-actions p label em {display:block;font-weight:normal;}
+.invite_actions p input[type="checkbox"] {float:left;margin-right:1em;}
+.invite_actions p label em {display:block;font-weight:normal;}
 
 code {color:#000;background:#eee;padding:0 5px;font-size:1.3em;}
 .right {float:right;}
@@ -618,9 +618,9 @@ ul.tagCloud {float:left;padding:0;margin:0 0 2.5em!important;width:100%;}
 #showuser_socialnetworks, #showuser_communities {clear:left;margin-bottom:2em;overflow:auto;}
 
 
-.user-email {clear:both;padding-bottom:1.25em;border-top:1px solid #ddd;padding-top:1.25em;margin-bottom:0;overflow:auto;/*border:solid red 1px;*/}
-.user-email label {color:#888;font-weight:normal;}
-.user-email input[type="text"] {float: left; width: 20em;}
+.users_email {clear:both;padding-bottom:1.25em;border-top:1px solid #ddd;padding-top:1.25em;margin-bottom:0;overflow:auto;/*border:solid red 1px;*/}
+.users_email label {color:#888;font-weight:normal;}
+.users_email input[type="text"] {float: left; width: 20em;}
 
 
 #fixed {position:fixed;left:auto;top:30em;width:320px; background: url(/images/people/fuzzyshadowbar.png) 50% 50% no-repeat;padding-left:300px;}
