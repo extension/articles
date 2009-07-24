@@ -1,0 +1,87 @@
+<% @page_title = "Preferences for Ask an Expert" %>
+
+<!-- <h2><%= @page_title %></h2> -->
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<div id="user_pref">
+    <ul id="nav">
+        <li><%= link_to_unless_current "General Preferences", :action => 'index' %></li>
+        <li><%= link_to_unless_current "Areas of Expertise", :action => 'expertise' %></li>
+        <li><%= link_to_unless_current "Geographic Regions", :action => 'location' %></li>
+        <li><%= link_to_unless_current "Widget Preferences", :action => 'widget_preferences' %></li>
+    </ul>
+<br class="clear"/>
+
+<% form_tag :action => "index" do %>
+
+<h2>General Preferences</h2>
+
+<div id="aae_pref_section">
+
+    <h3>Volunteer to Receive Incoming Questions <small><a href="#how_are_incoming" class="help">How are questions assigned?</a></small> <small><a href="#widget" class="help">Answering questions from the Ask Widget?</a></small></h3>
+    <fieldset>
+        <p><%= check_box_tag "auto_route", "1", @auto_route %> Automatically assign me incoming questions that match my expertise or location</p>
+        <ul>
+            <li><%= check_box_tag "county_only", "1", @county_only %> Don't assign me questions outside of my county(ies)</li>
+            <li><%= check_box_tag "location_only", "1", @location_only %> Don't assign me questions outside of my state(s)</li>
+        </ul>
+    </fieldset>
+    
+    <fieldset>
+        <p><%= check_box_tag "answer_uncat", "1", @answer_uncat %> Be a Question Wrangler</p>
+        <ul>
+            <li>Question Wranglers monitor uncategorized incoming questions and route them to the right person. They also follow-up with experts to make sure questions are answered in timely manner. <%= link_to("Learn more about this group", :controller => '/people', :action => 'communities', :id => 38) %>.</li>
+        </ul>
+    </fieldset>
+    <fieldset>
+        <p><%= check_box_tag "auto_escalate", "1", @auto_escalate %> Send me an email if a question in my area of expertise is still unanswered after 48 hours</p>
+    </fieldset>
+    
+</div>
+
+    <br /><br />
+    
+<div class="form_section">
+    <p>
+        <label for="signature">'Ask an Expert' Email Signature
+        <span class="help">Added to your response when answering incoming questions. You can always edit this on a per-question basis.</span>
+        </label>
+    <%= text_area_tag("signature", @signature, :cols => "20", :rows => "3") %>
+    </p>
+</div>
+    
+    <br class="clear"/>
+    <p class="save_it"><%= submit_tag "Save changes" %></p>
+<% end %>
+</div>
+<br /><br />
+<div class="directions">
+    <a name="how_are_incoming" ></a>
+    <h2>How are incoming questions from the public site (www.extension.org) assigned?</h2>
+    <p>The FAQ system assigns incoming questions from our public site based on <strong>Areas of Expertise</strong>, <strong>Geographic Location</strong> and <strong>User Workload</strong>. When more than one expert is available, <strong>the question is given to the user with the fewest assigned questions</strong>. Questions are matched to experts based on the following criteria:</p>
+    <ul>
+        <li>matching Areas of Expertise and Geographic Locations</li>
+        <li>matching Areas of Expertise (by sub-category if available, then main category)</li>
+        <li>matching Geographic Locations (by county if available, then state)</li>
+    </ul>
+    <p>If none of the above criteria are met, then a question is assigned to an Ask an Expert question wrangler.</p>
+    
+</div>
+
+<div class="directions">
+    <a name="widget" ></a>
+    <h2>Are you answering questions from the Ask Widget?</h2>
+    <p>The Ask widget is a new tool that enables Extension professionals to offer their constituents an easy way to ask questions via their blogs, county Extension websites, or other Extension related websites and enables them to manage and answer these questions. The widget works in conjunction with the eXtension FAQ/Ask an Expert site. <%= link_to "Learn more about the Ask widget", :controller => 'ask/widgets', :action => 'index' %>.</p>
+    <p>To receive questions coming from your Ask widget:</p>
+        
+        <ul>
+            <li>Go to the <%= link_to 'Widget Preferences', :controller => 'ask/prefs', :action => :widget_preferences %> page</li>
+            <li>Find your widget by name</li>
+            <li>Select the 'Auto-assign me these questions' check box</li>
+            <li>That's It!</li>
+        </ul>
+    
+    <p>You are also encouraged to set your location and expertise preferences so others can find you in the ask an expert search.</p>
+    
+</div>

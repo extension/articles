@@ -255,7 +255,7 @@ class Ask::PrefsController < ApplicationController
     render :partial => "widget_list", :layout => false
   end
   
-  def ask_an_expert_preferences
+  def index
     @categories = Category.root_categories
     auto_route_role = Role.find_by_name(Role::AUTO_ROUTE)
     escalation_role = Role.find_by_name(Role::ESCALATION)
@@ -381,7 +381,7 @@ class Ask::PrefsController < ApplicationController
     else
       @auto_route_msg = "*Has not indicated in prefs to receive auto-routed questions. "
       if @user.id == @currentuser.id 
-        @auto_route_msg += "<a href='/account/ask_an_expert_preferences'>edit</a>"
+        @auto_route_msg += "<a href='/ask/prefs/index'>edit</a>"
       end
       @auto_route_msg = "<p>".concat(@auto_route_msg).concat("</p>")   
     end
