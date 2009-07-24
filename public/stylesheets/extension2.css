@@ -177,7 +177,7 @@ h3.headerdescription {text-transform:none !important;}
 #masthead_wrap {padding:0; background:#fff; margin:0 0 32px;border-bottom: 1px solid #e6e6e6;overflow:auto;}
 #institution_picker {padding:0; background:#fff; margin:0 0 32px;border-top: 1px solid #e6e6e6;width:963px;margin:0 auto;text-align:left;clear:both;}
 #masthead {width:963px;margin:0 auto;}
-.navbar {color: #000; background: #c05412 url(/images/layout/navbarbgnd2.gif) no-repeat; width: 963px; margin: 0 auto;padding:0;overflow:auto;}
+.navbar {color: #000; background: #c05412 url(/images/layout/navbarbgnd.png) no-repeat; width: 963px; margin: 0 auto;padding:0;overflow:auto;}
 
 .branding_wrapper {width:963px;height:80px;position:relative;margin-bottom:1em;}
 .branding_wrapper ul a {color:#666;display:block;text-decoration:none;margin:0;padding:.1em .2em;}
