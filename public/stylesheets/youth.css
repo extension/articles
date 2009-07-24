@@ -52,45 +52,7 @@ a:link {cursor: pointer; text-decoration: none; color: #336699}
 .searchbar { width:283px; height:72px; background:url(/images/layout/youth/youthsearchbkgrnd.gif) no-repeat;padding: 20px 0 0 0;}
 .searchbar .searchfield {width: 190px;}
 
-/*
-#slider2 {margin:0 0 2em; padding:0; width: 615px; }
-#slider2 .contentdiv {margin:0; padding:15px 0 0; width: 615px; }
-#slider2.home_slider .contentdiv {background: url(images/layout/youth/featurebgnd_top.gif) no-repeat top center;}
-#slider2.cop_slider {background: url(/images/layout/youth/youthfeaturebackground.gif) no-repeat 50% top; background-color:#fb8f5c;}
-#slider2 .contentdiv_bottom {background: url(/images/layout/youth/youthfeaturebottom.gif) no-repeat 50% top; height:11px; width:615px;}
 
-.pagination {font-size:1.2em;margin:0; padding:2px; width: 615px;}
-
-#slider2 dl {float:left;width:200px;margin:0 0 0;padding: 0 0 30px;}
-
-#slider2 dt,
-#slider2 dd {
-    width: 200px;
-    padding-right: 20px;
-    font-size:1.4em;
-	margin-left:15px;
-	margin-right:15px;
-}
-
-#slider2 dd.img {float:none;     border: 5px solid #8cb60c;}
-
-#slider2 dd.more {
-    font-weight:bold;
-    font-size:1.4em;
-    margin-bottom:0;
-	margin-left:15px;
-	margin-right:15px;
-}
-
-#slider2 dt {
-	font-weight:bold;
-    font-size: 1.4em;
-    margin:15px 0 .5em;
-	margin-left:15px;
-	margin-right:15px;
-}
-
-*/
 
 .whatsnewbox { padding: 10px; color: #333; background: url(/images/layout/youth/youthwhatsnewbackground.gif) top left repeat-x; }
 

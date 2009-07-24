@@ -260,8 +260,8 @@ h1.missionstatement {font-size: 2.1em;margin-bottom:.5em;}
 
 div#slider2 {margin:0 0 2em; padding:0; width: 610px;}
 div#slider2 .contentdiv {float:left; margin:0; padding:15px 0 0; width: 610px;}
-div#slider2.home_slider .contentdiv {background: url(/images/layout/featurebgnd_top.gif) no-repeat top center;}
-div#slider2.cop_slider .contentdiv {background: url(/images/layout/cop_featurebgnd_top.gif) no-repeat top center;}
+div#slider2.home_slider .contentdiv {background: url(/images/layout/featurebgnd_top.png) no-repeat top center;}
+div#slider2.cop_slider .contentdiv {background: url(/images/layout/cop_featurebgnd_top.png) no-repeat top center;}
 
 .pagination {font-size:1.2em;margin:0; padding:2px; width: 610px;}
 
