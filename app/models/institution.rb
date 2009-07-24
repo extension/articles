@@ -7,7 +7,7 @@
 include GroupingExtensions
 
 class Institution < ActiveRecord::Base
-  include Logo
+  include InstitutionalLogo
   serialize :additionaldata
   
   # entrytype

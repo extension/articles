@@ -8,6 +8,9 @@
 class DataController < ApplicationController
   layout 'people'
   before_filter :login_optional
+  
+  # if we are using rails-footnotes, then 
+  # stop using it for the data controller
   if defined?(Footnotes::Filter)
     skip_after_filter Footnotes::Filter
   end

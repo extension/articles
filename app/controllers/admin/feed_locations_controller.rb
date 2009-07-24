@@ -8,18 +8,17 @@
 class Admin::FeedLocationsController < ApplicationController
   before_filter :admin_required
   before_filter :check_purgatory
+  before_filter :turn_off_right_column
 
 
   def index
     @feed_locations = FeedLocation.all
     set_titletag("External Feeds Management - Pubsite Admin")
-    @right_column = false
   end
 
   def edit
     @feed_location = FeedLocation.find(params[:id])
     set_titletag("Edit Feed Source - Pubsite Admin")
-    @right_column = false
   end
 
   def update
@@ -37,7 +36,6 @@ class Admin::FeedLocationsController < ApplicationController
   def new
     @feed_location = FeedLocation.new
     set_titletag("New Feed Source - Pubsite Admin")
-    @right_column = false
   end
 
   def create

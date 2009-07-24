@@ -1,3 +1,10 @@
+# === COPYRIGHT:
+#  Copyright (c) 2005-2009 North Carolina State University
+#  Developed with funding for the National eXtension Initiative.
+# === LICENSE:
+#  BSD(-compatible)
+#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+
 module DataHelper
 
   # TODO:  this is stupid.  a) there's probably a better to get the primary_content_tags and B) if a community has more than one content tag, the news won't be picked up

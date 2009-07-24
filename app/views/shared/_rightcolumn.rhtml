@@ -48,8 +48,8 @@
     	</div>
     <% end %>
         
-    <% if @sponsors and @sponsors.length > 0 %>
-    <%= render(:partial => 'advertisements/advertisement', :locals => {:sponsors =>  @sponsors}) %>
+    <% if !@sponsors.blank? %>
+    <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
     <% end %>
     
 </div> <!-- end .rightcolumn -->

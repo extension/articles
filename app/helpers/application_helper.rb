@@ -1,10 +1,9 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2006 North Carolina State University
+#  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
-
 
 module ApplicationHelper
     
@@ -174,9 +173,9 @@ module ApplicationHelper
           '</h3>'
   end
     
-  def render_inline_image asset, show_thumbnail = false
-    return "<img alt='error'></img>" unless asset && asset.image?
-    url = "#{asset_path(asset.filename)}"
+  def render_inline_logo(logo, show_thumbnail = false)
+    return "<img alt='error'></img>" unless logo && logo.image?
+    url = "#{logo_path({:file => logo.filename})}"
     url += "?thumb=true" if show_thumbnail
     image_tag url
   end

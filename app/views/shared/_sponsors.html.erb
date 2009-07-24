@@ -1,9 +1,9 @@
 <h1>Our Sponsors</h1>
 
-<% for ad in @sponsors %>
-  <div class="advertisement">
-	<% if !ad.nil? and !ad.image.nil? %>
-		<%= render_inline_image ad.image %>
+<% sponsorlist.each do |sponsor| %>
+  <div class="sponsorlogo">
+	<% if !sponsor.nil? and !sponsor.logo.nil? %>
+		<%= render_inline_logo(sponsor.logo) %>
 	<% end %>
   </div>
 <% end %>

@@ -1,11 +1,11 @@
 <div id="admin">
     <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
     
-    <h1>Advertising Graphics (Sponsor Image library)</h1>
+    <h1>Logos (Image library for Sponsors)</h1>
     
-    <p><%= link_to 'Add a new graphic', new_asset_path %> | <%= link_to 'Manage Ads', :controller => :advertisements, :action => 'list' %></p>
+    <p><%= link_to 'Add a new graphic', new_asset_path %> | <%= link_to 'Manage Sponsors', :controller => '/admin/sponsors', :action => 'list' %></p>
     
-    <table class="ad-graphics">
+    <table class="logos">
         <tr>
             <th scope="col">Image</th>	
             <th scope="col">Filename</th>

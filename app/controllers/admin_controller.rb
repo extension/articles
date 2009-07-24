@@ -137,10 +137,6 @@ class AdminController < ApplicationController
   end
     
   private
-  
-  def turn_off_right_column
-    @right_column = false    
-  end
 
   def finished_retrieving(what)
     ActiveRecord::Base::logger.debug "Imported #{what} at: " + Time.now.to_s    

@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-module Logo
+module InstitutionalLogo
 
   def existing_university_logo(university_code)
     existing_image("logos/universities/#{university_code}")

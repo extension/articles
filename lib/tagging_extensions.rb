@@ -286,3 +286,5 @@ class ActiveRecord::Base #:nodoc:
   include TaggingExtensions
   extend  TaggingFinders
 end
+
+

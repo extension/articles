@@ -1,10 +1,12 @@
-class AssetsController < ApplicationController
-    
-  # and these aren't registered by default....why?
-  Mime::Type.register("image/gif", :gif)
-  Mime::Type.register("image/jpg", :jpg)
-  Mime::Type.register("image/png", :png)
-  
+# === COPYRIGHT:
+#  Copyright (c) 2005-2009 North Carolina State University
+#  Developed with funding for the National eXtension Initiative.
+# === LICENSE:
+#  BSD(-compatible)
+#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+
+class Admin::LogosController < ApplicationController
+
   # GET /assets
   # GET /assets.xml
   def index

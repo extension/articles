@@ -2,14 +2,16 @@ ActionController::Routing::Routes.draw do |map|
   
   map.root :controller => 'main'
   
-  map.resources :assets, :path_prefix => '/admin', :except => :show
+  #map.resources :assets, :path_prefix => '/admin', :except => :show
   
   map.namespace :admin do |admin|
+    admin.resources :sponsors
     admin.resources :feed_locations
+    admin.resources :logos
   end
   
-  map.asset 'admin/asset/:file', :controller => "assets", :action => "show"
-  map.connect 'admin/asset/:file.:format', :controller => "assets", :action => "show"
+  map.logo  'logo/:file.:format', :controller => 'logo', :action => :display
+  #map.connect 'logo/:file.:format', :controller => "logo", :action => "display"
   
   map.home '', :controller => 'main', :action => 'index'
   map.redirect 'news', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :category => 'all', :permanent => true

@@ -13,6 +13,8 @@ module Extension
         # single tag scoper
         add_content_tag_scope(opts)
 
+        # any content tag scoper
+        add_any_content_tag_scope(opts)
       end
   
       # no options currently
@@ -67,6 +69,14 @@ module Extension
       def add_content_tag_scope(opts={})
         named_scope :tagged_with_content_tag, lambda {|tagname| 
           {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tag_kind = #{Tag::CONTENT}"}
+        }
+      end
+      
+      def add_any_content_tag_scope(opts={})
+        named_scope :tagged_with_any_content_tags, lambda {|tagliststring|
+          includelist = Tag.castlist_to_array(tagliststring)
+          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tag::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
+          {:include => {:taggings => :tag}, :conditions => includeconditions}
         }
       end
     end

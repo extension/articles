@@ -54,8 +54,7 @@ class FaqController < ApplicationController
     end
     
     @community_tags = (Tag.community_content_tags & @faq.tags)
-    adtag = @community_tags[0] if @community_tags and @community_tags.length > 0
-    @sponsors = Advertisement.prioritized_for_tag(adtag) if adtag
+    @sponsors = Sponsor.tagged_with_any_content_tags(@community_tags.map(&:name)).prioritized
     flash.now[:googleanalytics] = request.request_uri + "?" + @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_tags and @community_tags.length > 0
   end
   

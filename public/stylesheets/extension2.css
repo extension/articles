@@ -568,19 +568,19 @@ a.cancel:hover {color:#000;}
 
 h1.title {color:#333;font-weight:normal;font-size:2.1em;margin-bottom:.35em;}
 
-.advertisement {text-align:center;padding:24px 0;border-bottom:1px solid #eee;}
+.sponsorlogo {text-align:center;padding:24px 0;border-bottom:1px solid #eee;}
 .readmore {padding-top:1.2em !important;font-size:1.2em !important;}
 
 #sortable_list {margin:0;padding:0;}
 
-#ad_list li {list-style:none;border:1px solid #ccc;margin:.6em 0 !important;padding:1em;background:#e5e5e5;float:left;width:600px;}
+#sponsor_list li {list-style:none;border:1px solid #ccc;margin:.6em 0 !important;padding:1em;background:#e5e5e5;float:left;width:600px;}
 #sortable_list a {display:block;margin:.5em 0;padding:0;float:left;clear:left;}
-#ad_list li img {border:1px solid #eee;padding:1.5em;background:#fff;float:left;}
-table.ad-graphics {width:100% !important;}
-table.ad-graphics td {padding:1em !important;}
-.ad-actions { padding:1em;background:#e5e5e5;float:left;width:180px;}
-.ad-actions span {float:left;}
-.ad-actions span strong {font-size:1.2em;}
+#sponsor_list li img {border:1px solid #eee;padding:1.5em;background:#fff;float:left;}
+table.logos {width:100% !important;}
+table.logos td {padding:1em !important;}
+.sponsor_actions { padding:1em;background:#e5e5e5;float:left;width:180px;}
+.sponsor_actions span {float:left;}
+.sponsor_actions span strong {font-size:1.2em;}
 
 .homesection {padding-top: 20px;clear:both;}
 .homesection h2 {float:left;color: #000;font-size:2.1em;margin-bottom:.25em;}

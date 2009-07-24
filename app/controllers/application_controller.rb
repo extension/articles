@@ -13,8 +13,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
   include LoginSystem
   include ExceptionNotifiable
-  include ArrayStats
-  include Logo
+  include InstitutionalLogo
   include ControllerExtensions
 
   # Scrub sensitive parameters from your log
@@ -100,6 +99,10 @@ class ApplicationController < ActionController::Base
   end
     
   private
+  
+  def turn_off_right_column
+    @right_column = false    
+  end
   
   def disable_link_prefetching
     if request.env["HTTP_X_MOZ"] == "prefetch" 

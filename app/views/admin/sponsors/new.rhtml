@@ -1,6 +1,6 @@
 <div id="admin">
-    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %>  > <%= link_to 'Advertisements', :controller=>'advertisements', :action => 'list' %></p>
-    <h2>New advertisement</h2>
+    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %> &gt; <%= link_to('Sponsors',admin_sponsors_url)  %></p>    
+    <h2>New sponsor</h2>
     <% form_tag( {:action => 'create'},  :multipart => true )do %>
         <fieldset class="stacked">
             <%= render :partial => 'form' %>

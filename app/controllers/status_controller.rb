@@ -29,8 +29,8 @@ class StatusController < ApplicationController
     render(:layout => false,:template => 'status/version')
   end
   
+  # prints out session information
   def debug
-    
   end
-  
+
 end
