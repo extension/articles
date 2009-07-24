@@ -266,8 +266,8 @@ div#slider2.cop_slider .contentdiv {background: url(/images/layout/cop_featurebg
 .pagination {font-size:1.2em;margin:0; padding:2px; width: 610px;}
 
 #slider2 dl {float:left;width:610px;margin:0 0 0;padding: 0 0 30px;height: 18em;}
-div#slider2.home_slider dl {background: url(/images/layout/featurebgnd_bottom.gif) no-repeat 50% bottom;}
-div#slider2.cop_slider dl {background: url(/images/layout/cop_featurebgnd_bottom.gif) no-repeat 50% bottom;}
+div#slider2.home_slider dl {background: url(/images/layout/featurebgnd_bottom.png) no-repeat 50% bottom;}
+div#slider2.cop_slider dl {background: url(/images/layout/cop_featurebgnd_bottom.png) no-repeat 50% bottom;}
 
 #slider2 dt {line-height:125%;}
 #slider2 dt,
