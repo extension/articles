@@ -34,7 +34,7 @@ body, html { height: 100%; margin:0; padding:0; background: #f4f4f4; font-family
 body { text-align: center }
 
 #wrap {width: 100%}
-#main-content { background: url(/images/layout/rightnavbgnd.gif) left #fff repeat-y; border-bottom: 1px solid #ebebeb; border-right: 1px solid #ebebeb; width:962px; text-align: left; padding: 0px; margin-bottom: 0px; margin-left: auto; margin-right: auto; height:auto !important; /* real browsers */ height:100%; /* IE6: treaded as min-height*/ min-height:100%; /* real browsers */ position: relative; }
+#main_content { background: url(/images/layout/rightnavbgnd.gif) left #fff repeat-y; border-bottom: 1px solid #ebebeb; border-right: 1px solid #ebebeb; width:962px; text-align: left; padding: 0px; margin-bottom: 0px; margin-left: auto; margin-right: auto; height:auto !important; /* real browsers */ height:100%; /* IE6: treaded as min-height*/ min-height:100%; /* real browsers */ position: relative; }
 
 #container {
 	position: relative;
@@ -174,7 +174,7 @@ h3.headerdescription {text-transform:none !important;}
 /* PAGE HEADER */
 .aboutex {padding:.65em 0; margin:0 auto 1em;color:#e07432;font-weight:bold;text-align:left;border-bottom:1px solid #bfbfbf;}
 
-#masthead-wrap {padding:0; background:#fff; margin:0 0 32px;border-bottom: 1px solid #e6e6e6;overflow:auto;}
+#masthead_wrap {padding:0; background:#fff; margin:0 0 32px;border-bottom: 1px solid #e6e6e6;overflow:auto;}
 #institution_picker {padding:0; background:#fff; margin:0 0 32px;border-top: 1px solid #e6e6e6;width:963px;margin:0 auto;text-align:left;clear:both;}
 #masthead {width:963px;margin:0 auto;}
 .navbar {color: #000; background: #c05412 url(/images/layout/navbarbgnd2.gif) no-repeat; width: 963px; margin: 0 auto;padding:0;overflow:auto;}
@@ -338,7 +338,7 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 #aae_plug a {text-decoration:underline;}
 .askanexpert {font-size:1.4em;margin-top:2em;}
 .callout {font-size: 1.6em;}
-.aae-options {background:#e8f2fd;padding:.5em 1.5em;float:left;width:90%;margin-bottom:1.5em;}
+.aae_options {background:#e8f2fd;padding:.5em 1.5em;float:left;width:90%;margin-bottom:1.5em;}
 
 
 .instructions {color: #829500; padding-bottom: 10px}
@@ -606,7 +606,7 @@ dl.events dd span {color:#999;}
 
 .pageextras {float:right;width:112px;margin-right:10px;}
 .pageextras .print {margin:0;padding:1em 0 0;}
-.view-as-web-page {display:none;}
+.view_as_web_page {display:none;}
 
 .homesection iframe {display:none;}
 p.textcounter {margin:0;padding:.25em 0;}

@@ -1,7 +1,7 @@
 body, html {background: url(/images/layout/youth/Youthbackground.jpg) repeat left #f4f4f4;}
 
 #wrap {padding-top: 10px;}
-#main-content { background: url(/images/layout/youth/youthrightnavbgnd.gif) left #fff repeat-y;}
+#main_content { background: url(/images/layout/youth/youthrightnavbgnd.gif) left #fff repeat-y;}
 
 .rightcolmodule { background: url(/images/layout/youth/greenStar.gif) left #fbf2c8 repeat; width:259px; text-align: left; padding: 0px; margin-bottom: 10px; margin-left: 1px; margin-right: auto; height:auto !important; /* real browsers */ height:100%; /* IE6: treaded as min-height*/ min-height:100%; /* real browsers */ position: relative; } 
 #rightcontent ul li {list-style: disc url(/images/layout/youth/youthbullet.gif);}
