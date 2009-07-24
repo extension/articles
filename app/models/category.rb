@@ -90,11 +90,11 @@ class Category < ActiveRecord::Base
     #  conditions << build_entrytype_condition(options)
        if options[:location]
           joins <<  " join expertise_areas as ea on categories.id=ea.category_id join expertise_counties_users as ctu on ctu.user_id=ea.user_id" +
-                        " join counties on counties.id=ctu.county_id"
+                        " join counties on counties.id=ctu.expertise_county_id"
           conditions << "parent_id is null"
           conditions << "location_id = #{options[:location].id}"
           if options[:county]
-            conditions << "ctu.county_id = #{options[:county].id}"
+            conditions << "ctu.expertise_county_id = #{options[:county].id}"
           end
        end
        

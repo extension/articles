@@ -390,7 +390,7 @@ class Ask::ReportsController < ApplicationController
          @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
          @lsize = @locs.size 
          #@locsum=ExpertiseLocation.count_answerers_by_state
-         @locsum = ExpertiseLocation.count(:joins => " join expertise_locations_users as elu on expertise_locations.id=elu.location_id join users on users.id=elu.user_id",
+         @locsum = ExpertiseLocation.count(:joins => " join expertise_locations_users as elu on expertise_locations.id=elu.expertise_location_id join users on users.id=elu.user_id",
                  :group => "users.location_id", :order => "entrytype, name")
         end
 
@@ -426,7 +426,7 @@ class Ask::ReportsController < ApplicationController
         #    @filterstring = @filteredparams.filter_string   ...why do I need this?
              @cats = Category.find(:all, :conditions => "parent_id is null", :order => "name")
              @csize = @cats.size 
-             @cnties = ExpertiseCounty.find(:all,  :conditions => "location_id = #{params[:location]}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
+             @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{params[:location]}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
              @ysize = @cnties.size
            #  @locations = ExpertiseCounty.filtered(@findoptions).displaylist
              @catcnt = Category.catuserfilter_count(@filteredoptions)
@@ -493,7 +493,7 @@ class Ask::ReportsController < ApplicationController
           end
           if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
-            countyid = ExpertiseCounty.find(:first, :conditions => ["location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
+            countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             @userlist = consolidate(ExpertiseCounty.get_users_for_counties(countyid, @statename, @catname))
             @usize = @userlist.size
           end
@@ -546,7 +546,7 @@ class Ask::ReportsController < ApplicationController
             @dir = params[:dir]
           end
           if (@statename && @statename != "")
-            @cnties = ExpertiseCounty.find(:all,  :conditions => "location_id = #{Location.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}
+            @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{Location.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}
             @cntycnt = ExpertiseCounty.count_answerers_for_county_and_category(@catname, @statename)
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             @userlist = consolidate(ExpertiseCounty.get_users_for_counties(nil, @statename, @catname))
@@ -571,7 +571,7 @@ class Ask::ReportsController < ApplicationController
             redirect_to :action => 'state_answerers', :Category => @catname
           end
           if (@county)
-            countyid = ExpertiseCounty.find(:first, :conditions => ["location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
+            countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
           # form array of users for selected county
             @userlist = consolidate(ExpertiseCounty.get_users_for_counties(countyid, @statename, @catname))
