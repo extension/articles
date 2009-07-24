@@ -14,7 +14,7 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 <script type="text/javascript">
 try {
 var pageTracker = _gat._getTracker("<%= @gaprofile %>");
-pageTracker._setDomainName("extension.com");
+pageTracker._setDomainName("extension.org");
 <% if !flash[:googleanalytics].nil? %>
     pageTracker._trackPageview("<%= flash[:googleanalytics] %>");
 <% else  %>
