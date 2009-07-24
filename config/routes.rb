@@ -10,9 +10,6 @@ ActionController::Routing::Routes.draw do |map|
   
   map.asset 'admin/asset/:file', :controller => "assets", :action => "show"
   map.connect 'admin/asset/:file.:format', :controller => "assets", :action => "show"
-      
-  map.open_id_complete 'openidsession', :controller => "openidsessions", :action => "create", :requirements => { :method => :get }
-  map.resource :openidsession
   
   map.home '', :controller => 'main', :action => 'index'
   map.redirect 'news', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :category => 'all', :permanent => true
