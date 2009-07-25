@@ -353,10 +353,10 @@ class Ask::PrefsController < ApplicationController
     render :layout => 'aae'   
   end
   
-  def aaeprofile
+  def profile
     if params[:id].nil? || params[:id].length == 0
       flash[:failure] = "No eXtension ID specified.";
-      redirect_to home_url
+      redirect_to :action => :index
       return
     end
     
@@ -365,7 +365,7 @@ class Ask::PrefsController < ApplicationController
    
     if @user.nil?
       flash[:failure] = "eXtension ID does not exist.";
-      redirect_to home_url
+      redirect_to :action => :index
       return
     end
     

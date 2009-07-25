@@ -1,0 +1,73 @@
+<div id="user_profile">
+<% @page_title = "Profile: " + @user.fullname %>
+<% help_title = "User Profile" %>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+    <h2><%= @user.fullname %> <small>(Ask an Expert User Profile)</small></h2>
+    <% if @user.retired? %><p class="alert"><strong>* This user is retired from the system.</strong></p><% end %>
+    
+    <div class="vcard">
+    	<p class="item">
+    		<span class="vcardLabel">Name:</span>
+    		<span class="fn"><%= @user.fullname %></span>
+    	</p>
+    	<p class="item">
+    		<span class="vcardLabel">Email:</span>
+    		<span class="email"><%= @user.email %></span>
+    	</p>
+    	<p class="item">
+    		<span class="vcardLabel">Title:</span>
+    		<span class="title"><%= (@user.title.nil? or @user.title == '') ? '&nbsp;': @user.title %></span>
+    	</p>
+    	<div class="org">
+    		<p class="item">
+    			<span class="vcardLabel">Institution:</span>
+    			<span class="organization-name"><%= (!@user.institution) ? '&nbsp;': @user.institution.name %></span>
+    		</p>
+    	</div>
+    	<div class="adr">	
+    		<p class="item">
+    			<span class="vcardLabel">State:</span>
+    			<span class="region"><%= (!@user.location) ? '&nbsp;': @user.location.name %></span>
+    		</p>
+    		<p class="item">
+    			<span class="vcardLabel">County:</span>
+    			<span class="county-name"><%= (!@user.county) ? '&nbsp;': @user.county.name %></span>
+    		</p>
+    	</div>
+    </div>
+    
+
+
+    <h2>Area of Expertise <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'ask/prefs', :action => 'expertise' %></small><% end %></h2>
+    <% if !@user.categories.empty? %>
+    <h4>Click to browse by expertise </h4>
+    <ul id="aoe_list">
+        <% @user.categories.each do |cat| %>
+            <li><%= link_to(cat.full_name, {:controller => 'ask/expert', :action => 'category', :id => cat.id }) %></li>
+        <% end %>
+        
+    </ul>
+    
+    <h2>Geographic Regions <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'ask/prefs', :action => 'location' %></small><% end %></h2>
+    <p><%= @geo_info %> <% if @myid == @user.id %><%= link_to "edit", :controller => 'ask/prefs', :action => 'index' %><% end %></p>
+    
+    <% if !@user.expertise_locations.empty? %>
+    <h4>Click to browse by location</h4>
+    <ul id="aoe_list">
+        <% @user.expertise_locations.each do |loc| %>
+            <li><%= link_to(loc.abbreviation, {:controller => 'ask/prefs', :action => 'location', :id => loc.fipsid }) %></li>
+        <% end %>
+    </ul>
+    <% end %>
+
+    <h2>Roles</h2>
+    <%= @auto_route_msg %>
+    <ul>
+        <% @user.user_roles.each do |ur| %>
+            <li><%= ur %></li>
+        <% end %>
+    </ul>
+<% end %>
+</div>

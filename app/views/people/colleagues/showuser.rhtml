@@ -52,7 +52,7 @@
 		    <h2>Ask an Expert and FAQ</h2>
 		    <ul class="simplelist">
 		        <li><%= link_to("FAQ Profile", "http://faq.extension.org/account/profile/" + @showuser.login)%></li>
-		        <li><%= link_to("Ask an Expert Profile", "http://faq.extension.org/account/aaeprofile/" + @showuser.login)%></li>
+		        <li><%= link_to("Ask an Expert Profile", :controller => 'ask/prefs', :action => 'profile', :id => @showuser.login)%></li>
 		    </ul>
 		</div>
 		<div id="showuser_activity">

@@ -7,7 +7,7 @@
     </tr>
 <% @users.each do |user| %>
     <tr>
-        <td><%= link_to (user.fullname, {:controller => 'account', :action => 'aaeprofile', :id => user.login}, {:class => "profile"}) %></td>
+        <td><%= link_to (user.fullname, {:controller => 'ask/prefs', :action => 'profile', :id => user.login}, {:class => "profile"}) %></td>
         <td>
         <% if user.expertise_locations.length > 0 %>    
           <% user.expertise_locations.each do |l| %>

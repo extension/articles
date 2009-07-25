@@ -72,7 +72,7 @@
                 <% end%>
 
                 <li><%= link_to "Reports", {:controller => "reports"} %></li>
-                <li><%= link_to(@currentuser.login, {:controller => 'account', :action => 'aaeprofile', :id => @currentuser.login}, {:class => "usericon"}) %></li>
+                <li><%= link_to(@currentuser.login, {:controller => 'ask/prefs', :action => 'profile', :id => @currentuser.login}, {:class => "usericon"}) %></li>
                 <li id="prefs"><%= link_to "preferences", :controller => 'ask/prefs', :action => 'index' %></li>
                 <li><%= link_to "Logout", :controller => 'people/account', :action => :logout %></li>
 

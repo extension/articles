@@ -84,6 +84,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'ask/about', :controller => 'ask/widgets', :action => 'about'
   map.connect 'ask/documentation', :controller => 'ask/widgets', :action => 'documentation'
   map.connect 'ask/help', :controller => 'ask/widgets', :action => 'help'
+  map.connect 'ask/profile/:id', :controller => 'ask/prefs', :action => 'profile'
   ################################################################
   
   map.connect 'sitemap_index', :controller => 'feeds', :action => 'sitemap_index'
