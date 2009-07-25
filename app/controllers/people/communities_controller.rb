@@ -368,12 +368,12 @@ class People::CommunitiesController < ApplicationController
   
   
   def findcommunity
-    if (params[:id].nil? or params[:id].empty?)
+    if (params[:q].nil? or params[:q].empty?)
       flash[:warning] = "Empty search term"
       redirect_to :action => 'index'
     else    
       
-      @communitylist = Community.search({:order => 'name', :limit => 10, :searchterm => params[:id], :page => params[:page], :paginate => true})
+      @communitylist = Community.search({:order => 'name', :limit => 10, :searchterm => params[:q], :page => params[:page], :paginate => true})
           
       if @communitylist.nil? || @communitylist.length == 0
         flash[:warning] = "No community was found that matches your search term"
