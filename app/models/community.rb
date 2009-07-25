@@ -187,7 +187,7 @@ class Community < ActiveRecord::Base
   end
   
   def update_user_tags(taglist,owner)
-    self.tag_with_and_cache(taglist,owner.id,Tag::USER)
+    self.replace_tags_with_and_cache(taglist,owner.id,Tag::USER)
   end
   
   def remove_user_tags(owner)
@@ -199,7 +199,7 @@ class Community < ActiveRecord::Base
   end
   
   def tag_myself_with_systemuser_tags(taglist)
-    self.tag_with_and_cache(taglist,User.systemuserid,Tag::SHARED,AppConfig::configtable['systemuser_sharedtag_weight'])
+    self.replace_tags_with_and_cache(taglist,User.systemuserid,Tag::SHARED,AppConfig::configtable['systemuser_sharedtag_weight'])
   end
   
   def shared_tag_list_to_s(limit=10)
@@ -565,180 +565,178 @@ class Community < ActiveRecord::Base
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
-  class << self  
     
-    def communitytype_condition(communitytype)
-      
-      if(communitytype.nil?)
-        return "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
-      end
-      
-      case communitytype
-      when 'approved'
-        returncondition = "communities.entrytype = #{Community::APPROVED}"
-      when 'usercontributed'
-        returncondition = "communities.entrytype = #{Community::USERCONTRIBUTED}"
-      else
-        returncondition = "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
-      end
-      
-      return returncondition      
+  def self.communitytype_condition(communitytype)
+    
+    if(communitytype.nil?)
+      return "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
     end
     
-    
-    def find_by_shortname_or_id(searchterm)
-      community = find_by_id(searchterm)
-      if(community.nil?)
-        community = find_by_shortname(searchterm)
-      end
-      return community
+    case communitytype
+    when 'approved'
+      returncondition = "communities.entrytype = #{Community::APPROVED}"
+    when 'usercontributed'
+      returncondition = "communities.entrytype = #{Community::USERCONTRIBUTED}"
+    else
+      returncondition = "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
     end
     
-    def drop_nonjoined_taggings
-      allcommunities = find(:all)
-      allcommunities.each do |community|
-        community.drop_nonjoined_taggings
-      end
-    end
-    
-    def per_page
-      10
-    end
-      
-    def get_approved_list
-      approved.find(:all,:order => 'name ASC')
-    end
-    
-    def newest(limit=5,entrytype='all')
-      if(entrytype == 'all')
-        find(:all,:order => 'created_at DESC', :limit => limit)
-      else
-        find(:all,:order => 'created_at DESC', :limit => limit, :conditions => ['entrytype = ?',entrytype])
-      end
-    end
-    
-    def search(opts = {})
-      
-      # TODO: search the description and the tags
-      
-      tmpterm = opts.delete(:searchterm)
-      if tmpterm.nil?
-        return nil
-      end
-      # remove any leading * to avoid borking mysql
-      searchterm = tmpterm.gsub(/^\*/,'$').strip
-      findvalues = {
-        :findname => searchterm,
-        :findtext => searchterm,
-      }
-      #TODO: bring back tag searching
-      conditions = ["name rlike :findname or description rlike :findtext",findvalues]
-      
-      finder_opts = {:conditions => conditions}
-      
-      dopaginate = opts.delete(:paginate)
-      if(dopaginate)
-        paginate(:all,opts.merge(finder_opts))
-      else
-        find(:all,opts.merge(finder_opts))
-      end
-    end
-    
-    
-    def userfilter_conditions(options={})
-      joins = [:users]
-      
-      conditions = []
-      
-      conditions << build_date_condition(options)
-      
-      if(options[:connectiontype])
-        conditions << "#{Communityconnection.connection_condition(options[:connectiontype])}"
-      else  
-        conditions << "#{Communityconnection.connection_condition('joined')}"
-      end
-      
-      if(options[:communitytype])
-        conditions << "#{self.communitytype_condition(options[:communitytype])}"
-      else
-        conditions << "#{self.communitytype_condition('all')}"
-      end
-      
-      # location, position, institution?
-      conditions << User.build_association_conditions(options)
-      
-      # agreement status?
-      conditions << User.build_agreement_status_conditions(options)
-      
-      if(options[:allusers].nil? or !options[:allusers])
-        conditions << "#{User.table_name}.retired = 0 and #{User.table_name}.vouched = 1 and #{User.table_name}.id != 1"
-      end  
-          
-      return {:joins => joins.compact, :conditions => conditions.compact.join(' AND ')}  
-    end
-    
-    def userfilter_count(options={},returnarray = false)
-      if(options[:countcommunities])
-        countcolumn = "#{table_name}.id"
-      else
-        countcolumn = "DISTINCT(#{User.table_name}.id)"
-      end
-          
-      countarray = self.filtered(options).count(countcolumn, :group => "#{table_name}.id")
-      if(returnarray)
-        return countarray
-      else
-        returnhash = {}
-        countarray.map{|values| returnhash[values[0]] = values[1].to_i}
-        return returnhash
-      end
-    end  
+    return returncondition      
+  end
   
-    # Gets the count of tags for the specified communities where the # of tags applied is >= 2 - which makes it way more complex
-    def get_shared_tag_counts(community_ids,options={},inneroptions={})
-      # scopes go on inner query - I'm sure that will bite this function in the arse later
-      
-      # construct inner query
-      inneroptions[:select] = "#{table_name}.#{primary_key} as community_id, taggings.tag_id as tag_id, COUNT(taggings.tag_id) as frequency, SUM(taggings.weight) as weightedfrequency"
-      inneroptions[:from] = "#{table_name}, #{Tagging.table_name}"
-
-      innersql  = "SELECT #{inneroptions[:select]} "
-      innersql << "FROM #{inneroptions[:from]} "
-
-      #add_joins!(innersql, inneroptions, nil)
-
-      innersql << "WHERE #{table_name}.#{primary_key} = taggings.taggable_id "
-      innersql << "AND taggings.taggable_type = '#{ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s}' "
-      ids_list_condition = community_ids.map { |id| "'#{id}'"}.join(',')
-      innersql << "AND (#{table_name}.#{primary_key} IN (#{sanitize_sql(ids_list_condition)})) "
-      innersql << "AND #{sanitize_sql(inneroptions[:conditions])} " if inneroptions[:conditions]
-      innersql << "GROUP BY taggings.tag_id "
-      if(!options[:minweight].nil?)
-        innersql << "HAVING SUM(taggings.weight) >= #{inneroptions[:minweight]}"
-      elsif(!options[:mincount].nil?)
-        innersql << "HAVING COUNT(taggings.tag_id) >= #{inneroptions[:mincount]}"
-      else # default to minweight >= 2
-        innersql << "HAVING SUM(taggings.weight) >= 2"
-      end
-      add_order!(innersql, inneroptions[:order], nil)
-      add_limit!(innersql, inneroptions, nil)
-      add_lock!(innersql, inneroptions, nil)
-      
-      # construct outer query
-      
-      options[:select] = "#{table_name}.*, COUNT(DISTINCT(shared_tag_list.tag_id)) as shared_tag_count"
-      options[:from] = "#{table_name}, (#{innersql}) AS shared_tag_list"
-
-      sql  = "SELECT #{options[:select]} "
-      sql << "FROM #{options[:from]} "
-      sql << "WHERE #{table_name}.#{primary_key} = shared_tag_list.community_id "
-      sql << "GROUP BY #{table_name}.#{primary_key} "
-      add_order!(sql, options[:order], nil)
-      add_limit!(sql, options, nil)
-      add_lock!(sql, options, nil)
-      
-      find_by_sql(sql)
+  
+  def self.find_by_shortname_or_id(searchterm)
+    community = find_by_id(searchterm)
+    if(community.nil?)
+      community = find_by_shortname(searchterm)
+    end
+    return community
+  end
+  
+  def self.drop_nonjoined_taggings
+    allcommunities = find(:all)
+    allcommunities.each do |community|
+      community.drop_nonjoined_taggings
+    end
+  end
+  
+  def self.per_page
+    10
+  end
+    
+  def self.get_approved_list
+    approved.find(:all,:order => 'name ASC')
+  end
+  
+  def self.newest(limit=5,entrytype='all')
+    if(entrytype == 'all')
+      find(:all,:order => 'created_at DESC', :limit => limit)
+    else
+      find(:all,:order => 'created_at DESC', :limit => limit, :conditions => ['entrytype = ?',entrytype])
+    end
+  end
+  
+  def self.search(opts = {})
+    
+    # TODO: search the description and the tags
+    
+    tmpterm = opts.delete(:searchterm)
+    if tmpterm.nil?
+      return nil
+    end
+    # remove any leading * to avoid borking mysql
+    searchterm = tmpterm.gsub(/^\*/,'$').strip
+    findvalues = {
+      :findname => searchterm,
+      :findtext => searchterm,
+      :findtag => searchterm
+    }
+    conditions = ["name rlike :findname or description rlike :findtext or cached_tags.fulltextlist rlike :findtag",findvalues]
+    
+    finder_opts = {:joins => [:cached_tags], :conditions => conditions, :group => "communities.id"}
+    
+    dopaginate = opts.delete(:paginate)
+    if(dopaginate)
+      paginate(:all,opts.merge(finder_opts))
+    else
+      find(:all,opts.merge(finder_opts))
+    end
+  end
+  
+  
+  def self.userfilter_conditions(options={})
+    joins = [:users]
+    
+    conditions = []
+    
+    conditions << build_date_condition(options)
+    
+    if(options[:connectiontype])
+      conditions << "#{Communityconnection.connection_condition(options[:connectiontype])}"
+    else  
+      conditions << "#{Communityconnection.connection_condition('joined')}"
+    end
+    
+    if(options[:communitytype])
+      conditions << "#{self.communitytype_condition(options[:communitytype])}"
+    else
+      conditions << "#{self.communitytype_condition('all')}"
+    end
+    
+    # location, position, institution?
+    conditions << User.build_association_conditions(options)
+    
+    # agreement status?
+    conditions << User.build_agreement_status_conditions(options)
+    
+    if(options[:allusers].nil? or !options[:allusers])
+      conditions << "#{User.table_name}.retired = 0 and #{User.table_name}.vouched = 1 and #{User.table_name}.id != 1"
+    end  
+        
+    return {:joins => joins.compact, :conditions => conditions.compact.join(' AND ')}  
+  end
+  
+  def self.userfilter_count(options={},returnarray = false)
+    if(options[:countcommunities])
+      countcolumn = "#{table_name}.id"
+    else
+      countcolumn = "DISTINCT(#{User.table_name}.id)"
     end
         
+    countarray = self.filtered(options).count(countcolumn, :group => "#{table_name}.id")
+    if(returnarray)
+      return countarray
+    else
+      returnhash = {}
+      countarray.map{|values| returnhash[values[0]] = values[1].to_i}
+      return returnhash
+    end
+  end  
+
+  # Gets the count of tags for the specified communities where the # of tags applied is >= 2 - which makes it way more complex
+  def self.get_shared_tag_counts(community_ids,options={},inneroptions={})
+    # scopes go on inner query - I'm sure that will bite this function in the arse later
+    
+    # construct inner query
+    inneroptions[:select] = "#{table_name}.#{primary_key} as community_id, taggings.tag_id as tag_id, COUNT(taggings.tag_id) as frequency, SUM(taggings.weight) as weightedfrequency"
+    inneroptions[:from] = "#{table_name}, #{Tagging.table_name}"
+
+    innersql  = "SELECT #{inneroptions[:select]} "
+    innersql << "FROM #{inneroptions[:from]} "
+
+    #add_joins!(innersql, inneroptions, nil)
+
+    innersql << "WHERE #{table_name}.#{primary_key} = taggings.taggable_id "
+    innersql << "AND taggings.taggable_type = '#{ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s}' "
+    ids_list_condition = community_ids.map { |id| "'#{id}'"}.join(',')
+    innersql << "AND (#{table_name}.#{primary_key} IN (#{sanitize_sql(ids_list_condition)})) "
+    innersql << "AND #{sanitize_sql(inneroptions[:conditions])} " if inneroptions[:conditions]
+    innersql << "GROUP BY taggings.tag_id "
+    if(!options[:minweight].nil?)
+      innersql << "HAVING SUM(taggings.weight) >= #{inneroptions[:minweight]}"
+    elsif(!options[:mincount].nil?)
+      innersql << "HAVING COUNT(taggings.tag_id) >= #{inneroptions[:mincount]}"
+    else # default to minweight >= 2
+      innersql << "HAVING SUM(taggings.weight) >= 2"
+    end
+    add_order!(innersql, inneroptions[:order], nil)
+    add_limit!(innersql, inneroptions, nil)
+    add_lock!(innersql, inneroptions, nil)
+    
+    # construct outer query
+    
+    options[:select] = "#{table_name}.*, COUNT(DISTINCT(shared_tag_list.tag_id)) as shared_tag_count"
+    options[:from] = "#{table_name}, (#{innersql}) AS shared_tag_list"
+
+    sql  = "SELECT #{options[:select]} "
+    sql << "FROM #{options[:from]} "
+    sql << "WHERE #{table_name}.#{primary_key} = shared_tag_list.community_id "
+    sql << "GROUP BY #{table_name}.#{primary_key} "
+    add_order!(sql, options[:order], nil)
+    add_limit!(sql, options, nil)
+    add_lock!(sql, options, nil)
+    
+    find_by_sql(sql)
   end
+        
 end

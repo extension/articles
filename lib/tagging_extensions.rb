@@ -79,13 +79,20 @@ class ActiveRecord::Base #:nodoc:
     def cache_tags(ownerid,kind)
       # TODO: possibly handle just the top tags?
       # e.g. my_top_tags_displaylist(:order => 'weightedfrequency DESC', :minweight => 2))
-      CachedTag.create_or_update(self,ownerid,kind)
+      
+      # TODO: NOTE!!  only supporting "all tags and any user for now!!"
+      CachedTag.create_or_update(self,User.anyuser,Tag::ALL)
     end
     
     def tag_with_and_cache(list,ownerid=User.systemuserid,kind=self.default_tag_kind,weight=1)
       tag_with(list,ownerid,kind,weight)
       cache_tags(ownerid,kind)
     end    
+    
+    def replace_tags_with_and_cache(list,ownerid=User.systemuserid,kind=self.default_tag_kind,weight=1)
+      replace_tags(list,ownerid,kind,weight)
+      cache_tags(ownerid,kind)
+    end
 
    # Returns the tags on <tt>self</tt> as a string.
     def tag_list #:nodoc:
@@ -114,7 +121,7 @@ class ActiveRecord::Base #:nodoc:
       taggable?(true)
       #tags.reload
       # has to be uniq by mysql index
-      tags.find(:all, :conditions => tagcond(ownerid,kind))
+      tags.find(:all, :select => "tags.*,count(tags.id) as frequency", :conditions => tagcond(ownerid,kind), :group => "tags.id")
       # TODO: use cache?
     end
         

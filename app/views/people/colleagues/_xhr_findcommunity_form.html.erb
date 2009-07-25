@@ -1,9 +1,9 @@
 <% form_tag(:action=> "invitetocommunity",:onSubmit => "Element.show('spinner');") do %>
     <fieldset class="search">
         <p>
-            <label for="findcommunity">search by Community name or description </label>
+            <label for="findcommunity">search by Community name or description
             <%= text_field_tag("findcommunity","",{:size => 25, :class => 'ajaxfind'})%>
-            <img alt="spinner" id="spinner" src="/images/spinner.gif" style="display:none;" />
+            <img alt="spinner" id="spinner" src="/images/common/spinner.gif" style="display:none;" /> </label>
         
         </p>
     </fieldset>

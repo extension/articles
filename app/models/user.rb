@@ -926,11 +926,11 @@ class User < ActiveRecord::Base
     findvalues = {
       :findname => searchterm,
       :findtext => searchterm,
+      :findtag => searchterm
     }
-    #TODO: bring back tag searching
-    conditions = ["(name rlike :findname or description rlike :findtext)",findvalues]
+    conditions = ["name rlike :findname or description rlike :findtext or cached_tags.fulltextlist rlike :findtag",findvalues]
 
-    finder_opts = {:conditions => conditions}
+    finder_opts = {:joins => [:cached_tags], :conditions => conditions, :group => 'communities.id'}
     
     dopaginate = opts.delete(:paginate)
     if(dopaginate)
@@ -1201,6 +1201,10 @@ class User < ActiveRecord::Base
     
     def systemuserid
       1
+    end
+    
+    def anyuser
+      0
     end
     
     def per_page
