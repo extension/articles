@@ -70,13 +70,31 @@ class AdminController < ApplicationController
     @community.public_description = params['community']['public_description']
     @community.public_name = params['community']['public_name']
     @community.is_launched = ( params['community']['is_launched'] ? true : false)
+    
+    
+    # sanity check tag names
+    this_community_content_tags = @community.tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+    other_community_tags = Tag.community_content_tags - this_community_content_tags
+    other_community_tag_names = other_community_tags.map(&:name)
+    updatelist = Tag.castlist_to_array(params['community']['content_tag_names'],true)
+    invalid_tags = []
+    updatelist.each do |tagname|
+      invalid_tags << tagname if other_community_tag_names.include?(tagname)
+    end
+    
+    if(!invalid_tags.blank?)
+      flash[:notice] = "The following tag names are in use by other communities: #{invalid_tags.join(Tag::JOINER)}"
+      return(render(:action => "edit_public_community"))
+    end
 
     if @community.save
       flash[:notice] = 'Community Updated'
+      @community.content_tag_names=(params['community']['content_tag_names'])
+      redirect_to :action => :manage_communities
     else
       flash[:notice] = 'Error updating community'
+      return(render(:action => "edit_public_community"))
     end
-    redirect_to :action => :manage_communities
   end
     
   def edit_public_community

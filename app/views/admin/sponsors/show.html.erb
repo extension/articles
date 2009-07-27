@@ -5,7 +5,7 @@
     <%= render_inline_logo(@sponsor.logo, false) %>
 
     <p>Graphic: <%= link_to(@sponsor.logo.filename, logo_url if @sponsor.image) %></p>
-    <p>Tags: <%= @sponsor.cached_content_tags.join(',') %></p>
+    <p>Tags: <%= @sponsor.cached_content_tags.join(Tag::JOINER) %></p>
 
     <p><%= link_to 'Edit', :action => 'edit', :id => @sponsor %></p>
     <p><%= link_to 'Delete', { :action => 'destroy', :id => @sponsor }, :confirm => 'Are you sure?', :method => :post %></p>

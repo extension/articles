@@ -2,11 +2,12 @@
     <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Communities', :action => 'manage_communities' %></p>
     <h1>Edit Community Details</h1>
     
-
     <h2><%= @community.name %></h2>
     
   
     <% form_tag( {:action => 'update_public_community', :id => @community}) do %>
+        <%= error_messages_for :community %>
+    
         <fieldset class="stacked">
             <h3>Edit details</h3>
         <p>
@@ -31,7 +32,12 @@
             <%= check_box_tag 'community[is_launched]', true, @community.is_launched %> Show to the Public
             <span class="instructions">Allows the public to see this community. The change is immediate.</span>
         </p>
-
+        
+        <p>
+            <label>Content Tag:</label>
+            <%= text_field_tag 'community[content_tag_names]', @community.content_tag_names %>
+            <span class="instructions">The term used to associate content with this community.</span>
+        <p>
         <p>
             <input type="submit" value="Update"> 
             <%= link_to 'cancel', {:controller => "admin", :action => "manage_communities"}, {:class => "cancel"}  %> 

@@ -12,6 +12,8 @@ class Tag < ActiveRecord::Base
   USER = 1
   SHARED = 2
   CONTENT = 3
+  CONTENT_PRIMARY = 4  # for public communities, indicates the primary content tag for the community, if more than one
+  
   
   # special class of 'all' for caching purposes
   ALL = 42  # the ultimate answer, of course

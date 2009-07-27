@@ -97,7 +97,7 @@ class Community < ActiveRecord::Base
   
   # validations
   validates_uniqueness_of :name
-  validates_presence_of :name, :description, :entrytype
+  validates_presence_of :name, :entrytype
      
      
   
@@ -115,20 +115,77 @@ class Community < ActiveRecord::Base
   before_create :clean_description_and_shortname, :show_in_public_if_approved
   before_update :clean_description_and_shortname, :show_in_public_if_approved
 
-  def primary_content_tag_name
-    self.cached_content_tags[0]
+  def primary_content_tag_name(force_cache_update=false)
+    self.cached_content_tags(force_cache_update)[0]
   end
+    
+  # returns a comma delimited of the tags - with the primary content tag name first in the list
+  # used for community editing in the administrative interface for public communities
+  def content_tag_names(force_cache_update=false)
+    self.cached_content_tags(force_cache_update).join(Tag::JOINER)
+  end  
   
+  # this will silently strip out content tags in use by other communities
+  # it's up to the controller level to deal with the warnings on this
+  def content_tag_names=(taglist)
+    # get content tags in use by other communities
+    my_content_tags = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+    other_community_tags = Tag.community_content_tags - my_content_tags
+    other_community_tag_names = other_community_tags.map(&:name)
+    updatelist = Tag.castlist_to_array(taglist,true)
+    primary = updatelist[0]
+    
+    # primary tag - first in the list
+    if(!other_community_tag_names.include?(primary))
+      self.replace_tags(primary,User.systemuserid,Tag::CONTENT_PRIMARY)
+    end
+    
+    # okay do the others - updating the cached_tags for search
+    self.replace_tags_with_and_cache(updatelist.reject{|tname| other_community_tag_names.include?(tname)},User.systemuserid,Tag::CONTENT)
+           
+    # now update my cached_content_tags and return those
+    return self.cached_content_tags(true)
+  end
+    
   # returns an array of the names
   def cached_content_tags(force_cache_update=false)
-    if(self.cached_content_tag_data.blank? or force_cache_update)
-      tagarray = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+    if(self.cached_content_tag_data.blank? or self.cached_content_tag_data[:primary_tag].blank? or self.cached_content_tag_data[:all_tags].blank? or force_cache_update)
+      # get primary content tag first - should be only one - and if not, we'll force it anyway
+      primary_tags = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT_PRIMARY)
+      if(!primary_tags.blank?)
+        tagarray = []
+        primary_content_tag = primary_tags[0]
+        tagarray << primary_content_tag
+        # get the rest...
+        other_content_tags = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+        other_content_tags.each do |tag| 
+          if(tag != primary_content_tag)
+            tagarray << tag
+          end
+        end
+        tagarray += other_content_tags if !other_content_tags.blank?
+      else
+        tagarray = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+      end
+      
       cachedata = {}
-      tagarray.map{|t| cachedata[t.id] = t.name}
+      if(!tagarray.blank?)
+        cachedata[:primary_tag] = {:id => tagarray[0].id, :name => tagarray[0].name}
+        cachedata[:all_tags] = {}
+        tagarray.map{|t| cachedata[:all_tags][t.id] = t.name}
+      end
       update_attribute(:cached_content_tag_data, cachedata)
       return tagarray.collect(&:name)
     else
-      return self.cached_content_tag_data.collect{|id,name| name}
+      tagarray = []
+      primary_tag_name = self.cached_content_tag_data[:primary_tag][:name] 
+      tagarray << primary_tag_name    
+      self.cached_content_tag_data[:all_tags].each do |id,name| 
+        if(name != primary_tag_name)
+          tagarray << name
+        end
+      end          
+      return tagarray
     end
   end
   
