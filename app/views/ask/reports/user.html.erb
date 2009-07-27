@@ -7,7 +7,7 @@
 <h1><%= (@user.first_name) ? @user.first_name : ""%>  <%= @user.last_name%> <small>(FAQ and Ask an Expert activity)</small></h1>
 
 <h2 id="additional">Additional information available on this user's 
-<%= link_to ("FAQ profile", {:controller => 'account', :action => 'profile', :id => @user.login}) %>
+<%= link_to ("People profile", {:controller => 'people/colleagues', :action => 'showuser', :userid => @user.login}) %>
  or <%= link_to ("Ask an Expert profile", {:controller => 'ask/prefs', :action => 'profile', :id => @user.login}) %></h2>
 
 

@@ -27,7 +27,7 @@
         <% @role.user_roles.each do |user_role| %>
             <tr>
                 <td class="list"><%= user_role.user.fullname %> <% if user_role.category %>for <%= user_role.category.name %><% end %></td>
-                <td class="list"><%= link_to user_role.user.login, :controller => 'account', :action => 'profile', :id => user_role.user.login %></td>
+                <td class="list"><%= link_to user_role.user.login, :controller => 'people/colleagues', :action => 'showuser', :userid => user_role.user.login %></td>
                 <td class="list"><%= link_to "remove role", :action => "delete_assignment", :id => user_role.id %></td>
             </tr>
         <% end %>

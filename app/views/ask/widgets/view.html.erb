@@ -8,6 +8,8 @@
 
 <p>Date Created: <strong><%= @widget.created_at %></strong></p>
 
+<h4><%= link_to "View '#{@widget.name}' Assignees", :controller => 'ask/widgets', :action => 'widget_assignees', :id => @widget.id %></h4>
+
 <h4>Widget Status</h4>
 <div class="active-status">
     <p>This widget is currently <strong id="widget_active"><%= @widget.active? ? "Active" : "Inactive" %></strong></p>
