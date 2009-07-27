@@ -1,6 +1,6 @@
 <% if !countylist.nil? and !countylist.empty?%>
 	<p>
 	    <label for="user_county_id">County:</label>
-			<%= select(:user, :county_id, countylist.map {|c| [c.name,c.id]},{ :include_blank => true }) %>
+			<%= select(:user, :county_id, countylist.map{|c| [c.name,c.id] if c.name.downcase != 'all' }.compact,{ :include_blank => true }) %>
 	</p>
 <% end %>
