@@ -519,16 +519,13 @@ th.empty {background:none;}
 .general_table {
 	width: 50%;
 	border:  1px solid #a9c9e5;
-	background:url(/images/table_row_fade_blue.jpg) repeat-y #fff;
 }
 #user_table {
 	border:  1px solid #a9c9e5;
-	background:url(/images/table_row_fade_blue.jpg) repeat-y #fff;
 }
 
 #pref_states {
 	border:  1px solid #a9c9e5;
-/*	background:url(/images/table_row_fade_blue.jpg) repeat-y #fff;*/
 }
 #pref_states span {
 	font-weight: bold;

@@ -1,7 +1,12 @@
-<h1>Widget: <%= @widget.name %></h1>
-<%= render(:partial => "partial/flashmessages") %>
-<p>Created: <%= @widget.created_at %></p>
-<h3>Widget Assignees (users taking responsibility for questions)</h3>
+<div class="detailpage">
+    
+    <p><%= link_to "All widgets", :controller => 'ask/widgets/list' %> > <%= link_to("Widget info", :controller => :widgets, :action => :view, :id => @widget.id) %> > Assignee Pool</p>
+    
+    <h2><%= @widget.name %></h2>
+    
+    <%= render(:partial => "partial/flashmessages") %>
+    
+    <h4>Assignee Pool (users taking responsibility for questions)</h4>
 
 <% if @widget_assignees.length > 0 %>
   <table id="aoe_table">
@@ -15,7 +20,9 @@
   <% end %>
   </table>
 <% else %>
-  <p>This widget currently has no users signed up to receive questions from it. If you like, you can 
-  <%= link_to ("sign up to receive questions", :controller => :account, :action => :widget_preferences) %> from 
-     this widget and begin answering.</p>
+    <div class="askalert">
+        <p><strong>There are currently no users signed up to receive questions from this widget.</strong></p>
+        <p>If you like, you can <%= link_to ("sign up to receive questions", :controller => :account, :action => :widget_preferences) %> from this widget and begin answering.</p>
+    </div>
 <% end %>
+</div>

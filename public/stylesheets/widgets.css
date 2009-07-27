@@ -256,3 +256,7 @@ select {display:block;}
 div#gsfn_search_widget {width:450px;}
 #contact_us ul {padding:.75em 1em 1em 2em;}
 #contact_us ul li {list-style:disc; margin-bottom:1em;}
+
+.askalert {padding: .25em 1em; border: 2px solid red;}
+.askalert strong {color:red;}
+.groupicon {background: transparent url(/images/common/group.png) 0 0 no-repeat; padding-left:20px;}

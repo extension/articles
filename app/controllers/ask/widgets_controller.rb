@@ -52,6 +52,7 @@ class Ask::WidgetsController < ApplicationController
       redirect_to :action => :index
     else
       @widget_iframe_code = @widget.get_iframe_code
+      @widget_assignees = @widget.assignees
     end
   end
   
