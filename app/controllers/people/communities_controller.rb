@@ -12,7 +12,6 @@ class People::CommunitiesController < ApplicationController
 
   # GET /communities
   def index
-
     if(@currentuser.tags.count > 0) 
       @relevant_communities = @currentuser.relevant_community_scores
     end
@@ -185,8 +184,6 @@ class People::CommunitiesController < ApplicationController
 
     @findoptions = @filteredparams.findoptions
 
-    
-    
     @page_title = @community.name + ': ' + Communityconnection::TYPES[@filteredparams.connectiontype]
         # download check    
     if(!params[:download].nil? and params[:download] == 'csv')
@@ -390,7 +387,7 @@ class People::CommunitiesController < ApplicationController
     @communitylist = Community.paginate(:all,:order => 'created_at DESC', :page => params[:page])
     @page_title = "Newest Communities"
     respond_to do |format|
-      format.html { render :template => "communities/communitylist" }
+      format.html { render :template => "people/communities/communitylist" }
     end
   end 
   
@@ -398,7 +395,7 @@ class People::CommunitiesController < ApplicationController
     @communitylist = @currentuser.communities.paginate(:all,:order => 'created_at DESC', :page => params[:page])
     @page_title = "Your Communities"
     respond_to do |format|
-      format.html { render :template => "communities/communitylist" }
+      format.html { render :template => "people/communities/communitylist" }
     end
   end
     
@@ -406,7 +403,7 @@ class People::CommunitiesController < ApplicationController
     @communitylist = Community.paginate(:all,:order => 'name ASC', :page => params[:page])
     @page_title = "All Communities"
     respond_to do |format|
-      format.html { render :template => "communities/communitylist" }
+      format.html { render :template => "people/communities/communitylist" }
     end
   end
   
