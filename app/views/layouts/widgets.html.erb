@@ -37,7 +37,7 @@
         </div>
         <div id="sidebar">
             <% if !@currentuser %>
-              <p><%= link_to "Sign in", :controller => 'people/account', :action => :login %></p>
+              <p><%= link_to "Sign in", :controller => 'ask/widgets', :action => :login_redirect, :return_back => request.request_uri %></p>
               <% get_widget_link_message = "<em>(requires login)</em>" %>
             <% else %>
               <% get_widget_link_message = "" %>

@@ -7,7 +7,7 @@
 
 class Ask::WidgetsController < ApplicationController
   
-  before_filter :login_required, :except => [:create_from_widget, :widget, :index, :about, :documentation, :who]
+  before_filter :login_required, :except => [:create_from_widget, :widget, :index, :about, :documentation, :who, :login_redirect]
   before_filter :login_optional, :only => [:index, :about, :documentation, :who]
   layout 'widgets'
   
@@ -19,6 +19,11 @@ class Ask::WidgetsController < ApplicationController
       @selected_tab = :all
       @widgets = Widget.active
     end
+  end
+  
+  def login_redirect
+    session[:return_to] = params[:return_back]
+    redirect_to :controller => 'people/account', :action => :login
   end
   
   def index
