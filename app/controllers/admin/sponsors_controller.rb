@@ -19,17 +19,8 @@ class Admin::SponsorsController < ApplicationController
     end
     render :nothing => true
   end
-  
+
   def index
-    list
-    render :action => 'list'
-  end
-
-  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
-
-  def list
     set_titletag('Manage Sponsors - Pubsite Admin')
     @sponsors = Sponsor.find(:all, :order => 'position')
   end
@@ -40,17 +31,17 @@ class Admin::SponsorsController < ApplicationController
 
   def new
     @sponsor = Sponsor.new
-    @assets =  Asset.find(:all)
-    # TODO: remove assets from collection which are already assigned to advertisements?
+    @logos =  Logo.find(:all)
   end
 
   def create
     @sponsor = Sponsor.new(params[:sponsor])
     if @sponsor.save
+      @sponsor.content_tag_names=(params['sponsor']['content_tag_names'])
       flash[:notice] = 'Sponsor was successfully created and added to the bottom of the list. You can now arrange the display order if needed.'
-      redirect_to :action => 'list'
+      redirect_to(admin_sponsors_url)
     else
-      render :action => 'new'
+      render(:action => 'new')
     end
   end
 
@@ -61,16 +52,18 @@ class Admin::SponsorsController < ApplicationController
   def update
     @sponsor = Sponsor.find(params[:id])
     if @sponsor.update_attributes(params[:sponsor])
+      @sponsor.content_tag_names=(params['sponsor']['content_tag_names'])
       flash[:notice] = 'Sponsor was successfully updated.'
-      redirect_to :action => 'list'
+      redirect_to(admin_sponsors_url)
     else
-      render :action => 'edit'
+      render(:action => 'edit')
     end
   end
 
   def destroy
     Sponsor.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    flash[:notice] = 'Sponsor was successfully deleted.'
+    redirect_to(admin_sponsors_url)
   end
     
 end

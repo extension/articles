@@ -1,0 +1,30 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %></p>
+    
+    <h1>Logos (Image library for Sponsors)</h1>
+    
+    <p><%= link_to('Add a new graphic', new_admin_logo_url) %> | <%= link_to('Manage Sponsors', admin_sponsors_url) %></p>
+    
+    <table class="logos">
+        <tr>
+            <th scope="col">Image</th>	
+            <th scope="col">Filename</th>
+            <th scope="col">Created</th>
+            <th scope="col">delete</th>
+        </tr>
+
+  
+<% for logo in @logos %>
+  <tr>
+	<td><%= render_inline_logo(logo, true) %></td>
+    <td><%=h logo.filename %></td>
+    <td><%=h logo.created_at %></td>
+    <td><%= link_to 'Delete', admin_logo_url(logo), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+
+
+
+</div>

@@ -9,9 +9,10 @@
         <% @sponsors.each do |sponsor| %>    
             <li id="item_<%= sponsor.id %>">
                 <span class="sponsor_actions">
-                    <span>Tags: <strong><%= sponsor.cached_content_tags.join(Tag::JOINER) %></strong></span>
-                    <%= link_to "edit", :action => 'edit', :id => sponsor.id %>
-                    <%= link_to 'delete', { :action => 'destroy', :id => sponsor.id }, :confirm => 'Are you sure?', :method => :post %>
+                    <span>Name: <%= sponsor.name.blank? ? 'not set' : sponsor.name %></span><br/>
+                    <span>Tags: <%= sponsor.content_tag_names %></span>
+                    <%= link_to("edit", edit_admin_sponsor_url(sponsor)) %>
+                    <%= link_to('delete',admin_sponsor_url(sponsor) , {:confirm => 'Are you sure?', :method => :delete, :class => "delete"}) %>
                 </span>
                 <%= render_inline_logo(sponsor.logo, true) %>
                 

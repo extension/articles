@@ -1,10 +1,10 @@
 <div id="admin">
     <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %> &gt; <%= link_to('Sponsors',admin_sponsors_url)  %></p>    
     <h2>Sponsor Edit</h2>
-    <% form_tag( {:action => 'update', :id => @sponsor},  :multipart => true )do %>
+    <% form_for :sponsor, @sponsor, :url => admin_sponsor_path(@sponsor), :html => { :method => :put } do |f| %>
         <fieldset class="stacked">
             <%= render :partial => 'form' %>
-            <p><%= submit_tag 'Save' %> <%= link_to 'Cancel', :action => 'list' %></p>
+            <p><%= submit_tag 'Save' %> <%= link_to('Cancel', admin_sponsors_url) %></p>
         </fieldset>
     <% end %>
 </div>

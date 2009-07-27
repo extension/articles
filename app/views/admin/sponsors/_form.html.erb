@@ -1,12 +1,21 @@
 <%= error_messages_for 'sponsor' %>
 
-<!--[form:sponsor]-->
 <p>
-<%= label :sponsor, :logo_id, "Which graphic will this ad use?" %>
-	<%= select :sponsor, :logo_id, Logo.find(:all).collect { |a| [a.filename, a.id] }.delete_if { |a| a[0].include? "_thumb." } %>
+    <label>Name:</label>
+    <%= text_field_tag 'sponsor[name]', (@sponsor.name.nil? ? '' : @sponsor.name) %>
+    <span class="instructions">Also used as the alt tag for the sponsor logo display.</span>
 </p>
+
 <p>
-	<span>"main" displays ad only on the eXtension homepage. Other options display ad on the homepage and any page that includes the content tag.</span>
+    <label>Which graphic will this ad use?</label>
+    <%= select(:sponsor, :logo_id, Logo.all.collect { |l| [l.filename, l.id] if l.thumbnail != 'thumb' }.compact, {:prompt => "Select a logo", :selected => @sponsor.logo_id}) %>
+<p>
+
+<p>
+    <label>Content Tags:</label>
+    <%= text_field_tag 'sponsor[content_tag_names]', @sponsor.content_tag_names %>
+    <span class="instructions">Adding tags will display the sponsor on the index page for the community that uses that tag and any page that is tagged with that content tag.  Leave blank if the logo should just be displayed on the main page only.</span>
+<p>
+
 </p>
-<!--[eoform:sponsor]-->
 
