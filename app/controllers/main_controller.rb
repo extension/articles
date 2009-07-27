@@ -37,8 +37,8 @@ class MainController < ApplicationController
       set_title(@community.name,@community.public_description)
       set_titletag("#{@community.public_name} - eXtension")
       # TODO: write a helper method to get the content tags
-      @community_tags = @community.tags
-      @sponsors = Sponsor.tagged_with_any_content_tags(@community_tags.map(&:name)).prioritized
+      @community_content_tags = @community.tags
+      @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
       
       @homage = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered.first
       @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered.first
