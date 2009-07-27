@@ -12,7 +12,7 @@
 	 <p>
 	     <label for="community_tag_list">Describe and tag this community: 
 	     <%= text_area_tag(:tag_list,@community.user_tag_displaylist(@currentuser),{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
-	     <em>Separate tags with commas or spaces.  Create multi-word tags with double quotes (ie. learning "sharing information" education )</em>
+	     <em>Separate tags with commas.</em>
 	     </label>
 	 </p>
 		

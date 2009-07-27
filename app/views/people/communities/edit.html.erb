@@ -31,7 +31,7 @@
 	 <p>
 	     <label for="community_tag_list">Provide some initial tags for this community: 
 	     <%= text_area_tag(:tag_list,@community.system_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
-	     <em>Separate tags with commas or spaces.  Create multi-word tags with double quotes (ie. learning "sharing information" education )</em>
+	     <em>Separate tags with commas.</em>
 	     </label>
 	 </p>
 	
