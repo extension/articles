@@ -51,9 +51,10 @@ class ArticlesController < ApplicationController
         return
       end
     
+      # special handling for mediawiki-like "Categoy:bob" - style titles
       if title_to_lookup =~ /Category\:(.+)/
-        category = $1.gsub(/_/, ' ')
-        redirect_to content_tag_index_url(with_content_tag?), :status=>301
+        content_tag = $1.gsub(/_/, ' ')
+        redirect_to content_tag_index_url(:content_tag => content_tag), :status=>301
         return
       end
     
