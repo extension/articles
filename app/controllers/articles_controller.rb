@@ -18,7 +18,7 @@ class ArticlesController < ApplicationController
       articles = Article.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
     else
       set_titletag("Articles - all - eXtension")
-      articles = Article.all.ordered(params[:order]).paginate(:page => params[:page])
+      articles = Article.ordered(params[:order]).paginate(:page => params[:page])
     end
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true
