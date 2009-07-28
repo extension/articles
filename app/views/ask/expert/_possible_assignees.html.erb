@@ -18,14 +18,14 @@
 <% users.each do |user| %>
     <div id='user_tooltip_<%= user.id %>' style="display:none;" class="usertooltip">
         <div id="usertooltip_hook">
-        <h3><%= user.first_name %> <%= user.last_name %> <small>(<%= user.login %>)</small></h3>
+        <h3><%= user.fullname %> <small>(<%= user.login %>)</small></h3>
         
         <% if user.title %>
             <h4><%= user.title %></h4>
         <% end %>
 
-        <% if user.university %>
-            <h4><%= user.university %></h4>
+        <% if user.institution %>
+            <h4><%= user.institution.name %></h4>
         <% end %>
         
         <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>

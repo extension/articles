@@ -125,7 +125,7 @@ class Ask::ExpertController < ApplicationController
       @users = User.find(:all, :include => [:expertise_locations, :open_questions, :categories], :limit => 20, :conditions => ['(login like ? or first_name like ? or last_name like ?) and users.retired = false', user_name[0] + '%', user_name[0] + '%', user_name[0] + '%'], :order => 'first_name')
     end
     
-    render :template => 'expert/assignees_by_name.js.rjs', :layout => false
+    render :template => 'ask/expert/assignees_by_name.js.rjs', :layout => false
     
   end
   
