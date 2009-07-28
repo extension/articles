@@ -727,6 +727,7 @@ end
 
 def pick_user_from_county(county, question_categories)
   # if a county was selected for this question and there are users for this county
+  county = ExpertiseCounty.find_by_fipsid(county.fipsid)
   county_users = User.narrow_by_routers(county.users, Role::AUTO_ROUTE)
   if county_users and county_users.length > 0
     # if there were categories
@@ -735,7 +736,7 @@ def pick_user_from_county(county, question_categories)
         cat_county_users = subcat.get_user_intersection(county_users)
         # if there are no common users that have the subcat and county, then try the location and subcat intersection
         if !cat_county_users or cat_county_users.length == 0
-          loc_subcat_user = pick_user_from_state(county.location, question_categories)
+          loc_subcat_user = pick_user_from_state(county.expertise_location, question_categories)
           # if there was no county, subcat intersection or location, subcat intersection, then use the subcat's users
           if loc_subcat_user  
             return loc_subcat_user 
@@ -749,7 +750,7 @@ def pick_user_from_county(county, question_categories)
         cat_county_users = top_level_cat.get_user_intersection(county_users)
         # if there are no common users between the top level category's users and the counties' users, then try the top level cat and location intersection
         if !cat_county_users or cat_county_users.length == 0
-          loc_cat_user = pick_user_from_state(county.location, question_categories)
+          loc_cat_user = pick_user_from_state(county.expertise_location, question_categories)
           if loc_cat_user 
             return loc_cat_user
           else
@@ -767,7 +768,7 @@ def pick_user_from_county(county, question_categories)
       uncat_county_users = county.users.find(:all, :conditions => "users.id IN (#{uncat_wranglers.collect{|u| u.id}.join(',')})")
       # if there are no uncat. quest. wranglers with the preference set for this county, then route by location with no category
       if !uncat_county_users or uncat_county_users.length == 0
-        return pick_user_from_state(county.location, nil)
+        return pick_user_from_state(county.expertise_location, nil)
       else
         return pick_user_from_list(uncat_county_users)
       end
@@ -777,11 +778,12 @@ def pick_user_from_county(county, question_categories)
     end
   # there were no users for this county  
   else
-    return pick_user_from_state(county.location, question_categories)
+    return pick_user_from_state(county.expertise_location, question_categories)
   end # end of 'are there county users'
 end
 
 def pick_user_from_state(location, question_categories)
+  location = ExpertiseLocation.find_by_fipsid(location.fipsid)
   all_county_loc = location.expertise_counties.find(:first, :conditions => "countycode = '0'")
   all_county_loc ? all_county_users = User.narrow_by_routers(all_county_loc.users, Role::AUTO_ROUTE) : all_county_users = nil
   
