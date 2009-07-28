@@ -168,7 +168,7 @@ class Ask::ExpertController < ApplicationController
     @location_options = get_location_options
     @county_options = get_county_options
     
-    @categories = [""].concat(Category.root_categories.map{|c| [c.name, c.id]})
+    @categories = [""].concat(Category.launched_content_categories.map{|c| [c.name, c.id]})
   end
   
   def location

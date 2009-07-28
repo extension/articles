@@ -53,6 +53,7 @@ class Tag < ActiveRecord::Base
   end
   
   named_scope :community_content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggable_type = 'Community'"}
+  named_scope :launched_community_content_tags, {:joins => [:communities], :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE"}
   named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}"}
   
   # TODO: review.  This is kind of a hack that might should be done differently

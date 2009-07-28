@@ -26,6 +26,12 @@ class Category < ActiveRecord::Base
     Category.find(:all, :conditions => 'parent_id is null', :order => 'name')
   end
   
+  def self.launched_content_categories
+    # get the content tags for launched communities and map to a string we can limit a category find to.
+    launched_community_content_tags = Tag.launched_community_content_tags.map{|t| "'#{t.name}'"}
+    self.find(:all, :conditions => "parent_id IS NULL and LOWER(name) IN (#{launched_community_content_tags.join(',')})", :order => 'name')
+  end
+  
   def subcat_names
     self.children.collect{|c| c.name}.join(',')
   end
