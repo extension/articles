@@ -7,7 +7,6 @@
 
 class MainController < ApplicationController
   protect_from_forgery :except => :find_institution
-  skip_before_filter :disable_link_prefetching, :only => :find_institution
   before_filter :set_community_topic_and_content_tag
 
   def index

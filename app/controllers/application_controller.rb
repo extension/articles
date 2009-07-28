@@ -31,7 +31,6 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_locale
   before_filter :unescape_params
-  before_filter :disable_link_prefetching
   before_filter :personalize
   before_filter :set_request_url_options
   before_filter :set_default_request_ip_address
@@ -104,13 +103,13 @@ class ApplicationController < ActionController::Base
     @right_column = false    
   end
   
-  def disable_link_prefetching
-    if request.env["HTTP_X_MOZ"] == "prefetch" 
-      logger.debug "prefetch detected: sending 403 Forbidden" 
-      render(:nothing => true, :status => 403)
-      return false
-    end
-  end
+  # def disable_link_prefetching
+  #   if request.env["HTTP_X_MOZ"] == "prefetch" 
+  #     logger.debug "prefetch detected: sending 403 Forbidden" 
+  #     render(:nothing => true, :status => 403)
+  #     return false
+  #   end
+  # end
   
   def personalize
     @personal = {}

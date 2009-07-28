@@ -560,7 +560,6 @@ ActiveRecord::Schema.define(:version => 20090727144500) do
     t.integer "logo_id"
     t.integer "position"
     t.string  "name"
-    t.text    "cached_content_tag_data"
   end
 
   create_table "submitted_question_events", :force => true do |t|

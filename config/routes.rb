@@ -19,6 +19,8 @@ ActionController::Routing::Routes.draw do |map|
   map.redirect 'articles', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :category => 'all', :permanent => true
   
   map.reports 'reports', :controller => :reports
+  map.feeds 'reports', :controller => :feeds
+
   
   #################################################################
   ### people routes ###

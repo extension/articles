@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class FeedsController < ApplicationController
-  skip_before_filter :disable_link_prefetching, :get_tag, :personalize, :except => :index
+  skip_before_filter :personalize, :except => :index
     
   def index
     set_title('Feeds')
