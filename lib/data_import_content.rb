@@ -117,7 +117,7 @@ module DataImportContent
     last_updated_item_time = refresh_since
     
 
-    atom_entries =  AtomEntry.entries_from_xml(xmlcontent)
+    atom_entries =  Atom::Feed.load_feed(xmlcontent).entries
     if(!atom_entries.blank?)
       atom_entries.each do |entry|
         (object_update_time, object_op, object) = self.create_or_update_from_atom_entry(entry)

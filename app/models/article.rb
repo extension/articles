@@ -44,12 +44,12 @@ class Article < ActiveRecord::Base
   end
   
   def self.create_or_update_from_atom_entry(entry)
-    article = find_by_original_url(entry.link) || self.new
+    article = find_by_original_url(entry.links[0].href) || self.new
     
     if entry.updated.nil?
       updated = Time.now.utc
     else
-      updated = Time.parse(entry.updated)
+      updated = entry.updated
     end
     
     # if article.wiki_updated_at
@@ -63,19 +63,19 @@ class Article < ActiveRecord::Base
     if entry.published.nil?
       pubdate = Time.now.utc
     else
-      pubdate = Time.parse(entry.published)
+      pubdate = entry.published
     end
     article.wiki_created_at = pubdate
       
-    if entry.categories and entry.categories.include?('delete')
+    if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
       returndata = [article.wiki_updated_at, 'deleted', nil]
       article.destroy
       return returndata
     end
     
     article.title = entry.title
-    article.url = entry.link if article.url.blank?
-    article.author = entry.author.name
+    article.url = entry.links[0].href if article.url.blank?
+    article.author = entry.authors[0].name
     article.original_content = entry.content
   
     if(article.new_record?)
@@ -85,8 +85,8 @@ class Article < ActiveRecord::Base
     end  
     article.save
     if(!entry.categories.blank?)
-      article.replace_tags(entry.categories,User.systemuserid,Tag::CONTENT)
-      article.put_in_buckets(entry.categories)    
+      article.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)
+      article.put_in_buckets(entry.categories.map(&:term))    
     end
     returndata << article
     return returndata
@@ -114,7 +114,7 @@ class Article < ActiveRecord::Base
     # create new objects from the atom entries
     deleted_items = 0
     last_updated_item_time = refresh_since
-    atom_entries =  AtomEntry.entries_from_xml(xmlcontent)
+    atom_entries =  Atom::Feed.load_feed(xmlcontent).entries
     if(!atom_entries.blank?)
       atom_entries.each do |entry|
         if entry.id == AppConfig.configtable['host_wikiarticle'] + "/wiki/Special:Log/delete"
@@ -123,7 +123,7 @@ class Article < ActiveRecord::Base
           title = matches[1]
             article = Article.find_by_title(title)
             if(!article.nil?)
-              removed_time = Time.parse(entry.updated)
+              removed_time = entry.updated
               # if article is newer than delete record, then keep it
               if article.wiki_updated_at <= removed_time
                 article.destroy

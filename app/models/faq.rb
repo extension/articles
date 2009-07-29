@@ -37,18 +37,18 @@ class Faq < ActiveRecord::Base
     if entry.updated.nil?
       updated_time = Time.now.utc
     else
-      updated_time = Time.parse(entry.updated)
+      updated_time = entry.updated
     end    
     faq.heureka_published_at = updated_time
     
-    if entry.categories and entry.categories.include?('delete')
+    if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
       returndata = [updated_time, 'deleted', nil]
       faq.destroy
       return returndata
     end
     
     faq.question = entry.title
-    faq.answer = entry.content
+    faq.answer = entry.content.to_s
   
     if(faq.new_record?)
       returndata = [faq.heureka_published_at, 'added']
@@ -56,8 +56,8 @@ class Faq < ActiveRecord::Base
       returndata = [faq.heureka_published_at, 'updated']
     end  
     faq.save
-    if(!faq.categories.blank?)
-      faq.replace_tags(entry.categories,User.systemuserid,Tag::CONTENT)
+    if(!entry.categories.blank?)
+      faq.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)
     end
     returndata << faq
     return returndata

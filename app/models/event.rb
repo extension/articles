@@ -33,7 +33,7 @@ class Event < ActiveRecord::Base
   
     
   def self.create_or_update_from_atom_entry(entry)
-    vevent = hCalendar.find(:first => {:text => entry.content})
+    vevent = hCalendar.find(:first => {:text => entry.content.to_s})
     item = self.find_by_id(vevent.uid) || self.new
     
     # hcalendar attributes:
@@ -66,7 +66,7 @@ class Event < ActiveRecord::Base
     if entry.updated.nil?
       updated = Time.now.utc
     else
-      updated = Time.parse(entry.updated)
+      updated = entry.updated
     end
     item.xcal_updated_at = updated
     
@@ -98,7 +98,11 @@ class Event < ActiveRecord::Base
       returndata = [item.xcal_updated_at, 'updated']
     end
     item.save!
-    item.replace_tags(entry.categories,User.systemuserid,Tag::CONTENT)
+    
+    if(!entry.categories.blank?)
+      item.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)      
+    end
+    
     returndata << item
     return returndata
   end
