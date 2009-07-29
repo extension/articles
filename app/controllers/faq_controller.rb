@@ -59,16 +59,4 @@ class FaqController < ApplicationController
     end
     flash.now[:googleanalytics] = request.request_uri + "?" + @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_content_tags and @community_content_tags.length > 0
   end
-  
-  #feed for questions asked via the ask an expert tool to be consumed by the faq application
-  def send_questions
-    @submitted_questions = ExpertQuestion.find(:all, :conditions => ["status = 'submitted' and expert_questions.updated_at >= ?", time_in_params])    
-    headers["Content-Type"] = "application/xml"
-    render :template => 'faq/expert_questions', :layout => false
-  end
-  
-  private
-  def time_in_params
-    Time.utc(params['year'], params['month'], params['day'], params['hour'], params['minute'], params['second'])
-  end
 end
