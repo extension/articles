@@ -15,8 +15,7 @@ class AccountMailer < ActionMailer::Base
       default_url_options[:port] = default_port
     end
   end
-
-    
+  
   def base_email
     AccountMailer.set_url_options
     @sent_on  = Time.now
@@ -37,9 +36,6 @@ class AccountMailer < ActionMailer::Base
     end
     
     @headers        = {}    
-  end
-
-  def reconfirm_email(token)
   end
 
   def confirm_email(token)
@@ -91,9 +87,6 @@ class AccountMailer < ActionMailer::Base
     
   end
 
-
-
-
   def confirm_email_change(token)
     # base parameters for the email
     self.base_email
@@ -121,42 +114,17 @@ class AccountMailer < ActionMailer::Base
   end
 
   def confirm_revocation(token, revokeuser, urls, sent_at = Time.now)
-    if(AppConfig.configtable['mail_label'] == 'production')
-      isdemo = false
-      subjectlabel = "eXtension Initiative: "
-    else
-      isdemo = true
-      subjectlabel = "eXtension Initiative (#{AppConfig.configtable['mail_label']}): "
-    end
+    self.base_email
     @subject        = subjectlabel+'Please confirm your revocation request'
     @body           = {:isdemo => isdemo, :revokeuser => revokeuser, :urls => urls, :token => token, }
     @recipients     = token.user.email
-    @from           = %("eXtensionHelp" <#{AppConfig.configtable['mail_system_from']}>)
-    @sent_on        = sent_at
-    if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
-      @bcc            = AppConfig.configtable['mail_system_bcc']
-    end
-    @headers        = {}
   end
 
   def revocation_agreement(adminuser,revokeuser,urls)
-    sent_at = Time.now
-    if(AppConfig.configtable['mail_label'] == 'production')
-      isdemo = false
-      subjectlabel = "eXtension Initiative: "
-    else
-      isdemo = true
-      subjectlabel = "eXtension Initiative (#{AppConfig.configtable['mail_label']}): "
-    end
+    self.base_email
     @subject        = subjectlabel+'Your Contributor Agreement has been revoked'
     @body           = {:isdemo => isdemo, :revokeuser => revokeuser, :urls => urls, :adminuser => adminuser, :agreetime => sent_at}
     @recipients     = adminuser.email,revokeuser.email
-    @from           = %("eXtensionHelp" <#{AppConfig.configtable['mail_system_from']}>)
-    @sent_on        = sent_at
-    if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
-      @bcc            = AppConfig.configtable['mail_system_bcc']
-    end
-    @headers        = {}
   end
 
 
