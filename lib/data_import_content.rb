@@ -100,8 +100,8 @@ module DataImportContent
      elsif(refresh_all)
        refresh_since = (options[:refresh_since].nil? ? AppConfig.configtable['content_feed_refresh_since'] : options[:refresh_since])
        fetch_url = self.build_feed_url(feed_url,refresh_since,usexmlschematime)
-     elsif(update_retrieve_time)    
-       refresh_since = updatetime.last_datasourced_at
+     elsif(update_retrieve_time)
+       refresh_since = (updatetime.last_datasourced_at.nil? ? AppConfig.configtable['content_feed_refresh_since'] : updatetime.last_datasourced_at)           
        fetch_url = self.build_feed_url(feed_url,refresh_since,usexmlschematime)
      else
        raise ContentRetrievalError, "Retrieve Content: Invalid options. (no knowledge of what last update time to use).  (#{self.name} objects from #{feed_url})."
