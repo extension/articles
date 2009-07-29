@@ -222,7 +222,7 @@ class Ask::ExpertController < ApplicationController
       flash[:success] = "Your answer has been sent to the person who asked the question.<br />
                         You can now save the question as an FAQ, or exit this screen without saving."
         
-      redirect_to :action => 'question_answered', :question => @submitted_question.asked_question, :answer => @submitted_question.current_response, :squid => @submitted_question.id
+      redirect_to :action => 'question_answered', :squid => @submitted_question.id
     end
 
   end
