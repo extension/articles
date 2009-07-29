@@ -36,10 +36,10 @@ class AccountMailer < ActionMailer::Base
     @recipients     = token.user.email
     @subject        = @subjectlabel+'Please confirm your email address'
     urls = Hash.new
-    urls['directurl'] = url_for(:controller => :account, :action => :confirmemail, :token => token.token)
-    urls['manualurl'] = url_for(:controller => :account, :action => :confirmemail)        
-    urls['newtoken'] = url_for(:controller => :account, :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => :help, :action => :contactform)
+    urls['directurl'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => token.token)
+    urls['manualurl'] = url_for(:controller => 'people/account', :action => :confirmemail)        
+    urls['newtoken'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => 'send')        
+    urls['contactus'] = url_for(:controller => 'people/help', :action => :contactform)
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
   end
 
@@ -49,10 +49,10 @@ class AccountMailer < ActionMailer::Base
     @recipients     = token.user.email
     @subject        = @subjectlabel+'Please confirm your email address'
     urls = Hash.new
-    urls['directurl'] = url_for(:controller => :signup, :action => :confirm, :token => token.token)
-    urls['manualurl'] = url_for(:controller => :signup, :action => :confirm)        
-    urls['newtoken'] = url_for(:controller => :signup, :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => :help, :action => :contactform)    
+    urls['directurl'] = url_for(:controller => 'people/signup', :action => :confirm, :token => token.token)
+    urls['manualurl'] = url_for(:controller => 'people/signup', :action => :confirm)        
+    urls['newtoken'] = url_for(:controller => 'people/signup', :action => :confirmemail, :token => 'send')        
+    urls['contactus'] = url_for(:controller => 'people/help', :action => :contactform)    
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls,:additionaloptions => additionaloptions}  
   end
   
@@ -61,8 +61,8 @@ class AccountMailer < ActionMailer::Base
     @recipients     = user.email
     @subject        = @subjectlabel+'Welcome!'
     urls = Hash.new
-    urls['profile'] = url_for(:controller => 'profile', :action => 'me')
-    urls['contactus'] = url_for(:controller => 'help', :action => 'contactform')
+    urls['profile'] = url_for(:controller => 'people/profile', :action => 'me')
+    urls['contactus'] = url_for(:controller => 'people/help', :action => 'contactform')
     @body           = {:isdemo => @isdemo, :user => user, :is_after_review => is_after_review, :urls => urls }  
   end
   
@@ -88,10 +88,10 @@ class AccountMailer < ActionMailer::Base
     @recipients     = token.user.email
     @subject        = @subjectlabel+'Please confirm your email address'
     urls = Hash.new
-    urls['directurl'] = url_for(:controller => :account, :action => :confirmemail, :token => token.token)
-    urls['manualurl'] = url_for(:controller => :account, :action => :confirmemail)        
-    urls['newtoken'] = url_for(:controller => :account, :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => :help, :action => :contactform)
+    urls['directurl'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => token.token)
+    urls['manualurl'] = url_for(:controller => 'people/account', :action => :confirmemail)        
+    urls['newtoken'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => 'send')        
+    urls['contactus'] = url_for(:controller => 'people/help', :action => :contactform)
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls }
   end
 
@@ -101,10 +101,10 @@ class AccountMailer < ActionMailer::Base
     @recipients     = token.user.email
     @subject        = @subjectlabel+'Please confirm your new password request'
     urls = Hash.new        
-    urls['directurl'] = url_for(:controller => 'account', :action => 'set_password', :token => token.token)
-    urls['manualurl'] = url_for(:controller => 'account', :action => 'set_password') 
-    urls['contactus'] = url_for(:controller => 'help', :action => 'contactform')
-    urls['newtoken'] = url_for(:controller => :account, :action => :new_password)        
+    urls['directurl'] = url_for(:controller => 'people/account', :action => 'set_password', :token => token.token)
+    urls['manualurl'] = url_for(:controller => 'people/account', :action => 'set_password') 
+    urls['contactus'] = url_for(:controller => 'people/help', :action => 'contactform')
+    urls['newtoken'] = url_for(:controller => 'people/account', :action => :new_password)        
     @body           = {:isdemo => @isdemo, :urls => urls, :token => token}
   end
 
@@ -146,22 +146,6 @@ class AccountMailer < ActionMailer::Base
     end
     @headers        = {}
   end
-
-
-  
-  def agreement_notice(agreeuser)
-    sent_at = Time.now
-    @subject        = "eXtension Initiative - Contributor and Business Agreement"
-    @body           = {:agreeuser => agreeuser}
-    @recipients     = agreeuser.email
-    @from           = "\"Dan Cotton\" <#{AppConfig.configtable['mail_system_from']}>"
-    @sent_on        = sent_at
-    if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
-      @bcc            = AppConfig.configtable['mail_system_bcc']
-    end
-    @headers        = {}
-  end
-
 
 
 
