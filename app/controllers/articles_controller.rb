@@ -96,7 +96,7 @@ class ArticlesController < ApplicationController
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
         # loop through the list, and see if one of these matches my @community already
         # if so, use that, else, just use the first in the list
-        use_content_tag = @community_content_tags[0]
+        use_content_tag = @community_content_tags.rand
         @community_content_tags.each do |community_content_tag|
           if(community_content_tag.content_community == @community)
             use_content_tag = community_content_tag
