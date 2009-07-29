@@ -66,7 +66,9 @@ class Faq < ActiveRecord::Base
   
   def id_and_link
     default_url_options[:host] = AppConfig.configtable['url_options']['host']
-    default_url_options[:port] = AppConfig.get_url_port
+    if(default_port = AppConfig.get_url_port)
+      default_url_options[:port] = default_port
+    end
     faq_page_url(:id => self.id.to_s)
   end
   

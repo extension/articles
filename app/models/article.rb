@@ -145,7 +145,9 @@ class Article < ActiveRecord::Base
   
   def id_and_link
     default_url_options[:host] = AppConfig.configtable['url_options']['host']
-    default_url_options[:port] = AppConfig.get_url_port
+    if(default_port = AppConfig.get_url_port)
+      default_url_options[:port] = default_port
+    end
     wiki_page_url(:title => self.title_url)
   end
   

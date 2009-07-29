@@ -9,8 +9,10 @@ class NotificationMailer < ActionMailer::Base
   include ActionController::UrlWriter
   default_url_options[:host] = AppConfig.configtable['url_options']['host']
   default_url_options[:protocol] = AppConfig.configtable['url_options']['protocol']
-  default_url_options[:port] = AppConfig.get_url_port
-    
+  if(default_port = AppConfig.get_url_port)
+    default_url_options[:port] = default_port
+  end
+      
   def base_email(emailsettings_label = 'default')
     @sent_on  = Time.now
     if(AppConfig.configtable['mail_label'] == 'production')
