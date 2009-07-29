@@ -7,7 +7,7 @@
 
 class MainController < ApplicationController
   protect_from_forgery :except => :find_institution
-  before_filter :set_community_topic_and_content_tag
+  before_filter :set_content_tag_and_community_and_topic
 
   def index
      set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')

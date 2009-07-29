@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ArticlesController < ApplicationController
-  before_filter :set_community_topic_and_content_tag
+  before_filter :set_content_tag_and_community_and_topic
   
   def index
     # validate order
@@ -81,18 +81,33 @@ class ArticlesController < ApplicationController
       do_404
       return
     end
-    
-    for tag in article.tags
-      category = tag if !tag.content_community.nil?
-      @youth = true if tag.name == 'youth'
-    end
 
-    # go through tags, get first one that has .community not nil
-    if category
-      @community = category.content_community
-      @homage = Article.bucketed_as('homage').tagged_with_content_tag(category.name).ordered.first if @community
-      @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(category.name).ordered.first if @community
-      @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
+
+    # get the tags on this article that correspond to community content tags
+    article_content_tags = article.tags.content_tags
+    if(!article_content_tags.blank?)
+      # is this article tagged with youth?
+      @youth = true if article_content_tags.map(&:name).include?('youth')
+      
+      # get the tags on this article that are content tags on communities
+      @community_content_tags = (Tag.community_content_tags & article_content_tags)
+    
+      if(!@community_content_tags.blank?)
+        @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
+        # loop through the list, and see if one of these matches my @community already
+        # if so, use that, else, just use the first in the list
+        use_content_tag = @community_content_tags[0]
+        @community_content_tags.each do |community_content_tag|
+          if(community_content_tag.content_community == @community)
+            use_content_tag = community_content_tag
+          end
+        end
+      
+        @community = use_content_tag.content_community
+        @homage = Article.bucketed_as('homage').tagged_with_content_tag(use_content_tag.name).ordered.first if @community
+        @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(use_content_tag.name).ordered.first if @community
+        @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
+      end
     end
     
     if article.tag_list.include? 'news'
@@ -105,11 +120,7 @@ class ArticlesController < ApplicationController
       set_title("#{article.title} - eXtension", "Articles from our resource area experts.")
       set_titletag("#{article.title} - eXtension")
     end
-    
-    @community_content_tags = (Tag.community_content_tags & article.tags)
-    if(!@community_content_tags.blank?)
-      @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
-    end
+
     
     flash.now[:googleanalytics] = request.request_uri + "?" + @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_content_tags and @community_content_tags.length > 0
     

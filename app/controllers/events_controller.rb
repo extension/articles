@@ -1,12 +1,12 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2006 North Carolina State University
+#  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class EventsController < ApplicationController
-  before_filter :set_community_topic_and_content_tag
+  before_filter :set_content_tag_and_community_and_topic
   
   def index    
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
@@ -25,11 +25,35 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     return unless @event
     @published_content = true
-    @community_content_tags = (Tag.community_content_tags & @event.tags)
-    @youth = true if @topic and @topic.name == 'Youth'
+    
+
+    # get the tags on this faq that correspond to community content tags
+    event_content_tags = @event.tags.content_tags
+    if(!event_content_tags.blank?)
+      # is this article tagged with youth?
+      @youth = true if event_content_tags.map(&:name).include?('youth')
+      
+      # get the tags on this article that are content tags on communities
+      @community_content_tags = (Tag.community_content_tags & event_content_tags)
+    
+      if(!@community_content_tags.blank?)
+        @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
+        # loop through the list, and see if one of these matches my @community already
+        # if so, use that, else, just use the first in the list
+        use_content_tag = @community_content_tags[0]
+        @community_content_tags.each do |community_content_tag|
+          if(community_content_tag.content_community == @community)
+            use_content_tag = community_content_tag
+          end
+        end
+      
+        @community = use_content_tag.content_community
+        @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
+      end
+    end    
+        
     set_title("#{@event.title.titleize} - eXtension Event",  @event.title.titleize)
     set_titletag("#{@event.title.titleize} - eXtension Event")
-    
     flash.now[:googleanalytics] = request.request_uri + "?" + @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_content_tags and @community_content_tags.length > 0
   end
   

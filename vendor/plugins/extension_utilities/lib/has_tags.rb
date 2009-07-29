@@ -10,10 +10,10 @@ module Extension
         # Get options with defaults
         add_content_tags_scope(opts)
         
-        # single tag scoper
+        # single tag scope
         add_content_tag_scope(opts)
 
-        # any content tag scoper
+        # any content tag scope
         add_any_content_tag_scope(opts)
       end
   
@@ -79,6 +79,7 @@ module Extension
           {:include => {:taggings => :tag}, :conditions => includeconditions}
         }
       end
+          
     end
   end
 end
