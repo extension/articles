@@ -12,6 +12,7 @@ class Ask::ExpertController < ApplicationController
   
   has_rakismet :only => [:widget_submit]
   before_filter :filter_string_helper, :only => [:incoming, :assigned, :my_resolved, :resolved]
+  before_filter :login_required
   
   UNASSIGNED = "uncategorized"
   ALL = "all"
