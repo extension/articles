@@ -20,10 +20,15 @@ class AccountMailer < ActionMailer::Base
       @isdemo = true
       @subjectlabel = "eXtension Initiative (#{AppConfig.configtable['mail_label']}): "
     end
-    @from           = %("#{AppConfig.configtable['mail_system_noreply_name']}" <#{AppConfig.configtable['mail_system_noreply']}>)
-    if(!AppConfig.configtable['mail_system_bcc'].nil? and !AppConfig.configtable['mail_system_bcc'].empty?)
-      @bcc            = AppConfig.configtable['mail_system_bcc']
+    
+    # set up the reply, bcc, and from name based on the notification type
+    emailsettings_label = 'people'
+    
+    @from           = %("#{AppConfig.configtable['emailsettings'][emailsettings_label]['name']}" <#{AppConfig.configtable['emailsettings'][emailsettings_label]['address']}>)
+    if(!AppConfig.configtable['emailsettings'][emailsettings_label]['bcc'].blank?)
+      @bcc            = AppConfig.configtable['emailsettings'][emailsettings_label]['bcc']
     end
+    
     @headers        = {}    
   end
 
