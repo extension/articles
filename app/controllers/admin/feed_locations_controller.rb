@@ -24,7 +24,7 @@ class Admin::FeedLocationsController < ApplicationController
   def update
     @feed_location = FeedLocation.find(params[:id])  
     if @feed_location.update_attributes(params[:feed_location])
-      # TODO: log action
+      AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_FEED_LOCATION,{:feed_location_id => @feed_location.id,:feed_location_uri => @feed_location.uri})
       flash[:notice] = 'Feed source was successfully updated.'
       redirect_to admin_feed_locations_url
     else
@@ -41,7 +41,7 @@ class Admin::FeedLocationsController < ApplicationController
   def create
     @feed_location = FeedLocation.new(params[:feed_location])
     if @feed_location.save
-      # TODO: log action
+      AdminEvent.log_event(@currentuser, AdminEvent::CREATE_FEED_LOCATION,{:feed_location_id => @feed_location.id,:feed_location_uri => @feed_location.uri})
       flash[:notice] = 'Feed source created.'
       redirect_to admin_feed_locations_url
     else
@@ -53,6 +53,7 @@ class Admin::FeedLocationsController < ApplicationController
   def destroy
     # TODO: log action
     @feed_location = FeedLocation.find(params[:id])
+    AdminEvent.log_event(@currentuser, AdminEvent::DELETE_FEED_LOCATION,{:feed_location_id => @feed_location.id, :feed_location_uri => @feed_location.uri})
     @feed_location.destroy
     flash[:notice] = "Successfully deleted the feed source"
     redirect_to admin_feed_locations_url

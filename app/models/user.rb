@@ -985,7 +985,7 @@ class User < ActiveRecord::Base
     
     old_email_address = self.email
     if(self.update_attributes(:email => newemailaddress))
-      AdminEvent.log_event(adminuser, AdminEvent::CHANGE_EMAIL,nil,{:extensionid => self.login, :oldemail => old_email_address, :newemail => self.email})
+      AdminEvent.log_event(adminuser, AdminEvent::CHANGE_EMAIL,{:extensionid => self.login, :oldemail => old_email_address, :newemail => self.email})
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "email address changed by #{adminuser.login}")
     else
       return false

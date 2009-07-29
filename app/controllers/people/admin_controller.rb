@@ -42,7 +42,7 @@ class People::AdminController < ApplicationController
           else
             is_add = (operation == 'add') ? true : false
             if(@showuser.update_attribute(:is_admin, is_add))
-              log_admin_event(@currentuser, is_add ? AdminEvent::ADD_ADMIN : AdminEvent::DELETE_ADMIN,{:extensionid => @showuser.login})
+              AdminEvent.log_event(@currentuser, is_add ? AdminEvent::ADD_ADMIN : AdminEvent::DELETE_ADMIN,{:extensionid => @showuser.login})
               return redirect_to(:action => :showuser, :id => @showuser.login)
             else
               flash[:failure] = "Failed to perform admin #{operation} operation"
@@ -104,7 +104,7 @@ class People::AdminController < ApplicationController
             @showuser.errors.add("A reason for disabling this eXtensionID is required")
           else
             if @showuser.retire
-              log_admin_event(@currentuser, AdminEvent::RETIRE_ACCOUNT,{:extensionid => @showuser.login, :reason => params[:reason]})
+              AdminEvent.log_event(@currentuser, AdminEvent::RETIRE_ACCOUNT,{:extensionid => @showuser.login, :reason => params[:reason]})
               UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "account retired by #{@currentuser.login}")                                              
             else
               flash.now[:failure] = 'Failed to retire user, reported status may not be correct'      
@@ -135,7 +135,7 @@ class People::AdminController < ApplicationController
             @showuser.errors.add("A reason for enabling this eXtensionID is required")
           else
             if @showuser.enable
-              log_admin_event(@currentuser, AdminEvent::ENABLE_ACCOUNT,{:extensionid => @showuser.login, :reason => params[:reason]})
+              AdminEvent.log_event(@currentuser, AdminEvent::ENABLE_ACCOUNT,{:extensionid => @showuser.login, :reason => params[:reason]})
               UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "account enabled by #{@currentuser.login}")
             else
               flash.now[:failure] = 'Failed to enable user, reported status may not be correct'      
@@ -166,7 +166,7 @@ class People::AdminController < ApplicationController
               @showuser.errors.add("A reason for marking this email address invalid is required")
             else
               if @showuser.invalidemail
-                log_admin_event(@currentuser, AdminEvent::ACCOUNT_INVALIDEMAIL,{:extensionid => @showuser.login, :reason => params[:reason]})
+                AdminEvent.log_event(@currentuser, AdminEvent::ACCOUNT_INVALIDEMAIL,{:extensionid => @showuser.login, :reason => params[:reason]})
                 UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "email marked invalid by #{@currentuser.login}")                                                                            
               else
                 flash.now[:failure] = 'Failed to mark email invalid, reported status may not be correct'      
@@ -193,7 +193,7 @@ class People::AdminController < ApplicationController
       if @revokeuser
         @token = UserToken.create(:user=>@currentuser,:tokentype=>UserToken::ADMIN_REVOKEAGREENT, :tokendata => {:revokeuser => @revokeuser.login})
         send_token_confirmation(@token,@revokeuser)
-        log_admin_event(@currentuser, AdminEvent::REVOKEAGREEMENT_REQUEST,@revokeuser.login)
+        AdminEvent.log_event(@currentuser, AdminEvent::REVOKEAGREEMENT_REQUEST,@revokeuser.login)
       end    
     end
   end
@@ -219,7 +219,7 @@ class People::AdminController < ApplicationController
           if @revokeuser.save
             @token.destroy
             UserToken.delete_all("user_id = #{@currentuser.id} AND tokentype=#{UserToken::ADMIN_REVOKEAGREENT} AND tokendata LIKE '#{@revokeuser.login}'")            
-            log_admin_event(@currentuser, AdminEvent::REVOKEAGREEMENT,@revokeuser.login)
+            AdminEvent.log_event(@currentuser, AdminEvent::REVOKEAGREEMENT,@revokeuser.login)
             UserEvent.log_event(:etype => UserEvent::AGREEMENT,:user => @revokeuser,:description => "contributor agreement revoked by #{@currentuser.login}")                                                                                        
             send_revocation_email(@currentuser,@revokeuser)
           else

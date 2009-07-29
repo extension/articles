@@ -24,6 +24,7 @@ class Admin::LogosController < ApplicationController
 
     if @logo.save
       flash[:notice] = 'Logo was successfully uploaded.'
+      AdminEvent.log_event(@currentuser, AdminEvent::CREATE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})      
       redirect_to(admin_logos_url)
     else
       render(:action => "new")
@@ -32,6 +33,7 @@ class Admin::LogosController < ApplicationController
 
   def destroy
     @logo = Logo.find(params[:id])
+    AdminEvent.log_event(@currentuser, AdminEvent::DELETE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})
     @logo.destroy
     redirect_to(admin_logos_url)
   end    

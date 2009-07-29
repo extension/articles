@@ -26,10 +26,6 @@ module ControllerExtensions
     Activity.log_activity(opts)
   end
 
-  def log_admin_event(user, event, data = nil)
-    AdminEvent.log_event(user, event, request.env["REMOTE_ADDR"], data)
-  end
-    
   def check_openidurl_foruser(user,checkurl)
     if(user.openid_url == checkurl or user.openid_url == checkurl +'/')
       return true

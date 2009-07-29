@@ -9,13 +9,13 @@
             <h3>Edit details</h3>
         <p>
             <label>Referer Domain</label>
-            <%= text_field_tag 'community[referer_domain]', @institution.referer_domain %>
+            <%= text_field_tag 'institution[referer_domain]', @institution.referer_domain %>
             <span class="instructions">Used for logo display when following a link from the referring domain.</span>
         </p>
 
         <p>
             <label>URL ("about this institution" link)</label>
-            <%= text_field_tag 'community[public_uri]', @institution.public_uri %>
+            <%= text_field_tag 'institution[public_uri]', @institution.public_uri %>
         </p>
 
         <p>

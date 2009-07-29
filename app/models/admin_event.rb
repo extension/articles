@@ -22,6 +22,22 @@ class AdminEvent < ActiveRecord::Base
   CHANGE_EMAIL = 10
   
   
+  # PUBSITE EVENTS
+  DELETE_TOPIC = 50
+  CREATE_TOPIC = 51
+  UPDATE_LOCATION_OFFICE_LINK = 52
+  UPDATE_PUBLIC_COMMUNITY = 53
+  UPDATE_PUBLIC_INSTITUTION = 54
+  DELETE_FEED_LOCATION = 55
+  CREATE_FEED_LOCATION = 56
+  UPDATE_FEED_LOCATION = 57
+  DELETE_LOGO = 58
+  CREATE_LOGO = 59
+  DELETE_SPONSOR = 60
+  CREATE_SPONSOR = 61
+  UPDATE_SPONSOR = 62
+  REORDER_SPONSORS = 63
+  
   # LIST EVENTS
   CREATE_LIST = 100
   CONNECT_LIST = 101
@@ -65,18 +81,32 @@ class AdminEvent < ActiveRecord::Base
            CREATE_OWNERSHIP => {:description => 'Created List Ownership'},
            REMOVE_COMMUNITY_CONNECTION => {:description => 'Removed Community Connection'},
            UPDATE_OWNERS => {:description => 'Updated List Owners'},
-           SENT_NOTIFICATIONS => {:description => 'Sent Notifications'}}
+           SENT_NOTIFICATIONS => {:description => 'Sent Notifications'},
+           DELETE_TOPIC => {:description => 'Deleted Topic'},
+           CREATE_TOPIC => {:description => 'Created Topic'},
+           UPDATE_LOCATION_OFFICE_LINK => {:description => 'Updated Office Link for Location'},
+           UPDATE_PUBLIC_COMMUNITY => {:description => 'Updated Public Attributes for Community'},
+           UPDATE_PUBLIC_INSTITUTION => {:description => 'Updated Public Attributes for Institution'},
+           DELETE_FEED_LOCATION => {:description => 'Deleted Feed Location'},
+           CREATE_FEED_LOCATION => {:description => 'Created Feed Location'},
+           UPDATE_FEED_LOCATION => {:description => 'Updated Feed Location'},
+           DELETE_LOGO => {:description => 'Deleted Logo'},
+           CREATE_LOGO => {:description => 'Created Logo'},
+           DELETE_SPONSOR => {:description => 'Deleted Sponsor'},
+           CREATE_SPONSOR => {:description => 'Created Sponsor'},
+           UPDATE_SPONSOR => {:description => 'Updated Sponsor'},
+           REORDER_SPONSORS => {:description => 'Reordered Sponsors'}}
 
   
   def description
     AdminEvent::DESCRIPTIONS.include?(self.event) ? AdminEvent::DESCRIPTIONS[self.event][:description] : "Unknown"
   end
   
-  def self.log_event(user, event, ip = 'unknown', data = nil)
+  def self.log_event(user, event, data = nil)
     newae = AdminEvent.new do |ae|
       ae.user = user
       ae.event = event
-      ae.ip = ip.blank? ? 'unknown' : ip
+      ae.ip = AppConfig.configtable['request_ip_address']
       ae.data = data
     end
     newae.save

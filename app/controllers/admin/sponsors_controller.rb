@@ -17,6 +17,7 @@ class Admin::SponsorsController < ApplicationController
       ad = Sponsor.find(id)
       ad.update_attribute(:position, (position + 1))  
     end
+    AdminEvent.log_event(@currentuser, AdminEvent::REORDER_SPONSORS,{:first => params[:sortable_list][0]})      
     render :nothing => true
   end
 
@@ -39,6 +40,7 @@ class Admin::SponsorsController < ApplicationController
     if @sponsor.save
       @sponsor.content_tag_names=(params['sponsor']['content_tag_names'])
       flash[:notice] = 'Sponsor was successfully created and added to the bottom of the list. You can now arrange the display order if needed.'
+      AdminEvent.log_event(@currentuser, AdminEvent::CREATE_SPONSOR,{:sponsor_id => @sponsor.id})      
       redirect_to(admin_sponsors_url)
     else
       render(:action => 'new')
@@ -53,6 +55,7 @@ class Admin::SponsorsController < ApplicationController
     @sponsor = Sponsor.find(params[:id])
     if @sponsor.update_attributes(params[:sponsor])
       @sponsor.content_tag_names=(params['sponsor']['content_tag_names'])
+      AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_SPONSOR,{:sponsor_id => @sponsor.id})      
       flash[:notice] = 'Sponsor was successfully updated.'
       redirect_to(admin_sponsors_url)
     else
@@ -61,7 +64,9 @@ class Admin::SponsorsController < ApplicationController
   end
 
   def destroy
-    Sponsor.find(params[:id]).destroy
+    @sponsor = Sponsor.find_by_id(params[:id])
+    AdminEvent.log_event(@currentuser, AdminEvent::DELETE_SPONSOR,{:sponsor_id => @sponsor.id})      
+    @sponsor.destroy
     flash[:notice] = 'Sponsor was successfully deleted.'
     redirect_to(admin_sponsors_url)
   end

@@ -20,12 +20,20 @@ class AdminController < ApplicationController
   end
   
   def destroy_topic
-    Topic.destroy(params[:id])
+    if(topic = Topic.find_by_id(params[:id]))
+      AdminEvent.log_event(@currentuser, AdminEvent::DELETE_TOPIC,{:topicname => topic.name})
+      topic.destroy
+    end
+    flash[:notice] = 'Topic Deleted'
     redirect_to :action => :manage_topics
   end
   
   def create_topic
-    Topic.create(params[:topic])
+    topic = Topic.create(params[:topic])
+    if(!topic.nil?)
+      flash[:notice] = 'Topic Created'
+      AdminEvent.log_event(@currentuser, AdminEvent::CREATE_TOPIC,{:topicname => topic.name})
+    end
     redirect_to :action => :manage_topics
   end
   
@@ -53,9 +61,11 @@ class AdminController < ApplicationController
   
   def update_location_office_link
     @location =  Location.find(params['id'])
+    oldlink = @location.office_link
     @location.office_link = params['location']['office_link']
 
     if @location.save
+      AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_LOCATION_OFFICE_LINK,{:location_id => @location.id, :location_name => @location.name, :oldlink => oldlink, :newlink => @location.office_link})
       flash[:notice] = 'Location Updated'
     else
       flash[:notice] = 'Error updating location'
@@ -90,6 +100,8 @@ class AdminController < ApplicationController
     if @community.save
       flash[:notice] = 'Community Updated'
       @community.content_tag_names=(params['community']['content_tag_names'])
+      AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
+      
       redirect_to :action => :manage_communities
     else
       flash[:notice] = 'Error updating community'
@@ -105,11 +117,13 @@ class AdminController < ApplicationController
   
   def update_public_institution
     @institution =  Institution.find(params['id'])
-    @institution.referrer_domain = params['institution']['referrer_domain']
+    @institution.referer_domain = params['institution']['referer_domain']
     @institution.public_uri = params['institution']['public_uri']
 
     if @institution.save
       flash[:notice] = 'Institution Updated'
+      AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_INSTITUTION,{:institution_id => @institution.id, :institution_name => @institution.name})
+      
     else
       flash[:notice] = 'Error updating institution'
     end
