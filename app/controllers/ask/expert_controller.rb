@@ -8,21 +8,13 @@
 require 'zip_code_to_state'
 
 class Ask::ExpertController < ApplicationController
-  layout :choose_layout
+  layout 'aae'
   
   has_rakismet :only => [:widget_submit]
   before_filter :filter_string_helper, :only => [:incoming, :assigned, :my_resolved, :resolved]
   
   UNASSIGNED = "uncategorized"
   ALL = "all"
-  
-  def choose_layout
-    if ['ask_an_expert', 'question_confirmation'].include? action_name
-      return 'application'
-    else
-      return 'aae'
-    end
-  end
   
   def assign
     if !params[:id]

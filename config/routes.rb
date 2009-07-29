@@ -82,6 +82,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widget', :controller => 'ask/widgets', :action => 'widget'  
   
   map.connect 'ask', :controller => 'ask', :action => 'index'
+  map.ask_form 'ask', :controller => 'ask', :action => 'index'
   #map.connect 'ask/who', :controller => 'ask/widgets', :action => 'who'
   #map.connect 'ask/about', :controller => 'ask/widgets', :action => 'about'
   #map.connect 'ask/documentation', :controller => 'ask/widgets', :action => 'documentation'

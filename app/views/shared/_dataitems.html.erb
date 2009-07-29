@@ -28,4 +28,4 @@
 
 <%= render :partial => "shared/will_paginator", :locals => { :collection => items } %>
 
-<p class="askanexpert">Didn't find what you were looking for? <%= link_to 'Try asking one of our Experts', :controller => 'ask/expert', :action => 'ask_an_expert', :redirect_to => request.request_uri %>.</p>
+<p class="askanexpert">Didn't find what you were looking for? <%= link_to 'Try asking one of our Experts', ask_form_url %>.</p>

@@ -7,7 +7,7 @@
 
 <div class="pageextras">
     <% if not @youth %>
-      <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', :controller => 'ask/expert', :action => 'ask_an_expert', :redirect_to => request.request_uri %></p>
+      <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', ask_form_url %></p>
     <% end %>
     <p class="print"><%= link_to 'Print', request.request_uri + "/print/" unless params[:print]%></p>
 </div>
@@ -30,7 +30,7 @@
 
 <% if not @youth %>
    <div id="aae_plug">
-      <h4>Have a specific question? <%= link_to 'Try asking one of our Experts', :controller => 'ask/expert', :action => 'ask_an_expert', :redirect_to => request.request_uri %></h4>
+      <h4>Have a specific question? <%= link_to 'Try asking one of our Experts', ask_form_url %></h4>
       <p>Unlike most other resources on the web, we have experts from Universities around the country ready to answer your questions.</p>
    </div>
 <% end %>
