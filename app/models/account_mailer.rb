@@ -7,13 +7,18 @@
 
 class AccountMailer < ActionMailer::Base
   include ActionController::UrlWriter
-  default_url_options[:host] = AppConfig.configtable['url_options']['host']
-  default_url_options[:protocol] = AppConfig.configtable['url_options']['protocol']
-  if(default_port = AppConfig.get_url_port)
-    default_url_options[:port] = default_port
+
+  def self.set_url_options
+    default_url_options[:host] = AppConfig.get_url_host
+    default_url_options[:protocol] = AppConfig.get_url_protocol
+    if(default_port = AppConfig.get_url_port)
+      default_url_options[:port] = default_port
+    end
   end
+
     
   def base_email
+    AccountMailer.set_url_options
     @sent_on  = Time.now
     if(AppConfig.configtable['mail_label'] == 'production')
       @isdemo = false

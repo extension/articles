@@ -57,7 +57,8 @@ class ExternalArticle < Article
   end
   
   def id_and_link
-    default_url_options[:host] = AppConfig.configtable['url_options']['host']
+    default_url_options[:host] = AppConfig.get_url_host
+    default_url_options[:protocol] = AppConfig.get_url_protocol
     if(default_port = AppConfig.get_url_port)
       default_url_options[:port] = default_port
     end

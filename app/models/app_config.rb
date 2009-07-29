@@ -150,6 +150,15 @@ class AppConfig
       return @@configtable['url_options']['port']
     end
   end
+  
+  def AppConfig.get_url_host
+    return @@configtable['url_options']['host']
+  end
+  
+  def AppConfig.get_url_protocol
+    return @@configtable['url_options']['protocol']
+  end
+  
     
   def AppConfig.url_port_string
     if(port = self.get_url_port)
