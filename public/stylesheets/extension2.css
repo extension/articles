@@ -122,8 +122,8 @@ label em.required {
     background: url(/images/layout/feed_gray.gif) 0 50% no-repeat; padding-left:30px;
 }
 
-.rightcolumn ul li {font-size:1.5em;}
-.rightcolumn dl {font-size:1.2em;}
+.rightcolumn ul li {font-size:1.4em;}
+.rightcolumn dl {font-size:1.1em;}
 .rightcolumn p, .rightcolumn li, .rightcolumn dl {line-height:1.5em;margin:0;padding:0;}
 .rightcolumn p, .rightcolumn form, .rightcolumn dl, .rightcolumn h3 {padding: 0 10px 0 20px;}
 
