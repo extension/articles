@@ -89,11 +89,13 @@ class AdminController < ApplicationController
     updatelist = Tag.castlist_to_array(params['community']['content_tag_names'],true)
     invalid_tags = []
     updatelist.each do |tagname|
-      invalid_tags << tagname if other_community_tag_names.include?(tagname)
+      if(other_community_tag_names.include?(tagname) or Tag::CONTENTBLACKLIST.include?(tagname))
+        invalid_tags << tagname
+      end
     end
     
     if(!invalid_tags.blank?)
-      flash[:notice] = "The following tag names are in use by other communities: #{invalid_tags.join(Tag::JOINER)}"
+      flash[:notice] = "The following tag names are in use by other communities or are not allowed for community use: #{invalid_tags.join(Tag::JOINER)}"
       return(render(:action => "edit_public_community"))
     end
 

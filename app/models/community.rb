@@ -138,12 +138,12 @@ class Community < ActiveRecord::Base
     primary = updatelist[0]
     
     # primary tag - first in the list
-    if(!other_community_tag_names.include?(primary))
+    if(!other_community_tag_names.include?(primary) and !Tag::CONTENTBLACKLIST.include?(primary))
       self.replace_tags(primary,User.systemuserid,Tag::CONTENT_PRIMARY)
     end
     
     # okay do the others - updating the cached_tags for search
-    self.replace_tags_with_and_cache(updatelist.reject{|tname| other_community_tag_names.include?(tname)},User.systemuserid,Tag::CONTENT)
+    self.replace_tags_with_and_cache(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},User.systemuserid,Tag::CONTENT)
            
     # now update my cached_content_tags and return those
     return self.cached_content_tags(true)

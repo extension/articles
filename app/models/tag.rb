@@ -25,9 +25,9 @@ class Tag < ActiveRecord::Base
   BLACKLIST = ['all']
   
   # terms that can be used as tags, but have special meaning
-  CONTENTBLACKLIST = ['article', 'contents', 'dpl', 'events', 'faq', 'feature',
+  CONTENTBLACKLIST = ['article', 'articles','contents', 'dpl', 'events', 'faq', 'feature',
                     'highlight', 'homage', 'youth', 'learning lessons',
-                    'learning lessons home', 'main', 'news', 'beano']
+                    'learning lessons home', 'main', 'news', 'beano','people','ask','aae','status','opie','feeds','data','reports']
 
   # If database speed becomes an issue, you could remove these validations and rescue the ActiveRecord database constraint errors instead.
   validates_presence_of :name
