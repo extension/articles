@@ -66,8 +66,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'sitemap_pages', :controller => 'feeds', :action => 'sitemap_pages'
   map.connect 'sitemap_faq', :controller => 'feeds', :action => 'sitemap_faq'
   map.connect 'sitemap_events', :controller => 'feeds', :action => 'sitemap_events'
+  map.connect 'feeds', :controller => 'feeds'
   map.connect 'feeds/:action', :controller => 'feeds', :requirements => {:action => /articles|article|faqs|events|all/}
-  map.connect 'feeds/:action/-/*categories', :controller => 'feeds'
+  map.connect 'feeds/:action/-/*content_tags', :controller => 'feeds'
   map.connect 'feeds/:action/:type/*id', :controller => 'feeds'
   ## print routes
   map.connect 'article/:id/print', :controller => 'articles', :action => 'page', :print => 1, :requirements => { :id => /\d+/ }
@@ -96,7 +97,6 @@ ActionController::Routing::Routes.draw do |map|
   ### pubsite named routes  
   map.logo  'logo/:file.:format', :controller => 'logo', :action => :display
   map.reports 'reports', :controller => :reports
-  map.feeds 'feeds', :controller => :feeds
   map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
   map.article_page 'article/:id', :controller => 'articles', :action => 'page', :requirements => { :id => /\d+/ }
   map.faq_page 'faq/:id', :controller => 'faq', :action => 'detail'

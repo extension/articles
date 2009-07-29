@@ -11,7 +11,7 @@ class FeedsController < ApplicationController
   def index
     set_title('Feeds')
     set_titletag('eXtension - Feeds')
-    @communities = Community.find_all_sorted
+    @communities = Community.launched.all(:order => 'public_name')
   end
 
   def sitemap_index
@@ -45,7 +45,7 @@ class FeedsController < ApplicationController
      
   def articles
     @feed_title = 'Articles - eXtension'
-    @feed_title = params[:categories].join(', ').capitalize+' '+@feed_title if params[:categories]
+    @feed_title = params[:content_tags].join(', ').capitalize+' '+@feed_title if params[:content_tags]
     @alternate_link = url_for(:controller => 'articles', :action => 'index', :only_path => false)
     gen_feed
   end
@@ -58,17 +58,17 @@ class FeedsController < ApplicationController
   
   def community
     @feed_title = 'FAQs and Articles - eXtension'
-    if !params[:categories] or (params[:categories] and params[:categories].empty?)
+    if !params[:content_tags] or (params[:content_tags] and params[:content_tags].empty?)
       flash[:notice] = 'No community was selected!'
       return redirect_to(:controller => 'feeds', :action => 'index')
     end
     
-    tag = Tag.find_by_name(params[:categories][0])
+    tag = Tag.find_by_name(params[:content_tags][0])
     community = tag.content_community if tag
     
     # all that just to make sure the category is a community?  ugh.
     unless community
-      flash[:notice] = 'The '+params[:categories][0]+' community does not exist.'
+      flash[:notice] = 'No community for the tag: '+params[:content_tags][0]+' exists.'
       return redirect_to(:controller => 'feeds', :action => 'index')
     end
     
@@ -86,7 +86,7 @@ class FeedsController < ApplicationController
   
   def events
     @feed_title = 'Events - eXtension'
-    @feed_title = params[:categories].join(', ').capitalize+' '+@feed_title if params[:categories]
+    @feed_title = params[:content_tags].join(', ').capitalize+' '+@feed_title if params[:content_tags]
     @alternate_link = url_for(:controller => 'events', :action => 'index', :only_path => false)
     gen_feed
   end
@@ -99,78 +99,27 @@ class FeedsController < ApplicationController
   
   
   def gen_feed(type=params[:action])
-    begin
-      validate_gdata_params(params)
-    rescue ArgumentError
-      render_feed_error
-      return
-    end
-    
-    gdata_params = ['updated_min', 'updated_max', 'published_min',
-                    'published_max', 'start-index', 'max-results',
-                    'q', 'author', 'alt']
-    
-    start_index = 1
-    max_results = 50
+    @filteredparams = FilterParams.new(params)
+        
+    start_index = @filteredparams.start_index || 1
+    max_results = @filteredparams.max_results || 50
     q = nil
     author = nil
     alt = nil
     # eX content did not exist in published fashion prior to 10/2006.
-    updated_min = Time.utc(2006,10)
-    updated_max = Time.now.utc
-    published_min = updated_min
-    published_max = updated_max
+    updated_min = @filteredparams.updated_min || Time.utc(2006,10)
+    updated_max = @filteredparams.updated_max || Time.now.utc
+    published_min = @filteredparams.published_min || updated_min
+    published_max = @filteredparams.published_max || updated_max
     category_array = nil
     
-    if params[:categories] && params[:categories].length > 0
-      category_array = params[:categories]
+    if params[:content_tags] && params[:content_tags].length > 0
+      category_array = params[:content_tags]
       if category_array.length > 3
         raise ArgumentError
       end
     end
-    
-    begin
-      gdata_params.each do |param|
-        if params.has_key?(param)
-          value = params[param]
-          case param
-            when 'q'
-              raise ArgumentError
-              
-            when 'author'
-              raise ArgumentError
-              
-            when 'alt'
-              raise ArgumentError unless value == 'atom'
-              
-            when 'start-index'
-              start_index = value
-            
-            when 'max-results'
-              max_results = value
-            
-            when 'updated_min'
-              updated_min = Time.parse(value)
-            
-            when 'updated_max'
-              updated_max = Time.parse(value)
-            
-            when 'published_min'
-              published_min = Time.parse(value)
-            
-            when 'published_max'
-              published_max = Time.parse(value)
-            
-            when 'max_results'
-              max_results = value
-          end
-        end
-      end
-    rescue ArgumentError
-      render_feed_error
-      return
-    end
-    
+        
     if type=='all' || type.class == Array
       type = ['faqs', 'events', 'articles'] if type=='all'
       entries=[]
@@ -245,9 +194,9 @@ class FeedsController < ApplicationController
                         
       when 'articles'
         if category_array
-          entries = Article.tagged_with_content_tags(category_array + ['!dpl']).ordered.limit(limit).find(:all, :select => select, :conditions => conditions)
+          entries = Article.notdpl.tagged_with_content_tags(category_array).ordered.limit(limit).find(:all, :select => select, :conditions => conditions)
         else
-          entries = Article.tagged_with_content_tags('!dpl').ordered("articles.wiki_updated_at DESC").limit(limit).find(:all, :select => select, :joins => joins, :conditions => conditions)
+          entries = Article.notdpl.ordered("articles.wiki_updated_at DESC").limit(limit).find(:all, :select => select, :joins => joins, :conditions => conditions)
         end  
               
       when 'events'
@@ -260,7 +209,7 @@ class FeedsController < ApplicationController
         end   
         
        end
-      total_possible_results = ActiveRecord::Base.count_by_sql("SELECT FOUND_ROWS()")
+      total_possible_results = entries[0].class.count_by_sql("SELECT FOUND_ROWS()")
       return entries, total_possible_results
     end
   

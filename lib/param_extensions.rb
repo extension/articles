@@ -110,7 +110,9 @@ module ParamExtensions
       parameters = new_parameters.dup
       parameters.stringify_keys!
         
-      parameters.each do |k, v|
+      parameters.each do |paramkey, v|
+        # convert dashes to underscores
+        k = paramkey.gsub('-','_')
         respond_to?(:"#{k}=") ? send(:"#{k}=", v) : @unfilteredparameters[k] = v
       end   
     end

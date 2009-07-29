@@ -32,6 +32,8 @@ class Article < ActiveRecord::Base
     {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
   
+  named_scope :notdpl, {:conditions => {:is_dpl => false}}
+  
   def put_in_buckets(categoryarray)
     logger.info "categoryarray = #{categoryarray.inspect}"
     namearray = []
@@ -76,13 +78,19 @@ class Article < ActiveRecord::Base
     article.title = entry.title
     article.url = entry.links[0].href if article.url.blank?
     article.author = entry.authors[0].name
-    article.original_content = entry.content
+    article.original_content = entry.content.to_s
   
     if(article.new_record?)
       returndata = [article.wiki_updated_at, 'added']
     else
       returndata = [article.wiki_updated_at, 'updated']
-    end  
+    end 
+    
+    # flag as dpl
+    if !entry.categories.blank? and entry.categories.map(&:term).include?('dpl')
+      article.is_dpl = true
+    end
+     
     article.save
     if(!entry.categories.blank?)
       article.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)

@@ -57,13 +57,13 @@ class FilterParams < ParamExtensions::ParamsFilter
   
   # gdata params - some are quoted because symbols can't have dashes
   wantsparameter :author, :user
-  wantsparameter 'published-min', :datetime  # note, does not validate for RFC 3339 format per spec.
-  wantsparameter 'published-max', :datetime  # note, does not validate for RFC 3339 format per spec.
-  wantsparameter 'updated-min', :datetime # note, does not validate for RFC 3339 format per spec.
-  wantsparameter 'updated-max', :datetime # note, does not validate for RFC 3339 format per spec.
+  wantsparameter :published_min, :datetime  # note, does not validate for RFC 3339 format per spec.
+  wantsparameter :published_max, :datetime  # note, does not validate for RFC 3339 format per spec.
+  wantsparameter :updated_min, :datetime # note, does not validate for RFC 3339 format per spec.
+  wantsparameter :updated_max, :datetime # note, does not validate for RFC 3339 format per spec.
   wantsparameter :alt, :string
-  wantsparameter 'max-results', :integer
-  wantsparameter 'start-index', :integer
+  wantsparameter :max_results, :integer
+  wantsparameter :start_index, :integer
   wantsparameter :prettyprint, :boolean  # not sure that we'll actually do anything with this
   wantsparameter :strict, :boolean  # not sure that we'll actually do anything with this
   wantsparameter :q, :string # TODO: parse for terms and phrases, and negative values
