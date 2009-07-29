@@ -33,7 +33,7 @@ class MainController < ApplicationController
 
   def content_tag
     if(!@community.nil?)
-      set_title(@community.name,@community.public_description)
+      set_title(@community.public_name,@community.public_description)
       set_titletag("#{@community.public_name} - eXtension")
       # TODO: write a helper method to get the content tags
       @community_content_tags = @community.tags
