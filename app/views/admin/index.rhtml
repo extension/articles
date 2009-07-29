@@ -11,15 +11,4 @@
         <li><%= link_to 'Manage Institutions', :action => 'manage_institutions' %></li>
         <li><%= link_to 'Manage External Feed sources', admin_feed_locations_url %></li>
     </ul>
-    
-    <% if !AppConfig.configtable['production_site'] %>
-    <h2>Jobs</h2>
-    <ul>
-            <li><%= link_to 'Retrieve Wiki Articles', :action => 'retrieve_wikis' %></li>
-            <li><%= link_to 'Retrieve FAQs', :action => 'retrieve_faqs' %></li>
-            <li><%= link_to 'Retrieve Events', :action => 'retrieve_events' %></li>
-            <li><%= link_to 'Retrieve External Articles', :action => 'retrieve_external_articles' %></li>
-    </ul>
-    <% end %>
-
 </div>
