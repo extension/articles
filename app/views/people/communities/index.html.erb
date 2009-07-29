@@ -21,7 +21,7 @@
     		<ul class="your_comms">
         	<% @currentuser.connectinvitations.each do |communityconnection|%>
         		<li>
-        		    <%= link_to("#{communityconnection.community.name}", communityconnection.community)%>
+        		    <%= link_to("#{communityconnection.community.name}", people_community_url(communityconnection.community))%>
         		    <span><%= communityconnection.connectiontype.capitalize %></span>
         		</li>
         	<% end %>
