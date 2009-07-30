@@ -45,7 +45,7 @@
         	         <h4 id="selected_range" class="period1"><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
         	         <br class="clear"/>
                   <!--  <%= date_picker_field  "dateFrom", "to_s" %> <span>to</span> <%= date_picker_field "dateTo", "to_s" %> -->
-                    <%= calendar_date_select_tag "dateFrom", Date.today, :popup => true, :year_range => 3.years.ago..0.years.ago%><span>to</span><%= calendar_date_select_tag "dateTo", Date.today, :popup => true, :year_range => 3.years.ago..0.years.ago%>  
+                    <%= calendar_date_select_tag "dateFrom",((@dateFrom) ? @dateFrom : Time.parse(@oldest_date).strftime('%Y-%m-%d')) , :popup => true%><span>to</span><%= calendar_date_select_tag "dateTo", ((@dateTo) ? @dateTo : Date.today), :popup => true%>  
                     <%= submit_tag 'Go' %>
                     <%= submit_tag 'Show all'%>
                     <ul id="search_parms">
@@ -65,7 +65,7 @@
         			<h4 id="selected_range" class="period2"><%= (@datec1 && @datec2) ? "#{Time.parse(@datecFrom).strftime('%b %e, %Y')} - #{Time.parse(@datecTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
                     <br class="clear"/>
         	    <!--   <%= date_picker_field  "datecFrom", "to_s" %> <span>to</span> <%= date_picker_field "datecTo", "to_s" %>  -->
-                 <%= calendar_date_select_tag "datecFrom", Date.today, :popup => true, :year_range => 3.years.ago..0.years.ago%><span>to</span><%= calendar_date_select_tag "datecTo", Date.today, :popup => true, :year_range => 3.years.ago..0.years.ago%> 
+                 <%= calendar_date_select_tag "datecFrom",((@datecFrom) ? @datecFrom : Time.parse(@oldest_date).strftime('%Y-%m-%d')), :popup => true %><span>to</span><%= calendar_date_select_tag "datecTo", ((@datecTo) ? @datecTo : Date.today), :popup => true%> 
         	        <%= submit_tag 'Go' %>
         	        <%= submit_tag 'Show all'%>
         	        <ul id="search_parms">
