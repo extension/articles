@@ -44,7 +44,7 @@ class People::ActivityController < ApplicationController
     urlparams = @filteredparameters.option_values_hash.merge({:id => @showuser.id, :feedkey => @currentuser.feedkey})
     urlparams.delete(:dateinterval)
     urlparams.delete(:datefield)
-    urlparams.merge!({:controller => :feeds, :action => :showuser})
+    urlparams.merge!({:controller => '/people/feeds', :action => :showuser})
     @feedurl = url_for(urlparams)
     @feedlink = "<link rel='alternate' type='application/atom+xml' href='#{@feedurl}', title='#{feedtitle}' />"
     respond_to do |format|
@@ -123,7 +123,7 @@ class People::ActivityController < ApplicationController
     urlparams = @filteredparams.option_values_hash.merge({:feedkey => @currentuser.feedkey})
     urlparams.delete(:dateinterval)
     urlparams.delete(:datefield)
-    urlparams.merge!({:controller => :feeds, :action => :list})
+    urlparams.merge!({:controller => '/people/feeds', :action => :list})
     @feedurl = url_for(urlparams)    
     @feedlink = "<link rel='alternate' type='application/atom+xml' href='#{@feedurl}', title='#{feedtitle}' />"
     

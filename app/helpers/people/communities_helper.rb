@@ -8,7 +8,7 @@
 module People::CommunitiesHelper
   
   def change_community_connection_link(container,community,label,connectaction,linkoptions = {})
-    url = {:controller => :communities, :action => :change_my_connection, :id => community.id, :connectaction => connectaction}
+    url = {:controller => '/people/communities', :action => :change_my_connection, :id => community.id, :connectaction => connectaction}
     if(container == 'nointerest')
       color = 'white'
     else
@@ -68,7 +68,7 @@ module People::CommunitiesHelper
   end
   
   def community_connection_link(container,community,showuser,label,connectaction,title,confirm = nil)
-    urloptions = {:controller => :communities, :action => :modify_user_connection, :id => community.id, :userid => showuser.id }
+    urloptions = {:controller => '/people/communities', :action => :modify_user_connection, :id => community.id, :userid => showuser.id }
     urloptions.merge!({:connectaction => connectaction})
     progress = "<img src='/images/ajax-loader-white.gif' /> Saving..."
     loading = update_page{|p| p.replace_html(container,progress)}

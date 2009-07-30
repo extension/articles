@@ -23,6 +23,6 @@
 
 <% if (!@showuser.retired? and @showuser.account_status != User::STATUS_SIGNUP and @showuser.vouched? )%>		
 	<% if admin_mode? or @currentuser.communityinvitejoins.count > 0 %>
-		<p class="clear"><%= link_to ("Invite #{@showuser.first_name} to join a Community", {:controller => :colleagues, :action => :invitetocommunity, :id => @showuser.id}, {:class => "action"}) %></p>
+		<p class="clear"><%= link_to ("Invite #{@showuser.first_name} to join a Community", {:controller => '/people/colleagues', :action => :invitetocommunity, :id => @showuser.id}, {:class => "action"}) %></p>
 	<% end %>
 <% end %>

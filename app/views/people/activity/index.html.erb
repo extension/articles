@@ -41,7 +41,7 @@
     	</ul>
 
     <% else %>
-    	<p>You haven't yet created, joined, or indicated a desire to join any <%= link_to("communities",:controller => :communities, :action => :index)%></p>
+    	<p>You haven't yet created, joined, or indicated a desire to join any <%= link_to("communities",:controller => '/people/communities', :action => :index)%></p>
     <% end %>
 
 </div>

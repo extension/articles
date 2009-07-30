@@ -8,5 +8,5 @@
 <% else %>
 <h2>Confirm Your Account</h2>
 <%end%>
-<p>Please try <%= link_to("sending another confirmation email", :controller => :signup, :action => :confirm, :token => 'send') %> or 
-<%= link_to("contact us", :controller => :help, :action => :contactform) %> for more information.</p>
+<p>Please try <%= link_to("sending another confirmation email", :controller => '/people/signup', :action => :confirm, :token => 'send') %> or 
+<%= link_to("contact us", :controller => '/people/help', :action => :contactform) %> for more information.</p>

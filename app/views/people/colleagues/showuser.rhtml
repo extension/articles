@@ -28,7 +28,7 @@
 		</div>
   	<% end %>
 	<% if admin_mode? %>
-  		<p>See also the information in the <%= link_to("administrative user profile",:controller => :admin, :action => :showuser, :id => @showuser.login) %></p>
+  		<p>See also the information in the <%= link_to("administrative user profile",:controller => '/people/admin', :action => :showuser, :id => @showuser.login) %></p>
 	<% end %>
   	<%= render(:partial => 'people/common/showuser_profile', :locals => {:showuser => @showuser}) %>
   	<% if @showuser.vouched? %>
@@ -57,9 +57,9 @@
 		</div>
 		<div id="showuser_activity">
 			<h2>Recent Activity</h2>
-			<p class="syndication"><%= link_to("feed", :controller => :feeds, :action => :showuser, :id => @showuser.id)%></p>
+			<p class="syndication"><%= link_to("feed", :controller => '/people/feeds', :action => :showuser, :id => @showuser.id)%></p>
 			<%= render(:partial => 'people/activity/activitylist', :locals => { :activitylist => @showuser.recent_public_activity, :activityoptions => {:userview => true}}) %>
-			<p><%= link_to("More...",{:controller => :activity, :action => :showuser, :id => @showuser.id })%></p>
+			<p><%= link_to("More...",{:controller => '/people/activity', :action => :showuser, :id => @showuser.id })%></p>
 		</div>
 
 	<% end %>

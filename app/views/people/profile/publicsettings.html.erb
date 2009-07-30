@@ -21,7 +21,7 @@
 			
             <td class="publiccol">
             	<%= check_box_tag("show_publicly","yes",setting.is_public?, {:id => "privacy_setting_#{setting.id}"}) %>
-            	<%= observe_field("privacy_setting_#{setting.id}", :url => {:controller => :profile, :action => :change_privacy_setting, :id => setting.id}, :with => "'show_publicly=' + value") %>
+            	<%= observe_field("privacy_setting_#{setting.id}", :url => {:controller => '/people/profile', :action => :change_privacy_setting, :id => setting.id}, :with => "'show_publicly=' + value") %>
             </td>
             <td><%= PrivacySetting::ITEM_LABELS[setting.item] %></td>
         </tr>
@@ -40,7 +40,7 @@
             <tr id="social_network_row_<%= social_network.id %>">
                 <td class="publiccol">
                 	<%= check_box_tag("show_publicly","yes",social_network.is_public?, {:id => "social_network_privacy_#{social_network.id}"}) %>
-                	<%= observe_field("social_network_privacy_#{social_network.id}",:url => {:controller => :profile, :action => :change_social_network_privacy, :id => social_network.id}, :with => "'show_publicly=' + value") %>
+                	<%= observe_field("social_network_privacy_#{social_network.id}",:url => {:controller => '/people/profile', :action => :change_social_network_privacy, :id => social_network.id}, :with => "'show_publicly=' + value") %>
                 </td>
                 <td><span class="socialnetwork <%= social_network_class(social_network.network) %>"><%= social_network_link(social_network) %> (<%= social_network_name(social_network)%>)</span></td>
             </tr>

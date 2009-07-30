@@ -22,5 +22,5 @@
 	<% end %>
 </table>
 <% else %>
-	<p>You are not yet part of any communities. <%= link_to("Find a community", {:controller => :communities, :action => :index})%>.</p>
+	<p>You are not yet part of any communities. <%= link_to("Find a community", {:controller => '/people/communities', :action => :index})%>.</p>
 <% end %>

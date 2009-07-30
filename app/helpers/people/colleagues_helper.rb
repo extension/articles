@@ -8,7 +8,7 @@
 module People::ColleaguesHelper
 
   def colleague_community_connection_link(container,community,showuser,label,connectaction,title,confirm = nil)
-    urloptions = {:controller => :colleagues, :action => :modify_community_connection, :id => showuser.id, :communityid => community.id }
+    urloptions = {:controller => '/people/colleagues', :action => :modify_community_connection, :id => showuser.id, :communityid => community.id }
     urloptions.merge!({:connectaction => connectaction})
     progress = "<img src='/images/ajax-loader-white.gif' /> Saving..."
     loading = update_page{|p| p.replace_html(container,progress)}

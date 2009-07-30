@@ -41,12 +41,12 @@ module People::ActivityDisplayHelper
     elsif(nolink)
       "#{user.fullname}"
     else
-      "<a href='#{url_for(:controller => :colleagues, :action => :showuser, :id => user.login)}'>#{user.fullname}</a>"
+      "<a href='#{url_for(:controller => '/people/colleagues', :action => :showuser, :id => user.login)}'>#{user.fullname}</a>"
     end
   end
   
   def link_to_activity_application(aa)
-    "<a href='#{url_for(:controller => :activity, :action => :list, :activityapplication => aa.id)}'>#{aa.displayname}</a>"
+    "<a href='#{url_for(:controller => '/people/activity', :action => :list, :activityapplication => aa.id)}'>#{aa.displayname}</a>"
   end
   
   def activity_to_s(activity,opts = {})

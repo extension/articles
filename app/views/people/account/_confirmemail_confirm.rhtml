@@ -25,7 +25,7 @@
 <div class="form_help">
     <h2>If you didn't receive the email yet...</h2>
     
-    <p><%= link_to('Please send me another confirmation email', :controller => :account, :action => :confirmemail, :token => 'send') %></p>
+    <p><%= link_to('Please send me another confirmation email', :controller => '/people/account', :action => :confirmemail, :token => 'send') %></p>
 
     <p>Sometimes emails can get delayed up to a few hours. It's also possible for email to be mistakenly flagged as spam by your email provider. You may want to check your Spam or Junk folders to see if it's there.</p>
     
@@ -35,5 +35,5 @@
     <p>with the subject:
     <br /><code>eXtension Initiative: Please confirm your email address</code></p>
     
-    <p>If you don't receive the email within the next 24 hours, please <%= link_to("contact us", :controller => :help, :action => :contactform) %>.</p>
+    <p>If you don't receive the email within the next 24 hours, please <%= link_to("contact us", :controller => '/people/help', :action => :contactform) %>.</p>
 </div>

@@ -56,7 +56,7 @@
 	
 	<%if social_network.autocomplete? %>
 	<%= observe_field("socialnetwork_#{fieldid}_accountid",
-                    :url       => { :controller => :profile, :action => :xhr_socialnetworkurl },
+                    :url       => { :controller => '/people/profile', :action => :xhr_socialnetworkurl },
 					:frequency => 1,
                     :with      => "'accountid='
 								+ encodeURIComponent(value)

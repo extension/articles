@@ -23,28 +23,28 @@ module AuthCheck
   def explainauthresult(resultcode)
     case resultcode
       when AUTH_INVALID_ID
-        gourl = "<a href='"+url_for(:controller => :signup, :action => :new)+"'>signup for an account</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/signup', :action => :new)+"'>signup for an account</a>"
         explanation = "<p>The eXtensionID or email address was not found. Please check that ID/email again, or #{gourl}.</p>"        
       when AUTH_INVALID_PASSWORD
-        gourl = "<a href='"+url_for(:controller => :account, :action => 'new_password') +"'>set a new password</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/account', :action => 'new_password') +"'>set a new password</a>"
         explanation = "<p>Your eXtensionID password is incorrect. Please check your password again.  If you have forgotten your password, you can #{gourl} for your eXtensionID.</p>"       
       when AUTH_EMAIL_NOTCONFIRM
-        gourl = "<a href='"+url_for(:controller => :account, :action => :confirmemail) +"'>confirm your email address</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/account', :action => :confirmemail) +"'>confirm your email address</a>"
         explanation = "<p>You have not yet confirmed your email address. Please #{gourl}.</p>"        
       when AUTH_SIGNUP_CONFIRM
-        gourl = "<a href='"+url_for(:controller => :signup, :action => :confirm) +"'>confirm your account and email address</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/signup', :action => :confirm) +"'>confirm your account and email address</a>"
         explanation = "<p>You have not yet confirmed your email address and account. Please #{gourl}.</p>"        
       when AUTH_ACCOUNT_REVIEW
-        gourl = "<a href='"+url_for(:controller => :account, :action => 'review') +"'>Learn more about account reviews</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/account', :action => 'review') +"'>Learn more about account reviews</a>"
         explanation = "<p>Your eXtensionID is currently under review. #{gourl}.</p>"         
       when AUTH_ACCOUNT_NOTVOUCHED
-        gourl = "<a href='"+url_for(:controller => :account, :action => 'review') +"'>Learn more about account reviews</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/account', :action => 'review') +"'>Learn more about account reviews</a>"
         explanation = "<p>Your eXtensionID is currently under review. #{gourl}.</p>"         
       when AUTH_INVALID_EMAIL
-        gourl = "<a href='"+url_for(:controller => :profile, :action => :edit) +"'>edit your profile</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/profile', :action => :edit) +"'>edit your profile</a>"
         explanation = "<p>Your registered email address is invalid. Please #{gourl} and set a valid email address for your eXtensionID.</p>"      
       when AUTH_ACCOUNT_RETIRED
-        gourl = "<a href='"+url_for(:controller => :help, :action => :contactform)+"'>contact us</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/help', :action => :contactform)+"'>contact us</a>"
         explanation = "<p>Your eXtensionID has been retired. Please #{gourl} for more information.</p>"
       when AUTH_INVALID_APIKEY
         explanation = "<p>An internal configuration error has occurred.  Please let us know about this by emailing us at <a href='mailto:eXtensionBugs@extension.org'>eXtensionBugs@extension.org</a>"        

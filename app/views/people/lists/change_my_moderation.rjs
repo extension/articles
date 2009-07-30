@@ -1,2 +1,2 @@
-page.replace_html "listconnection", :partial => '/lists/list_connection'
-page.replace_html "listnumbers", :partial => '/lists/list_numbers'
+page.replace_html "listconnection", :partial => '/people/lists/list_connection'
+page.replace_html "listnumbers", :partial => '/people/lists/list_numbers'

@@ -1,4 +1,4 @@
-<% @filterstring = community_filter_string(@findoptions.merge({:controller => :numbers, :action => :summary,:nolink => true})) %>
+<% @filterstring = community_filter_string(@findoptions.merge({:controller => '/people/numbers', :action => :summary,:nolink => true})) %>
 <% if @filterstring.empty? %>
 	<% @page_title = "Numbers by Community"%>
 <% else %>

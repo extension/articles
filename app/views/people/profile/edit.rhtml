@@ -20,6 +20,6 @@
 	</fieldset>
 	</div>
 	<%= render(:partial => 'profile_fields', :locals => {:user => @currentuser, :signup => false}) %>
-    <p><%= submit_tag 'Save' %> or <%= link_to 'Cancel', :controller => :profile, :action => :me %> </p>
+    <p><%= submit_tag 'Save' %> or <%= link_to 'Cancel', :controller => '/people/profile', :action => :me %> </p>
 
 <% end %>

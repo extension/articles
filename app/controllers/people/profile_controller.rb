@@ -169,7 +169,7 @@ class People::ProfileController < ApplicationController
   
   def communitymemberships
     # convenience method to do redirection to new communities controller
-    return redirect_to(:controller => :communities, :action => :mine)
+    return redirect_to(:controller => '/people/communities', :action => :mine)
   end
   
   def auto_complete_for_institution_name

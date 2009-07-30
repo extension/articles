@@ -14,7 +14,7 @@ class People::AccountController < ApplicationController
   before_filter :login_optional, :only => [:login]
 
   def review
-    return redirect_to(:controller => :signup, :action => :review, :status => 301)
+    return redirect_to(:controller => '/people/signup', :action => :review, :status => 301)
   end
 
   def ajaxfindreviewer
@@ -152,7 +152,7 @@ class People::AccountController < ApplicationController
   end
       
   def signup
-    return redirect_to(:controller => :signup, :action => :new, :invite => params[:invite], :status => 301)
+    return redirect_to(:controller => '/people/signup', :action => :new, :invite => params[:invite], :status => 301)
   end
   
   def change_password

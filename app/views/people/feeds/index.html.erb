@@ -4,12 +4,12 @@
 <div id="activity_one" class="activity_summary">
     <h1>Activity Feeds</h1>
 	<h2>Feeds</h2>		
-	<p class="syndication"><%= link_to("All Activity",{:controller => :feeds, :action => :all, :filter => 'all', :feedkey => @currentuser.feedkey})%></p>
-	<p class="syndication"><%= link_to("Signups",{:controller => :feeds, :action => :all, :filter => 'signup', :feedkey => @currentuser.feedkey})%></p>
-	<p class="syndication"><%= link_to("Logins",{:controller => :feeds, :action => :all, :filter => 'login', :feedkey => @currentuser.feedkey})%></p>
-	<p class="syndication"><%= link_to("Community Activity - all communities",{:controller => :feeds, :action => :communities, :filter => 'all', :feedkey => @currentuser.feedkey})%></p>
-	<p class="syndication"><%= link_to("Community Activity - eXtension Communities of Practice",{:controller => :feeds, :action => :communities, :filter => 'approved', :feedkey => @currentuser.feedkey})%></p>
-	<p class="syndication"><%= link_to("Community Activity - user-contributed communities",{:controller => :feeds, :action => :communities, :filter => 'usercontributed', :feedkey => @currentuser.feedkey})%></p>
+	<p class="syndication"><%= link_to("All Activity",{:controller => '/people/feeds', :action => :all, :filter => 'all', :feedkey => @currentuser.feedkey})%></p>
+	<p class="syndication"><%= link_to("Signups",{:controller => '/people/feeds', :action => :all, :filter => 'signup', :feedkey => @currentuser.feedkey})%></p>
+	<p class="syndication"><%= link_to("Logins",{:controller => '/people/feeds', :action => :all, :filter => 'login', :feedkey => @currentuser.feedkey})%></p>
+	<p class="syndication"><%= link_to("Community Activity - all communities",{:controller => '/people/feeds', :action => :communities, :filter => 'all', :feedkey => @currentuser.feedkey})%></p>
+	<p class="syndication"><%= link_to("Community Activity - eXtension Communities of Practice",{:controller => '/people/feeds', :action => :communities, :filter => 'approved', :feedkey => @currentuser.feedkey})%></p>
+	<p class="syndication"><%= link_to("Community Activity - user-contributed communities",{:controller => '/people/feeds', :action => :communities, :filter => 'usercontributed', :feedkey => @currentuser.feedkey})%></p>
 
 	<h2>Indexes</h2>
 	<p><%= link_to("Institutions",{:action => :institutions, :displayfilter => 'all'})%></p>
@@ -23,13 +23,13 @@
 	<h2>Institution, Location, and Position</h2>
 
 	<% if !@currentuser.institution.nil? %>
-		<p class="syndication"><%= link_to("Your Institution - #{@currentuser.institution.name}",{:controller => :feeds, :action => :institution, :id => @currentuser.institution.id, :feedkey => @currentuser.feedkey})%></p>
+		<p class="syndication"><%= link_to("Your Institution - #{@currentuser.institution.name}",{:controller => '/people/feeds', :action => :institution, :id => @currentuser.institution.id, :feedkey => @currentuser.feedkey})%></p>
 	<% end %>
 	<% if !@currentuser.location.nil? %>	
-	<p class="syndication"><%= link_to("Your Location - #{@currentuser.location.name}",{:controller => :feeds, :action => :location, :id => @currentuser.location.id, :feedkey => @currentuser.feedkey})%></p>
+	<p class="syndication"><%= link_to("Your Location - #{@currentuser.location.name}",{:controller => '/people/feeds', :action => :location, :id => @currentuser.location.id, :feedkey => @currentuser.feedkey})%></p>
 	<% end %>
 	<% if !@currentuser.position.nil? %>	
-		<p class="syndication"><%= link_to("Your Position - #{@currentuser.position.name}",{:controller => :feeds, :action => :position, :id => @currentuser.position.id, :feedkey => @currentuser.feedkey})%></p>
+		<p class="syndication"><%= link_to("Your Position - #{@currentuser.position.name}",{:controller => '/people/feeds', :action => :position, :id => @currentuser.position.id, :feedkey => @currentuser.feedkey})%></p>
 	<% end %>
 	
 	<h2>Your Communities</h2>
@@ -39,14 +39,14 @@
     	<% @currentuser.connectionsofanyinterest.each do |communityconnection|%>
     		<li>
 				<strong><%= communityconnection.community.name %></strong>
-				<p><span class="syndication"><%= link_to("community activity",{:controller => :feeds, :action => :community, :id => communityconnection.community.id, :filter => 'community', :feedkey => @currentuser.feedkey})%></span>
-				<span class="syndication"><%= link_to("member activity",{:controller => :feeds, :action => :community, :id => communityconnection.community.id, :filter => 'member', :feedkey => @currentuser.feedkey})%></span></p>
+				<p><span class="syndication"><%= link_to("community activity",{:controller => '/people/feeds', :action => :community, :id => communityconnection.community.id, :filter => 'community', :feedkey => @currentuser.feedkey})%></span>
+				<span class="syndication"><%= link_to("member activity",{:controller => '/people/feeds', :action => :community, :id => communityconnection.community.id, :filter => 'member', :feedkey => @currentuser.feedkey})%></span></p>
     		</li>
     	<% end %>
     	</ul>
 
     <% else %>
-    	<p>You haven't yet created, joined, or indicated that you want to join any <%= link_to("communities",:controller => :communities, :action => :index)%></p>
+    	<p>You haven't yet created, joined, or indicated that you want to join any <%= link_to("communities",:controller => '/people/communities', :action => :index)%></p>
     <% end %>
 
 </div>

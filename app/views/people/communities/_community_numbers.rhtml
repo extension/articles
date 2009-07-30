@@ -27,6 +27,6 @@
 	    </tr>
 	<% end %>
 	<tr>
-        <td colspan='2'><%= link_to("More numbers for this community...", :controller => :numbers, :action => :community, :id => @community.id) %></td>
+        <td colspan='2'><%= link_to("More numbers for this community...", :controller => '/people/numbers', :action => :community, :id => @community.id) %></td>
     </tr>
 </table>

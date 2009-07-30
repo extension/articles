@@ -1,6 +1,6 @@
 <h1>Invite People to <%= @community.name %></h1>
 <ul id="nav">
-<li><%= link_to("#{@community.name}", @community)%></li>
+<li><%= link_to("#{@community.name}", people_community_url(@community))%></li>
 <li></li>
 <li></li>
 </ul>

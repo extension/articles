@@ -20,7 +20,7 @@
 	<%- if !session[:last_opierequest] -%>
     <p>This is the eXtension Account Management site. You can use it to update your eXtension profile, find Extension colleagues, or manage your eXtensionID and password.</p>
 	<%- end -%>
-	<p>If you don't already have an eXtensionID, please <%= link_to "signup for one!", :controller => :signup, :action => :new %></p>
+	<p>If you don't already have an eXtensionID, please <%= link_to "signup for one!", :controller => '/people/signup', :action => :new %></p>
 <% end %>
 
 

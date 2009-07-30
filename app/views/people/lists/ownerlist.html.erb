@@ -39,7 +39,7 @@
 		<% if (@listtype != 'noidowners') %>    
 		    <% @ownerlist.each do |owner| %>
 		        <tr id="ownerlist_row_<%= owner.id %>">
-					<td><%= link_to("#{owner.user.fullname}", :controller => :colleagues, :action => :showuser, :id => owner.user.login) %></td>
+					<td><%= link_to("#{owner.user.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => owner.user.login) %></td>
 					<td><%= owner.user.login %></td>
 					<td><%= owner.user.email %></td>   
 		        	<td><%= owner.moderator? ? 'Yes' : 'No' %></td>

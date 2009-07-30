@@ -39,7 +39,7 @@
 		<% if (@listtype != 'noidsubscribers') %>    
 		    <% @subscriptionlist.each do |subscription| %>
 		        <tr id="subscriptionlist_row_<%= subscription.id %>">
-					<td><%= link_to("#{subscription.user.fullname}", :controller => :colleagues, :action => :showuser, :id => subscription.user.login) %></td>
+					<td><%= link_to("#{subscription.user.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => subscription.user.login) %></td>
 					<td><%= subscription.user.login %></td>
 					<td><%= subscription.user.email %></td>     
 					<% if (@listtype == 'ineligible') %>

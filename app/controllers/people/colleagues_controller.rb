@@ -13,12 +13,12 @@ class People::ColleaguesController < ApplicationController
   
   def communityinterest
     # convenience method to do redirection to new communities controller
-    return redirect_to(:controller => :communities, :action => :show, :id => params[:id])
+    return redirect_to(:controller => '/people/communities', :action => :show, :id => params[:id])
   end
   
   def communitymembership
     # convenience method to do redirection to new communities controller
-    return redirect_to(:controller => :communities, :action => :show, :id => params[:id])
+    return redirect_to(:controller => '/people/communities', :action => :show, :id => params[:id])
   end
   
   def index
@@ -125,7 +125,7 @@ class People::ColleaguesController < ApplicationController
       @page_title = "Social Network Identities - #{SocialNetwork.get_name(params[:id])}"
     end
     
-    @backto = {:label => "back to Social Networks List", :url => url_for(:controller => :colleagues, :action => :socialnetworks)}
+    @backto = {:label => "back to Social Networks List", :url => url_for(:controller => '/people/colleagues', :action => :socialnetworks)}
     
   end
 
@@ -169,7 +169,7 @@ class People::ColleaguesController < ApplicationController
     
     label = (match == 'matchall') ? "and" : "or"
     @page_title = "Colleagues interested in #{findtags.join(" #{label} ")}"
-    @backto = {:label => "back to Interests List", :url => url_for(:controller => :colleagues, :action => :tagcloud)}
+    @backto = {:label => "back to Interests List", :url => url_for(:controller => '/people/colleagues', :action => :tagcloud)}
 
     if(!params[:downloadreport].nil? and params[:downloadreport] == 'csv')
       reportusers = User.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name'})
@@ -178,7 +178,7 @@ class People::ColleaguesController < ApplicationController
     else
       @userlist =  User.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name', :paginate => true, :page => params[:page]})
       if((@userlist.length) > 0)
-        @csvreporturl = url_for(:controller => :colleagues, :action => :tags, :taglist => taglist, :match => match, :downloadreport => 'csv')
+        @csvreporturl = url_for(:controller => '/people/colleagues', :action => :tags, :taglist => taglist, :match => match, :downloadreport => 'csv')
       end
     end
 
@@ -206,7 +206,7 @@ class People::ColleaguesController < ApplicationController
       @userlist = User.filtered(@findoptions).ordered(@filteredparams.order).paginate(:all, :page => params[:page])
       if((@userlist.length) > 0)
         urloptions = @filteredparams.option_values_hash
-        urloptions.merge!({:controller => :colleagues, :action => :list, :download => 'csv'})
+        urloptions.merge!({:controller => '/people/colleagues', :action => :list, :download => 'csv'})
         @csvreporturl = CGI.escapeHTML(url_for(urloptions))
       end
     end
@@ -244,7 +244,7 @@ class People::ColleaguesController < ApplicationController
       @userlist = User.searchcolleagues({:order => 'last_name,first_name', :searchterm => params[:searchterm], :page => params[:page], :paginate => true})
       
       if @userlist.nil? || @userlist.length == 0
-        flash.now[:warning] = "<p>No colleague was found that matches your search term.</p> <p>Your colleague may not yet have an eXtensionID. <a href='#{url_for(:controller => :colleagues, :action => :invite)}'>Invite your colleague to get an eXtensionID</a></p>"
+        flash.now[:warning] = "<p>No colleague was found that matches your search term.</p> <p>Your colleague may not yet have an eXtensionID. <a href='#{url_for(:controller => '/people/colleagues', :action => :invite)}'>Invite your colleague to get an eXtensionID</a></p>"
       else
         if @userlist.length == 1
           redirect_to :action => :showuser, :id => @userlist[0].login

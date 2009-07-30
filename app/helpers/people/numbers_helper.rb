@@ -36,7 +36,7 @@ module People::NumbersHelper
   def url_for_itemlist(itemlist,options,params={})
     filteredparameters = FilterParams.new(options)
     filter_params = filteredparameters.option_values_hash
-    options = {:controller => :numbers, :action => itemlist}
+    options = {:controller => '/people/numbers', :action => itemlist}
     options.merge!(filter_params)
     options.merge!(params)
     return url_for(options)
@@ -51,10 +51,10 @@ module People::NumbersHelper
     community = options[:community] || nil
     bycount = (options[:bycount].nil? ? false : options[:bycount])
     if(community)
-      urlparams = {:controller => :communities, :action => :userlist, :id => community.id, :connectiontype => 'joined'}
+      urlparams = {:controller => '/people/communities', :action => :userlist, :id => community.id, :connectiontype => 'joined'}
       options.delete(:communitytype)
     else
-      urlparams = {:controller => :colleagues, :action => :list}
+      urlparams = {:controller => '/people/colleagues', :action => :list}
     end
     urlparams.merge!(filteredparameters.option_values_hash)
     # must be logged in!
@@ -75,7 +75,7 @@ module People::NumbersHelper
   
   # this is honestly a bit absurd
   def almost_breadcrumbs(path,filterobject)
-    breadcrumbs = link_to("Numbers",:controller => :numbers, :action => :index )
+    breadcrumbs = link_to("Numbers",:controller => '/people/numbers', :action => :index )
     if(filterobject.nil?)
       breadcrumbs += " >> "
       breadcrumbs += "#{path.capitalize}"
@@ -83,10 +83,10 @@ module People::NumbersHelper
       objectklass = filterobject.class.name
       objectid = filterobject.id
       breadcrumbs += " >> "
-      breadcrumbs += link_to("#{objectklass.pluralize}",:controller => :numbers, :action => objectklass.downcase.pluralize )
+      breadcrumbs += link_to("#{objectklass.pluralize}",:controller => '/people/numbers', :action => objectklass.downcase.pluralize )
       if(objectklass.downcase.pluralize != path)
         breadcrumbs += " >> "
-        breadcrumbs += link_to("#{filterobject.name}",:controller => :numbers, :action => objectklass.downcase, :id => objectid )
+        breadcrumbs += link_to("#{filterobject.name}",:controller => '/people/numbers', :action => objectklass.downcase, :id => objectid )
         breadcrumbs += " >> "
         breadcrumbs += "#{path.capitalize}"
       else

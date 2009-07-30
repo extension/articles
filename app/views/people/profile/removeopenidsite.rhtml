@@ -7,5 +7,5 @@
     <p>Do you want to remove the following website from your OpenID trust list?</p>
 	<p><code><%= @removesite.trust_root %></code></p>
 	<%= hidden_field_tag('id',@removesite.id) %>
-    <%= submit_tag 'Remove' %>  or <%= link_to('Cancel', :controller => :profile, :action => :openid) %>
+    <%= submit_tag 'Remove' %>  or <%= link_to('Cancel', :controller => '/people/profile', :action => :openid) %>
 <% end %>

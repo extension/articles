@@ -33,7 +33,7 @@
 		    <label for="user_location_id">Location:</label>
 		<%= select(:user, :location_id, @locations.map {|loc| [loc.name,loc.id]}, :include_blank => true) %>
 		<%= observe_field(:user_location_id,
-		                  :url       => { :controller => :profile, :action => :xhr_countylist },
+		                  :url       => { :controller => '/people/profile', :action => :xhr_countylist },
 		                  :with      => "'location='+value") %>
 		</p>
 	</div>

@@ -1,5 +1,5 @@
 <% if(mailinglist = community.listconnection(listtype)) %>
-	<h4><%= link_to("#{mailinglist.list.name}", mailinglist.list)%></h4>
+	<h4><%= link_to("#{mailinglist.list.name}",  people_list_url(mailinglist.list))%></h4>
 	<p>Created On: <strong><%= mailinglist.list.created_at %></strong></p>
 	<p>Posting activity within the last month: <%= list_stat_line(mailinglist.list.get_posting_stats('lastmonth')) %></p>
 <% else %>
@@ -17,7 +17,7 @@
 		<% if !errors.nil? %>
 		    <div class="feedback_banner failure"><p><%= errors %></p></div>
 		<% end %>
-			<% form_remote_tag(:url => {:controller => :communities, :action => :xhr_create_list, :communityid => community.id}, :html => {:id => "community_#{community.id}_#{listtype}_list_form"}) do %>
+			<% form_remote_tag(:url => {:controller => '/people/communities', :action => :xhr_create_list, :communityid => community.id}, :html => {:id => "community_#{community.id}_#{listtype}_list_form"}) do %>
 			<div class="form_section">
 			    <fieldset>	
 			        <p>	

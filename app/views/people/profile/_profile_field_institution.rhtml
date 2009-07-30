@@ -1,1 +1,1 @@
-<p><%= link_to_remote("#{user.institution.name } (edit)", {:url => {:controller => :profile, :action => :editinstitution}, :method => :post}, :title => "Edit Institution") %></p>
+<p><%= link_to_remote("#{user.institution.name } (edit)", {:url => {:controller => '/people/profile', :action => :editinstitution}, :method => :post}, :title => "Edit Institution") %></p>

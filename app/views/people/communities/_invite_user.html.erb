@@ -5,7 +5,7 @@
           <p id="community_<%= community.id %>_user_<%= user.id %>_connection"> <%= link_to_function 'invitation options', "Effect.toggle('community_#{community.id}_user_#{user.id}_inviteform_block','blind', { duration: .4});" %></p>
 	
 	<div id="community_<%= community.id %>_user_<%= user.id %>_inviteform_block" style="display:none;" class="invite_actions">
-		<% form_remote_tag(:url => {:controller => :communities, :action => :inviteuser, :id => community.id, :userid => user.id}, :html => {:id => "community_#{community.id}_user_#{user.id}_invite_form"}) do %>
+		<% form_remote_tag(:url => {:controller => '/people/communities', :action => :inviteuser, :id => community.id, :userid => user.id}, :html => {:id => "community_#{community.id}_user_#{user.id}_invite_form"}) do %>
 		    <fieldset>
 		        <h3>Invite <%= user.fullname%> to join <%= community.name %></h3>
 				<% if @currentuser.is_community_leader?(@community) or admin_mode? %>

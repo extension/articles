@@ -1,6 +1,6 @@
 <% displaylistposts.each do |listpost| %>
 <dl class="event">
-    <dt><%= link_to(time_ago_in_words(listpost.posted_at,true)+" ago", :controller => :lists, :action => :showpost, :id => listpost.id) %></dt>
+    <dt><%= link_to(time_ago_in_words(listpost.posted_at,true)+" ago", :controller => '/people/lists', :action => :showpost, :id => listpost.id) %></dt>
 	<% if(listview.nil?) %>
     	<dd><%= listpost_activity_to_s(listpost) %></dd>
 	<% else %>

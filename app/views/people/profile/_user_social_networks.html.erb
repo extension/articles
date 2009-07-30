@@ -4,7 +4,7 @@
     <div id="showuser_socialnetworks">
         <% @currentuser.social_networks.each do |social_network| %>
             <dl class="usernetwork">
-                <dt class="<%= social_network_class(social_network.network) %>"><%= link_to(social_network_name(social_network), {:controller => :colleagues, :action => :socialnetwork, :id => social_network.network}) %></dt>
+                <dt class="<%= social_network_class(social_network.network) %>"><%= link_to(social_network_name(social_network), {:controller => '/people/colleagues', :action => :socialnetwork, :id => social_network.network}) %></dt>
                 <dd><%= social_network_link(social_network) %></dd>
             </dl>
         <% end %>

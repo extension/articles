@@ -2,7 +2,7 @@
 
 <p><code class="email"><%= @currentuser.email %></code> <span class="help">(Incorrect address? Please <%= link_to('fix it in your profile', :controller => 'profile', :action => 'edit')%>)</span></p>
 
-<p>The email should arrive within a few minutes. Once you receive it, either click the confirmation link or use the provided token to <%= link_to('confirm your address', :controller => :account, :action => :confirmemail) %>.</p>
+<p>The email should arrive within a few minutes. Once you receive it, either click the confirmation link or use the provided token to <%= link_to('confirm your address', :controller => '/people/account', :action => :confirmemail) %>.</p>
 
 <p><strong>Thanks for signing up!</strong></p>
 
@@ -17,5 +17,5 @@
     <p>with the subject:
     <br /><code>eXtension Initiative: Please confirm your email address</code></p>
 
-    <p>If you don't receive the email within the next 24 hours, please <%= link_to("contact us", :controller => :help, :action => :contactform) %>.</p>
+    <p>If you don't receive the email within the next 24 hours, please <%= link_to("contact us", :controller => '/people/help', :action => :contactform) %>.</p>
 </div>

@@ -9,7 +9,7 @@
     
     <% for shownetwork in @socialnetworklist %>
         <tr>
-			<td><%= link_to("#{shownetwork.user.fullname}", :controller => :colleagues, :action => :showuser, :id => shownetwork.user.login) %></td>
+			<td><%= link_to("#{shownetwork.user.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => shownetwork.user.login) %></td>
             <td><%= shownetwork.user.login %></td>
             <td><%= shownetwork.user.email %></td>
 			<td><%= link_to(social_network_name(shownetwork), {:action => :socialnetwork, :id => shownetwork.network}, :class => social_network_class(shownetwork.network)) %></td>

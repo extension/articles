@@ -9,6 +9,6 @@
     <p>with the subject:
     <br /><code>eXtension Initiative: Please confirm your email address</code></p>
 
-    <p>If you don't receive the email within the next 24 hours,  please try <%= link_to("sending another confirmation email", :controller => :signup, :action => :confirm, :token => 'send') %> or 
-	<%= link_to("contact us", :controller => :help, :action => :contactform) %> for more information.</p>
+    <p>If you don't receive the email within the next 24 hours,  please try <%= link_to("sending another confirmation email", :controller => '/people/signup', :action => :confirm, :token => 'send') %> or 
+	<%= link_to("contact us", :controller => '/people/help', :action => :contactform) %> for more information.</p>
 </div>

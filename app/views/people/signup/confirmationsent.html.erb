@@ -6,7 +6,7 @@
 
 <p><code class="email"><%= @currentuser.email %></code> <span class="help">(Incorrect address? Please <%= link_to('fix it in your profile', :controller => 'profile', :action => 'edit')%>)</span></p>
 
-<p>The email should arrive within a few minutes. Once you receive it, either click the confirmation link or use the provided token to <%= link_to('confirm your account', :controller => :signup, :action => :confirm) %>.</p>
+<p>The email should arrive within a few minutes. Once you receive it, either click the confirmation link or use the provided token to <%= link_to('confirm your account', :controller => '/people/signup', :action => :confirm) %>.</p>
 
 <p><strong>Thanks for signing up!</strong></p>
 

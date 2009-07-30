@@ -25,7 +25,7 @@
 				<% if @vouchedby.nil? %>
 					<td>Yes (by system at <%= @currentuser.vouched_at%>)</td>
 				<% else %>	
-	    			<td>Yes (by <%= link_to(@vouchedby.login, :controller => :colleagues,:action => 'showuser', :id => @vouchedby.login) %> at <%= @currentuser.vouched_at%>)</td>
+	    			<td>Yes (by <%= link_to(@vouchedby.login, :controller => '/people/colleagues',:action => 'showuser', :id => @vouchedby.login) %> at <%= @currentuser.vouched_at%>)</td>
 				<% end %>
 			<% end %>
 	    </tr>
@@ -47,9 +47,9 @@
         <% if @currentuser.emailconfirmed? %>
             <td><%= @currentuser.email_event_at%></td>
         <% elsif @currentuser.account_status == User::STATUS_SIGNUP %>
-        	<td><%= link_to("Confirm account", :controller => :signup, :action => :confirm) %></td>
+        	<td><%= link_to("Confirm account", :controller => '/people/signup', :action => :confirm) %></td>
 		<% else %>
-            <td><%= link_to("Confirm email address", :controller => :account, :action => :confirmemail) %></td>
+            <td><%= link_to("Confirm email address", :controller => '/people/account', :action => :confirmemail) %></td>
         <% end %>
     </tr>
 	
@@ -57,12 +57,12 @@
         <td scope="row" class="label">Contributor Agreement:</td>
         <% if !@currentuser.contributor_agreement.nil? %>
 		    <% if @currentuser.contributor_agreement %>
-       	        <td><%= link_to("View", :controller => :account, :action => :contributor_agreement) %> - Accepted on <%= @currentuser.contributor_agreement_at %></td>
+       	        <td><%= link_to("View", :controller => '/people/account', :action => :contributor_agreement) %> - Accepted on <%= @currentuser.contributor_agreement_at %></td>
 		    <% else %>	
-       	        <td><%= link_to("View", :controller => :account, :action => :contributor_agreement) %> - Reviewed, Did not accept </td>
+       	        <td><%= link_to("View", :controller => '/people/account', :action => :contributor_agreement) %> - Reviewed, Did not accept </td>
 		    <% end %>	
 		<% else %>
-		    <td><%= link_to("Review Agreement", :controller => :account, :action => :contributor_agreement) %></td>
+		    <td><%= link_to("Review Agreement", :controller => '/people/account', :action => :contributor_agreement) %></td>
 		<% end %>
     </tr>	
 		

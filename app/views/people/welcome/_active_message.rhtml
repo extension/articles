@@ -2,13 +2,13 @@
 
 <ul>
     <li>
-		<%= link_to('View', :controller => :profile, :action => :me) %> or <%= link_to('edit', :controller => :profile, :action => :edit) %> your profile 
+		<%= link_to('View', :controller => '/people/profile', :action => :me) %> or <%= link_to('edit', :controller => '/people/profile', :action => :edit) %> your profile 
 	</li>
 	<li>
-		<%= link_to("Browse, join, and create communities", :controller => :communities, :action => :index) %>
+		<%= link_to("Browse, join, and create communities", :controller => '/people/communities', :action => :index) %>
 	</li>
     <li>
-		<%= link_to('Find colleagues', :controller => :colleagues, :action => :index) %> that have an eXtensionID
+		<%= link_to('Find colleagues', :controller => '/people/colleagues', :action => :index) %> that have an eXtensionID
 	</li>
 	<li>
 		Explore our publishing tools (login required)

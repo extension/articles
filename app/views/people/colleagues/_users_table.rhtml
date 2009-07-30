@@ -9,7 +9,7 @@
     
     <% for showuser in @userlist %>
         <tr>
-			<td><%= link_to("#{showuser.fullname}", :controller => :colleagues, :action => :showuser, :id => showuser.login) %></td>
+			<td><%= link_to("#{showuser.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => showuser.login) %></td>
             <td><%= showuser.login %></td>
             <td><%= showuser.email %></td>            
 	        <td><%= (showuser.institution.nil? or showuser.institution == '') ? '<span class="na">not specified</span>': showuser.institution.name %></td>

@@ -48,9 +48,9 @@
         <h3>You may be interested in joining these communities</h3>
         <% if @currentuser.tags.count == 0 %>
             
-        	<p><%= link_to("Tell us about your interests and expertise", :controller => :profile, :action => :tagedit ) %> and we'll try to recommend some communities for you.</p>
+        	<p><%= link_to("Tell us about your interests and expertise", :controller => '/people/profile', :action => :tagedit ) %> and we'll try to recommend some communities for you.</p>
         <% elsif @relevant_communities.size == 0 %>
-        	<p>We don't have any recommendations right now. If you <%= link_to("add some more tags", :controller => :profile, :action => :tagedit ) %> maybe we can find a match.</p>
+        	<p>We don't have any recommendations right now. If you <%= link_to("add some more tags", :controller => '/people/profile', :action => :tagedit ) %> maybe we can find a match.</p>
         <% else %>
         	    <dl> 
         	    <% @relevant_communities.each do |rc| %>
@@ -63,7 +63,7 @@
 	              <% end %>
         	    <% end %>
         	    </dl>
-	        	<p><%= link_to("Edit your interests and expertise", :controller => :profile, :action => :tagedit ) %> for more or fewer recommendations.</p>
+	        	<p><%= link_to("Edit your interests and expertise", :controller => '/people/profile', :action => :tagedit ) %> for more or fewer recommendations.</p>
         <% end %>
 
         <h3>Newest Communities</h3>

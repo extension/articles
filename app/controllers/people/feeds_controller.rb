@@ -115,7 +115,7 @@ class People::FeedsController < ApplicationController
     feedoptions = {}
 
     urlparams = @filteredparams.option_values_hash
-    urlparams.merge!({:controller => :feeds, :action => :list})
+    urlparams.merge!({:controller => '/people/feeds', :action => :list})
     if(@feedkey)
       urlparams.merge!({:feedkey => @feedkey})
     end

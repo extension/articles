@@ -59,7 +59,7 @@
 		    <div id="recent_list_activity" class="section">
 				<h3>Recent Posting Activity</h3> 
 		    	<%= render(:partial => 'post_activity', :locals => {:displaylistposts => @list.recent_posts, :listview => false}) %>
-				<p class="more"><%= link_to("More...",{:controller => :lists, :action => :posts, :id => @list.id})%></p>
+				<p class="more"><%= link_to("More...",{:controller => '/people/lists', :action => :posts, :id => @list.id})%></p>
 			</div>
 		<% end %>
 		

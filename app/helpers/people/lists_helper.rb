@@ -39,6 +39,31 @@ module People::ListsHelper
     
   end
   
+  def link_to_people_community_connection(community, communityconnection, linktext=nil, displayna = true)
+    if(community.nil?)
+      return displayna ? "N/A" : "&nbsp;"
+    elsif(!linktext.blank?)
+      "<a href='#{userlist_people_community_url(community.id, :connectiontype => communityconnection.connectiontype)}'>#{linktext}</a>"
+    else
+      "<a href='#{userlist_people_community_url(community.id, :connectiontype => communityconnection.connectiontype)}'>#{communityconnection.connectiontype.capitalize}</a>"
+    end
+  end
+  
+  def list_description(list)
+    if !list.community.nil?
+   	  description = "<p>This mailing list is connected to the #{link_to_people_community(list.community)} community and the list membership is updated from those that have a  #{link_to_people_community_connection(list.community, list.communityconnection)} connection with the community.</p>"
+    elsif list.is_announce_list? 
+   	  description = "<p>This mailing list is associated with all currently registered eXtensionID's that have opted to receive announcements from eXtension</p>"
+    else
+   	  description = "<p>This mailing list is not currently connected to a community.</p>"
+    end
+    
+    if(!@currentuser.nil?)
+      description +=  "<p>To send email to this list:  <a href='mailto:#{list.name}@lists.extension.org'>mailto:#{list.name}@lists.extension.org</a></p>"
+    end
+    return description
+  end
+  
   def list_stat_line(hash)
     if(hash[:listcount].nil?)
       "<span class='bignumber'>#{hash[:messages]}</span> messages sent by <span class='bignumber'>#{hash[:senders]}</span> senders (total size: #{number_to_human_size(hash[:totalsize])})"
@@ -48,14 +73,14 @@ module People::ListsHelper
   end
   
   def change_list_subscription_link(container,list,subscribeaction,linktext,linkoptions = {})
-    url = {:controller => :lists, :action => :change_my_subscription, :id => list.id, :subscribeaction => subscribeaction}
+    url = {:controller => '/people/lists', :action => :change_my_subscription, :id => list.id, :subscribeaction => subscribeaction}
     color = 'ffe2c8'
     progress = "<p><img src='/images/ajax-loader-#{color}.gif' /> Saving... </p>"
     return link_to_remote(linktext, {:url => url, :loading => update_page{|p| p.replace_html(container,progress)}}, linkoptions)
   end
   
   def change_list_moderation_link(container,list,moderationaction,linktext,linkoptions = {})
-    url = {:controller => :lists, :action => :change_my_moderation, :id => list.id, :moderationaction => moderationaction}
+    url = {:controller => '/people/lists', :action => :change_my_moderation, :id => list.id, :moderationaction => moderationaction}
     color = 'white'
     progress = "<p><img src='/images/ajax-loader-#{color}.gif' /> Saving... </p>"
     return link_to_remote(linktext, {:url => url, :loading => update_page{|p| p.replace_html(container,progress)}}, linkoptions)
