@@ -65,7 +65,7 @@ module DataImportContent
   
   def retrieve_content(options = {})
      current_time = Time.now.utc
-     refresh_all = (options[:refresh_all].nil? ? false : options[:refresh_all])
+     have_refresh_since = (!options[:refresh_since].nil?)
      refresh_without_time = (options[:refresh_without_time].nil? ? false : options[:refresh_without_time])
      update_retrieve_time = (options[:update_retrieve_time].nil? ? true : options[:update_retrieve_time])
      
@@ -97,8 +97,8 @@ module DataImportContent
        # build URL without a time
        refresh_since = AppConfig.configtable['epoch_time'] # so we have a date for comparisons below
        fetch_url = self.build_feed_url(feed_url,nil)
-     elsif(refresh_all)
-       refresh_since = (options[:refresh_since].nil? ? AppConfig.configtable['content_feed_refresh_since'] : options[:refresh_since])
+     elsif(have_refresh_since)
+       refresh_since = options[:refresh_since]
        fetch_url = self.build_feed_url(feed_url,refresh_since,usexmlschematime)
      elsif(update_retrieve_time)
        refresh_since = (updatetime.last_datasourced_at.nil? ? AppConfig.configtable['content_feed_refresh_since'] : updatetime.last_datasourced_at)           
@@ -138,7 +138,7 @@ module DataImportContent
     
       if(update_retrieve_time)
         # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
-        updatetime.update_attribute(:last_datasourced_at,last_updated_item_time + 1)
+        updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_items, :added => added_items, :updated => updated_items}})        
       end
     end
     

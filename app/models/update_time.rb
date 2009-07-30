@@ -6,6 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class UpdateTime < ActiveRecord::Base
+  serialize :additionaldata
   belongs_to :datasource, :polymorphic => true
   
   

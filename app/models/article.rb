@@ -102,18 +102,18 @@ class Article < ActiveRecord::Base
   
   def self.retrieve_deletes(options = {})
      current_time = Time.now.utc
-     refresh_all = (options[:refresh_all].nil? ? false : options[:refresh_all])
-     update_retrieve_time = (options[:update_retrieve_time].nil? ? true : options[:update_retrieve_time])
+     have_refresh_since = (!options[:refresh_since].nil?)
      feed_url = (options[:feed_url].nil? ? AppConfig.configtable['changes_feed_wiki'] : options[:feed_url])
      updatetime = UpdateTime.find_or_create(self,'changes')
-     
-     if(refresh_all)
-       refresh_since = (options[:refresh_since].nil? ? AppConfig.configtable['changes_feed_refresh_since'] : options[:refresh_since])
-     else
-       refresh_since = updatetime.last_datasourced_at
-     end
-     
-     fetch_url = self.build_feed_url(feed_url,refresh_since,true)
+
+
+    if(have_refresh_since)
+      refresh_since = options[:refresh_since]
+    else
+      refresh_since = (updatetime.last_datasourced_at.nil? ? AppConfig.configtable['changes_feed_refresh_since'] : updatetime.last_datasourced_at)           
+    end
+ 
+    fetch_url = self.build_feed_url(feed_url,refresh_since,true)
      
     
     # will raise errors on failure
@@ -147,7 +147,7 @@ class Article < ActiveRecord::Base
     end # had atom entries
       
     # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
-    updatetime.update_attribute(:last_datasourced_at,last_updated_item_time + 1)
+    updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_itmes}})
     return {:deleted => deleted_items, :last_updated_item_time => last_updated_item_time}
   end
   

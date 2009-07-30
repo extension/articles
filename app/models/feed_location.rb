@@ -22,18 +22,25 @@ class FeedLocation < ActiveRecord::Base
     
     # note, this time will be ignored by ExternalArticle.retrieve_content if we don't retrieve_with time
     # but we'll set it anyway in order to update the time that the data was last pulled
-    retrieve_options[:refresh_since] = updatetime.last_datasourced_at
-    
+    if(retrieve_options[:refresh_since].nil?)
+      retrieve_options[:refresh_since] = updatetime.last_datasourced_at
+    end
+      
     if(retrieve_options[:refresh_without_time].nil?)
       if(!self.retrieve_with_time?)
         retrieve_options[:refresh_without_time] = true
       end
+    end
+    
+    if(retrieve_options[:feed_url].nil?)
       retrieve_options[:feed_url] = self.uri
     end
     
     results = ExternalArticle.retrieve_content(retrieve_options)
-    if(results[:last_updated_item_time].nil?)
-      updatetime.update_attribute(:last_datasourced_at,last_updated_item_time + 1)
+    if(!results[:last_updated_item_time].nil?)
+      updatetime.update_attributes({:last_datasourced_at => results[:last_updated_item_time] + 1, :additionaldata => {:deleted => results[:deleted], :added => results[:added], :updated => results[:updated]}})        
+    else
+      updatetime.touch
     end
     return results
   end
