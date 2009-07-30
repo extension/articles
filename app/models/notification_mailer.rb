@@ -311,7 +311,7 @@ class NotificationMailer < ActionMailer::Base
      urls['question'] = url_for(:controller => 'ask/expert', :action => 'question', :id => submitted_question.id)
      # TODO: fix contact us URL
      urls['contactus'] = url_for(:controller => '/')
-     @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
    end
  
    def aae_reassigned(notification)
@@ -325,7 +325,7 @@ class NotificationMailer < ActionMailer::Base
      urls['question'] = url_for(:controller => 'ask/expert', :action => 'question', :id => submitted_question.id)
      # TODO: fix contact us URL
      urls['contactus'] = url_for(:controller => '/')
-     @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
    end
 
    def aae_public_response(notification)
@@ -335,7 +335,7 @@ class NotificationMailer < ActionMailer::Base
      self.base_email(notification.notifytype_to_s)
      @subject = "[Message from eXtension] Your question has been answered by one of our experts."          
      @recipients     = submitted_question.submitter_email
-     @body           = {:isdemo => @isdemo, :submitted_question => submitted_question, :signature => signature, :urls => urls }
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :signature => signature, :urls => urls }
    end
    
    
