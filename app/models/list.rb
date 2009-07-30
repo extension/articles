@@ -1,5 +1,5 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2008 North Carolina State University
+#  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
