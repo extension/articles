@@ -81,7 +81,7 @@ class Notification < ActiveRecord::Base
   def notifytype_to_s
     if(self.notifytype == NONE)
       return 'none'
-    elsif(self.notifytype >= NOTIFICATION_PEOPLE_START[0] and self.notifytype <= NOTIFICATION_PEOPLE_START[1])
+    elsif(self.notifytype >= NOTIFICATION_PEOPLE[0] and self.notifytype <= NOTIFICATION_PEOPLE[1])
       return 'people'
     elsif(self.notifytype >= NOTIFICATION_AAE_INTERNAL[0] and self.notifytype <= NOTIFICATION_AAE_INTERNAL[1])
       return 'aae_internal'
