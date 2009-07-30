@@ -335,6 +335,7 @@ class NotificationMailer < ActionMailer::Base
      self.base_email(notification.notifytype_to_s)
      @subject = "[Message from eXtension] Your question has been answered by one of our experts."          
      @recipients     = submitted_question.submitter_email
+     urls = Hash.new
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :signature => signature, :urls => urls }
    end
    
