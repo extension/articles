@@ -1,1 +1,1 @@
-CalendarDateSelect.format = :american
+CalendarDateSelect.format = :hyphen_ampm

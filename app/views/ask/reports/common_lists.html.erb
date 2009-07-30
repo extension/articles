@@ -2,10 +2,29 @@
 
 <% genstring = "General Statistics by "+ @typet%>
 
+
 <div id="report">
     <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "General Overview",  :action => 'activity' %> &gt; <%= @page_title %></p>
     
 <h1><%= genstring %></h1>
+
+<div id="date_range">
+    <h4 id="selected_range"><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
+
+    <div id="calendar">
+        
+        <% form_tag({:action => @repaction, :Category => @typename}) do %>
+          <!--  <%= date_picker_field  "dateFrom", "to_s" %> <span>to</span> <%= date_picker_field "dateTo", "to_s" %>-->
+
+            <%= calendar_date_select_tag "dateFrom", Date.today, :popup => true %><span>to</span><%= calendar_date_select_tag "dateTo", Date.today, :popup => true%> 
+            <%= submit_tag 'Go' %>
+        <% end%>
+        
+        <% form_tag({ :action => @repaction, :Category => @typename}) do %>
+            <%= submit_tag 'Show all'%>
+        <% end%>
+    </div>
+</div>
 <% sta = SubmittedQuestion::STATUS_RESOLVED%>
 <% str = SubmittedQuestion::STATUS_REJECTED%>
 <% stn = SubmittedQuestion::STATUS_NO_ANSWER%>
@@ -31,7 +50,7 @@
 	   <td class="left">
 		  <%= x.name %>
 	   </td>
-	    <% @asgn = (@rept.NewQuestion({ :catid => x.id},[]))[0] %>
+	    <% @asgn = (@rept.NewQuestion({:date1 => @date1, :date2 => @date2, :catid => x.id},[]))[0] %>
        <td <%= ' class="empty"' if @asgn==0 %>>
 	     <!-- number of open incoming faqs in assigned state -->
 	        <% if @asgn%>
@@ -40,7 +59,7 @@
 	      <!--   <%= @asgn%>-->
 	        <% end%>
 	   </td>
-	    <% @reslvd = (@rept.ResolvedQuestion({ :catid => x.id},[]))[0]%>
+	    <% @reslvd = (@rept.ResolvedQuestion({ :date1 => @date1, :date2 => @date2, :catid => x.id},[]))[0]%>
 	   <td <%= ' class="empty"' if @reslvd==0 %>>
 		 <!-- number of incoming faqs that have been Resolved one way or another -->
 		    <% if @reslvd%>
@@ -49,7 +68,7 @@
 	        <!--  <%= @reslvd%> -->
            <% end%>
 	   </td>
-	     <% @answ = (@rept.ResolvedQuestion({ :catid => x.id, :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]%>
+	     <% @answ = (@rept.ResolvedQuestion({:date1 => @date1, :date2 => @date2, :catid => x.id, :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]%>
 	     <td <%= ' class="empty"' if @answ==0 %>>
 			 <!-- number of incoming faqs in answered state -->
 			    <% if @answ%>
@@ -58,7 +77,7 @@
 		       <!--  <%= @answ%> -->
 		        <% end %>
 		   </td>
-		   <% @rej = (@rept.ResolvedQuestion({ :catid => x.id, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]%>
+		   <% @rej = (@rept.ResolvedQuestion({ :date1 => @date1, :date2 => @date2, :catid => x.id, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]%>
 		  <td <%= ' class="empty"' if @rej==0 %>>
 			 <!-- number of incoming faqs in in rejected state -->
 			    <% if @rej%>
@@ -67,7 +86,7 @@
 		      <!--   <%= @rej%> -->
 		        <% end%>
 		   </td>
-		   <% @noexp = (@rept.ResolvedQuestion({ :catid => x.id, :status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]%>
+		   <% @noexp = (@rept.ResolvedQuestion({:date1 => @date1, :date2 => @date2, :catid => x.id, :status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]%>
 		<td <%= ' class="empty"' if @noexp==0 %>>
 			 <!-- number of incoming faqs in no_answer state -->
 			    <% if @noexp%>

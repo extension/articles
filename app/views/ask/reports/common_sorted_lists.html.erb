@@ -6,7 +6,8 @@
     <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "General Overview",  :action => 'activity' %> &gt; <%= @page_title %></p>
     
 <h1><%= genstring %></h1>
-<!-- render partial seldates%>-->
+
+<%= render(:partial => 'seldates') %>
 
 <p>Click on column header links to sort.</p>
 <table cellspacing="0" class="stats" summary="<%= genstring %>">

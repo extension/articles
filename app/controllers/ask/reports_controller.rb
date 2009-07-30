@@ -10,10 +10,9 @@ class Ask::ReportsController < ApplicationController
 
     ##Activity Reports
     def activity
-      # (@date1,@date2, @dateFrom,@dateTo)= valid_date()
-      # (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+       (@date1,@date2, @dateFrom,@dateTo)= valid_date()
+       (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
        @oldest_date = SubmittedQuestion.find_oldest_date
-       @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; 
        @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
        @rept = Aaereport.new(:name => "Activity")
        @repaction = "activity"
@@ -23,22 +22,22 @@ class Ask::ReportsController < ApplicationController
      def state_univ_activity
       @typelist = [];  @new={}; @reslvd={}; @answ={}; @rej={}; @noexp={} ; openquestions={}
         @type = params[:type]; @oldest_date = SubmittedQuestion.find_oldest_date
-       #   (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
+        (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
         if (@type=="State")
           @typelist  = Location.find(:all, :order => "entrytype, name")
         else
           @typelist = Institution.find(:all, :order => 'name')
         end
-         @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; typel= @type.downcase
+          typel= @type.downcase
          @rept = Aaereport.new(:name => "ActivityGroup")
          
          if @type=="State"
-          openquestions = (@rept.NewQuestion({:g => typel},[]))[0] 
+          openquestions = (@rept.NewQuestion({:g => typel, :date1 => @date1, :date2 => @date2},[]))[0] 
          end
-          resolved = (@rept.ResolvedQuestion({:g => typel},[]))[0]
-          answered = (@rept.ResolvedQuestion({:g => typel, :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]
-          rejected = (@rept.ResolvedQuestion({:g => typel, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]
-          noexp = (@rept.ResolvedQuestion({:g => typel, :status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]
+          resolved = (@rept.ResolvedQuestion({:g => typel, :date1 => @date1, :date2 => @date2},[]))[0]
+          answered = (@rept.ResolvedQuestion({:g => typel, :date1 => @date1, :date2 => @date2, :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]
+          rejected = (@rept.ResolvedQuestion({:g => typel, :date1 => @date1, :date2 => @date2, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]
+          noexp = (@rept.ResolvedQuestion({:g => typel, :date1 => @date1, :date2 => @date2, :status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]
             stuv = nil
              @typelist.each do |st|
                if (@type=="State"); stuv= st.id; else; stuv=st.id.to_s; end;
@@ -85,13 +84,14 @@ class Ask::ReportsController < ApplicationController
            @typename = params[:Category]
             cat = Category.find_by_name(params[:Category]) 
             @type = "Category" ; @typel="category"; @typet="Tag"
-            @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; 
-         #   @oldest_date = SubmittedQuestion.find_oldest_date
-      #   (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
+          
+            @oldest_date = SubmittedQuestion.find_oldest_date
+           (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
             @typelist = [cat]
             if !cat.nil?
                 #tagname = Tag.normalize_tag(cat.name)
                 @rept = Aaereport.new(:name => "ActivityCategory")
+                @repaction = "show_active_cats" 
                 render :template=>'ask/reports/common_lists'
             else
                 redirect_to :controller => 'ask/reports', :action => 'sel_active_cats' 
@@ -172,9 +172,9 @@ class Ask::ReportsController < ApplicationController
         def display_tag_links
             @cat = Category.find_by_name(params[:Category])
             @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
-            @date1 = nil; @date2 = nil; @dateFrom = nil; @dateTo = nil; aux = nil ; @catname = params[:Category]
-          #  @dateFrom = params[:from] ;  @dateTo=params[:to]
-         #   @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+             aux = nil ; @catname = params[:Category]
+            @dateFrom = params[:from] ;  @dateTo=params[:to]
+             @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
             desc = params[:descriptor]; @numb = params[:num].to_i
              if (@edits.length > 8)
                if (@edits[0..7]=="Resolved")
@@ -234,16 +234,15 @@ class Ask::ReportsController < ApplicationController
           
         
         def user
-     #     if (params[:from] && params[:to])
-    #        @dateFrom = params[:from] ;  @dateTo=params[:to]
-    #        @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-    #      else
-    #        (@date1,@date2,@dateFrom,@dateTo)=valid_date()
-    #        (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-    #      end
-          @date1 = nil; @date2 = nil
+         if (params[:from] && params[:to])
+            @dateFrom = params[:from] ;  @dateTo=params[:to]
+            @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+          else
+            (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+            (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+          end
           @oldest_date = SubmittedQuestion.find_oldest_date
-          @user = User.find_by_id(params[:id])
+          @user = User.find_by_id(params[:id]) 
        
           @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
           @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
@@ -284,32 +283,48 @@ class Ask::ReportsController < ApplicationController
         ####   end of User Report for Ask an Expert Activity #####
          
          ####  Date handling ###
-         def valid_date()
-           dateFrom = params["dateFrom"]["to_s"] if (params["dateFrom"] && params["dateFrom"]["to_s"]) 
-           date1 = date_valid(dateFrom)
-           dateTo = params["dateTo"]["to_s"] if (params["dateTo"] && params["dateTo"]["to_s"]) 
-           date2 = date_valid(dateTo)
-           [date1, date2, dateFrom, dateTo]
-         end
+         
+         
+     #    def valid_date()
+    #       dateFrom = params["dateFrom"]["to_s"] if (params["dateFrom"] && params["dateFrom"]["to_s"]) 
+    #       date1 = date_valid(dateFrom)
+    #       dateTo = params["dateTo"]["to_s"] if (params["dateTo"] && params["dateTo"]["to_s"]) 
+    #       date2 = date_valid(dateTo)
+    #       [date1, date2, dateFrom, dateTo]
+    #     end
+    
+           def valid_date()
+             dateFrom = params["dateFrom"] if (params["dateFrom"] ) 
+           #  if dateFrom
+          #     dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
+          #   end
+             date1 = date_valid(dateFrom)
+             dateTo = params["dateTo"] if (params["dateTo"] )
+          #   if dateTo
+          #     dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
+          #   end
+             date2 = date_valid(dateTo)
+             [date1, date2, dateFrom, dateTo]
+           end
 
-          def valid_compare_date()
-            dateFrom = params["datecFrom"]["to_s"] if (params["datecFrom"] && params["datecFrom"]["to_s"]) 
-            date1 = date_valid(dateFrom)
-            dateTo = params["datecTo"]["to_s"] if (params["datecTo"] && params["datecTo"]["to_s"]) 
-            date2 = date_valid(dateTo)
-            [date1, date2, dateFrom, dateTo]
-          end
+        #  def valid_compare_date()
+        #    dateFrom = params["datecFrom"]["to_s"] if (params["datecFrom"] && params["datecFrom"]["to_s"]) 
+        #    date1 = date_valid(dateFrom)
+        #    dateTo = params["datecTo"]["to_s"] if (params["datecTo"] && params["datecTo"]["to_s"]) 
+        #    date2 = date_valid(dateTo)
+        #    [date1, date2, dateFrom, dateTo]
+        #  end
           
-          def valid_compare_date_calselct()
+          def valid_compare_date()
             dateFrom = params["datecFrom"] if (params["datecFrom"] ) 
-            if dateFrom
-              dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
-            end
+       #     if dateFrom
+      #        dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
+      #      end
             date1 = date_valid(dateFrom)
             dateTo = params["datecTo"] if (params["datecTo"] )
-            if dateTo
-              dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
-            end
+       #     if dateTo
+      #        dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
+      #      end
             date2 = date_valid(dateTo)
             [date1, date2, dateFrom, dateTo]
           end
@@ -335,13 +350,21 @@ class Ask::ReportsController < ApplicationController
                 if params[:FromDate]
                   dateFrom = params[:FromDate]
                 else
-                  dateFrom = params["dateFrom"]["to_s"] if (params["dateFrom"] && params["dateFrom"]["to_s"])
+                 # dateFrom = params["dateFrom"]["to_s"] if (params["dateFrom"] && params["dateFrom"]["to_s"])
+                    dateFrom = params["dateFrom"] if (params["dateFrom"] ) 
+                 #   if dateFrom
+                #      dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
+                #    end
                 end
                 date1 = date_valid(dateFrom)
                 if params[:ToDate]
                   dateTo=params[:ToDate]
                 else
-                  dateTo = params["dateTo"]["to_s"] if (params["dateTo"] && params["dateTo"]["to_s"])
+               #   dateTo = params["dateTo"]["to_s"] if (params["dateTo"] && params["dateTo"]["to_s"])
+                   dateTo = params["dateTo"] if (params["dateTo"] )
+              #     if dateTo
+              #        dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
+              #     end
                 end
                 date2 = date_valid(dateTo)
               else
@@ -360,13 +383,21 @@ class Ask::ReportsController < ApplicationController
               if params[:FromcDate]
                 dateFrom = params[:FromcDate]
               else
-                dateFrom = params["datecFrom"]["to_s"] if (params["datecFrom"] && params["datecFrom"]["to_s"])
+           #     dateFrom = params["datecFrom"]["to_s"] if (params["datecFrom"] && params["datecFrom"]["to_s"])
+                dateFrom = params["datecFrom"] if (params["datecFrom"] ) 
+            #    if dateFrom
+            #      dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
+            #    end
               end
               date1 = date_valid(dateFrom)
               if params[:TocDate]
                 dateTo=params[:TocDate]
               else
-                dateTo = params["datecTo"]["to_s"] if (params["datecTo"] && params["datecTo"]["to_s"])
+              #  dateTo = params["datecTo"]["to_s"] if (params["datecTo"] && params["datecTo"]["to_s"])
+                 dateTo = params["datecTo"] if (params["datecTo"] )
+          #       if dateTo
+          #         dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
+          #       end
               end
               date2 = date_valid(dateTo)
             else
@@ -446,12 +477,12 @@ class Ask::ReportsController < ApplicationController
       #       @cnties = ExpertiseCounty.find(:all,  :conditions => "location_id = #{ExpertiseLocation.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
       #       @ysize = @cnties.size
       #     #  @cntycnt = County.count_answerers_for_county(@statename)
-      #       @cntycnt = ExpertiseCounty.count(:all,:select => "ecu.user_id", :joins => " join expertise_counties_users as ecu on ecu.county_id=expertise_counties.id " + 
+      #       @cntycnt = ExpertiseCounty.count(:all,:select => "ecu.user_id", :joins => " join expertise_counties_users as ecu on ecu.expertise_county_id=expertise_counties.id " + 
       #          "join users on ecu.user_id=users.id join expertise_areas as ea on ecu.user_id=ea.user_id join categories as c on ea.category_id=c.id",
-      #          :conditions =>  ["expertise_counties.location_id=? and c.parent_id is null", ExpertiseLocation.find_by_name(@statename).id],
+      #          :conditions =>  ["expertise_counties.expertise_location_id=? and c.parent_id is null", ExpertiseLocation.find_by_name(@statename).id],
       #          :group => "expertise_counties.name", :distinct => "true")
       #          
-      #      #  userlist = ExpertiseLocation.find_by_sql(["Select distinct users.id, users.first_name, users.last_name, users.login, roles.name, roles.id as rid from expertise_locations join expertise_locations_users as lu on lu.location_id=expertise_locations.id " +
+      #      #  userlist = ExpertiseLocation.find_by_sql(["Select distinct users.id, users.first_name, users.last_name, users.login, roles.name, roles.id as rid from expertise_locations join expertise_locations_users as lu on lu.expertise_location_id=expertise_locations.id " +
       #               "  join users on lu.user_id=users.id left join user_roles on users.id=user_roles.user_id left join roles on user_roles.role_id=roles.id " +
       #               " where expertise_locations.id=? order by users.last_name",ExpertiseLocation.find_by_name(@statename).id ])
       #      @userlist = consolidate(ExpertiseLocation.get_users_in_state(@statename))
@@ -837,7 +868,7 @@ class Ask::ReportsController < ApplicationController
             if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
                (@datec1, @datec2, @datecFrom, @datecTo) = parmccheck()
             else
-              (@datec1,@datec2,@datecFrom,@datecTo)=valid_compare_date()  #not valid_compare_date_selct() until that's got more javascript
+              (@datec1,@datec2,@datecFrom,@datecTo)=valid_compare_date()  
               (@datec1,@datec2,@datecFrom,@datecTo)= errchk(@datec1,@datec2,@datecFrom,@datecTo)
             end
             if (@datec1 && @datec2)

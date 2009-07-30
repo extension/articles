@@ -5,28 +5,29 @@
 <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= @page_title %></p>
 
 <h1>General Overview</h1>
-<!-- render partial seldates -->
+
+<%= render(:partial => 'seldates') %>
 
 <table class="general_table" cellspacing="0">
     <tr>
         <td>Open Questions (awaiting an answer)</td>
-        <td class="count"><%= number_with_delimiter((@rept.NewQuestion({},[]))[0]) %></td>
+        <td class="count"><%= number_with_delimiter((@rept.NewQuestion({:date1 => @date1, :date2 => @date2},[]))[0]) %></td>
     </tr>
     <tr>
         <td>Resolved Questions</td>
-        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({},[]))[0]) %></td>
+        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:date1 => @date1, :date2 => @date2},[]))[0]) %></td>
     <tr>
         <td>Answered</td>
-        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:status_state=> SubmittedQuestion::STATUS_RESOLVED},[]))[0]) %></td>
+        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:date1 => @date1, :date2 => @date2, :status_state=> SubmittedQuestion::STATUS_RESOLVED},[]))[0]) %></td>
     </tr>
     
     <tr>
         <td>Rejected</td>
-        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]) %></td>
+        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:date1 => @date1, :date2 => @date2, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]) %></td>
     </tr>
     <tr>
 		<td>Responded to with 'No Expertise'</td>
-		<td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:status_state => SubmittedQuestion::STATUS_NO_ANSWER}, []))[0]) %></td>
+		<td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:date1 => @date1, :date2 => @date2, :status_state => SubmittedQuestion::STATUS_NO_ANSWER}, []))[0]) %></td>
 	</tr>
 
 </table>
