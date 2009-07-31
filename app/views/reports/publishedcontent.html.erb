@@ -5,7 +5,7 @@
 <table cellspacing="0" summary="Item Counts"o>
     <tr>
         <th scope="col">Community</th> 
-        <th scope="col">Content Tag</th> 
+        <th scope="col">Content Tags</th> 
         <th scope="col">Events</th>
         <th scope="col">Faqs</th>
         <th scope="col">All Articles (*)</th>
@@ -24,17 +24,16 @@
         <td><%= Article.bucketed_as('learning lessons').count %></td>
         <td><%= Article.bucketed_as('feature').count %></td>
     </tr>
-    <%- Community.launched.all(:order => 'name').each do |c| 
-        content_tag = c.primary_content_tag_name %>
+    <%- Community.launched.all(:order => 'name').each do |c|  %>
     <tr>
         <td><%= c.name %></td>
-        <td><%= content_tag %></td>        
-        <td><%= Event.tagged_with_content_tag(content_tag).count %></td>
-        <td><%= Faq.tagged_with_content_tag(content_tag).count %></td>
-        <td><%= Article.tagged_with_content_tag(content_tag).count %></td>
-        <td><%= Article.bucketed_as('news').tagged_with_content_tag(content_tag).count %></td>
-        <td><%= Article.bucketed_as('learning lessons').tagged_with_content_tag(content_tag).count %></td>
-        <td><%= Article.bucketed_as('feature').tagged_with_content_tag(content_tag).count %></td>
+        <td><%= c.content_tag_names %></td>        
+        <td><%= Event.tagged_with_any_content_tags(c.content_tag_names).count %></td>
+        <td><%= Faq.tagged_with_any_content_tags(c.content_tag_names).count %></td>
+        <td><%= Article.tagged_with_any_content_tags(c.content_tag_names).count %></td>
+        <td><%= Article.bucketed_as('news').tagged_with_any_content_tags(c.content_tag_names).count %></td>
+        <td><%= Article.bucketed_as('learning lessons').tagged_with_any_content_tags(c.content_tag_names).count %></td>
+        <td><%= Article.bucketed_as('feature').tagged_with_any_content_tags(c.content_tag_names).count %></td>
     </tr>
     <%- end -%>
     

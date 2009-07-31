@@ -177,18 +177,17 @@ class Community < ActiveRecord::Base
         tagarray.map{|t| cachedata[:all_tags][t.id] = t.name}
       end
       update_attribute(:cached_content_tag_data, cachedata)
-      return tagarray.collect(&:name)
-    else
-      tagarray = []
-      primary_tag_name = self.cached_content_tag_data[:primary_tag][:name] 
-      tagarray << primary_tag_name    
-      self.cached_content_tag_data[:all_tags].each do |id,name| 
-        if(name != primary_tag_name)
-          tagarray << name
-        end
-      end          
-      return tagarray
     end
+    
+    returntagarray = []
+    primary_tag_name = self.cached_content_tag_data[:primary_tag][:name] 
+    returntagarray << primary_tag_name    
+    self.cached_content_tag_data[:all_tags].each do |id,name| 
+      if(name != primary_tag_name)
+        returntagarray << name
+      end
+    end          
+    return returntagarray
   end
   
   
