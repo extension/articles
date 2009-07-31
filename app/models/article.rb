@@ -63,7 +63,7 @@ class Article < ActiveRecord::Base
     article.wiki_updated_at = updated
     
     if entry.published.nil?
-      pubdate = Time.now.utc
+      pubdate = updated
     else
       pubdate = entry.published
     end
