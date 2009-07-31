@@ -136,6 +136,8 @@ class People::CommunitiesController < ApplicationController
   # GET /communities/1
   
   def show
+    fp = FilterParams.new(params)
+    @datadate = fp.datadate.nil? ? Date.yesterday : fp.datadate
     @community = Community.find_by_shortname_or_id(params[:id])
     if(@community.nil?)  
       flash[:error] = 'That community does not exist'  

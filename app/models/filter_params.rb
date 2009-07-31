@@ -34,6 +34,8 @@ class FilterParams < ParamExtensions::ParamsFilter
   wantsparameter :dateinterval, :string
   wantsparameter :datefield, :string
   wantsparameter :tz, :string
+
+  wantsparameter :datadate, :date
   
   wantsparameter :appname, :string
   wantsparameter :activityapplication, :activity_application

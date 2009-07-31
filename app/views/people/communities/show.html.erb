@@ -43,15 +43,15 @@
     	
     	<div id="col_two">
     	    <% if @community.is_launched? %>
-    	    <h2>Publishing Activity</h2>
+    	    <h2>Publishing Numbers (through <%= @datadate.to_s %>)</h2>
     	    <div class="dashmodule">
-    	        <ul id="publish_activity">
-                    <li><span><%= Event.tagged_with_any_content_tags(@community.content_tag_names).count %></span> Events</li>
-                    <li><span><%= Faq.tagged_with_any_content_tags(@community.content_tag_names).count %></span> FAQs</li>
-                    <li><span><%= Article.tagged_with_any_content_tags(@community.content_tag_names).count %></span> All Articles</li>
-                    <li><span><%= Article.bucketed_as('news').tagged_with_any_content_tags(@community.content_tag_names).count %></span> News</li>
-                    <li><span><%= Article.bucketed_as('learning lessons').tagged_with_any_content_tags(@community.content_tag_names).count %></span> Learning Lessons</li>
-                    <li><span><%= Article.bucketed_as('feature').tagged_with_any_content_tags(@community.content_tag_names).count %></span> Features</li>
+    	        <ul id="publish_activity">                    
+                    <li><span><%= @community.item_count_for_date(@datadate,'published events') %></span> Events</li>
+                    <li><span><%= @community.item_count_for_date(@datadate,'published faqs') %></span> FAQs</li>
+                    <li><span><%= @community.item_count_for_date(@datadate,'published articles') %></span> All Articles</li>
+                    <li><span><%= @community.item_count_for_date(@datadate,'published news') %></span> News</li>
+                    <li><span><%= @community.item_count_for_date(@datadate,'published learning lessons') %></span> Learning Lessons</li>
+                    <li><span><%= @community.item_count_for_date(@datadate,'published features') %></span> Features</li>
                 </ul>
                 <p><small>"All Articles" includes all published pages, news, features, dpls, learning lessons, etc.</small></p>
     	    </div>

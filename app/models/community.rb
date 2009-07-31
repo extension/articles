@@ -87,6 +87,10 @@ class Community < ActiveRecord::Base
   
   has_many :cached_tags, :as => :tagcacheable
   
+
+  has_many :daily_numbers, :as => :datasource
+  
+  
   named_scope :tagged_with_content_tag, lambda {|tagname| 
     {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tag::CONTENT}"}
   }
@@ -620,6 +624,41 @@ class Community < ActiveRecord::Base
     Communitylistconnection.find_by_connectiontype_and_community_id(connectiontype,self.id)
   end
   
+  def item_count_for_date(datadate,datatype,getvalue = 'total',update=false)
+    if(!update and (dn = self.daily_numbers.find_by_datatype_and_datadate(datatype,datadate)))
+      return dn.send(getvalue)
+    end
+    
+    case datatype
+    when 'published articles'
+      total = Article.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Article.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
+    when 'published faqs'
+      total = Faq.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(faqs.heureka_published_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Faq.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(faqs.heureka_published_at) = '#{datadate.to_s(:db)}'").count      
+    when 'published events'
+      total = Event.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(events.xcal_updated_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Event.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(events.xcal_updated_at) = '#{datadate.to_s(:db)}'").count      
+    when 'published news'
+      total = Article.bucketed_as('news').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Article.bucketed_as('news').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+    when 'published features'
+      total = Article.bucketed_as('feature').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Article.bucketed_as('feature').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+    when 'published learning lessons'
+      total = Article.bucketed_as('learning lessons').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Article.bucketed_as('learning lessons').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+    else
+      return nil
+    end
+    
+    if(dn = DailyNumber.update_or_create(self,datatype,datadate,{:total => total, :thatday => thatday}))
+      return dn.send(getvalue)
+    else
+      return nil
+    end
+  end
+      
   # -----------------------------------
   # Class-level methods
   # -----------------------------------

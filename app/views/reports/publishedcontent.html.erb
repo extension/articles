@@ -1,6 +1,6 @@
 <h1>Published Content By Communtity</h1>
 
-<h3>Published Item Count</h3>
+<h3>Published Item Count (through <%= @date.to_s %>)</h3>
 <p><em>* "All Articles" includes all published pages, news, features, dpls, learning lessons, etc.</em></p>
 <table cellspacing="0" summary="Item Counts"o>
     <tr>
@@ -17,23 +17,23 @@
     <tr>
         <td>Totals</td>
         <td>(all)</td>
-        <td><%= Event.all.count %></td>
-        <td><%= Faq.all.count %></td>
-        <td><%= Article.all.count %></td>
-        <td><%= Article.bucketed_as('news').count %></td>
-        <td><%= Article.bucketed_as('learning lessons').count %></td>
-        <td><%= Article.bucketed_as('feature').count %></td>
+        <td><%= DailyNumber.all_item_count_for_date(Event,@date,'published events') %></td>
+        <td><%= DailyNumber.all_item_count_for_date(Faq,@date,'published faqs') %></td>
+        <td><%= DailyNumber.all_item_count_for_date(Article,@date,'published articles') %></td>
+        <td><%= DailyNumber.all_item_count_for_date(Article,@date,'published news') %></td>
+        <td><%= DailyNumber.all_item_count_for_date(Article,@date,'published learning lessons') %></td>
+        <td><%= DailyNumber.all_item_count_for_date(Article,@date,'published features') %></td>
     </tr>
     <%- Community.launched.all(:order => 'name').each do |c|  %>
     <tr>
         <td><%= c.name %></td>
         <td><%= c.content_tag_names %></td>        
-        <td><%= Event.tagged_with_any_content_tags(c.content_tag_names).count %></td>
-        <td><%= Faq.tagged_with_any_content_tags(c.content_tag_names).count %></td>
-        <td><%= Article.tagged_with_any_content_tags(c.content_tag_names).count %></td>
-        <td><%= Article.bucketed_as('news').tagged_with_any_content_tags(c.content_tag_names).count %></td>
-        <td><%= Article.bucketed_as('learning lessons').tagged_with_any_content_tags(c.content_tag_names).count %></td>
-        <td><%= Article.bucketed_as('feature').tagged_with_any_content_tags(c.content_tag_names).count %></td>
+        <td><%= c.item_count_for_date(@date,'published events') %></td>
+        <td><%= c.item_count_for_date(@date,'published faqs') %></td>
+        <td><%= c.item_count_for_date(@date,'published articles') %></td>
+        <td><%= c.item_count_for_date(@date,'published news') %></td>
+        <td><%= c.item_count_for_date(@date,'published learning lessons') %></td>
+        <td><%= c.item_count_for_date(@date,'published features') %></td>
     </tr>
     <%- end -%>
     

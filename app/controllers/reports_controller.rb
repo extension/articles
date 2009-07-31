@@ -20,9 +20,11 @@ class ReportsController < ApplicationController
   end
   
   def publishedcontent
+    fp = FilterParams.new(params)
     set_title("Published Content by Community")
     set_titletag("Reports - eXtension")
     @right_column = false
+    @date = fp.datadate.nil? ? Date.yesterday : fp.datadate
   end
   
   def activitygraph
