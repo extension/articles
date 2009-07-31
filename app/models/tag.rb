@@ -19,7 +19,7 @@ class Tag < ActiveRecord::Base
   ALL = 42  # the ultimate answer, of course
  
   SPLITTER = Regexp.new(/\s*,\s*/)
-  JOINER = "," 
+  JOINER = ", " 
   
   # terms that can't be used as tags
   BLACKLIST = ['all']

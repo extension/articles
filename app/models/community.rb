@@ -510,7 +510,7 @@ class Community < ActiveRecord::Base
     return [adds,removes]
   end
   
-  def recent_community_activity(limit=20)
+  def recent_community_activity(limit=7)
     Activity.filtered(:community => self, :communityactivity => 'all').find(:all, :limit => limit, :order => 'activities.created_at DESC')
   end
   
