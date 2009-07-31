@@ -39,11 +39,7 @@
 	 <!--	  <%= link_to x[0], :action => 'show_all_by_state', :State => x[0] %> -->
 	          <%= h(x[0])%>
 		 <% else%>
-		     <% if (x[0] == "" || ((x[0]) && (x[0].index(".com") || x[0].index("She Asked"))) ) %>
-		      <% next%>
-	         <% else%>
-		      <%= h(x[0]) %>
-		     <% end%>	  
+		      <%= h(x[0]) %>  
 		 <% end%>
      </td>
     

@@ -26,7 +26,7 @@ class Ask::ReportsController < ApplicationController
         if (@type=="State")
           @typelist  = Location.find(:all, :order => "entrytype, name")
         else
-          @typelist = Institution.find(:all, :order => 'name')
+          @typelist = Institution.find(:all, :order => 'name', :conditions => {:entrytype => Institution::LANDGRANT})
         end
           typel= @type.downcase
          @rept = Aaereport.new(:name => "ActivityGroup")

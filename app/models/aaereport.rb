@@ -57,6 +57,9 @@ class Aaereport < ActiveRecord::Base
      if p[:status_state]
        cond << " status_state=#{p[:status_state]}"
      end
+     if p[:g]=="institution"
+       cond << " users.vouched = 1 and users.retired = 0"
+     end
      if cond.empty?; return nil
      else
        return cond.join(" and ") 
