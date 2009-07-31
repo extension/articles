@@ -190,8 +190,11 @@ class FilterParams < ParamExtensions::ParamsFilter
       end
     else
       @filteredparameters.each do |key,value|
-        if(!value.nil? and (returnvalue = self.send(key)))
-          returnhash[key.to_sym] = returnvalue
+        if(!value.nil?)
+          returnvalue = self.send(key)
+          if(!returnvalue.nil?)
+            returnhash[key.to_sym] = returnvalue
+          end
         end
       end
     end

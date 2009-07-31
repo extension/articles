@@ -6,6 +6,35 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 module People::ColleaguesHelper
+  
+  def makeusercsvstring(user)
+    #eXtensionID,First Name,Last Name,Email,Title,Position,Institution,Location,County,Agreement Status,Account Created
+    csvstring = user.login+','
+    csvstring += user.first_name.tr(',',' ')+','
+    csvstring += user.last_name.tr(',',' ')+','
+    csvstring += user.email+','
+    csvstring += ((user.phonenumber.nil? or user.phonenumber == '') ? 'not specified' : number_to_phone(user.phonenumber,:area_code => true))+','
+    csvstring += ((user.title.nil? or user.title == '') ? 'not specified' : user.title.tr(',',' '))+','
+    csvstring += ((user.position.nil? or user.position == '') ? 'not specified' : user.position.name.tr(',',' '))+','
+    csvstring += ((user.institution.nil? or user.institution == '') ? 'not specified' : user.institution.name.tr(',',' '))+','
+    csvstring += ((user.location.nil? or user.location == '') ? 'not specified' : user.location.name.tr(',',' '))+','
+    csvstring += ((user.county.nil? or user.county == '') ? 'not specified' : user.county.name.tr(',',' '))+','
+  	
+  	if !user.contributor_agreement.nil?
+  	  if user.contributor_agreement 
+  	    csvstring += 'Accepted'
+  	  else
+  	    csvstring += 'Did Not Accept'
+  	  end
+  	else
+	    csvstring += 'Not Yet Reviewed'
+	  end
+	  
+	  csvstring += ','
+    csvstring += user.created_at.strftime("%Y/%m/%d %H:%M:%S")
+	  
+	  return csvstring
+  end
 
   def colleague_community_connection_link(container,community,showuser,label,connectaction,title,confirm = nil)
     urloptions = {:controller => '/people/colleagues', :action => :modify_community_connection, :id => showuser.id, :communityid => community.id }
