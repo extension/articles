@@ -160,17 +160,26 @@ legend {font-size:1.3em;font-weight:bold;}
 #community_sidebar ul {margin:0;}
 
 .dashmodule {border: 2px solid #ddd; margin-bottom:2.5em;padding:1.5em;}
-.dashboard {padding:2em 0 0 1em;}
-#titleblock {background:transparent url(/images/people/group-icon.png) no-repeat left top;padding:0 0 0 72px; margin-bottom:1em;min-height:72px;}
-#titleblock p {padding-left:4px;}
-.dashboard h1 {font-weight:600;margin-bottom:.25em; line-height:1.1em;}
-.dashboard h2 {font-size: 1.4em; font-weight:bold; color:#000;}
 .dashmodule h3 {font-size: 1.4em;}
 
+
+.dashboard {padding:2em 0 0 1em;}
+.dashboard h1 {font-weight:600;margin-bottom:.25em; line-height:1.1em;}
+.dashboard h2 {font-size: 1.4em; font-weight:bold; color:#000;}
+
+#titleblock {background:transparent url(/images/people/group-icon.png) no-repeat left top;padding:0 0 0 72px; margin-bottom:1em;min-height:72px;}
+#titleblock p {padding-left:4px;}
+
+
+.dashmodule p {margin-bottom:0;}
+.dashmodule p small {font-size:1em; color:#888;}
 
 ul#comm_population {margin:0;padding:0;}
 #comm_population li {margin:0 0 1em;}
 #comm_population span {font-size:1.8em;text-align:right; width:2em; display:block; float:left; padding-right:.5em;}
+
+#publish_activity li {float:none !important;}
+#publish_activity li span {font-size:1.3em !important; color:#666 !important;}
 
 #communityuserconnection, #createconnection, #invite {padding:1.5em 1.5em 1em;margin-bottom:1em;background:#ffe2c8;}
 
