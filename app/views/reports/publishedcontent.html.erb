@@ -1,0 +1,42 @@
+<h1>Published Content By Communtity</h1>
+
+<h3>Published Item Count</h3>
+<p><em>* "All Articles" includes all published pages, news, features, dpls, learning lessons, etc.</em></p>
+<table cellspacing="0" summary="Item Counts"o>
+    <tr>
+        <th scope="col">Community</th> 
+        <th scope="col">Content Tag</th> 
+        <th scope="col">Events</th>
+        <th scope="col">Faqs</th>
+        <th scope="col">All Articles (*)</th>
+        <th scope="col">News</th>
+        <th scope="col">Learning Lessons</th>
+        <th scope="col">Features</th>
+    </tr>
+    
+    <tr>
+        <td>Totals</td>
+        <td>(all)</td>
+        <td><%= Event.all.count %></td>
+        <td><%= Faq.all.count %></td>
+        <td><%= Article.all.count %></td>
+        <td><%= Article.bucketed_as('news').count %></td>
+        <td><%= Article.bucketed_as('learning lessons').count %></td>
+        <td><%= Article.bucketed_as('feature').count %></td>
+    </tr>
+    <%- Community.launched.all(:order => 'name').each do |c| 
+        content_tag = c.primary_content_tag_name %>
+    <tr>
+        <td><%= c.name %></td>
+        <td><%= content_tag %></td>        
+        <td><%= Event.tagged_with_content_tag(content_tag).count %></td>
+        <td><%= Faq.tagged_with_content_tag(content_tag).count %></td>
+        <td><%= Article.tagged_with_content_tag(content_tag).count %></td>
+        <td><%= Article.bucketed_as('news').tagged_with_content_tag(content_tag).count %></td>
+        <td><%= Article.bucketed_as('learning lessons').tagged_with_content_tag(content_tag).count %></td>
+        <td><%= Article.bucketed_as('feature').tagged_with_content_tag(content_tag).count %></td>
+    </tr>
+    <%- end -%>
+    
+</table>
+

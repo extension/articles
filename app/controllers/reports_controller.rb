@@ -19,6 +19,12 @@ class ReportsController < ApplicationController
   def graphs
   end
   
+  def publishedcontent
+    set_title("Published Content by Community")
+    set_titletag("Reports - eXtension")
+    @right_column = false
+  end
+  
   def activitygraph
     datatype = params[:datatype].nil? ? 'hourly' : params[:datatype]
     if(params[:primary_type].nil?)
