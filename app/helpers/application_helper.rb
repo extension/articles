@@ -76,7 +76,13 @@ module ApplicationHelper
   def humane_date(time)
      time.strftime("%B %e, %Y, %l:%M %p")
   end
-    
+  
+  # http://blog.macromates.com/2006/wrapping-text-with-regular-expressions/
+  def wrap_text(txt, col=120)
+    txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
+      "\\1\\3\n") 
+  end
+  
   def article_summary(content)
     return nil unless content
     ptags = Regexp.new('<p>(.+?)<\/p>', Regexp::MULTILINE)

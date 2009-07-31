@@ -79,7 +79,7 @@ class Ask::AdminController < ApplicationController
     
     #if you revoke your own admin privileges
     if @currentuser.id == user.id
-      redirect_to :controller => 'ask/expert', :action => 'incoming'
+      redirect_to incoming_url
     else
       redirect_to :action => 'role', :id => role
     end

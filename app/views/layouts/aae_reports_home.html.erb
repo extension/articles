@@ -48,9 +48,9 @@
             <ul id="app_toggle">
                 <li id="faqaae" <%= selected_tab_if(:home) %>><%= link_to "Home", "http://faq.extension.org/" %></li>
                 <li id="faqhome" <% if controller.controller_name == 'questions' %> class="selected"<% end %>><%= link_to "FAQs", "http://faq.extension.org/questions" %></li>
-                <li id="aaehome" ><%= link_to "Ask an Expert", :controller => 'expert', :action => 'incoming' %></li>
+                <li id="aaehome" ><%= link_to "Ask an Expert", incoming_url %></li>
             </ul>
-            <h1><%= link_to("eXtension Ask an Expert", :controller => 'expert', :action => 'incoming') %></h1>
+            <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
             
             
             <ul id="userinfo">

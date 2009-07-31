@@ -16,7 +16,7 @@ class Ask::FaqController < ApplicationController
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
     if !@submitted_question
       flash[:failure] = "Invalid question."
-      redirect_to :controller => 'ask/expert', :action => :resolved
+      redirect_to resolved_url
       return
     end
   end
@@ -27,7 +27,7 @@ class Ask::FaqController < ApplicationController
     
     if !submitted_question
       flash[:failure] = "Invalid question entered"
-      redirect_to :controller => 'ask/expert', :action => :resolved
+      redirect_to resolved_url
       return
     end
     if !params[:question] or params[:question].strip == '' or !params[:answer] or params[:answer].strip == ''

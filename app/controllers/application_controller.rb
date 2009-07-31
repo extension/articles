@@ -111,6 +111,11 @@ class ApplicationController < ActionController::Base
   #   end
   # end
   
+  def list_view_error(err_msg)
+    redirect_to incoming_url
+    flash[:failure] = err_msg
+  end
+  
   def personalize
     @personal = {}
     
@@ -194,7 +199,227 @@ class ApplicationController < ActionController::Base
     return true
   end
   
+  #sets the instance variables based on parameters from views like incoming questions and resolved questions
+   #if there was no category parameter, then use the category specified in the user's preferences if it exists
+   def list_view(is_resolved = false)
+     (is_resolved) ? field_to_sort_on = 'resolved_at' : field_to_sort_on = 'created_at'
+            
+     if params[:order] and params[:order] == "asc"
+         @order = "submitted_questions.#{field_to_sort_on} asc"
+         @toggle_order = "desc"
+     # either no order parameter or order parameter is "desc"
+     elsif !params[:order] or params[:order] == "desc"
+       @order = "submitted_questions.#{field_to_sort_on} desc"
+       @toggle_order = "asc"
+     end
+     
+     # if there are no filter parameters, then find saved filter options if they exist
+     if !params[:category] and !params[:location] and !params[:county] and !params[:source]
   
+       # filter by category if it exists
+       if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_CATEGORY))
+         if pref.setting == Category::UNASSIGNED
+           @category = Category::UNASSIGNED
+          else   
+            @category = Category.find(pref.setting)
+            if !@category
+              flash[:failure] = "Invalid category."
+              redirect_to incoming_url
+              return
+            end
+          end
+        end  
+
+        # filter by location if it exists
+        if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_LOCATION))
+          @location = Location.find_by_fipsid(pref.setting)
+          if !@location
+            flash[:failure] = "Invalid location."
+            redirect_to incoming_url
+            return
+          end
+        end
+
+        # filter by county if it exists
+        if (@location) and (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_COUNTY))
+          @county = County.find_by_fipsid(pref.setting)
+          if !@county
+            flash[:failure] = "Invalid county."
+            redirect_to incoming_url
+            return
+          end
+        end
+        
+        # filter by source if it exists
+        if pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_SOURCE)
+          @source = pref.setting
+        end
+        
+        
+     # parameters exist, process parameters and save preferences    
+     else
+       #process location preference
+       if params[:location] == Location::ALL
+         @location = nil
+       elsif params[:location] and params[:location].strip != ''
+         @location = Location.find(:first, :conditions => ["fipsid = ?", params[:location].strip])
+         if !@location
+           flash[:failure] = "Invalid location."
+           redirect_to incoming_url
+           return
+         end
+       end
+
+       #process county preference
+       if params[:county] == County::ALL
+         @county = nil
+       elsif params[:county] and params[:county].strip != ''
+         @county = County.find(:first, :conditions => ["fipsid = ?", params[:county].strip])
+         if !@county
+           flash[:failure] = "Invalid county."
+           redirect_to incoming_url
+           return
+         end
+       end
+      
+       #process category preference
+       if params[:category] == Category::UNASSIGNED
+         @category = Category::UNASSIGNED
+       elsif params[:category] == Category::ALL
+         @category = nil
+       elsif params[:category] and params[:category].strip != ''
+         @category = Category.find(:first, :conditions => ["id = ?", params[:category].strip])
+         if !@category
+           flash[:failure] = "Invalid category."
+           redirect_to incoming_url
+           return  
+         end
+       end
+       
+       #process source preference
+       if params[:source] == UserPreference::ALL
+         @source = nil
+       elsif params[:source] and params[:source].strip != '' and params[:source].strip != 'add_sources'
+         @source = params[:source]
+       end
+         
+       # save the category, location and source prefs from the filter
+
+       #save category prefs
+       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_CATEGORY}'")
+       if user_prefs
+          user_prefs.each {|up| up.destroy}
+       end
+       
+       if @category.class == Category
+          cat_setting = @category.id
+       elsif @category == Category::UNASSIGNED
+         cat_setting = @category
+       end
+
+       if cat_setting
+         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_CATEGORY, :setting => cat_setting)
+         up.save
+       end
+
+       #save location prefs
+       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_LOCATION}'")
+       if user_prefs
+         user_prefs.each {|up| up.destroy}
+       end
+
+       if @location 
+         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_LOCATION, :setting => @location.fipsid)
+         up.save
+       end
+
+       #save county prefs
+       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_COUNTY}'")
+       if user_prefs
+         user_prefs.each {|up| up.destroy}
+       end
+
+       if @county 
+         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_COUNTY, :setting => @county.fipsid)
+         up.save
+       end
+       
+       #save source prefs
+       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_SOURCE}'")
+       if user_prefs
+         user_prefs.each{ |up| up.destroy}
+       end
+       
+       if @source
+         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_SOURCE, :setting => @source)
+         up.save
+       end
+       
+       # end the save prefs section
+     end
+   end
+   
+   def filter_string_helper
+     if !@category and !@location and !@county and !@source
+       @filter_string = 'All'
+     else
+         filter_params = Array.new
+         if @category
+             if @category == Category::UNASSIGNED
+                 filter_params << "Uncategorized"
+             else
+                 filter_params << @category.full_name
+             end
+         end
+         if @location
+             filter_params << @location.name
+         end
+         if @county
+             filter_params << @county.name
+         end
+
+         if @source
+           case @source
+             when 'pubsite'
+               filter_params << 'www.extension.org'
+             when 'widget'
+               filter_params << 'Ask eXtension widgets'
+             else
+               source_int = @source.to_i
+               if source_int != 0
+                 widget = Widget.find(:first, :conditions => "id = #{source_int}")
+               end
+
+               if widget
+                 filter_params << "#{widget.name} widget"
+               end
+           end  
+         end
+
+         @filter_string = filter_params.join(' + ')
+     end
+   end
+  
+  def params_errors
+    if params[:page] and params[:page].to_i == 0 
+      return "Invalid page number"
+    else
+      return nil
+    end
+  end
+  
+  def set_filters
+    source_filter_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting}.join(',')
+    widgets_to_filter = Widget.find(:all, :conditions => "widgets.id IN (#{source_filter_prefs})", :order => "name") if source_filter_prefs and source_filter_prefs.strip != ''
+    @source_options = [['All Sources', 'all'], ['www.extension.org', 'pubsite'], ['All Ask eXtension widgets', 'widget']]
+    @source_options = @source_options.concat(widgets_to_filter.map{|w| [w.name, w.id.to_s]}) if widgets_to_filter
+    @source_options = @source_options.concat([['', ''], ['Edit source list','add_sources']])
+    @widget_filter_url = url_for(:controller => 'ask/prefs', :action => 'widget_preferences', :only_path => false)
+  end
+  
+  def go_back
+    request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
+  end
   
 end
 

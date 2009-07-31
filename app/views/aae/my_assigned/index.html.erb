@@ -3,14 +3,14 @@
 
 <% if !@category and !@location and !@county and !@source %>
     <h2><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
-    <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => @currentuser %></span></h2>
+    <%= link_to 'feed', my_assigned_feed_url(:user_id => @currentuser) %></span></h2>
 <% else %>
     <% if @category == Category::UNASSIGNED %>
-         <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small> <span class="syndication">
-         <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => @currentuser, :id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source %></span></h2> 
+         <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
+         <%= link_to 'feed', my_assigned_feed_url(:user_id => @currentuser, :id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source) %></span></h2> 
     <% else %>
-         <h2><%= @page_title %> <small>(<%= filter_string_helper %>)</small> <span class="syndication">
-         <%= link_to 'feed', :controller => 'feeds', :action => 'my_assigned', :user_id => @currentuser, :id => @category, :location => @location, :county => @county, :source => @source %></span></h2>
+         <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
+         <%= link_to 'feed', my_assigned_feed_url(:user_id => @currentuser, :id => @category, :location => @location, :county => @county, :source => @source) %></span></h2>
     <% end %>
 <% end %>
 
@@ -29,16 +29,16 @@
         <h3>There <%= @question_difference == 1 ? "is" : "are" %> <strong><%= @question_difference %> 
         <%= @question_difference == 1 ? "question" : "questions" %> assigned to you</strong> outside of your filter:</h3>
     </div>
-    <%= render(:partial => "submitted_questions") %>
+    <%= render(:partial => "aae/partial/submitted_questions") %>
     
     <% else %>
-    <%= render(:partial => "submitted_questions") %>
+    <%= render(:partial => "aae/partial/submitted_questions") %>
     <div class="noresults">
         <h3>There <%= @question_difference == 1 ? "is" : "are" %> <strong><%= @question_difference %> other
         <%= @question_difference == 1 ? "question" : "questions" %> assigned to you</strong> outside of your filter and are listed below.</h3>
     </div>
-    <%= render(:partial => "list_difference") %>
+    <%= render(:partial => "aae/partial/list_difference") %>
     <% end %>
 <% else %>
-    <%= render(:partial => "submitted_questions") %>
+    <%= render(:partial => "aae/partial/submitted_questions") %>
 <% end %>

@@ -36,11 +36,11 @@ class Ask::FeedsController < ApplicationController
     
     if params[:id].nil?
       @feed_title = 'Incoming Ask an Expert Questions' + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'expert', :action => 'incoming', :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)  
+      @alternative_link = url_for(incoming_url(:location => params[:location], :county => params[:county], :source => params[:source]), :only_path => false)  
       @submitted_questions = SubmittedQuestion.find(:all, :order => 'submitted_questions.created_at desc', :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.created_at > #{DATE_EXPRESSION}" + conditions_hash[:cumulative_condition])
     elsif params[:id] == Category::UNASSIGNED
       @feed_title = 'Incoming Uncategorized Ask an Expert Questions' + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'expert', :action => 'incoming', :id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)  
+      @alternative_link = url_for(incoming_url(:id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source]), :only_path => false)  
       @submitted_questions = SubmittedQuestion.find_uncategorized(:all, :order => 'submitted_questions.created_at desc', :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.created_at > #{DATE_EXPRESSION}" + conditions_hash[:cumulative_condition])
     else
       category = Category.find_by_name(params[:id])
@@ -55,7 +55,7 @@ class Ask::FeedsController < ApplicationController
         return
       else
         @feed_title = "Incoming #{category.name} Ask an Expert Questions" + conditions_hash[:cumulative_title]
-        @alternate_link = url_for(:controller => 'expert', :action => 'incoming', :id => category.name, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)
+        @alternate_link = url_for(incoming_url(:id => category.name, :location => params[:location], :county => params[:county], :source => params[:source]), :only_path => false)
         @submitted_questions = SubmittedQuestion.find_with_category(category, :all, :order => 'submitted_questions.created_at desc',
         :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.created_at > #{DATE_EXPRESSION}" + conditions_hash[:cumulative_condition])
       end
@@ -82,11 +82,11 @@ class Ask::FeedsController < ApplicationController
     
     if params[:id].nil?
       @feed_title = 'Ask an Expert Questions Assigned to Me' + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'expert', :action => 'assigned', :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)  
+      @alternative_link = url_for(my_assigned_url(:location => params[:location], :county => params[:county], :source => params[:source]), :only_path => false)  
       @submitted_questions = SubmittedQuestion.find(:all, :order => 'submitted_questions.created_at desc', :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.user_id = #{user_id}" + conditions_hash[:cumulative_condition])
     elsif params[:id] == Category::UNASSIGNED
       @feed_title = 'Incoming Uncategorized Ask an Expert Questions Assigned to Me' + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'expert', :action => 'assigned', :id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)  
+      @alternative_link = url_for(my_assigned_url(:id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source]), :only_path => false)  
       @submitted_questions = SubmittedQuestion.find_uncategorized(:all, :order => 'submitted_questions.created_at desc', :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.user_id = #{user_id}" + conditions_hash[:cumulative_condition])
     else
       category = Category.find_by_name(params[:id])
@@ -101,7 +101,7 @@ class Ask::FeedsController < ApplicationController
         return
       else
         @feed_title = "Incoming #{category.name} Ask an Expert Questions Assigned to Me" + conditions_hash[:cumulative_title]
-        @alternate_link = url_for(:controller => 'expert', :action => 'assigned', :id => category.name, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)
+        @alternate_link = url_for(my_assigned_url(:id => category.name, :location => params[:location], :county => params[:county], :source => params[:source]), :only_path => false)
         @submitted_questions = SubmittedQuestion.find_with_category(category, :all, :order => 'submitted_questions.created_at desc',
         :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.user_id = #{user_id}" + conditions_hash[:cumulative_condition])
       end
@@ -139,12 +139,12 @@ class Ask::FeedsController < ApplicationController
     
     if params[:id].nil?
       @feed_title = "Resolved Ask an Expert Questions#{feed_title_text}" + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'expert', :action => 'resolved', :location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type], :only_path => false)  
+      @alternative_link = url_for(resolved_url(:location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type]), :only_path => false)  
       conditions_string = build_aae_conditions(conditions_hash[:cumulative_condition], DATE_EXPRESSION)    
       @submitted_questions = SubmittedQuestion.send(sq_query_method, [], conditions_string).by_order
     elsif params[:id] == Category::UNASSIGNED
       @feed_title = "Resolved Uncategorized Ask an Expert Questions#{feed_title_text}" + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'expert', :action => 'resolved', :id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type], :only_path => false)  
+      @alternative_link = url_for(resolved_url(:id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type]), :only_path => false)  
       conditions_string = build_aae_conditions(conditions_hash[:cumulative_condition] + " and categories.id IS NULL", DATE_EXPRESSION)
       @submitted_questions = SubmittedQuestion.send(sq_query_method, [:categories], conditions_string).by_order
     else
@@ -160,7 +160,7 @@ class Ask::FeedsController < ApplicationController
         return
       else
         @feed_title = "Resolved#{feed_title_text} #{category.name} Ask an Expert Questions" + conditions_hash[:cumulative_title]
-        @alternate_link = url_for(:controller => 'expert', :action => 'resolved', :id => category.name, :location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type], :only_path => false)
+        @alternate_link = url_for(resolved_url(:id => category.name, :location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type]), :only_path => false)
         conditions_string = build_aae_conditions(conditions_hash[:cumulative_condition] + " and (categories.id = #{category.id} or categories.parent_id = #{category.id})", DATE_EXPRESSION)
         @submitted_questions = SubmittedQuestion.send(sq_query_method, [:categories], conditions_string).by_order
       end
@@ -194,7 +194,7 @@ class Ask::FeedsController < ApplicationController
         return
       else        
         @feed_title = "Escalated #{category.name} Ask an Expert Questions"
-        @alternate_link = url_for(:controller => 'expert', :action => 'incoming', :id => category.name, :only_path => false)
+        @alternate_link = url_for(incoming_url(:id => category.name), :only_path => false)
 
         @submitted_questions = category.submitted_questions.find(:all, :conditions => ["status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and created_at < ?", cutoff_date], :order => 'created_at desc')
       end

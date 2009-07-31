@@ -18,5 +18,5 @@
 
 <br/>
 <p>Don't want to create an FAQ right now? No problem, you can always do it later.
-    <br />Other options: <%= link_to "View the resolved question page", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %> or <%= link_to "Look at other incoming questions", {:controller => 'ask/expert', :action => 'incoming'} %>.
+    <br />Other options: <%= link_to "View the resolved question page", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %> or <%= link_to "Look at other incoming questions", incoming_url %>.
     </div>

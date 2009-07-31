@@ -37,11 +37,20 @@ ActionController::Routing::Routes.draw do |map|
   ################################################################
   ### AaE routes ###
     
-  map.connect 'ask', :controller => 'ask', :action => 'index'
-  
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
   map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
   map.widget 'widget', :controller => 'widget', :action => 'index'
+  map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
+  map.incoming_feed 'aae/feeds/incoming', :controller => 'aae/feeds', :action => 'incoming'
+  map.my_assigned 'aae/my_assigned', :controller => 'aae/my_assigned', :action => 'index'
+  map.my_assigned_feed 'aae/feeds/my_assigned', :controller => 'aae/feeds', :action => 'my_assigned'
+  map.my_resolved 'aae/my_resolved', :controller => 'aae/my_resolved', :action => 'index'
+  map.resolved 'aae/resolved', :controller => 'aae/resolved', :action => 'index'
+  map.resolved_feed 'aae/feeds/resolved', :controller => 'aae/feeds', :action => 'resolved'
+  map.spam 'aae/spam_list', :controller => 'aae/spam_list', :action => 'index'
+  map.view_question 'aae/question/view', :controller => 'aae/question', :action => 'view'
+  map.question 'aae/question', :controller => 'aae/question', :action => 'index'
+  
   #map.connect 'ask/who', :controller => 'ask/widgets', :action => 'who'
   #map.connect 'ask/about', :controller => 'ask/widgets', :action => 'about'
   #map.connect 'ask/documentation', :controller => 'ask/widgets', :action => 'documentation'

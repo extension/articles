@@ -7,8 +7,9 @@
 
 class WidgetController < ApplicationController
   
-  skip_before_filter :login_required
   layout 'widgets'
+  skip_before_filter :login_required
+  has_rakismet :only => [:create_from_widget]
   
   # ask widget pulled from remote iframe
   def index

@@ -40,27 +40,27 @@
 
     <div id="pageContainer">
         <div id="masthead">
-            <h1><%= link_to("eXtension Ask an Expert", :controller => 'expert', :action => 'incoming') %></h1>
+            <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
             <ul id="app_toggle">
                 <li id="faqaae" ><%= link_to "Home", "http://faq.extension.org/" %></li>
                 <li id="faqhome" ><%= link_to "FAQs", "http://faq.extension.org/questions" %></li>
-                <li id="aaehome" class="selected"><%= link_to "Ask an Expert", :controller => 'expert', :action => 'incoming' %></li>
+                <li id="aaehome" class="selected"><%= link_to "Ask an Expert", incoming_url %></li>
             </ul>
         </div>
         
         <div id="pageContent">
             <ul id="aaelinks">
-                <li><%= link_to_unless_current '<span>Incoming</span>', :controller => 'expert', :action => 'incoming' %></li>
-                <li><%= link_to_unless_current "<span>Assigned to me</span>", :controller => "expert", :action => 'assigned' %></li>
-                <li><%= link_to_unless_current "<span>Resolved by me</span>", :controller => 'expert', :action => 'my_resolved' %></li>
+                <li><%= link_to_unless_current '<span>Incoming</span>', incoming_url %></li>
+                <li><%= link_to_unless_current "<span>Assigned to me</span>", my_assigned_url %></li>
+                <li><%= link_to_unless_current "<span>Resolved by me</span>", my_resolved_url %></li>
                 <% if !@category %>
-                    <li><%= link_to_unless_current '<span>Resolved</span>', :controller => 'expert', :action => 'resolved', :type => 'all' %></li>
+                    <li><%= link_to_unless_current '<span>Resolved</span>', resolved_url(:type => 'all') %></li>
                 <% else %>
                     <li>
-                    <%= link_to_unless_current '<span>Resolved</span>', :controller => 'expert', :action => 'resolved', :id => @category, :type => 'all' %>
+                    <%= link_to_unless_current '<span>Resolved</span>', resolved_url(:id => @category, :type => 'all') %>
                     </li>
                 <% end %>
-                <li><%= link_to_unless_current '<span>Spam Review</span>', :controller => 'expert', :action => 'spam_list' %></li>
+                <li><%= link_to_unless_current '<span>Spam Review</span>', spam_url %></li>
             </ul>
             <ul id="userinfo">
                 <% if @help_title %>

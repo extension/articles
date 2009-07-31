@@ -2,5 +2,5 @@
 <% @menu_partial_to_display = 'expert_list_filter' %>
 
 <% if @submitted_questions and @submitted_questions.length > 0 %>
-  <%= render(:partial => "ask/expert/submitted_questions_list", :locals => { :submitted_questions_to_list => @submitted_questions }) %>
+  <%= render(:partial => "aae/partial/submitted_questions_list", :locals => { :submitted_questions_to_list => @submitted_questions }) %>
 <% end %>

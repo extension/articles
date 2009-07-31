@@ -10,12 +10,15 @@ require 'zip_code_to_state'
 class Ask::ExpertController < ApplicationController
   layout 'aae'
   
-  has_rakismet :only => [:widget_submit]
   before_filter :filter_string_helper, :only => [:incoming, :assigned, :my_resolved, :resolved]
   before_filter :login_required
   
   UNASSIGNED = "uncategorized"
   ALL = "all"
+  
+  def help
+    render :template => 'help/contactform.html.erb'
+  end
   
   def assign
     if !params[:id]
@@ -61,13 +64,9 @@ class Ask::ExpertController < ApplicationController
         assigned_to_someone_else = true
       end
       
-      @submitted_question.assign_to(user, @currentuser, assign_comment)            
+      @submitted_question.assign_to(user, @currentuser, assign_comment)
       redirect_to :action => 'question', :id => @submitted_question
     end
-  end
-  
-  def help
-    render :template => 'help/contactform.html.erb'
   end
   
   def profile_tooltip
@@ -179,7 +178,7 @@ class Ask::ExpertController < ApplicationController
     
     if !@submitted_question
       flash[:failure] = "Invalid question."
-      redirect_to :action => :incoming
+      redirect_to incoming_url
       return
     end
     
@@ -233,7 +232,7 @@ class Ask::ExpertController < ApplicationController
     
     if !@submitted_question
       flash[:failure] = "Invalid question."
-      redirect_to :action => :incoming
+      redirect_to incoming_url
       return
     end
     
@@ -255,7 +254,7 @@ class Ask::ExpertController < ApplicationController
         redirect_to :action => :question, :id => @submitted_question.id
       else
         flash[:failure] = "Invalid submitted question number."
-        redirect_to :action => :incoming
+        redirect_to incoming_url
       end
     else
       do_404
@@ -263,40 +262,6 @@ class Ask::ExpertController < ApplicationController
     end
   end
 
-  # Detail page for an ask an expert question
-  def question
-    @submitted_question = SubmittedQuestion.find_by_id(params[:id])
-    
-    if @submitted_question.nil?
-      do_404
-      return
-    end
-    
-    @contributing_question = @submitted_question.contributing_question
-    if @contributing_question
-      @contributing_question.entrytype == SearchQuestion::FAQ ? @type = 'FAQ' : @type = 'AaE Question'
-    end
-    
-    @categories = Category.root_categories
-    @category_options = @categories.map{|c| [c.name,c.id]}
-      
-    @submitter_name = @submitted_question.submitter_fullname
-      
-    if @submitted_question.categories and @submitted_question.categories.length > 0
-      @category = @submitted_question.categories.first
-      @category = @category.parent if @category.parent
-      @category_id = @category.id
-      @users = @category.users.find(:all, :select => "users.*", :order => "users.first_name")
-    # find subcategories
-      @sub_category_options = [""].concat(@category.children.map{|sq| [sq.name, sq.id]})
-      if subcategory = @submitted_question.categories.find(:first, :conditions => "parent_id IS NOT NULL")
-        @sub_category_id = subcategory.id
-      end
-    else
-      @sub_category_options = [""]    
-    end
-  end
-  
   def search_answers
     if params[:squid] and @submitted_question = SubmittedQuestion.find_by_id(params[:squid])    
       if params[:q] and params[:q].strip != ''
@@ -308,7 +273,7 @@ class Ask::ExpertController < ApplicationController
       end
     else
       flash[:failure] = "The question specified does not exist."
-      redirect_to :action => :incoming
+      redirect_to incoming_url
       return
     end
   end
@@ -320,61 +285,9 @@ class Ask::ExpertController < ApplicationController
   
     if !(@aae_search_item and @submitted_question)
       flash[:failure] = "Invalid input"
-      redirect_to :action => :incoming
+      redirect_to incoming_url
       return
     end
-  end
-  
-  def view_question
-    @aae_search_item = SearchQuestion.find_by_entrytype_and_foreignid(params[:type], params[:qid])
-    if !@aae_search_item
-      flash[:failure] = "Invalid question parameters"
-      redirect_to :action => :incoming
-      return
-    end
-    
-    @aae_search_item.entrytype == SearchQuestion::AAE ? @type = 'Ask an Expert Question' : @type = 'FAQ'
-  end
-
-  def assigned
-    if err_msg = params_errors
-      list_view_error(err_msg)
-      return
-    end
-    
-    #set the instance variables based on parameters
-    list_view
-    set_filters
-    @questions_status = SubmittedQuestion::STATUS_SUBMITTED
-    if params[:id]
-      @user = User.find_by_id(params[:id])
-      
-      if !@user
-        flash[:failure] = "Invalid user."
-        go_back
-        return
-      end
-      
-    else
-      @user = @currentuser
-    end
-    
-    # find questions that are marked as being currently worked on
-    @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
-    
-    # user's assigned submitted questions filtered by submitted question filter
-    @filtered_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::SUBMITTED_TEXT, @category, @location, @county, @source, nil, @user, nil, false, false, @order)
-    
-    # total user's assigned submitted questions (unfiltered)
-    @total_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::SUBMITTED_TEXT, nil, nil, nil, nil, nil, @user, nil, false, false, @order)
-
-    # the difference in count between the filtered and unfiltered questions
-    @question_difference = @total_submitted_questions.length - @filtered_submitted_questions.length
-    
-    @questions_not_in_filter = @total_submitted_questions - @filtered_submitted_questions if @question_difference > 0
-    
-    # decide which set of submitted questions (filtered or unfiltered) get shown in the list view
-    @filtered_submitted_questions.length == 0 ? @submitted_questions = @total_submitted_questions : @submitted_questions = @filtered_submitted_questions
   end
   
   def enable_search_by_name
@@ -442,103 +355,6 @@ class Ask::ExpertController < ApplicationController
     render :layout => false
   end
   
-  # Lists unresolved ask an expert questions
-  def incoming
-    if err_msg = params_errors
-      list_view_error(err_msg)
-      return
-    end
-    
-    #set the instance variables based on parameters
-    list_view
-    set_filters
-    
-    @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
-    @questions_status = SubmittedQuestion::STATUS_SUBMITTED
-    @submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::SUBMITTED_TEXT, @category, @location, @county, @source, nil, nil, params[:page], true, false, @order)
-  end
-
-  # Lists all resolved ask an expert questions including answered, not answered, and rejected
-  def resolved
-    if err_msg = params_errors
-      list_view_error(err_msg)
-      return
-    end
-    
-    # set the instance variables based on parameters
-    list_view(true)
-    set_filters
-    
-    case params[:type]
-    when 'all'
-      sq_query_method = SubmittedQuestion::RESOLVED_TEXT
-      @questions_status = SubmittedQuestion::STATUS_RESOLVED
-    when nil
-      sq_query_method = SubmittedQuestion::RESOLVED_TEXT
-      @questions_status = SubmittedQuestion::STATUS_RESOLVED
-    when 'answered'
-      sq_query_method = SubmittedQuestion::ANSWERED_TEXT
-      @questions_status = SubmittedQuestion::ANSWERED_TEXT
-      @page_title = 'Resolved/Answered Questions'
-    when 'not_answered'
-      sq_query_method = SubmittedQuestion::NO_ANSWER_TEXT
-      @questions_status = SubmittedQuestion::STATUS_NO_ANSWER
-      @page_title = 'Resolved/Not Answered Questions'
-    when 'rejected'
-      sq_query_method = SubmittedQuestion::REJECTED_TEXT
-      @questions_status = SubmittedQuestion::STATUS_REJECTED
-      @page_title = 'Resolved/Rejected Questions'
-    else
-      flash.now[:failure] = "Wrong type of resolved questions specified."
-      @submitted_questions = []
-      return
-    end
-    
-    @submitted_questions = SubmittedQuestion.find_submitted_questions(sq_query_method, @category, @location, @county, @source, nil, nil, params[:page], true, false, @order)
-  end
-  
-  def my_resolved
-    if err_msg = params_errors
-      list_view_error(err_msg)
-      return
-    end
-    
-    #set the instance variables based on parameters
-    list_view(true)
-    set_filters
-    @questions_status = SubmittedQuestion::STATUS_RESOLVED
-    @user = @currentuser
-    
-    # user's resolved submitted questions filtered by submitted question filter
-    @filtered_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::RESOLVED_TEXT, @category, @location, @county, @source, @user, nil, params[:page], true, false, @order)
-    
-    # total user's resolved submitted questions (unfiltered)
-    @total_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::RESOLVED_TEXT, nil, nil, nil, nil, @user, nil, params[:page], true, false, @order)  
-    
-    # the difference in count between the filtered and unfiltered questions
-    @question_difference = @total_submitted_questions.total_entries - @filtered_submitted_questions.total_entries
-    
-    # decide which set of submitted questions (filtered or unfiltered) get shown in the list view
-    @filtered_submitted_questions.total_entries == 0 ? @submitted_questions = @total_submitted_questions : @submitted_questions = @filtered_submitted_questions
-  end
-  
-  #lists questions marked as spam
-  def spam_list
-    if err_msg = params_errors
-      list_view_error(err_msg)
-      return
-    end
-    
-    #set the instance variables based on parameters  
-    list_view
-    set_filters
-    
-    # it does not matter if this question was previously reserved if it's spam
-    @reserved_questions = []
-    @questions_status = SubmittedQuestion::STATUS_SUBMITTED
-    @submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::SUBMITTED_TEXT, @category, @location, @county, @source, nil, nil, params[:page], true, true, @order)
-  end
-  
   def report_spam
     if request.post?      
       begin
@@ -556,7 +372,7 @@ class Ask::ExpertController < ApplicationController
         flash[:failure] = "There was a problem reporting spam. Please try again at a later time."
         logger.error "Problem reporting spam at #{Time.now.to_s}\nError: #{ex.message}"
       end
-      redirect_to :controller => :expert, :action => :incoming
+      redirect_to incoming_url
     end
   end
 
@@ -580,7 +396,7 @@ class Ask::ExpertController < ApplicationController
         logger.error "Problem reporting ham at #{Time.now.to_s}\nError: #{ex.message}"
       end
         
-      redirect_to :controller => :expert, :action => :spam_list
+      redirect_to spam_url
     end   
   end
 
@@ -630,7 +446,7 @@ class Ask::ExpertController < ApplicationController
       end        
     else
       flash[:failure] = "Question not found."
-      redirect_to :controller => :expert, :action => :incoming
+      redirect_to incoming_url
     end
   end
   
@@ -645,41 +461,7 @@ class Ask::ExpertController < ApplicationController
   end
 
   private
-  
-  def params_errors
-    if params[:page] and params[:page].to_i == 0 
-      return "Invalid page number"
-    else
-      return nil
-    end
-  end
-  
-  def list_view_error(err_msg)
-    redirect_to :controller => :expert, :action => :incoming
-    flash[:failure] = err_msg
-  end
-  
-  def set_filters
-    source_filter_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting}.join(',')
-    widgets_to_filter = Widget.find(:all, :conditions => "widgets.id IN (#{source_filter_prefs})", :order => "name") if source_filter_prefs and source_filter_prefs.strip != ''
-    @source_options = [['All Sources', 'all'], ['www.extension.org', 'pubsite'], ['All Ask eXtension widgets', 'widget']]
-    @source_options = @source_options.concat(widgets_to_filter.map{|w| [w.name, w.id.to_s]}) if widgets_to_filter
-    @source_options = @source_options.concat([['', ''], ['Edit source list','add_sources']])
-    @widget_filter_url = url_for(:controller => 'ask/prefs', :action => 'widget_preferences', :only_path => false)
-  end
-  
-  def error_render(action = "new_faq")
-    @tag_string = params[:tag_list].strip if params[:tag_list]
-    @user_popular_tags = @currentuser.popular_tags(10)
-    
-    @input_numbers=params['Numbers'] if params['Numbers'] and params['Numbers'].strip !=''
-    @saved_reference_names = []
-    if @revision.reference_string
-      @saved_reference_names = @revision.reference_string.split(',')
-    end
-    render :action => action
-  end
-  
+   
   def setup_cat_loc
     @location_options = [""].concat(ExpertiseLocation.find(:all, :order => 'entrytype, name').map{|l| [l.name, l.fipsid]})
     @categories = Category.root_categories
@@ -700,222 +482,5 @@ class Ask::ExpertController < ApplicationController
     answering_users = answering_role.users.find(:all, :select => "users.*", :conditions => "users.id IN (#{user_ids})")
     user_intersection = selected_users & answering_users
   end
-  
-  def go_back
-    request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to :action => 'incoming')
-  end
-  
-  def filter_category_name
-    id = get_filter_pref.setting if get_filter_pref
-    
-    return id if !id
-    
-    return id if id == Category::UNASSIGNED
-    
-    return Category.find(id).name
-  end
-  
-  def filter_string_helper
-    if !@category and !@location and !@county and !@source
-      @filter_string = 'All'
-    else
-        filter_params = Array.new
-        if @category
-            if @category == Category::UNASSIGNED
-                filter_params << "Uncategorized"
-            else
-                filter_params << @category.full_name
-            end
-        end
-        if @location
-            filter_params << @location.name
-        end
-        if @county
-            filter_params << @county.name
-        end
-
-        if @source
-          case @source
-            when 'pubsite'
-              filter_params << 'www.extension.org'
-            when 'widget'
-              filter_params << 'Ask eXtension widgets'
-            else
-              source_int = @source.to_i
-              if source_int != 0
-                widget = Widget.find(:first, :conditions => "id = #{source_int}")
-              end
-
-              if widget
-                filter_params << "#{widget.name} widget"
-              end
-          end  
-        end
-
-        @filter_string = filter_params.join(' + ')
-    end
-  end
-  
-   #sets the instance variables based on parameters from views like incoming questions and resolved questions
-   #if there was no category parameter, then use the category specified in the user's preferences if it exists
-   def list_view(is_resolved = false)
-     (is_resolved) ? field_to_sort_on = 'resolved_at' : field_to_sort_on = 'created_at'
-            
-     if params[:order] and params[:order] == "asc"
-         @order = "submitted_questions.#{field_to_sort_on} asc"
-         @toggle_order = "desc"
-     # either no order parameter or order parameter is "desc"
-     elsif !params[:order] or params[:order] == "desc"
-       @order = "submitted_questions.#{field_to_sort_on} desc"
-       @toggle_order = "asc"
-     end
-     
-     # if there are no filter parameters, then find saved filter options if they exist
-     if !params[:category] and !params[:location] and !params[:county] and !params[:source]
-  
-       # filter by category if it exists
-       if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_CATEGORY))
-         if pref.setting == UNASSIGNED
-           @category = UNASSIGNED
-          else   
-            @category = Category.find(pref.setting)
-            if !@category
-              flash[:failure] = "Invalid category."
-              redirect_to :controller => "ask/expert", :action => :incoming
-              return
-            end
-          end
-        end  
-
-        # filter by location if it exists
-        if (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_LOCATION))
-          @location = Location.find_by_fipsid(pref.setting)
-          if !@location
-            flash[:failure] = "Invalid location."
-            redirect_to :controller => "ask/expert", :action => :incoming
-            return
-          end
-        end
-
-        # filter by county if it exists
-        if (@location) and (pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_COUNTY))
-          @county = County.find_by_fipsid(pref.setting)
-          if !@county
-            flash[:failure] = "Invalid county."
-            redirect_to :controller => "ask/expert", :action => :incoming
-            return
-          end
-        end
-        
-        # filter by source if it exists
-        if pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_FILTER_SOURCE)
-          @source = pref.setting
-        end
-        
-        
-     # parameters exist, process parameters and save preferences    
-     else
-       #process location preference
-       if params[:location] == Location::ALL
-         @location = nil
-       elsif params[:location] and params[:location].strip != ''
-         @location = Location.find(:first, :conditions => ["fipsid = ?", params[:location].strip])
-         if !@location
-           flash[:failure] = "Invalid location."
-           redirect_to :controller => "ask/expert", :action => :incoming
-           return
-         end
-       end
-
-       #process county preference
-       if params[:county] == County::ALL
-         @county = nil
-       elsif params[:county] and params[:county].strip != ''
-         @county = County.find(:first, :conditions => ["fipsid = ?", params[:county].strip])
-         if !@county
-           flash[:failure] = "Invalid county."
-           redirect_to :controller => "ask/expert", :action => :incoming
-           return
-         end
-       end
-      
-      
-       
-       #process category preference
-       if params[:category] == Category::UNASSIGNED
-         @category = Category::UNASSIGNED
-       elsif params[:category] == Category::ALL
-         @category = nil
-       elsif params[:category] and params[:category].strip != ''
-         @category = Category.find(:first, :conditions => ["id = ?", params[:category].strip])
-         if !@category
-           flash[:failure] = "Invalid category."
-           redirect_to :controller => "ask/expert", :action => :incoming
-           return  
-         end
-       end
-       
-       #process source preference
-       if params[:source] == UserPreference::ALL
-         @source = nil
-       elsif params[:source] and params[:source].strip != '' and params[:source].strip != 'add_sources'
-         @source = params[:source]
-       end
-         
-       # save the category, location and source prefs from the filter
-
-       #save category prefs
-       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_CATEGORY}'")
-       if user_prefs
-          user_prefs.each {|up| up.destroy}
-       end
-       
-       if @category.class == Category
-          cat_setting = @category.id
-       elsif @category == Category::UNASSIGNED
-         cat_setting = @category
-       end
-
-       if cat_setting
-         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_CATEGORY, :setting => cat_setting)
-         up.save
-       end
-
-       #save location prefs
-       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_LOCATION}'")
-       if user_prefs
-         user_prefs.each {|up| up.destroy}
-       end
-
-       if @location 
-         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_LOCATION, :setting => @location.fipsid)
-         up.save
-       end
-
-       #save county prefs
-       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_COUNTY}'")
-       if user_prefs
-         user_prefs.each {|up| up.destroy}
-       end
-
-       if @county 
-         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_COUNTY, :setting => @county.fipsid)
-         up.save
-       end
-       
-       #save source prefs
-       user_prefs = @currentuser.user_preferences.find(:all, :conditions => "name = '#{UserPreference::AAE_FILTER_SOURCE}'")
-       if user_prefs
-         user_prefs.each{ |up| up.destroy}
-       end
-       
-       if @source
-         up = UserPreference.new(:user_id => @currentuser.id, :name => UserPreference::AAE_FILTER_SOURCE, :setting => @source)
-         up.save
-       end
-       
-       # end the save prefs section
-     end
-   end
   
 end

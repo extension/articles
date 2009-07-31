@@ -1,18 +1,18 @@
 <% @page_title = "Ask an Expert - \"" + @submitted_question.asked_question + "\""%>
 <% @help_title = "Ask an Expert Question" %>
 
-<%= render(:partial => "partial/flashmessages") %>
+<%= render(:partial => "/partial/flashmessages") %>
 
 <% if !@submitted_question.spam %>
   <% if work_time_remaining = get_work_time_remaining(@submitted_question) %>
   <% if (work_time_remaining <= 0) and (@currentuser.id != @submitted_question.assignee.id) %>
-  <%= render(:partial => "ask/expert/take_question") %>
+  <%= render(:partial => "aae/question/take_question") %>
   <% elsif (work_time_remaining > 0) and (@currentuser.id != @submitted_question.assignee.id) %>
-  <%= render(:partial => "ask/expert/question_alert") %>
+  <%= render(:partial => "aae/question/question_alert") %>
   <% elsif (work_time_remaining <= 0) and (@currentuser.id == @submitted_question.assignee.id) %>
-  <%= render(:partial => "ask/expert/my_claim") %>
+  <%= render(:partial => "aae/question/my_claim") %>
   <% elsif (work_time_remaining > 0) and (@currentuser.id == @submitted_question.assignee.id) %>
-  <%= render(:partial => "ask/expert/my_claim_status") %>
+  <%= render(:partial => "aae/question/my_claim_status") %>
   <% end %>
   <% end %>
 <% end %>
@@ -34,7 +34,7 @@
     
     <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
         <div id="recat_<%= @submitted_question.id %>" style="display:none;" class="recat">
-        <%= render(:partial => "ask/expert/category_form") %>
+        <%= render(:partial => "aae/partial/category_form") %>
         </div>
     <% end %>
     
@@ -65,16 +65,9 @@
             <% if @contributing_question %>
     	        <p><strong>This question was answered with 
     	        <% if @type == 'FAQ' %>
-    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", 
-    	          :controller => 'ask/expert', 
-    	          :action => 'view_question', 
-    	          :qid => @contributing_question.foreignid, 
-    	          :type => @contributing_question.entrytype %>
+    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", view_question_url(:qid => @contributing_question.foreignid, :type => @contributing_question.entrytype) %>
     	        <% else %>
-    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", 
-    	          :controller => 'ask/expert', 
-    	          :action => 'question', 
-    	          :id => @contributing_question.foreignid %>
+    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", question_url(:id => @contributing_question.foreignid) %>
     	        <% end %>
     	        </strong></p>
     	    <% end %>	        
@@ -138,7 +131,7 @@
     <% end %>
     
 <% if @submitted_question.status_state != SubmittedQuestion::STATUS_RESOLVED and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER %>
-  <%= render(:partial => 'ask/expert/manual_assign', :locals => { :work_time_remaining => work_time_remaining }) %>
+  <%= render(:partial => 'manual_assign', :locals => { :work_time_remaining => work_time_remaining }) %>
 <% end %>
 
 

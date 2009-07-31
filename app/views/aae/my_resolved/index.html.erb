@@ -18,10 +18,10 @@
         <%= @question_difference == 1 ? "question" : "questions" %> resolved by you</strong> outside of your filter:</h3>
         <p>We've listed them below</p>
     </div>
-    <%= render(:partial => "submitted_questions") %>
+    <%= render(:partial => "aae/partial/submitted_questions") %>
     
     <% else %>
-    <%= render(:partial => "submitted_questions") %>
+    <%= render(:partial => "aae/partial/submitted_questions") %>
     <div class="noresults">
         <h3>There <%= @question_difference == 1 ? "is" : "are" %> <%= @question_difference %> other
         <%= @question_difference == 1 ? "question" : "questions" %> outside of your filter.</h3>
@@ -29,6 +29,6 @@
     </div>
     <% end %>
 <% else %>
-    <%= render(:partial => "submitted_questions") %>
+    <%= render(:partial => "aae/partial/submitted_questions") %>
 <% end %>
 

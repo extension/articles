@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-module Ask::ExpertHelper
+module Aae::QuestionHelper
   
 def stringify_submitted_question_event(sq_event)
   case sq_event.event_state
@@ -40,19 +40,6 @@ def stringify_submitted_question_event(sq_event)
   end
 end
 
-def getExperts(community)
-  users = Array.new
-  
-  roles = community.role_assignments
-  roles.each do |role|
-    users << role.user
-  end  
-  
-  users.uniq!
-  
-  users
-end
-
 def get_work_time_remaining(submitted_question)
   return nil if !submitted_question or submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED
   latest_claim = SubmittedQuestionEvent.work_in_progress(submitted_question.assignee.id, submitted_question.id).latest
@@ -60,25 +47,6 @@ def get_work_time_remaining(submitted_question)
   elapsed_time = Time.now - latest_claim[0].created_at 
   # 7200 sec == 2 hours
   return 7200 - elapsed_time
-end
-
-def outstandingQuestionsCount(submittedQuestions)
-  questionsArray = Array.new
-  questionsArray = submittedQuestions.find_all {|sq| sq.status_state == SubmittedQuestion::STATUS_SUBMITTED}
-  return questionsArray.length
-end
-
-def formatDate(strDate)
-  strDate = strDate.to_s
-  dateArr = strDate.split(' ')
-  newDate = dateArr[1] + " " + dateArr[2] + " " + dateArr[5]
-  newDate  
-end
-
-# http://blog.macromates.com/2006/wrapping-text-with-regular-expressions/
-def wrap_text(txt, col=120)
-  txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
-    "\\1\\3\n") 
 end
 
 
