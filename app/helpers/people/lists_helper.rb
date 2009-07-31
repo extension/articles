@@ -75,14 +75,14 @@ module People::ListsHelper
   def change_list_subscription_link(container,list,subscribeaction,linktext,linkoptions = {})
     url = {:controller => '/people/lists', :action => :change_my_subscription, :id => list.id, :subscribeaction => subscribeaction}
     color = 'ffe2c8'
-    progress = "<p><img src='/images/ajax-loader-#{color}.gif' /> Saving... </p>"
+    progress = "<p><img src='/images/common/ajax-loader-#{color}.gif' /> Saving... </p>"
     return link_to_remote(linktext, {:url => url, :loading => update_page{|p| p.replace_html(container,progress)}}, linkoptions)
   end
   
   def change_list_moderation_link(container,list,moderationaction,linktext,linkoptions = {})
     url = {:controller => '/people/lists', :action => :change_my_moderation, :id => list.id, :moderationaction => moderationaction}
     color = 'white'
-    progress = "<p><img src='/images/ajax-loader-#{color}.gif' /> Saving... </p>"
+    progress = "<p><img src='/images/common/ajax-loader-#{color}.gif' /> Saving... </p>"
     return link_to_remote(linktext, {:url => url, :loading => update_page{|p| p.replace_html(container,progress)}}, linkoptions)
   end
   

@@ -14,7 +14,7 @@ module People::CommunitiesHelper
     else
       color = 'ffe2c8'
     end
-    progress = "<p><img src='/images/ajax-loader-#{color}.gif' /> Saving... </p>"
+    progress = "<p><img src='/images/common/ajax-loader-#{color}.gif' /> Saving... </p>"
     return link_to_remote(label, {:url => url, :loading => update_page{|p| p.replace_html(container,progress)}}, linkoptions)
   end
   
@@ -70,7 +70,7 @@ module People::CommunitiesHelper
   def community_connection_link(container,community,showuser,label,connectaction,title,confirm = nil)
     urloptions = {:controller => '/people/communities', :action => :modify_user_connection, :id => community.id, :userid => showuser.id }
     urloptions.merge!({:connectaction => connectaction})
-    progress = "<img src='/images/ajax-loader-white.gif' /> Saving..."
+    progress = "<img src='/images/common/ajax-loader-white.gif' /> Saving..."
     loading = update_page{|p| p.replace_html(container,progress)}
     options = {:url => urloptions, :loading => loading}
     options.merge!({:confirm => confirm}) if(!confirm.nil?)
