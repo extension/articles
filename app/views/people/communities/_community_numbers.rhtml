@@ -1,32 +1,33 @@
-<table class="community_stats" cellspacing="0" summary="Summary of Community Membership and other Stats">
-    <caption>Community Stats</caption>
-	<% if(@community.entrytype != Community::SYSTEM)%>
-    <tr>
-        <td><%= link_by_count(@community.leaders.count, 'Leaders', userlist_people_community_url(@community.id, :connectiontype => 'leaders')) %></td>
-        <td class="bignumber"><%= @community.leaders.count %></td>
-    </tr>
-	<% end %>
-    <tr>
-        <td><%= link_by_count(@community.members.count,'Members', userlist_people_community_url(@community.id, :connectiontype => 'members')) %></td>
-        <td class="bignumber"><%= (@community.members.count) %></td>
-    </tr>
+<ul>
+<% if(@community.entrytype != Community::SYSTEM)%>
+    <li>
+        <span><%= @community.leaders.count %></span>
+        <%= link_by_count(@community.leaders.count, 'Leaders', userlist_people_community_url(@community.id, :connectiontype => 'leaders')) %>
+    </li>
+<% end %>
+    <li>
+        <span><%= (@community.members.count) %></span>
+        <%= link_by_count(@community.members.count,'Members', userlist_people_community_url(@community.id, :connectiontype => 'members')) %>
+    </li>
 	<% if(@community.entrytype != Community::SYSTEM)%>
 		<% if @community.memberfilter == Community::MODERATED %>
-		    <tr>
-		        <td><%= link_by_count(@community.wantstojoin.count,'People who want to join', userlist_people_community_url(@community.id, :connectiontype => 'wantstojoin')) %></td>
-		        <td class="bignumber"><%= @community.wantstojoin.count %></td>
-		    </tr>
+		    <li>
+		        <span><%= @community.wantstojoin.count %></span>
+		        <%= link_by_count(@community.wantstojoin.count,'People who want to join', userlist_people_community_url(@community.id, :connectiontype => 'wantstojoin')) %>
+		    </li>
 		<% end %>
-		<tr>
-	        <td><%= link_by_count(@community.invited.count,'Invitations', userlist_people_community_url(@community.id, :connectiontype => 'invited')) %></td>
-	        <td class="bignumber"><%=  @community.invited.count %></td>
-	    </tr>
-	    <tr>
-	        <td><%= link_by_count(@community.interest.count,'Interest', userlist_people_community_url(@community.id, :connectiontype => 'interest')) %></td>
-	        <td class="bignumber"><%= (@community.interest.count) %></td>
-	    </tr>
+		<li>
+		    <span><%=  @community.invited.count %></span>
+		    <%= link_by_count(@community.invited.count,'Invitations', userlist_people_community_url(@community.id, :connectiontype => 'invited')) %>
+            <% if @community.entrytype != Community::SYSTEM %>
+                <% if ((@am_i_leader or admin_mode?) or @currentuser.communityopenjoins.include?(@community)) %>
+    	    		<%= link_to('Invite people to join this Community', invite_people_community_path(@community)) %>
+    	    	<% end %>
+    		<% end %>
+    	</li>
+	    <li>
+	        <span><%= (@community.interest.count) %></span>
+	        <%= link_by_count(@community.interest.count,'Interest', userlist_people_community_url(@community.id, :connectiontype => 'interest')) %>
+	    </li>
 	<% end %>
-	<tr>
-        <td colspan='2'><%= link_to("More numbers for this community...", :controller => '/people/numbers', :action => :community, :id => @community.id) %></td>
-    </tr>
-</table>
+</ul>

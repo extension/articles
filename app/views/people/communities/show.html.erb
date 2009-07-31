@@ -4,10 +4,11 @@
 <%= render(:partial => 'partial/flashmessages') %>
 
 <div id="community">
-    <h1><%= @community.name%></h1>
+    
     
 
-	<div id="primary_column">
+	<div id="primary_column" class="dashboard">
+	    <h1><%= @community.name%></h1>
 	    
     	<% if !@community.description.nil? %>
     	    <p id="description"><%= @community.description %> 
@@ -16,47 +17,62 @@
     	    <% end %>
     	<% end %>
     	
-    	<div id="sharedtaglist">
-    		<%= render(:partial => 'shared_tag_list') %>
+    	<div id="col_one">
+    	    <h2>People</h2>
+    	    <div class="dashmodule">
+    	        <div id = "connectiontocommunity">
+    				<%= render(:partial => 'community_connection') %>
+    			</div>
+    			<div id="communitynumbers">
+            		<%= render(:partial => 'community_numbers') %>
+        	    </div>
+    	    </div>    
+    	
+    	
+    	    <h2>Community Mailing Lists <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', editlists_people_community_path(@community) %></small><% end %></h2>
+        	<div class="dashmodule">
+        	    <div id="communitymailinglists">        
+               		<%= render(:partial => 'community_mailinglists') %>
+           	    </div>
+        	</div>
     	</div>
     	
-    	<div id="recent_community_activity" class="section">
-			<%= render(:partial => 'recent_activity') %>
-	    </div>
+    	
+    	<div id="col_two">
+    	    
+    	    <h2>Community Tags <a class="tooltip-help" href="#" id="tags_trigger">?</a></h2>
+    	    <div class="dashmodule">
+    	        <div id="sharedtaglist">
+            		<%= render(:partial => 'shared_tag_list') %>
+            	</div>
+        	</div>
+        	
+        	<h2>Community Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_people_community_path(@community) %></small><% end %></h2>
+        	<div class="dashmodule">
+        	    <div class="community_summary">
+                    <p><%= link_to("Reports: Numbers and Activity", :controller => '/people/numbers', :action => :community, :id => @community.id) %></p>
+            	    <dl>
+            	        <dt>Community Type:</dt>
+            		    <dd><%= @community.entrytype_to_s %></dd>
+            		    <dt>Membership:</dt>
+            	        <dd><%= @community.memberfilter_to_s %></dd>
+            	        <dt>Created by:</dt>
+            	        <dd><%= link_to_user(@community.creator) %></dd>
+            	        <dt>Created:</dt>
+            	        <dd><%= @community.created_at%></dd>
+            	        
+            	    </dl>
+        	    </div>
+        	</div>
+    	</div>
+    	
+    	
     </div>
     
     <div id="community_sidebar">
-    	<% if @community.entrytype != Community::SYSTEM %>
-      	  <% if ((@am_i_leader or admin_mode?) or @currentuser.communityopenjoins.include?(@community)) %>
-	    		<p class="button2"><%= link_to('Invite people to join this Community', invite_people_community_path(@community)) %></p>
-	    	<% end %>
-			<div id = "connectiontocommunity">
-				<%= render(:partial => 'community_connection') %>
-			</div>
-    
-		<% end %>
-
-       	<div id="communitymailinglists">        
-       		<%= render(:partial => 'community_mailinglists') %>
-   	    </div>
-	
-        <div id="communitynumbers">
-    		<%= render(:partial => 'community_numbers') %>
-	    </div>
         
-    	<div class="community_summary">
-    	    <h3>Community Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_people_community_path(@community) %></small><% end %></h3>
-
-    	    <dl>
-    	        <dt>Community Type:</dt>
-    		    <dd><%= @community.entrytype_to_s %></dd>
-    		    <dt>Created:</dt>
-    	        <dd><%= @community.created_at%></dd>
-    	        <dt>Created by:</dt>
-    	        <dd><%= link_to_user(@community.creator) %></dd>
-    	        <dt>Membership:</dt>
-    	        <dd><%= @community.memberfilter_to_s %></dd>
-    	    </dl>
+        <div id="recent_community_activity" class="section">
+			<%= render(:partial => 'recent_activity') %>
 	    </div>
 
 	</div>

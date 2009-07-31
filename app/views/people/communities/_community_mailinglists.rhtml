@@ -1,13 +1,14 @@
 <div class="community_summary">
-	<h3>Community Mailing Lists <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', editlists_people_community_path(@community) %></small><% end %></h3>
 	<% if @community.lists.blank? %>
 		<p>No lists have been created for this community.</p>
 	<% else %>
-	<dl>
+	<ul>
 		<% @community.lists.each do |mailinglist| %>
-			<dt><%= mailinglist.communityconnection_to_s %> List</dt>
-			<dd><span class="mailto"><%= link_to(mailinglist.name, people_list_url(mailinglist)) %></span></dd>
+			<li>
+			    <span class="mailto"><%= link_to(mailinglist.name, people_list_url(mailinglist)) %></span>
+			    <%= mailinglist.communityconnection_to_s %> List
+			</li>
 		<% end %>
-	</dl>
+	</ul>
 	<% end %>
 </div>
