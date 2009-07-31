@@ -38,7 +38,7 @@
 </div>
         <div id="rightcal">
             <h2>Select a custom date range</h2>
-       
+            <%= render(:partial => 'flashmessages') %>
             <div id="calendar">
                 <% form_tag({:action => @repaction, :compd1 => @datec1, :compd2 => @datec2, :compds => @datecTo, :compdf => @datecFrom}) do %>
 

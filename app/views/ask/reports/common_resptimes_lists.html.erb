@@ -9,11 +9,12 @@
 <div id="report">
     <div id="report-date-selector">
         <div>
+	        <%= render(:partial => 'flashmessages') %>
             <h4>
                 <a onclick="Effect.toggle('date-selectors','blind', { duration: .4});" ><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@prior90th).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(last 90 days)</span>"%> <%= "<em>compared to</em> #{Time.parse(@datecFrom).strftime('%b %e, %Y')} - #{Time.parse(@datecTo).strftime('%b %e, %Y')}" if (@datec1 && @datec2) %> <em>edit</em></a></h4>
              
             <div id="calendar" >
-	            
+	           
 	            <div id="date-selectors" style="display:none;" >
 	                
 	                <div class="date-selector1" >

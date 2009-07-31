@@ -285,46 +285,20 @@ class Ask::ReportsController < ApplicationController
          ####  Date handling ###
          
          
-     #    def valid_date()
-    #       dateFrom = params["dateFrom"]["to_s"] if (params["dateFrom"] && params["dateFrom"]["to_s"]) 
-    #       date1 = date_valid(dateFrom)
-    #       dateTo = params["dateTo"]["to_s"] if (params["dateTo"] && params["dateTo"]["to_s"]) 
-    #       date2 = date_valid(dateTo)
-    #       [date1, date2, dateFrom, dateTo]
-    #     end
-    
+   
            def valid_date()
              dateFrom = params["dateFrom"] if (params["dateFrom"] ) 
-           #  if dateFrom
-          #     dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
-          #   end
              date1 = date_valid(dateFrom)
              dateTo = params["dateTo"] if (params["dateTo"] )
-          #   if dateTo
-          #     dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
-          #   end
              date2 = date_valid(dateTo)
              [date1, date2, dateFrom, dateTo]
            end
 
-        #  def valid_compare_date()
-        #    dateFrom = params["datecFrom"]["to_s"] if (params["datecFrom"] && params["datecFrom"]["to_s"]) 
-        #    date1 = date_valid(dateFrom)
-        #    dateTo = params["datecTo"]["to_s"] if (params["datecTo"] && params["datecTo"]["to_s"]) 
-        #    date2 = date_valid(dateTo)
-        #    [date1, date2, dateFrom, dateTo]
-        #  end
-          
+     
           def valid_compare_date()
             dateFrom = params["datecFrom"] if (params["datecFrom"] ) 
-       #     if dateFrom
-      #        dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
-      #      end
             date1 = date_valid(dateFrom)
             dateTo = params["datecTo"] if (params["datecTo"] )
-       #     if dateTo
-      #        dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
-      #      end
             date2 = date_valid(dateTo)
             [date1, date2, dateFrom, dateTo]
           end
@@ -332,8 +306,15 @@ class Ask::ReportsController < ApplicationController
           def date_valid(yyyymmdd)
               #yyyymmdd = yyyy-mm-dd
               return nil if !yyyymmdd || yyyymmdd=="" 
-              return Time.parse(yyyymmdd)
-          end
+              begin
+                t =  Time.parse(yyyymmdd)
+              rescue Exception => e
+                 flash.now[:failure] = "Incorrect input detected: #{yyyymmdd}, do yyyy-mm-dd "
+                 ActiveRecord::Base::logger.debug "time parse error on #{yyyymmdd} "  + e.to_s
+                 return nil
+              end
+              return t
+          end 
 
           def errchk(datef,datet, dateFrom, dateTo)
            if ((datef && datet) && (datet - datef < 0))
@@ -350,21 +331,13 @@ class Ask::ReportsController < ApplicationController
                 if params[:FromDate]
                   dateFrom = params[:FromDate]
                 else
-                 # dateFrom = params["dateFrom"]["to_s"] if (params["dateFrom"] && params["dateFrom"]["to_s"])
                     dateFrom = params["dateFrom"] if (params["dateFrom"] ) 
-                 #   if dateFrom
-                #      dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
-                #    end
                 end
                 date1 = date_valid(dateFrom)
                 if params[:ToDate]
                   dateTo=params[:ToDate]
                 else
-               #   dateTo = params["dateTo"]["to_s"] if (params["dateTo"] && params["dateTo"]["to_s"])
                    dateTo = params["dateTo"] if (params["dateTo"] )
-              #     if dateTo
-              #        dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
-              #     end
                 end
                 date2 = date_valid(dateTo)
               else
@@ -383,21 +356,13 @@ class Ask::ReportsController < ApplicationController
               if params[:FromcDate]
                 dateFrom = params[:FromcDate]
               else
-           #     dateFrom = params["datecFrom"]["to_s"] if (params["datecFrom"] && params["datecFrom"]["to_s"])
                 dateFrom = params["datecFrom"] if (params["datecFrom"] ) 
-            #    if dateFrom
-            #      dateFrom = dateFrom[6..9] + "-" + dateFrom[0..1] + "-" + dateFrom[3..4]
-            #    end
               end
               date1 = date_valid(dateFrom)
               if params[:TocDate]
                 dateTo=params[:TocDate]
               else
-              #  dateTo = params["datecTo"]["to_s"] if (params["datecTo"] && params["datecTo"]["to_s"])
                  dateTo = params["datecTo"] if (params["datecTo"] )
-          #       if dateTo
-          #         dateTo = dateTo[6..9] + "-" + dateTo[0..1] + "-" + dateTo[3..4]
-          #       end
               end
               date2 = date_valid(dateTo)
             else

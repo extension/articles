@@ -6,6 +6,8 @@
 
 <h1><%= @typename%>  Report</h1>
 <div id="date_range">
+	<%= render(:partial => 'flashmessages') %>
+	
     <h4 id="selected_range"><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
 
 
