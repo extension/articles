@@ -19,7 +19,7 @@ progopts = GetoptLong.new(
 )
 
 @environment = 'production'
-@hours = AppConfig.configtable['aae_escalation_delta']
+@hours = 0
 progopts.each do |option, arg|
   case option
     when '--environment'
@@ -39,15 +39,20 @@ end
 
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
+if(@hours == 0)
+  @hours = AppConfig.configtable['aae_escalation_delta']
+end
+
+
 # loop through all the root categories that we might have escalations for
 Category.root_categories.each do |category|
    # question count
    if(SubmittedQuestion.escalated(@hours,category).count > 0)
-     begin
+     #begin
        NotificationMailer.deliver_aae_escalation_for_category(category,@hours)
-     rescue
-       puts "AaE Escalation Email:  Unable to deliver escalation email for category #{category.name}"
-     end
+     #rescue
+    #   puts "AaE Escalation Email:  Unable to deliver escalation email for category #{category.name}"
+    # end
    end
 end
 
