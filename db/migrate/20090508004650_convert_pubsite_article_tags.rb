@@ -1,5 +1,9 @@
 class ConvertPubsiteArticleTags < ActiveRecord::Migration
   def self.up
+    # rename external article column so that we don't get errors from pulling ExternalArticle - 20090801 - jayoung
+    rename_column('articles', 'type', 'datatype')
+    
+    
     ownerid = User.systemuserid
     insert_time = Time.now.utc.to_s(:db)
     

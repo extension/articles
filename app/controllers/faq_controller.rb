@@ -47,7 +47,7 @@ class FaqController < ApplicationController
       @youth = true if faq_content_tags.map(&:name).include?('youth')
       
       # get the tags on this article that are content tags on communities
-      @community_content_tags = (Tag.community_content_tags & faq_content_tags)
+      @community_content_tags = (Tag.community_content_tags({:launchedonly => true}) & faq_content_tags)
     
       if(!@community_content_tags.blank?)
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
@@ -61,8 +61,8 @@ class FaqController < ApplicationController
         end
       
         @community = use_content_tag.content_community
-        @homage = Article.bucketed_as('homage').tagged_with_content_tag(use_content_tag.name).ordered.first if @community
-        @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(use_content_tag.name).ordered.first if @community
+        @homage = Article.homage_for_content_tag({:content_tag => use_content_tag}) if @community
+        @in_this_section = Article.contents_for_content_tag({:content_tag => use_content_tag}) if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
       end
     end    

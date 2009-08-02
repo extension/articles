@@ -15,6 +15,7 @@ class FeedLocation < ActiveRecord::Base
   # retrieves content from this feed_url and creates ExternalArticle objects
   def retrieve_articles(options = {})
     retrieve_options = options.dup
+    retrieve_options[:datatype] = 'ExternalArticle'
     
     # don't update retrieve time for ExternalArticle, instead update a time per feed
     retrieve_options[:update_retrieve_time] = false
@@ -36,7 +37,7 @@ class FeedLocation < ActiveRecord::Base
       retrieve_options[:feed_url] = self.uri
     end
     
-    results = ExternalArticle.retrieve_content(retrieve_options)
+    results = Article.retrieve_content(retrieve_options)
     if(!results[:last_updated_item_time].nil?)
       updatetime.update_attributes({:last_datasourced_at => results[:last_updated_item_time] + 1, :additionaldata => {:deleted => results[:deleted], :added => results[:added], :updated => results[:updated]}})        
     else

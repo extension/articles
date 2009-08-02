@@ -80,8 +80,13 @@ class ActiveRecord::Base #:nodoc:
       # TODO: possibly handle just the top tags?
       # e.g. my_top_tags_displaylist(:order => 'weightedfrequency DESC', :minweight => 2))
       
-      # TODO: NOTE!!  only supporting "all tags and any user for now!!"
-      CachedTag.create_or_update(self,User.anyuser,Tag::ALL)
+      # TODO: review this special case - communities get all tags cached for now, others get the one specified
+      if(self.is_a?(Community))
+        CachedTag.create_or_update(self,User.anyuser,Tag::ALL)
+      else
+        CachedTag.create_or_update(self,ownerid,kind)
+      end
+        
     end
     
     def tag_with_and_cache(list,ownerid=User.systemuserid,kind=self.default_tag_kind,weight=1)

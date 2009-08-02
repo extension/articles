@@ -16,6 +16,7 @@ class CachedTag < ActiveRecord::Base
   
   named_scope :content, {:conditions => "owner_id = #{User.systemuserid} and tag_kind = #{Tag::CONTENT}"}
   
+  
   # -----------------------------------
   # Class-level methods
   # -----------------------------------

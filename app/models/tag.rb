@@ -29,6 +29,8 @@ class Tag < ActiveRecord::Base
                     'highlight', 'homage', 'youth', 'learning lessons',
                     'learning lessons home', 'main', 'news', 'beano','people','ask','aae','status','opie','feeds','data','reports']
 
+  CONTENT_TAG_CACHE_EXPIRY = 24.hours
+
   # If database speed becomes an issue, you could remove these validations and rescue the ActiveRecord database constraint errors instead.
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
@@ -52,13 +54,38 @@ class Tag < ActiveRecord::Base
     self.name = self.class.normalizename(self.name)
   end
   
-  named_scope :community_content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggable_type = 'Community'"}
-  named_scope :launched_community_content_tags, {:joins => [:communities], :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE"}
   named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}"}
   
   # TODO: review.  This is kind of a hack that might should be done differently
-  def content_community
-    communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
+  def content_community(forcecacheupdate=false)
+    cache_key = self.class.get_object_cache_key(self,this_method,{:name => self.name})
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
+      self.communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
+    end
+  end
+  
+  def self.get_object_cache_key(theobject,method_name,optionshash={})
+    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
+    cache_key = "#{self.name}::#{theobject.id}::#{method_name}::#{optionshashval}"
+    return cache_key
+  end
+  
+  def self.get_cache_key(method_name,optionshash={})
+    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
+    cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
+    return cache_key
+  end
+  
+  def self.community_content_tags(options = {},forcecacheupdate=false)
+    cache_key = self.get_cache_key(this_method,options)
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
+      launchedonly = options[:launchedonly].nil? ? false : options[:launchedonly]
+      if(launchedonly)
+        self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
+      else
+        self.find(:all, :include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggable_type = 'Community'")
+      end
+    end  
   end
 
   # normalize tag names 

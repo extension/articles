@@ -9,13 +9,14 @@ class CreateContentBucket < ActiveRecord::Migration
 
     add_index "content_buckets", ["name"], :unique => true
     
-    create_table "article_buckets", :force => true do |t|
-      t.string   "article_id",       :null => false
-      t.string   "content_bucket_id",       :null => false
+    create_table "bucketings", :force => true do |t|
+      t.integer   "bucketable_id",       :null => false
+      t.string   "bucketable_type",       :null => false
+      t.integer   "content_bucket_id",       :null => false
       t.timestamps
     end
     
-    add_index "article_buckets", ["article_id","content_bucket_id"], :unique => true
+    add_index "bucketings", ["bucketable_id","bucketable_type","content_bucket_id"] ,:name => "bucketingindex", :unique => true
     
     bucketlist = ['contents', 'dpl', 'feature', 'homage', 'youth', 'learning lessons', 'news']
                   
@@ -34,19 +35,18 @@ class CreateContentBucket < ActiveRecord::Migration
       bucket_records = []
       article_ids = taggings.map(&:taggable_id)
       article_ids.each do |aid|
-        bucket_records << "(#{aid},#{bucketid},'#{insert_time}','#{insert_time}')"
+        bucket_records << "(#{aid},'Article',#{bucketid},'#{insert_time}','#{insert_time}')"
       end
       
       # go through taggings_to_insert, 500 at a time
       say_with_time "Bulk inserting article buckets: #{bucketname}..." do
         while (insert_chunk = bucket_records.slice!(0,500) and !insert_chunk.empty?)
-          insert_sql = "INSERT IGNORE INTO article_buckets (article_id,content_bucket_id,created_at,updated_at) VALUES #{insert_chunk.join(',')}"
+          insert_sql = "INSERT IGNORE INTO bucketings (bucketable_id,bucketable_type,content_bucket_id,created_at,updated_at) VALUES #{insert_chunk.join(',')}"
           suppress_messages {execute insert_sql}
         end
       end      
     end
-    
-    
+        
   end
 
   def self.down

@@ -12,6 +12,14 @@ require 'net/http'
 
 module DataImportContent
   
+  def content_cache_expiry
+    if(!AppConfig.configtable['cache-expiry'][self.name].nil?)
+      AppConfig.configtable['cache-expiry'][self.name]
+    else
+      15.minutes
+    end
+  end
+  
   # returns a block of content read from a file or a URL, does not parse
   def fetch_url_content(feed_url)
     urlcontent = ''
@@ -77,13 +85,8 @@ module DataImportContent
        feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_faqs'] : options[:feed_url])
        usexmlschematime = false
      when 'Article'
+       datatype = (options[:datatype].nil? ? 'WikiArticle' : options[:datatype])
        feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_wikiarticles'] : options[:feed_url])
-       usexmlschematime = true
-     when 'ExternalArticle'
-       if(options[:feed_url].nil?)
-         raise ContentRetrievalError, "Retrieve Content:  Retrieval External sources must supply a valid url for the external source"
-       end
-       feed_url =  options[:feed_url]
        usexmlschematime = true
      else
        raise ContentRetrievalError, "Retrieve Content: Unknown object type for content retrieval (#{self.name})"
@@ -120,7 +123,7 @@ module DataImportContent
     atom_entries =  Atom::Feed.load_feed(xmlcontent).entries
     if(!atom_entries.blank?)
       atom_entries.each do |entry|
-        (object_update_time, object_op, object) = self.create_or_update_from_atom_entry(entry)
+        (object_update_time, object_op, object) = self.create_or_update_from_atom_entry(entry,datatype)
         # get smart about the last updated time
         if(object_update_time > last_updated_item_time )
           last_updated_item_time = object_update_time

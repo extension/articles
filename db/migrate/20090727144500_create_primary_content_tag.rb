@@ -1,5 +1,5 @@
 class CreatePrimaryContentTag < ActiveRecord::Migration
-  def self.up
+  def self.up    
     # this is about to be quite the exercise
     # communities with more than one tag currently - number is community.id
     fixcommunities = {}

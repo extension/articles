@@ -16,7 +16,7 @@ module Extension
         # any content tag scope
         add_any_content_tag_scope(opts)
       end
-  
+      
       # no options currently
       # NOTE! NOTE! NOTE! this scope is designed to do an AND of all the tags or !tags passed to it
       def add_content_tags_scope(opts={})

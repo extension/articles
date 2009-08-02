@@ -5,7 +5,7 @@
 
 <div class = "left" style = "width: 250px">
     <div class = "communitylist">
-        <%= render(:partial => "shared/communities", :locals => {:topics  => Topic.find_with_communities }) %>
+        <%= render(:partial => "shared/communities", :locals => {:topics  => Topic.topics_list({:launchedonly => true})}) %>
     </div>
 </div>
 

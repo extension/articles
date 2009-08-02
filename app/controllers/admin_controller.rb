@@ -84,7 +84,7 @@ class AdminController < ApplicationController
     
     # sanity check tag names
     this_community_content_tags = @community.tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
-    other_community_tags = Tag.community_content_tags - this_community_content_tags
+    other_community_tags = Tag.community_content_tags({:all => true},true) - this_community_content_tags
     other_community_tag_names = other_community_tags.map(&:name)
     updatelist = Tag.castlist_to_array(params['community']['content_tag_names'],true)
     invalid_tags = []
@@ -103,7 +103,6 @@ class AdminController < ApplicationController
       flash[:notice] = 'Community Updated'
       @community.content_tag_names=(params['community']['content_tag_names'])
       AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
-      
       redirect_to :action => :manage_communities
     else
       flash[:notice] = 'Error updating community'
@@ -136,53 +135,6 @@ class AdminController < ApplicationController
     set_title('Edit Institution Public Options')
     set_titletag("Edit Institution - Pubsite Admin")
     @institution = Institution.find(params[:id])
-  end
-  
-  def retrieve_wikis
-    WikiFeed.retrieve_wikis
-    WikiChangesFeed.retrieve_wikis
-    finished_retrieving("Wiki articles")
-  rescue Exception => e
-    handle_feed_error(e, WikiFeed)
-  end
-    
-  def retrieve_events
-    XCal.retrieve_events
-    finished_retrieving("Events")
-  rescue Exception => e
-    handle_feed_error(e, XCal)
-  end
-  
-  def retrieve_faqs
-  #   Heureka.retrieve_faqs
-  #   finished_retrieving("FAQs")
-  # rescue Exception => e
-  #   handle_feed_error(e, Heureka)
-  end
-      
-  def retrieve_external_articles
-    ExternalArticleFeed.retrieve_feeds
-    finished_retrieving("External Feed")
-  rescue Exception => e
-    backtrace = e.backtrace.join("\n")
-    flash[:error] = "Unsucessfully retrieved items from the feed."
-    #MainMailer.deliver_feed_error("External feed", "#{e}\n #{backtrace}")
-    redirect_to :action => "index"
-  end
-    
-  private
-
-  def finished_retrieving(what)
-    ActiveRecord::Base::logger.debug "Imported #{what} at: " + Time.now.to_s    
-    flash[:notice] = "#{what} articles retrieved."
-    redirect_to :action => "index"
-  end
-  
-  def handle_feed_error(e, feed)
-    backtrace = e.backtrace.join("\n")
-    flash[:error] = "Unsucessfully retrieved items from the feed."
-    #MainMailer.deliver_feed_error(feed.full_url, "#{e}\n #{backtrace}")
-    redirect_to :action => "index"
   end
   
 end

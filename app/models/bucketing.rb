@@ -8,7 +8,7 @@
 
 # join class for articles <=> content buckets
 
-class ArticleBucket < ActiveRecord::Base
-  belongs_to :article
-  belongs_to :content_bucket
+class Bucketing < ActiveRecord::Base
+  belongs_to :content_bucket, :foreign_key => "content_bucket_id", :class_name => "ContentBucket"
+  belongs_to :bucketable, :polymorphic => true
 end

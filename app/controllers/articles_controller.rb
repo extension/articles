@@ -63,18 +63,18 @@ class ArticlesController < ApplicationController
         title_to_lookup = title_to_lookup.gsub(/\/print(\/)?$/, '')
       end
 
-      article = get_article_by_title(title_to_lookup)
+      @article = get_article_by_title(title_to_lookup)
     else
       # using find_by to avoid exception
-      article = ExternalArticle.find_by_id(params[:id])
+      @article = Article.find_by_id(params[:id])
       # Resolve links so they point to extension.org content where possible
-      if article and article.content.nil?
-        article.resolve_links!
+      if @article and @article.content.nil?
+        @article.resolve_links!
       end
       
     end
     
-    if article
+    if @article
       @published_content = true
     else
       @missing = title_to_lookup
@@ -84,13 +84,14 @@ class ArticlesController < ApplicationController
 
 
     # get the tags on this article that correspond to community content tags
-    article_content_tags = article.tags.content_tags
-    if(!article_content_tags.blank?)
+    @article_content_tags = @article.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
+    @article_content_tag_names = @article_content_tags.map(&:name)
+    if(!@article_content_tags.blank?)
       # is this article tagged with youth?
-      @youth = true if article_content_tags.map(&:name).include?('youth')
+      @youth = true if @article_content_tag_names.include?('youth')
       
       # get the tags on this article that are content tags on communities
-      @community_content_tags = (Tag.community_content_tags & article_content_tags)
+      @community_content_tags = (Tag.community_content_tags({:launchedonly => true}) & @article_content_tags)
     
       if(!@community_content_tags.blank?)
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
@@ -104,28 +105,28 @@ class ArticlesController < ApplicationController
         end
       
         @community = use_content_tag.content_community
-        @homage = Article.bucketed_as('homage').tagged_with_content_tag(use_content_tag.name).ordered.first if @community
-        @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(use_content_tag.name).ordered.first if @community
+        @homage = Article.homage_for_content_tag({:content_tag => use_content_tag}) if @community
+        @in_this_section = Article.contents_for_content_tag({:content_tag => use_content_tag})  if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
       end
     end
     
-    if article.tag_list.include? 'news'
-      set_title("#{article.title} - eXtension News", "Check out the news from the land grant university in your area.")
-      set_titletag("#{article.title} - eXtension News")
-    elsif article.tag_list.include? 'learning lessons'
+    if @article_content_tag_names.include?('news')
+      set_title("#{@article.title} - eXtension News", "Check out the news from the land grant university in your area.")
+      set_titletag("#{@article.title} - eXtension News")
+    elsif @article_content_tag_names.include?('learning lessons')
       set_title('Learning', "Don't just read. Learn.")
-      set_titletag("#{article.title} - eXtension")
+      set_titletag("#{@article.title} - eXtension")
     else
-      set_title("#{article.title} - eXtension", "Articles from our resource area experts.")
-      set_titletag("#{article.title} - eXtension")
+      set_title("#{@article.title} - eXtension", "Articles from our resource area experts.")
+      set_titletag("#{@article.title} - eXtension")
     end
 
     
     flash.now[:googleanalytics] = request.request_uri + "?" + @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_content_tags and @community_content_tags.length > 0
     
     # Specify view since we want sub class (external articles) to go here too
-    render :template => 'articles/page', :locals => { :article => article }
+    #render :template => 'articles/page', :locals => { :article => article }
   end
   
   def news

@@ -1,12 +1,12 @@
 <a name="top" id="top"></a>
 
 <div id="sidebar" class="rightcolumn">
-    <%= render :partial => 'shared/hommage' %>
+    <%= render :partial => 'shared/homage' %>
     
     <% if @show_resource_areas %>
         <div class="rightcolmodule">
         <h1>Resource Areas</h1>
-        <%= render(:partial => "shared/communities", :locals => {:topics  => Topic.find_with_communities }) %>
+        <%= render(:partial => "shared/communities", :locals => {:topics  => Topic.topics_list({:launchedonly => true})}) %>
         </div>
     <% end %>
     

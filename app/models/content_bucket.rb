@@ -6,11 +6,24 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ContentBucket < ActiveRecord::Base
-  has_many :article_buckets
-  has_many :articles, :through => :article_buckets
+  
+  # Set up the polymorphic relationship.
+  has_many_polymorphs :bucketables, 
+    :from => [:articles], 
+    :through => :bucketings, 
+    :dependent => :destroy,
+    :as => :content_bucket,
+    :skip_duplicates => false, 
+    :parent_extend => proc {
+      # Defined on the taggable models, not on Tag itself. Return the tagnames associated with this record as a string.
+      def to_s
+        self.map(&:name).sort.join(Tag::JOINER)
+      end
+    }
+    
 
   SPLITTER = Regexp.new(/\s*,\s*/)
-  JOINER = "," 
+  JOINER = ", " 
 
   # Callback to normalize the tagname before saving it. 
   def before_save

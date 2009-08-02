@@ -15,20 +15,17 @@ class MainController < ApplicationController
         
      @sponsors = Sponsor.prioritized
      
-     @in_the_news = Article.bucketed_as('news').ordered.limit(4)
-     
-     @community_highlights = Article.bucketed_as('feature').ordered.limit(8)
-     
-     @latest_activities = Article.find(:all, :order => 'wiki_updated_at DESC', :limit => 4)
+     @in_the_news = Article.main_news_list({:limit => 4})
+     @community_highlights = Article.main_feature_list({:limit => 8})
+     @latest_activities = Article.main_recent_list({:limit => 8})
      @latest_faq = Faq.ordered.first
-
      @latest_article = @latest_activities[0]
      @second_latest = @latest_activities[1]
      
      date_conditions = ['start >= ? AND start < ?', get_calendar_date, get_calendar_date+5]
      @calendar_events = Event.find(:all, :conditions => date_conditions, :order => 'date ASC')
-
-     @latest_learning_lesson = Article.bucketed_as('learning lessons').ordered.first     
+     learning_lessons = Article.main_lessons_list({:limit => 3})  
+     @latest_learning_lesson =  learning_lessons[0] if learning_lessons
   end
 
   def content_tag
@@ -39,9 +36,9 @@ class MainController < ApplicationController
       @community_content_tags = @community.tags
       @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
       
-      @homage = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered.first
-      @in_this_section = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered.first
-      @community_highlights = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).ordered.limit(8)
+      @homage = Article.homage_for_content_tag({:content_tag => @content_tag})
+      @in_this_section = Article.contents_for_content_tag({:content_tag => @content_tag})
+      @community_highlights = Article.main_feature_list({:content_tag => @content_tag, :limit => 8})
       @youth = true if @topic and @topic.name == 'Youth'
       flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
     elsif(!@content_tag.nil?)
@@ -54,18 +51,18 @@ class MainController < ApplicationController
     end
     
     if(@content_tag.nil?)
-      @news = Article.bucketed_as('news').ordered.limit(3)
-      @recent_learning_lessons = Article.bucketed_as('learning lessons').ordered(Article.orderings['Newest to oldest']).limit(3)
+      @news = Article.main_news_list({:limit => 3})
+      @recent_learning_lessons = Article.main_lessons_list({:limit => 3})
       @faqs = Faq.limit(3).ordered
       @calendar_events = Event.ordered.within(3, get_calendar_date)
       @articles = Article.ordered(Article.orderings['Newest to oldest']).limit(3)
     else
-      @news = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered.limit(3)
-      @recent_learning_lessons = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(Article.orderings['Newest to oldest']).limit(3)
+      @news = Article.main_news_list({:content_tag => @content_tag, :limit => 3})
+      @recent_learning_lessons = Article.main_lessons_list({:content_tag => @content_tag, :limit => 3})
       @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered.limit(3)
       @calendar_events =  Event.tagged_with_content_tag(@content_tag.name).ordered.limit(5).after(get_calendar_date)
-      @articles = Article.tagged_with_content_tag(@content_tag.name).ordered(Article.orderings['Newest to oldest']).limit(8) unless @community
-      @recent_articles = Article.tagged_with_content_tag(@content_tag.name).ordered.limit(3) unless @in_this_section
+      @articles = Article.main_feature_list({:content_tag => @content_tag, :limit => 8}) unless @community
+      @recent_articles = Article.main_feature_list({:content_tag => @content_tag, :limit => 3}) unless @in_this_section
     end
   end
   

@@ -180,7 +180,6 @@ class ApplicationController < ActionController::Base
     if(!content_tag.nil?)
       @community = content_tag.content_community 
     end
-    
     return @community
   end
   

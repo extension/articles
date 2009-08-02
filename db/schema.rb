@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090731221829) do
+ActiveRecord::Schema.define(:version => 20090801160842) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -81,15 +81,6 @@ ActiveRecord::Schema.define(:version => 20090731221829) do
     t.datetime "created_at"
   end
 
-  create_table "article_buckets", :force => true do |t|
-    t.string   "article_id",        :null => false
-    t.string   "content_bucket_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "article_buckets", ["article_id", "content_bucket_id"], :name => "index_article_buckets_on_article_id_and_content_bucket_id", :unique => true
-
   create_table "articles", :force => true do |t|
     t.text     "title"
     t.string   "url"
@@ -99,16 +90,27 @@ ActiveRecord::Schema.define(:version => 20090731221829) do
     t.datetime "updated_at"
     t.datetime "wiki_created_at"
     t.datetime "wiki_updated_at"
-    t.string   "type"
+    t.string   "datatype"
     t.string   "original_url"
     t.text     "original_content", :limit => 16777215
     t.boolean  "is_dpl",                               :default => false
   end
 
+  add_index "articles", ["datatype"], :name => "index_wiki_articles_on_type"
   add_index "articles", ["original_url"], :name => "index_wiki_articles_on_original_url", :unique => true
   add_index "articles", ["title"], :name => "index_wiki_articles_on_title"
-  add_index "articles", ["type"], :name => "index_wiki_articles_on_type"
   add_index "articles", ["url"], :name => "index_wiki_articles_on_url", :unique => true
+  add_index "articles", ["wiki_created_at", "wiki_updated_at"], :name => "index_articles_on_wiki_created_at_and_wiki_updated_at"
+
+  create_table "bucketings", :force => true do |t|
+    t.integer  "bucketable_id",     :null => false
+    t.string   "bucketable_type",   :null => false
+    t.integer  "content_bucket_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "bucketings", ["bucketable_id", "bucketable_type", "content_bucket_id"], :name => "bucketingindex", :unique => true
 
   create_table "cached_tags", :force => true do |t|
     t.integer  "tagcacheable_id"
@@ -256,6 +258,9 @@ ActiveRecord::Schema.define(:version => 20090731221829) do
     t.boolean  "deleted"
   end
 
+  add_index "events", ["date"], :name => "index_events_on_date"
+  add_index "events", ["xcal_updated_at"], :name => "index_events_on_xcal_updated_at"
+
   create_table "expertise_areas", :force => true do |t|
     t.integer  "category_id", :null => false
     t.integer  "user_id",     :null => false
@@ -321,6 +326,8 @@ ActiveRecord::Schema.define(:version => 20090731221829) do
     t.text     "age_ranges"
     t.text     "reference_questions"
   end
+
+  add_index "faqs", ["heureka_published_at"], :name => "index_faqs_on_heureka_published_at"
 
   create_table "feed_locations", :force => true do |t|
     t.text     "uri",                                   :null => false

@@ -130,7 +130,6 @@ class Community < ActiveRecord::Base
   end  
   
   
-  # TODO: check blacklist tags!
   # this will silently strip out content tags in use by other communities
   # it's up to the controller level to deal with the warnings on this
   def content_tag_names=(taglist)
@@ -148,9 +147,24 @@ class Community < ActiveRecord::Base
     
     # okay do the others - updating the cached_tags for search
     self.replace_tags_with_and_cache(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},User.systemuserid,Tag::CONTENT)
-           
-    # now update my cached_content_tags and return those
-    return self.cached_content_tags(true)
+    
+    # update the Tag model's community_content_tags
+    cctags = Tag.community_content_tags({:all => true},true)
+    if(self.is_launched?)
+      Tag.community_content_tags({:launchedonly => true},true)       
+    end
+    
+    # now update the cached content community for each tag
+    cctags.each do |t|
+      t.content_community(true)
+    end
+    
+    # now update my cached_content_tags
+    taglist = self.cached_content_tags(true)
+    
+
+    
+    return taglist.join(Tag::JOINER)
   end
     
   # returns an array of the names
