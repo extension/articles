@@ -32,7 +32,7 @@ class Event < ActiveRecord::Base
   named_scope :within, lambda { |interval, date| { :conditions => ['start >= ? AND start < ?', date, date + interval] } }
   
     
-  def self.create_or_update_from_atom_entry(entry)
+  def self.create_or_update_from_atom_entry(entry,datatype = "ignored")
     vevent = hCalendar.find(:first => {:text => entry.content.to_s})
     item = self.find_by_id(vevent.uid) || self.new
     

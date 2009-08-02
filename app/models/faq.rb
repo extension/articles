@@ -31,7 +31,7 @@ class Faq < ActiveRecord::Base
     end
   end
   
-  def self.create_or_update_from_atom_entry(entry)
+  def self.create_or_update_from_atom_entry(entry,datatype = "ignored")
     faq = self.find_from_atom_feed_id(entry.id) || self.new
     
     if entry.updated.nil?
