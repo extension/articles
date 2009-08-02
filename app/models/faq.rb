@@ -98,11 +98,11 @@ class Faq < ActiveRecord::Base
     heureka_published_at
   end
   
-  def self.representative_field
+  def representative_field
     'id'
   end
   
-  def self.page
+  def page
     'faq'
   end
   

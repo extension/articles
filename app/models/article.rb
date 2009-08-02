@@ -264,7 +264,7 @@ class Article < ActiveRecord::Base
     wiki_updated_at
   end
   
-  def self.representative_field
+  def representative_field
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
       'id'
     else
@@ -272,7 +272,7 @@ class Article < ActiveRecord::Base
     end
   end
   
-  def self.page
+  def page
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
       'article'
     else

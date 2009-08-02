@@ -30,9 +30,9 @@ module DataHelper
   
   def link_to_page(result)
     params[:controller]
-    value = result.send(result.class.representative_field)
-    page = result.class.page
-    url = self.send(result.class.page+'_page_url', {result.class.representative_field.to_sym => value })
+    value = result.send(result.representative_field)
+    page = result.page
+    url = self.send(result.page+'_page_url', {result.representative_field.to_sym => value })
     
     link_to result.title, url
   end
