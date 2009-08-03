@@ -25,7 +25,11 @@ module DataHelper
   end
   
   def link_to_public_community(community)
-    return link_to(h(community.public_name), site_index_url(:content_tag => community.primary_content_tag_name))
+    if(community.content_tag_names.empty?)
+      return community.public_name
+    else
+      return link_to(h(community.public_name), site_index_url(:content_tag => community.primary_content_tag_name))
+    end
   end
   
   def link_to_page(result)

@@ -44,68 +44,73 @@ class Article < ActiveRecord::Base
   end
   
   def self.get_cache_key(method_name,optionshash={})
-    logger.debug("Inside get_cache_key: #{optionshash.inspect}")
     optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
     cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
     return cache_key
   end
   
   def self.main_news_list(options = {},forcecacheupdate=false)
-    cache_key = self.get_cache_key(this_method,options)
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+    # OPTIMIZE: Turn Off caching for now and see what impact it has with rails doing it itself
+    # cache_key = self.get_cache_key(this_method,options)
+    # Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
       if(options[:content_tag].nil?)
         Article.bucketed_as('news').ordered.limit(options[:limit]).find(:all)
       else
         Article.bucketed_as('news').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).find(:all)
       end
-    end
+    # end
   end
   
   def self.main_feature_list(options = {},forcecacheupdate=false)
-    cache_key = self.get_cache_key(this_method,options)
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+    # OPTIMIZE: Turn Off caching for now and see what impact it has with rails doing it itself
+    # cache_key = self.get_cache_key(this_method,options)
+    # Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
       if(options[:content_tag].nil?)
         Article.bucketed_as('feature').ordered.limit(options[:limit]).all 
       else
         Article.bucketed_as('feature').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
       end
-    end
+    # end
   end
   
   def self.main_recent_list(options = {},forcecacheupdate=false)
-    cache_key = self.get_cache_key(this_method,options)
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+    # OPTIMIZE: Turn Off caching for now and see what impact it has with rails doing it itself
+    # cache_key = self.get_cache_key(this_method,options)
+    # Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
       if(options[:content_tag].nil?)
         Article.ordered.limit(options[:limit]).all 
       else
         Article.tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
       end
-    end
+    # end
   end
   
   def self.main_lessons_list(options = {},forcecacheupdate=false)
-    cache_key = self.get_cache_key(this_method,options)
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+    # OPTIMIZE: Turn Off caching for now and see what impact it has with rails doing it itself
+    # cache_key = self.get_cache_key(this_method,options)
+    # Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
       if(options[:content_tag].nil?)
         Article.bucketed_as('learning lessons').ordered.limit(options[:limit]).all 
       else
         Article.bucketed_as('learning lessons').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
       end
-    end
+    # end
   end
   
   def self.homage_for_content_tag(options = {},forcecacheupdate=false)
-    cache_key = self.get_cache_key(this_method,options)
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+    # OPTIMIZE: Turn Off caching for now and see what impact it has with rails doing it itself
+    # cache_key = self.get_cache_key(this_method,options)
+    # Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
         Article.bucketed_as('homage').tagged_with_content_tag(options[:content_tag].name).ordered.first
-    end
+    # end
   end
   
   def self.contents_for_content_tag(options = {},forcecacheupdate=false)
-    cache_key = self.get_cache_key(this_method,options)
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+    # OPTIMIZE: Turn Off caching for now and see what impact it has with rails doing it itself
+    # cache_key = self.get_cache_key(this_method,options)
+    # Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
         Article.bucketed_as('contents').tagged_with_content_tag(options[:content_tag].name).ordered.first
-    end
+    # end
   end
     
   def self.create_or_update_from_atom_entry(entry,datatype = 'WikiArticle')

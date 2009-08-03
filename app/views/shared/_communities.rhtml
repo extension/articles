@@ -2,7 +2,7 @@
 <%for topic in topics%>
         <h3><%= topic.name%></h3>
         <ul>
-        <%for community in topic.launched_communities %>
+        <%for community in topic.communities %>
             <li><%= link_to_public_community(community) %></li>
         <%end%>
         </ul>

@@ -18,7 +18,6 @@ module ConditionExtensions
   end
   
   def get_cache_key(method_name,optionshash={})
-    logger.debug("Inside get_cache_key: #{optionshash.inspect}")
     optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
     cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
     return cache_key
