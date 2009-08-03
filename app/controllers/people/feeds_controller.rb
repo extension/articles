@@ -6,6 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class People::FeedsController < ApplicationController
+  include People::ActivityDisplayHelper
   session :off, :except => [:index,:institutions, :locations, :positions,:applications]
 
   before_filter :signin_required, :only => [:index, :institutions, :locations, :positions,:applications]
@@ -111,7 +112,7 @@ class People::FeedsController < ApplicationController
     @filteredparams = FilterParams.new(params)
     @filteredparams.order=@filteredparams.order('activities.created_at','DESC')
     @findoptions = @filteredparams.findoptions
-    primary_content_tag_name
+    @filterstring = @filteredparams.filter_string
     feedoptions = {}
 
     urlparams = @filteredparams.option_values_hash
@@ -122,12 +123,12 @@ class People::FeedsController < ApplicationController
     
     feedoptions[:communityview] = params[:communityview] || false
     feedoptions[:userview] = params[:userview] || false
-    feedoptions[:feedtitle] = "Activity Atom Feed #{filter_string(@findoptions.merge({:nolink => true}))}"
+    feedoptions[:feedtitle] = "Activity Atom Feed #{@filterstring}"
     
 
     @activitylist = Activity.filtered(@findoptions).find(:all, :limit => ATOM_FEED_LIMIT, :order => @order)
     render :xml => activityfeed(@activitylist,feedoptions).to_xml
-  end      
+  end   
     
   def application
     # backwards compatibility

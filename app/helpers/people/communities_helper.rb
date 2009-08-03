@@ -133,7 +133,7 @@ module People::CommunitiesHelper
     #   if(displayfilter == 'all')
     #     returntext += "<li class='filtered'>All</li>"
     #   else
-    #     returntext += "<li>#{link_to('All',userlist_community_url(community.id, :connectiontype => 'all'))}</li>"
+    #     returntext += "<li>#{link_to('All',userlist_people_community_url(community.id, :connectiontype => 'all'))}</li>"
     #   end
     # end
     
@@ -142,7 +142,7 @@ module People::CommunitiesHelper
       if(displayfilter == 'joined')
         returntext += "<li class='filtered'>Joined</li>"
       else
-        returntext += "<li>#{link_to('Joined',userlist_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'joined'})))}</li>"
+        returntext += "<li>#{link_to('Joined',userlist_people_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'joined'})))}</li>"
       end
     end
     
@@ -151,7 +151,7 @@ module People::CommunitiesHelper
       if(displayfilter == 'leaders')
         returntext += "<li class='filtered'>Leaders</li>"
       else
-        returntext += "<li>#{link_to('Leaders',userlist_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'leaders'})))}</li>"
+        returntext += "<li>#{link_to('Leaders',userlist_people_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'leaders'})))}</li>"
       end
     end
         
@@ -160,7 +160,7 @@ module People::CommunitiesHelper
       if(displayfilter == 'members')
         returntext += "<li class='filtered'>Members</li>"
       else
-        returntext += "<li>#{link_to('Members',userlist_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'members'})))}</li>"
+        returntext += "<li>#{link_to('Members',userlist_people_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'members'})))}</li>"
       end
     end
     
@@ -169,7 +169,7 @@ module People::CommunitiesHelper
       if(displayfilter == 'wantstojoin')
         returntext += "<li class='filtered'>Wants to Join</li>"
       else
-        returntext += "<li>#{link_to('Wants to Join',userlist_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'wantstojoin'})))}</li>"
+        returntext += "<li>#{link_to('Wants to Join',userlist_people_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'wantstojoin'})))}</li>"
       end
     end
     
@@ -178,7 +178,7 @@ module People::CommunitiesHelper
       if(displayfilter == 'interest')
         returntext += "<li class='filtered'>Interest</li>"
       else
-        returntext += "<li>#{link_to('Interest',userlist_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'interest'})))}</li>"
+        returntext += "<li>#{link_to('Interest',userlist_people_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'interest'})))}</li>"
       end
     end
     
@@ -187,7 +187,7 @@ module People::CommunitiesHelper
       if(displayfilter == 'invited')
         returntext += "<li class='filtered'>Invited</li>"
       else
-        returntext += "<li>#{link_to('Invited',userlist_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'invited'})))}</li>"
+        returntext += "<li>#{link_to('Invited',userlist_people_community_url(community.id, filteredparameters.option_values_hash.merge({:connectiontype => 'invited'})))}</li>"
       end
     end
     returntext += '</ul>'
