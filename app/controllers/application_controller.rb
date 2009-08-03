@@ -180,7 +180,9 @@ class ApplicationController < ActionController::Base
     if(!content_tag.nil?)
       @community = content_tag.content_community 
     end
-    @community_primary_content_tag_name = @community.primary_content_tag_name
+    if(!@community.nil?)
+      @community_primary_content_tag_name = @community.primary_content_tag_name
+    end
     return @community
   end
   
