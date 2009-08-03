@@ -58,11 +58,11 @@ class Tag < ActiveRecord::Base
   
   # TODO: review.  This is kind of a hack that might should be done differently
   def content_community(forcecacheupdate=false)
-    # OPTIMIZE: Turn Off caching for now and see what impact it has with rails doing it itself
-    # cache_key = self.class.get_object_cache_key(self,this_method,{:name => self.name})
-    # Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
+    # OPTIMIZE: Review this caching
+    cache_key = self.class.get_object_cache_key(self,this_method,{:name => self.name})
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
       self.communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
-    # end
+    end
   end
   
   def self.get_object_cache_key(theobject,method_name,optionshash={})
@@ -78,16 +78,16 @@ class Tag < ActiveRecord::Base
   end
   
   def self.community_content_tags(options = {},forcecacheupdate=false)
-    # OPTIMIZE: Turn Off caching for now and see what impact it has with rails doing it itself
-    # cache_key = self.get_cache_key(this_method,options)
-    # Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
+    # OPTIMIZE: Review this caching
+    cache_key = self.get_cache_key(this_method,options)
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
       launchedonly = options[:launchedonly].nil? ? false : options[:launchedonly]
       if(launchedonly)
         self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
       else
         self.find(:all, :include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggable_type = 'Community'")
       end
-    # end  
+    end  
   end
 
   # normalize tag names 
