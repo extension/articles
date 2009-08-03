@@ -633,3 +633,4 @@ ul.simplelist {line-height:2em;}
 .tag_cloud li span {margin-left:.25em;color:#888;}
 .tag_cloud li a:hover span {margin-left:.25em;color:#ccc;}
 
+.dashmodule .tag_cloud ul {margin:0 !important;}
