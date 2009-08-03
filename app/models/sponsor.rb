@@ -10,7 +10,7 @@ class Sponsor < ActiveRecord::Base
   acts_as_list
   has_content_tags
   
-  named_scope :prioritized, {:order => 'position ASC'}
+  named_scope :prioritized, {:include => :logo, :order => 'position ASC'}
   
   # returns a comma delimited of the tags - with the primary content tag name first in the list
   # used for community editing in the administrative interface for public communities
