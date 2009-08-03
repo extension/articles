@@ -60,9 +60,11 @@ class Tag < ActiveRecord::Base
   def content_community(forcecacheupdate=false)
     # OPTIMIZE: Review this caching
     cache_key = self.class.get_object_cache_key(self,this_method,{:name => self.name})
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
+    # just store the id and get the community each time
+    communityid = Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
       self.communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
     end
+    return Community.find(communityid)
   end
   
   def self.get_object_cache_key(theobject,method_name,optionshash={})

@@ -120,6 +120,7 @@ class Community < ActiveRecord::Base
   before_update :clean_description_and_shortname, :show_in_public_if_approved
 
   def primary_content_tag_name(force_cache_update=false)
+    
     self.cached_content_tags(force_cache_update)[0]
   end
     
@@ -195,12 +196,14 @@ class Community < ActiveRecord::Base
         tagarray.map{|t| cachedata[:all_tags][t.id] = t.name}
       end
       update_attribute(:cached_content_tag_data, cachedata)
+    else
+      cachedata =  self.cached_content_tag_data
     end
-    
-    returntagarray = []
-    primary_tag_name = self.cached_content_tag_data[:primary_tag][:name] 
+
+    returntagarray = []    
+    primary_tag_name = cachedata[:primary_tag][:name] 
     returntagarray << primary_tag_name    
-    self.cached_content_tag_data[:all_tags].each do |id,name| 
+    cachedata[:all_tags].each do |id,name| 
       if(name != primary_tag_name)
         returntagarray << name
       end

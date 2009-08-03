@@ -35,7 +35,6 @@ class MainController < ApplicationController
       # TODO: write a helper method to get the content tags
       @community_content_tags = @community.tags
       @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
-      
       @homage = Article.homage_for_content_tag({:content_tag => @content_tag})
       @in_this_section = Article.contents_for_content_tag({:content_tag => @content_tag})
       @community_highlights = Article.main_feature_list({:content_tag => @content_tag, :limit => 8})
@@ -62,7 +61,7 @@ class MainController < ApplicationController
       @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered.limit(3)
       @calendar_events =  Event.tagged_with_content_tag(@content_tag.name).ordered.limit(5).after(get_calendar_date)
       @articles = Article.main_feature_list({:content_tag => @content_tag, :limit => 8}) unless @community
-      @recent_articles = Article.main_feature_list({:content_tag => @content_tag, :limit => 3}) unless @in_this_section
+      @recent_articles = Article.main_recent_list({:content_tag => @content_tag, :limit => 3}) unless @in_this_section
     end
   end
   
