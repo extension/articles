@@ -200,12 +200,14 @@ class Community < ActiveRecord::Base
       cachedata =  self.cached_content_tag_data
     end
 
-    returntagarray = []    
-    primary_tag_name = cachedata[:primary_tag][:name] 
-    returntagarray << primary_tag_name    
-    cachedata[:all_tags].each do |id,name| 
-      if(name != primary_tag_name)
-        returntagarray << name
+    returntagarray = []
+    if(!cachedata[:primary_tag].nil?)    
+      primary_tag_name = cachedata[:primary_tag][:name] 
+      returntagarray << primary_tag_name    
+      cachedata[:all_tags].each do |id,name| 
+        if(name != primary_tag_name)
+          returntagarray << name
+        end
       end
     end          
     return returntagarray
