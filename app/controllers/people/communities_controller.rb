@@ -338,20 +338,6 @@ class People::CommunitiesController < ApplicationController
     end
   end
   
-  def describe
-    @community = Community.find(params[:id])
-    if(!@currentuser.communityjoins.include?(@community))
-      flash[:warning] = "You are not a leader or member within this community."
-      return(redirect_to(people_community_url(@community.id)))
-    end
-    
-    if request.post?
-      @community.update_user_tags(params[:tag_list].strip,@currentuser)              
-      log_user_activity(:activitycode => Activity::COMMUNITY_TAGGED,:user => @currentuser,:community => @community,:appname => 'local')   
-      flash[:notice] = 'Your tags for this community were successfully updated.'
-      return redirect_to(people_community_url(@community.id))
-    end
-  end
 
   # DELETE /communities/1
   # DELETE /communities/1.xml

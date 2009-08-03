@@ -1,7 +1,7 @@
 <% if @community.shared_tag_list.size > 0 %>	
     <div class="tag_cloud">
         <ul> 
-            <% @community.shared_tag_list.each do |tag| %>
+            <% @community.shared_tag_list('all').each do |tag| %>
               <li><%= link_to(tag.name, :controller=> :communities, :action => :tags, :taglist=>tag.name)%></li>
             <% end %>
         </ul>
@@ -9,25 +9,9 @@
     <br class="clearing"/>
 	
 	<div id='tags_tooltip' style="display:none;" class="tooltip">
-        <p id="tooltip_hook"><strong>Community Tags</strong> These tags reflect the shared descriptions of the community from members and leaders</p>
+        <p id="tooltip_hook"><strong>Community Tags</strong> These tags reflect the shared descriptions of the community from leaders</p>
     </div>
-    
-    <% if(@currentuser.communityjoins.include?(@community)) %>
-        <p class="edit"><%= link_to 'tag this community', describe_people_community_path(@community) %></p>
-    <% end %>
-    
-	<% if @community.user_tag_list(@currentuser).length > 0 %>
-	    <h4>Your tags for this community</h4>
-	    
-	    <div class="tag_cloud">
-	        <ul>
-                <li><%= link_shared_tags(@community.user_tag_list(@currentuser).sort) %></li>
-            </ul>
-        </div>
-        <br class="clearing"/>
-	    
-	    
-	<% end %>
+        
     <script type="text/javascript">
         var my_tooltip = new Tooltip('tags_trigger', 'tags_tooltip')
     </script>
