@@ -159,8 +159,7 @@ legend {font-size:1.3em;font-weight:bold;}
 #community_sidebar h3 {color:#4b92cb;border:0;}
 #community_sidebar ul {margin:0;}
 
-.dashmodule {border: 2px solid #ddd; margin-bottom:2.5em;padding:1.5em;}
-.dashmodule h3 {font-size: 1.4em;}
+
 
 
 .dashboard {padding:2em 0 0 1em;}
@@ -170,29 +169,24 @@ legend {font-size:1.3em;font-weight:bold;}
 #titleblock {background:transparent url(/images/people/group-icon.png) no-repeat left top;padding:0 0 0 72px; margin-bottom:1em;min-height:72px;}
 #titleblock p {padding-left:4px;}
 
-
+.dashmodule {border: 2px solid #ddd; margin-bottom:2.5em;padding:1.5em;}
 .dashmodule p {margin-bottom:0;}
 .dashmodule p small {font-size:1em; color:#888;}
+.dashmodule h3 {font-weight:normal;font-size:1.3em;border:0;}
+.dashmodule h3 small {font-size:1.1em;}
+.dashmodule dt {color:#888;margin:.5em 0 .2em;padding:.5em 0 0;line-height:1em; border-top:1px solid #ddd;}
+.dashmodule dd {margin:0 0 .5em;padding:0;line-height:1.1em;color:#555;}
+.dashmodule ul {margin:0 !important;padding:0 !important;}
 
 ul#comm_population {margin:0;padding:0;}
-#comm_population li {margin:0 0 1em;}
+#comm_population li {margin:0 0 1em;clear:both;}
 #comm_population span {font-size:1.8em;text-align:right; width:2em; display:block; float:left; padding-right:.5em;}
 
-#publish_activity li {float:none !important;}
-#publish_activity li span {font-size:1.3em !important; color:#666 !important;}
+#comm_population span.button {width:auto; font-size:1em; float:right;}
 
-#communityuserconnection, #createconnection, #invite {padding:1.5em 1.5em 1em;margin-bottom:1em;background:#ffe2c8;}
+#publishing_totals li {float:none !important;}
+#publishing_totals li span {font-size:1.3em !important; color:#666 !important;}
 
-#createconnection p {line-height:1.1em;}
-#invite {border:1px solid #ddd;padding:1em;background: #fefed8; float:left;}
-#invite .button2 {margin-bottom:.35em;}
-
-
-.community_summary h3 {font-weight:normal;font-size:1.3em;border:0;}
-.community_summary h3 small {font-size:1.1em;}
-.community_summary dt {color:#888;margin:.5em 0 .2em;padding:.5em 0 0;line-height:1em; border-top:1px solid #ddd;}
-.community_summary dd {margin:0 0 .5em;padding:0;line-height:1.1em;color:#555;}
-.community_summary ul, .community_summary ul li {margin:0 !important;padding:0 !important;}
 #col_two ul {list-style:none;margin:0;padding:0;}
 #col_two ul li {margin:0 0 .65em 0;padding:0;clear:both;float:left;border-bottom:1px solid #eee;width:100%;}
 #col_two ul li a {text-decoration:none; width:200px !important;}
@@ -393,41 +387,13 @@ td.bignumbercontainer {text-align:right;}
 
 code {color:#000;background:#eee;padding:0 5px;font-size:1.3em;}
 .right {float:right;}
-.button2,
-.button {
-	list-style-type: none;
-	margin: 0 20px 0 0;
-	border-top: 1px solid #a4adcb;
-	border-bottom: 1px solid #0e1450;
-	border-right: 1px solid #3d416c;
-	border-left: 1px solid #a4adcb;
-	float: left;
-	background: #fff;
-	color: #222;
-	text-decoration: none;
-	margin-bottom: 2em;
-}
-.button2 a,
-.button a {
-	margin: 0 0 0 0;
-	padding: 2px 8px;
-	border: 1px solid #fff;
-	float: left;
-	background: #fff;
-	color: #0e1450 !important;
-	text-decoration: none;
-	background: transparent url(/images/people/button-a.png) -500px bottom repeat-x;
-}
-.button2 a:hover {
-	color: #000 !important;
-	background: transparent url(/images/people/button-a.png) 0 bottom repeat-x;
-}
+
 .errorExplanation {color:red;}
 .errorExplanation h2 {color:red;font-size:1.6em;margin:0 0 .25em;padding:0;}
 .highlight {background:#e5c0e5;padding:.1em .5em;float:left;}
 
-/*#communitynotification {background:#fff;padding:1em;clear:both;}*/
-.delete {background: transparent; /*padding-left:18px;text-align:right;padding-top:2px;padding-bottom:2px;*/}
+
+.delete {background: transparent;}
 a:hover.delete {color:red;}
 a.delete {color:#888;}
 
@@ -520,12 +486,12 @@ h3 {clear:left;}
 
 #feeds_one {float:left;width:43%;margin-right:3%;border-right:1px solid #eee;padding-right:3em;}
 #feeds_two {float:left;width:43%;}
-#communityconnection {clear:left;}
-#communityconnection h3, #nointerest h3 {margin:0;line-height:1.1em;font-size:1.5em; border:0;}
-#communityconnection p.leave {margin:0 .5em .3em; font-size:1.15em;}
 
-#nointerest {clear:left;margin-bottom:1em;}
-#nointerest p {margin:0 .5em .3em; font-size:1.05em !important;}
+#connectiontocommunity {padding:1.5em 1.5em 1em;margin-bottom:1em;background:#ffe2c8;}
+#connectiontocommunity h3 {margin:0;line-height:1.1em;font-size:1.5em; border:0; color:#000;}
+
+
+#nointerest {clear:left;margin-bottom:1em; background:#fff; padding:.75em .75em .25em;}
 
 .community_short {margin:0 0 2.75em;}
 .community_short h2 {margin:0 0 .35em;font-size:1.8em;}

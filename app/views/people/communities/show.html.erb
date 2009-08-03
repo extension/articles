@@ -10,42 +10,38 @@
 	        <h1><%= @community.name%></h1>
 	        <p><%= @community.entrytype_to_s == "User created community" ? "a" : "an" %>  <%= @community.entrytype_to_s %></p>
 	    </div>
+    	
     	<% if !@community.description.nil? %>
     	    <p id="description"><%= @community.description %> 
     	        <% if (@am_i_leader or admin_mode?) %>
-    	    <small class="edit"><%= link_to 'edit', edit_people_community_path(@community) %></small></p>
-    	    <% end %>
+    	            <small class="edit"><%= link_to 'edit', edit_people_community_path(@community) %></small>
+    	        <% end %>
+    	    </p>    	        
     	<% end %>
-    	
-    	
     	
     	<div id="col_one">
     	    <h2>People</h2>
-    	    <div id = "connectiontocommunity">
+    	    <div id="connectiontocommunity">
 				<%= render(:partial => 'community_connection') %>
 			</div>
-    	    <div class="dashmodule">
-    	        
-    			<div id="communitynumbers">
-            		<%= render(:partial => 'community_numbers') %>
-        	    </div>
-    	    </div>    
+			
+    	    <div id="communitynumbers" class="dashmodule">
+                <%= render(:partial => 'community_numbers') %>
+    	    </div>
     	
     	
     	    <h2>Community Mailing Lists <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', editlists_people_community_path(@community) %></small><% end %></h2>
-        	<div class="dashmodule">
-        	    <div id="communitymailinglists">        
-               		<%= render(:partial => 'community_mailinglists') %>
-           	    </div>
+        	<div id="communitymailinglists" class="dashmodule">
+               	<%= render(:partial => 'community_mailinglists') %>
         	</div>
     	</div>
     	
     	
     	<div id="col_two">
     	    <% if @community.is_launched? %>
-    	    <h2>Publishing Numbers (through <%= @datadate.to_s %>)</h2>
+    	    <h2>Publishing Totals <small>(through <%= @datadate.to_s %>)</small></h2>
     	    <div class="dashmodule">
-    	        <ul id="publish_activity">                    
+    	        <ul id="publishing_totals">                    
                     <li><span><%= @community.item_count_for_date(@datadate,'published events') %></span> Events</li>
                     <li><span><%= @community.item_count_for_date(@datadate,'published faqs') %></span> FAQs</li>
                     <li><span><%= @community.item_count_for_date(@datadate,'published articles') %></span> All Articles</li>
@@ -65,7 +61,6 @@
         	
         	<h2>Community Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_people_community_path(@community) %></small><% end %></h2>
         	<div class="dashmodule">
-        	    <div class="community_summary">
                     <p><%= link_to("Reports: Numbers and Activity", :controller => '/people/numbers', :action => :community, :id => @community.id) %></p>
             	    <dl>
             	        <dt>Community Type:</dt>
@@ -78,7 +73,6 @@
             	        <dd><%= @community.created_at%></dd>
             	        
             	    </dl>
-        	    </div>
         	</div>
     	</div>
     	

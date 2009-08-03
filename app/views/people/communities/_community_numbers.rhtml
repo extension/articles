@@ -21,7 +21,7 @@
 		    <%= link_by_count(@community.invited.count,'Invitations', userlist_people_community_url(@community.id, :connectiontype => 'invited')) %>
             <% if @community.entrytype != Community::SYSTEM %>
                 <% if ((@am_i_leader or admin_mode?) or @currentuser.communityopenjoins.include?(@community)) %>
-    	    		<%= link_to('Invite people to join this Community', invite_people_community_path(@community)) %>
+    	    		<span class="button"><%= link_to('Invite people to join', invite_people_community_path(@community)) %></span>
     	    	<% end %>
     		<% end %>
     	</li>

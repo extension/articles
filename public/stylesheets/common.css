@@ -123,36 +123,50 @@ table caption {font-size:1.4em; line-height:2em;font-weight:bold;color: #12396e;
 use this markup:
 <p class="button2"><a href="">Button Text</a></p>
 -----------------------------------------------------------------------------*/
+span.button {
+    display:block;
+    float:none;
+    margin-bottom: 0;
+    padding: 0 !important;
+}
+
+span.button a {
+    display:block !important;
+/*    width:100%;*/
+    float:none;
+}
+
+.button a:hover {text-decoration: underline;}
+
 .button2,
 .button {
 	list-style-type: none;
 	margin: 0 20px 0 0;
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #666;
-	border-right: 1px solid #555;
-	border-left: 1px solid #ccc;
+	border-top: 1px solid #a4adcb;
+	border-bottom: 1px solid #0e1450;
+	border-right: 1px solid #3d416c;
+	border-left: 1px solid #a4adcb;
 	float: left;
 	background: #fff;
 	color: #222;
 	text-decoration: none;
-	margin-bottom: 4px;
+	margin-bottom: 2em;
 }
 .button2 a,
 .button a {
-	margin: 0;
+	margin: 0 0 0 0;
 	padding: 2px 8px;
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #666;
-	border-right: 1px solid #555;
-	border-left: 1px solid #ccc;
 	border: 1px solid #fff;
 	float: left;
 	background: #fff;
-	color: #111 !important;
+	color: #0e1450 !important;
 	text-decoration: none;
-	background: transparent url(/images/common/grey_button.gif) 1px bottom repeat-x;
+	background: transparent url(/images/people/button-a.png) -500px bottom repeat-x;
 }
-.button2 a:hover {text-decoration: underline;}
+.button2 a:hover {
+	color: #000 !important;
+	background: transparent url(/images/people/button-a.png) 0 bottom repeat-x;
+}
 
 
 /* Styles from Get Satisfaction */
