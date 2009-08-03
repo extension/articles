@@ -19,6 +19,24 @@ class Faq < ActiveRecord::Base
   
   has_many :expert_questions
   
+  def self.get_cache_key(method_name,optionshash={})
+    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
+    cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
+    return cache_key
+  end
+  
+  def self.main_recent_list(options = {},forcecacheupdate=false)
+    # OPTIMIZE: keep an eye on this caching
+    cache_key = self.get_cache_key(this_method,options)
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+      if(options[:content_tag].nil?)
+        Faq.ordered.limit(options[:limit]).all 
+      else
+        Faq.tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
+      end
+    end
+  end
+  
   # the current FAQ feed uses an URL for the id at some point, it probably should move to something like:
   # http://friendfeed.com/extensiondarmokproject/ae997214/how-to-make-good-id-in-atom-dive-into-mark
   def self.find_from_atom_feed_id(idurl)

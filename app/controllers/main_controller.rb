@@ -18,12 +18,13 @@ class MainController < ApplicationController
      @in_the_news = Article.main_news_list({:limit => 4})
      @community_highlights = Article.main_feature_list({:limit => 8})
      @latest_activities = Article.main_recent_list({:limit => 8})
-     @latest_faq = Faq.ordered.first
+     @latest_faqs = Faq.main_recent_list({:limit => 3})
+     @latest_faq = @latest_faqs[0]
      @latest_article = @latest_activities[0]
      @second_latest = @latest_activities[1]
      
-     date_conditions = ['start >= ? AND start < ?', get_calendar_date, get_calendar_date+5]
-     @calendar_events = Event.find(:all, :conditions => date_conditions, :order => 'date ASC')
+     @calendar_date = get_calendar_date
+     @calendar_events = Event.main_calendar_list({:within_days => 5, :calendar_date => @calendar_date})
      learning_lessons = Article.main_lessons_list({:limit => 3})  
      @latest_learning_lesson =  learning_lessons[0] if learning_lessons
   end
@@ -48,18 +49,20 @@ class MainController < ApplicationController
       set_title("All Content")
       set_titletag("All Content - eXtension")  
     end
+
+    @calendar_date = get_calendar_date
     
     if(@content_tag.nil?)
       @news = Article.main_news_list({:limit => 3})
       @recent_learning_lessons = Article.main_lessons_list({:limit => 3})
-      @faqs = Faq.limit(3).ordered
-      @calendar_events = Event.ordered.within(3, get_calendar_date)
+      @faqs = Faq.main_recent_list({:limit => 3})
+      @calendar_events = Event.main_calendar_list({:within_days => 3, :calendar_date => @calendar_date})
       @articles = Article.ordered(Article.orderings['Newest to oldest']).limit(3)
     else
       @news = Article.main_news_list({:content_tag => @content_tag, :limit => 3})
       @recent_learning_lessons = Article.main_lessons_list({:content_tag => @content_tag, :limit => 3})
-      @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered.limit(3)
-      @calendar_events =  Event.tagged_with_content_tag(@content_tag.name).ordered.limit(5).after(get_calendar_date)
+      @faqs = Faq.main_recent_list({:content_tag => @content_tag, :limit => 3})
+      @calendar_events =  Event.main_calendar_list({:limit => 5, :calendar_date => @calendar_date, :content_tag => @content_tag})
       @articles = Article.main_feature_list({:content_tag => @content_tag, :limit => 8}) unless @community
       @recent_articles = Article.main_recent_list({:content_tag => @content_tag, :limit => 3}) unless @in_this_section
     end

@@ -4,8 +4,7 @@
     <p class="months right"><%=month_select(get_calendar_month, true, @content_tag)%></p>
 
     <%last_date = nil%>
-    <%while @calendar_events.length > 0
-        event = @calendar_events.shift%>
+    <% @calendar_events.each do |event| %>
         <%if event.date != last_date%>
   	        <%= '</ul>' if last_date%>
             <h3><%=event.date.strftime("%B") + ' ' + event.date.day.to_s%></h3>

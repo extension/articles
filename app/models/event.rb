@@ -31,6 +31,33 @@ class Event < ActiveRecord::Base
   # Get all events within x number of days from the given date
   named_scope :within, lambda { |interval, date| { :conditions => ['start >= ? AND start < ?', date, date + interval] } }
   
+  def self.get_cache_key(method_name,optionshash={})
+    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
+    cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
+    return cache_key
+  end
+  
+  # helper method for main page items
+  def self.main_calendar_list(options = {},forcecacheupdate=false)
+    cache_key = self.get_cache_key(this_method,options)
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+      if(!options[:within_days].nil?)
+        findoptions = {:conditions => ['start >= ? AND start < ?', options[:calendar_date], options[:calendar_date] + options[:within_days]]}
+      else
+        findoptions = {:conditions => ['start >= ?', options[:calendar_date]]}
+      end
+      
+      if(!options[:limit].nil?)
+        findoptions.merge!({:limit => options[:limit]})
+      end
+      
+      if(options[:content_tag].nil?)
+        Event.ordered.all(findoptions)
+      else
+        Event.tagged_with_content_tag(options[:content_tag].name).ordered.all(findoptions)
+      end
+    end
+  end 
     
   def self.create_or_update_from_atom_entry(entry,datatype = "ignored")
     vevent = hCalendar.find(:first => {:text => entry.content.to_s})
