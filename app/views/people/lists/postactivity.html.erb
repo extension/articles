@@ -13,7 +13,7 @@
 <% if @inactive.length == 0 %>
     <p>No inactive lists</p>
 <% else %>
-    <ul class="tagCloud">
+    <ul>
     <% @inactive.each do |list| %>
         <li><%= link_to_mailinglist(list) %></li>
     <% end %>

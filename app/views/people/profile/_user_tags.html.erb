@@ -1,8 +1,8 @@
 <h3>My Interests <%= link_to "edit", :controller => 'profile', :action => 'tagedit' %></h3>
 
 <% if !@currentuser.tags.empty? %>
-    <div id="tag_cloud">
-        <ul class="tagCloud"> 
+    <div class="tag_cloud">
+        <ul> 
             <% @currentuser.tags.each do |tag| %>
               <li><%= link_to(tag.name,:controller=> :colleagues, :action => :tags, :taglist=>tag.name) %></li>
             <% end %>

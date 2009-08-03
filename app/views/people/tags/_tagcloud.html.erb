@@ -3,7 +3,7 @@
 <% if listoftags.blank? %>
     <p>No tags yet.</p>
 <% else %>
-    <ul class="tagCloud">
+    <ul>
     <% listoftags.each do |tag| %>
         <li><%= link_to("#{tag.name}<span>(#{tag.frequency})</span>", {:action => :tags, :taglist => tag.name}) %></li>
     <% end %>

@@ -531,27 +531,15 @@ h3 {clear:left;}
 #community #primary_column {width:68%;}
 #list #primary_column {width:68%;}
 #pageContent {float:left;width:100%;padding-bottom:2em;padding-right:0;padding-left:0;}
-#tag_cloud {float:left;padding:0;margin:0;width:100%;}
-ul.tagCloud {float:left;padding:0;margin:0 0 2.5em!important;width:100%;}
-#tag_cloud li {float:left;margin:.35em;}
-#tag_cloud li a {text-decoration:none;padding:.2em .25em;background:#f2f2f2;}
-#tag_cloud li a:hover {text-decoration:none;background:#003ba1;color:#fff;}
-#tag_cloud li span {margin-left:.25em;color:#888;}
-#tag_cloud li a:hover span {margin-left:.25em;color:#ccc;}
+
+
 
 #description{margin-bottom:1.2em;font-size:1.6em;clear:both;}
-.needsdescription {padding:1.3em;background:#f2f2f2;font-size:1.8em;color:#888;}
-/*.general {width:auto;}*/
+
 .edit {/*border:1px solid red;*/display:block;}
 .edit a {color:#888;text-decoration:none;}
 .edit a:hover {color:blue;text-decoration:underline;}
 
-.tag_cloud {float:left;padding:0;margin:0;width:100%;}
-.tag_cloud li {float:left;margin:.35em;}
-.tag_cloud li a {text-decoration:none;padding:.2em .25em;background:#f2f2f2;}
-.tag_cloud li a:hover {text-decoration:none;background:#003ba1;color:#fff;}
-.tag_cloud li span {margin-left:.25em;color:#888;}
-.tag_cloud li a:hover span {margin-left:.25em;color:#ccc;}
 
 #socialnetworklist {margin-bottom:3em;float:left;width:100%;max-width:900px;}
 #socialnetworklist li {margin:0 0 .6em !important; line-height:1.3em;color:#000;}
@@ -637,5 +625,11 @@ ul.simplelist {line-height:2em;}
 #contact_col_two {width:25%;float:left;}
 
 
-
+.tag_cloud {float:left;padding:0;margin:0;width:100%;}
+.tag_cloud ul {float:left;padding:0;margin:0 0 1.5em !important;width:100%;}
+.tag_cloud li {float:left !important;margin:.35em !important; border:0;clear:none !important; width:auto !important;}
+.tag_cloud li a {text-decoration:none;padding:.2em .25em;background:#f2f2f2;}
+.tag_cloud li a:hover {text-decoration:none;background:#003ba1;color:#fff;}
+.tag_cloud li span {margin-left:.25em;color:#888;}
+.tag_cloud li a:hover span {margin-left:.25em;color:#ccc;}
 
