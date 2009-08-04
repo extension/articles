@@ -2,7 +2,7 @@
     <% if @submitted_question.assignee %>
         <p>Assigned to 
                 <%= link_to (@submitted_question.assignee.fullname, 
-            {aae_profile_url(:id => @submitted_question.assignee.login)}, :title => "view user profile") %>
+            aae_profile_url(:id => @submitted_question.assignee.login), :title => "view user profile") %>
             
             <!-- Show the assigned date of the submitted question if it exists and is valid -->
             <%= (assign_date = @submitted_question.assigned_date) ? time_ago_in_words(assign_date) + ' ago' : ""%> 
@@ -21,9 +21,9 @@
     <% end %>
         <p id="assignlinks">
         <%= link_to_remote 'By name', :update => "search_experts",
-            :url => { aae_name_search_url(:id => @submitted_question.id) } %>
+            :url => aae_name_search_url(:id => @submitted_question.id) %>
         <%= link_to_remote 'By location or category', :update => "search_experts",
-            :url => { aae_cat_loc_search_url(:id => @submitted_question.id) }, :html => { :class  => "off" }%>
+            :url => aae_cat_loc_search_url(:id => @submitted_question.id), :html => { :class  => "off" }%>
         </p>
 <div id="search_experts">  
 </div>

@@ -82,7 +82,7 @@
             </div>
             
             <div id="secondary">
-                <%= render(:partial => "/ask/expert/#{@menu_partial_to_display}") if @menu_partial_to_display %>
+                <%= render(:partial => @menu_partial_to_display) if @menu_partial_to_display %>
             </div>
             
         </div>

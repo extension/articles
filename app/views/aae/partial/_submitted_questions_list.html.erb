@@ -10,7 +10,7 @@
                 <% if @questions_status and @questions_status == SubmittedQuestion::STATUS_RESOLVED %>
                     <p class="inc_resolved">
                         <span class="resolved">RESOLVED<%= sq.status_state == SubmittedQuestion::STATUS_RESOLVED ? "" : "(#{sq.status})" %>: 
-                        </span> <%= link_to "View response", {:controller => 'expert', :action => 'question', :id => sq.id} %> 
+                        </span> <%= link_to "View response", question_url(:id => sq.id) %> 
                     <!-- TODO: Put back in code for contributing faq here -->
                     </p>
                 <% end %>
@@ -66,7 +66,7 @@
                 <div id="category_change_<%= sq.id %>"></div>
                 
 
-                <p class="inc_question"><%= link_to sq.asked_question, {:controller => 'expert', :action => 'question', :id => sq.id} %></p>
+                <p class="inc_question"><%= link_to sq.asked_question, question_url(:id => sq.id) %></p>
                 
                 <p class="inc_time_ago">
                     Submitted from <em><%= sq.external_app_id %> <% if sq.widget_name %>(<%= sq.widget_name %>)<% end %></em>
