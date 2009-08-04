@@ -357,7 +357,7 @@ class NotificationMailer < ActionMailer::Base
      
      urls = Hash.new
      # TODO: must be fixed when escalation report is moved
-     urls['escalation_report'] = url_for(:controller => 'ask/expert', :action => 'escalation_report', :id => category.id)
+     urls['escalation_report'] = url_for(:controller => 'aae/question', :action => 'escalation_report', :id => category.id)
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :submitted_questions_list => submitted_questions_list, :sincehours => sincehours, :urls => urls }
    end
