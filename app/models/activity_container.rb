@@ -29,45 +29,31 @@ class ActivityContainer
   end
   
   def hourly
-    get_or_set_data_value(this_method.to_sym) do 
-      Activity.hourlycount_with_userfilter(self.findoptions,self.forcecacheupdate)
-    end
+    Activity.hourlycount_with_userfilter(self.findoptions,self.forcecacheupdate)
   end
   
   def weekday
-    get_or_set_data_value(this_method.to_sym) do 
-      Activity.weekdaycount_with_userfilter(self.findoptions,self.forcecacheupdate)
-    end
+    Activity.weekdaycount_with_userfilter(self.findoptions,self.forcecacheupdate)
   end
   
   def weekofyear
-    get_or_set_data_value(this_method.to_sym) do 
-      Activity.weekofyearcount_with_userfilter(self.findoptions,self.forcecacheupdate)
-    end 
+    Activity.weekofyearcount_with_userfilter(self.findoptions,self.forcecacheupdate)
   end
   
   def monthofyear
-    get_or_set_data_value(this_method.to_sym) do 
-      Activity.monthcount_with_userfilter(self.findoptions,self.forcecacheupdate)
-    end 
+    Activity.monthcount_with_userfilter(self.findoptions,self.forcecacheupdate)
   end
   
   def month
-    get_or_set_data_value(this_method.to_sym) do 
-      Activity.yearmonthcount_with_userfilter(self.findoptions,self.forcecacheupdate)
-    end 
+    Activity.yearmonthcount_with_userfilter(self.findoptions,self.forcecacheupdate)
   end
   
   def week
-    get_or_set_data_value(this_method.to_sym) do 
-      Activity.yearweekcount_with_userfilter(self.findoptions,self.forcecacheupdate)
-    end 
+    Activity.yearweekcount_with_userfilter(self.findoptions,self.forcecacheupdate)
   end
   
   def date
-    get_or_set_data_value(this_method.to_sym) do 
-      Activity.datecount_with_userfilter(self.findoptions,self.forcecacheupdate)
-    end 
+    Activity.datecount_with_userfilter(self.findoptions,self.forcecacheupdate)
   end
   
   def table
