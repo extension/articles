@@ -1,7 +1,7 @@
 <% showuser.social_networks.each do |social_network| %>
 <% if social_network.is_public? %>
 <dl class="usernetwork">
-  <dt class="<%= social_network.network %>"><%= link_to(social_network_name(social_network), {:action => :socialnetwork, :id => social_network.network}) %></dt>
+  <dt class="<%= social_network.network %>"><%= social_network_name(social_network) %></dt>
   <dd><%= social_network_link(social_network) %></dd>
   </dl>
 <% end %>
