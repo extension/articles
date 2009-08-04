@@ -72,24 +72,7 @@ class MainController < ApplicationController
     set_title("Search results")
     set_titletag("eXtension - Search results")
   end
-  
-  def version
-    set_title('App Information')
-    set_titletag("App Information - eXtension")
-    @deploy = Hash.new
-    @deploy['version'] = AppVersion.version
-    fname = 'REVISION'
-    if File.exists?(fname)
-      stat = File.stat(fname)
-      @deploy['date'] = stat.ctime
-      @deploy['revision'] = File.read(fname)
-      @deploy['userid'] = stat.uid
-      userinfo = Etc.getpwuid(stat.uid)
-      @deploy['username'] = userinfo.name
-    end
-    render(:layout => false)
-  end
-    
+      
   def about
     set_title('About', "Read about our origins and what we have to offer online.")
     set_titletag('About eXtension - Our origins and what we have to offer')
