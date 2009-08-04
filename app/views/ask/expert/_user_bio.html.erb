@@ -13,7 +13,7 @@
         <%= submit_tag ("Assign question "), :class => "submit" %>
     </p>
     
-    <p><%= link_to("view profile", { aae_profile_url(:id => user_bio.login) }, :title => "view profile") %></p>
+    <p><%= link_to("view profile", aae_profile_url(:id => user_bio.login), :title => "view profile") %></p>
     <% open_question_count = user_bio.open_question_count %>
     <p><strong><%= open_question_count %> <%= (open_question_count > 1 or open_question_count == 0) ? ' questions' : ' question' %></strong> currently assigned.</p>
     <p><%= user_bio.title %></p>

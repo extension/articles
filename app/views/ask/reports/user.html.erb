@@ -8,7 +8,7 @@
 
 <h2 id="additional">Additional information available on this user's 
 <%= link_to ("People profile", {:controller => 'people/colleagues', :action => 'showuser', :userid => @user.login}) %>
- or <%= link_to ("Ask an Expert profile", {aae_profile_url(:id => @user.login)}) %></h2>
+ or <%= link_to ("Ask an Expert profile", aae_profile_url(:id => @user.login)) %></h2>
 
 
  

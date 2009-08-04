@@ -1,6 +1,6 @@
 <%= render(:partial => "partial/flashmessages") %>
 
-<h3><%= link_to "Incoming Question #{@submitted_question.id}", {question_url(:id => @submitted_question.id)} %></h3>
+<h3><%= link_to "Incoming Question #{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %></h3>
 <h1>Write an Answer</h1>
 
 <div id="response_form">

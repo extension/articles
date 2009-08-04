@@ -49,7 +49,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resolved_feed 'aae/feeds/resolved', :controller => 'aae/feeds', :action => 'resolved'
   map.spam 'aae/spam_list', :controller => 'aae/spam_list', :action => 'index'
   map.view_search_question 'aae/search', :controller => 'aae/search', :action => 'index'
-  map.question 'aae/question', :controller => 'aae/question', :action => 'index'
+  map.aae_question 'aae/question', :controller => 'aae/question', :action => 'index'
   map.answer_question 'aae/answer_question', :controller => 'aae/question', :action => 'answer'
   map.aae_name_search 'aae/name_search', :controller => 'aae/search', :action => 'enable_search_by_name'
   map.aae_cat_loc_search 'aae/cat_loc_search', :controller => 'aae/search', :action => 'enable_search_by_cat_loc'

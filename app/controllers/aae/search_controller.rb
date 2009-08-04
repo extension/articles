@@ -54,7 +54,7 @@ class Aae::SearchController < ApplicationController
         @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score', :limit => 30)
       else
         flash[:failure] = "You must enter valid text into the search field." 
-        redirect_to question_url(:id => @submitted_question.id)
+        redirect_to aae_question_url(:id => @submitted_question.id)
         return
       end
     else

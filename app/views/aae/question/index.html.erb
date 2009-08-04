@@ -67,7 +67,7 @@
     	        <% if @type == 'FAQ' %>
     	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", view_search_question_url(:qid => @contributing_question.foreignid, :type => @contributing_question.entrytype) %>
     	        <% else %>
-    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", question_url(:id => @contributing_question.foreignid) %>
+    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", aae_question_url(:id => @contributing_question.foreignid) %>
     	        <% end %>
     	        </strong></p>
     	    <% end %>	        
