@@ -155,7 +155,8 @@ class OpieController < ApplicationController
       @openidmeta = openidmeta(@openiduser)
       @publicattributes = @openiduser.public_attributes
     end
-    render(:layout => 'people')
+    @right_column = false
+    render(:layout => 'application')
   end
 
   def idp_xrds

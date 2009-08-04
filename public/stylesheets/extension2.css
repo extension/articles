@@ -627,7 +627,47 @@ p.textcounter span.charcount-limit {background:#ff0000;font-weight:bold;color:#f
 p.textcounter span.charcount-warning {color:#ff0000;font-weight:bold;}
 p.textcounter span.charcount-makeaware {color:#888;}
 
+#publicprofile {padding:2em;}
 
+#publicprofile h2 {color:#DF7432; font-size: 1.8em; margin-bottom:.75em;}
+/* Profiles/Vcards
+-----------------------------------------------------------------------------*/
+.vcard {margin:0 0 3em;}
+.vcard .item {padding:.2em;margin:0 1em;border-bottom:1px solid #ddd;}
+.vcard .item .vcardLabel {
+	width:180px;
+	display:block;
+	float:left;
+	text-align: left;
+	font-weight:bold;
+	margin-right:15px;
+}
 
+.usernetwork {clear:both;float:left;margin-bottom:1em;padding:0;}
+.usernetwork dt {margin:0 !important; height:1.3em;color:#000;float:left;}
+.usernetwork dd {float:left;padding:0 0 0 1em;}
 
+#socialnetworklist {margin-bottom:3em;float:left;width:100%;max-width:900px;}
+#socialnetworklist li {margin:0 0 .6em !important; line-height:1.3em;color:#000;}
 
+.aim        {padding:0 0 0 26px; background: url(/images/people/socialnetworks/aim.png) 0 0 no-repeat;}
+.blog       {padding:0 0 0 26px; background: url(/images/people/socialnetworks/blog.png) 0 0 no-repeat;}
+.delicious  {padding:0 0 0 26px; background: url(/images/people/socialnetworks/delicious.png) 0 0 no-repeat;}
+.facebook   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/facebook.png) 0 0 no-repeat;}
+.flickr     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/flickr.png) 0 0 no-repeat;}
+.friendfeed {padding:0 0 0 26px; background: url(/images/people/socialnetworks/friendfeed.png) 0 0 no-repeat;}
+.google     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/google.png) 0 0 no-repeat;}
+.gtalk      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/gtalk.png) 0 0 no-repeat;}
+.other		{padding:0 0 0 26px; background: url(/images/people/socialnetworks/other.png) 0 0 no-repeat;}
+.identica   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/identica.png) 0 0 no-repeat;}
+.jabber     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/jabber.png) 0 0 no-repeat;}
+.linkedin   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/linkedin.png) 0 0 no-repeat;}
+.magnolia   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/magnolia.png) 0 0 no-repeat;}
+.msnim      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/msnim.png) 0 0 no-repeat;}
+.secondlife {padding:0 0 0 26px; background: url(/images/people/socialnetworks/secondlife.png) 0 0 no-repeat;}
+.skype      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/skype.png) 0 0 no-repeat;}
+.slideshare {padding:0 0 0 26px; background: url(/images/people/socialnetworks/slideshare.png) 0 0 no-repeat;}
+.twitter    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/twitter.png) 0 0 no-repeat;}
+.yahooim    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/yahooim.png) 0 0 no-repeat;}
+.youtube    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/youtube.png) 0 0 no-repeat;}
+.mailto      {padding:0 0 0 26px; background: url(/images/common/email.png) 0 0 no-repeat;}

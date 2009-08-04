@@ -1,22 +1,7 @@
 <% if !publicattributes[:fullname].nil? %>
 <div class="vcard">
-    <h1 class="vcardHeader">User Profile for <%= showuser.fullname %></h1> 
-	<p class="item">
-		<span class="vcardLabel">Full Name:</span>
-		<span class="fn"><%= showuser.fullname %></span>
-	</p>
-	<% if !publicattributes[:first_name].blank? and !publicattributes[:last_name].blank? %>
-	<div class="n">
-	<p class="item">
-		<span class="vcardLabel">First Name:</span>
-		<span class="given-name"><%= showuser.first_name%></span>
-	</p>	
-	<p class="item">
-		<span class="vcardLabel">Last Name:</span>
-		<span class="family-name"><%= showuser.last_name%></span>
-	</p>
-	</div>
-	<% end %>
+    <h1 class="vcardHeader"><%= showuser.fullname %></h1>
+	
 	<% if !publicattributes[:email].blank? %>
 	<p class="item">
 		<span class="vcardLabel">Email:</span>
