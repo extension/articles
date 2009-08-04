@@ -15,7 +15,7 @@
       </tr>
   <% @widget_assignees.each do |user| %>
     <tr>
-      <td><%= link_to (user.fullname, {:controller => 'ask/prefs', :action => :profile, :id => user.login}, {:class => "profile"}) %></td>
+      <td><%= link_to (user.fullname, {aae_profile_url(:id => user.login)}, {:class => "profile"}) %></td>
     </tr>
   <% end %>
   </table>

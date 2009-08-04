@@ -1,6 +1,6 @@
 <div class="aae_module">
     <h3>Search FAQs for an answer</h3>
-    <% form_tag({:action => :search_answers}, {:method => 'get'}) do %>
+    <% form_tag({aae_answer_search_url}, {:method => 'get'}) do %>
     <p>
        <%= text_field_tag "q", params[:q], :size => 24 %>
        <%= submit_tag "Search" %>

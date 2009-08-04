@@ -4,18 +4,13 @@
   <% if @submitted_question.assignee.id == @currentuser.id %>
         	<p class="button2">
             <%= link_to "#{@type} ##{@aae_search_item.id} is a relevant answer. Use it to write my response.", 
-            :controller => 'ask/expert', 
-            :action => 'answer_question', 
+            answer_question_url(
             :question => @aae_search_item, 
-            :squid => @submitted_question %>
+            :squid => @submitted_question) %>
             </p>
             <p class="clear">
             <strong>
-            <%= link_to "Return to search results", 
-            :controller => 'ask/expert', 
-            :action => 'search_answers', 
-            :squid => @submitted_question, 
-            :q => params[:q] %>
+            <%= link_to "Return to search results", aae_answer_search_url(:squid => @submitted_question, :q => params[:q]) %>
             </strong>
             </p>
     <% end %>

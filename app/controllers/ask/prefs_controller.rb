@@ -353,42 +353,6 @@ class Ask::PrefsController < ApplicationController
     render :layout => 'aae'   
   end
   
-  def profile
-    if params[:id].nil? || params[:id].length == 0
-      flash[:failure] = "No eXtension ID specified.";
-      redirect_to :action => :index
-      return
-    end
-    
-    @myid = @currentuser.id
-    @user = User.find(:first, :conditions => ["login = ?", params[:id]])
-   
-    if @user.nil?
-      flash[:failure] = "eXtension ID does not exist.";
-      redirect_to :action => :index
-      return
-    end
-    
-    location_only = @user.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
-    county_only = @user.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
-    
-    @geo_info = "*Indicated in prefs to not assign questions outside of marked states/locations." if location_only
-    @geo_info = "*Indicated in prefs to not assign questions outside of marked counties." if county_only
-    @geo_info = "*Indicated in prefs that you may route questions outside of the specified geographic regions." if !defined?(@geo_info)
-       
-    if @user.is_answerer? 
-      @auto_route_msg = ""   
-    else
-      @auto_route_msg = "*Has not indicated in prefs to receive auto-routed questions. "
-      if @user.id == @currentuser.id 
-        @auto_route_msg += "<a href='/ask/prefs/index'>edit</a>"
-      end
-      @auto_route_msg = "<p>".concat(@auto_route_msg).concat("</p>")   
-    end
-    
-    render :layout => 'aae'
-  end
-  
   private
   
   def delete_user_roles(user, conditions)

@@ -75,7 +75,7 @@
                 
                 <% if @questions_status && @questions_status == SubmittedQuestion::STATUS_SUBMITTED %>
                      <p class="inc_assigned">
-                         Assigned to <%= (sq.assignee) ? link_to(sq.assignee.login, {:controller => 'ask/prefs', :action => 'profile', :id => sq.assignee.login}) : "<span>nobody</span>"%>
+                         Assigned to <%= (sq.assignee) ? link_to(sq.assignee.login, aae_profile_url(:id => sq.assignee.login)) : "<span>nobody</span>" %>
                          <!-- Show the assigned date of the submitted question if it exists and is valid -->
                          <%= (sq.assignee and (assign_date = sq.assigned_date)) ? time_ago_in_words(assign_date) + ' ago' : ""%> 
                     </p>
@@ -83,8 +83,8 @@
              
                 <% if @questions_status && @questions_status != SubmittedQuestion::STATUS_SUBMITTED %>
                     <p class="inc_resolved_by">
-                    Resolved by <%= link_to sq.resolved_by.login, {:controller => 'ask/prefs', :action => 'profile', :id => sq.resolved_by.login }, 
-                    :class => "profile" %> 
+                    Resolved by <%= link_to(sq.resolved_by.login, aae_profile_url(:id => sq.resolved_by.login), 
+                    :class => "profile") %> 
                     <%= (sq.resolved_at) ? time_ago_in_words(sq.resolved_at) + ' ago' : '' %>
                     
                     </p>

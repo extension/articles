@@ -3,7 +3,7 @@
     
     <h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'ask/expert', :action => :question, :id => @submitted_question.id} %> > Search Result Details</h3>
     
-    <p class="clear"><strong><%= link_to "Return to search results", :controller => 'ask/expert', :action => 'search_answers', :squid => @submitted_question, :q => params[:q] %></strong></p>
+    <p class="clear"><strong><%= link_to "Return to search results", aae_answer_search_url(:squid => @submitted_question, :q => params[:q]) %></strong></p>
     
     <h2 class="inc_question"><span><%= @submitted_question.asked_question %></span></h2>
     <br class="clear" />

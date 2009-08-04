@@ -1,6 +1,6 @@
 <%= render(:partial => "partial/flashmessages") %>
 
-<h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %></h3>
+<h3><%= link_to "Incoming Question #{@submitted_question.id}", {question_url(:id => @submitted_question.id)} %></h3>
 <h1>Write an Answer</h1>
 
 <div id="response_form">
@@ -20,7 +20,7 @@
             <p>Question asked:</p> 
             <p><%= @submitted_question.asked_question %></p>
             
-            <% form_tag :action => 'answer_question', :squid => @submitted_question.id, :status_state => @status, :question => @question ? @question.id : nil do %>
+            <% form_tag answer_question_url(:squid => @submitted_question.id, :status_state => @status, :question => @question ? @question.id : nil) do %>
 
             <p><label for="current_response">Answer:</label>
             

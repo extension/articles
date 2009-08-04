@@ -21,8 +21,8 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
       	xml.text! "#{user.fullname} added #{@category.name} to expertise."
       end
       
-      xml.link    "rel" => "alternate", "href" => url_for(:only_path => false, :controller => 'ask/prefs', :action => 'profile', :id => user.login)
-      xml.id     url_for(:only_path => false, :controller => 'ask/prefs', :action => 'profile', :id => user.login) 
+      xml.link    "rel" => "alternate", "href" => url_for(:only_path => false, aae_profile_url(:id => user.login))
+      xml.id     url_for(:only_path => false, aae_profile_url(:id => user.login)) 
       xml.updated date_format(user.added_at.to_time)
       
       xml.content "type" => "html" do

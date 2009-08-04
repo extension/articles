@@ -1,21 +1,21 @@
-<%= render(:partial => "ask/expert/answer_search") %>
+<%= render(:partial => "aae/search/answer_search") %>
 
 <div class="aae_module">
     <h3>Answer</h3>
     <p class="button2">
-        <%= link_to 'Write an Answer', { :action => :answer_question, :squid => @submitted_question.id } %>
+        <%= link_to 'Write an Answer', answer_question_url(:squid => @submitted_question.id) %>
     </p>
 </div>
 
 <div class="aae_module">
 <h3>Respond with no answer available</h3>
 <p class="button2">
-<%= link_to 'No Answer Response', { :action => :answer_question, :squid => @submitted_question.id, :status_state => SubmittedQuestion::STATUS_NO_ANSWER} %>
+<%= link_to 'No Answer Response', answer_question_url(:squid => @submitted_question.id, :status_state => SubmittedQuestion::STATUS_NO_ANSWER) %>
 </p>
 
 <p class="clear">Please don't reject valid questions. If no one can answer this question, respond and suggest their local office.
 <%= link_to_function 'Sample response text', "Effect.toggle('sample_response','blind', { duration: .4});", :class => "sample" %></p>
-<p id="sample_response" style="display:none;"><%= link_to 'Copy this to the reply form', { :action => :answer_question, :squid => @submitted_question.id, :sample => SubmittedQuestion::DECLINE_ANSWER, :status_state => SubmittedQuestion::STATUS_NO_ANSWER } %><%= SubmittedQuestion::DECLINE_ANSWER %></p>
+<p id="sample_response" style="display:none;"><%= link_to 'Copy this to the reply form', answer_question_url(:squid => @submitted_question.id, :sample => SubmittedQuestion::DECLINE_ANSWER, :status_state => SubmittedQuestion::STATUS_NO_ANSWER) %><%= SubmittedQuestion::DECLINE_ANSWER %></p>
 </div>
 
 <div class="aae_module">

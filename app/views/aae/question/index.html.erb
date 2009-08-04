@@ -58,14 +58,14 @@
         
 	    <div id="answered_FAQ">
 	        <p>
-        	    <strong>Resolved by:</strong> <%= link_to @submitted_question.resolved_by.fullname, {:controller => 'ask/prefs', :action => 'profile', :id => @submitted_question.resolved_by.login}, :class => "profile" %>
+        	    <strong>Resolved by:</strong> <%= link_to @submitted_question.resolved_by.fullname, {aae_profile_url(:id => @submitted_question.resolved_by.login)}, :class => "profile" %>
         	</p>
 	        <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
             
             <% if @contributing_question %>
     	        <p><strong>This question was answered with 
     	        <% if @type == 'FAQ' %>
-    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", view_question_url(:qid => @contributing_question.foreignid, :type => @contributing_question.entrytype) %>
+    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", view_search_question_url(:qid => @contributing_question.foreignid, :type => @contributing_question.entrytype) %>
     	        <% else %>
     	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", question_url(:id => @contributing_question.foreignid) %>
     	        <% end %>
@@ -137,15 +137,15 @@
 
 <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
      <% if @submitted_question.assignee.id == @currentuser.id %>
-       <%= render(:partial => "ask/expert/question_resolve") %> 
+       <%= render(:partial => "aae/question/question_resolve") %> 
      <% else %>
        <% if !(work_time_remaining and work_time_remaining > 0) %>
        <div class="aae_module">
        <h3>If you would like to answer this question, please assign it to yourself.</h3>
-       <%= button_to 'Assign me this question', :controller => 'ask/expert', :action => :assign, :id => @submitted_question.id, :assignee_login => @currentuser.login %>
+       <%= button_to 'Assign me this question', :action => :assign, :id => @submitted_question.id, :assignee_login => @currentuser.login %>
        </div>
        <% end %>
-       <%= render(:partial => "ask/expert/answer_search") %>
+       <%= render(:partial => "aae/search/answer_search") %>
      <% end %>
 <% end %>
 
