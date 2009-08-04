@@ -99,7 +99,7 @@
 <div id="user_actions">
     <% if @submitted_question.spam %>
     <h3>This question has been marked as spam.</h3>
-    <p><%= link_to "This is not spam", {:controller => :expert, :action => :report_ham, :id => @submitted_question.id},
+    <p><%= link_to "This is not spam", aae_report_ham_url(:id => @submitted_question.id),
                                        :confirm => "Are you sure you want to report this question as non-spam?", :method => :post %></p>
     
     <% else %>

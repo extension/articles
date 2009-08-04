@@ -198,6 +198,86 @@ class Aae::QuestionController < ApplicationController
     
   end
   
+  def reserve_question
+    if request.post?
+      if params[:sq_id] and @submitted_question = SubmittedQuestion.find_by_id(params[:sq_id].strip) 
+        if @submitted_question.resolved?
+          flash[:failure] = "This question has already been resolved"
+          redirect_to aae_question_url(:id => @submitted_question.id)
+          return
+        end
+        if @currentuser.id != @submitted_question.assignee.id
+          previous_assignee_email = @submitted_question.assignee.email
+          @submitted_question.assign_to(@currentuser, @currentuser, nil) 
+        end
+        SubmittedQuestionEvent.log_working_on(@submitted_question, @currentuser)
+        redirect_to aae_question_url(:id => @submitted_question.id)
+      else
+        flash[:failure] = "Invalid submitted question number."
+        redirect_to incoming_url
+      end
+    else
+      do_404
+      return
+    end
+  end
+  
+  def get_subcats
+    parent_cat = Category.find_by_id(params[:category].strip) if params[:category] and params[:category].strip != '' and params[:category].strip != "uncat"
+    if parent_cat 
+      @sub_category_options = [""].concat(parent_cat.children.map{|sq| [sq.name, sq.id]})
+    else
+      @sub_category_options = [""]
+    end
+    
+    render :layout => false
+  end
+  
+  def report_spam
+    if request.post?      
+      begin
+        submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
+        if submitted_question
+          submitted_question.update_attribute(:spam, true)
+          SubmittedQuestionEvent.log_spam(submitted_question, @currentuser)       
+          submitted_question.spam!
+          flash[:success] = "Incoming question has been successfully marked as spam."
+        else
+          flash[:failure] = "Incoming question does not exist."
+        end
+        
+      rescue Exception => ex
+        flash[:failure] = "There was a problem reporting spam. Please try again at a later time."
+        logger.error "Problem reporting spam at #{Time.now.to_s}\nError: #{ex.message}"
+      end
+      redirect_to incoming_url
+    end
+  end
+
+  def report_ham
+    if request.post?
+      begin
+        submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
+        if submitted_question
+          submitted_question.update_attribute(:spam, false)
+          SubmittedQuestionEvent.log_non_spam(submitted_question, @currentuser)
+          submitted_question.ham!
+          flash[:success] = "Incoming question has been successfully marked as non-spam."
+          redirect_to aae_question_url(:id => submitted_question.id)
+          return
+        else
+          flash[:failure] = "Incoming question does not exist."
+        end
+        
+      rescue Exception => ex
+        flash[:failure] = "There was a problem marking this question as non-spam. Please try again at a later time."
+        logger.error "Problem reporting ham at #{Time.now.to_s}\nError: #{ex.message}"
+      end
+        
+      redirect_to spam_url
+    end   
+  end
+  
   def escalation_report
     cutoff_date = Time.new - (24 * 60 * 60 * 2) # two days
      

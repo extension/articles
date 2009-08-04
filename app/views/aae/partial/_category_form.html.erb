@@ -14,7 +14,7 @@
 
 <%= observe_field("category_#{@submitted_question.id}",
                   :update    => "subcat_#{@submitted_question.id}",
-                  :url       => { :controller => :expert, :action => :get_subcats },
+                  :url       => { :controller => 'aae/question', :action => :get_subcats },
                   :with      => "'category='+value") %>
 </fieldset>         
 <% end %>

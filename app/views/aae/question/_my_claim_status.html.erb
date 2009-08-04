@@ -6,7 +6,7 @@
     </div>    
     </div>
     <div id="aaebigbutton">
-        <p><%= link_to "<strong>Give me another 2 hours</strong><span></span>", {:controller => :expert, :action => :reserve_question, :sq_id => @submitted_question.id}, :method => :post %></p>
+        <p><%= link_to "<strong>Give me another 2 hours</strong><span></span>", aae_reserve_question_url(:sq_id => @submitted_question.id), :method => :post %></p>
     </div>
 </div>
 

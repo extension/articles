@@ -103,4 +103,49 @@ class Aae::SearchController < ApplicationController
     
   end
   
+  def experts_by_location
+    if params[:id]
+      @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:id].to_i])
+      if !@location
+        flash[:failure] = "Invalid Location Entered"
+        redirect_to home_url
+      else
+        @users = @location.users.find(:all, :order => "users.first_name")
+      end
+    else
+      flash[:failure] = "Invalid Location Entered"
+      redirect_to home_url
+    end
+  end
+  
+  def experts_by_category
+    #if all users with an expertise in a category were selected
+    if params[:id]
+      @category = Category.find(:first, :conditions => ["id = ?", params[:id].strip])
+      
+      if @category
+        @category_name = @category.name
+        @users = @category.users
+        @combined_users = get_answering_users(@users) if @users.length > 0
+      else
+        flash[:failure] = "Invalid Category"
+        request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
+        return
+      end
+    else
+      flash[:failure] = "Invalid Category"
+      request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
+      return
+    end
+  end
+  
+  private
+  
+  def get_answering_users(selected_users)
+    user_ids = selected_users.map{|u| u.id}.join(',')
+    answering_role = Role.find_by_name(Role::AUTO_ROUTE)
+    answering_users = answering_role.users.find(:all, :select => "users.*", :conditions => "users.id IN (#{user_ids})")
+    user_intersection = selected_users & answering_users
+  end
+  
 end

@@ -54,4 +54,11 @@ class Aae::ProfileController < ApplicationController
     end
   end
   
+  def show_profile
+    @user = User.find(params[:id])
+    respond_to do |format|
+      format.js
+    end
+  end
+  
 end

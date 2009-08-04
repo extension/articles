@@ -53,11 +53,11 @@
                             :url => { :controller => :expert, :action => :enable_category_change, :id => sq.id } %>
                     <% if !sq.asked_question.index("http://").nil? %>
                     &nbsp;| &nbsp;
-                    <%= link_to "Report as Spam", {:controller => :expert, :action => :report_spam, :id => sq.id}, 
+                    <%= link_to "Report as Spam", aae_report_spam_url(:id => sq.id), 
                                                    :confirm => "Are you sure you want to report this question as spam?", :method => :post %>
                     <% end %>
                     <% else %>
-                    <%= link_to "This is not spam", {:controller => :expert, :action => :report_ham, :id => sq.id},
+                    <%= link_to "This is not spam", aae_report_ham_url(:id => sq.id),
                                                        :confirm => "Are you sure you want to report this question as non-spam?", :method => :post %>
                     <% end %>
                     <% end %>

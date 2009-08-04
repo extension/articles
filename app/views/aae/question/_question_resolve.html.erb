@@ -23,7 +23,7 @@
 <p><%= link_to 'Reject', {:action => :reject, :id => @submitted_question.id} %> (inappropriate or duplicate questions)</p>
 
 <% if !@submitted_question.asked_question.index("http://").nil? %>
-<p><%= link_to "Report as Spam", {:action => :report_spam, :id => @submitted_question.id}, 
+<p><%= link_to "Report as Spam", aae_report_spam_url(:id => @submitted_question.id), 
                                :confirm => "Are you sure you want to report this question as spam?", :method => :post %></p>
 <% end %>
 </div>

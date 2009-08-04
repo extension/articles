@@ -56,6 +56,10 @@ ActionController::Routing::Routes.draw do |map|
   map.aae_answer_search 'aae/search/answers', :controller => 'aae/search', :action => 'answers'
   map.aae_answer 'aae/search/answer', :controller => 'aae/search', :action => 'answer'
   map.aae_profile 'aae/profile', :controller => 'aae/profile', :action => 'index'
+  map.aae_show_profile 'aae/profile/show_profile', :controller => 'aae/profile', :action => 'show_profile'
+  map.aae_reserve_question 'aae/question/reserve_question', :controller => 'aae/question', :action => 'reserve_question'
+  map.aae_report_spam 'aae/question/report_spam', :controller => 'aae/question', :action => 'report_spam'
+  map.aae_report_ham  'aae/question/report_ham', :controller => 'aae/question', :action => 'report_ham'
   
   map.namespace :aae do |aae|
      aae.connect 'help', :controller => :help
