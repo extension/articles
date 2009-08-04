@@ -14,9 +14,9 @@ class ActivityContainer
   
   def initialize(options = {})
     @data = {}
-    self.findoptions = options[:findoptions].nil? ? {} : options[:findoptions]
-    self.datatype = options[:datatype].nil? ? 'hourly' : options[:datatype]
-    self.graphtype = options[:graphtype].nil? ? 'area' : options[:graphtype]
+    self.findoptions = (options[:findoptions].nil? ? {} : options[:findoptions])
+    self.datatype = (options[:datatype].nil? ? 'hourly' : options[:datatype])
+    self.graphtype = (options[:graphtype].nil? ? 'area' : options[:graphtype])
 
     if(!options[:datalabel].nil?) 
       self.datalabel = options[:datalabel] 
@@ -155,7 +155,7 @@ class ActivityContainer
   class << self
     
     def convert_yearweek_to_array(first,last)
-      ActiveRecord::Base.logger.debug("first | last = #{first} #{last}")
+      ActiveRecord::Base.logger.info("convert_yearweek_to_array: first | last = #{first} #{last}")
       returnarray = []
       currentweek = Date.strptime(first,'%Y-%W')
       lastweek = Date.strptime(last,'%Y-%W')
@@ -167,6 +167,7 @@ class ActivityContainer
     end
     
     def convert_yearmonth_to_array(first,last)
+      ActiveRecord::Base.logger.info("convert_yearmonth_to_array: first | last = #{first} #{last}")
       returnarray = []
       currentmonth = Date.parse(first+'-01')
       lastmonth = Date.parse(last+'-01')
@@ -178,6 +179,7 @@ class ActivityContainer
     end
     
     def comparisontable(containers,normalize=false,normalize_to_value=100)
+      ActiveRecord::Base.logger.info("comparisontable: containers = #{containers.inspect}")    
       columns = ['primary','secondary','tertiary','quaternary','quinary','senary','septenary']
       
       case containers[0].datatype
