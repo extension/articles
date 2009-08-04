@@ -33,7 +33,6 @@ class Article < ActiveRecord::Base
   named_scope :notdpl, {:conditions => {:is_dpl => false}}
   
   def put_in_buckets(categoryarray)
-    logger.info "categoryarray = #{categoryarray.inspect}"
     namearray = []
     categoryarray.each do |name|
       namearray << ContentBucket.normalizename(name)

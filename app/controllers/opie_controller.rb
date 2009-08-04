@@ -257,10 +257,6 @@ EOS
 
 
   def checklogin(is_idselect,identity,trust_root)
-    ActiveRecord::Base::logger.info "Inside checklogin session: #{session.inspect}"  
-    ActiveRecord::Base::logger.info "Inside checklogin identity: #{identity.inspect}"  
-    ActiveRecord::Base::logger.info "Inside checklogin trust_root: #{trust_root.inspect}"  
-    
     if session[:userid]
       checkuser = User.find_by_id(session[:userid])
       if not checkuser      
