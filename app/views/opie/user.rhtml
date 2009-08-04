@@ -1,4 +1,4 @@
-<% @title_tag = "People Information" %>
+<% @title_tag = (!@openiduser.nil? ? @openiduser.fullname : 'People Information') %>
 
 <div id="publicprofile">
 <%= render(:partial => 'partial/flashmessages') %>
