@@ -543,6 +543,7 @@ h3 {clear:left;}
 
 #socialnetworklist {margin-bottom:3em;float:left;width:100%;max-width:900px;}
 #socialnetworklist li {margin:0 0 .6em !important; line-height:1.3em;color:#000;}
+.socialnetwork a {display:inline;}
 
 .aim        {padding:0 0 0 26px; background: url(/images/people/socialnetworks/aim.png) 0 0 no-repeat;}
 .blog       {padding:0 0 0 26px; background: url(/images/people/socialnetworks/blog.png) 0 0 no-repeat;}
