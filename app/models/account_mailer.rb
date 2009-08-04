@@ -47,7 +47,7 @@ class AccountMailer < ActionMailer::Base
     urls['directurl'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => token.token)
     urls['manualurl'] = url_for(:controller => 'people/account', :action => :confirmemail)        
     urls['newtoken'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => 'people/help', :action => :contactform)
+    urls['contactus'] = url_for(:controller => 'people/help', :action => :index)
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
   end
 
@@ -60,7 +60,7 @@ class AccountMailer < ActionMailer::Base
     urls['directurl'] = url_for(:controller => 'people/signup', :action => :confirm, :token => token.token)
     urls['manualurl'] = url_for(:controller => 'people/signup', :action => :confirm)        
     urls['newtoken'] = url_for(:controller => 'people/signup', :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => 'people/help', :action => :contactform)    
+    urls['contactus'] = url_for(:controller => 'people/help', :action => :index)    
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls,:additionaloptions => additionaloptions}  
   end
   
@@ -83,6 +83,7 @@ class AccountMailer < ActionMailer::Base
     @subject        = @subjectlabel+'Account Review Request'
     urls = Hash.new
     urls['reviewurl'] = url_for(:controller => 'colleagues', :action => 'showuser', :id => reviewuser.login)
+    urls['contactus'] = url_for(:controller => 'people/help', :action => :index)
     @body           = {:isdemo => @isdemo, :reviewuser => reviewuser, :urls => urls }  
     
   end
@@ -96,7 +97,7 @@ class AccountMailer < ActionMailer::Base
     urls['directurl'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => token.token)
     urls['manualurl'] = url_for(:controller => 'people/account', :action => :confirmemail)        
     urls['newtoken'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => 'people/help', :action => :contactform)
+    urls['contactus'] = url_for(:controller => 'people/help', :action => :index)
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls }
   end
 
@@ -116,13 +117,17 @@ class AccountMailer < ActionMailer::Base
   def confirm_revocation(token, revokeuser, urls, sent_at = Time.now)
     self.base_email
     @subject        = subjectlabel+'Please confirm your revocation request'
-    @body           = {:isdemo => isdemo, :revokeuser => revokeuser, :urls => urls, :token => token, }
+    urls = Hash.new
+    urls['contactus'] = url_for(:controller => 'people/help', :action => 'contactform')
+    @body           = {:isdemo => isdemo, :revokeuser => revokeuser, :urls => urls, :token => token }
     @recipients     = token.user.email
   end
 
   def revocation_agreement(adminuser,revokeuser,urls)
     self.base_email
     @subject        = subjectlabel+'Your Contributor Agreement has been revoked'
+    urls = Hash.new
+    urls['contactus'] = url_for(:controller => 'people/help', :action => 'contactform')
     @body           = {:isdemo => isdemo, :revokeuser => revokeuser, :urls => urls, :adminuser => adminuser, :agreetime => sent_at}
     @recipients     = adminuser.email,revokeuser.email
   end

@@ -488,7 +488,8 @@ class People::AdminController < ApplicationController
     case token.tokentype
       when UserToken::ADMIN_REVOKEAGREENT
         urls['directurl'] = url_for(:controller => '/people/admin', :action => :revoke_agreement, :token => token.token)
-        urls['manualurl'] = url_for(:controller => '/people/admin', :action => :revoke_agreement)        
+        urls['manualurl'] = url_for(:controller => '/people/admin', :action => :revoke_agreement)
+        urls['contactus'] = url_for(:controller => '/people/help', :action => :index)        
         email = AccountMailer.create_confirm_revocation(token,revokeuser,urls)
       else 
         logger.error("Invalid token type.");
@@ -508,6 +509,7 @@ class People::AdminController < ApplicationController
     urls = Hash.new
     urls['agreementurl'] = url_for(:controller => '/people/account', :action => :contributor_agreement)
     urls['execurl'] = 'http://about.extension.org/wiki/Executive_Team'
+    urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
     email = AccountMailer.create_revocation_agreement(adminuser,revokeuser,urls)
     begin
       AccountMailer.deliver(email)    
@@ -523,7 +525,7 @@ class People::AdminController < ApplicationController
     urls['directurl'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => token.token)
     urls['manualurl'] = url_for(:controller => '/people/account', :action => :confirmemail)        
     urls['newtoken'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => '/people/help', :action => :contactform)
+    urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
     email = AccountMailer.create_confirm_email_change(token,urls,oldemail)
     
     begin

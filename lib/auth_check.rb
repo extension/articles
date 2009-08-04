@@ -44,7 +44,7 @@ module AuthCheck
         gourl = "<a href='"+url_for(:controller => '/people/profile', :action => :edit) +"'>edit your profile</a>"
         explanation = "<p>Your registered email address is invalid. Please #{gourl} and set a valid email address for your eXtensionID.</p>"      
       when AUTH_ACCOUNT_RETIRED
-        gourl = "<a href='"+url_for(:controller => '/people/help', :action => :contactform)+"'>contact us</a>"
+        gourl = "<a href='"+url_for(:controller => '/people/help', :action => :index)+"'>contact us</a>"
         explanation = "<p>Your eXtensionID has been retired. Please #{gourl} for more information.</p>"
       when AUTH_INVALID_APIKEY
         explanation = "<p>An internal configuration error has occurred.  Please let us know about this by emailing us at <a href='mailto:eXtensionBugs@extension.org'>eXtensionBugs@extension.org</a>"        

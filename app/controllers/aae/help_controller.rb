@@ -5,17 +5,12 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class People::HelpController < ApplicationController
-  layout 'people'
+class Aae::HelpController < ApplicationController
+  layout 'aae'
   
   def index
     @isloggedin = checklogin
     return render :template => 'help/contactform.html.erb'
-  end
-
-  # in case this is bookmarked
-  def contactform
-    return redirect_to(:action => 'index')
   end
   
   private

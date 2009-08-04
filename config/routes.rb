@@ -36,7 +36,7 @@ ActionController::Routing::Routes.draw do |map|
   
   ################################################################
   ### AaE routes ###
-    
+  
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
   map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
   map.widget 'widget', :controller => 'widget', :action => 'index'
@@ -56,6 +56,10 @@ ActionController::Routing::Routes.draw do |map|
   map.aae_answer_search 'aae/search/answers', :controller => 'aae/search', :action => 'answers'
   map.aae_answer 'aae/search/answer', :controller => 'aae/search', :action => 'answer'
   map.aae_profile 'aae/profile', :controller => 'aae/profile', :action => 'index'
+  
+  map.namespace :aae do |aae|
+     aae.connect 'help', :controller => :help
+  end
   
   #map.connect 'ask/who', :controller => 'ask/widgets', :action => 'who'
   #map.connect 'ask/about', :controller => 'ask/widgets', :action => 'about'

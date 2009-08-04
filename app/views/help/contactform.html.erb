@@ -45,8 +45,8 @@
 <div id="contact_col_two">
     <h4>Create a Get Satisfaction account</h4>
     <ul>
-        <% if @user %>
-        <li>Copy your OpenID: <strong>people.extension.org/<%= @user.login %></strong></li>
+        <% if @currentuser %>
+        <li>Copy your OpenID: <strong><%= @currentuser.openid_url(true) %></strong></li>
         <% end %>
         <li>Visit the <a href="http://getsatisfaction.com/session/new">Get Satisfaction login page</a> and paste your OpenID in the OpenID field</li>
         <li>Confirm your OpenID on the eXtension People site</li>

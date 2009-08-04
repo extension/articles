@@ -86,7 +86,7 @@ class NotificationMailer < ActionMailer::Base
     
     urls = Hash.new
     urls['showcolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => bycolleague.login)
-    urls['contactus'] = url_for(:controller => '/people/help', :action => :contactform)
+    urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
     urls['showcommunity'] = url_for(:controller => '/people/communities', :action => :show, :id => community.id)
 
 
@@ -143,7 +143,7 @@ class NotificationMailer < ActionMailer::Base
     urls = Hash.new
     urls['bycolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => bycolleague.login)
     urls['oncolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => oncolleague.login)
-    urls['contactus'] = url_for(:controller => '/people/help', :action => :contactform)
+    urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
     urls['showcommunity'] = url_for(:controller => '/people/communities', :action => :show, :id => community.id)
 
 
@@ -211,7 +211,7 @@ class NotificationMailer < ActionMailer::Base
     
     urls = Hash.new
     urls['bycolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => bycolleague.login)
-    urls['contactus'] = url_for(:controller => '/people/help', :action => :contactform)
+    urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
     urls['showcommunity'] = url_for(:controller => '/people/communities', :action => :show, :id => community.id)
 
 
@@ -262,7 +262,7 @@ class NotificationMailer < ActionMailer::Base
      urls['directurl'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => token.token)
      urls['manualurl'] = url_for(:controller => '/people/account', :action => :confirmemail)        
      urls['newtoken'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => 'send')        
-     urls['contactus'] = url_for(:controller => '/people/help', :action => :contactform)
+     urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
      @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
    
@@ -276,7 +276,7 @@ class NotificationMailer < ActionMailer::Base
       urls['directurl'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => token.token)
       urls['manualurl'] = url_for(:controller => '/people/account', :action => :confirmemail)        
       urls['newtoken'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => 'send')        
-      urls['contactus'] = url_for(:controller => '/people/help', :action => :contactform)
+      urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
   
@@ -290,7 +290,7 @@ class NotificationMailer < ActionMailer::Base
       urls['directurl'] = url_for(:controller => '/people/signup', :action => :confirm, :token => token.token)
       urls['manualurl'] = url_for(:controller => '/people/signup', :action => :confirm)        
       urls['newtoken'] = url_for(:controller => '/people/signup', :action => :confirm, :token => 'send')        
-      urls['contactus'] = url_for(:controller => '/people/help', :action => :contactform)
+      urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
    
@@ -308,9 +308,8 @@ class NotificationMailer < ActionMailer::Base
      assigned_at = @sent_on
      respond_by = assigned_at +  48.hours
      urls = Hash.new
-     urls['question'] = url_for(:controller => 'ask/expert', :action => 'question', :id => submitted_question.id)
-     # TODO: fix contact us URL
-     urls['contactus'] = url_for(:controller => '/')
+     urls['question'] = url_for(:controller => 'aae/question', :action => :index, :id => submitted_question.id)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
    end
  
@@ -322,9 +321,9 @@ class NotificationMailer < ActionMailer::Base
      @recipients     = notification.user.email
      assigned_at = @sent_on
      urls = Hash.new
-     urls['question'] = url_for(:controller => 'ask/expert', :action => 'question', :id => submitted_question.id)
-     # TODO: fix contact us URL
-     urls['contactus'] = url_for(:controller => '/')
+     urls['incoming'] = url_for(:controller => 'aae/incoming', :action => :index, :id => submitted_question.id)     
+     urls['question'] = url_for(:controller => 'aae/question', :action => :index, :id => submitted_question.id)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
    end
 
@@ -357,9 +356,9 @@ class NotificationMailer < ActionMailer::Base
      end
      
      urls = Hash.new
+     # TODO: must be fixed when escalation report is moved
      urls['escalation_report'] = url_for(:controller => 'ask/expert', :action => 'escalation_report', :id => category.id)
-     # TODO: fix contact us URL
-     urls['contactus'] = url_for(:controller => '/')
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :submitted_questions_list => submitted_questions_list, :sincehours => sincehours, :urls => urls }
    end
       
