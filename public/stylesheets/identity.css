@@ -630,7 +630,7 @@ ul.simplelist {line-height:2em;}
 .tag_cloud ul {float:left;padding:0;margin:0 0 1.5em !important;width:100%;}
 .tag_cloud li {float:left !important;margin:.35em !important; border:0;clear:none !important; width:auto !important;}
 .tag_cloud li a {text-decoration:none;padding:.2em .25em;background:#f2f2f2;}
-.tag_cloud li a:hover {text-decoration:none;background:#003ba1;color:#fff;}
+.tag_cloud li a:hover {text-decoration:none !important;background:#003ba1;color:#fff;}
 .tag_cloud li span {margin-left:.25em;color:#888;}
 .tag_cloud li a:hover span {margin-left:.25em;color:#ccc;}
 
