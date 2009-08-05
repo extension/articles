@@ -1,5 +1,5 @@
 <% form_remote_tag :complete => "Effect.toggle('recat_#{@submitted_question.id}','blind', { duration: .4});",
-                   :url => {:controller => :expert, :action => :change_category, :sq_id => @submitted_question.id} do %>
+                   :url => {:controller => 'aae/question', :action => :change_category, :sq_id => @submitted_question.id} do %>
 <fieldset>
     <p><label>Category: <%= select_tag ("category_#{@submitted_question.id}", 
                                                 options_for_select([["uncategorized", "uncat"]].concat(@category_options), @category_id)) %></label></p>

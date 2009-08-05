@@ -148,4 +148,18 @@ class Aae::SearchController < ApplicationController
     user_intersection = selected_users & answering_users
   end
   
+  def setup_cat_loc
+    @location_options = [""].concat(ExpertiseLocation.find(:all, :order => 'entrytype, name').map{|l| [l.name, l.fipsid]})
+    @categories = Category.root_categories
+    @category_options = @categories.map{|c| [c.name,c.id]}
+    
+    @county_fips = @county.fipsid if @county  
+    @category_id = @category.id if @category
+    @location_fips = @location.fipsid if @location
+    
+    # ToDo: need to change this id parameter name to something more descriptive
+    @submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]]) if not @submitted_question
+    @users = User.find_by_cat_loc(@category, @location, @county)
+  end
+  
 end

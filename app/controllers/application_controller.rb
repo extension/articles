@@ -55,13 +55,6 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def get_counties
-    return render(:nothing => true) if !params[:location_id] or params[:location_id].strip == '' or !(location = Location.find(params[:location_id]))
-    counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
-    @county_options = [['', '']].concat(counties.map{|c| [c.name, c.id]})
-    render(:partial => 'shared/county_list', :locals => {:location=> Location.find(params[:location_id])}, :layout => false)
-  end
-
   def set_default_request_ip_address
     if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
       AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]

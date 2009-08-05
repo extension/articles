@@ -8,12 +8,12 @@
 
 <p class="bekind">Please don't reject valid questions. If no one can answer this question, respond and suggest their local office.
 <%= link_to_function 'Sample response text', "Effect.toggle('sample_response','blind', { duration: .4});", :class => "sample" %></p>
-<p id="sample_response" class="rejectpage" style="display:none;"><%= link_to 'Copy this to the reply form', { :action => :answer_question, :squid => @submitted_question.id, :sample => SubmittedQuestion::DECLINE_ANSWER } %><%= SubmittedQuestion::DECLINE_ANSWER %></p>
+<p id="sample_response" class="rejectpage" style="display:none;"><%= link_to 'Copy this to the reply form', answer_question_url(:squid => @submitted_question.id, :sample => SubmittedQuestion::DECLINE_ANSWER) %><%= SubmittedQuestion::DECLINE_ANSWER %></p>
 <%= render(:partial => "partial/flashmessages") %>
 
 <%= error_messages_for :submitted_question %>
 
-<% form_tag :action => :reject, :id => @submitted_question do %>
+<% form_tag :controller => 'aae/question', :action => :reject, :id => @submitted_question do %>
     <p>
         <label for="reject_message">Reason for rejecting question</label>
         <%= text_field_tag :reject_message %>

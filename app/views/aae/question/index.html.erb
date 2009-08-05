@@ -126,7 +126,7 @@
         
         
         <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED%>
-          <%= button_to 'Reactivate Question', :controller => 'ask/expert', :action => :reactivate, :id => @submitted_question.id %>
+          <%= button_to 'Reactivate Question', :controller => 'aae/question', :action => :reactivate, :id => @submitted_question.id %>
         <% end %>
     <% end %>
     

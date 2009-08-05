@@ -16,7 +16,7 @@
     <% end %>
     <span>Skip the search</span>
     <p class="button2">
-      <%= link_to 'Write an Answer', { :action => 'answer_question', :squid => @submitted_question.id } %>     
+      <%= link_to 'Write an Answer', answer_question_url(:squid => @submitted_question.id) %>     
     </p>
     </div>
     

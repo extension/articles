@@ -20,7 +20,7 @@
 
 <div class="aae_module">
 <h3>Moderate this Question</h3>
-<p><%= link_to 'Reject', {:action => :reject, :id => @submitted_question.id} %> (inappropriate or duplicate questions)</p>
+<p><%= link_to 'Reject', {:controller => 'aae/question', :action => :reject, :id => @submitted_question.id} %> (inappropriate or duplicate questions)</p>
 
 <% if !@submitted_question.asked_question.index("http://").nil? %>
 <p><%= link_to "Report as Spam", aae_report_spam_url(:id => @submitted_question.id), 

@@ -278,6 +278,61 @@ class Aae::QuestionController < ApplicationController
     end   
   end
   
+  def reject    
+    @submitted_question = SubmittedQuestion.find_by_id(params[:id])
+    @submitter_name = @submitted_question.submitter_fullname
+    if @submitted_question  
+      if @submitted_question.resolved?
+        flash[:failure] = "This question has already been resolved."
+        redirect_to aae_question_url(:id => @submitted_question)
+        return
+      end
+      
+      if request.post?
+        message = params[:reject_message]
+        if message.nil? or message.strip == ''
+          flash.now[:failure] = "Please document a reason for the rejecting this question."
+          render nil
+          return
+        end
+        
+        if @submitted_question.resolved?
+          flash.now[:failure] = "This question has already been resolved."
+          render nil
+          return
+        end   
+
+        if @submitted_question.reject(@currentuser, message)
+          flash[:success] = "The question has been rejected."
+          redirect_to aae_question_url(:id => @submitted_question)
+        else
+          flash[:failure] = "The question did not get properly saved. Please try again."
+          render :action => :reject
+        end
+      end        
+    else
+      flash[:failure] = "Question not found."
+      redirect_to incoming_url
+    end
+  end
+  
+  def reactivate
+    if request.post?
+      @submitted_question = SubmittedQuestion.find_by_id(params[:id])
+      @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED, :resolved_by => nil, :current_response => nil, :resolved_at => nil, :resolver_email => nil)
+      SubmittedQuestionEvent.log_reactivate(@submitted_question, @currentuser)
+      flash[:success] = "Question re-activated"
+      redirect_to aae_question_url(:id => @submitted_question.id)
+    end
+  end
+  
+  def get_counties
+    return render(:nothing => true) if !params[:location_id] or params[:location_id].strip == '' or !(location = Location.find(params[:location_id]))
+    counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
+    @county_options = [['', '']].concat(counties.map{|c| [c.name, c.id]})
+    render(:partial => 'shared/county_list', :locals => {:location=> Location.find(params[:location_id])}, :layout => false)
+  end
+  
   def escalation_report
     cutoff_date = Time.new - (24 * 60 * 60 * 2) # two days
      
