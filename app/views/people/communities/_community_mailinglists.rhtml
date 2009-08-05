@@ -1,7 +1,7 @@
 <% if @community.lists.blank? %>
 	<p>No lists have been created for this community.</p>
 <% else %>
-<ul>
+<ul class="mailing_lists">
 	<% @community.lists.each do |mailinglist| %>
 		<li>
 		    <span class="mailto"><%= link_to(mailinglist.name, people_list_url(mailinglist)) %></span>

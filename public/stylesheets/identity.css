@@ -169,7 +169,7 @@ legend {font-size:1.3em;font-weight:bold;}
 #titleblock {background:transparent url(/images/people/group-icon.png) no-repeat left top;padding:0 0 0 72px; margin-bottom:1em;min-height:72px;}
 #titleblock p {padding-left:4px;}
 
-.dashmodule {border: 2px solid #ddd; margin-bottom:2.5em;padding:1.5em;}
+.dashmodule {border: 2px solid #ddd; margin-bottom:2.5em;padding:1.5em; -moz-border-radius: 8px;-webkit-border-radius: 8px;}
 .dashmodule p {margin-bottom:0;}
 .dashmodule p small {font-size:1em; color:#888;}
 .dashmodule h3 {font-weight:normal;font-size:1.3em;border:0;}
@@ -487,7 +487,7 @@ h3 {clear:left;}
 #feeds_one {float:left;width:43%;margin-right:3%;border-right:1px solid #eee;padding-right:3em;}
 #feeds_two {float:left;width:43%;}
 
-#connectiontocommunity {padding:1.5em 1.5em 1em;margin-bottom:1em;background:#ffe2c8;}
+#connectiontocommunity {padding:1.5em 1.5em 1em;margin-bottom:1em;background:#ffe2c8;  -moz-border-radius: 8px;-webkit-border-radius: 8px;}
 #connectiontocommunity h3 {margin:0;line-height:1.1em;font-size:1.5em; border:0; color:#000;}
 
 
@@ -626,7 +626,7 @@ ul.simplelist {line-height:2em;}
 #contact_col_two {width:25%;float:left;}
 
 
-.tag_cloud {float:left;padding:0;margin:0;width:100%;}
+.tag_cloud {float:left;padding:0;margin:0;width:100%;border:1px solid #fff;}
 .tag_cloud ul {float:left;padding:0;margin:0 0 1.5em !important;width:100%;}
 .tag_cloud li {float:left !important;margin:.35em !important; border:0;clear:none !important; width:auto !important;}
 .tag_cloud li a {text-decoration:none;padding:.2em .25em;background:#f2f2f2;}
@@ -635,3 +635,5 @@ ul.simplelist {line-height:2em;}
 .tag_cloud li a:hover span {margin-left:.25em;color:#ccc;}
 
 .dashmodule .tag_cloud ul {margin:0 !important;}
+
+.mailing_lists li span {width:50%;display:block;float:left;}
