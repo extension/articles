@@ -20,7 +20,7 @@
     <div id="masthead">
         <div class="wrapper">
             <div id="header">
-                <h1><%= link_to("Ask eXtension", :controller => 'ask/widgets') %></h1>
+                <h1><%= link_to("Ask eXtension", widget_home_url) %></h1>
                 <p>Experts from around the country are ready to answer your questions</p>
             </div>
             <div id="extension"><%= image_tag("/images/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %>
@@ -37,7 +37,7 @@
         </div>
         <div id="sidebar">
             <% if !@currentuser %>
-              <p><%= link_to "Sign in", :controller => 'ask/widgets', :action => :login_redirect, :return_back => request.request_uri %></p>
+              <p><%= link_to "Sign in", :controller => 'aae/widgets', :action => :login_redirect, :return_back => request.request_uri %></p>
               <% get_widget_link_message = "<em>(requires login)</em>" %>
             <% else %>
               <% get_widget_link_message = "" %>
@@ -47,12 +47,12 @@
     		  
             <% end %>
             <ul>
-                <li <%= selected_tab_if(:welcome) %>><%= link_to("Home", {:controller => 'ask/widgets'}) %></li>
-                <li <%= selected_tab_if(:about) %>><%= link_to "About", :controller => 'ask/widgets', :action => :about %></li>
-                <li <%= selected_tab_if(:who) %>><%= link_to "Who answers the questions?", :controller => 'ask/widgets', :action => :who %></li>
-                <li <%= selected_tab_if(:get) %>><%= link_to "Get the Ask widget for your site #{get_widget_link_message}", :controller => 'ask/widgets', :action => :new %></li>
-                <li <%= selected_tab_if(:documentation) %>><%= link_to "Documentation", :controller => 'ask/widgets', :action => :documentation %></li>
-                <li <%= selected_tab_if(:all) %>><%= link_to "All Widgets", :controller => 'ask/widgets', :action => :list %></li>
+                <li <%= selected_tab_if(:welcome) %>><%= link_to("Home", widget_home_url) %></li>
+                <li <%= selected_tab_if(:about) %>><%= link_to "About", :controller => 'aae/widgets', :action => :about %></li>
+                <li <%= selected_tab_if(:who) %>><%= link_to "Who answers the questions?", :controller => 'aae/widgets', :action => :who %></li>
+                <li <%= selected_tab_if(:get) %>><%= link_to "Get the Ask widget for your site #{get_widget_link_message}", :controller => 'aae/widgets', :action => :new %></li>
+                <li <%= selected_tab_if(:documentation) %>><%= link_to "Documentation", :controller => 'aae/widgets', :action => :documentation %></li>
+                <li <%= selected_tab_if(:all) %>><%= link_to "All Widgets", :controller => 'aae/widgets', :action => :list %></li>
                 
             </ul>
         </div>
@@ -63,7 +63,7 @@
             <div class="col">
                 <h4>what is eXtension?</h4>
                 <p>eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest land-grant university minds across America. eXtension connects knowledge consumers with knowledge providers—experts like you who know their subject matter inside out.</p> 
-                <p><%= link_to("Contact Us", :action => 'help') %></p>
+                <p><%= link_to("Contact Us", :controller => 'aae/help') %></p>
                 <p>copyright 2009 eXtension</p>
                 
             </div>

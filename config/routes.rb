@@ -35,11 +35,9 @@ ActionController::Routing::Routes.draw do |map|
     
   
   ################################################################
-  ### AaE routes ###
+  ### AaE ###
   
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
-  map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
-  map.widget 'widget', :controller => 'widget', :action => 'index'
   map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
   map.incoming_feed 'aae/feeds/incoming', :controller => 'aae/feeds', :action => 'incoming'
   map.my_assigned 'aae/my_assigned', :controller => 'aae/my_assigned', :action => 'index'
@@ -65,11 +63,15 @@ ActionController::Routing::Routes.draw do |map|
      aae.connect 'help', :controller => :help
   end
   
-  #map.connect 'ask/who', :controller => 'ask/widgets', :action => 'who'
-  #map.connect 'ask/about', :controller => 'ask/widgets', :action => 'about'
-  #map.connect 'ask/documentation', :controller => 'ask/widgets', :action => 'documentation'
-  #map.connect 'ask/help', :controller => 'ask/widgets', :action => 'help'
-  #map.connect 'ask/profile/:id', :controller => 'ask/prefs', :action => 'profile'
+  ### Widget iFrame ###
+  
+  map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
+  map.widget 'widget', :controller => 'widget', :action => 'index'
+  
+  ### Widgets ###
+  
+  map.view_widget 'aae/widgets/view', :controller => 'aae/widgets', :action => 'view'
+  map.widget_home 'aae/widgets', :controller => 'aae/widgets', :action => 'index'
   
   #################################################################
   ### pubsite routes ###
