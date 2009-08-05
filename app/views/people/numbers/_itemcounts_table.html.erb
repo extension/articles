@@ -8,8 +8,7 @@
     	<tr>
 			<td><%= link_to_object_numbers_action(item) %></td>  
 			<td><%= itemcounts[item.id] %>
-				<% if !@currentuser.nil? %>
-				(<%= link_to_userlist('list',findoptions.merge({item.class.name.downcase.to_sym => item}),{:title => "Users #{@filterstring}))}"}) %>)<% end %>				
+				<% if !@currentuser.nil? %><%= link_to_userlist('list',findoptions.merge({item.class.name.downcase.to_sym => item}),{:title => "Users #{@filterstring}))}"}) %><% end %>				
 			</td>
         </tr>
     <% end%>

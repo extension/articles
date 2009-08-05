@@ -1,4 +1,4 @@
-<% if @filterstring.empty? %>
+<% if @filterstring.blank? %>
 	<% @page_title = "Numbers by Position"%>
 <% else %>
 	<% @page_title = "Numbers by Position (Filtered)"%>
@@ -7,4 +7,4 @@
 <%= render(:partial => 'navtabs') %>
 <h1><%= @page_title %></h1>
 <p><%= @filterstring %></p>
-<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'position', :itemlist => @positions,  :itemcounts => @positioncounts, :filtered => !@filterstring.empty?, :findoptions => @findoptions}) %>
+<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'position', :itemlist => @positions,  :itemcounts => @positioncounts, :filtered => !@filterstring.blank?, :findoptions => @findoptions}) %>

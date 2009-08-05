@@ -1,7 +1,7 @@
 <% @selected_tab = :communities %>
 
 <h1><%= (@page_title) ? @page_title : "Downloads" %></h1>
-<% if !@filterstring.empty? %>
+<% if !@filterstring.blank? %>
 	<p><%= @filterstring %></p>
 <% end %>
 

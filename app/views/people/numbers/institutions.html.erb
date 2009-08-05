@@ -1,4 +1,4 @@
-<% if @filterstring.empty? %>
+<% if @filterstring.blank? %>
 	<% @page_title = "Numbers by Institution"%>
 <% else %>
 	<% @page_title = "Numbers by Institution (Filtered)"%>
@@ -25,23 +25,23 @@
 
 <% if !@landgrant.blank? %>
 	<a name='LandGrant'/><h3>Land Grant Institutions</h3>
-	<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'institution', :itemlist => @landgrant, :itemcounts => @institutioncounts,  :filtered => !@filterstring.empty?, :findoptions => @findoptions }) %>
+	<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'institution', :itemlist => @landgrant, :itemcounts => @institutioncounts,  :filtered => !@filterstring.blank?, :findoptions => @findoptions }) %>
 <% end %>
 
 <% if !@federal.blank? %>
 <a name='Federal'/><h3>Federal Institutions</h3>
 <% if @displayfilter == 'all' or @displayfilter == 'system' %> <p>(<a href='#list'>back to institutions list</a>)</p><% end %>
-<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'institution', :itemlist => @federal,  :itemcounts => @institutioncounts, :filtered => !@filterstring.empty?, :findoptions => @findoptions }) %>
+<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'institution', :itemlist => @federal,  :itemcounts => @institutioncounts, :filtered => !@filterstring.blank?, :findoptions => @findoptions }) %>
 <% end %>
 
 <% if !@state.blank? %>
 <a name='State'/><h3>State Institutions</h3>
 <% if @displayfilter == 'all' or @displayfilter == 'system' %> <p>(<a href='#list'>back to institutions list</a>)</p><% end %>
-<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'institution', :itemlist => @state, :itemcounts => @institutioncounts, :filtered => !@filterstring.empty?, :findoptions => @findoptions }) %>
+<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'institution', :itemlist => @state, :itemcounts => @institutioncounts, :filtered => !@filterstring.blank?, :findoptions => @findoptions }) %>
 <% end %>
 
 <% if !@usercontributed.blank? %>
 <a name='UserSpecified'/><h3>User-contributed Institutions</h3>
 <% if @displayfilter == 'all' or @displayfilter == 'system' %> <p>(<a href='#list'>back to institutions list</a>)</p><% end %>
-<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'institution', :itemlist => @usercontributed, :itemcounts => @institutioncounts, :filtered => !@filterstring.empty?, :findoptions => @findoptions }) %>
+<%= render(:partial => 'itemcounts_table', :locals => { :count_title => 'Users',:itemtype => 'institution', :itemlist => @usercontributed, :itemcounts => @institutioncounts, :filtered => !@filterstring.blank?, :findoptions => @findoptions }) %>
 <% end %>
