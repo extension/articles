@@ -1,5 +1,4 @@
 <% if @currentuser.communityjoins.include?(@community) %>
-
 	    <h3>You are a <%= @currentuser.connection_display(@community) %> <span id="memberoptions"><%= link_to_function 'membership options', "Effect.toggle('connection_options','blind', { duration: .4});" %></span></h3>
 	    <% if (@am_i_leader) %>
         	<%= render(:partial => 'community_notification') %>
@@ -57,8 +56,11 @@
 		<p><%= change_community_connection_link('connectiontocommunity',@community,'I am interested in this community','interest') %></p>
 		</div>
 		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :interest => true, :nointerest => false}}) %>
-
+<% elsif @community.memberfilter == Community::INVITATIONONLY %>
+    <h3>Create a connection with this Community</h3>
+    <p>Contact a <%= link_to('community leader', userlist_people_community_url(@community.id, :connectiontype => 'leaders')) %> to find out more about how to make a connection with this community</p>
 <% end %>
+
 
 
 <% if (!@currentuser.communities.include?(@community) and @currentuser.is_relevant_community?(@community))%>
