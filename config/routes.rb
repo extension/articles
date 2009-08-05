@@ -67,8 +67,16 @@ ActionController::Routing::Routes.draw do |map|
   
   map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
   map.widget 'widget', :controller => 'widget', :action => 'index'
+  # Routes for widgets that are named and tracked
+  map.connect 'widget/tracking/:id/:location/:county', :controller => 'widget', :action => 'index'
+  map.connect 'widget/tracking/:id/:location', :controller => 'widget', :action => 'index'
+  map.connect 'widget/tracking/:id', :controller => 'widget', :action => 'index'
   
-  ### Widgets ###
+  # Routes for widgets that are not named and tracked and have just location info
+  map.connect 'widget/:location/:county', :controller => 'widget', :action => 'index'
+  map.connect 'widget/:location', :controller => 'widget', :action => 'index'
+  
+  ### Widget Stuff ###
   
   map.view_widget 'aae/widgets/view', :controller => 'aae/widgets', :action => 'view'
   map.widget_home 'aae/widgets', :controller => 'aae/widgets', :action => 'index'
