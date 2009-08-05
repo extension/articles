@@ -3,12 +3,6 @@ Hello <%= @notification.user.first_name %>,
 
 A question is assigned to you at the eXtension Ask an Expert site.
 
-*** UPDATE: We just added a NEW feature ***
-You can now tell us "I'm working on this." 
-Read about this change: http://tinyurl.com/ddb82b
-
-Please visit the question page and click the BIG, 
-green button before you start working. thanks!
 <%= @urls['question']%>  
 
 The question is:
@@ -37,11 +31,11 @@ question page before you start working.
 
 The question was assigned to you <%= @assigned_at.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00).
 
-***PLEASE DO NOT REPLY TO THIS MESSAGE***
+*** PLEASE DO NOT REPLY TO THIS MESSAGE ***
+If you have questions please contact us at: 
+ 
+<%= @urls['contactus']%>
+
 --
 eXtension Staff
 http://about.extension.org
-
-Replies to this email address are not monitored. If you have questions please contact us at: 
- 
- <%= @urls['contactus']%>

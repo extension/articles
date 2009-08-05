@@ -11,18 +11,18 @@
 <% end %>
 Hi <%= @token.user.first_name %>,
 
-We have changed your email address that is associated with your eXtensionID.  Your previous email address was marked as invalid, most likely because of a typo in the address at the time that you signed up for an account.  We have tried to find your correct email address by searching for your published listing at your institution.
+We have edited the email address that is associated with your eXtensionID. Your previous email address was flagged as invalid, most likely because of a typo. We attempted to correct your email address by searching for your published listing at your institution.
 
-Your previous email address:  <%= @token.tokendata[:oldemail] %>
-Your new email address: <%= @token.user.email %>
+The email address you signed up with was:  <%= @token.tokendata[:oldemail] %>
+We think your email address actually is: <%= @token.user.email %>
 
-We are sending this confirmation email to verify that your new email address is correct. 
+We are sending this confirmation email to see if we have your correct email address now. 
 
-In order to confirm your email address, you should click the following link:
+To verify your email address, please click the following link:
 
 <%= @urls['directurl'] %>
 
-If the above link does not work, or word-wraps incorrectly in your email client, then visit:
+If the above link does not work in your email program, then please visit:
 
 <%= @urls['manualurl'] %>
 

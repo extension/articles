@@ -13,11 +13,11 @@ Hi <%= @token.user.first_name %>,
 
 We are sending this confirmation email to verify that you requested to revoke the contributor agreement for <%= @revokeuser.first_name %> <%= @revokeuser.last_name %> (<%= @revokeuser.email %>)
 
-In order to confirm this request and complete the revocation, you should click the following link:
+To confirm this request and complete the revocation, please click the following link:
 
 <%= @urls['directurl'] %>
 
-If the above link does not work, or word-wraps incorrectly in your email client, then visit:
+If the above link does not work in your email program, then please visit:
 
 <%= @urls['manualurl'] %>
 

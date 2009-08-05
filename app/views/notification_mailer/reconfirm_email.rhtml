@@ -12,15 +12,13 @@ First Name: <%= @token.user.first_name %>
 Last Name: <%= @token.user.last_name %>
 Email Address: <%= @token.user.email %>
 
-and you have not yet confirmed your email address.   
+You have not yet confirmed your email address, so we are re-sending this confirmation email.
 
-You'll need to confirm your email address with us in order to take advantage of all of the services we have available, so we are re-sending this confirmation email to verify that your email address is correct.
-
-In order to confirm your email address, you should click the following link:
+To verify your email address, please click the following link:
 
 <%= @urls['directurl'] %>
 
-If the above link does not work, or word-wraps incorrectly in your email client, then visit:
+If the above link does not work in your email program, then please visit:
 
 <%= @urls['manualurl'] %>
 
@@ -36,7 +34,7 @@ If your token has expired - you can send yourself a new one at:
 
  <%= @urls['newtoken'] %>
 
-If you have any questions or need assistance, please reply to this email or contact us at:
+If you have any questions or need assistance, please contact us at:
  
  <%= @urls['contactus']%>
 
