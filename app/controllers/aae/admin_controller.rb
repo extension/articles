@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class Ask::AdminController < ApplicationController
+class Aae::AdminController < ApplicationController
   before_filter :login_required
   skip_before_filter :get_tag
   skip_before_filter :unescape_params
