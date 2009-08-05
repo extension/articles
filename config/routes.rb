@@ -7,10 +7,10 @@ ActionController::Routing::Routes.draw do |map|
   ### people routes ###
   
   # some named convenience routes
-  map.welcome 'people', :controller => "people/welcome", :action => 'home'
   map.login 'people/login', :controller => 'people/account', :action => 'login'
 
   map.namespace :people do |people|
+    people.welcome '/', :controller => :welcome, :action => :home
     people.connect 'colleagues/:action', :controller => :colleagues
     people.connect 'admin/:action', :controller => :admin
     people.connect 'signup', :controller => :signup, :action => :new

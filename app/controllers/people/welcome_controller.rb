@@ -21,7 +21,7 @@ class People::WelcomeController < ApplicationController
   def notice
     result = statuscheck(@currentuser)
     if(AUTH_SUCCESS == result[:code])
-      redirect_to(welcome_url)
+      redirect_to(people_welcome_url)
     else
       @notice = explainauthresult(result[:code])
     end

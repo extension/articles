@@ -58,7 +58,13 @@ class DailyNumber < ActiveRecord::Base
       thatday = Article.bucketed_as('feature').all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
     when 'published learning lessons'
       total = Article.bucketed_as('learning lessons').all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Article.bucketed_as('learning lessons').all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      thatday = Article.bucketed_as('learning lessons').all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
+    when 'accounts'
+      total = User.all(:conditions => "DATE(users.created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = User.all(:conditions => "DATE(users.created_at) = '#{datadate.to_s(:db)}'").count
+    when 'valid accounts'
+      total = User.validusers.all(:conditions => "DATE(users.created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = User.validusers.all(:conditions => "DATE(users.created_at) = '#{datadate.to_s(:db)}'").count
     else
       return nil
     end

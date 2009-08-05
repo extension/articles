@@ -1,4 +1,4 @@
-<li id="homenav" <%= selected_tab_if(:home) %>><%= link_to 'Home', welcome_url %></li>
+<li id="homenav" <%= selected_tab_if(:home) %>><%= link_to 'Home', people_welcome_url %></li>
 <li <%= selected_tab_if(:my_profile) %>><%= link_to "My Profile", :controller => "profile", :action => "me" %></li>
 <li <%= selected_tab_if(:communities) %>><%= link_to "Communities", :controller => '/people/communities' %></li>
 <li <%= selected_tab_if(:colleagues) %>><%= link_to "Find Colleagues", :controller => '/people/colleagues' %></li>

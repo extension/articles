@@ -98,7 +98,7 @@ class People::SignupController < ApplicationController
   
   def confirm
     if(@currentuser.account_status != User::STATUS_SIGNUP)
-      return redirect_to(welcome_url) 
+      return redirect_to(people_welcome_url) 
     end
     
     if(params[:token].nil?)
@@ -123,7 +123,7 @@ class People::SignupController < ApplicationController
 
       if (@currentuser.vouched?)            
         @currentuser.send_welcome
-        return redirect_to(welcome_url)
+        return redirect_to(people_welcome_url)
       else
         @currentuser.send_review_request
         return redirect_to(:controller => 'signup', :action => 'review')
