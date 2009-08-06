@@ -2,10 +2,10 @@ if @delete_location
   rep_html = "<h3 class=\"localert\">What part of #{@location.name}?</h3><p id='counties'> Please choose the entire state or pick individual counties.</p>"
 else
   rep_html = "<h3>#{@location.name}</h3><p id='counties'>" +
-  content_tag(:p, link_to_remote("[remove location]", :url => {:controller => 'ask/prefs', :action => :delete_counties, :location_option => @location.fipsid}, :method => :post))
+  content_tag(:p, link_to_remote("[remove location]", :url => {:controller => 'aae/prefs', :action => :delete_counties, :location_option => @location.fipsid}, :method => :post))
   @county_list.each do |c|    
     rep_html = rep_html + "<p>#{c.name} " +  
-    content_tag(:span, link_to_remote ("remove", :url => {:controller => 'ask/prefs', :action => :delete_counties, :county_option => c.fipsid}, :with => "'location_selected=' + $('location_option').value", :method => :post)) + "</p>"
+    content_tag(:span, link_to_remote ("remove", :url => {:controller => 'aae/prefs', :action => :delete_counties, :county_option => c.fipsid}, :with => "'location_selected=' + $('location_option').value", :method => :post)) + "</p>"
   end
   rep_html = rep_html
   

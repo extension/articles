@@ -405,7 +405,7 @@ class ApplicationController < ActionController::Base
     @source_options = [['All Sources', 'all'], ['www.extension.org', 'pubsite'], ['All Ask eXtension widgets', 'widget']]
     @source_options = @source_options.concat(widgets_to_filter.map{|w| [w.name, w.id.to_s]}) if widgets_to_filter
     @source_options = @source_options.concat([['', ''], ['Edit source list','add_sources']])
-    @widget_filter_url = url_for(:controller => 'ask/prefs', :action => 'widget_preferences', :only_path => false)
+    @widget_filter_url = url_for(:controller => 'aae/prefs', :action => 'widget_preferences', :only_path => false)
   end
   
   def go_back

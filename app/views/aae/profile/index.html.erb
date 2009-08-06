@@ -40,24 +40,24 @@
     
 
 
-    <h2>Area of Expertise <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'ask/prefs', :action => 'expertise' %></small><% end %></h2>
+    <h2>Area of Expertise <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'aae/prefs', :action => 'expertise' %></small><% end %></h2>
     <% if !@user.categories.empty? %>
     <h4>Click to browse by expertise </h4>
     <ul id="aoe_list">
         <% @user.categories.each do |cat| %>
-            <li><%= link_to(cat.full_name, {:controller => 'ask/expert', :action => 'category', :id => cat.id }) %></li>
+            <li><%= link_to(cat.full_name, {:controller => 'aae/expert', :action => 'category', :id => cat.id }) %></li>
         <% end %>
         
     </ul>
     
-    <h2>Geographic Regions <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'ask/prefs', :action => 'location' %></small><% end %></h2>
-    <p><%= @geo_info %> <% if @myid == @user.id %><%= link_to "edit", :controller => 'ask/prefs', :action => 'index' %><% end %></p>
+    <h2>Geographic Regions <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'aae/prefs', :action => 'location' %></small><% end %></h2>
+    <p><%= @geo_info %> <% if @myid == @user.id %><%= link_to "edit", :controller => 'aae/prefs', :action => 'index' %><% end %></p>
     
     <% if !@user.expertise_locations.empty? %>
     <h4>Click to browse by location</h4>
     <ul id="aoe_list">
         <% @user.expertise_locations.each do |loc| %>
-            <li><%= link_to(loc.abbreviation, {:controller => 'ask/prefs', :action => 'location', :id => loc.fipsid }) %></li>
+            <li><%= link_to(loc.abbreviation, {:controller => 'aae/prefs', :action => 'location', :id => loc.fipsid }) %></li>
         <% end %>
     </ul>
     <% end %>

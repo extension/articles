@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 
-class Ask::PrefsController < ApplicationController
+class Aae::PrefsController < ApplicationController
   layout 'aae'
   
   before_filter :login_required

@@ -20,7 +20,7 @@
 </p>
 
 <%= observe_field(:widget_name,
-                  :url       => { :controller => 'ask/prefs', :action => :get_widgets },
+                  :url       => { :controller => 'aae/prefs', :action => :get_widgets },
                   :update    => :aae_pref_section,
                   :frequency => 0.6,
                   :with      => "'widget_name=' + value")
