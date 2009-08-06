@@ -21,8 +21,8 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
       	xml.text! question.asked_question
       end
       
-      xml.link     "rel" => "alternate", "href" => url_for(:only_path => false, :controller => 'expert', :action => 'question', :id => question.id)
-      xml.id      url_for(:only_path => false, :controller => 'expert', :action => 'question', :id => question.id)
+      xml.link     "rel" => "alternate", "href" => url_for(:controller => 'aae/question', :action => 'index', :id => question.id, :only_path => false)
+      xml.id      url_for(:controller => 'aae/question', :action => 'index', :id => question.id, :only_path => false)
       xml.updated date_format(question.updated_at)
       
       xml.content "type" => "html" do

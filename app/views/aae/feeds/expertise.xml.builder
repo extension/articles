@@ -4,7 +4,7 @@ xml.instruct! "xml-stylesheet", :href => stylesheet_path("feed")
 xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
 
   xml.title   "eXtension: Users signed up for the #{@category.name} area of expertise"
-  xml.subtitle "Users signed up for expertise in the faq application"
+  xml.subtitle "Users signed up for expertise in Ask an Expert"
   xml.link    "rel" => "alternate", "href" => @alternate_link
   xml.link    "rel" => "self", "href" => url_for(:only_path => false)
   xml.id      url_for(:only_path => false)
@@ -21,8 +21,8 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
       	xml.text! "#{user.fullname} added #{@category.name} to expertise."
       end
       
-      xml.link    "rel" => "alternate", "href" => url_for(:only_path => false, aae_profile_url(:id => user.login))
-      xml.id     url_for(:only_path => false, aae_profile_url(:id => user.login)) 
+      xml.link    "rel" => "alternate", "href" => url_for(:controller => 'aae/profile', :action => 'index', :id => user.login, :only_path => false)
+      xml.id     url_for(:controller => 'aae/profile', :action => 'index', :id => user.login, :only_path => false) 
       xml.updated date_format(user.added_at.to_time)
       
       xml.content "type" => "html" do
