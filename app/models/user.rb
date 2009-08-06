@@ -1578,7 +1578,9 @@ class User < ActiveRecord::Base
   def self.submitted_question_resolvers_by_category(category)
     # TODO: does external_app_id != NULL matter?
     # TODO: should this be validusers?
-    self.find(:all, :select => "users.*, count(submitted_questions.id) as resolved_count", :joins => {:resolved_questions => :categories}, :conditions => ['categories.id = ? and submitted_questions.external_app_id IS NOT NULL',category.id], :group => 'users.id', :order => 'users.last_name,users.first_name')
+    self.find(:all, :select => "users.*, count(submitted_questions.id) as resolved_count", :joins => {:resolved_questions => :categories}, \
+    :conditions => ['categories.id = ? and submitted_questions.external_app_id IS NOT NULL',category.id], :group => 'users.id', \
+    :order => 'users.last_name,users.first_name')
   end
     
     

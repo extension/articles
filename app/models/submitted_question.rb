@@ -628,28 +628,7 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
      end
      h
    end
- 
-   def SubmittedQuestion.resolved_submitted_questions_by_category_users(catid)
-
-      qarray=self.count(:all, 
-          :joins => " join categories_submitted_questions as csq on csq.submitted_question_id=submitted_questions.id " +
-               "join categories on csq.category_id=categories.id " , 
-          :conditions => [" (resolved_by > 0) and external_app_id IS NOT NULL and category_id=? ", catid],
-          :group => " resolved_by")
-     total_resolved = self.count(:all, 
-           :joins => " join categories_submitted_questions as csq on csq.submitted_question_id=submitted_questions.id " +
-                 "join categories on csq.category_id=categories.id " , 
-            :conditions => [" (resolved_by > 0) and external_app_id IS NOT NULL and category_id=? ", catid])
-      qarray = qarray.find_all { |k,v| k != "a"}  #turn into an array rather than a hash
-      i = 0; n = qarray.size
-      while i < n
-        qarray[i][0] = User.find_by_id((qarray[i][0]).to_i).login
-        i = i + 1
-      end     
-       [Category.find_by_id(catid).name, total_resolved, qarray]
-
-    end
-    
+     
       def SubmittedQuestion.get_answered_question_by_state_persp(bywhat, stateobj, date1, date2)
            statuses = ["", " and status_state=#{STATUS_RESOLVED}", " and status_state=#{STATUS_REJECTED}", " and status_state=#{STATUS_NO_ANSWER}"]
             results = Array.new; i = 0; cond_string = " and submitted_questions.created_at between ? and ?" ;  n = statuses.size
