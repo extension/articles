@@ -1,6 +1,6 @@
 <% @page_title = "Select County in " + @statename %>
 
- <p id="activity_report"><%= link_to "All Reports",  :controller => 'ask/reports' %> <%= @page_title %> </p>
+ <p id="activity_report"><%= link_to "All Reports",  :controller => 'aae/reports' %> <%= @page_title %> </p>
 
 <% form_tag({:action => :county, :State => @statename, :to => @dateTo, :from => @dateFrom} ) do %>
 

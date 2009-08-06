@@ -39,10 +39,13 @@
                         <dd><%= link_to truncate_at_word(@latest_faq.question,60), faq_page_url(:id => @latest_faq.id) %></dd>
                     </dl>
                 <%end%>
+                <% if @latest_learning_lesson%>
                 <dl>
-                    <dt><%=expanded_time_print(@latest_learning_lesson.wiki_updated_at)%><dt>
-                    <dd><%= link_to truncate_at_word(@latest_learning_lesson.title,60), @latest_learning_lesson.id_and_link %></dd>
-                </dl>
+                      <dt><%=expanded_time_print(@latest_learning_lesson.wiki_updated_at)%><dt>
+                      <dd><%= link_to truncate_at_word(@latest_learning_lesson.title,60), @latest_learning_lesson.id_and_link %></dd>
+
+                </dl> 
+                <% end%>
                 <dl>
                     <dt><%=expanded_time_print(@second_latest.wiki_updated_at)%></dt>
                     <dd><%= link_to truncate_at_word(@second_latest.title,60), @second_latest.id_and_link %></dd>

@@ -62,7 +62,7 @@ class Aae::ReportsController < ApplicationController
        state_univ_activity
        params[:sdir]="a"
        @typelist = transform_typelist(@typelist)
-       render :template=>'ask/reports/common_sorted_lists'
+       render :template=>'aae/reports/common_sorted_lists'
     end
 
     def activity_by_state
@@ -99,9 +99,9 @@ class Aae::ReportsController < ApplicationController
                 #tagname = Tag.normalize_tag(cat.name)
                 @rept = Aaereport.new(:name => "ActivityCategory")
                 @repaction = "show_active_cats" 
-                render :template=>'ask/reports/common_lists'
+                render :template=>'aae/reports/common_lists'
             else
-                redirect_to :controller => 'ask/reports', :action => 'sel_active_cats' 
+                redirect_to :controller => 'aae/reports', :action => 'sel_active_cats' 
             end
        end  
 
@@ -149,9 +149,9 @@ class Aae::ReportsController < ApplicationController
               @typelist = russ
               case report
               when 'activity'
-                 render :template=>'ask/reports/common_sorted_lists'
+                 render :template=>'aae/reports/common_sorted_lists'
               when 'response_times'
-                 render :template => 'ask/reports/common_resptimes_lists'
+                 render :template => 'aae/reports/common_resptimes_lists'
               end
            end
        end
@@ -197,7 +197,7 @@ class Aae::ReportsController < ApplicationController
                  :all,  :select => select_string,  :joins => jstring, :order => order_clause("sq.updated_at", "desc"),
                        :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                
               @min = 124
-             render  :template => "ask/reports/display_questions"
+             render  :template => "aae/reports/display_questions"
         end
         
         ######   User Report of Ask an Expert Activity #####
@@ -617,13 +617,13 @@ class Aae::ReportsController < ApplicationController
            (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp("member", @typeobj, @date1, @date2)
        
            @repaction = "show_all_by_state"      
-           render :template=>'ask/reports/state'
+           render :template=>'aae/reports/state'
 
          else
-           redirect_to :controller => 'ask/reports', :action => 'state_report'
+           redirect_to :controller => 'aae/reports', :action => 'state_report'
          end
        else
-         redirect_to :controller => 'ask/reports', :action => 'index'
+         redirect_to :controller => 'aae/reports', :action => 'index'
        end
      end
      
@@ -675,7 +675,7 @@ class Aae::ReportsController < ApplicationController
           end
       #    set_navigation_context('list', @questions, 'reports')
           @min = 124
-          render  :template => "ask/reports/display_questions"
+          render  :template => "aae/reports/display_questions"
       end
 
       def display_state_users
@@ -708,7 +708,7 @@ class Aae::ReportsController < ApplicationController
        if (@statename && @statename != "")
          @counties= County.find(:all,  :conditions => "location_id = #{Location.find_by_name(@statename).id} and name<>'All'", :order => 'countycode, name')
        else
-         redirect_to :controller => 'ask/reports', :action => 'index'
+         redirect_to :controller => 'aae/reports', :action => 'index'
        end
      end
 
@@ -738,12 +738,12 @@ class Aae::ReportsController < ApplicationController
           (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp("member",@typeobj, @date1, @date2)   
           
            @repaction = 'county'
-           render :template => 'ask/reports/state'
+           render :template => 'aae/reports/state'
         else
-          redirect_to :controller => 'ask/reports', :action => 'county_select', :State => @statename
+          redirect_to :controller => 'aae/reports', :action => 'county_select', :State => @statename
         end
       else
-         redirect_to :controller => 'ask/reports', :action => 'index'
+         redirect_to :controller => 'aae/reports', :action => 'index'
       end
     end  
     
@@ -939,7 +939,7 @@ class Aae::ReportsController < ApplicationController
         category_response_times
         params[:sdir]="a"
         @typelist = transform_typelist(@typelist)
-        render :template=>'ask/reports/common_resptimes_lists'
+        render :template=>'aae/reports/common_resptimes_lists'
      end
 
      def get_responses_by_location(date1, date2, pub, wgt)
@@ -1019,7 +1019,7 @@ class Aae::ReportsController < ApplicationController
           location_response_times
           params[:sdir]="a"
           @typelist = transform_typelist(@typelist)
-          render :template=>'ask/reports/common_resptimes_lists'
+          render :template=>'aae/reports/common_resptimes_lists'
        end
        
        ## end of Response Times Report   
@@ -1052,7 +1052,7 @@ class Aae::ReportsController < ApplicationController
 
        #    set_navigation_context('list', @questions, 'reports')
             @min = 124
-           render  :template => "ask/reports/display_questions"
+           render  :template => "aae/reports/display_questions"
        end
    ####   End of Responders by Category Report ###
   
