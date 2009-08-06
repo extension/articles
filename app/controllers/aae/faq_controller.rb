@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class Ask::FaqController < ApplicationController
+class Aae::FaqController < ApplicationController
   
   layout 'aae'
   before_filter :login_required
@@ -43,7 +43,7 @@ class Ask::FaqController < ApplicationController
     
       if response.class == Net::HTTPOK
         flash[:success] = "Faq has been successfully saved in the faq system at http://faq.extension.org."
-        redirect_to :controller => 'ask/expert', :action => :question, :id => submitted_question.id
+        redirect_to aae_question_url(:id => submitted_question.id)
       else
         flash[:failure] = "Something went wrong saving your faq. Please try entering it again or check back at another time."
         redirect_to :action => :new_faq, :squid => submitted_question.id
