@@ -19,13 +19,13 @@
     <ul id="expertiselist">
     <% @categories.each do |cat| %>
         <li id="<%= cat.id %>"><%= check_box_tag "areas_of_expertise[]", cat.id, @current_user_categories.include?(cat), { :id => "areas_of_expertise#{cat.id}"} %> 
-        <%= link_to cat.name, {:controller => 'ask/expert', :action => 'category', :id => cat.id } %>
+        <%= link_to cat.name, {:controller => 'aae/search', :action => 'experts_by_category', :id => cat.id } %>
             
             <% if cat.children.length > 0 %>
                 <em> - <%= cat.children.length %> subcategories</em>
             <% end %>
         
-        <span class="syndication"><%= link_to 'feed', :controller => 'ask/feeds', :action => 'expertise', :id => cat.id %></span>
+        <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :id => cat.id %></span>
         <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
         
         <%= observe_field("areas_of_expertise#{cat.id}",

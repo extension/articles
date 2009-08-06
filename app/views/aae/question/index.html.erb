@@ -116,7 +116,7 @@
         <br/> 
 
         
-           <% form_tag({:controller => 'ask/faq', :action => 'new_faq'}) do %>
+           <% form_tag({:controller => 'aae/faq', :action => 'new_faq'}) do %>
              <%= hidden_field_tag(:squid, @submitted_question.id) %>
              <p>
              <%= submit_tag 'Convert this Question & Answer into a FAQ', :class => "submit" %>

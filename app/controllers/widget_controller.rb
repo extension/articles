@@ -59,7 +59,7 @@ class WidgetController < ApplicationController
         if @submitted_question.save
           if @submitted_question.assignee
             if(AppConfig.configtable['send_aae_emails'])
-              #AskMailer.deliver_assigned(@submitted_question, url_for(:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id), request.host)
+              #AskMailer.deliver_assigned(@submitted_question, url_for(aae_question_url(:id => @submitted_question.id)), request.host)
             end
           end
           render :layout => false
@@ -73,7 +73,7 @@ class WidgetController < ApplicationController
         return
       #rescue Exception => e
       #  @status = '500 (internal error)'
-      #  render :template => 'ask/expert/status', :status => 500, :layout => false
+      #  render :template => 'widget/status', :status => 500, :layout => false
       #  return
       end
     end

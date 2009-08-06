@@ -1,0 +1,9 @@
+<div id="inc_to_FAQ">
+<div class="question">
+    <h2>FAQ #<%= question.id %></h2>
+    <p><%= h question.current_revision.question_text %></p>
+</div>
+<div class="answer">
+    <%= simple_format(question.current_revision.answer) %>
+</div>
+</div>

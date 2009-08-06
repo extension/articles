@@ -1,7 +1,7 @@
 <% @page_title = "Resolve with an existing answer" %>
 <div id="inc_body">
     
-    <h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'ask/expert', :action => :question, :id => @submitted_question.id} %> > Search Result Details</h3>
+    <h3><%= link_to "Incoming Question #{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %> > Search Result Details</h3>
     
     <p class="clear"><strong><%= link_to "Return to search results", aae_answer_search_url(:squid => @submitted_question, :q => params[:q]) %></strong></p>
     
@@ -13,10 +13,10 @@
 
 <div class="clearing">
     <% if @submitted_question.assignee.id != @currentuser.id %>
-    <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", {:controller => 'ask/expert', :action => 'question', :id => @submitted_question.id} %>.</h3>
+    <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", aae_question_url(:id => @submitted_question.id) %>.</h3>
     <% end %>
 </div>
 
 
-<%= render(:partial => "ask/expert/question") %>
+<%= render(:partial => "aae/question/question_summary") %>
 
