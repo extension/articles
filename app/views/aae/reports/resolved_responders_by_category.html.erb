@@ -7,53 +7,30 @@
 <% genstring = "Responders by Category "%>
 <h1><%= genstring %></h1>
 
- 
-<% if @typelist%>
-
-    <% even = false %>
-    <% @typelist.each do |x| %>
-        <h2><%= x.name %></h2>
-        <p><strong><%= @noresponders[x.name] %></strong> AaE questions answered <em>(resolved, rejected, or answered with 'no expertise')</em></p>
-        
-        <table cellspace="0" class="stats" summary="Users Count">
+<% @categorylist.each do |category| %>
+    <h2><%= category.name %></h2>
+    <p><strong><%= @total_resolved_by_category[category.name] %></strong> AaE questions answered <em>(resolved, rejected, or answered with 'no expertise')</em></p>
+    
+    <%- if @total_resolved_by_category[category.name] > 0 -%>
+    <table cellspace="0" class="stats" summary="Users Count">
 	     <tr>
 		     <th scope="col">User</th><th scope="col">Answered</th>
 		     <th scope="col">User</th><th scope="col">Answered</th>
 		     <th scope="col">User</th><th scope="col">Answered</th>
 		 </tr>
-		     <% i = 0%>
-		     <% n = @responderslist[x.name].size%>
-		     <% while i < n do%>
-		       <% j = 0%>
-			   <% if n - i > 3 %>
-			      <% k = 3%>
-			   <% else%>
-			       <% k = n - i%>
-			   <% end %>
-			   <tr>
-		       <% while j < k do%>
-		        <td >
-			      <% username = @responderslist[x.name][i][0]%>
-			     <%= link_to username,  :action => "user", :id => User.find_by_login(username).id%>
-		        </td>
-		         <td>
-			       <!-- <%=  @responderslist[x.name][i][1] %> -->
-			        <%= link_to @responderslist[x.name][i][1], :action => "display_discrete_responded", :id => User.find_by_login(username).id, :cat => x.name, :num => @responderslist[x.name][i][1]%>
-			        <% i = i + 1%>
-			      </td>
-			    <% j = j + 1 %>
-		       <% end%>
-			   
-		      </tr>
-		     <% end%>
-		    
-	     </table>
-	     </td>
-	    </tr>
-	    <% even = !even %>
-   <% end %>
+		 
+         <% 
+            user_count = 0
+         %>
+		 <% @responders_by_category[category.name].each do |user| %>
+		     <% user_count += 1 %>
+		     <%= (user_count % 3 == 1) ? '<tr>' : '' %>
+    		     <td><%= link_to(user.fullname, :action => 'user', :id => user.id) %></td>
+    		     <td><%= link_to(user.resolved_count, :action => "display_discrete_responded", :id => user.id, :cat => category.name, :num => user.resolved_count)  %></td>
+    		 <%= (user_count % 3 == 0) ? '</tr>' : '' %>
+		 <% end%>
+		 <%= (user_count % 3 != 0) ? '</tr>' : '' %>
+    </table>
+    <% end %>
 <%end %>
-
- </table>
-
 </div>

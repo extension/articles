@@ -1026,12 +1026,18 @@ class Aae::ReportsController < ApplicationController
   
     #### Start of Responders by Category Report ####
        def resolved_responders_by_category
-         @noresponders = Hash.new; @responderslist = Hash.new
-         @typelist = Category.find(:all, :conditions => "parent_id is null", :order => 'name')
-          @typelist.each do |cat|
-            userarray = SubmittedQuestion.resolved_submitted_questions_by_category_users(cat.id)
-            @noresponders[cat.name]= userarray[1]
-            @responderslist[cat.name]=userarray[2]
+         @responders_by_category= Hash.new
+         @total_resolved_by_category = Hash.new
+         @categorylist = Category.find(:all, :conditions => "parent_id is null", :order => 'name')
+          @categorylist.each do |category|
+            userlist = User.submitted_question_resolvers_by_category(category)
+            if(!userlist.blank?)
+              @responders_by_category[category.name] = userlist
+              # resolved_count is a query-generated field from a custom select in submitted_question_resolvers_by_category
+              @total_resolved_by_category[category.name] = userlist.map{|u| u.resolved_count.to_i}.sum
+            else
+              @total_resolved_by_category[category.name] = 0
+            end       
           end
        end
 
