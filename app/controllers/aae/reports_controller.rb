@@ -1,4 +1,11 @@
-class Ask::ReportsController < ApplicationController
+# === COPYRIGHT:
+#  Copyright (c) 2005-2009 North Carolina State University
+#  Developed with funding for the National eXtension Initiative.
+# === LICENSE:
+#  BSD(-compatible)
+#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+
+class Aae::ReportsController < ApplicationController
   
    layout  'aae_reports_home'  
    
