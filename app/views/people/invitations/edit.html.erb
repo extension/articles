@@ -7,7 +7,7 @@
 
 
 <%= error_messages_for 'invitation' %>
-<% form_for :invitation, :url => {:controller => 'people/invitations'} do |i| %>
+<% form_for :invitation, @invitation, :url => people_invitation_path(@invitation), :html => { :method => :put } do |i| %>
 <div class="form_section">
 	<% if @invitation.status == Invitation::INVALID_EMAIL %>
 		<p>
@@ -15,7 +15,7 @@
 			<%= i.text_field(:email,{:size => 30}) %>
 		</p>
 	<% else %>
-		<p class='easyread'>Email: <%= @invitation.email %></p>
+		<p class='easyread'>Email: <%= @invitation.email %></p>		
 	<% end %>
 	<% if @invitation.user == @currentuser %>
 		<p>

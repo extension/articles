@@ -84,7 +84,7 @@ class People::InvitationsController < ApplicationController
     if(@existinginvitation = Invitation.find_by_email(params[:invitation][:email]))
       if(@existinginvitation.user == @currentuser)
         warningmsg = "You have already invited #{@existinginvitation.email} to get an eXtensionID."
-        warningmsg += " <a href='#{edit_invitation_url(@existinginvitation)}'>Resend invitation?</a>"
+        warningmsg += " <a href='#{edit_people_invitation_url(@existinginvitation)}'>Resend invitation?</a>"
       else
         warningmsg = "#{@existinginvitation.email} has already been invited to get an eXtensionID by #{link_to_user(@existinginvitation.user)}."
       end
@@ -109,7 +109,7 @@ class People::InvitationsController < ApplicationController
     @invitation = Invitation.find_by_id(params[:id])
     if(@invitation.status == Invitation::ACCEPTED)
       flash[:warning] = 'This invitation has already been accepted.'
-      return(redirect_to(invitation_url(@invitation)))
+      return(redirect_to(people_invitation_url(@invitation)))
     end
   end
   

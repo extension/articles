@@ -7,6 +7,10 @@
 
 module People::ListsHelper
   
+  def link_to_mailinglist(mailinglist)
+    "<a href='#{url_for(:controller => 'people/lists', :action => :show, :id => mailinglist.id)}'>#{mailinglist.name}</a>"
+  end
+  
   def list_subscriber_count(list)
     if !list.managed? or !list.dropforeignsubscriptions 
   	  subscribers = list.list_subscriptions.subscribers.count + list.list_subscriptions.noidsubscribers.count 

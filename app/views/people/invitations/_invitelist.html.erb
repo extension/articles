@@ -41,7 +41,7 @@
 			</td>
 	        <td>
 				<%- if ((invitation.status == Invitation::PENDING or invitation.status == Invitation::INVALID_EMAIL) and invitation.user == @currentuser) -%>
-					<%= link_to('Resend',edit_invitation_url(invitation))%>
+					<%= link_to('Resend',edit_people_invitation_url(invitation))%>
 				<%- end -%>			
 			</td>
         </tr>

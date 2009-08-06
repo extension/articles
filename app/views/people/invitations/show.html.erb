@@ -6,7 +6,7 @@
 <h1>Invitation to <%= @invitation.email%></h1>
 
 <%- if ((@invitation.status == Invitation::PENDING or @invitation.status == Invitation::INVALID_EMAIL) and @invitation.user == @currentuser)  -%>
-<p><%= link_to('Resend',edit_invitation_url(@invitation))%></p>
+<p><%= link_to('Resend',edit_people_invitation_url(@invitation))%></p>
 <%- end -%>
 <h3>Invitation Details</h3>
 <p>Created At: <%= humane_date(@invitation.created_at) %></p>

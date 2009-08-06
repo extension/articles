@@ -26,7 +26,7 @@ class People::ColleaguesController < ApplicationController
   end
     
   def invite
-    return redirect_to(new_invitation_url)
+    return redirect_to(new_people_invitation_url)
   end
   
   
