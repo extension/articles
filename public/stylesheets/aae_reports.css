@@ -38,7 +38,7 @@
     width:53%;
     margin-right:3%;
     color:#3a4fa2;
-    background: transparent url(/images/extensionNav_bg2.jpg) repeat-x;
+    background: transparent url(/images/aae/extensionNav_bg2.jpg) repeat-x;
 }
 
 #search_parameters {
@@ -208,11 +208,6 @@ background:url(/images/common/user.gif) no-repeat #fff;
 
 .box li {line-height: 110%;margin-bottom: .7em;list-style:none;}
 
-.publishicon {
-    margin-left: -.6em;
-    padding-left: 15px;
-    background: transparent url(/images/bullet_go.png) -2px 50% no-repeat !important;
-}
 #userinfo .help { display:none; }
 h2 {
     color:#333;
@@ -676,9 +671,9 @@ th.instit {width:30%;}
 }
 #date_range #calendar {
     padding-left: 30px;
-    background: #fff url(/images/calendar_view_week.png) 6px 50% no-repeat;
+    background: #fff url(/images/aae/calendar_view_week.png) 6px 50% no-repeat;
 }
-.cal-icon {background: #fff url(/images/calendar_view_week.png) 6px 50% no-repeat;padding-left:25px;}
+.cal-icon {background: #fff url(/images/aae/calendar_view_week.png) 6px 50% no-repeat;padding-left:25px;}
 .reportheader {background: #ccc; font-weight:bold;}
 /*.rowtotal {background: #eee;}*/
 .subtotal {padding-left:2em;background: #f3f3f3;}
