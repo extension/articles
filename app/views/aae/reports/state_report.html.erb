@@ -1,11 +1,11 @@
 <% @page_title = "Select State for State Report" %>
 
-<p id="state_report"><%= link_to "All Reports",  :controller => 'ask/reports' %> &gt; <%= @page_title %></p>
+<p id="state_report"><%= link_to "All Reports",  :controller => 'aae/reports' %> &gt; <%= @page_title %></p>
 
 <!-- <h1>State Report</h1> -->
 
   
-    <% form_tag({:controller => 'ask/reports', :action => :show_all_by_state }, {:method => "get"}) do %>
+    <% form_tag({:controller => 'aae/reports', :action => :show_all_by_state }, {:method => "get"}) do %>
      
   
 	<h2>Select State or Territory</h2>
