@@ -327,10 +327,13 @@ class Aae::QuestionController < ApplicationController
   end
   
   def get_counties
-    return render(:nothing => true) if !params[:location_id] or params[:location_id].strip == '' or !(location = Location.find(params[:location_id]))
-    counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
-    @county_options = [['', '']].concat(counties.map{|c| [c.name, c.id]})
-    render(:partial => 'shared/county_list', :locals => {:location=> Location.find(params[:location_id])}, :layout => false)
+    if !params[:location_fips] or params[:location_fips].strip == '' or !(location = Location.find_by_fipsid(params[:location_fips]))
+      @counties = nil
+    else
+      @counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
+    end
+    
+    render :layout => false
   end
   
   def escalation_report

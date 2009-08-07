@@ -11,7 +11,7 @@
 <%= observe_field(:location,
                   :update    => :county_select_box,
                   :url       => { :controller => 'aae/question', :action => :get_counties },
-                  :with      => "'location='+value") %>
+                  :with      => "'location_fips='+value") %>
 
 
     <div class="inc_filter" id="county_select_box">
