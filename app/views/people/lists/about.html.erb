@@ -1,0 +1,15 @@
+<% @page_title = "About eXtension Mailing Lists" %>
+<% @selected_tab = :lists %>
+
+<h2>About eXtension Mailing Lists</h2>
+
+<p>Mailing lists hosted by extension.org are managed using the eXtension People application.</p>  
+    
+<p>In order to create or subscribe to extension.org mailing lists, you must have an eXtensionID.  eXtensionID's are currently limited to individuals closely associated with the U.S. Cooperative Extension system (either those working at a Land-Grant Institution, State college or U.S. Government personnel affiliated with Cooperative Extension), or individuals in Extension-related organizations working on projects with Cooperative Extension staff.</p>
+
+<p>Each of our mailing lists are associated with People "communities" and require that you have a connection to the community associated with the mailing list that you posted to.  Depending on the mailing list, this connection could be as a "leader" in the community, a "member", or just having an "interest" in the community (the most common case is that you need to be a leader/member of the community.)</p>
+
+<p>eXtensionID holders can <%= link_to('browse their community connections', :controller => '/people/profile', :action => :communities)%>, and <%= link_to('browse their mailing list membership', :controller => '/people/profile', :action => :lists)%> as part of <%= link_to('their profile', :controller => '/people/profile', :action => :me) %>.</p> 
+
+<p><%- if @currentuser.nil? -%> (Please <%= link_to('sign in', :controller => '/people/account', :action => :login) %> with your eXtensionID or <%= link_to('signup', :controller => '/people/signup', :action => :new) %> for one if you are eligible and do not have an eXtensionID)<%- end -%></p>
+

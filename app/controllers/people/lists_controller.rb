@@ -7,10 +7,13 @@
 
 class People::ListsController < ApplicationController
   layout 'people'
-  before_filter :login_required, :check_purgatory, :except => [:show, :postinghelp]
-  before_filter :login_optional, :only => [:show, :postinghelp]
+  before_filter :login_required, :check_purgatory, :except => [:show, :postinghelp, :about]
+  before_filter :login_optional, :only => [:show, :postinghelp, :about]
   
   def postinghelp
+  end
+  
+  def about
   end
   
   def showpost
