@@ -21,12 +21,13 @@ class Aae::MyResolvedController < ApplicationController
     set_filters
     @questions_status = SubmittedQuestion::STATUS_RESOLVED
     @user = @currentuser
-    
+
     # user's resolved submitted questions filtered by submitted question filter
-    @filtered_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::RESOLVED_TEXT, @category, @location, @county, @source, @user, nil, params[:page], true, false, @order)
-    
+    filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source, :resolved_by => @user}
+    @filtered_submitted_questions = SubmittedQuestion.resolved.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
+      
     # total user's resolved submitted questions (unfiltered)
-    @total_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::RESOLVED_TEXT, nil, nil, nil, nil, @user, nil, params[:page], true, false, @order)  
+    @total_submitted_questions = SubmittedQuestion.resolved.filtered({:resolved_by => @user}).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
     
     # the difference in count between the filtered and unfiltered questions
     @question_difference = @total_submitted_questions.total_entries - @filtered_submitted_questions.total_entries

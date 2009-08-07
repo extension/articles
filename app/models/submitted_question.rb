@@ -39,6 +39,8 @@ has_rakismet :author_email => :external_submitter,
              :user_agent => :user_agent,
              :referrer => :referrer
              
+ordered_by :default => "#{self.table_name}.created_at ASC"
+             
 # status numbers (will be used from now on for status_state and the old field of status will be phased out)     
 STATUS_SUBMITTED = 1
 STATUS_RESOLVED = 2
@@ -66,16 +68,22 @@ DECLINE_ANSWER = "Thank you for your question for eXtension. The topic area in w
 
 ALL_RESOLVED_STATII = [STATUS_RESOLVED, STATUS_REJECTED, STATUS_NO_ANSWER]
 
-# scoping it out for resolved questions
-named_scope :resolved, lambda { |join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state IN (#{ALL_RESOLVED_STATII.join(',')}) " + (cond.first || '')}}
-named_scope :answered, lambda {|join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_RESOLVED} " + (cond.first || '')}}
-named_scope :rejected, lambda {|join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_REJECTED} " + (cond.first || '')}}
-named_scope :not_answered, lambda {|join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_NO_ANSWER} " + (cond.first || '')}}
+# scoping it out for various question states
+named_scope :resolved, :conditions => "submitted_questions.status_state IN (#{ALL_RESOLVED_STATII.join(',')}) AND submitted_questions.spam = FALSE"
+named_scope :answered, :conditions => "submitted_questions.status_state = #{STATUS_RESOLVED} AND submitted_questions.spam = FALSE"
+named_scope :rejected, :conditions => "submitted_questions.status_state = #{STATUS_REJECTED} AND submitted_questions.spam = FALSE"
+named_scope :not_answered, :conditions => "submitted_questions.status_state = #{STATUS_NO_ANSWER} AND submitted_questions.spam = FALSE" 
+named_scope :submitted, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE"
+named_scope :submittedspam, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = TRUE"
+
+
+named_scope :listdisplayincludes, :include => [:categories, :assignee, :county, :location]
+
+# filter scope by various conditions
+named_scope :filtered, lambda {|options| filterconditions(options)}  
+
+# TODO: see if this should be converged with the :ordered named scope used through the pubsite controllers
 named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_questions.resolved_at desc') }}
-
-# other submitted question scopes
-named_scope :submitted, lambda { |join_array, *cond| {:include => join_array, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} " + (cond.first || '')}}
-
 
 
 #Response times named scopes for by_category report
@@ -286,7 +294,7 @@ end
 def assigned_date
   sqevent = self.submitted_question_events.find(:first, :conditions => "event_state = '#{SubmittedQuestionEvent::ASSIGNED_TO}'", :order => "created_at desc")
   #make sure that this event is valid by making sure that the user between the event and the submitted question match up
-  if sqevent and (sqevent.subject_user.id == self.assignee.id)
+  if sqevent and (sqevent.subject_user_id == self.user_id)
     return sqevent.created_at
   else
     return nil
@@ -389,75 +397,60 @@ end
 ##Class Methods##
 
 #finds submitted_questions for views like incoming questions and resolved questions
-def self.find_submitted_questions(sq_query_method, category = nil, location = nil, county = nil, source = nil, user = nil, assignee = nil, page_number = nil, paginated = true, is_spam = false, result_order = nil)
 
-  result_order ? order_var = result_order : order_var = "submitted_questions.created_at desc"
-  cond_str = ''
-  
-  if category
-    if category == Category::UNASSIGNED
-      cond_str += " AND categories.id IS NULL"
+def self.filterconditions(options={})
+  joins = []
+  conditions = []
+
+  if(!options[:category].nil?)
+    joins << :categories
+    if options[:category] == Category::UNASSIGNED
+      conditions << "categories.id IS NULL"
     else
       #look for the submitted questions of the category and all subcategories of the category
-      if category.children and category.children.length > 0
-        subcat_ids = category.children.map{|sc| sc.id}.join(',')
-        cat_ids = subcat_ids + ",#{category.id}"
-        cond_str += " AND categories.id IN (#{cat_ids})"        
+      if options[:category].children and options[:category].children.length > 0
+        subcat_ids = options[:category].children.map{|sc| sc.id}.join(',')
+        cat_ids = subcat_ids + ",#{options[:category].id}"
+        conditions << "categories.id IN (#{cat_ids})"        
       else
-        cond_str += " AND categories.id = #{category.id}"
+        conditions << "categories.id = #{options[:category].id}"
       end
     end
   end
   
-  if user
-    cond_str += " AND submitted_questions.resolved_by = #{user.id}"
+  if(!options[:resolved_by].nil?)
+    conditions << "#{self.table_name}.resolved_by = #{options[:resolved_by].id}"
   end
   
-  if assignee
-    cond_str += " AND submitted_questions.user_id = #{assignee.id}"
+  if(!options[:assignee].nil?)  
+    conditions << "#{self.table_name}.user_id = #{options[:assignee].id}"
   end
  
-  if location
-    cond_str += " AND submitted_questions.location_id = #{location.id}"
+  if(!options[:location].nil?)   
+    conditions << "#{self.table_name}.location_id = #{options[:location]..id}"
   end
 
-  if county
-    cond_str += " AND submitted_questions.county_id = #{county.id}"
+  if(!options[:county].nil?)  
+    conditions << "#{self.table_name}.county_id = #{options[:county].id}"
   end
   
-  if source
-    case source
-      when 'pubsite'
-        cond_str += " AND submitted_questions.external_app_id != 'widget'"
-      when 'widget'
-        cond_str += " AND submitted_questions.external_app_id = 'widget'"
-      else
-        source_int = source.to_i
-        if source_int != 0
-          widget = Widget.find(:first, :conditions => "id = #{source_int}")
-        end
-  
-        if widget
-          cond_str += " AND submitted_questions.widget_name = '#{widget.name}'"
+  if(!options[:source].nil?)    
+    case options[:source]
+    when 'pubsite'
+      conditions << "#{self.table_name}.external_app_id != 'widget'"
+    when 'widget'
+      conditions << "#{self.table_name}.external_app_id = 'widget'"
+    else
+      source_int = options[:source].to_i
+      if source_int != 0
+        if(widget = Widget.find(:first, :conditions => "id = #{source_int}"))
+          conditions << "#{self.table_name}.widget_name = '#{widget.name}'"
         end
       end
-  end
-  
-  cond_str += " AND submitted_questions.spam = #{is_spam}"
-  
-  if paginated
-    if category
-      return SubmittedQuestion.send(sq_query_method, [:categories], cond_str).by_order(order_var).paginate(:page => page_number, :per_page => AppConfig.configtable['items_per_page'])
-    else
-      return SubmittedQuestion.send(sq_query_method, [], cond_str).by_order(order_var).paginate(:page => page_number, :per_page => AppConfig.configtable['items_per_page'])
-    end
-  else
-    if category
-      return SubmittedQuestion.send(sq_query_method, [:categories], cond_str).by_order(order_var)
-    else
-      return SubmittedQuestion.send(sq_query_method, [], cond_str).by_order(order_var)
     end
   end
+
+  return {:joins => joins.compact, :conditions => conditions.compact.join(' AND ')}
 end
 
 def self.find_uncategorized(*args)

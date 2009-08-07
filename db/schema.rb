@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090801160842) do
+ActiveRecord::Schema.define(:version => 20090807161959) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -585,8 +585,8 @@ ActiveRecord::Schema.define(:version => 20090801160842) do
   create_table "submitted_question_events", :force => true do |t|
     t.string   "event_type"
     t.integer  "submitted_question_id"
-    t.integer  "initiated_by"
-    t.integer  "subject_user"
+    t.integer  "initiated_by_id"
+    t.integer  "subject_user_id"
     t.datetime "created_at"
     t.text     "response"
     t.integer  "contributing_question"
@@ -594,8 +594,8 @@ ActiveRecord::Schema.define(:version => 20090801160842) do
     t.integer  "event_state",           :null => false
   end
 
-  add_index "submitted_question_events", ["initiated_by"], :name => "initiated_by_idx"
-  add_index "submitted_question_events", ["subject_user"], :name => "subject_user_idx"
+  add_index "submitted_question_events", ["initiated_by_id"], :name => "initiated_by_idx"
+  add_index "submitted_question_events", ["subject_user_id"], :name => "subject_user_idx"
   add_index "submitted_question_events", ["submitted_question_id"], :name => "submitted_question_id_idx"
 
   create_table "submitted_questions", :force => true do |t|

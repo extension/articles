@@ -37,10 +37,11 @@ class Aae::MyAssignedController < ApplicationController
     @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
     
     # user's assigned submitted questions filtered by submitted question filter
-    @filtered_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::SUBMITTED_TEXT, @category, @location, @county, @source, nil, @user, nil, false, false, @order)
-    
+    filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source, :assignee => @user}
+    @filtered_submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).listdisplayincludes.ordered(@order)
+      
     # total user's assigned submitted questions (unfiltered)
-    @total_submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::SUBMITTED_TEXT, nil, nil, nil, nil, nil, @user, nil, false, false, @order)
+    @total_submitted_questions = SubmittedQuestion.submitted.filtered({:assignee => @user}).listdisplayincludes.ordered(@order)
 
     # the difference in count between the filtered and unfiltered questions
     @question_difference = @total_submitted_questions.length - @filtered_submitted_questions.length

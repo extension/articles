@@ -20,6 +20,8 @@ class Aae::ResolvedController < ApplicationController
     list_view(true)
     set_filters
     
+    filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
+    
     case params[:type]
     when 'all'
       sq_query_method = SubmittedQuestion::RESOLVED_TEXT
@@ -45,7 +47,7 @@ class Aae::ResolvedController < ApplicationController
       return
     end
     
-    @submitted_questions = SubmittedQuestion.find_submitted_questions(sq_query_method, @category, @location, @county, @source, nil, nil, params[:page], true, false, @order) 
+    @submitted_questions = SubmittedQuestion.send(sq_query_method).filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])    
     
   end
   

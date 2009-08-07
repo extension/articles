@@ -362,8 +362,8 @@ module DataImportActivity
 
     # build sql - ASSUMES FAQ ACCOUNTS == IDENTITY ACCOUNTS!
     sql = "INSERT IGNORE INTO #{mydatabase}.#{self.table_name} (created_at,user_id,activitytype,activitycode,activity_application_id,ipaddr,created_by,colleague_id,activity_object_id,privacy,responsetime)"
-    sql +=  " SELECT #{activitydatabase}.submitted_question_events.created_at, #{activitydatabase}.submitted_question_events.initiated_by, #{Activity::AAE}, #{casestatement},"
-    sql +=  "#{activityapplication.id},'unknown',#{activitydatabase}.submitted_question_events.initiated_by,#{activitydatabase}.submitted_question_events.subject_user,"
+    sql +=  " SELECT #{activitydatabase}.submitted_question_events.created_at, #{activitydatabase}.submitted_question_events.initiated_by_id, #{Activity::AAE}, #{casestatement},"
+    sql +=  "#{activityapplication.id},'unknown',#{activitydatabase}.submitted_question_events.initiated_by_id,#{activitydatabase}.submitted_question_events.subject_user_id,"
     sql +=  "#{mydatabase}.activity_objects.id,#{Activity::PROTECTED},TIMESTAMPDIFF(MINUTE,#{mydatabase}.activity_objects.created_at,#{activitydatabase}.submitted_question_events.created_at)"
     sql +=  " FROM #{activitydatabase}.submitted_question_events, #{mydatabase}.activity_objects"
     sql +=  " WHERE #{activitydatabase}.submitted_question_events.submitted_question_id = #{mydatabase}.activity_objects.foreignid"  

@@ -78,6 +78,30 @@ class DataController < ApplicationController
     end
   end
   
+  def aae_numbers
+    filteredparams = FilterParams.new(params)
+    # just going to get them for a single user for now
+    if(filteredparams.person.nil?)
+      returnhash = {:success => false, :errormessage => 'Not a valid account'}
+      return render :text => returnhash.to_json
+    end
+    
+    returnhash = {}
+    returnhash[:total_incoming] = SubmittedQuestion.submitted.count
+    returnhash[:answered] = SubmittedQuestion.resolved.filtered({:resolved_by => @user}).count
+    returnhash[:assigned] = SubmittedQuestion.submitted.filtered({:assignee => @user}).count
+    
+    return render :text => returnhash.to_json
+    
+    # TODO: filtered    
+    
+    # filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
+    # @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
+    # 
+    # 
+    
+  end
+  
   protected
   
   def check_for_table_comparisons

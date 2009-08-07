@@ -23,7 +23,8 @@ class Aae::SpamListController < ApplicationController
     # it does not matter if this question was previously reserved if it's spam
     @reserved_questions = []
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
-    @submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::SUBMITTED_TEXT, @category, @location, @county, @source, nil, nil, params[:page], true, true, @order)
+    filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
+    @submitted_questions = SubmittedQuestion.submittedspam.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
   end
   
 end

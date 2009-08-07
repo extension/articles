@@ -7,8 +7,8 @@
 
 class SubmittedQuestionEvent < ActiveRecord::Base
   belongs_to :submitted_question
-  belongs_to :initiated_by, :class_name => "User", :foreign_key => "initiated_by"
-  belongs_to :subject_user, :class_name => "User", :foreign_key => "subject_user"
+  belongs_to :initiated_by, :class_name => "User", :foreign_key => "initiated_by_id"
+  belongs_to :subject_user, :class_name => "User", :foreign_key => "subject_user_id"
   
   RESERVE_WINDOW = "date_sub(NOW(), interval 2 hour)"
   
@@ -33,10 +33,10 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   WORKING_ON = 9
   
   #scopes for sq events
-  named_scope :work_in_progress, lambda { |user_id, sq_id| {:conditions => {:event_state => WORKING_ON, :initiated_by => user_id, :submitted_question_id => sq_id}}}
+  named_scope :work_in_progress, lambda { |user_id, sq_id| {:conditions => {:event_state => WORKING_ON, :initiated_by_id => user_id, :submitted_question_id => sq_id}}}
   named_scope :latest, {:order => "created_at desc", :limit => 1}
   # get all the questions with a 'I'm working on this' status (make sure the current question assignee is the one who claimed the question to work on it)
-  named_scope :reserved_questions, {:select => "DISTINCT(submitted_question_events.submitted_question_id) AS id", :joins => :submitted_question, :conditions => "submitted_questions.user_id = submitted_question_events.initiated_by AND submitted_question_events.event_state = #{WORKING_ON} AND submitted_question_events.created_at > #{RESERVE_WINDOW}"}
+  named_scope :reserved_questions, {:select => "DISTINCT(submitted_question_events.submitted_question_id) AS id", :joins => :submitted_question, :conditions => "submitted_questions.user_id = submitted_question_events.initiated_by_id AND submitted_question_events.event_state = #{WORKING_ON} AND submitted_question_events.created_at > #{RESERVE_WINDOW}"}
   
   
   def self.log_assignment(question, subject_user, initiated_by, assignment_comment)

@@ -23,7 +23,8 @@ class Aae::IncomingController < ApplicationController
   
     @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
-    @submitted_questions = SubmittedQuestion.find_submitted_questions(SubmittedQuestion::SUBMITTED_TEXT, @category, @location, @county, @source, nil, nil, params[:page], true, false, @order)
+    filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
+    @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
   end
   
   

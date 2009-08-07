@@ -270,6 +270,11 @@ class User < ActiveRecord::Base
      end
   end
   
+  # returns a hash of aae filter prefs
+  def aae_filter_prefs
+    
+    
+  
   def clear_all_list_and_community_connections
     # WARNING WARNING DANGER WILL ROBINSON
     # log for recovery if we need to...
