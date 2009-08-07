@@ -37,6 +37,7 @@ ActionController::Routing::Routes.draw do |map|
   ################################################################
   ### AaE ###
   
+  map.connect 'aae/question/:action', :controller => 'aae/question'
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
   map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
   map.incoming_feed 'aae/feeds/incoming', :controller => 'aae/feeds', :action => 'incoming'
@@ -47,7 +48,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resolved_feed 'aae/feeds/resolved', :controller => 'aae/feeds', :action => 'resolved'
   map.spam 'aae/spam_list', :controller => 'aae/spam_list', :action => 'index'
   map.view_search_question 'aae/search', :controller => 'aae/search', :action => 'index'
-  map.aae_question 'aae/question/:id', :controller => 'aae/question', :action => 'index'
   map.answer_question 'aae/question/answer', :controller => 'aae/question', :action => 'answer'
   map.aae_name_search 'aae/name_search', :controller => 'aae/search', :action => 'enable_search_by_name'
   map.aae_cat_loc_search 'aae/cat_loc_search', :controller => 'aae/search', :action => 'enable_search_by_cat_loc'
@@ -55,9 +55,10 @@ ActionController::Routing::Routes.draw do |map|
   map.aae_answer 'aae/search/answer', :controller => 'aae/search', :action => 'answer'
   map.aae_profile 'aae/profile/:id', :controller => 'aae/profile', :action => 'index'
   map.aae_show_profile 'aae/profile/show_profile', :controller => 'aae/profile', :action => 'show_profile'
-  map.aae_reserve_question 'aae/question/reserve_question', :controller => 'aae/question', :action => 'reserve_question'
+  map.aae_reserve_question 'aae/question/reserve_question/:sq_id', :controller => 'aae/question', :action => 'reserve_question'
   map.aae_report_spam 'aae/question/report_spam', :controller => 'aae/question', :action => 'report_spam'
   map.aae_report_ham  'aae/question/report_ham', :controller => 'aae/question', :action => 'report_ham'
+  map.aae_question 'aae/question/:id', :controller => 'aae/question', :action => 'index'
   
   map.namespace :aae do |aae|
      aae.connect 'help', :controller => :help

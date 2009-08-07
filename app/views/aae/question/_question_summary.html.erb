@@ -1,9 +1,9 @@
 <div id="inc_to_FAQ">
 <div class="question">
-    <h2>FAQ #<%= question.id %></h2>
-    <p><%= h question.current_revision.question_text %></p>
+    <h2><%= (@aae_search_item.entrytype == SearchQuestion::AAE) ? 'AaE' : 'Faq' %> #<%= @aae_search_item.foreignid %></h2>
+    <p><%= h @aae_search_item.fulltitle %></p>
 </div>
 <div class="answer">
-    <%= simple_format(question.current_revision.answer) %>
+    <%= simple_format(@aae_search_item.content) %>
 </div>
 </div>
