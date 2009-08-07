@@ -61,6 +61,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.namespace :aae do |aae|
      aae.connect 'help', :controller => :help
+     aae.home '/', :controller => :home, :action => :index
   end
   
   ### Widget iFrame ###
