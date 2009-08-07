@@ -1,6 +1,6 @@
 <% @page_title = "Thanks for answering the question" %>
 <div id="inc_body">
-    <h3><%= link_to "Incoming Question ##{@submitted_question.id}", {:controller => 'expert', :action => 'question', :id => @submitted_question.id} %> > Convert to a FAQ?</h3>
+    <h3><%= link_to "Incoming Question ##{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %> > Convert to a FAQ?</h3>
 </div>
 
 <div id="user_actions">
