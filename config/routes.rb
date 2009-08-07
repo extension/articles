@@ -53,7 +53,7 @@ ActionController::Routing::Routes.draw do |map|
   map.aae_cat_loc_search 'aae/cat_loc_search', :controller => 'aae/search', :action => 'enable_search_by_cat_loc'
   map.aae_answer_search 'aae/search/answers', :controller => 'aae/search', :action => 'answers'
   map.aae_answer 'aae/search/answer', :controller => 'aae/search', :action => 'answer'
-  map.aae_profile 'aae/profile/:id', :controller => 'aae/profile', :action => 'index'
+  map.aae_profile 'aae/profile', :controller => 'aae/profile', :action => 'index'
   map.aae_show_profile 'aae/profile/show_profile', :controller => 'aae/profile', :action => 'show_profile'
   map.aae_reserve_question 'aae/question/reserve_question/:sq_id', :controller => 'aae/question', :action => 'reserve_question'
   map.aae_report_spam 'aae/question/report_spam', :controller => 'aae/question', :action => 'report_spam'
