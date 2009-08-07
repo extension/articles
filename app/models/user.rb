@@ -270,6 +270,29 @@ class User < ActiveRecord::Base
      end
   end
   
+  # returns a hash of aae filter prefs
+  def aae_filter_prefs
+    returnhash = {}
+    self.user_preferences.each do |preference|
+      case preference.name
+      when UserPreference::AAE_FILTER_CATEGORY
+        if preference.setting == Category::UNASSIGNED
+          category = Category::UNASSIGNED
+        else   
+          category = Category.find_by_id(preference.setting)
+        end
+        returnhash[:category] = category
+      when UserPreference::AAE_FILTER_LOCATION
+         returnhash[:location] = Location.find_by_fipsid(preference.setting)         
+      when UserPreference::AAE_FILTER_COUNTY
+        returnhash[:county] = County.find_by_fipsid(preference.setting)
+      when UserPreference::AAE_FILTER_SOURCE
+        returnhash[:source] = preference.setting 
+      end 
+    end
+    return returnhash
+  end
+    
   
   def clear_all_list_and_community_connections
     # WARNING WARNING DANGER WILL ROBINSON

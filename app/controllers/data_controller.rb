@@ -88,18 +88,11 @@ class DataController < ApplicationController
     
     returnhash = {}
     returnhash[:total_incoming] = SubmittedQuestion.submitted.count
-    returnhash[:answered] = SubmittedQuestion.resolved.filtered({:resolved_by => @user}).count
-    returnhash[:assigned] = SubmittedQuestion.submitted.filtered({:assignee => @user}).count
-    
+    returnhash[:answered] = SubmittedQuestion.resolved.filtered({:resolved_by => filteredparams.person}).count
+    returnhash[:assigned] = SubmittedQuestion.submitted.filtered({:assignee => filteredparams.person}).count
+    filteroptions = filteredparams.person.aae_filter_prefs
+    returnhash[:filtered_incoming] = SubmittedQuestion.submitted.filtered(filteroptions).count
     return render :text => returnhash.to_json
-    
-    # TODO: filtered    
-    
-    # filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
-    # @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
-    # 
-    # 
-    
   end
   
   protected
