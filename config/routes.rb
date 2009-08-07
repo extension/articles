@@ -37,7 +37,7 @@ ActionController::Routing::Routes.draw do |map|
   ################################################################
   ### AaE ###
   
-  map.connect 'aae/question/:action', :controller => 'aae/question'
+  map.aae_question 'aae/question', :controller => 'aae/question', :action => 'index'
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
   map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
   map.incoming_feed 'aae/feeds/incoming', :controller => 'aae/feeds', :action => 'incoming'
@@ -58,7 +58,6 @@ ActionController::Routing::Routes.draw do |map|
   map.aae_reserve_question 'aae/question/reserve_question/:sq_id', :controller => 'aae/question', :action => 'reserve_question'
   map.aae_report_spam 'aae/question/report_spam', :controller => 'aae/question', :action => 'report_spam'
   map.aae_report_ham  'aae/question/report_ham', :controller => 'aae/question', :action => 'report_ham'
-  map.aae_question 'aae/question/:id', :controller => 'aae/question', :action => 'index'
   
   map.namespace :aae do |aae|
      aae.connect 'help', :controller => :help
