@@ -1,6 +1,6 @@
 <div id="assignUser">
     <p class="close"><%= link_to_function 'close', "Effect.toggle('assignUser','blind', { duration: .4});" %></p>
-<% form_tag :action => 'assign', :id => @submitted_question.id do %>
+<% form_tag :controller => 'aae/question', :action => 'assign', :id => @submitted_question.id do %>
     
         <h3>Search for a user</h3>
         

@@ -1,4 +1,4 @@
-<% form_tag({:action => 'assign'}, {:id => 'cat_loc_form'}) do %>
+<% form_tag({:controller => 'aae/question', :action => 'assign'}, {:id => 'cat_loc_form'}) do %>
 <p class="close"><%= link_to_function 'close', "Effect.toggle('assignUser','blind', { duration: .4});" %></p>
   <h3>Browse by Location or Category</h3>
   <p><label class="hide">Browse by category</label><%= select_tag (:category, options_for_select([""].concat(@category_options), @category_id)) %></p>

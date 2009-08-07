@@ -89,7 +89,7 @@ class Aae::QuestionController < ApplicationController
       end
       
       @submitted_question.assign_to(user, @currentuser, assign_comment)
-      redirect_to :action => 'question', :id => @submitted_question
+      redirect_to :action => 'index', :id => @submitted_question
     end
   end
   
