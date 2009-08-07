@@ -83,8 +83,13 @@
              
                 <% if @questions_status && @questions_status != SubmittedQuestion::STATUS_SUBMITTED %>
                     <p class="inc_resolved_by">
-                    Resolved by <%= link_to(sq.resolved_by.login, aae_profile_url(:id => sq.resolved_by.login), 
+                    Resolved by 
+                    <% if sq.resolved_by.id == User.systemuserid %>  
+                    <strong>System</strong>
+                    <% else %>  
+                    <%= link_to(sq.resolved_by.login, aae_profile_url(:id => sq.resolved_by.login), 
                     :class => "profile") %> 
+                    <% end %>
                     <%= (sq.resolved_at) ? time_ago_in_words(sq.resolved_at) + ' ago' : '' %>
                     
                     </p>

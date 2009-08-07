@@ -58,7 +58,12 @@
         
 	    <div id="answered_FAQ">
 	        <p>
-        	    <strong>Resolved by:</strong> <%= link_to @submitted_question.resolved_by.fullname, aae_profile_url(:id => @submitted_question.resolved_by.login), :class => "profile" %>
+        	    <strong>Resolved by: </strong> 
+        	    <% if @submitted_question.resolved_by.id == User.systemuserid %>
+        	    System
+        	    <% else %>
+        	    <%= link_to @submitted_question.resolved_by.fullname, aae_profile_url(:id => @submitted_question.resolved_by.login), :class => "profile" %>
+        	    <% end %>
         	</p>
 	        <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
             
