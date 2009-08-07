@@ -674,7 +674,7 @@ a.profile {
     #aoe_options {
         float: left !important;
         width: 350px;
-        background: #fff url(/images/table_row_fade_gray.jpg) repeat-y -100px 50px;
+        background: #fff;
         border: none;
     }
     #aoe_options h3 {
@@ -794,7 +794,7 @@ div.answer h2 {
 	width:90%;
 	margin: 0;
 	padding: .5em 10px;
-	background:url(/images/table_row_fade_gray.jpg) -50px 0 repeat-y #fff;
+	background: #fff;
 	border: 1px solid #ccc;
 	}
 #user_bio h4 {
@@ -1134,9 +1134,6 @@ h1, h2 {
     color: #007236;
     border-bottom: 1px solid #ddd;
     padding-bottom:.2em;
-}
-.vcard {
-	background: #fff url(/images/table_row_fade_gray.jpg) repeat-y;
 }
 /* Profiles/Vcards
 -----------------------------------------------------------------------------*/
