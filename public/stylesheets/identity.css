@@ -197,7 +197,7 @@ ul#comm_population {margin:0;padding:0;}
 #listsubscriptionconnection p {line-height:1.1em;}
 #listownerconnection {width:200px;padding:.75em 1.5em .25em;border:1px solid #eee;margin-bottom:1em;background:#ffffff;}
 #listownerconnection p {line-height:1.1em;}
-#list_sidebar {float:right;width:230px;}
+#list_sidebar {float:right;width:230px;margin-right:2em;}
 #list_sidebar .list_stats {width:100%;}
 #list_summary {border:1px solid #ddd;width:200px;padding:.75em 1.5em;background:#f2f2f2;}
 #list_summary h3 {font-weight:normal;font-size:1.3em;border:0;}
