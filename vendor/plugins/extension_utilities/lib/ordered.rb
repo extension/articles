@@ -27,7 +27,7 @@ module Extension
         
         # Add named scope
         named_scope :ordered, lambda { |*ordervals|
-          if(ordervals.length > 1)
+          if(ordervals.length > 0)
             order = ordervals[0]
           end
           # expecting an order param of "column[,columns] direction"
