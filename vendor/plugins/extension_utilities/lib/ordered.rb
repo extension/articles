@@ -31,7 +31,7 @@ module Extension
             order = ordervals[0]
           end
           # expecting an order param of "column[,columns] direction"
-          if(!sortorder.blank?)
+          if(!order.blank?)
             (columnstring,sortorder) = order.split(' ')
             # make sure direction is valid
             if(!sortorder.blank? and ['d','descending','desc'].include?(sortorder.downcase))
