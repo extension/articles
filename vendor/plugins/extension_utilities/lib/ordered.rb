@@ -26,9 +26,12 @@ module Extension
         opts = {:orderings => {}, :default => 'id ASC'}.merge(opts)
         
         # Add named scope
-        named_scope :ordered, lambda { |*order|
+        named_scope :ordered, lambda { |*ordervals|
+          if(ordervals.length > 1)
+            order = ordervals[0]
+          end
           # expecting an order param of "column[,columns] direction"
-          if(!order.blank?)
+          if(!sortorder.blank?)
             (columnstring,sortorder) = order.split(' ')
             # make sure direction is valid
             if(!sortorder.blank? and ['d','descending','desc'].include?(sortorder.downcase))
@@ -53,22 +56,42 @@ module Extension
         end
       end
       
-      def check_model_columns(columnstring)
+      def check_model_columns(columnstring)        
         columnarray = columnstring.split(',')
         if(columnarray.size > 1)
-          columnarray.each do |column|
-            if(!self.column_names.include?(column))
-              return nil
+          columnarray.each do |item|
+            # check for table.column
+            (table,column) = column.split('.')
+            if(column.blank?)
+              column = table
+              if(!self.column_names.include?(column))
+                return nil
+              end
+            elsif(table == self.table_name)
+              if(!self.column_names.include?(column))
+                return nil
+              end
+            else
+              # assume it's okay for now
             end
           end
           # all columns match
           return columnstring
         else
-          if(self.column_names.include?(columnstring))
-            return columnstring
+          (table,column) = columnstring.split('.')          
+          if(column.blank?)
+            column = table
+            if(!self.column_names.include?(column))
+              return nil
+            end
+          elsif(table == self.table_name)
+            if(!self.column_names.include?(column))
+              return nil
+            end
           else
-            return nil
+            # assume it's okay for now
           end
+          return columnstring
         end
       end
       

@@ -427,7 +427,7 @@ def self.filterconditions(options={})
   end
  
   if(!options[:location].nil?)   
-    conditions << "#{self.table_name}.location_id = #{options[:location]..id}"
+    conditions << "#{self.table_name}.location_id = #{options[:location].id}"
   end
 
   if(!options[:county].nil?)  
