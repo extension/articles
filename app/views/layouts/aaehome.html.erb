@@ -13,31 +13,40 @@
 
 <body>
 
-<div id="masthead">
-    <h1>Ask an Expert</h1>
-    <p>eXtension: More Mind Reach</p>
+<div id="pageContainer">
+    <div id="masthead">
+        <h1>Ask an Expert</h1>
+        <p id="extensionlogo">eXtension: More Mind Reach</p>
     
-    <p><%= link_to("Ask an Expert (sign-in required)", incoming_url) %></p>
-</div>
+        <p class="signin"><%= link_to("Ask an Expert (sign-in required)", incoming_url) %></p>
+    </div>
 
-<p>Need information about AaE?</p>
+    <div id="content">
+        <p class="tabblock"><span>Need information about AaE?</span></p>
 
-<div id="extensionagents">
-    <h2>For Extension Agents</h2>
+        <div id="extensionagents" class="column">
+            <div class="wrapper">
+            <h2>For Extension Agents</h2>
     
-    <p>Use Ask an Expert to receive questions from your local public through your own county website.</p>
+            <p>Use Ask an Expert to receive questions from your local public through your own county website.</p>
     
-    <p>Learn about Ask an Expert and AaE Widgets for your site</p>
+            <p><%= link_to("Learn about Ask an Expert",  widget_home_url )%> and getting AaE Widgets for your site.</p>
     
-    <p><%= link_to("Learn More...",  widget_home_url )%></p>
-</div>
+            <p class="button2"><%= link_to("Learn More...",  widget_home_url )%></p>
+            </div>
+        </div>
 
-<div id="thepublic">
-    <h2>For the Public</h2>
+        <div id="thepublic" class="column">
+            <div class="wrapper">
+            <h2>For the Public</h2>
     
-    <p>Ask an Expert allows you to get objective, research-based, and credible answers to your questions.</p>
+            <p>Ask an Expert allows you to get objective, research-based, credible answers to your questions.</p>
     
-    <p>You can <%= link_to("ask your question here", ask_form_url ) %>, on the eXtension Public Site.</p>
+            <p>You can <%= link_to("ask your question here", ask_form_url ) %>, on the eXtension Public Site.</p>
+            </div>
+        </div>
+        <br class="clearing"/>
+    </div>
 </div>
 
 <%= render(:partial => 'aae/partial/googleanalytics') %>
