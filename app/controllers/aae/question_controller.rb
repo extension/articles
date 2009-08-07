@@ -178,8 +178,6 @@ class Aae::QuestionController < ApplicationController
       end
       
       Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :user => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
-      flash[:success] = "Your answer has been sent to the person who asked the question.<br />
-                        You can now save the question as an FAQ, or exit this screen without saving."
         
       redirect_to :action => 'question_answered', :squid => @submitted_question.id
     end
