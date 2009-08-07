@@ -15,7 +15,7 @@ a:visited	{ color: #0047ae; }
 a:hover		{ color: blue;}
 
 
-#pageContainer {width:60%;margin:1em auto 0;min-width:800px;background:#fff;border:3px solid #ddd; padding:0 2em 2em;}
+#pageContainer {width:60%;margin:1em auto 0;min-width:800px;background:#fff;border:3px solid #ddd; padding:0 2em 10em;}
 
 #masthead {position:relative;border:1px solid #fff;}
 
