@@ -47,13 +47,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resolved_feed 'aae/feeds/resolved', :controller => 'aae/feeds', :action => 'resolved'
   map.spam 'aae/spam_list', :controller => 'aae/spam_list', :action => 'index'
   map.view_search_question 'aae/search', :controller => 'aae/search', :action => 'index'
-  map.aae_question 'aae/question', :controller => 'aae/question', :action => 'index'
+  map.aae_question 'aae/question/:id', :controller => 'aae/question', :action => 'index'
   map.answer_question 'aae/question/answer', :controller => 'aae/question', :action => 'answer'
   map.aae_name_search 'aae/name_search', :controller => 'aae/search', :action => 'enable_search_by_name'
   map.aae_cat_loc_search 'aae/cat_loc_search', :controller => 'aae/search', :action => 'enable_search_by_cat_loc'
   map.aae_answer_search 'aae/search/answers', :controller => 'aae/search', :action => 'answers'
   map.aae_answer 'aae/search/answer', :controller => 'aae/search', :action => 'answer'
-  map.aae_profile 'aae/profile', :controller => 'aae/profile', :action => 'index'
+  map.aae_profile 'aae/profile/:id', :controller => 'aae/profile', :action => 'index'
   map.aae_show_profile 'aae/profile/show_profile', :controller => 'aae/profile', :action => 'show_profile'
   map.aae_reserve_question 'aae/question/reserve_question', :controller => 'aae/question', :action => 'reserve_question'
   map.aae_report_spam 'aae/question/report_spam', :controller => 'aae/question', :action => 'report_spam'
@@ -79,7 +79,7 @@ ActionController::Routing::Routes.draw do |map|
   
   ### Widget Stuff ###
   
-  map.view_widget 'aae/widgets/view', :controller => 'aae/widgets', :action => 'view'
+  map.view_widget 'aae/widgets/view/:id', :controller => 'aae/widgets', :action => 'view'
   map.widget_home 'aae/widgets', :controller => 'aae/widgets', :action => 'index'
   
   #################################################################
