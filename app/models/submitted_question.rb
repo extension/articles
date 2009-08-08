@@ -28,6 +28,7 @@ validates_format_of :submitter_email, :with => /\A([\w\.\-\+]+)@((?:[-a-z0-9]+\.
 validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
 
 before_update :add_resolution
+before_create :generate_fingerprint
 
 after_save :assign_parent_categories
 after_create :auto_assign_by_preference
@@ -664,6 +665,20 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
 
 
 private
+
+def generate_fingerprint
+  create_time = Time.now.to_s
+  if(!self.external_app_id.nil?)
+    if(self.external_app_id == 'widget')
+      appname = self.widget_id.to_s
+    else
+      appname = self.external_app_id
+    end
+  else
+    appname = 'unknown'
+  end
+  self.question_fingerprint = Digest::SHA1.hexdigest(appname + create_time + self.asked_question + self.submitter_email)
+end
 
 def pick_user_from_list(users)
   if !users or users.length == 0
