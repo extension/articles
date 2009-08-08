@@ -1,6 +1,14 @@
-class AskController < ApplicationController
-  
-  skip_before_filter :login_required
+# === COPYRIGHT:
+#  Copyright (c) 2005-2009 North Carolina State University
+#  Developed with funding for the National eXtension Initiative.
+# === LICENSE:
+#  BSD(-compatible)
+#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+
+# Filters added to this controller apply to all controllers in the application.
+# Likewise, all the methods added will be available for all controllers.
+
+class AskController < ApplicationController  
   has_rakismet :only => [:submit_question]
   
   def index

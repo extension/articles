@@ -32,11 +32,11 @@ class Aae::WidgetsController < ApplicationController
   
   def list
     if params[:id] and params[:id] == 'inactive'
-      @widgets = Widget.inactive
+      @widgets = Widget.inactive.all(:include => :user)
       @selected_tab = :inactive
     else
       @selected_tab = :all
-      @widgets = Widget.active
+      @widgets = Widget.active.all(:include => :user)
     end
   end
   
@@ -79,7 +79,6 @@ class Aae::WidgetsController < ApplicationController
     @widget.set_fingerprint(@currentuser)
     @widget_url = url_for(:controller => '/widget', :location => location_str, :county => county_str, :id => @widget.fingerprint, :only_path => false)  
     @widget.widget_url = @widget_url
-    @widget.author = @currentuser.login
 
     @currentuser.widgets << @widget
   end

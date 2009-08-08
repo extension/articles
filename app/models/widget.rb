@@ -29,16 +29,4 @@ class Widget < ActiveRecord::Base
     return '<iframe style="border:0" width="100%" src="' +  self.widget_url + '" height="300px"></iframe>'
   end
   
-  def history
-    history_array = Array.new
-    history_array << "Created at #{self.created_at} by <a href='/people/colleagues/showuser?userid=#{self.author}'>#{self.author}</a>"
-    
-    events = self.widget_events
-    events.each do |event|
-      history_array << "#{event.event.capitalize} on #{event.created_at} by <a href='/people/colleagues/showuser?userid=#{event.user.login}'>#{event.user.login}</a>"
-    end    
-    
-    return history_array
-  end
-  
 end

@@ -4,7 +4,7 @@
 
 <h2><%= @widget.name %></h2>
 
-<p>Administrator: <strong><%= @widget.author %></strong></p>
+<p>Administrator: <strong><%= link_to_user(@widget.user) %></strong></p>
 
 <p>Date Created: <strong><%= @widget.created_at %></strong></p>
 
