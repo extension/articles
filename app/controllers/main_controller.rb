@@ -33,9 +33,8 @@ class MainController < ApplicationController
     if(!@community.nil?)
       set_title(@community.public_name,@community.public_description)
       set_titletag("#{@community.public_name} - eXtension")
-      # TODO: write a helper method to get the content tags
-      @community_content_tags = @community.tags
-      @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
+      community_content_tag_names = @community.content_tag_names
+      @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
       @homage = Article.homage_for_content_tag({:content_tag => @content_tag})
       @in_this_section = Article.contents_for_content_tag({:content_tag => @content_tag})
       @community_highlights = Article.main_feature_list({:content_tag => @content_tag, :limit => 8})

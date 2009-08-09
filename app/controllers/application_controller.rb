@@ -22,13 +22,6 @@ class ApplicationController < ActionController::Base
   require 'zip_code_to_state'
   require 'image_size'
   
-  # please do not show allowable actions
-  # TODO: something better than this because I believe this is masking too many errors
-  # commented out for development
-  # rescue_from ActionController::RoutingError, :with => :do_404
-  # rescue_from ActionController::MethodNotAllowed, :with => :do_404
-  # rescue_from ActionController::UnknownAction, :with => :do_404
-
   before_filter :set_locale
   before_filter :unescape_params
   before_filter :personalize

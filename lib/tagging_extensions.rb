@@ -31,7 +31,6 @@ class ActiveRecord::Base #:nodoc:
     # Removes tags from <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.  
     def _remove_tags(tagarray,ownerid,kind)
       taggable?(true)
-      #taggings.reload
       # because of http://dev.rubyonrails.org/ticket/6466
       taggings.destroy(*(taggings.find(:all, :include => :tag, :conditions => ["tag_kind = ? AND owner_id =?",kind,ownerid]).select do |tagging| 
         (tagarray.include? tagging.tag.name)  
@@ -107,27 +106,21 @@ class ActiveRecord::Base #:nodoc:
     end
     
     def tag_count
-      # this may be problematic down the line for an object with a lot of tags
+      # TODO: this may be problematic down the line for an object with a lot of tags
       taggable?(true)
-      #taggings.reload
       taggings.count(:group => :tag)
-      # TODO: use cache?
     end  
     
     def tag_count_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)      
-      # this may be problematic down the line for an object with a lot of tags
+      # TODO: this may be problematic down the line for an object with a lot of tags
       taggable?(true)
-      #taggings.reload
       taggings.count(:group => :tag, :conditions => tagcond(ownerid,kind))
-      # TODO: use cache?
     end
     
     def tags_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)      
       taggable?(true)
-      #tags.reload
       # has to be uniq by mysql index
       tags.find(:all, :select => "tags.*,count(tags.id) as frequency", :conditions => tagcond(ownerid,kind), :group => "tags.id")
-      # TODO: use cache?
     end
         
     def tag_list_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)
@@ -136,7 +129,6 @@ class ActiveRecord::Base #:nodoc:
 
      def tag_displaylist_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL,returnarray=false)
        taggable?(true)
-       #taggings.reload
        array = taggings.find(:all, :conditions => tagcond(ownerid,kind)).map(&:tag_display)
        if(returnarray)
          array

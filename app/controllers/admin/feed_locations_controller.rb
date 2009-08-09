@@ -51,7 +51,6 @@ class Admin::FeedLocationsController < ApplicationController
   end
   
   def destroy
-    # TODO: log action
     @feed_location = FeedLocation.find(params[:id])
     AdminEvent.log_event(@currentuser, AdminEvent::DELETE_FEED_LOCATION,{:feed_location_id => @feed_location.id, :feed_location_uri => @feed_location.uri})
     @feed_location.destroy

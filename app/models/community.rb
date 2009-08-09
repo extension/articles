@@ -408,9 +408,8 @@ class Community < ActiveRecord::Base
   def make_meta_connection(metacommunity,connectiontype,connector=nil)
     logger.debug "=================================== Inside make_meta_connection: #{self.attributes.inspect}"
     
-    # ONLY SYSTEM COMMUNITIES CAN BE META COMMUNITIES FOR NOW
-    # TODO: change?
-    return if(metacommunity.entrytype != Community::SYSTEM)
+    # TODO: change? ONLY SYSTEM COMMUNITIES CAN BE META COMMUNITIES FOR NOW
+   return if(metacommunity.entrytype != Community::SYSTEM)
     if connector.nil?
       connector = User.find(1)
     end
@@ -435,8 +434,7 @@ class Community < ActiveRecord::Base
   end
   
   def drop_meta_connection(metacommunity,connectiontype,connector=nil)
-    # ONLY SYSTEM COMMUNITIES CAN BE META COMMUNITIES FOR NOW
-    # TODO: change?
+    # TODO: change? ONLY SYSTEM COMMUNITIES CAN BE META COMMUNITIES FOR NOW
     return if(metacommunity.entrytype != Community::SYSTEM)
     if connector.nil?
       connector = User.find(1)
@@ -733,9 +731,6 @@ class Community < ActiveRecord::Base
   end
   
   def self.search(opts = {})
-    
-    # TODO: search the description and the tags
-    
     tmpterm = opts.delete(:searchterm)
     if tmpterm.nil?
       return nil
