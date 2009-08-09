@@ -1,0 +1,3 @@
+<% if @counties %>
+  <%= select_tag "county_id", options_for_select([['All Counties', 'all']].concat(@counties.map{|c| [c.name, c.id]})) %>
+<% end %>

@@ -6,7 +6,7 @@
 		
 	<%= observe_field('location_id',
 	                  :update    => :county_list,
-	                  :url       => { :controller => 'aae/question', :action => :get_counties },
+	                  :url       => { :controller => 'aae/search', :action => :get_counties },
 	                  :with      => "'location_id='+value") %>
 
 <p id="county_list">

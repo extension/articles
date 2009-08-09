@@ -8,7 +8,7 @@
 class Aae::SearchController < ApplicationController
   layout 'aae'
   before_filter :filter_string_helper
-  before_filter :login_required
+  before_filter :login_required, :except => [:get_counties]
   
   def index
     @aae_search_item = SearchQuestion.find_by_entrytype_and_foreignid(params[:type], params[:qid])
@@ -62,6 +62,16 @@ class Aae::SearchController < ApplicationController
       redirect_to incoming_url
       return
     end
+  end
+  
+  def get_counties
+    if !params[:location_id] or params[:location_id].strip == '' or !(location = Location.find_by_id(params[:location_id]))
+      @counties = nil
+    else
+      @counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
+    end
+    
+    render :layout => false
   end
   
   def assignees_by_cat_loc

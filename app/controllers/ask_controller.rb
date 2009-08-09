@@ -10,6 +10,7 @@
 
 class AskController < ApplicationController  
   has_rakismet :only => [:submit_question]
+  skip_before_filter :login_required
   
   def index
     @right_column = false
@@ -110,6 +111,5 @@ class AskController < ApplicationController
     
     render :partial => 'aae_subcats', :layout => false
   end
-  
   
 end
