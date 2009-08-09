@@ -5,10 +5,8 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class WidgetController < ApplicationController
-  
+class WidgetController < ApplicationController  
   layout 'widgets'
-  skip_before_filter :login_required
   has_rakismet :only => [:create_from_widget]
   
   # ask widget pulled from remote iframe
