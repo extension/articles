@@ -460,31 +460,6 @@ def self.find_uncategorized(*args)
   end
 end
 
-#TODO: not sure if we'll need this
-def self.new_from_personal(personal)
-  new_instance = self.new
-  if(personal[:zip_code] && zc = ZipCode.find_by_zip_code(personal[:zip_code]))
-    new_instance.county = zc.county
-    new_instance.location = new_instance.county.location
-  end
-    
-  new_instance.category_tag = personal[:tag] if personal[:tag]
-  return new_instance
-end
-
-#TODO: not sure if we'll need this
-def state_fipsid
-  zc = ZipCode.find_by_zip_code(zip_code)
-  l = Location.find_by_abbreviation(zc.state)
-  l.fipsid
-end
-
-#TODO: not sure if we'll need this  
-def county_fipsid
-  zc = ZipCode.find_by_zip_code(zip_code)
-  zc.county_fips
-end
-
 # utility function to convert status_state numbers to status strings
 def self.convert_to_string(status_number)
   case status_number

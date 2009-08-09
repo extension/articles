@@ -42,8 +42,6 @@ class AskController < ApplicationController
         @submitted_question = SubmittedQuestion.new
       end
     else
-      # not sure yet if we'll be using the 'new_from_personal' method
-      #@submitted_question = SubmittedQuestion.new_from_personal(@personal)      
       @submitted_question = SubmittedQuestion.new
     end
     
