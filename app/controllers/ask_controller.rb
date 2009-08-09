@@ -10,7 +10,6 @@
 
 class AskController < ApplicationController  
   has_rakismet :only => [:submit_question]
-  skip_before_filter :login_required
   
   def index
     @right_column = false
