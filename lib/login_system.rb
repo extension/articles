@@ -164,24 +164,21 @@ module LoginSystem
     end
   end
   
-  def openid_xrds_header(openiduser=nil)
+  def openid_xrds_header
     proto = request.ssl? ? 'https://' : 'http://'
-    if(!openiduser.nil?)
-      xrds_url = url_for(:controller=>'/opie', :action=> 'user_xrds', :extensionid=>openiduser.login.downcase, :protocol => proto)
-    else
-      xrds_url = url_for(:controller=>'/opie', :action=> 'idp_xrds', :protocol => proto)
-    end
     response.headers['X-XRDS-Location'] = url_for(:controller => '/opie', :action => :idp_xrds, :protocol => proto)
+    xrds_url = url_for(:controller=>'/opie', :action=> 'idp_xrds', :protocol => proto)
     return xrds_url
   end
   
   def openidmeta(openiduser=nil)
-    xrds_url = openid_xrds_header(openiduser)
-    returnstring = '<meta http-equiv="X-XRDS-Location" content="'+xrds_url+'" />'+"\n"
-    returnstring += '<link rel="openid.server" href="'+AppConfig.openid_endpoint+'" />'
+    returnstring == '<link rel="openid.server" href="'+AppConfig.openid_endpoint+'" />'
     returnstring += '<link rel="openid2.provider openid.server" href="'+AppConfig.openid_endpoint+'" />'
     if(!openiduser.nil?)
       returnstring += '<link rel="openid2.local_id openid.delegate" href="'+openiduser.openid_url+'" />'
+    else
+      xrds_url = openid_xrds_header(openiduser)
+      returnstring += '<meta http-equiv="X-XRDS-Location" content="'+xrds_url+'" />'+"\n"
     end
     return returnstring
   end
