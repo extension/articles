@@ -61,7 +61,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.namespace :aae do |aae|
      aae.question 'question/:id', :controller => :question, :action => :index
-     aae.connect  'question/escalation_report/:id' :controller => :question, :action => :escalation_report
+     aae.connect  'question/escalation_report/:id', :controller => :question, :action => :escalation_report
      aae.connect 'help', :controller => :help
      aae.home '/', :controller => :home, :action => :index
   end
