@@ -29,6 +29,8 @@ module ControllerExtensions
   def check_openidurl_foruser(user,checkurl)
     if(user.openid_url == checkurl or user.openid_url == checkurl +'/')
       return true
+    elsif(user.openid_url(true) == checkurl or user.openid_url(true) == checkurl +'/')
+      return true
     else
       return false
     end
