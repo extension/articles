@@ -24,6 +24,8 @@ class Aae::MyResolvedController < ApplicationController
 
     # user's resolved submitted questions filtered by submitted question filter
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source, :resolved_by => @user}
+    # skip the joins because we are including them already with listdisplayincludes
+    filteroptions.merge!({:skipjoins => true})
     @filtered_submitted_questions = SubmittedQuestion.resolved.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
       
     # total user's resolved submitted questions (unfiltered)

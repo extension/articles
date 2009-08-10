@@ -404,7 +404,9 @@ def self.filterconditions(options={})
   conditions = []
 
   if(!options[:category].nil?)
-    joins << :categories
+    if(options[:skipjoins].nil? or !options[:skipjoins])
+      joins << :categories
+    end
     if options[:category] == Category::UNASSIGNED
       conditions << "categories.id IS NULL"
     else

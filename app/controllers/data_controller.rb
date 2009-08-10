@@ -91,6 +91,8 @@ class DataController < ApplicationController
     returnhash[:answered] = SubmittedQuestion.resolved.filtered({:resolved_by => filteredparams.person}).count
     returnhash[:assigned] = SubmittedQuestion.submitted.filtered({:assignee => filteredparams.person}).count
     filteroptions = filteredparams.person.aae_filter_prefs
+    # skip the joins because we are including them already with listdisplayincludes
+    filteroptions.merge!({:skipjoins => true})
     returnhash[:filtered_incoming] = SubmittedQuestion.submitted.filtered(filteroptions).count
     return render :text => returnhash.to_json
   end

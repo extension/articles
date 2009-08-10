@@ -24,6 +24,8 @@ class Aae::SpamListController < ApplicationController
     @reserved_questions = []
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
+    # skip the joins because we are including them already with listdisplayincludes
+    filteroptions.merge!({:skipjoins => true})
     @submitted_questions = SubmittedQuestion.submittedspam.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
   end
   

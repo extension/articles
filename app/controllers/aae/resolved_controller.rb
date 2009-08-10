@@ -47,6 +47,8 @@ class Aae::ResolvedController < ApplicationController
       return
     end
     
+    # skip the joins because we are including them already with listdisplayincludes
+    filteroptions.merge!({:skipjoins => true})
     @submitted_questions = SubmittedQuestion.send(sq_query_method).filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])    
     
   end
