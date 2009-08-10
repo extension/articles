@@ -10,23 +10,26 @@
     <li><%= link_to_unless_current "Geographic Regions", :action => 'location' %></li>
     <li><%= link_to_unless_current "Widget Preferences", :action => 'widget_preferences' %></li>
 </ul>
+
 <br class="clear"/>
 
-<h2>Areas of Expertise</h2>
+<h2>In What Areas of Expertise Can You Answer Questions?</h2>
+<p>These preferences are indicated on your Ask an Expert profile for other experts to see. Question Wranglers search these areas of expertise when assigning questions.</p>
     
     <div id="areas_of_expertise">
-        <p>Please indicate your areas of expertise.</p>
     <ul id="expertiselist">
     <% @categories.each do |cat| %>
-        <li id="<%= cat.id %>"><%= check_box_tag "areas_of_expertise[]", cat.id, @current_user_categories.include?(cat), { :id => "areas_of_expertise#{cat.id}"} %> 
-        <%= link_to cat.name, {:controller => 'aae/search', :action => 'experts_by_category', :id => cat.id } %>
+        <li id="<%= cat.id %>"> 
+            <span class="aaecategory"><%= check_box_tag "areas_of_expertise[]", cat.id, @current_user_categories.include?(cat), { :id => "areas_of_expertise#{cat.id}"} %> <%= link_to cat.name, {:controller => 'aae/search', :action => 'experts_by_category', :id => cat.id } %></span>
             
             <% if cat.children.length > 0 %>
-                <em> - <%= cat.children.length %> subcategories</em>
+                <span class="subcats"><%= cat.children.length %> subcategories</span>
+            <% else %>
+                <span class="subcats">&nbsp;</span>
             <% end %>
         
         <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :id => cat.id %></span>
-        <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
+        <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving...</span>
         
         <%= observe_field("areas_of_expertise#{cat.id}",
                           :url       => { :action => :expertise },

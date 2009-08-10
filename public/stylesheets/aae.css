@@ -644,7 +644,7 @@ a.profile {
         border-bottom: 1px solid #ddd;
     }
     #areas_of_expertise ul {
-        margin-left: .5em;
+        margin: 1em .5em;
     }
     #areas_of_expertise ul li input {
         margin-right: .2em;
@@ -660,17 +660,27 @@ a.profile {
         border: none;
     }
 
-    #areas_of_expertise {
-        padding: .25em;
-        width: 300px;
-        margin-right: 1em;
-        float: left;
-    }
-    #areas_of_expertise em {
-        font-weight: normal;
-        color: #888;
-        font-size: 95%;
-    }
+#areas_of_expertise {
+    padding: .25em 2em;
+    width: 80%;
+    margin: 0 auto;
+/*    border:1px solid orange;*/
+}
+#areas_of_expertise em {
+    font-style: normal;
+    font-weight: normal;
+    color: #888;
+}
+
+#expertiselist li {margin-bottom:.5em;float:left;width:100%;padding:0 0 .5em!important;position:relative;}
+#expertiselist li ul li {margin:.5em 0 .1em;float:left;width:100%;padding:0 !important;position:relative; font-size:1em;}
+#expertiselist li span {display:block; float:left;}
+#expertiselist li .aaecategory {width:50%;}
+#expertiselist li .subcats {width:25%;color:#666; font-weight:normal;}
+#expertiselist li .syndication {width:20%;font-size:.9em !important;}
+#expertiselist li .float-spinner {position:absolute; margin-top:0 !important;background:none;padding:.5em; left:-120px;top:0;background:#fdfeac;}
+
+
     #aoe_options {
         float: left !important;
         width: 350px;
@@ -1239,9 +1249,7 @@ h1, h2 {
 .recat form {margin:0;}
 .recatedit {font-weight:normal;}
 
-#expertiselist li {width:25em;position:relative;}
-#expertiselist li .syndication {font-size:.9em !important;position:absolute; top:0;right:0;}
-#expertiselist li .float-spinner {position:absolute; margin-left:1em;margin-top:0;background:none;padding:.2em;}
+
 
 
 #aoe_table a {
