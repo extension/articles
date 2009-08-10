@@ -6,8 +6,8 @@
 <h2><%= @page_title %></h2>
 
 <%= render(:partial => "partial/flashmessages") %>
-
-<h3>Subcategories<br /><%= link_to "Add Subcategory", :action => 'add_subcategory', :id => @category %></h3>
+<p><%= link_to "Add Subcategory", :action => 'add_subcategory', :id => @category %></p>
+<h3>Subcategories</h3>
 
 <% if !@category.children.empty? %>
     <ul>
