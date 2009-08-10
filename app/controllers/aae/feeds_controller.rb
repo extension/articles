@@ -5,6 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+#TODO: rewrite this.
 class Aae::FeedsController < ApplicationController
   skip_before_filter :login_required
   
