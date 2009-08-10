@@ -177,7 +177,7 @@ module LoginSystem
     if(!openiduser.nil?)
       returnstring += '<link rel="openid2.local_id openid.delegate" href="'+openiduser.openid_url+'" />'
     else
-      xrds_url = openid_xrds_header(openiduser)
+      xrds_url = openid_xrds_header
       returnstring += '<meta http-equiv="X-XRDS-Location" content="'+xrds_url+'" />'+"\n"
     end
     return returnstring
