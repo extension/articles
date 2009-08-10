@@ -45,7 +45,7 @@ class OpieController < ApplicationController
     if(!@openiduser.nil?)
       @publicattributes = @openiduser.public_attributes
     end
-    render(:layout => 'delegate')
+    render(:layout => 'peopledelegate')
   end
   
   def index
@@ -159,7 +159,7 @@ class OpieController < ApplicationController
       @publicattributes = @openiduser.public_attributes
     end
     @right_column = false
-    render(:layout => 'delegate')
+    render(:layout => 'publicdelegate')
   end
 
   def idp_xrds
