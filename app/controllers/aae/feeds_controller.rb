@@ -163,10 +163,10 @@ class Aae::FeedsController < ApplicationController
     
     render_submitted_questions
     
-    # rescue Exception => e
-    #   @error_message = "Error loading your feed"
-    #   render_error
-    #   return
+    rescue Exception => e
+      @error_message = "Error loading your feed"
+      render_error
+      return
   end
   
   def escalation
