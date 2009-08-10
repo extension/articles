@@ -159,7 +159,7 @@ class OpieController < ApplicationController
       @publicattributes = @openiduser.public_attributes
     end
     @right_column = false
-    render(:layout => 'application')
+    render(:layout => 'delegate')
   end
 
   def idp_xrds
