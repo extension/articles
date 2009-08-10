@@ -27,17 +27,12 @@ module ControllerExtensions
   end
 
   def check_openidurl_foruser(user,checkurl)
-    ActiveRecord::Base::logger.info "debug: checkurl = #{checkurl}"
-    ActiveRecord::Base::logger.info "debug: user.openid_url = #{user.openid_url}"
-    ActiveRecord::Base::logger.info "debug: user.openid_url(true) = #{user.openid_url(true)}"
-    
     if(user.openid_url == checkurl or user.openid_url == checkurl +'/')
       return true
     elsif(user.openid_url(true) == checkurl or user.openid_url(true) == checkurl +'/')
       return true
     else
-      # FIXME: we're lying
-      return true
+      return false
     end
   end
   
