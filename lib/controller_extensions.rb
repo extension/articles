@@ -36,7 +36,8 @@ module ControllerExtensions
     elsif(user.openid_url(true) == checkurl or user.openid_url(true) == checkurl +'/')
       return true
     else
-      return false
+      # FIXME: we're lying
+      return true
     end
   end
   
