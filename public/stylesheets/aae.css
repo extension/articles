@@ -281,9 +281,10 @@ h2 {color:#365591;font-size:1.8em;}
 #footer {width: 100%;max-width: 1000px;}
 
 #secondary {
-    float:left;
+    float:right;
     width:29%;
     margin:1em 1% 0 2%;
+    border:1px solid re;
 }
 
 #list_filter {
