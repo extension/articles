@@ -35,7 +35,7 @@
     <div id="search_for_answer">
     <h2>Don't see a good answer?</h2>
 
-    <% form_tag({:action => :show_duplicates}, {:method => 'get'}) do %>
+    <% form_tag(aae_answer_search_url, {:method => 'get'}) do %>
     
     <h4>Search again</h4>
     <p>
@@ -46,7 +46,7 @@
     <% end %>
     <h4>Or... Skip the search</h4>
     <p class="button2">
-      <%= link_to 'Write an Answer', { :action => 'answer_external_question', :squid => @submitted_question.id } %>       
+      <%= link_to 'Write an Answer', answer_question_url(:squid => @submitted_question.id) %>       
     </p>
     </div>
 
