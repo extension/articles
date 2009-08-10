@@ -117,7 +117,28 @@ class Aae::FeedsController < ApplicationController
   end
   
   def resolved
-    conditions_hash = list_view_feed
+    @filterparams = FilterParams.new(params)
+    if(!params[:id].nil?)
+      @filterparams.legacycategory = params[:id]
+    end
+    
+    filteroptions = {}
+    filteroptions[:category] = @filterparams.legacycategory
+    filteroptions[:county] = @filterparams.county
+    filteroptions[:location] = @filterparams.location
+    filteroptions[:source] = @filterparams.source
+    # skip the joins because we are including them already with listdisplayincludes
+    filteroptions[:skipjoins] = true
+    
+    linkoptions = {}
+    linkoptions[:controller] = 'aae/resolved'
+    linkoptions[:action] = :index
+    linkoptions[:type] = params[:type]
+    linkoptions[:category] = @filterparams.legacycategory
+    linkoptions[:county] = (@filterparams.county.nil? ? nil : filterparams.county.id)
+    linkoptions[:location] = (@filterparams.location.nil? ? nil : filterparams.location.id)
+    linkoptions[:source] = @filterparams.source
+    linkoptions[:only_path] = false
     
     case params[:type]
     when 'all'
@@ -136,42 +157,16 @@ class Aae::FeedsController < ApplicationController
     end
     
     feed_title_text = (sq_query_method == 'resolved') ? '' : " / #{sq_query_method}"
-    
-    if params[:id].nil?
-      @feed_title = "Resolved Ask an Expert Questions#{feed_title_text}" + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'aae/resolved', :action => :index, :location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type], :only_path => false)  
-      conditions_string = build_aae_conditions(conditions_hash[:cumulative_condition], DATE_EXPRESSION)    
-      @submitted_questions = SubmittedQuestion.send(sq_query_method, [], conditions_string).by_order
-    elsif params[:id] == Category::UNASSIGNED
-      @feed_title = "Resolved Uncategorized Ask an Expert Questions#{feed_title_text}" + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'aae/resolved', :action => :index, :id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type], :only_path => false)  
-      conditions_string = build_aae_conditions(conditions_hash[:cumulative_condition] + " and categories.id IS NULL", DATE_EXPRESSION)
-      @submitted_questions = SubmittedQuestion.send(sq_query_method, [:categories], conditions_string).by_order
-    else
-      category = Category.find_by_name(params[:id])
-      
-      if !category
-        category = Category.find_by_id(params[:id])
-      end
-      
-      if !category
-        @error_message = "Invalid category identifier"
-        render_error
-        return
-      else
-        @feed_title = "Resolved#{feed_title_text} #{category.name} Ask an Expert Questions" + conditions_hash[:cumulative_title]
-        @alternate_link = url_for(:controller => 'aae/resolved', :action => :index, :id => category.name, :location => params[:location], :county => params[:county], :source => params[:source], :type => params[:type], :only_path => false)
-        conditions_string = build_aae_conditions(conditions_hash[:cumulative_condition] + " and (categories.id = #{category.id} or categories.parent_id = #{category.id})", DATE_EXPRESSION)
-        @submitted_questions = SubmittedQuestion.send(sq_query_method, [:categories], conditions_string).by_order
-      end
-    end
+    @feed_title = build_feed_title(@filterparams,feed_title_text)
+    @alternative_link = url_for(linkoptions)  
+    @submitted_questions = SubmittedQuestion.send(sq_query_method).filtered(filteroptions).ordered('submitted_questions.created_at desc').resolved_since(DATE_EXPRESSION).listdisplayincludes 
     
     render_submitted_questions
     
-    rescue Exception => e
-      @error_message = "Error loading your feed"
-      render_error
-      return
+    # rescue Exception => e
+    #   @error_message = "Error loading your feed"
+    #   render_error
+    #   return
   end
   
   def escalation
@@ -205,6 +200,45 @@ class Aae::FeedsController < ApplicationController
   end
     
   private
+  
+  def build_feed_title(filterparams,additionaltitletext)
+    
+    if(filterparams.legacycategory.nil?)
+      returntitle = "Resolved Ask an Expert Questions#{additionaltitletext}"
+    elsif(filterparams.legacycategory.is_a?(String) and filterparams.legacycategory == Category::UNASSIGNED)
+      returntitle = "Resolved Uncategorized Ask an Expert Questions#{additionaltitletext}"
+    elsif(filterparams.legacycategory.is_a?(Category))
+      returntitle = "Resolved#{additionaltitletext} #{filterparams.legacycategory.name} Ask an Expert Questions"
+    else
+      returntitle = "Resolved Ask an Expert Questions#{additionaltitletext}"
+    end
+      
+    if(!filterparams.location.nil?)
+      returntitle += " from the location #{filterparams.location.abbreviation}"
+    end
+    
+    if(!filterparams.county.nil?)
+      returntitle += " in #{filterparams.county.name} county"
+    end
+    
+    if(!filterparams.source.nil?)
+      case filterparams.source
+      when 'pubsite'
+        returntitle += " from source www.extension.org"
+      when 'widget'
+        returntitle += " from Ask eXtension widgets source"
+      else
+        source_int = filterparams.source.to_i
+        if source_int != 0
+          widget = Widget.find(:first, :conditions => "id = #{source_int}")
+          returntitle += " from #{widget.name} widget source" if widget
+        end
+      end
+    end
+    
+    return returntitle
+  end
+    
   
   def list_view_feed
     ret_hash = {}

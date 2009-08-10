@@ -38,6 +38,7 @@ module ParamExtensions
         when :position    then Position.find_by_id(value)
         when :institution then Institution.find_by_id(value)
         when :user        then User.find_by_email_or_extensionid_or_id(value)
+        when :category    then Category.find_by_name_or_id(value)
         when :activity_application then ActivityApplication.find_by_id(value)
         else value
       end
@@ -58,6 +59,7 @@ module ParamExtensions
         when :position   then "Position.find_by_id(#{var_name})"
         when :institution then "Institution.find_by_id(#{var_name})"
         when :user       then "User.find_by_email_or_extensionid_or_id(#{var_name})"
+        when :category   then "Category.find_by_name_or_id(#{var_name})"
         when :activity_application then "ActivityApplication.find_by_id(#{var_name})"
         else nil
       end

@@ -26,6 +26,8 @@ class FilterParams < ParamExtensions::ParamsFilter
   wantsparameter :communitytype, :string
   wantsparameter :agreementstatus, :boolean
   wantsparameter :announcements, :boolean
+  wantsparameter :source, :string
+  wantsparameter :legacycategory, :category
 
   wantsparameter :order, :string
   wantsparameter :orderby, :string

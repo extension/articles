@@ -118,6 +118,18 @@ class Category < ActiveRecord::Base
     end
   end
   
+  # used for parameter searching
+  def self.find_by_name_or_id(value)
+    if(value.to_i != 0)
+      # assume id value
+      return self.find_by_id(value)
+    elsif(value == Category::UNASSIGNED)
+      return Category::UNASSIGNED
+    else
+      return self.find_by_name(value)
+    end
+  end
+  
   
   
 

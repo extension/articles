@@ -82,6 +82,7 @@ named_scope :listdisplayincludes, :include => [:categories, :assignee, :county, 
 
 # filter scope by various conditions
 named_scope :filtered, lambda {|options| filterconditions(options)}  
+named_scope :resolved_since, lambda{|date| {:conditions => "#{self.table_name}.resolved_at > #{date}"}}
 
 # TODO: see if this should be converged with the :ordered named scope used through the pubsite controllers
 named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_questions.resolved_at desc') }}
