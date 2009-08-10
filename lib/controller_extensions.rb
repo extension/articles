@@ -27,9 +27,9 @@ module ControllerExtensions
   end
 
   def check_openidurl_foruser(user,checkurl)
-    ActiveRecord::Base::logger.debug "debug: checkurl = #{checkurl}"
-    ActiveRecord::Base::logger.debug "debug: user.openid_url = #{user.openid_url}"
-    ActiveRecord::Base::logger.debug "debug: user.openid_url(true) = #{user.openid_url(true)}"
+    ActiveRecord::Base::logger.info "debug: checkurl = #{checkurl}"
+    ActiveRecord::Base::logger.info "debug: user.openid_url = #{user.openid_url}"
+    ActiveRecord::Base::logger.info "debug: user.openid_url(true) = #{user.openid_url(true)}"
     
     if(user.openid_url == checkurl or user.openid_url == checkurl +'/')
       return true
