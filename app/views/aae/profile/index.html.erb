@@ -45,7 +45,7 @@
     <h4>Click to browse by expertise </h4>
     <ul id="aoe_list">
         <% @user.categories.each do |cat| %>
-            <li><%= link_to(cat.full_name, {:controller => 'aae/search', :action => 'experts_by_category', :id => cat.id }) %></li>
+            <li><%= link_to(cat.full_name, {:controller => 'aae/search', :action => 'experts_by_category', :legacycategory => cat.id }) %></li>
         <% end %>
         
     </ul>

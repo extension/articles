@@ -28,7 +28,7 @@
                 <span class="subcats">&nbsp;</span>
             <% end %>
         
-        <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :id => cat.id %></span>
+        <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :legacycategory => cat.id %></span>
         <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving...</span>
         
         <%= observe_field("areas_of_expertise#{cat.id}",

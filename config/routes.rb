@@ -57,8 +57,9 @@ ActionController::Routing::Routes.draw do |map|
   map.aae_report_ham  'aae/question/report_ham', :controller => 'aae/question', :action => 'report_ham'
   
   map.namespace :aae do |aae|
-     aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }
-     aae.connect  'question/escalation_report/:id', :controller => :question, :action => :escalation_report
+     aae.connect 'search/experts_by_category/:legacycategory', :controller => :search, :action => :experts_by_category
+     aae.connect 'question/:action/:id', :controller => :question
+     aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }     
      aae.connect 'help', :controller => :help
      aae.connect 'feeds/:action/:legacycategory', :controller => :feeds
      aae.home '/', :controller => :home, :action => :index     

@@ -118,33 +118,25 @@ class Aae::SearchController < ApplicationController
       @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:id].to_i])
       if !@location
         flash[:failure] = "Invalid Location Entered"
-        redirect_to home_url
+        redirect_to incoming_url
       else
         @users = @location.users.find(:all, :order => "users.first_name")
       end
     else
       flash[:failure] = "Invalid Location Entered"
-      redirect_to home_url
+      redirect_to incoming_url
     end
   end
   
   def experts_by_category
     #if all users with an expertise in a category were selected
-    if params[:id]
-      @category = Category.find(:first, :conditions => ["id = ?", params[:id].strip])
-      
-      if @category
-        @category_name = @category.name
-        @users = @category.users
-        @combined_users = get_answering_users(@users) if @users.length > 0
-      else
-        flash[:failure] = "Invalid Category"
-        request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
-        return
-      end
+    if (!params[:legacycategory].nil? and @category = Category.find_by_name_or_id(params[:legacycategory]))
+      @category_name = @category.name
+      @users = @category.users
+      @combined_users = get_answering_users(@users) if @users.length > 0
     else
       flash[:failure] = "Invalid Category"
-      request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
+      request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
       return
     end
   end
