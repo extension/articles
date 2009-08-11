@@ -641,3 +641,5 @@ th.instit {width:30%;}
 .subtotal {padding-left:2em;background: #f3f3f3;}
 
 label select {display:block;}
+
+table .left {text-align:left; float:none;}
