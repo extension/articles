@@ -677,3 +677,5 @@ th.instit {width:30%;}
 .reportheader {background: #ccc; font-weight:bold;}
 /*.rowtotal {background: #eee;}*/
 .subtotal {padding-left:2em;background: #f3f3f3;}
+
+label select {display:block;}

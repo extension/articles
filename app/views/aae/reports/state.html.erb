@@ -36,7 +36,14 @@
 
 </div>
 
+<%options_array.insert(0, "")%>
+<label>Individual county reports</label>
 
+<select name="State">
+   <%= options_for_select(options_array) %>
+   </select>
+   <%= submit_tag "go" %>
+<% end %>
 
 <table id="state_activities_table" cellspacing="0">
     <caption><%= "General Activity" %></caption>

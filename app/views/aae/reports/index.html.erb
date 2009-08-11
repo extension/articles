@@ -1,63 +1,71 @@
 <% @page_title = "Select a Report" %>
 
 <div id="report_home">
+    
     <p id="activity_report">All Reports</p>
+    
     <h1>Select a Report</h1>
-	  <h2>Ask an Expert Individual Reports</h2>
-	    <ul>
-	<li class="complex"><label>Individual user reports</label>
-	    <% form_tag({:controller => 'reports', :action => 'locate'}, {:method => "get"}) do %>
-
-	      <input type="text" name="u" size="15" value="<%= @user_name %>" />
-	      <%= submit_tag "go" %>
-	    <% end %>
-	    (type in the user's login name)
-	</li>
-	<li class="complex">
+    <h2>Ask an Expert Individual Reports</h2>
+    
+    <% form_tag({:controller => 'reports', :action => 'locate'}, {:method => "get"}) do %>
+        <p>
+            <label>
+                Individual user reports (type in the user's login name)
+                <input type="text" name="u" size="15" value="<%= @user_name %>" />
+            </label>
+            <%= submit_tag "go" %>
+        </p>
+    <% end %>
+	
 	<% form_tag({:controller => 'reports', :action => :show_all_by_state }, {:method => "get"}) do %>
-	<% options_array= Array.new%>
-	<% @locs.each do |stobj|
-	      options_array << stobj.name
-	 %>      
+	    <% options_array= Array.new %>
+	        <% @locs.each do |stobj|
+	            options_array << stobj.name
+	        %>
+	    <% end %>
+	
+        <% options_array.insert(0, "") %>
+	
+	    <p>
+    	    <label>Individual state reports
+    	        <select name="State">
+                <%= options_for_select(options_array) %>
+                </select>
+            </label>
+            <%= submit_tag "go" %>
+        </p>
+	  
 	<% end %>
-	<%options_array.insert(0, "")%>
-	<label>Individual state reports</label>
+	
 
-	<select name="State">
-	   <%= options_for_select(options_array) %>
-	   </select>
-	   <%= submit_tag "go" %>
-	<% end %>
-	</li>
-	<li class="complex">
 	<% form_tag({:controller => 'reports', :action => :county_select }, {:method => "get"}) do %>
-	<% options_array= Array.new%>
-	<% @locs.each do |stobj|
-	      options_array << stobj.name
-	 %>      
+	    <% options_array= Array.new%>
+	        <% @locs.each do |stobj|
+                options_array << stobj.name
+            %>
+	    <% end %>
+	    <%options_array.insert(0, "")%>
+	    
+	    <p>
+	        <label>Individual county reports
+                <select name="State">
+                <%= options_for_select(options_array) %>
+                </select>
+            </label>
+            <%= submit_tag "go" %>
+        </p>
 	<% end %>
-	<%options_array.insert(0, "")%>
-	<label>Individual county reports</label>
 
-	<select name="State">
-	   <%= options_for_select(options_array) %>
-	   </select>
-	   <%= submit_tag "go" %>
-	<% end %>
-	</li>
-	</ul>
     <h2>Ask an Expert Activity</h2>
     
     <ul>
-        <li><%= link_to " General Overview",  {:action => 'activity'}, {:class => 'report_doc'} %>,
-	    <%= link_to "by State", { :action => 'activity_by_state', :FromDate => @dateFrom, :ToDate=> @dateTo}  %>, 
-		<%= link_to "by Institution", {:action => 'activity_by_institution', :FromDate => @dateFrom, :ToDate=> @dateTo}%>, 
-		<%= link_to "by Tag", { :action => 'sel_active_cats', :FromDate => @dateFrom, :ToDate=> @dateTo } %></li>
-	   
-       
-    
-
-       <li>Response Times: <%= link_to "Overall", :action => "response_times"%>, <%= link_to "by category",  :action => 'response_times_by_category' %>,  <%= link_to "by responder location", :action => 'response_times_by_location' %></li
+        <li>
+            <%= link_to " General Overview",  {:action => 'activity'}, {:class => 'report_doc'} %>,
+	        <%= link_to "by State", { :action => 'activity_by_state', :FromDate => @dateFrom, :ToDate=> @dateTo}  %>, 
+		    <%= link_to "by Institution", {:action => 'activity_by_institution', :FromDate => @dateFrom, :ToDate=> @dateTo}%>, 
+		    <%= link_to "by Tag", { :action => 'sel_active_cats', :FromDate => @dateFrom, :ToDate=> @dateTo } %>
+		</li>
+       <li>Response Times: <%= link_to "Overall", :action => "response_times"%>, <%= link_to "by category",  :action => 'response_times_by_category' %>,  <%= link_to "by responder location", :action => 'response_times_by_location' %></li>
        <li>Expertise (Content Area and Geographic Region): <%= link_to "Overview", :action => 'answerers'%></li>
        <li>Answered Question Responders by Category: <%= link_to "Responders", :action => "resolved_responders_by_category"%></li>
     </ul>
