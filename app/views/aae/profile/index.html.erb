@@ -49,6 +49,7 @@
         <% end %>
         
     </ul>
+    <% end %>
     
     <h2>Geographic Regions <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'aae/prefs', :action => 'location' %></small><% end %></h2>
     <p><%= @geo_info %> <% if @myid == @user.id %><%= link_to "edit", :controller => 'aae/prefs', :action => 'index' %><% end %></p>
@@ -69,5 +70,5 @@
             <li><%= ur %></li>
         <% end %>
     </ul>
-<% end %>
+
 </div>
