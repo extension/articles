@@ -47,12 +47,12 @@ end
 # loop through all the root categories that we might have escalations for
 Category.root_categories.each do |category|
    # question count
-   if(SubmittedQuestion.escalated(sincehours).filtered({:category => category}).count > 0)
-     #begin
+   if(SubmittedQuestion.escalated(@hours).filtered({:category => category}).count > 0)
+     begin
        NotificationMailer.deliver_aae_escalation_for_category(category,@hours)
-     #rescue
-    #   puts "AaE Escalation Email:  Unable to deliver escalation email for category #{category.name}"
-    # end
+     rescue
+       puts "AaE Escalation Email:  Unable to deliver escalation email for category #{category.name}"
+     end
    end
 end
 

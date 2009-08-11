@@ -7,7 +7,7 @@ visit:
 
 <% @submitted_questions_list.each do |question| %>
 ** Please visit the question page before you start working. **
-Link: <%= url_for(:controller => 'aae/question', :action => :index, :id => question.id, :only_path => false) %>
+Link: <%= aae_question_url(:id => question.id, :only_path => false) %>
 
 The question is:
 "<%= question.asked_question %>"
