@@ -1,6 +1,8 @@
 <% @page_title = "Questions Marked as Spam" %>
 <% @help_title = "Questions Marked as Spam" %>
 
+<h2><%= @page_title %></h2>
+
 <%= render(:partial => "aae/partial/submitted_questions") %>
 
 <% if @submitted_questions.length == 0 %>
