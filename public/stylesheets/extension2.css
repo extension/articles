@@ -357,9 +357,8 @@ h3.instructions {color: #829500; font-weight:normal;}
 .hiddenStructure {position:absolute;left:-5000px;display:hidden;}
 
 /* Template:calloutbox */
-.calloutbox {font-size:1.2em; padding:.7em; margin:0; border: 1px solid #ccc; background:#fffff2;}
-.calloutbox p {padding: 0; margin: 0 0 .9em;}
-.calloutbox * {font-size:inherit !important;}
+.calloutbox {font-size:1.2em; padding:1.2em; margin:0 0 1.5em; border: 1px solid #ccc; background:#fffff2;}
+.calloutbox p {font-size:1.2em !important;padding: 0; margin: 0 0 .9em;}
 
 /* Template:multipage */
 .multipage {background: #fff0bb; padding:0 1em;margin:0;}
