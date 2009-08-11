@@ -59,8 +59,8 @@ ActionController::Routing::Routes.draw do |map|
      aae.connect 'search/experts_by_category/:legacycategory', :controller => :search, :action => :experts_by_category
      aae.connect 'search/:action/:id', :controller => :search
      aae.connect 'question/escalation_report/:legacycategory', :controller => :question, :action => :escalation_report
-     aae.connect 'question/:action/:id', :controller => :question
      aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }     
+     aae.connect 'question/:action/:id', :controller => :question
      aae.connect 'help', :controller => :help
      aae.connect 'feeds/:action/:legacycategory', :controller => :feeds
      aae.home '/', :controller => :home, :action => :index     
