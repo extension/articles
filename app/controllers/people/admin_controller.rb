@@ -62,15 +62,6 @@ class People::AdminController < ApplicationController
     end    
   end
   
-  def show_config
-  end
-    
-  def reload_config
-    AppConfig.load_config
-    redirect_to :action => :show_config 
-  end
-  
-  
   # -----------------------------------
   # End - Sudo Actions
   # -----------------------------------

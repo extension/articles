@@ -8,6 +8,7 @@ class AdminController < ApplicationController
   before_filter :admin_required
   before_filter :check_purgatory
   before_filter :turn_off_right_column
+  before_filter :sudo_required, :only => [:reload_config]
 
   def index
     set_titletag("eXtension Pubsite Admin")
@@ -135,6 +136,14 @@ class AdminController < ApplicationController
     set_title('Edit Institution Public Options')
     set_titletag("Edit Institution - Pubsite Admin")
     @institution = Institution.find(params[:id])
+  end
+  
+  def show_config
+  end
+    
+  def reload_config
+    AppConfig.load_config
+    redirect_to :action => :show_config 
   end
   
 end

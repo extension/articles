@@ -1,7 +1,7 @@
 <% @page_title = "Program Configuration" %>
 <% @selected_tab = :admin %>
 
-<h2>Program Configuration <%= link_to "(reload)", :controller => 'admin', :action => 'reload_config' %></h2>
+<h2>Program Configuration <% if @currentuser.is_sudoer? %><%= link_to "(reload)", :controller => 'admin', :action => 'reload_config' %><% end %></h2>
 
 <table cellspacing="0" border="1">
     <tr>
@@ -19,7 +19,7 @@
 	<% else %>
     <tr>
         <td><%= key %></td>
-		<% if key != 'appkey'%>
+		<% if(key != 'appkey' and key != 'sessionsecret')%>
         	<td><%= value %></td>
        	<% else %>
     		<td>(not displayed)</td>
