@@ -388,7 +388,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 
 
 /*this was added to allow content to be cleared below images without clearing the rightsidebar*/
-#article {float:left;line-height: 1.8em;}
+#article {float:left;line-height: 1.8em; width:653px;}
 #article p {font-size:1.3em;}
 .content {width: 600px}
 .faq {width: 600px}
@@ -410,12 +410,14 @@ h3.instructions {color: #829500; font-weight:normal;}
 #content_css_reset dl dt dt {font-size:inherit;}
 #content_css_reset dl dd {font-size:1.2em;}
 #content_css_reset dl dd dd {font-size:inherit;}
+#content_css_reset table {background:#fff;}
 #content_css_reset table,
 #content_css_reset table caption {font-weight:bold;font-size:1em}
 #content_css_reset table th,
 #content_css_reset table td,
 #content_css_reset table th {color:#222;border: 1px solid #bbb;} 
 #content_css_reset table th {background:#ededed;}
+#content_css_reset table p {font-size:1em;}
 #content_css_reset th {white-space: normal;}
 #content_css_reset ul {padding:0 1.5em 0;overflow:auto;margin:0 0 1em;}
 #content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;}
