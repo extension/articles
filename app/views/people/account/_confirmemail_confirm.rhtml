@@ -30,7 +30,8 @@
     <p>Sometimes emails can get delayed up to a few hours. It's also possible for email to be mistakenly flagged as spam by your email provider. You may want to check your Spam or Junk folders to see if it's there.</p>
     
     <p>This email will be from:
-    <br /><code>eXtensionHelp@extension.org</code></p>
+        <br /><code><%= Rack::Utils.escape_html("#{AppConfig.configtable['emailsettings']['people']['name']} <#{AppConfig.configtable['emailsettings']['people']['address']}>") %> </code></p>
+
 
     <p>with the subject:
     <br /><code>eXtension Initiative: Please confirm your email address</code></p>
