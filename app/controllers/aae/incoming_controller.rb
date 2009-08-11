@@ -24,8 +24,6 @@ class Aae::IncomingController < ApplicationController
     @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
-    # skip the joins because we are including them already with listdisplayincludes
-    filteroptions.merge!({:skipjoins => true})
     @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
   end
   

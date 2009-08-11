@@ -47,7 +47,7 @@ end
 # loop through all the root categories that we might have escalations for
 Category.root_categories.each do |category|
    # question count
-   if(SubmittedQuestion.escalated(@hours,category).count > 0)
+   if(SubmittedQuestion.escalated(sincehours).filtered({:category => category}).count > 0)
      #begin
        NotificationMailer.deliver_aae_escalation_for_category(category,@hours)
      #rescue

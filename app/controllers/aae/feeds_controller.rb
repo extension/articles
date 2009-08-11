@@ -43,9 +43,7 @@ class Aae::FeedsController < ApplicationController
     filteroptions[:location] = @filterparams.location
     filteroptions[:source] = @filterparams.source
     filteroptions[:assignee] = @filterparams.person
-    # skip the joins because we are including them already with listdisplayincludes
-    filteroptions[:skipjoins] = true
-    
+        
     linkoptions = {}
     linkoptions[:controller] = 'aae/incoming'
     linkoptions[:action] = :index
@@ -92,8 +90,6 @@ class Aae::FeedsController < ApplicationController
     filteroptions[:location] = @filterparams.location
     filteroptions[:source] = @filterparams.source
     filteroptions[:assignee] = @filterparams.person
-    # skip the joins because we are including them already with listdisplayincludes
-    filteroptions[:skipjoins] = true
     
     linkoptions = {}
     linkoptions[:controller] = 'aae/my_assigned'
@@ -131,8 +127,6 @@ class Aae::FeedsController < ApplicationController
     filteroptions[:county] = @filterparams.county
     filteroptions[:location] = @filterparams.location
     filteroptions[:source] = @filterparams.source
-    # skip the joins because we are including them already with listdisplayincludes
-    filteroptions[:skipjoins] = true
     
     linkoptions = {}
     linkoptions[:controller] = 'aae/resolved'
@@ -175,32 +169,30 @@ class Aae::FeedsController < ApplicationController
   end
   
   def escalation
-    cutoff_date = Time.new - (24 * 60 * 60 * 2) # two days
+    @filterparams = FilterParams.new(params)
+    sincehours = AppConfig.configtable['aae_escalation_delta'] = 24
     
-    if !params[:id]
-      @feed_title = 'Escalated Ask an Expert Questions'
-      @alternate_link = url_for(:controller => 'aae/question', :action => 'escalation_report', :only_path => false)
-      @submitted_questions = SubmittedQuestion.find(:all, :conditions => ["status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and created_at < ?", cutoff_date], :order => 'created_at desc')
+    linkoptions = {}
+    linkoptions[:controller] = 'aae/question'
+    linkoptions[:action] = :escalation_report
+    # note, this is still "id" over in the non feed views, need to change!
+    linkoptions[:id] = @filterparams.legacycategory
+    linkoptions[:only_path] = false
+    
+    if(!@filterparams.legacycategory.nil?)
+      if(@filterparams.legacycategory.is_a?(Category))
+        @feed_title = "Escalated #{@filterparams.legacycategory.name} Ask an Expert Questions"
+      elsif(@filterparams.legacycategory.is_a?(String) and @filterparams.legacycategory == Category::UNASSIGNED)
+        @feed_title = "Escalated Uncategorized Ask an Expert Questions"
+      else
+        @feed_title = 'Escalated Ask an Expert Questions'
+      end
     else
-      category = Category.find_by_name(params[:id])
-      
-      if !category
-        category = Category.find_by_id(params[:id])
-      end
-      
-      if !category
-        @error_message = "Invalid category identifier."
-        render_error
-        return
-      else        
-        @feed_title = "Escalated #{category.name} Ask an Expert Questions"
-        @alternate_link = url_for(:controller => 'aae/incoming', :action => :index, :id => category.name, :only_path => false)
-
-        @submitted_questions = category.submitted_questions.find(:all, :conditions => ["status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and created_at < ?", cutoff_date], :order => 'created_at desc')
-      end
-      
+      @feed_title = 'Escalated Ask an Expert Questions'
     end
     
+    @alternate_link = url_for(linkoptions)  
+    @submitted_questions = SubmittedQuestion.escalated(sincehours).filtered({:category => @filterparams.legacycategory}).ordered('submitted_questions.created_at desc')
     render_submitted_questions    
   end
     

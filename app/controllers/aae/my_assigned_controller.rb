@@ -38,8 +38,6 @@ class Aae::MyAssignedController < ApplicationController
     
     # user's assigned submitted questions filtered by submitted question filter
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source, :assignee => @user}
-    # skip the joins because we are including them already with listdisplayincludes
-    filteroptions.merge!({:skipjoins => true})
     @filtered_submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).listdisplayincludes.ordered(@order)
       
     # total user's assigned submitted questions (unfiltered)

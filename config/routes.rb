@@ -39,7 +39,6 @@ ActionController::Routing::Routes.draw do |map|
   
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
   map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
-  #map.incoming_feed 'aae/feeds/incoming', :controller => 'aae/feeds', :action => 'incoming'
   map.my_assigned 'aae/my_assigned', :controller => 'aae/my_assigned', :action => 'index'
   map.my_resolved 'aae/my_resolved', :controller => 'aae/my_resolved', :action => 'index'
   map.resolved 'aae/resolved', :controller => 'aae/resolved', :action => 'index'
@@ -58,6 +57,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.namespace :aae do |aae|
      aae.connect 'search/experts_by_category/:legacycategory', :controller => :search, :action => :experts_by_category
+     aae.connect 'search/:action/:id', :controller => :search
      aae.connect 'question/:action/:id', :controller => :question
      aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }     
      aae.connect 'help', :controller => :help

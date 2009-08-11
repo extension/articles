@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-module Ask::FeedsHelper
+module Aae::FeedsHelper
   def get_date(date_var)
     return date_var if date_var.class == Time
     date_array = ParseDate.parsedate(date_var)

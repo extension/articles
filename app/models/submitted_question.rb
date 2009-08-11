@@ -82,8 +82,14 @@ named_scope :listdisplayincludes, :include => [:categories, :assignee, :county, 
 
 # filter scope by various conditions
 named_scope :filtered, lambda {|options| filterconditions(options)}  
-named_scope :resolved_since, lambda{|date| {:conditions => "#{self.table_name}.resolved_at > #{date}"}}
-named_scope :created_since, lambda{|date| {:conditions => "#{self.table_name}.created_at > #{date}"}}
+# both of these are expecting a "date expression" - not a date string
+named_scope :resolved_since, lambda{|date_expression| {:conditions => "#{self.table_name}.resolved_at > #{date_expression}"}}
+named_scope :created_since, lambda{|date_expression| {:conditions => "#{self.table_name}.created_at > #{date_expression}"}}
+
+named_scope :escalated, lambda{|sincehours| {
+  :conditions => "#{self.table_name}.created_at < '#{(Time.now.utc - sincehours.hours).to_s(:db)}' AND #{self.table_name}.status_state = #{STATUS_SUBMITTED} AND #{self.table_name}.spam = FALSE"  
+}}
+
 
 # TODO: see if this should be converged with the :ordered named scope used through the pubsite controllers
 named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_questions.resolved_at desc') }}
@@ -101,26 +107,6 @@ named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(tim
    
 #activity named scopes
 named_scope :date_subs, lambda { |date1, date2| { :conditions => (date1 && date2) ? [ "submitted_questions.created_at between ? and ?", date1, date2] : ""}}
-
-
-# escalated
-named_scope :escalated, lambda { |sincehours,category|
-  created_before = Time.now.utc - (sincehours).hours 
-  conditionsarray = []
-  if(!category.nil?)
-    conditionsarray << "(category_id = #{category.id} or categories.parent_id = #{category.id})"
-  end
-  conditionsarray << "external_app_id IS NOT NULL"
-  conditionsarray << "spam = FALSE"
-  conditionsarray << "status_state = #{SubmittedQuestion::STATUS_SUBMITTED}"
-  conditionsarray << "submitted_questions.created_at < '#{created_before.to_s(:db)}'"
-  if(!category.nil?)
-    {:joins => :categories, :conditions => ["#{conditionsarray.join(' AND ')}"], :order => "#{table_name}.created_at ASC"}
-  else
-    {:conditions => ["#{conditionsarray.join(' AND ')}"], :order => "#{table_name}.created_at ASC"}
-  end
-}
-
 
 # adds resolved date to submitted questions on save or update and also 
 # calls the function to log a new resolved submitted question event 
@@ -402,13 +388,11 @@ end
 #finds submitted_questions for views like incoming questions and resolved questions
 
 def self.filterconditions(options={})
-  joins = []
+  includes = []
   conditions = []
 
   if(!options[:category].nil?)
-    if(options[:skipjoins].nil? or !options[:skipjoins])
-      joins << :categories
-    end
+    includes << :categories
     if options[:category] == Category::UNASSIGNED
       conditions << "categories.id IS NULL"
     else
@@ -455,7 +439,7 @@ def self.filterconditions(options={})
     end
   end
 
-  return {:joins => joins.compact, :conditions => conditions.compact.join(' AND ')}
+  return {:include => includes.compact, :conditions => conditions.compact.join(' AND ')}
 end
 
 def self.find_uncategorized(*args)
