@@ -55,11 +55,6 @@ class WidgetController < ApplicationController
         #end
 
         if @submitted_question.save
-          if @submitted_question.assignee
-            if(AppConfig.configtable['send_aae_emails'])
-              #AskMailer.deliver_assigned(@submitted_question, url_for(aae_question_url(:id => @submitted_question.id)), request.host)
-            end
-          end
           render :layout => false
         else
           raise InternalError

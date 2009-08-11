@@ -58,23 +58,6 @@ class AppConfig
     # in hours
     @@configtable['aae_escalation_delta'] = 24
   
-  
-    #TODO : review these additional settings
-    #@@configtable['mail_system_from'] = "eXtensionHelp@extension.org"
-    #@@configtable['mail_system_to'] = "eXtensionHelp@extension.org"
-    #@@configtable['mail_to_help'] = "eXtensionHelp@extension.org"
-    
-    
-    # @@configtable['mail_errors_to'] = "eXtensionAppErrors@extension.org"
-    # @@configtable['mail_system_from'] = "eXtensionHelp@extension.org"
-    # @@configtable['mail_system_to'] = "eXtensionHelp@extension.org"
-    # @@configtable['mail_system_bcc'] = ''
-    # @@configtable['mail_to_help'] = "eXtensionHelp@extension.org"
-    # @@configtable['mail_to_bugs'] = "eXtensionBugs@extension.org"
-    # @@configtable['mail_system_noreply'] = "peoplemail@extension.org"
-    # @@configtable['mail_system_noreply_name'] = "eXtension People Notification - Do Not Reply"
-    # 
-  
     #Default sites
     @@configtable['faq_site'] = 'http://faq.extension.org'
     @@configtable['events_site'] = 'http://events.extension.org'
@@ -138,8 +121,7 @@ class AppConfig
     
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
-    @@configtable['send_escalation_report'] = true
-    @@configtable['send_aae_emails'] = true
+
   end
   
   def AppConfig.get_url_port
