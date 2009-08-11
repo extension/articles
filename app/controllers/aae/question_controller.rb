@@ -337,6 +337,7 @@ class Aae::QuestionController < ApplicationController
   def escalation_report
     @filterparams = FilterParams.new(params)
     sincehours = AppConfig.configtable['aae_escalation_delta'] = 24
+    @category = @filterparams.legacycategory
     @submitted_questions = SubmittedQuestion.escalated(sincehours).filtered({:category => @filterparams.legacycategory}).listdisplayincludes.ordered('submitted_questions.created_at asc')
   end
   
