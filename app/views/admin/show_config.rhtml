@@ -13,7 +13,16 @@
 		<% value.sort.each do |subkey,subvalue| %>
 	    <tr>
 	        <td><%= key %>:<%= subkey %></td>
-        	<td><%= subvalue %></td>
+	        <% if(subvalue.class == Hash) %>
+	            <td>
+	            <% subvalue.sort.each do |subsubkey,subsubvalue| %>
+	                <%= subsubkey %> : <%= subsubvalue %><br/>
+	            <% end %>
+	            </td>
+	        <% else %>
+        	    <td><%= subvalue %></td>
+    		<% end %>
+
 		</tr>
 		<% end %>
 	<% else %>
