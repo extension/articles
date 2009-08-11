@@ -1,6 +1,6 @@
 <%= render(:partial => 'partial/flashmessages') %>
 
-<% form_tag(:action=> "retire") do %>
+<% form_tag(:action=> "retire", :id => @showuser.login) do %>
     <label for="reason">Please provide a reason why you are disabling this account: </label>
     <input type="text" name="reason" id="reason" size="50" value=""/>
     <%= submit_tag 'Retire eXtensionID' %>  or <%= link_to 'Cancel', :controller => '/people/admin', :action => :showuser, :id => params[:id] %>
