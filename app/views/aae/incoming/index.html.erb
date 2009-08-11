@@ -8,10 +8,10 @@
 <% else %>
     <% if @category == Category::UNASSIGNED %>
          <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
-         <%= link_to 'feed', aae_incoming_feed_url(:id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source) %></span></h2> 
+         <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :incoming, :legacycategory => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source)) %></span></h2> 
     <% else %>
          <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
-         <%= link_to 'feed', aae_incoming_feed_url(:id => @category, :location => @location, :county => @county, :source => @source) %></span></h2>
+         <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :incoming, :legacycategory => @category, :location => @location, :county => @county, :source => @source)) %></span></h2>
     <% end %>
 <% end %>
 

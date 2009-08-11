@@ -10,14 +10,14 @@
 
 <% if !@category and !@location and !@county and !@source %>
     <h2><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
-    <%= link_to 'feed', resolved_feed_url(:type => params[:type]) %></span></h2>
+    <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :resolved, :type => params[:type])) %></span></h2>
 <% else %>
     <% if @category == Category::UNASSIGNED %>
          <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
-         <%= link_to 'feed', resolved_feed_url(:id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source, :type => params[:type]) %></span></h2> 
+         <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :resolved,:legacycategory => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source, :type => params[:type])) %></span></h2> 
     <% else %>
          <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
-         <%= link_to 'feed', resolved_feed_url(:id => @category, :location => @location, :county => @county, :source => @source, :type => params[:type]) %></span></h2>
+         <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :resolved,:legacycategory => @category, :location => @location, :county => @county, :source => @source, :type => params[:type])) %></span></h2>
     <% end %>
 <% end %>
 

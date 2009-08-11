@@ -3,14 +3,14 @@
 
 <% if !@category and !@location and !@county and !@source %>
     <h2><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
-    <%= link_to 'feed', my_assigned_feed_url(:user_id => @currentuser) %></span></h2>
+    <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :my_assigned, :person => @currentuser.id)) %></span></h2>
 <% else %>
     <% if @category == Category::UNASSIGNED %>
          <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
-         <%= link_to 'feed', my_assigned_feed_url(:user_id => @currentuser, :id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source) %></span></h2> 
+         <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :my_assigned, :person => @currentuser.id, :legacycategory => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source)) %></span></h2> 
     <% else %>
          <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
-         <%= link_to 'feed', my_assigned_feed_url(:user_id => @currentuser, :id => @category, :location => @location, :county => @county, :source => @source) %></span></h2>
+         <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :my_assigned, :person => @currentuser.id, :legacycategory => @category, :location => @location, :county => @county, :source => @source)) %></span></h2>
     <% end %>
 <% end %>
 

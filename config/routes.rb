@@ -41,10 +41,8 @@ ActionController::Routing::Routes.draw do |map|
   map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
   #map.incoming_feed 'aae/feeds/incoming', :controller => 'aae/feeds', :action => 'incoming'
   map.my_assigned 'aae/my_assigned', :controller => 'aae/my_assigned', :action => 'index'
-  map.my_assigned_feed 'aae/feeds/my_assigned', :controller => 'aae/feeds', :action => 'my_assigned'
   map.my_resolved 'aae/my_resolved', :controller => 'aae/my_resolved', :action => 'index'
   map.resolved 'aae/resolved', :controller => 'aae/resolved', :action => 'index'
-  map.resolved_feed 'aae/feeds/resolved', :controller => 'aae/feeds', :action => 'resolved'
   map.spam 'aae/spam_list', :controller => 'aae/spam_list', :action => 'index'
   map.view_search_question 'aae/search', :controller => 'aae/search', :action => 'index'
   map.answer_question 'aae/question/answer', :controller => 'aae/question', :action => 'answer'
@@ -62,8 +60,8 @@ ActionController::Routing::Routes.draw do |map|
      aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }
      aae.connect  'question/escalation_report/:id', :controller => :question, :action => :escalation_report
      aae.connect 'help', :controller => :help
-     aae.home '/', :controller => :home, :action => :index
-     aae.incoming_feed 'feeds/incoming/:id', :controller => :feeds, :action => :incoming, :requirements => { :id => /\d+/ }
+     aae.connect 'feeds/:action/:legacycategory', :controller => :feeds
+     aae.home '/', :controller => :home, :action => :index     
   end
   
   ### Widget iFrame ###

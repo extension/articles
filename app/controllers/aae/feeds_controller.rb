@@ -13,12 +13,14 @@ class Aae::FeedsController < ApplicationController
   DATE_EXPRESSION = "date_sub(curdate(), interval 7 day)"
   
   def expertise
-    @category = Category.find_by_id(params[:id])
-    if !@category
+    @filterparams = FilterParams.new(params)
+    if(@filterparams.legacycategory.nil?)
       @error_message = "Invalid category identifier"
-      render_error
-      return
+      return render_error
     end
+    
+    @category = @filterparams.legacycategory
+
     @alternate_link = url_for(:controller => 'aae/search', :action => 'experts_by_category', :id => @category.id, :only_path => false)
     @users = @category.get_experts(:select => "users.*, expertise_areas.created_at as added_at", 
                                    :order => "expertise_areas.created_at desc", 
@@ -33,81 +35,85 @@ class Aae::FeedsController < ApplicationController
   end
   
   def incoming
-    conditions_hash = list_view_feed
+    @filterparams = FilterParams.new(params)
     
-    if params[:id].nil?
-      @feed_title = 'Incoming Ask an Expert Questions' + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'aae/incoming', :action => 'index', :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)  
-      @submitted_questions = SubmittedQuestion.find(:all, :order => 'submitted_questions.created_at desc', :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.created_at > #{DATE_EXPRESSION}" + conditions_hash[:cumulative_condition])
-    elsif params[:id] == Category::UNASSIGNED
-      @feed_title = 'Incoming Uncategorized Ask an Expert Questions' + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'aae/incoming', :action => 'index', :id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)  
-      @submitted_questions = SubmittedQuestion.find_uncategorized(:all, :order => 'submitted_questions.created_at desc', :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.created_at > #{DATE_EXPRESSION}" + conditions_hash[:cumulative_condition])
-    else
-      category = Category.find_by_name(params[:id])
-      
-      if !category
-        category = Category.find_by_id(params[:id])
-      end
-      
-      if !category
-        @error_message = "Invalid category identifier"
-        render_error
-        return
-      else
-        @feed_title = "Incoming #{category.name} Ask an Expert Questions" + conditions_hash[:cumulative_title]
-        @alternate_link = url_for(:controller => 'aae/incoming', :action => 'index', :id => category.name, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)
-        @submitted_questions = SubmittedQuestion.find_with_category(category, :all, :order => 'submitted_questions.created_at desc',
-        :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.created_at > #{DATE_EXPRESSION}" + conditions_hash[:cumulative_condition])
-      end
-    end
+    filteroptions = {}
+    filteroptions[:category] = @filterparams.legacycategory
+    filteroptions[:county] = @filterparams.county
+    filteroptions[:location] = @filterparams.location
+    filteroptions[:source] = @filterparams.source
+    filteroptions[:assignee] = @filterparams.person
+    # skip the joins because we are including them already with listdisplayincludes
+    filteroptions[:skipjoins] = true
     
+    linkoptions = {}
+    linkoptions[:controller] = 'aae/incoming'
+    linkoptions[:action] = :index
+    linkoptions[:type] = params[:type]
+    # TODO: this is still "id" over in the non feed views, need to change!
+    linkoptions[:id] = @filterparams.legacycategory
+    linkoptions[:county] = (@filterparams.county.nil? ? nil : filterparams.county.id)
+    linkoptions[:location] = (@filterparams.location.nil? ? nil : filterparams.location.id)
+    linkoptions[:source] = @filterparams.source
+    linkoptions[:only_path] = false
+    
+    @feed_title = build_feed_title(@filterparams,"Incoming",'')
+    @alternate_link = url_for(linkoptions)  
+    
+    @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered('submitted_questions.created_at desc').created_since(DATE_EXPRESSION).listdisplayincludes 
+    
+  
     render_submitted_questions
     
     rescue Exception => e
+      logger.error(e.message)
       @error_message = "Error loading your feed"
       render_error
-      return 
+      return
   end
   
   def my_assigned
-    user_id = params[:user_id]
-    
-    if !user_id or user_id.strip == ''
-      @error_message = "Invalid User"
-      render_error
-      return
-    end
-    
-    conditions_hash = list_view_feed
-    
-    if params[:id].nil?
-      @feed_title = 'Ask an Expert Questions Assigned to Me' + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'aae/my_assigned', :action => :index, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)  
-      @submitted_questions = SubmittedQuestion.find(:all, :order => 'submitted_questions.created_at desc', :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.user_id = #{user_id}" + conditions_hash[:cumulative_condition])
-    elsif params[:id] == Category::UNASSIGNED
-      @feed_title = 'Incoming Uncategorized Ask an Expert Questions Assigned to Me' + conditions_hash[:cumulative_title]
-      @alternative_link = url_for(:controller => 'aae/my_assigned', :action => :index, :id => Category::UNASSIGNED, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)  
-      @submitted_questions = SubmittedQuestion.find_uncategorized(:all, :order => 'submitted_questions.created_at desc', :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.user_id = #{user_id}" + conditions_hash[:cumulative_condition])
-    else
-      category = Category.find_by_name(params[:id])
-      
-      if !category
-        category = Category.find_by_id(params[:id])
-      end
-      
-      if !category
-        @error_message = "Invalid category identifier"
-        render_error
-        return
-      else
-        @feed_title = "Incoming #{category.name} Ask an Expert Questions Assigned to Me" + conditions_hash[:cumulative_title]
-        @alternate_link = url_for(:controller => 'aae/my_assigned', :action => :index, :id => category.name, :location => params[:location], :county => params[:county], :source => params[:source], :only_path => false)
-        @submitted_questions = SubmittedQuestion.find_with_category(category, :all, :order => 'submitted_questions.created_at desc',
-        :conditions => "submitted_questions.status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and submitted_questions.user_id = #{user_id}" + conditions_hash[:cumulative_condition])
+    @filterparams = FilterParams.new(params)
+    if(@filterparams.person.nil?)
+      # check for use of 'user_id' param
+      if(!params[:user_id].nil?)
+        @filterparams.person = params[:user_id]
       end
     end
     
+    if(@filterparams.person.nil?)
+      @error_message = "Invalid account specified"
+      return render_error
+    end
+    
+    filteroptions = {}
+    filteroptions[:category] = @filterparams.legacycategory
+    filteroptions[:county] = @filterparams.county
+    filteroptions[:location] = @filterparams.location
+    filteroptions[:source] = @filterparams.source
+    filteroptions[:assignee] = @filterparams.person
+    # skip the joins because we are including them already with listdisplayincludes
+    filteroptions[:skipjoins] = true
+    
+    linkoptions = {}
+    linkoptions[:controller] = 'aae/my_assigned'
+    linkoptions[:action] = :index
+    linkoptions[:type] = params[:type]
+    # TODO: this is still "id" over in the non feed views, need to change!
+    linkoptions[:id] = @filterparams.legacycategory
+    linkoptions[:county] = (@filterparams.county.nil? ? nil : filterparams.county.id)
+    linkoptions[:location] = (@filterparams.location.nil? ? nil : filterparams.location.id)
+    linkoptions[:source] = @filterparams.source
+    # TODO: this is still "user_id" over in the non feed views, need to change!
+    linkoptions[:user_id] = @filterparams.person.id
+    linkoptions[:only_path] = false
+    
+    @feed_title = build_feed_title(@filterparams,"Assigned to #{@filterparams.person.fullname}",'')
+    @alternate_link = url_for(linkoptions)  
+    
+    @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered('submitted_questions.created_at desc').listdisplayincludes 
+    
+  
     render_submitted_questions
     
     rescue Exception => e
@@ -119,9 +125,6 @@ class Aae::FeedsController < ApplicationController
   
   def resolved
     @filterparams = FilterParams.new(params)
-    if(!params[:id].nil?)
-      @filterparams.legacycategory = params[:id]
-    end
     
     filteroptions = {}
     filteroptions[:category] = @filterparams.legacycategory
@@ -135,7 +138,8 @@ class Aae::FeedsController < ApplicationController
     linkoptions[:controller] = 'aae/resolved'
     linkoptions[:action] = :index
     linkoptions[:type] = params[:type]
-    linkoptions[:category] = @filterparams.legacycategory
+    # note, this is still "id" over in the non feed views, need to change!
+    linkoptions[:id] = @filterparams.legacycategory
     linkoptions[:county] = (@filterparams.county.nil? ? nil : filterparams.county.id)
     linkoptions[:location] = (@filterparams.location.nil? ? nil : filterparams.location.id)
     linkoptions[:source] = @filterparams.source
@@ -157,9 +161,9 @@ class Aae::FeedsController < ApplicationController
       raise
     end
     
-    feed_title_text = (sq_query_method == 'resolved') ? '' : " / #{sq_query_method}"
-    @feed_title = build_feed_title(@filterparams,feed_title_text)
-    @alternative_link = url_for(linkoptions)  
+    feed_title_text = (sq_query_method == 'resolved') ? '' : "/ #{sq_query_method}"
+    @feed_title = build_feed_title(@filterparams,'Resolved',feed_title_text)
+    @alternate_link = url_for(linkoptions)  
     @submitted_questions = SubmittedQuestion.send(sq_query_method).filtered(filteroptions).ordered('submitted_questions.created_at desc').resolved_since(DATE_EXPRESSION).listdisplayincludes 
     
     render_submitted_questions
@@ -202,16 +206,16 @@ class Aae::FeedsController < ApplicationController
     
   private
   
-  def build_feed_title(filterparams,additionaltitletext)
+  def build_feed_title(filterparams,label,additionaltitletext)
     
     if(filterparams.legacycategory.nil?)
-      returntitle = "Resolved Ask an Expert Questions#{additionaltitletext}"
+      returntitle = "#{label} Ask an Expert Questions #{additionaltitletext}"
     elsif(filterparams.legacycategory.is_a?(String) and filterparams.legacycategory == Category::UNASSIGNED)
-      returntitle = "Resolved Uncategorized Ask an Expert Questions#{additionaltitletext}"
+      returntitle = "#{label} Uncategorized Ask an Expert Questions #{additionaltitletext}"
     elsif(filterparams.legacycategory.is_a?(Category))
-      returntitle = "Resolved#{additionaltitletext} #{filterparams.legacycategory.name} Ask an Expert Questions"
+      returntitle = "#{label} #{additionaltitletext} #{filterparams.legacycategory.name} Ask an Expert Questions"
     else
-      returntitle = "Resolved Ask an Expert Questions#{additionaltitletext}"
+      returntitle = "#{label} Ask an Expert Questions #{additionaltitletext}"
     end
       
     if(!filterparams.location.nil?)
