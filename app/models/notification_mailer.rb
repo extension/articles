@@ -305,10 +305,10 @@ class NotificationMailer < ActionMailer::Base
      self.base_email(notification.notifytype_to_s)     
      @subject        = @subjectlabel+'Incoming question assigned to you'
      @recipients     = notification.user.email
-     assigned_at = @sent_on
-     respond_by = assigned_at +  48.hours
+     assigned_at = @sent_on     
+     respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
      urls = Hash.new
-     urls['question'] = url_for(:controller => 'aae/question', :action => :index, :id => submitted_question.id)
+     urls['question'] = aae_question_url(:id => submitted_question.id)
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
    end
@@ -321,8 +321,8 @@ class NotificationMailer < ActionMailer::Base
      @recipients     = notification.user.email
      assigned_at = @sent_on
      urls = Hash.new
-     urls['incoming'] = url_for(:controller => 'aae/incoming', :action => :index, :id => submitted_question.id)     
-     urls['question'] = url_for(:controller => 'aae/question', :action => :index, :id => submitted_question.id)
+     urls['incoming'] = incoming_url
+     urls['question'] = aae_question_url(:id => submitted_question.id)
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
    end
