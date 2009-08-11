@@ -7,7 +7,6 @@
 
 class Aae::SpamListController < ApplicationController
   layout 'aae'
-  before_filter :filter_string_helper
   before_filter :login_required
   
   def index
@@ -19,6 +18,7 @@ class Aae::SpamListController < ApplicationController
     #set the instance variables based on parameters  
     list_view
     set_filters
+    filter_string_helper
     
     # it does not matter if this question was previously reserved if it's spam
     @reserved_questions = []

@@ -7,7 +7,6 @@
 
 class Aae::MyAssignedController < ApplicationController
   layout 'aae'
-  before_filter :filter_string_helper
   before_filter :login_required
   
   def index
@@ -19,6 +18,7 @@ class Aae::MyAssignedController < ApplicationController
     #set the instance variables based on parameters
     list_view
     set_filters
+    filter_string_helper
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
     if params[:id]
       @user = User.find_by_id(params[:id])

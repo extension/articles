@@ -7,7 +7,6 @@
 
 class Aae::ResolvedController < ApplicationController
   layout 'aae'
-  before_filter :filter_string_helper
   before_filter :login_required
   
   def index
@@ -19,6 +18,7 @@ class Aae::ResolvedController < ApplicationController
     # set the instance variables based on parameters
     list_view(true)
     set_filters
+    filter_string_helper
     
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
     

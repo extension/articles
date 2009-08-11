@@ -7,7 +7,6 @@
 
 class Aae::QuestionController < ApplicationController
   layout 'aae'
-  before_filter :filter_string_helper
   before_filter :login_required
  
   def index

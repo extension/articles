@@ -7,7 +7,6 @@
 
 class Aae::SearchController < ApplicationController
   layout 'aae'
-  before_filter :filter_string_helper
   before_filter :login_required, :except => [:get_counties]
   
   def index

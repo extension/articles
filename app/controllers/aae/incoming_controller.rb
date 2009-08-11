@@ -7,7 +7,6 @@
 
 class Aae::IncomingController < ApplicationController
   layout 'aae'
-  before_filter :filter_string_helper
   before_filter :login_required
 
   # Lists unresolved ask an expert questions
@@ -20,6 +19,7 @@ class Aae::IncomingController < ApplicationController
     #set the instance variables based on parameters
     list_view
     set_filters
+    filter_string_helper
   
     @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
