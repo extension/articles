@@ -6,4 +6,7 @@ demo:
     host: <%= "#{app_host}.demo.extension.org" %>
     tag: trunk
     ssh_port: 24 
-
+prod:
+    deploy_dir: <%= "/services/apache/vhosts/#{app_host}.extension.org/railsroot" %>
+    host: <%= "#{app_host}.extension.org" %>
+    ssh_port: 22
