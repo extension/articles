@@ -234,7 +234,9 @@ form legend {
     padding:0;
     margin:0 1em 0 0;
     float:left;
+    clear:left;
     list-style:none;
+    width:100%;
 }
 #date_range_right {
 	position: relative;

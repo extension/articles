@@ -33,7 +33,7 @@
 <dl class="report">
    
    <dt>Questions answered from the Public (Ask an Expert)</dt>
-    <dd><%= link_to @uresolved, :action => "display_questions", :user => @user.id, :descriptor => "Answered as an Expert" , :olink => "Answered as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uresolved %></dd>
+    <dd><%= link_to "#{@uresolved} total", :action => "display_questions", :user => @user.id, :descriptor => "Answered as an Expert" , :olink => "Answered as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uresolved %></dd>
     
      
 </dl>	
