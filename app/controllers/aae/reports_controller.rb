@@ -208,13 +208,12 @@ class Aae::ReportsController < ApplicationController
          
          def locate
             if params[:u].nil?
-              flash[:failure] = "No Username entered."
-              # needs to be changed to go "back"
-              redirect_to :controller => 'main', :action => 'welcome'
+              flash[:failure] = "No Username entered. Please enter a usename and try again."
+              redirect_to :controller => 'reports', :action => 'user_report'
               return
             elsif params[:u].strip == ''
-              flash[:failure] = "No Username entered."
-              redirect_to :controller => 'main', :action => 'welcome'
+              flash[:failure] = "No Username entered. Please enter a usename and try again."
+              redirect_to :controller => 'reports', :action => 'user_report'
               return
             end
 
@@ -233,7 +232,7 @@ class Aae::ReportsController < ApplicationController
               if !user.nil?
                 redirect_to :action => 'user', :id=>user.id
               else
-                flash[:failure] = "Username unrecognized."   
+                flash[:failure] = "We can't find any record for <strong>#{params[:u]}</strong>. Please check the username spelling and try again."
                 redirect_to :controller => 'reports', :action => 'user_report'
               end   
             end
