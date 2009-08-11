@@ -238,37 +238,7 @@ form legend {
     list-style:none;
     width:100%;
 }
-#date_range_right {
-	position: relative;
-	float: left;
-	width: 48%;
-	margin-bottom: 1.65em;
-}
-#date_range_right form, 
-#date_range_right p {
-	position: relative;
-	float: left;
-	width: 100%;
-}
-#date_range_right span {
-    margin: 0 .25em 0 .5em;
-}
-#date_range_right input {
-    margin: 0 0 0 .65em;
-}
-#date_range_right a {
-    color: blue;
-}
-#date_range_right #calendar {
-    padding-left: 30px;
-    background: #fff url(/images/calendar_view_week.png) 6px 50% no-repeat;
-}
-#date_range_right div {
-    background:#f1f1f1;
-    border-bottom: 2px solid #e0e0e0;
-    padding: 0 .65em     .35em;
-    float: left;
-}
+
 .zero {color: #888;}
 #leftcal {width:48%;float:left;margin-top:1em;}
 #rightcal {width:35%;float:right;}
@@ -277,13 +247,10 @@ form legend {
 .dyndate {margin-top:1em;margin-bottom:.3em;}
 .datecompare {font-family: Arial, Helvetica, sans-serif;margin-bottom:2em;}
 
-.easyread {padding:.1em;}
-.nomargins {margin:0;}
 
 /* Reports */
 #report_state_home {width: 60em;}
-#report_home {width: 40em;}
-#report_home li {list-style:none !important;}
+
 #report li {list-style:none !important;}
 
 #report #search_parms {
@@ -299,11 +266,8 @@ form legend {
     border-bottom: 4px solid #eee;
 }
 #report_home label {
-/*    font-weight:bold;*/
+    font-weight:bold;
     color:#333;
-}
-#report_home ul li.complex {
-    margin-bottom: 1em;
 }
 
 
@@ -316,10 +280,6 @@ form legend {
     border-bottom: 1px solid #ccc;
 /*    background: #86a8c9;*/
     padding-left: 0;
-}
-#report_home ul {
-    margin-bottom:1.5em;
-    margin-left:.5em;
 }
 #report h1 {
     font-size: 1.8em;
