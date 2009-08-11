@@ -191,7 +191,7 @@ class Aae::FeedsController < ApplicationController
     end
     
     @alternate_link = url_for(linkoptions)  
-    @submitted_questions = SubmittedQuestion.escalated(sincehours).filtered({:category => @filterparams.legacycategory}).ordered('submitted_questions.created_at desc')
+    @submitted_questions = SubmittedQuestion.escalated(sincehours).filtered({:category => @filterparams.legacycategory}).listdisplayincludes.ordered('submitted_questions.created_at desc')
     render_submitted_questions    
   end
     
