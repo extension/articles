@@ -19,12 +19,12 @@ class AccountMailer < ActionMailer::Base
   def base_email
     AccountMailer.set_url_options
     @sent_on  = Time.now
-    if(AppConfig.configtable['mail_label'] == 'production')
+    if(AppConfig.configtable['app_location'] == 'production')
       @isdemo = false
       @subjectlabel = "eXtension Initiative: "
     else
       @isdemo = true
-      @subjectlabel = "eXtension Initiative (#{AppConfig.configtable['mail_label']}): "
+      @subjectlabel = "eXtension Initiative (#{AppConfig.configtable['app_location']}): "
     end
     
     # set up the reply, bcc, and from name based on the notification type

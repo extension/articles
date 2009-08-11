@@ -16,7 +16,6 @@ class AppConfig
     @@configtable['app_location'] = "localdev"
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
     @@configtable['sudoers'] = Hash.new
-    @@configtable['mail_label'] = "localdev"
     
     # possibly return different ones for demo?    
     @@configtable['openid_url_prefix'] = {}
