@@ -11,7 +11,7 @@
         <% end%>
         
         <% if (@date1 && @date2) %>
-            <% form_tag :action => @repaction do %>
+            <% form_tag ({:action => @repaction, :id => ((@user) ? @user.id : nil) }) do %>
                 <%= submit_tag 'Show all'%>
                 <% end%>
         <% end %>
