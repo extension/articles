@@ -101,7 +101,7 @@ class Invitation < ActiveRecord::Base
   
   def generate_token
     randval = rand
-    self.token = Digest::SHA1.hexdigest(AppConfig.configtable['appkey']+self.email+randval.to_s)
+    self.token = Digest::SHA1.hexdigest(AppConfig.configtable['sessionsecret']+self.email+randval.to_s)
   end
   
 

@@ -14,7 +14,6 @@ class AppConfig
   def AppConfig.default_config
     @@configtable.clear
     @@configtable['app_location'] = "localdev"
-    @@configtable['appkey'] = Digest::SHA1.hexdigest("no app key present")
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
     @@configtable['sudoers'] = Hash.new
     @@configtable['mail_label'] = "localdev"

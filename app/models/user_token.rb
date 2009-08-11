@@ -41,7 +41,7 @@ class UserToken < ActiveRecord::Base
   
   def generate_token
     randval = rand
-    self.token = Digest::SHA1.hexdigest(AppConfig.configtable['appkey']+self.user.email+self.user.password+randval.to_s)  
+    self.token = Digest::SHA1.hexdigest(AppConfig.configtable['sessionsecret']+self.user.email+self.user.password+randval.to_s)  
   end  
   
   def set_expires
