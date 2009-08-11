@@ -58,7 +58,7 @@
     <h4>Click to browse by location</h4>
     <ul id="aoe_list">
         <% @user.expertise_locations.each do |loc| %>
-            <li><%= link_to(loc.abbreviation, {:controller => 'aae/prefs', :action => 'location', :id => loc.fipsid }) %></li>
+            <li><%= link_to(loc.abbreviation, {:controller => 'aae/search', :action => 'experts_by_location', :id => loc.fipsid }) %></li>
         <% end %>
     </ul>
     <% end %>
