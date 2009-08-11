@@ -102,7 +102,7 @@ class People::SignupController < ApplicationController
     end
     
     if(params[:token].nil?)
-      return render(:template => 'signup/confirm')
+      return render(:template => 'people/signup/confirm')
     end
     
     if (params[:token] == 'send')

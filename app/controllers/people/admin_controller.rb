@@ -110,18 +110,18 @@ class People::AdminController < ApplicationController
               flash.now[:failure] = 'Failed to retire user, reported status may not be correct'      
             end
             @events = UserEvent.find(:all, :order => 'created_at desc', :conditions => ['login = :login or login = :email', { :login => @showuser.login, :email => @showuser.email }])
-            render :template => 'admin/showuser'
+            render :template => 'people/admin/showuser'
           end
         else
           # show form
         end
       else
         flash.now[:warning] = 'User not found.'      
-        render :template => 'admin/showuser'
+        render :template => 'people/admin/showuser'
       end
     else
       flash.now[:warning] = 'Missing user.'      
-      render :template => 'admin/showuser'
+      render :template => 'people/admin/showuser'
     end    
   end
     
@@ -141,18 +141,18 @@ class People::AdminController < ApplicationController
               flash.now[:failure] = 'Failed to enable user, reported status may not be correct'      
             end
             @events = UserEvent.find(:all, :order => 'created_at desc', :conditions => ['login = :login or login = :email', { :login => @showuser.login, :email => @showuser.email }])
-            render :template => 'admin/showuser'
+            render :template => 'people/admin/showuser'
           end
         else
           # show form
         end
       else
         flash.now[:warning] = 'User not found.'      
-        render :template => 'admin/showuser'
+        render :template => 'people/admin/showuser'
       end
     else
       flash.now[:warning] = 'Missing user.'      
-      render :template => 'admin/showuser'
+      render :template => 'people/admin/showuser'
     end    
   end
   
@@ -172,18 +172,18 @@ class People::AdminController < ApplicationController
                 flash.now[:failure] = 'Failed to mark email invalid, reported status may not be correct'      
               end
               @events = UserEvent.find(:all, :order => 'created_at desc', :conditions => ['login = :login or login = :email', { :login => @showuser.login, :email => @showuser.email }])
-              render :template => 'admin/showuser'
+              render :template => 'people/admin/showuser'
             end
           else
             # show form
           end
       else
         flash.now[:warning] = 'User not found.'      
-        render :template => 'admin/showuser'
+        render :template => 'people/admin/showuser'
       end
     else
       flash.now[:warning] = 'Missing user.'      
-      render :template => 'admin/showuser'
+      render :template => 'people/admin/showuser'
     end    
   end
   
@@ -428,11 +428,11 @@ class People::AdminController < ApplicationController
           :conditions => ['login = :login or login = :email', { :login => @showuser.login, :email => @showuser.email }])
       else
         flash[:warning] = 'User not found.'      
-        render :template => 'admin/showuser'
+        render :template => 'people/admin/showuser'
       end
     else
       flash[:warning] = 'Missing user.'      
-      render :template => 'admin/showuser'
+      render :template => 'people/admin/showuser'
     end
   end
   
@@ -473,11 +473,11 @@ class People::AdminController < ApplicationController
           flash.now[:success] = 'Unable to change email address for ' + @showuser.login + '.'
         end
         @events = UserEvent.find(:all, :order => 'created_at desc', :conditions => ['login = :login or login = :email', { :login => @showuser.login, :email => @showuser.email }])
-        render :template => 'admin/showuser'        
+        render :template => 'people/admin/showuser'
       end
     else
       flash.now[:warning] = 'User not found.'      
-      render :template => 'admin/index'
+      render :template => 'people/admin/index'
     end  
   end  
   
