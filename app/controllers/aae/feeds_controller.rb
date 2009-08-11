@@ -175,8 +175,7 @@ class Aae::FeedsController < ApplicationController
     linkoptions = {}
     linkoptions[:controller] = 'aae/question'
     linkoptions[:action] = :escalation_report
-    # note, this is still "id" over in the non feed views, need to change!
-    linkoptions[:id] = @filterparams.legacycategory
+    linkoptions[:legacycategory] = @filterparams.legacycategory
     linkoptions[:only_path] = false
     
     if(!@filterparams.legacycategory.nil?)

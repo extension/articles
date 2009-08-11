@@ -335,15 +335,9 @@ class Aae::QuestionController < ApplicationController
   end
   
   def escalation_report
-    cutoff_date = Time.new - (24 * 60 * 60 * 2) # two days
-     
-    if params[:id] == Category::UNASSIGNED
-      @submitted_questions = SubmittedQuestion.find_uncategorized(:all, :conditions => ["external_app_id IS NOT NULL and spam = false and status_state = ? and submitted_questions.created_at < ?", SubmittedQuestion::STATUS_SUBMITTED, cutoff_date], :order => 'submitted_questions.created_at desc')
-    elsif params[:id] and (category = Category.find(:first, :conditions => ["categories.id = ?", params[:id]]))
-      @submitted_questions = SubmittedQuestion.find_with_category(category, :all, :conditions => ["external_app_id IS NOT NULL and spam = false and status_state = ? and submitted_questions.created_at < ?", SubmittedQuestion::STATUS_SUBMITTED, cutoff_date], :order => 'submitted_questions.created_at desc')
-    else
-      @submitted_questions = SubmittedQuestion.find(:all, :conditions => ["external_app_id IS NOT NULL and spam = false and status_state = ? and created_at < ?", SubmittedQuestion::STATUS_SUBMITTED, cutoff_date], :order => 'created_at desc')
-    end
+    @filterparams = FilterParams.new(params)
+    sincehours = AppConfig.configtable['aae_escalation_delta'] = 24
+    @submitted_questions = SubmittedQuestion.escalated(sincehours).filtered({:category => @filterparams.legacycategory}).ordered('submitted_questions.created_at asc')
   end
   
 end
