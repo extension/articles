@@ -11,6 +11,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.namespace :people do |people|
     people.welcome '/', :controller => :welcome, :action => :home
+    people.notice  'welcome/notice', :controller => :welcome, :action => :notice
     people.connect 'colleagues/:action', :controller => :colleagues
     people.connect 'admin/:action', :controller => :admin
     people.connect 'signup', :controller => :signup, :action => :new

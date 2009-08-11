@@ -141,7 +141,7 @@ module LoginSystem
   end  
   
   def access_notice
-    redirect_to :controller=>:welcome, :action =>:notice
+    redirect_to people_notice_url
   end
   
   # store current uri in  the session.
