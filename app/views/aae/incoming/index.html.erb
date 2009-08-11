@@ -4,14 +4,14 @@
 
 <% if !@category and !@location and !@county and !@source %>
     <h2><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
-    <%= link_to 'feed', incoming_feed_url %></span></h2>
+    <%= link_to 'feed', :controller => 'aae/feeds', :action => :incoming %></span></h2>
 <% else %>
     <% if @category == Category::UNASSIGNED %>
          <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
-         <%= link_to 'feed', incoming_feed_url(:id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source) %></span></h2> 
+         <%= link_to 'feed', aae_incoming_feed_url(:id => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source) %></span></h2> 
     <% else %>
          <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
-         <%= link_to 'feed', incoming_feed_url(:id => @category, :location => @location, :county => @county, :source => @source) %></span></h2>
+         <%= link_to 'feed', aae_incoming_feed_url(:id => @category, :location => @location, :county => @county, :source => @source) %></span></h2>
     <% end %>
 <% end %>
 

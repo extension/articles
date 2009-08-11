@@ -39,7 +39,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
   map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
-  map.incoming_feed 'aae/feeds/incoming', :controller => 'aae/feeds', :action => 'incoming'
+  #map.incoming_feed 'aae/feeds/incoming', :controller => 'aae/feeds', :action => 'incoming'
   map.my_assigned 'aae/my_assigned', :controller => 'aae/my_assigned', :action => 'index'
   map.my_assigned_feed 'aae/feeds/my_assigned', :controller => 'aae/feeds', :action => 'my_assigned'
   map.my_resolved 'aae/my_resolved', :controller => 'aae/my_resolved', :action => 'index'
@@ -63,6 +63,7 @@ ActionController::Routing::Routes.draw do |map|
      aae.connect  'question/escalation_report/:id', :controller => :question, :action => :escalation_report
      aae.connect 'help', :controller => :help
      aae.home '/', :controller => :home, :action => :index
+     aae.incoming_feed 'feeds/incoming/:id', :controller => :feeds, :action => :incoming, :requirements => { :id => /\d+/ }
   end
   
   ### Widget iFrame ###
