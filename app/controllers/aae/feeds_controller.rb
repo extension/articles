@@ -97,8 +97,8 @@ class Aae::FeedsController < ApplicationController
     linkoptions[:type] = params[:type]
     # TODO: this is still "id" over in the non feed views, need to change!
     linkoptions[:id] = @filterparams.legacycategory
-    linkoptions[:county] = (@filterparams.county.nil? ? nil : filterparams.county.id)
-    linkoptions[:location] = (@filterparams.location.nil? ? nil : filterparams.location.id)
+    linkoptions[:county] = (@filterparams.county.nil? ? nil : @filterparams.county.id)
+    linkoptions[:location] = (@filterparams.location.nil? ? nil : @filterparams.location.id)
     linkoptions[:source] = @filterparams.source
     # TODO: this is still "user_id" over in the non feed views, need to change!
     linkoptions[:user_id] = @filterparams.person.id
@@ -134,8 +134,8 @@ class Aae::FeedsController < ApplicationController
     linkoptions[:type] = params[:type]
     # note, this is still "id" over in the non feed views, need to change!
     linkoptions[:id] = @filterparams.legacycategory
-    linkoptions[:county] = (@filterparams.county.nil? ? nil : filterparams.county.id)
-    linkoptions[:location] = (@filterparams.location.nil? ? nil : filterparams.location.id)
+    linkoptions[:county] = (@filterparams.county.nil? ? nil : @filterparams.county.id)
+    linkoptions[:location] = (@filterparams.location.nil? ? nil : @filterparams.location.id)
     linkoptions[:source] = @filterparams.source
     linkoptions[:only_path] = false
     
