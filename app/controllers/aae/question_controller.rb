@@ -8,6 +8,7 @@
 class Aae::QuestionController < ApplicationController
   layout 'aae'
   before_filter :login_required
+  before_filter :check_purgatory  
  
   def index
     @submitted_question = SubmittedQuestion.find_by_id(params[:id])

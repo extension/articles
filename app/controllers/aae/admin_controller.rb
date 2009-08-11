@@ -7,7 +7,7 @@
 
 class Aae::AdminController < ApplicationController
   before_filter :login_required
-  skip_before_filter :get_tag
+  before_filter :check_purgatory
   skip_before_filter :unescape_params
   
   layout 'aae'

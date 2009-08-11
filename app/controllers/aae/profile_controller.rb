@@ -6,10 +6,10 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Aae::ProfileController < ApplicationController
-  
   layout 'aae'
   before_filter :login_required
-  
+  before_filter :check_purgatory  
+    
   def index
     if params[:id].nil? || params[:id].length == 0
       flash[:failure] = "No eXtension ID specified.";

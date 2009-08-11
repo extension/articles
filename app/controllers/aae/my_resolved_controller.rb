@@ -8,6 +8,7 @@
 class Aae::MyResolvedController < ApplicationController
   layout 'aae'
   before_filter :login_required
+  before_filter :check_purgatory
   
   def index
     if err_msg = params_errors

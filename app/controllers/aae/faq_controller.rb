@@ -6,9 +6,9 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Aae::FaqController < ApplicationController
-  
   layout 'aae'
   before_filter :login_required
+  before_filter :check_purgatory
   protect_from_forgery :except => [:create] 
   
   # Display the "new FAQ form" when resolving an "ask an expert" question

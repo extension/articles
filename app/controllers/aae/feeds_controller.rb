@@ -6,9 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 #TODO: rewrite this.
-class Aae::FeedsController < ApplicationController
-  skip_before_filter :login_required
-  
+class Aae::FeedsController < ApplicationController  
   ENTRY_COUNT = 25
   DATE_EXPRESSION = "date_sub(curdate(), interval 7 day)"
   

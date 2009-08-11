@@ -8,6 +8,7 @@
 class People::FeedsController < ApplicationController
   include People::ActivityDisplayHelper
   before_filter :login_required, :only => [:index, :institutions, :locations, :positions,:applications]
+  before_filter :check_purgatory, :only => [:index, :institutions, :locations, :positions,:applications]  
   
   before_filter :validate_feedkey, :except => [:index,:institutions, :locations, :positions,:invalid,:applications]
   ATOM_FEED_LIMIT = 100  # TODO: paginated atom feeds!

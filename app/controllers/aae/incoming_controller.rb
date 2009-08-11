@@ -8,6 +8,7 @@
 class Aae::IncomingController < ApplicationController
   layout 'aae'
   before_filter :login_required
+  before_filter :check_purgatory
 
   # Lists unresolved ask an expert questions
   def index 

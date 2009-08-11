@@ -7,7 +7,9 @@
 
 class Aae::WidgetsController < ApplicationController
   before_filter :login_required, :except => [:index, :about, :documentation, :who, :login_redirect]
+  before_filter :check_purgatory, :except => [:index, :about, :documentation, :who, :login_redirect]
   before_filter :login_optional, :only => [:index, :about, :documentation, :who]
+  
   layout 'widgets'
   
   def index

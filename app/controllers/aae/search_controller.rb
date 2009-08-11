@@ -8,6 +8,7 @@
 class Aae::SearchController < ApplicationController
   layout 'aae'
   before_filter :login_required, :except => [:get_counties]
+  before_filter :check_purgatory, :except => [:get_counties]  
   
   def index
     @aae_search_item = SearchQuestion.find_by_entrytype_and_foreignid(params[:type], params[:qid])
