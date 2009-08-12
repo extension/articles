@@ -208,11 +208,11 @@ class Aae::ReportsController < ApplicationController
          
          def locate
             if params[:u].nil?
-              flash[:failure] = "No Username entered. Please enter a usename and try again."
+              flash[:failure] = "No Username entered. Please enter a username and try again."
               redirect_to :controller => 'reports', :action => 'user_report'
               return
             elsif params[:u].strip == ''
-              flash[:failure] = "No Username entered. Please enter a usename and try again."
+              flash[:failure] = "No Username entered. Please enter a username and try again."
               redirect_to :controller => 'reports', :action => 'user_report'
               return
             end
