@@ -28,10 +28,5 @@ config.action_view.cache_template_loading            = true
 # config.threadsafe!
 
 # email settings
-config.action_mailer.delivery_method = :smtp
+config.action_mailer.delivery_method = :sendmail
 config.action_mailer.default_charset = "utf-8"
-config.action_mailer.smtp_settings = {
-  :address => "sendmail.extension.org",
-  :port => 25,
-  :domain => "extension.org"
-}
