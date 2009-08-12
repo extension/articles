@@ -385,7 +385,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 -----------------------------------------------------------------------------*/
 #second_column_content {padding: 0; margin: 10px 0  0; width: 240px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
 #second_column_content ul {padding-left:20px;}
-.primarycolumn {width:400px;}
+.primarycolumn {width:400px !important;}
 
 
 /*this was added to allow content to be cleared below images without clearing the rightsidebar*/
