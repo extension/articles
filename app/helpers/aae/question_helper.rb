@@ -17,7 +17,7 @@ def stringify_submitted_question_event(sq_event)
   
   case sq_event.event_state
   when SubmittedQuestionEvent::ASSIGNED_TO 
-    reassign_msg = "Assigned to <strong><a href='/aae/profile/#{sq_event.subject_user.login}'>#{sq_event.subject_user.fullname}</a></strong> by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    reassign_msg = "Assigned to <strong><a href='/aae/profile?id=#{sq_event.subject_user.login}'>#{sq_event.subject_user.fullname}</a></strong> by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
     reassign_msg = reassign_msg + " <span>Comments: #{sq_event.response}</span>" if sq_event.response
     return reassign_msg 
   when SubmittedQuestionEvent::RESOLVED 
