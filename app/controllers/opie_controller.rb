@@ -75,14 +75,19 @@ class OpieController < ApplicationController
       return
     end
     # 
-    # proto = request.ssl? ? 'https://' : 'http://'
-    # server_url = url_for(:action => 'index', :protocol => proto)
+    
+    proto = request.ssl? ? 'https://' : 'http://'
+    server_url = url_for(:action => 'index', :protocol => proto)
     
     if opierequest.kind_of?(CheckIDRequest)
       
       if self.is_authorized(opierequest.id_select,opierequest.identity, opierequest.trust_root)
         if(opierequest.id_select)
-          response = opierequest.answer(true,nil,@currentuser.openid_url,@currentuser.openid_url(true))
+          if(opierequest.message.is_openid1)
+            response = opierequest.answer(true,server_url,@currentuser.openid_url(true))            
+          else
+            response = opierequest.answer(true,nil,@currentuser.openid_url,@currentuser.openid_url(true))
+          end
         else
           response = opierequest.answer(true)          
         end
