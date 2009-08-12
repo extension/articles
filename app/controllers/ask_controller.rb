@@ -53,21 +53,27 @@ class AskController < ApplicationController
   end
   
   def question_confirmation
-    params[:submitted_question][:asked_question] = params[:q]
-    flash.now[:googleanalytics] = '/ask-an-expert-search-results'
-    set_title("Ask an Expert - eXtension", "Confirmation")
-    set_titletag("Search Results for Ask an Expert - eXtension")
+    if params[:q] and params[:q].strip != '' 
+      params[:submitted_question][:asked_question] = params[:q]
+      flash.now[:googleanalytics] = '/ask-an-expert-search-results'
+      set_title("Ask an Expert - eXtension", "Confirmation")
+      set_titletag("Search Results for Ask an Expert - eXtension")
     
-    @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+      @submitted_question = SubmittedQuestion.new(params[:submitted_question])
     
-    unless @submitted_question.valid?
-      redirect_to :action => 'index', 
-                  :submitted_question => params[:submitted_question], 
-                  :location_id => params[:location_id], 
-                  :county_id => params[:county_id], 
-                  :aae_category => params[:aae_category], 
-                  :subcategory => params[:subcategory]
+      unless @submitted_question.valid?
+        redirect_to :action => 'index', 
+                    :submitted_question => params[:submitted_question], 
+                    :location_id => params[:location_id], 
+                    :county_id => params[:county_id], 
+                    :aae_category => params[:aae_category], 
+                    :subcategory => params[:subcategory]
+      end
+    else
+      flash[:notice] = "Please fill in the required fields before submitting."
+      redirect_to :action => :index
     end
+      
   end
   
   def submit_question
