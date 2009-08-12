@@ -389,7 +389,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 
 
 /*this was added to allow content to be cleared below images without clearing the rightsidebar*/
-#article {float:left;line-height: 1.8em; width:653px;}
+#article {float:left;line-height: 1.8em; }
 #article p {font-size:1.3em;}
 .content {width: 600px}
 .faq {width: 600px}
