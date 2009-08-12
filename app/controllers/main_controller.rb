@@ -62,7 +62,7 @@ class MainController < ApplicationController
       @recent_learning_lessons = Article.main_lessons_list({:content_tag => @content_tag, :limit => 3})
       @faqs = Faq.main_recent_list({:content_tag => @content_tag, :limit => 3})
       @calendar_events =  Event.main_calendar_list({:limit => 5, :calendar_date => @calendar_date, :content_tag => @content_tag})
-      @articles = Article.main_feature_list({:content_tag => @content_tag, :limit => 8}) unless @community
+      @articles = Article.main_recent_list({:content_tag => @content_tag, :limit => 8}) unless @community
       @recent_articles = Article.main_recent_list({:content_tag => @content_tag, :limit => 3}) unless @in_this_section
     end
   end
