@@ -247,10 +247,14 @@ EOS
       if(!self.approved(opierequest.trust_root))
         @currentuser.opie_approvals.create(:trust_root => opierequest.trust_root)
       end
-      # proto = request.ssl? ? 'https://' : 'http://'
-      # server_url = url_for(:action => 'index', :protocol => proto)
+      proto = request.ssl? ? 'https://' : 'http://'
+      server_url = url_for(:action => 'index', :protocol => proto)
       if(opierequest.id_select)
-        response = opierequest.answer(true,nil,@currentuser.openid_url,@currentuser.openid_url(true))
+        if(opierequest.message.is_openid1)
+          response = opierequest.answer(true,server_url,@currentuser.openid_url(true))            
+        else
+          response = opierequest.answer(true,nil,@currentuser.openid_url,@currentuser.openid_url(true))
+        end
       else
         response = opierequest.answer(true)          
       end
