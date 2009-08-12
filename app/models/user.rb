@@ -1548,6 +1548,10 @@ class User < ActiveRecord::Base
       condition_str ? condition_str += ' and users.retired = false' : condition_str = 'users.retired = false'
       return Role.find_by_name(Role::UNCATEGORIZED_QUESTION_WRANGLER).users.find(:all, :conditions => condition_str)
     end
+    
+    def self.aae_wranglers
+      return Role.find_by_name(Role::UNCATEGORIZED_QUESTION_WRANGLER).users.find(:all)
+    end
 
     def open_question_count
       self.open_questions.count

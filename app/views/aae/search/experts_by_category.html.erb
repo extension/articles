@@ -3,7 +3,7 @@
     <tr>
         <th>User</th>
         <th>Geographic region</th>
-        <th>Signed up to be automatically assigned <strong><%= @category_name %></strong> questions?</th>
+        <th>Signed up to be automatically assigned questions?</th>
     </tr>
 <% @users.each do |user| %>
     <tr>
@@ -11,7 +11,7 @@
         <td>
         <% if user.expertise_locations.length > 0 %>    
           <% user.expertise_locations.each do |l| %>
-            <%= link_to (l.abbreviation, {:controller => :expert, :action => :location, :id => l.fipsid}) %> 
+            <%= link_to (l.abbreviation, {:controller => 'aae/search', :action => 'experts_by_location', :id => l.fipsid }) %> 
           <% end %>
         <% end %>
         </td>

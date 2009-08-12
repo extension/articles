@@ -2,10 +2,19 @@
 <table id="aoe_table">
     <tr>
         <th>User</th>
+        <th>Signed up to be automatically assigned questions?</th>
     </tr>
 <% @users.each do |user| %>
     <tr>
         <td><%= link_to (user.fullname, aae_profile_url(:id => user.login), {:class => "profile"}) %></td>
+        <td>
+        <% if @combined_users and !@combined_users.include?(user) %>
+          no
+        <% else %>
+        yes - signed up to receive questions
+        <% end %>
+        </td>
     </tr>
+    
 <% end %>
 </table>

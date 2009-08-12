@@ -121,6 +121,7 @@ class Aae::SearchController < ApplicationController
         redirect_to incoming_url
       else
         @users = @location.users.find(:all, :order => "users.first_name")
+        @combined_users = get_answering_users(@users) if @users.length > 0
       end
     else
       flash[:failure] = "Invalid Location Entered"
@@ -131,9 +132,15 @@ class Aae::SearchController < ApplicationController
   def experts_by_category
     #if all users with an expertise in a category were selected
     if (!params[:legacycategory].nil? and @category = Category.find_by_name_or_id(params[:legacycategory]))
-      @category_name = @category.name
-      @users = @category.users
-      @combined_users = get_answering_users(@users) if @users.length > 0
+      if @category == Category::UNASSIGNED
+        @category_name = "AaE Uncategorized Question Wrangler"
+        @users = User.aae_wranglers 
+        @combined_users = get_answering_users(@users) if @users.length > 0
+      else  
+        @category_name = @category.name
+        @users = @category.users
+        @combined_users = get_answering_users(@users) if @users.length > 0
+      end
     else
       flash[:failure] = "Invalid Category"
       request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
@@ -146,8 +153,7 @@ class Aae::SearchController < ApplicationController
   def get_answering_users(selected_users)
     user_ids = selected_users.map{|u| u.id}.join(',')
     answering_role = Role.find_by_name(Role::AUTO_ROUTE)
-    answering_users = answering_role.users.find(:all, :select => "users.*", :conditions => "users.id IN (#{user_ids})")
-    user_intersection = selected_users & answering_users
+    user_intersection = answering_role.users.find(:all, :select => "users.*", :conditions => "users.id IN (#{user_ids})")
   end
   
   def setup_cat_loc
