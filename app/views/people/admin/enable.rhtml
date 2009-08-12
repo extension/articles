@@ -1,6 +1,6 @@
 <%= render(:partial => 'partial/flashmessages') %>
 
-<% form_tag(:action=> "enable") do %>
+<% form_tag(:action=> "enable", :id => @showuser.login) do %>
     <label for="reason">Please provide a reason why you are enabling this account: </label>
     <input type="text" name="reason" id="reason" size="50" value=""/>
     <%= submit_tag 'Enable eXtensionID' %>  or <%= link_to 'Cancel', :controller => '/people/admin', :action => :showuser, :id => params[:id] %>
