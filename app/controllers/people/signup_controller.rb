@@ -60,7 +60,7 @@ class People::SignupController < ApplicationController
     
     if(!didsave)
       if(!@user.errors.on(:email).nil? and @user.errors.on(:email) == 'has already been taken')
-        failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:action => :new_password)}'>request a new password</a>"
+        failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:controller => 'people/account', :action => :new_password)}'>request a new password</a>"
         flash.now[:failure] = failuremsg
       elsif(!@user.errors.empty?)
         failuremsg = "<h3>There were errors that prevented signup</h3>"
