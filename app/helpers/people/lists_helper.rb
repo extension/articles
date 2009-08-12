@@ -107,7 +107,7 @@ module People::ListsHelper
       if(displayfilter == 'idowners')
         returntext += "<li class='filtered'>Owners (with eXtensionIDs)</li>"
       else
-        returntext += "<li>#{link_to('Owners (with eXtensionIDs)',ownerlist_list_url(list.id, :type => 'idowners'))}</li>"
+        returntext += "<li>#{link_to('Owners (with eXtensionIDs)',ownerlist_people_list_url(list.id, :type => 'idowners'))}</li>"
       end
     end
 
@@ -117,7 +117,7 @@ module People::ListsHelper
         if(displayfilter == 'noidowners')
           returntext += "<li class='filtered'>Owners (without eXtensionIDs)</li>"
         else
-          returntext += "<li>#{link_to('Owners (without eXtensionIDs)',ownerlist_list_url(list.id, :type => 'noidowners'))}</li>"
+          returntext += "<li>#{link_to('Owners (without eXtensionIDs)',ownerlist_people_list_url(list.id, :type => 'noidowners'))}</li>"
         end
       end
     end
@@ -135,7 +135,7 @@ module People::ListsHelper
       if(displayfilter == 'subscribers')
         returntext += "<li class='filtered'>Subscribers</li>"
       else
-        returntext += "<li>#{link_to('Subscribers',subscriptionlist_list_url(list.id, :type => 'subscribers'))}</li>"
+        returntext += "<li>#{link_to('Subscribers',subscriptionlist_people_list_url(list.id, :type => 'subscribers'))}</li>"
       end
     end
 
@@ -144,7 +144,7 @@ module People::ListsHelper
       if(displayfilter == 'optout')
         returntext += "<li class='filtered'>Opt-out</li>"
       else
-        returntext += "<li>#{link_to('Opt-out',subscriptionlist_list_url(list.id, :type => 'optout'))}</li>"
+        returntext += "<li>#{link_to('Opt-out',subscriptionlist_people_list_url(list.id, :type => 'optout'))}</li>"
       end
     end
 
@@ -153,7 +153,7 @@ module People::ListsHelper
       if(displayfilter == 'ineligible')
         returntext += "<li class='filtered'>Ineligible</li>"
       else
-        returntext += "<li>#{link_to('Ineligible',subscriptionlist_list_url(list.id, :type => 'ineligible'))}</li>"
+        returntext += "<li>#{link_to('Ineligible',subscriptionlist_people_list_url(list.id, :type => 'ineligible'))}</li>"
       end
     end
 
@@ -163,7 +163,7 @@ module People::ListsHelper
         if(displayfilter == 'unconnected')
           returntext += "<li class='filtered'>Subscribers (unconnected)</li>"
         else
-          returntext += "<li>#{link_to('Subscribers (unconnected)',subscriptionlist_list_url(list.id, :type => 'unconnected'))}</li>"
+          returntext += "<li>#{link_to('Subscribers (unconnected)',subscriptionlist_people_list_url(list.id, :type => 'unconnected'))}</li>"
         end
       end
     end
@@ -174,7 +174,7 @@ module People::ListsHelper
         if(displayfilter == 'noidsubscribers')
           returntext += "<li class='filtered'>Subscribers (without eXtensionIDs)</li>"
         else
-          returntext += "<li>#{link_to('Subscribers (without eXtensionIDs)',subscriptionlist_list_url(list.id, :type => 'noidsubscribers'))}</li>"
+          returntext += "<li>#{link_to('Subscribers (without eXtensionIDs)',subscriptionlist_people_list_url(list.id, :type => 'noidsubscribers'))}</li>"
         end
       end
     end
