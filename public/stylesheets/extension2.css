@@ -359,6 +359,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 /* Template:calloutbox */
 .calloutbox {font-size:1.2em; padding:1.2em; margin:0 0 1.5em; border: 1px solid #ccc; background:#fffff2;}
 .calloutbox p {font-size:1.2em !important;padding: 0; margin: 0 0 .9em;}
+.calloutbox h2 {font-size:1.7em !important;padding: 0; margin: 0 0 .9em; margin-top:0 !important;}
 
 /* Template:multipage */
 .multipage {background: #fff0bb; padding:0 1em;margin:0;}
@@ -404,7 +405,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 #content_css_reset h5,
 #content_css_reset h6 {color:#333;}
 #content_css_reset h1 {margin-bottom:.5em;}
-#content_css_reset h2 {font-size:1.8em;}
+#content_css_reset h2 {font-size:2.2em; margin:1em 0 .5em; color:#000;}
 #content_css_reset dl {margin:1em;}
 #content_css_reset dl dt {font-size:1.2em !important;}
 #content_css_reset dl dt dt {font-size:inherit;}
@@ -420,8 +421,10 @@ h3.instructions {color: #829500; font-weight:normal;}
 #content_css_reset table p {font-size:1em;}
 #content_css_reset th {white-space: normal;}
 #content_css_reset ul {padding:0 1.5em 0;overflow:auto;margin:0 0 1em;}
-#content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;}
+#content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;font-size:1.4em;}
 #content_css_reset p {font-size:1.4em;}
+
+blockquote {padding:2em 2em 1em; font-size:1.1em; background:#ebf2f8;margin:1.5em; border-left: 3px solid #b5d9f8;}
 
 #extension_articles h1{font-size:2.1em; margin-bottom:.5em;}
 #extension_articles h2{font-size:1.6em; margin-bottom:.5em;}
@@ -673,3 +676,4 @@ p.textcounter span.charcount-makeaware {color:#888;}
 .yahooim    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/yahooim.png) 0 0 no-repeat;}
 .youtube    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/youtube.png) 0 0 no-repeat;}
 .mailto      {padding:0 0 0 26px; background: url(/images/common/email.png) 0 0 no-repeat;}
+
