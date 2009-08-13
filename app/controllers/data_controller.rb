@@ -51,21 +51,15 @@ class DataController < ApplicationController
     render :text => json_output_string
   end
   
-  #
-  # TODO: this should probably be changed to use "person" or "author" - but this has been provided to NC already
-  # 
   def publicprofile
-    if(!params[:userid].nil?)
-      @showuser = User.find_by_id(params[:userid])
-    elsif(!params[:extensionid].nil?)
-      @showuser = User.find_by_login(params[:extensionid])
-    elsif(!params[:email].nil?)
-      @showuser = User.find_by_email(params[:email])
-    end
+    filteredparams = FilterParams.new(params)
     
-    if(@showuser.nil?)
+    
+    if(filteredparams.person.nil?)
       returnhash = {:success => false, :errormessage => 'No show user.'}
       return render :text => returnhash.to_json
+    else
+      @showuser = filteredparams.person
     end
     
     publicattributes = @showuser.public_attributes
@@ -76,6 +70,14 @@ class DataController < ApplicationController
       returnhash = publicattributes.merge({:success => true})
       return render :text => returnhash.to_json
     end
+  end
+  
+  def launchedcommunities
+    returnhash = {}
+    Community.launched.all(:order => 'name').each do |community|
+      returnhash[community.id] = {:name => community.name, :public_name => community.public_name, :primary_content_tag_name => community.primary_content_tag_name, :content_tag_names => community.content_tag_names}
+    end
+    return render :text => returnhash.to_json
   end
   
   def aae_numbers
