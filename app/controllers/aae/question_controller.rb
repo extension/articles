@@ -9,6 +9,7 @@ class Aae::QuestionController < ApplicationController
   layout 'aae'
   before_filter :login_required
   before_filter :check_purgatory  
+  has_rakismet :only => [:report_spam, :report_ham]
  
   def index
     @submitted_question = SubmittedQuestion.find_by_id(params[:id])
@@ -233,20 +234,20 @@ class Aae::QuestionController < ApplicationController
   
   def report_spam
     if request.post?      
-      begin
-        submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
-        if submitted_question
-          submitted_question.update_attribute(:spam, true)
-          SubmittedQuestionEvent.log_spam(submitted_question, @currentuser)       
+      submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
+      if submitted_question
+        submitted_question.update_attribute(:spam, true)
+        SubmittedQuestionEvent.log_spam(submitted_question, @currentuser)       
+        
+        begin
           submitted_question.spam!
-          flash[:success] = "Incoming question has been successfully marked as spam."
-        else
-          flash[:failure] = "Incoming question does not exist."
+        rescue Exception => ex
+          logger.error "Problem reporting spam with rakismet for question # #{submitted_question.id} at #{Time.now.to_s}\nError: #{ex.message}"  
         end
         
-      rescue Exception => ex
-        flash[:failure] = "There was a problem reporting spam. Please try again at a later time."
-        logger.error "Problem reporting spam at #{Time.now.to_s}\nError: #{ex.message}"
+        flash[:success] = "Incoming question has been successfully marked as spam."
+      else
+        flash[:failure] = "Incoming question does not exist."
       end
       redirect_to incoming_url
     end
@@ -254,25 +255,23 @@ class Aae::QuestionController < ApplicationController
 
   def report_ham
     if request.post?
-      begin
-        submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
-        if submitted_question
-          submitted_question.update_attribute(:spam, false)
-          SubmittedQuestionEvent.log_non_spam(submitted_question, @currentuser)
+      submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
+      if submitted_question
+        submitted_question.update_attribute(:spam, false)
+        SubmittedQuestionEvent.log_non_spam(submitted_question, @currentuser)
+          
+        begin
           submitted_question.ham!
-          flash[:success] = "Incoming question has been successfully marked as non-spam."
-          redirect_to aae_question_url(:id => submitted_question.id)
-          return
-        else
-          flash[:failure] = "Incoming question does not exist."
+        rescue Exception => ex
+          logger.error "Problem reporting ham with rakismet for question # #{submitted_question.id} at #{Time.now.to_s}\nError: #{ex.message}"
         end
         
-      rescue Exception => ex
-        flash[:failure] = "There was a problem marking this question as non-spam. Please try again at a later time."
-        logger.error "Problem reporting ham at #{Time.now.to_s}\nError: #{ex.message}"
-      end
-        
-      redirect_to spam_url
+        flash[:success] = "Incoming question has been successfully marked as non-spam."
+        redirect_to aae_question_url(:id => submitted_question.id)
+      else
+        flash[:failure] = "Incoming question does not exist."
+        redirect_to spam_url
+      end  
     end   
   end
   

@@ -35,25 +35,12 @@ class WidgetController < ApplicationController
           raise ArgumentError
         end
         
-        # validate akismet key and log an error if something goes wrong with connecting to 
-        # akismet web service to verify the key
-        #begin
-        #  valid_key = has_verified_akismet_key?
-        #rescue Exception => ex
-        #  logger.error "Error verifying akismet key #{AppConfig.configtable['akismet_key']} at #{time.now.to_s}.\nError: #{ex.message}"
-        #end
+        begin
+          @submitted_question.spam = @submitted_question.spam? 
+        rescue Exception => exc
+          logger.error "Error checking submitted question from widget for spam via Akismet at #{Time.now.to_s}. Akismet webservice might be experiencing problems.\nError: #{exc.message}"
+        end
         
-        # check the akismet web service to see if the submitted question is spam or not
-        #if valid_key
-        #  begin
-        #    @submitted_question.spam = is_spam? @submitted_question.to_akismet_hash
-        #  rescue Exception => exc
-        #    logger.error "Error checking submitted question for spam via Akismet at #{Time.now.to_s}. Akismet webservice might be experiencing problems.\nError: #{exc.message}"
-        #  end
-        #else
-        #  logger.error "Akismet key #{AppConfig.configtable['akismet_key']} was not validated at #{Time.now.to_s}."
-        #end
-
         if @submitted_question.save
           render :layout => false
         else
@@ -64,10 +51,10 @@ class WidgetController < ApplicationController
         @status = '400 (argument error)'
         render :template => 'widget/status', :status => 400, :layout => false
         return
-      #rescue Exception => e
-      #  @status = '500 (internal error)'
-      #  render :template => 'widget/status', :status => 500, :layout => false
-      #  return
+      rescue Exception => e
+        @status = '500 (internal error)'
+        render :template => 'widget/status', :status => 500, :layout => false
+        return
       end
     end
   end
