@@ -224,9 +224,8 @@ class NotificationMailer < ActionMailer::Base
   # -----------------------------------
   
   def invitation_to_extensionid(notification)
-    
     # base parameters for the email
-    self.base_email
+    self.base_email(notification.notifytype_to_s)
     @recipients     = notification.additionaldata[:invitation_email]
     @cc             = notification.user.email
     @subject        = @subjectlabel+'You have been invited to get an eXtensionID'
@@ -239,7 +238,7 @@ class NotificationMailer < ActionMailer::Base
   
   def accepted_extensionid_invitation(notification)
     # base parameters for the email
-    self.base_email
+    self.base_email(notification.notifytype_to_s)
     @recipients     = notification.user.email
     @subject        = @subjectlabel+'Accepted eXtensionID Notification'
     

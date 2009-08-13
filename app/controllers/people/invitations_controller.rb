@@ -159,4 +159,22 @@ class People::InvitationsController < ApplicationController
     end
   end 
   
+  private
+  
+  def link_to_user(user,opts = {})
+    show_unknown = opts.delete(:show_unknown) || false
+    show_systemuser = opts.delete(:show_systemuser) || false
+    nolink = opts.delete(:nolink) || false
+    
+    if user.nil?
+      show_unknown ? 'Unknown' : 'System'
+    elsif(user.id == 1 and !show_systemuser)
+      'System' 
+    elsif(nolink)
+      "#{user.fullname}"
+    else
+      "<a href='#{url_for(:controller => '/people/colleagues', :action => :showuser, :id => user.login)}'>#{user.fullname}</a>"
+    end
+  end
+  
 end
