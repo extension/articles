@@ -8,7 +8,6 @@
 class WidgetController < ApplicationController  
   layout 'widgets'
   has_rakismet :only => [:create_from_widget]
-  skip_before_filter :verify_authenticity_token
   
   # ask widget pulled from remote iframe
   def index

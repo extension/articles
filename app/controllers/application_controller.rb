@@ -10,8 +10,7 @@
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
-  protect_from_forgery # See ActionController::RequestForgeryProtection for details
-  skip_before_filter :verify_authenticity_token, :only => [:do_404]
+  #protect_from_forgery # See ActionController::RequestForgeryProtection for details
   
   include LoginSystem
   include ExceptionNotifiable

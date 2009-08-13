@@ -32,10 +32,7 @@ end
 class OpieController < ApplicationController
   layout nil
   include OpenID::Server
-  include ApplicationHelper
-  
-
-  skip_before_filter :verify_authenticity_token
+  include ApplicationHelper  
   before_filter(:login_required, :only => [:decision])
   before_filter(:check_purgatory, :only => [:decision])
   

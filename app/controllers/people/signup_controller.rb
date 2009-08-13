@@ -9,7 +9,6 @@ class People::SignupController < ApplicationController
   include AuthCheck 
   layout 'people'
   before_filter :login_required, :only => [:confirm, :reconfirm, :confirmationsent, :review]
-  skip_before_filter :verify_authenticity_token, :only => [:auto_complete_for_institution_name]
   
   def new
     # just in case we got here from an openid login

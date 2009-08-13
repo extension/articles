@@ -10,7 +10,6 @@
 
 class AskController < ApplicationController  
   has_rakismet :only => [:submit_question]
-  skip_before_filter :verify_authenticity_token
   
   def index
     @right_column = false

@@ -12,7 +12,6 @@ class People::AccountController < ApplicationController
   layout 'people'
   before_filter :login_required, :except => [:login, :signup, :new_password, :set_password, :authenticate]
   before_filter :login_optional, :only => [:login]
-  skip_before_filter :verify_authenticity_token, :only => [:login, :signup, :new_password, :set_password, :authenticate]
 
   def review
     return redirect_to(:controller => '/people/signup', :action => :review, :status => 301)
