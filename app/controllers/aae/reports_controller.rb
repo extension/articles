@@ -6,9 +6,9 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Aae::ReportsController < ApplicationController
-  
-   layout  'aae_reports_home'  
-   
+    layout  'aae_reports_home'  
+    before_filter :login_required
+    before_filter :check_purgatory
 
      def index
        @locs = Location.find(:all, :order => "entrytype, name")
