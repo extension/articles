@@ -73,9 +73,11 @@ class DataController < ApplicationController
   end
   
   def launchedcommunities
-    returnhash = {}
-    Community.launched.all(:order => 'name').each do |community|
-      returnhash[community.id] = {:name => community.name, :public_name => community.public_name, :primary_content_tag_name => community.primary_content_tag_name, :content_tag_names => community.content_tag_names}
+    returnhash = {:success => true, :items => {}, :version => 1}
+    communitylist = Community.launched.all(:order => 'name')
+    returnhash[:itemcount] = communitylist.length
+    communitylist.each do |community|
+      returnhash[:items][community.id] = {:name => community.name, :public_name => community.public_name, :primary_content_tag_name => community.primary_content_tag_name, :content_tag_names => community.content_tag_names}
     end
     return render :text => returnhash.to_json
   end
