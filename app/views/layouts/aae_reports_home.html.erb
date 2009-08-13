@@ -61,13 +61,13 @@
                 <% else %>
                     <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help">Help</a></li>
                 <% end%>
-            <% if !session[:user].nil? %>
+            <% if !@currentuser.nil? %>
                 <li><%= link_to "Reports", {:controller => "reports"} %></li>
                 <li><%= link_to 'logout', '/account/logout' %></li>
             <% end %>
             </ul>
             
-            <% if !session[:user].nil? %>
+            <% if !@currentuser.nil? %>
             <p id="feedlink"><%= link_to "View all available Feeds", {:controller => "main", :action => "feeds" }, :class => "feed" %></p>
             <% end %>
         </div>
