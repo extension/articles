@@ -70,13 +70,12 @@
                 <% else %>
                     <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help">Help</a></li>
                 <% end%>
-
-                <li><%= link_to "Reports", {:controller => "reports"} %></li>
                 <%- if(!@currentuser.nil?) -%>
+                    <li><%= link_to "Reports", {:controller => "reports"} %></li>
                     <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
+                    <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
+                    <li><%= link_to "Logout", :controller => 'people/account', :action => :logout %></li>
                 <%- end -%>
-                <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
-                <li><%= link_to "Logout", :controller => 'people/account', :action => :logout %></li>
 
             </ul>
             <div id="content" <%= 'class="narrow"' if @menu_partial_to_display %>>
