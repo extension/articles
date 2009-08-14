@@ -20,7 +20,7 @@ class FeedsController < ApplicationController
   end
   
   def sitemap_communities
-    @communities = Community.find(:all, :include => 'tags')
+    @communities = Community.launched.all(:order => 'public_name')
     headers["Content-Type"] = "application/xml"    
     render :layout => false
   end
