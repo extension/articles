@@ -23,7 +23,7 @@ class Aae::FeedsController < ApplicationController
     @users = @category.get_experts(:select => "users.*, expertise_areas.created_at as added_at", 
                                    :order => "expertise_areas.created_at desc", 
                                    :conditions => "expertise_areas.created_at > #{DATE_EXPRESSION}" )
-    @updated_time = @users.any? ? @users.first.added_at.to_time : Time.new 
+    @updated_time = @users.any? ? @users.first.added_at.to_time : Time.now.utc 
 
     headers["Content-Type"] = "application/xml"
   

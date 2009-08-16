@@ -52,7 +52,7 @@ class Institution < ActiveRecord::Base
   def img
     existing_university_logo(code)
   end
-
+  
     
   # -----------------------------------
   # Class-level methods

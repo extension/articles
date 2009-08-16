@@ -249,7 +249,7 @@ class Article < ActiveRecord::Base
       xml.author { xml.name "Contributors" }
       xml.id(self.id_and_link)
       xml.link(:rel => 'alternate', :type => 'text/html', :href => self.id_and_link)
-      xml.updated self.wiki_updated_at.atom
+      xml.updated self.wiki_updated_at.xmlschema
     end
   end  
   
