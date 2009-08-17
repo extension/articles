@@ -4,7 +4,7 @@
     
 <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= @page_title %></p>
 
-<h1><%= (@user.first_name) ? @user.first_name : ""%>  <%= @user.last_name%> <small>(FAQ and Ask an Expert activity)</small></h1>
+<h1><%= @user.fullname %> <small>(FAQ and Ask an Expert activity)</small></h1>
 
 <h2 id="additional">Additional information available on this user's 
 <%= link_to ("People profile", {:controller => 'people/colleagues', :action => 'showuser', :userid => @user.login}) %>
@@ -15,15 +15,15 @@
 <h3>User Details <small>(pulled from people.extension.org)</small></h3>
 <dl class="report">
     <dt>Title</dt>
-    <dd><%= @user.title %></dd>
+    <dd><%= @user.title.nil? ? 'No title' : @user.title %></dd>
     <dt>Email</dt>
     <dd><%= @user.email %></dd>
-    <dt>State</dt>
-    <dd><%= Location.find_by_id(@user.location_id).name%></dd>
-    <dt>County of University</dt>
-    <dd><%= County.find_by_id(@user.county_id).name %></dd>
-    <dt>University</dt>
-    <dd><%= Institution.find_by_id(@user.institution_id).name %></dd>
+    <dt>Location</dt>
+    <dd><%= @user.location.nil? ? 'n/a' : @user.location.name %></dd>
+    <dt>County</dt>
+    <dd><%= @user.county.nil? ? 'n/a' : @user.county.name %></dd>
+    <dt>Institution</dt>
+    <dd><%= @user.institution.nil? ? 'n/a' : @user.institution.name %></dd>
 </dl>
 
 <br class="clear"/>
