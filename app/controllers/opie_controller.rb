@@ -42,6 +42,8 @@ class OpieController < ApplicationController
     if(!@openiduser.nil?)
       @publicattributes = @openiduser.public_attributes
     end
+    # force format to be html
+    params[:format] = 'html'
     render(:layout => 'peopledelegate')
   end
   
