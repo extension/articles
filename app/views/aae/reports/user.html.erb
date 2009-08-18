@@ -15,15 +15,15 @@
 <h3>User Details <small>(pulled from people.extension.org)</small></h3>
 <dl class="report">
     <dt>Title</dt>
-    <dd><%= @user.title.nil? ? 'No title' : @user.title %></dd>
+    <dd><%= @user.title.nil? ? ' ' : @user.title %></dd>
     <dt>Email</dt>
     <dd><%= @user.email %></dd>
     <dt>Location</dt>
-    <dd><%= @user.location.nil? ? 'n/a' : @user.location.name %></dd>
+    <dd><%= @user.location.nil? ? ' ' : @user.location.name %></dd>
     <dt>County</dt>
-    <dd><%= @user.county.nil? ? 'n/a' : @user.county.name %></dd>
+    <dd><%= @user.county.nil? ? ' ' : @user.county.name %></dd>
     <dt>Institution</dt>
-    <dd><%= @user.institution.nil? ? 'n/a' : @user.institution.name %></dd>
+    <dd><%= @user.institution.nil? ? ' ' : @user.institution.name %></dd>
 </dl>
 
 <br class="clear"/>
