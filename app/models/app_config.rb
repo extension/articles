@@ -37,7 +37,7 @@ class AppConfig
     @@configtable['content_feed_refresh_since'] = Time.parse('2005-11-01 00:00:00 UTC')
     
     @@configtable['content_feed_events'] = 'http://events.extension.org/events_after'
-    @@configtable['content_feed_faqs'] = 'http://faq.demo.extension.org/faq_export'
+    @@configtable['content_feed_faqs'] = 'http://faq.extension.org/faq_export'
     @@configtable['content_feed_wikiarticles'] = 'http://pubwiki.extension.org/wiki/Special:Feeds/?max-results=500&updated-min='
 
     @@configtable['changes_feed_wiki'] = 'http://pubwiki.extension.org/wiki/Special:Recentchanges?limit=500&feed=atom&ignore='
