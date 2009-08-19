@@ -120,7 +120,7 @@
                    <% if @faq%>
                      <%= link_to strip_tags( question.current_revision.question_text ), :controller => 'questions', :action => 'show', :id =>  question.id  %>
                    <% else%>
-                     <%= link_to strip_tags( question.asked_question), :controller => 'expert', :action => 'question', :id => question.squid  %>
+                     <%= link_to strip_tags( question.asked_question), :controller => 'aae/question', :action => 'index', :id => question.squid  %>
                    <% end%>
                   <% end%>
                  <% end%>
