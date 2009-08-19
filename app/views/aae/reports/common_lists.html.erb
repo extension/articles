@@ -7,6 +7,8 @@
     <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "General Overview",  :action => 'activity' %> &gt; <%= @page_title %></p>
     
 <h1><%= genstring %></h1>
+<p><%= @filtstr%></p>
+
 
 <%= render(:partial => 'flashmessages') %>
 
@@ -15,14 +17,14 @@
 
     <div id="calendar">
         
-        <% form_tag({:action => @repaction, :Category => @typename}) do %>
+        <% form_tag({:action => @repaction, :category => @typename, :location => @locid, :State => @statename}) do %>
           <!--  <%= date_picker_field  "dateFrom", "to_s" %> <span>to</span> <%= date_picker_field "dateTo", "to_s" %>-->
 
             <%= calendar_date_select_tag "dateFrom", ((@dateFrom) ? @dateFrom : Time.parse(@oldest_date).strftime('%Y-%m-%d')), :popup => true %><span>to</span><%= calendar_date_select_tag "dateTo", ((@dateTo) ? @dateTo : Date.today), :popup => true%> 
             <%= submit_tag 'Go' %>
         <% end%>
         
-        <% form_tag({ :action => @repaction, :Category => @typename}) do %>
+        <% form_tag({ :action => @repaction, :category => @typename, :location => @locid, :State => @statename}) do %>
             <%= submit_tag 'Show all'%>
         <% end%>
     </div>
@@ -30,6 +32,7 @@
 <% sta = SubmittedQuestion::STATUS_RESOLVED%>
 <% str = SubmittedQuestion::STATUS_REJECTED%>
 <% stn = SubmittedQuestion::STATUS_NO_ANSWER%>
+<% p = {:date1 => @date1, :date2 => @date2}%>
 
 <table cellspacing="0" class="stats" summary="<%= genstring %>">
 	<% even = false %> 
@@ -48,51 +51,53 @@
   
   <% @typelist.each do |x| %>
 
+    <% p.merge!({:catid => x.id})%>
+
     <tr <%= ' class="shaded"' if even %>>
 	   <td class="left">
 		  <%= x.name %>
 	   </td>
-	    <% @asgn = (@rept.NewQuestion({:date1 => @date1, :date2 => @date2, :catid => x.id},[]))[0] %>
+	    <% @asgn = (@rept.NewQuestion(p,[]))[0] %>
        <td <%= ' class="empty"' if @asgn==0 %>>
 	     <!-- number of open incoming faqs in assigned state -->
 	        <% if @asgn%>
-	    	<%= link_to @asgn, :action => "display_tag_links", :Category => @typename, :descriptor =>"New" , :olink => "New", :to => @dateTo, :from => @dateFrom, :num => @asgn%>
+	    	<%= link_to @asgn, :action => "display_tag_links", :category => @typename, :locname => @locname, :locid => @locid, :descriptor =>"New" , :olink => "New", :to => @dateTo, :from => @dateFrom, :num => @asgn%>
 	         
 	      <!--   <%= @asgn%>-->
 	        <% end%>
 	   </td>
-	    <% @reslvd = (@rept.ResolvedQuestion({ :date1 => @date1, :date2 => @date2, :catid => x.id},[]))[0]%>
+	    <% @reslvd = (@rept.ResolvedQuestion(p,[]))[0]%>
 	   <td <%= ' class="empty"' if @reslvd==0 %>>
 		 <!-- number of incoming faqs that have been Resolved one way or another -->
 		    <% if @reslvd%>
-	    	<%= link_to @reslvd, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved" , :olink => "Resolved", :to => @dateTo, :from => @dateFrom, :num => @reslvd%>
+	    	<%= link_to @reslvd, :action => "display_tag_links", :category => @typename, :locname => @locname, :locid => @locid, :descriptor =>"Resolved" , :olink => "Resolved", :to => @dateTo, :from => @dateFrom, :num => @reslvd%>
 			     
 	        <!--  <%= @reslvd%> -->
            <% end%>
 	   </td>
-	     <% @answ = (@rept.ResolvedQuestion({:date1 => @date1, :date2 => @date2, :catid => x.id, :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]%>
+	     <% @answ = (@rept.ResolvedQuestion(p.merge!({:status_state => sta}),[]))[0]%>
 	     <td <%= ' class="empty"' if @answ==0 %>>
 			 <!-- number of incoming faqs in answered state -->
 			    <% if @answ%>
-				<%= link_to @answ, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved#{sta}" , :olink => "Resolved#{sta}", :to => @dateTo, :from => @dateFrom, :num => @answ%>
+				<%= link_to @answ, :action => "display_tag_links", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{sta}" , :olink => "Resolved#{sta}", :to => @dateTo, :from => @dateFrom, :num => @answ%>
 				    
 		       <!--  <%= @answ%> -->
 		        <% end %>
 		   </td>
-		   <% @rej = (@rept.ResolvedQuestion({ :date1 => @date1, :date2 => @date2, :catid => x.id, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]%>
+		   <% @rej = (@rept.ResolvedQuestion(p.merge!({:status_state => str}),[]))[0]%>
 		  <td <%= ' class="empty"' if @rej==0 %>>
 			 <!-- number of incoming faqs in in rejected state -->
 			    <% if @rej%>
-				<%= link_to @rej, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved#{str}" , :olink => "Resolved#{str}", :to => @dateTo, :from => @dateFrom, :num => @rej%>
+				<%= link_to @rej, :action => "display_tag_links", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{str}" , :olink => "Resolved#{str}", :to => @dateTo, :from => @dateFrom, :num => @rej%>
 				    
 		      <!--   <%= @rej%> -->
 		        <% end%>
 		   </td>
-		   <% @noexp = (@rept.ResolvedQuestion({:date1 => @date1, :date2 => @date2, :catid => x.id, :status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]%>
+		   <% @noexp = (@rept.ResolvedQuestion(p.merge!({:status_state => stn}),[]))[0]%>
 		<td <%= ' class="empty"' if @noexp==0 %>>
 			 <!-- number of incoming faqs in no_answer state -->
 			    <% if @noexp%>
-				<%= link_to @noexp, :action => "display_tag_links", :Category => @typename, :descriptor =>"Resolved#{stn}" , :olink => "Resolved#{stn}", :to => @dateTo, :from => @dateFrom, :num => @noexp%>
+				<%= link_to @noexp, :action => "display_tag_links", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{stn}" , :olink => "Resolved#{stn}", :to => @dateTo, :from => @dateFrom, :num => @noexp%>
 			
 		     <!--   <%= @noexp%> -->
 		        <%end%>

@@ -192,16 +192,22 @@ end
    sarray[0].created_at.to_s
  end
 
-  def self.find_questions(cat, desc, aux,  date1, date2, *args)
+  def self.find_questions(cat, desc, aux, locid, date1, date2, *args)
    tstring = ""; cdstring = ""
    case desc
       when "New"
         cdstring = "status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and category_id=#{cat.id} "
+        if locid
+          cdstring = cdstring + " and locations.id = #{locid} "
+         end
       when "Resolved"
           if aux
               cdstring = "status_state=#{aux} and "
           end
           cdstring= cdstring +  "resolved_by > 0 and category_id=#{cat.id}"
+          if locid
+            cdstring = cdstring + " and locations.id = #{locid}"
+           end
       when "Resolver"
             if aux
               cdstring = " resolved_by = #{aux.to_i} and category_id=#{cat.id} and external_app_id IS NOT NULL "

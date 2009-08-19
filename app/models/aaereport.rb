@@ -10,6 +10,7 @@ class Aaereport < ActiveRecord::Base
   
   #Activity Submitted Questions
   def NewQuestion(p, results)
+    p.merge!(@idents[:filters]) if @idents[:filters]
     cond = buildcond(p, this_method, ["status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"])
     jstr = buildjoin(p, this_method)
     grp = buildgroup(p, this_method)
@@ -18,6 +19,7 @@ class Aaereport < ActiveRecord::Base
   
   #Activity Answered Questions
   def ResolvedQuestion(p, results)
+    p.merge!(@idents[:filters]) if @idents[:filters]
     jstr = buildjoin(p, this_method)
     cond = buildcond(p, this_method, ["resolved_by >= 1"])
     grp = buildgroup(p, this_method)
@@ -30,13 +32,21 @@ class Aaereport < ActiveRecord::Base
          if  @idents[:name]=="ActivityGroup"
            return  [:resolved_by]
          elsif @idents[:name]=="ActivityCategory"
-           return [:categories]
+            if  p[:location]
+              return "join categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id " +
+                     " join categories on categories.id=categories_submitted_questions.category_id join locations on submitted_questions.location_id=locations.id "
+            else
+              return [:categories]
+            end
          end
       end
       if (caller_method=="NewQuestion" )
-        if p[:catid]
-          return [:categories]
-        end
+         if p[:catid]  && p[:location]
+            return "join categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id " +
+                   " join categories on categories.id=categories_submitted_questions.category_id join locations on submitted_questions.location_id=locations.id "
+          elsif p[:catid]
+            return [:categories]
+          end
         case p[:g]
         when "state"
           return  [:location]
@@ -53,6 +63,13 @@ class Aaereport < ActiveRecord::Base
   #   end
      if p[:catid]
        cond << "category_id=#{p[:catid]}"
+     end
+     if p[:location]
+       if (p[:location].class != Fixnum)
+        cond << " locations.id=#{p[:location].id}"
+       else
+        cond << " locations.id=#{p[:location]}"
+       end
      end
      if p[:status_state]
        cond << " status_state=#{p[:status_state]}"

@@ -87,17 +87,33 @@ class Aae::ReportsController < ApplicationController
        end  
 
        def show_active_cats
-         @filteredparams = FilterParams.new(params)  #...can this be useful here?
-           @typename = params[:Category]
-            cat = Category.find_by_name(params[:Category]) 
+         @filteredparams = FilterParams.new(params)  #can this be useful here? for hackers of the url? filter by location as well...
+          @filteredoptions = @filteredparams.findoptions
+           @typename = params[:category] ;  @locid = nil; @statename=nil ; @locname=nil ; @filtstr=""    #was :Category
+           @statename = params[:State]    #in case someone hacks in &State=NY...use abbreviatio
+           if (loc=Location.find_by_id(params[:location]))  #in case someone hacks in &location=n...
+                @locname = "#{loc.id} (" + loc.name + ")"
+                @locid = loc.id
+                if (@statename && loc.abbreviation != @statename  && loc.name != @statename)   ##someone typed in both and they don't match
+                    params[:State] = nil    ##currently not allowing mutliple locations filtering
+                    @statename = nil
+                end                           
+            end
+            if params[:State] && !@locid
+             if (loc=Location.find_by_abbreviation(params[:State])) || (loc=Location.find_by_name(params[:State]))
+               @locid = loc.id
+               @locname = loc.name
+             end
+            end
+           @filteredoptions.merge!({:location => Location.find_by_id(@locid)}) if (@locid && !params[:location])  ##should probably add :State into the FilterParams wantsparameter lists
+            cat = Category.find_by_name(@typename); ((@locid) ? @filtstr = "Filtered by Location= #{@locname}" : "") 
             @type = "Category" ; @typel="category"; @typet="Tag"
-          
-            @oldest_date = SubmittedQuestion.find_oldest_date
+            @oldest_date = SubmittedQuestion.find_oldest_date; 
            (@date1, @date2, @dateFrom, @dateTo)=parmcheck()
             @typelist = [cat]
             if !cat.nil?
                 #tagname = Tag.normalize_tag(cat.name)
-                @rept = Aaereport.new(:name => "ActivityCategory")
+                @rept = Aaereport.new({:name => "ActivityCategory", :filters => @filteredoptions})
                 @repaction = "show_active_cats" 
                 render :template=>'aae/reports/common_lists'
             else
@@ -177,9 +193,9 @@ class Aae::ReportsController < ApplicationController
          end
 
         def display_tag_links
-            @cat = Category.find_by_name(params[:Category])
+            @cat = Category.find_by_name(params[:category])
             @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
-             aux = nil ; @catname = params[:Category]
+             aux = nil ; @catname = params[:category]; locid = params[:locid]
             @dateFrom = params[:from] ;  @dateTo=params[:to]
              @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
             desc = params[:descriptor]; @numb = params[:num].to_i
@@ -190,10 +206,11 @@ class Aae::ReportsController < ApplicationController
                end
              end
               select_string = " sq.id squid, sq.updated_at updated_at, resolved_by, asked_question, sq.question_updated_at, sq.status status"
-              jstring = " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id "
+              jstring = " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id " + ((locid) ? " join locations on sq.location_id=locations.id " : "")
               (desc=="New") ? @pgt = " Newly Submitted Questions in '#{@cat.name}'  " : @pgt = " Questions Resolved from Ask an Expert for '#{@cat.name}'"
-
-              @questions = SubmittedQuestion.find_questions(@cat, @edits, aux, @date1, @date2,
+              (params[:locname]) ? @filtstr = "Filtered by Location = #{params[:locname]} "  : ""
+              
+              @questions = SubmittedQuestion.find_questions(@cat, @edits, aux, locid,  @date1, @date2,
                  :all,  :select => select_string,  :joins => jstring, :order => order_clause("sq.updated_at", "desc"),
                        :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                
               @min = 124
@@ -273,7 +290,7 @@ class Aae::ReportsController < ApplicationController
              @faq = nil; @idtype='sqid'
         
         
-             @questions = SubmittedQuestion.find_questions(@user, desc,nil, @date1, @date2,
+             @questions = SubmittedQuestion.find_questions(@user, desc,nil,nil, @date1, @date2,
                                                             :all,
                                                             :select => select_string,
                                                             :joins => " as sq ",
@@ -1038,6 +1055,7 @@ class Aae::ReportsController < ApplicationController
               @total_resolved_by_category[category.name] = 0
             end       
           end
+           
        end
 
        def display_discrete_responded
@@ -1051,7 +1069,7 @@ class Aae::ReportsController < ApplicationController
             @pgt = " Questions Resolved by #{@resolver.first_name} #{@resolver.last_name} for '#{@cat.name}'"
             @faq = nil; @idtype='sqid'
 
-            @questions = SubmittedQuestion.find_questions(@cat, desc, aux,  @date1, @date2,
+            @questions = SubmittedQuestion.find_questions(@cat, desc, aux, nil, @date1, @date2,
                :all,  :select => select_string,  :joins => jstring, :order => order_clause("sq.updated_at", "desc"),
                      :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                          
 
