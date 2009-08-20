@@ -36,15 +36,15 @@ class Aae::ReportsController < ApplicationController
           @typelist = Institution.find(:all, :order => 'name', :conditions => {:entrytype => Institution::LANDGRANT})
         end
           typel= @type.downcase
-         @rept = Aaereport.new(:name => "ActivityGroup")
+         @rept = Aaereport.new({:name => "ActivityGroup", :filters => {:g => typel, :date1 => @date1, :date2 => @date2}})
          
          if @type=="State"
-          openquestions = (@rept.NewQuestion({:g => typel, :date1 => @date1, :date2 => @date2},[]))[0] 
+          openquestions = (@rept.NewQuestion({},[]))[0] 
          end
-          resolved = (@rept.ResolvedQuestion({:g => typel, :date1 => @date1, :date2 => @date2},[]))[0]
-          answered = (@rept.ResolvedQuestion({:g => typel, :date1 => @date1, :date2 => @date2, :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]
-          rejected = (@rept.ResolvedQuestion({:g => typel, :date1 => @date1, :date2 => @date2, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]
-          noexp = (@rept.ResolvedQuestion({:g => typel, :date1 => @date1, :date2 => @date2, :status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]
+          resolved = (@rept.ResolvedQuestion({},[]))[0]
+          answered = (@rept.ResolvedQuestion({ :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]
+          rejected = (@rept.ResolvedQuestion({ :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]
+          noexp = (@rept.ResolvedQuestion({:status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]
             stuv = nil
              @typelist.each do |st|
                if (@type=="State"); stuv= st.id; else; stuv=st.id.to_s; end;
@@ -90,7 +90,7 @@ class Aae::ReportsController < ApplicationController
          @filteredparams = FilterParams.new(params)  #can this be useful here? for hackers of the url? filter by location as well...
           @filteredoptions = @filteredparams.findoptions
            @typename = params[:category] ;  @locid = nil; @statename=nil ; @locname=nil ; @filtstr=""    #was :Category
-           @statename = params[:State]    #in case someone hacks in &State=NY...use abbreviatio
+           @statename = params[:State]    #in case someone hacks in &State=NY...use abbreviation
            if (loc=Location.find_by_id(params[:location]))  #in case someone hacks in &location=n...
                 @locname = "#{loc.id} (" + loc.name + ")"
                 @locid = loc.id

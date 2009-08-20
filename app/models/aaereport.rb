@@ -1,4 +1,4 @@
-class Aaereport < ActiveRecord::Base
+class Aaereport 
   
   
     attr_reader :idents
