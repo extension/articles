@@ -17,7 +17,7 @@ class Aae::ReportsController < ApplicationController
 
     ##Activity Reports
     def activity
-       (@date1,@date2, @dateFrom,@dateTo)= valid_date()
+       (@date1,@date2, @dateFrom,@dateTo)= valid_date("dateFrom", "dateTo")
        (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
        @oldest_date = SubmittedQuestion.find_oldest_date
        @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
@@ -261,7 +261,7 @@ class Aae::ReportsController < ApplicationController
             @dateFrom = params[:from] ;  @dateTo=params[:to]
             @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
           else
-            (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+            (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
             (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
           end
           @oldest_date = SubmittedQuestion.find_oldest_date
@@ -309,22 +309,14 @@ class Aae::ReportsController < ApplicationController
          
          
    
-           def valid_date()
-             dateFrom = params["dateFrom"] if (params["dateFrom"] ) 
+           def valid_date(fromdate, todate)               #valid_date() with date(c)From and date(c)To
+             dateFrom = params[fromdate] if (params[fromdate] ) 
              date1 = date_valid(dateFrom)
-             dateTo = params["dateTo"] if (params["dateTo"] )
+             dateTo = params[todate] if (params[todate] )
              date2 = date_valid(dateTo)
              [date1, date2, dateFrom, dateTo]
            end
 
-     
-          def valid_compare_date()
-            dateFrom = params["datecFrom"] if (params["datecFrom"] ) 
-            date1 = date_valid(dateFrom)
-            dateTo = params["datecTo"] if (params["datecTo"] )
-            date2 = date_valid(dateTo)
-            [date1, date2, dateFrom, dateTo]
-          end
 
           def date_valid(yyyymmdd)
               #yyyymmdd = yyyy-mm-dd
@@ -349,7 +341,7 @@ class Aae::ReportsController < ApplicationController
           [datef, datet, dateFrom, dateTo]
           end
 
-          def parmcheck(fromdate, todate, from, to, dateF, dateT)     #parmcheck() 
+          def parmcheck(fromdate, todate, from, to, dateF, dateT)     #parmcheck() ...check all date parms   (c) means compare_dates parms
               if params[:bysort] !="y"
                 if params[fromdate]      #:From(c)Date
                   dateFrom = params[fromdate]
@@ -591,7 +583,7 @@ class Aae::ReportsController < ApplicationController
          @dateFrom = params[:from] ;  @dateTo=params[:to]
           @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
        else
-         (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+         (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
          (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
        end
        @typename = params[:State]; 
@@ -710,7 +702,7 @@ class Aae::ReportsController < ApplicationController
          @dateFrom = params[:from] ;  @dateTo=params[:to]
          @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
        else
-         (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+         (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
          (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
        end
        @county = params[:County]; @typename = @county
@@ -784,7 +776,7 @@ class Aae::ReportsController < ApplicationController
               if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
                 (@date1, @date2, @dateFrom, @dateTo) = parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)
               else
-                (@date1,@date2,@dateFrom,@dateTo)=valid_date()
+                (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
                 (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
               end
               if (@date1 && @date2)
@@ -832,7 +824,7 @@ class Aae::ReportsController < ApplicationController
             if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
                (@datec1, @datec2, @datecFrom, @datecTo) = parmcheck(:FromcDate, :TocDate, :fromc, :toc, :datecFrom, :datecTo)   #parmccheck
             else
-              (@datec1,@datec2,@datecFrom,@datecTo)=valid_compare_date()  
+              (@datec1,@datec2,@datecFrom,@datecTo)=valid_date("datecFrom", "datecTo")  
               (@datec1,@datec2,@datecFrom,@datecTo)= errchk(@datec1,@datec2,@datecFrom,@datecTo)
             end
             if (@datec1 && @datec2)
