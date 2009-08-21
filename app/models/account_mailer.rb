@@ -79,10 +79,10 @@ class AccountMailer < ActionMailer::Base
     self.base_email
     # override from
     @from           = "\"#{reviewuser.first_name} #{reviewuser.last_name}\" <#{reviewuser.email}>"
-    @recipients     = AppConfig.configtable['mail_system_to']
-    @subject        = @subjectlabel+'Account Review Request'
+    @recipients     = AppConfig.configtable['emailsettings']['people']['review']
+    @subject        = @subjectlabel+'Account Review Request'    
     urls = Hash.new
-    urls['reviewurl'] = url_for(:controller => 'colleagues', :action => 'showuser', :id => reviewuser.login)
+    urls['reviewurl'] = url_for(:controller => 'people/colleagues', :action => 'showuser', :id => reviewuser.login)
     urls['contactus'] = url_for(:controller => 'people/help', :action => :index)
     @body           = {:isdemo => @isdemo, :reviewuser => reviewuser, :urls => urls }  
     
