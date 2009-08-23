@@ -1,8 +1,8 @@
 <% @page_title = "Reject this Question" %>
 
 <div id="reject">
-<h3><%= link_to "Incoming Question #{@submitted_question.id}", {:controller => 'expert', :action => 'question', :id => @submitted_question.id} %></h3>
-<h1><%= @page_title %></h1>
+    <h3><%= link_to "Incoming Question #{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %></h3>
+    <h1><%= @page_title %></h1>
 
 <p><strong>note:</strong> No information will be sent to the question submitter.</p>
 
