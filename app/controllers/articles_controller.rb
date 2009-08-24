@@ -34,6 +34,8 @@ class ArticlesController < ApplicationController
     @right_sidebar_to_display = "empty_vessel"
     
     if params[:title]
+      #ActiveRecord::Base::logger.info "article#page:  title = #{params[:title].inspect}"
+      #ActiveRecord::Base::logger.info "article#page:  request_uri = #{request.request_uri.inspect}"
       # ideally, rails would include a lone '?' at the end of a url...
       # yeah, poor form, but such is life with the wiki
     

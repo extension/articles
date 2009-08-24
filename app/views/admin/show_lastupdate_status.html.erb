@@ -1,0 +1,52 @@
+<% @page_title = "Program Configuration" %>
+<% @selected_tab = :admin %>
+
+<h2>Last Update</h2>
+
+<table cellspacing="0" border="1">
+    <tr>
+        <th scope="col">Data Source</th>
+        <th scope="col">Data Type</th>
+        <th scope="col">Last Updated</th>
+        <th scope="col">Last Ran</th>
+
+        <th scope="col">Additional Info</th>
+    </tr>
+<% UpdateTime.find(:all, :include => :datasource).each do |ut| %>
+    <tr>
+        <td>
+        <% if(ut.datasource_type == 'ActivityApplication') %>
+            Application: <%= ut.datasource.displayname %>
+        <% elsif(ut.datasource_type == 'FeedLocation') %>
+            Feed Location: <%= ut.datasource.uri %>
+        <% else %>
+            Object Type: <%= ut.datasource_type %>
+        <% end %>
+        </td>
+        <td><%= ut.datatype %></td>
+        <td><%= (ut.last_datasourced_at.nil? ? '&nbsp;' : ut.last_datasourced_at.to_s )%></td>
+        <td><%= (ut.updated_at.nil? ? '&nbsp;' : ut.updated_at.to_s) %></td>
+        <td>
+            <% if(ut.additionaldata.blank?) %>
+                &nbsp;
+            <% elsif ut.additionaldata.class == Hash%>
+                <% ut.additionaldata.each do |key,value| %>
+         	        <% if(value.class == Hash) %>
+         	            <% value.each do |subkey,subvalue| %>
+         	               <%= key %> : <%= subkey %> : <%= subvalue %><br/>
+         	            <% end %>
+         	        <% else %>
+                 	    <%= key %> : <%= value %><br/>
+             		<% end %>
+     		    <% end %>
+     		<% else %>
+     		   <%= ut.additionaldata %>
+     		 <% end %>
+        </td>
+    </tr>
+<% end %>
+</table>
+
+<p>
+  <%= link_to 'Admin Home', :action => 'index' %>
+</p>

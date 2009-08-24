@@ -12,6 +12,11 @@
         <li><%= link_to 'Manage External Feed sources', admin_feed_locations_url %></li>
     </ul>
     
+    <h2>Program Data</h2>
+    <ul>
+        <li><%= link_to 'Last Update Status', :action => 'show_lastupdate_status' %></li>
+    </ul>
+    
     <h2>Program Configuration</h2>
     <ul>
         <% if @currentuser.is_sudoer? %>

@@ -140,6 +140,10 @@ class AdminController < ApplicationController
   
   def show_config
   end
+  
+  def show_lastupdate_status
+  end  
+  
     
   def reload_config
     AppConfig.load_config
