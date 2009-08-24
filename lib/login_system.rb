@@ -147,6 +147,7 @@ module LoginSystem
   # store current uri in  the session.
   # we can return to this location by calling return_location
   def store_location
+    ActiveRecord::Base::logger.info "login: storing return_to = #{request.request_uri}"
     session[:return_to] = request.request_uri
   end
   
@@ -159,6 +160,8 @@ module LoginSystem
     if session[:return_to].nil?
       redirect_to default
     else
+      # add a debugging statement here so that we can get a feel for the current login errors
+      ActiveRecord::Base::logger.info "login: redirecting to #{session[:return_to]}"
       redirect_to session[:return_to]
       session[:return_to] = nil
     end
