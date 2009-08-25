@@ -52,10 +52,10 @@ class Aae::SearchController < ApplicationController
     setup_aae_search_params
     if params[:squid] and @submitted_question = SubmittedQuestion.find_by_id(params[:squid])    
       if params[:q] and params[:q].strip != ''
-        if session[:aae_search] == 'faq'
-          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score desc', :limit => 30).faq_questions
-        elsif session[:aae_search] == 'aae'
-          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score desc', :limit => 30).aae_questions
+        if session[:aae_search] == ['faq']
+          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).faq_questions.all(:order => 'match_score desc', :limit => 30)
+        elsif session[:aae_search] == ['aae']
+          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).aae_questions.all(:order => 'match_score desc', :limit => 30)
         else
           @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score desc', :limit => 30)
         end
