@@ -41,20 +41,6 @@
     background: transparent url(/images/aae/extensionNav_bg2.jpg) repeat-x;
 }
 
-#search_parameters {
-    padding:0;
-    margin:0 0 .5em;
-    width:100%;
-    display:block;
-/*    border:1px solid red;*/
-    float:left;
-}
-#search_parameters li {
-    padding:0;
-    margin:0 1em 0 0;
-    float:left;
-    display:inline;
-}
 #homeAAE {
     float:left;
     position: relative;

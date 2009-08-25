@@ -185,6 +185,7 @@ class People::AccountController < ApplicationController
     session[:first_set]= nil; session[:sec_set] = nil
     session[:left_set] = nil; session[:right_set] = nil
     session[:set1] = nil; session[:set2] = nil
+    session[:aae_search] = nil
   end
     
   def new_password

@@ -49,9 +49,16 @@ class Aae::SearchController < ApplicationController
   end
   
   def answers
+    setup_aae_search_params
     if params[:squid] and @submitted_question = SubmittedQuestion.find_by_id(params[:squid])    
       if params[:q] and params[:q].strip != ''
-        @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score desc', :limit => 30)
+        if session[:aae_search] == 'faq'
+          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score desc', :limit => 30).faq_questions
+        elsif session[:aae_search] == 'aae'
+          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score desc', :limit => 30).aae_questions
+        else
+          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score desc', :limit => 30)
+        end
       else
         flash[:failure] = "You must enter valid text into the search field." 
         redirect_to aae_question_url(:id => @submitted_question.id)
@@ -154,6 +161,16 @@ class Aae::SearchController < ApplicationController
     user_ids = selected_users.map{|u| u.id}.join(',')
     answering_role = Role.find_by_name(Role::AUTO_ROUTE)
     user_intersection = answering_role.users.find(:all, :select => "users.*", :conditions => "users.id IN (#{user_ids})")
+  end
+  
+  def setup_aae_search_params
+    session[:aae_search] = []
+    if !params[:faq_search] and !params[:aae_search]
+      session[:aae_search] = ['faq', 'aae']
+    else
+      session[:aae_search] << 'faq' if params[:faq_search]
+      session[:aae_search] << 'aae' if params[:aae_search]
+    end
   end
   
   def setup_cat_loc

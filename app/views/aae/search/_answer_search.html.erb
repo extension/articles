@@ -5,6 +5,12 @@
        <%= text_field_tag "q", params[:q], :size => 24 %>
        <%= submit_tag "Search" %>
        <%= hidden_field_tag(:squid, @submitted_question.id) %>
+       
+       <ul id="search_parameters">
+           <li><%= check_box_tag('faq_search', "1", is_checked('faq')) %> faq</li>
+           <li><%= check_box_tag('aae_search', "2", is_checked('aae')) %> aae</li>
+       </ul>
+       <br class="clear"/>
     </p>
     <% end %>
 </div>
