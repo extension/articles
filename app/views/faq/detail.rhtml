@@ -34,14 +34,4 @@
       <p>Unlike most other resources on the web, we have experts from Universities around the country ready to answer your questions.</p>
    </div>
 <% end %>
-  
-<% if @refq %>
-<p id="refqs">Reference Questions:
-         
-         <% @refq.each do |qno| %>
-           <% if Faq.find_by_id(qno.to_i)%>
-             <%= link_to qno, :action => 'detail', :id=>qno.to_i%>
-           <% end%>
-         <% end%>
-</p>
-<%end%>
+ 

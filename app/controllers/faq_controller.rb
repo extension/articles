@@ -30,10 +30,6 @@ class FaqController < ApplicationController
       set_title("#{@faq.question}", "Frequently asked questions from our resource area experts.")
       set_titletag("#{@faq.question} - eXtension")
       @published_content = true
-      
-      if @faq.reference_questions    
-        @refq = @faq.reference_questions.split(',') 
-      end
     else 
       @missing = "FAQ #{params[:id]}"
       do_404
