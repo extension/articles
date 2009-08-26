@@ -25,7 +25,7 @@
 <p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
 <div id="content_css_reset">
     <div id="article" class="faq">
-        <% if @faq.reference_questions %>
+        <% if(!@faq.reference_questions.blank?) %>
             <div id="relatedfaqs">
                 <h3>Related Questions...</h3>
                 <ul class="caption">
