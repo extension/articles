@@ -402,7 +402,7 @@ ul#aaelinks li a span {
 
 #search_parameters {
     padding:0;
-    margin:0 0 .5em;
+    margin:-.5em 0 .5em !important;
     width:100%;
     display:block;
 /*    border:1px solid red;*/
@@ -414,7 +414,8 @@ ul#aaelinks li a span {
     float:left;
     display:inline;
 }
-
+.AaE span {background:green;color:#fff; padding:1px 4px; font-size:.9em;-moz-border-radius: 4px;-webkit-border-radius: 4px;}
+.FAQ span {background:#003762;color:#fff; padding:1px 4px; font-size:.9em;-moz-border-radius: 4px;-webkit-border-radius: 4px;}
 
 #aae #masthead {
 	background: #fff url(/images/aae/masthead_bg_green.jpg) repeat-y top right;	
@@ -1438,3 +1439,5 @@ fieldset#add_location h3 {font-size:1.4em;}
 .moreinfo {padding:1px .3em;color:#eee;}
 a.moreinfo:link, a.moreinfo:visited {color:#ccc;font-size:.9em;}
 a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
+
+.tooltip_categories {height:100px; overflow: auto; border:1px solid red;}

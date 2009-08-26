@@ -18,8 +18,8 @@
 
     
     <tr <%= ' class="shaded"' if even %>>
-        <td>
-            <%= (question.entrytype == SearchQuestion::FAQ) ? 'FAQ' : 'AaE' %>
+        <td class="<%= (question.entrytype == SearchQuestion::FAQ) ? 'FAQ' : 'AaE' %>">
+            <span><%= (question.entrytype == SearchQuestion::FAQ) ? 'FAQ' : 'AaE' %></span>
         </td>
         <td>
             <%= question.status %>
