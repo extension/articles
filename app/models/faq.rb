@@ -9,9 +9,6 @@ class Faq < ActiveRecord::Base
   include ActionController::UrlWriter  # so that we can generate URLs out of the model
   extend DataImportContent  # utility functions for importing content
   
-  # faq foreign database
-  FAQDB = 'prod_faq'
-  
   # currently, no need to cache, we don't fulltext search tags
   # has_many :cached_tags, :as => :tagcacheable
     
@@ -21,22 +18,6 @@ class Faq < ActiveRecord::Base
              :default => "#{quoted_table_name}.heureka_published_at DESC"
   
   has_many :expert_questions
-  
-  
-  def self.retrieve_reference_questions
-    mydatabase = self.connection.instance_variable_get("@config")[:database]
-    faqdatabase = Faq::FAQDB
-    sub_query = "SELECT #{faqdatabase}.questions.id as question_id, #{faqdatabase}.revisions.reference_string as reference_questions FROM #{faqdatabase}.questions, #{faqdatabase}.revisions WHERE #{faqdatabase}.questions.published_revision = #{faqdatabase}.revisions.id AND #{faqdatabase}.revisions.reference_string IS NOT NULL"
-    update_query = "UPDATE #{mydatabase}.faqs, (#{sub_query}) as faq_query SET #{mydatabase}.faqs.reference_questions = faq_query.reference_questions WHERE #{mydatabase}.faqs.id = faq_query.question_id"
-    # execute sql 
-    begin
-      self.connection.execute(update_query)
-    rescue => err
-      logger.error "ERROR: Exception raised during FAQ reference_questions retrieval: #{err}"
-      return false
-    end    
-    return true    
-  end
   
   def self.get_cache_key(method_name,optionshash={})
     optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
