@@ -333,7 +333,7 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 .subheads {font-weight: bold}
 
 
-#aae_pitch {width:100px;padding: 5px; border:1px solid #efdb95; background: #fff0bb; text-align: center;margin:-10px 0 0;color:#C09F2C; font-size:1.2em;}
+#aae_pitch {width:100px;padding: 5px; border:1px solid #efdb95; background: #feffe4; text-align: center;margin:-10px 0 0;color:#888; font-size:1.2em;}
 #aae_pitch a {display:block;padding:.25em 0;}
 #aae_plug {margin: 2em 0 4em; border:1px solid #ccc; padding:1em;background:#feffe4;clear:both;}
 #aae_plug h4 {font-size: 1.7em;margin:0 0 .2em;}
@@ -348,6 +348,12 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 h3.instructions {color: #829500; font-weight:normal;}
 .dates {color: #bbb; padding-bottom: 3px}
 .caption {color: #afafaf; margin: 0 0 .5em;line-height:1.2em;}
+#relatedfaqs {float:right; width:190px; clear:right; border:1px solid #cce1fb; padding:1em 1.2em .75em; margin:2em 0 1em 2em !important;background:#e9f2fd;}
+#relatedfaqs h3 {padding:0; margin:0 0 .5em; color:#879cb7 !important;font-size:1.6em;font-weight:normal;}
+#relatedfaqs ul {padding:0 !important;}
+#relatedfaqs ul li {padding:0; margin:0 0 .75em; list-style:none;}
+#relatedfaqs a {display:block;}
+#relatedfaqs a:hover {color:#003f90;text-decoration:underline;}
 .warning {color: #9F0000; font-size:1.2em;}
 
 
@@ -392,7 +398,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 #article {float:left;line-height: 1.8em; }
 #article p {font-size:1.3em;}
 .content {width: 600px}
-.faq {width: 600px;margin-top:1.5em;}
+.faq {width: 600px;margin-top:1.1em;}
 
 
 /* Resest all styles for articles imported from the wiki
