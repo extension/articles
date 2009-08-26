@@ -117,6 +117,7 @@ module DataImportContent
     added_items = 0
     updated_items = 0
     deleted_items = 0
+    error_items = 0
     last_updated_item_time = refresh_since
     
 
@@ -136,16 +137,18 @@ module DataImportContent
           updated_items += 1
         when 'added'
           added_items += 1
+        when 'error'
+          error_items += 1
         end
       end
     
       if(update_retrieve_time)
         # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
-        updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_items, :added => added_items, :updated => updated_items}})        
+        updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_items, :added => added_items, :updated => updated_items, :errors => error_items}})        
       end
     end
     
-    return {:added => added_items, :deleted => deleted_items, :updated => updated_items, :last_updated_item_time => last_updated_item_time}
+    return {:added => added_items, :deleted => deleted_items, :errors => error_items, :updated => updated_items, :last_updated_item_time => last_updated_item_time}
   end
 
 end

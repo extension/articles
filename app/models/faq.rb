@@ -38,15 +38,7 @@ class Faq < ActiveRecord::Base
   end
   
   # the current FAQ feed uses an URL for the id at some point, it probably should move to something like:
-  # http://friendfeed.com/extensiondarmokproject/ae997214/how-to-make-good-id-in-atom-dive-into-mark
-  def self.find_from_atom_feed_id(idurl)
-    if(id = self.parse_id_from_atom_link(idurl))
-      return self.find_by_id(id)
-    else
-      return nil
-    end
-  end
-  
+  # http://friendfeed.com/extensiondarmokproject/ae997214/how-to-make-good-id-in-atom-dive-into-mark  
   def self.parse_id_from_atom_link(idurl)
     parsedurl = URI.parse(idurl)
     if(idlist = parsedurl.path.scan(/\d+/))
@@ -58,7 +50,16 @@ class Faq < ActiveRecord::Base
   end
   
   def self.create_or_update_from_atom_entry(entry,datatype = "ignored")
-    faq = self.find_from_atom_feed_id(entry.id) || self.new
+    if(!(faqid = self.parse_id_from_atom_link(entry.id)))
+      returndata = [Time.now.etc, 'error', nil]
+      return returndata
+    end
+    
+    faq = self.find_by_id(faqid) || self.new
+    if(faq.new_record?)
+      # force id
+      faq.id = faqid
+    end
     
     if entry.updated.nil?
       updated_time = Time.now.utc
