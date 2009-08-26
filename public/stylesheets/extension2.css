@@ -347,7 +347,7 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 .instructions {color: #829500; padding-bottom: 10px}
 h3.instructions {color: #829500; font-weight:normal;}
 .dates {color: #bbb; padding-bottom: 3px}
-.caption {color: #afafaf; margin: 0 0 1.2em;line-height:1.2em;}
+.caption {color: #afafaf; margin: 0 0 .5em;line-height:1.2em;}
 .warning {color: #9F0000; font-size:1.2em;}
 
 
@@ -392,7 +392,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 #article {float:left;line-height: 1.8em; }
 #article p {font-size:1.3em;}
 .content {width: 600px}
-.faq {width: 600px}
+.faq {width: 600px;margin-top:1.5em;}
 
 
 /* Resest all styles for articles imported from the wiki
