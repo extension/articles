@@ -11,7 +11,9 @@
         <div>
 	        <%= render(:partial => 'flashmessages') %>
             <h4>
-                <a onclick="Effect.toggle('date-selectors','blind', { duration: .4});" ><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@prior90th).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(last 90 days)</span>"%> <%= "<em>compared to</em> #{Time.parse(@datecFrom).strftime('%b %e, %Y')} - #{Time.parse(@datecTo).strftime('%b %e, %Y')}" if (@datec1 && @datec2) %> <em>edit</em></a></h4>
+	            <%p1 = nil%><% p2=nil%>
+	            <%p3 = nil%><% p4 =nil%>
+                <a onclick="Effect.toggle('date-selectors','blind', { duration: .4});" ><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@prior90th).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(last 90 days)</span>"%> <%  (p1=is_marked('public',:via_conduita))%> <% (p2=is_marked('widget', :via_conduita)) %> <% if p1 || p2 %> <%= "<em> Submitted through: </em>"%><%= (p1) ? 'Public' : ""%> <%= (p2) ? ((p1) ? ', Widgets' : ' Widgets' ): " "%><%end%> <%= "<em>compared to</em> #{Time.parse(@datecFrom).strftime('%b %e, %Y')} - #{Time.parse(@datecTo).strftime('%b %e, %Y')}" if (@datec1 && @datec2) %><% if @datec1 && @datec2 %> <%  (p3=is_marked('public', :via_conduitb))%> <% (p4=is_marked('widget', :via_conduitb))%><% if p3 || p4 %> <%= " <em>Submitted through:</em>" %> <%= (p3) ? 'Public' : ""%>  <%=(p4) ? ((p3) ? ', Widgets' : ' Widgets') : " " %><%end%><%end %> <em>edit</em></a></h4>
              
             <div id="calendar" >
 	           
