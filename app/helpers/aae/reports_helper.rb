@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-module Ask::ReportsHelper
+module Aae::ReportsHelper
   
   
   def is_marked(type, via_conduit)
