@@ -84,13 +84,14 @@ class ArticlesController < ApplicationController
       return
     end
 
-
     # get the tags on this article that correspond to community content tags
     @article_content_tags = @article.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
     @article_content_tag_names = @article_content_tags.map(&:name)
+    @article_bucket_names = @article.content_buckets.map(&:name)
+    
     if(!@article_content_tags.blank?)
       # is this article tagged with youth?
-      @youth = true if @article_content_tag_names.include?('youth')
+      @youth = true if @article_bucket_names.include?('youth')
       
       # get the tags on this article that are content tags on communities
       @community_content_tags = (Tag.community_content_tags({:launchedonly => true}) & @article_content_tags)
@@ -113,10 +114,10 @@ class ArticlesController < ApplicationController
       end
     end
     
-    if @article_content_tag_names.include?('news')
+    if @article_bucket_names.include?('news')
       set_title("#{@article.title} - eXtension News", "Check out the news from the land grant university in your area.")
       set_titletag("#{@article.title} - eXtension News")
-    elsif @article_content_tag_names.include?('learning lessons')
+    elsif @article_bucket_names.include?('learning lessons')
       set_title('Learning', "Don't just read. Learn.")
       set_titletag("#{@article.title} - eXtension")
     else
@@ -124,7 +125,6 @@ class ArticlesController < ApplicationController
       set_titletag("#{@article.title} - eXtension")
     end
 
-    
     flash.now[:googleanalytics] = request.request_uri + "?" + @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_content_tags and @community_content_tags.length > 0
     
     # Specify view since we want sub class (external articles) to go here too
