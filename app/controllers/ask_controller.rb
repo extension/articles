@@ -76,37 +76,42 @@ class AskController < ApplicationController
   end
   
   def submit_question
-    @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-    @submitted_question.location_id = params[:location_id]
-    @submitted_question.county_id = params[:county_id]
-    @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
-    @submitted_question.status = 'submitted'
-    @submitted_question.user_ip = request.remote_ip
-    @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
-    @submitted_question.referrer = request.env['HTTP_REFERER']
-    @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
-    @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
-    @submitted_question.external_app_id = 'www.extension.org'
+    if request.post?
+      @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+      @submitted_question.location_id = params[:location_id]
+      @submitted_question.county_id = params[:county_id]
+      @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
+      @submitted_question.status = 'submitted'
+      @submitted_question.user_ip = request.remote_ip
+      @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
+      @submitted_question.referrer = request.env['HTTP_REFERER']
+      @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
+      @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
+      @submitted_question.external_app_id = 'www.extension.org'
     
-    # let's check for spam
-    begin
-      @submitted_question.spam = @submitted_question.spam?
-    rescue Exception => ex
-      logger.error "Error checking submitted question from pubsite aae form for spam via Akismet at #{Time.now.to_s}. Akismet webservice might be experiencing problems.\nError: #{ex.message}"
-    end
+      # let's check for spam
+      begin
+        @submitted_question.spam = @submitted_question.spam?
+      rescue Exception => ex
+        logger.error "Error checking submitted question from pubsite aae form for spam via Akismet at #{Time.now.to_s}. Akismet webservice might be experiencing problems.\nError: #{ex.message}"
+      end
     
-    if !@submitted_question.valid? || !@submitted_question.save
-      flash[:notice] = 'There was an error saving your question. Please try again.'
-      redirect_to :action => 'index'
-      return
-    end
+      if !@submitted_question.valid? || !@submitted_question.save
+        flash[:notice] = 'There was an error saving your question. Please try again.'
+        redirect_to :action => 'index'
+        return
+      end
     
-    flash[:notice] = 'Your question has been submitted and the answer will be sent to your email. Our experts try to answer within 48 hours.'
-    flash[:googleanalytics] = '/ask-an-expert-question-submitted'
-    if session[:return_to]
-      redirect_to(session[:return_to]) 
+      flash[:notice] = 'Your question has been submitted and the answer will be sent to your email. Our experts try to answer within 48 hours.'
+      flash[:googleanalytics] = '/ask-an-expert-question-submitted'
+      if session[:return_to]
+        redirect_to(session[:return_to]) 
+      else
+        redirect_to '/'
+      end
     else
-      redirect_to '/'
+      flash[:warning] = "Please enter your question via the ask an expert form"
+      redirect_to ask_form_url
     end
   end
   

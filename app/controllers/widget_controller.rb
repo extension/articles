@@ -23,7 +23,6 @@ class WidgetController < ApplicationController
     render :layout => false
   end
 
-  # TODO: make akismet work
   def create_from_widget
     if request.post?
       
