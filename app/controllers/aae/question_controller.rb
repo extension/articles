@@ -194,7 +194,7 @@ class Aae::QuestionController < ApplicationController
       redirect_to incoming_url
       return
     end
-    
+
   end
   
   def reserve_question

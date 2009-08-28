@@ -69,8 +69,6 @@ class AppConfig
     @@configtable['help_wiki'] = 'http://docs.extension.org/wiki/' 
 
 
-
-
     # token timeouts are in days
     @@configtable['token_timeout_email'] = 7
     @@configtable['token_timeout_resetpass'] = 1
@@ -121,6 +119,7 @@ class AppConfig
     
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
+    @@configtable['faq_create_url'] = 'http://faq.extension.org/expert/new_faq'
 
   end
   

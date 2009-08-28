@@ -121,8 +121,10 @@
         <br/> 
 
         
-           <% form_tag({:controller => 'aae/faq', :action => 'new_faq'}) do %>
+           <% form_tag(AppConfig.configtable['faq_create_url']) do %>
              <%= hidden_field_tag(:squid, @submitted_question.id) %>
+             <%= hidden_field_tag(:aae_question, @submitted_question.asked_question) %>
+             <%= hidden_field_tag(:aae_answer, @submitted_question.current_response) %>
              <p>
              <%= submit_tag 'Convert this Question & Answer into a FAQ', :class => "submit" %>
              <br />(you can edit on the next screen)
