@@ -70,7 +70,7 @@ class WidgetController < ApplicationController
     @submitted_question.widget_name = widget.name if widget
     @submitted_question.user_ip = request.remote_ip
     @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
-    @submitted_question.referrer = request.env['HTTP_REFERER']
+    @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
     @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
     @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
     @submitted_question.external_app_id = 'widget'
