@@ -21,7 +21,7 @@
 	                
 	                <div class="date-selector1" >
 	                    <% form_tag ({:action => @repaction, :compd1 => @datec1, :compd2 => @datec2, :compds => @datecTo, :compdf => @datecFrom}) do %>
-	                  <!--  <div class="picker"><%= date_picker_field  "dateFrom", "to_s" %> <span>to</span> <%= date_picker_field "dateTo", "to_s" %></div>-->
+	                  
 	                     <%= calendar_date_select_tag "dateFrom", ((@dateFrom) ? @dateFrom : Time.parse(@prior90th).strftime('%Y-%m-%d')), :popup => true  %><span>to</span><%= calendar_date_select_tag "dateTo", ((@dateTo) ? @dateTo : Date.today), :popup => true%> 
 	                    <ul class="source">
                             <li><%= check_box_tag(:public_sourcea, true, is_marked('public', :via_conduita)) %> public site</li>
@@ -38,7 +38,7 @@
                     <div class="date-selector2">
                         <h4>Compare to...</h4>
                         <% form_tag  ({ :action => @repaction, :dat1 => @date1, :dat2 => @date2, :datF => @dateFrom, :datT => @dateTo}) do %>
-                       <!-- <div class="picker"><%= date_picker_field  "datecFrom", "to_s" %> <span>to</span> <%= date_picker_field "datecTo", "to_s" %></div>-->
+                      
                          <%= calendar_date_select_tag "datecFrom", ((@datecFrom) ? @datecFrom : Time.parse(@prior90th).strftime('%Y-%m-%d')), :popup => true%><span>to</span><%= calendar_date_select_tag "datecTo", ((@datecTo) ? @datecTo : Date.today), :popup => true%> 
                         <ul class="source">
                             <li><%= check_box_tag(:public_sourceb, true, is_marked('public', :via_conduitb)) %> public site</li>

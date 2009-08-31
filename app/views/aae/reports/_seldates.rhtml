@@ -5,7 +5,7 @@
  
         <% form_tag ({:action => @repaction, :id => ((@user) ? @user.id : nil) }) do %>
       
-          <!--  <p><%= date_picker_field  "dateFrom", "to_s", "cal-icon" %></p> <p><span>to</span> <%= date_picker_field "dateTo", "to_s" %></p> -->
+         
           <%= calendar_date_select_tag "dateFrom", ((@dateFrom) ? @dateFrom : Time.parse(@oldest_date).strftime('%Y-%m-%d')), :popup => true%><span>to</span><%= calendar_date_select_tag "dateTo", ((@dateTo) ? @dateTo : Date.today), :popup => true%> 
             <%= submit_tag 'Go' %>
         <% end%>

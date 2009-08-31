@@ -190,38 +190,5 @@ module ApplicationHelper
     (count.to_i == 0) ? text : link_to(text,params,htmloptions)
   end
   
-  #  david [at] davelee [dot] com [dot] au
-
-   #  project homepage: http://projects.exactlyoneturtle.com/date_picker/
-
-   #  License:
-   #  use, modify and distribute freely as long as this header remains intact;
-   #  please mail any improvements to the author
-   #*/
-   #---------------------------------------------------------------------------
-   # date_picker_field modified by NC State below 
-   #---------------------------------------------------------------------------
-   def date_picker_field(object, method, cssclass=nil)
-      obj = instance_eval("@#{object}")
-      value = obj.send(method)
-      display_value = value.respond_to?(:strftime) ? value.strftime('%d %b %Y') : value.to_s
-      display_value = 'choose date' if display_value.blank?
-
-      out = hidden_field(object, method)
-      out << content_tag('a', display_value, :href => '#',
-          :id => "_#{object}_#{method}_link", :class => cssclass,
-          :onclick => "DatePicker.toggleDatePicker('#{object}_#{method}'); return false;")
-      out << content_tag('div', '', :class => 'date_picker', :style => 'display: none',
-                        :id => "_#{object}_#{method}_calendar")
-      if obj.respond_to?(:errors) and obj.errors.on(method) then
-        ActionView::Base.field_error_proc.call(out, nil) # What should I pass ?
-      else
-        out
-      end
-   end
-   
-   
-   
-  
   
 end
