@@ -2,16 +2,19 @@ require 'erb'
 require 'yaml'
 
 #------------------------------
-# <i>Should</i> only have to edit these two vars for standard eXtension deployments
+# <i>Should</i> only have to edit these three vars for standard eXtension deployments
 
 set :application, "darmok"
 set :app_host, 'www'
+set :notify, "dev-deploys@lists.extension.org" #format for notifying multiple addresses = "to@someone.com,to@someoneelse.com" (no spaces)
 
 #------------------------------
 
 set :repository_base,  "https://sourcecode.extension.org/svn/#{application}"
 set :deploy_via, :export
 set :use_sudo, false
+set :ruby, "/usr/bin/ruby"
+set :email_script, "/services/scripts/deploy_notify.rb"
 
 # Make sure environment is loaded as first step
 on :load, "deploy:setup_environment"
@@ -27,6 +30,7 @@ after "deploy:update_code", "deploy:cleanup"
 
 # don't forget to turn it back on
 after "deploy", "deploy:web:enable"
+after :deploy, 'email:generate_report'
 
 # Add tasks to the deploy namespace
 namespace :deploy do
@@ -106,6 +110,14 @@ namespace :deploy do
   end
 end
 
+# generate an email to notify various users that a new version has been deployed
+# ruby deploy_email_generator.rb -m dev-deploys@lists.extension.org -r repository_base -a application -t target_host -u who_done_it
+namespace :email do 
+  desc "Generate an email for the deploy"
+  task :generate_report, :roles => [:app] do 
+    run "#{ruby} #{email_script} -m #{notify} -r #{repository_base} -a #{application} -t #{server_settings['host']} -u #{user}"
+  end
+end
 
 #--------------------------------------------------------------------------
 # Repository URI helper methods - specifically for the eXtension deployment
