@@ -104,11 +104,11 @@ named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_qu
 #Response times named scopes for by_category report
 named_scope :named_date_resp, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " submitted_questions.created_at between ? and ? ", date1, date2] : " date_sub(curdate(), interval 90 day) <= submitted_questions.created_at" } }
 named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join categories_submitted_questions on submitted_question_id=submitted_questions.id ",
-         :conditions => [ " ( status='resolved' or status='rejected' or status='no answer') and external_app_id #{extstr} "], :group => " category_id" }  } 
+         :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " category_id" }  } 
 
 #Response times named scopes for by_responder_locations report
  named_scope :count_avgs_loc, lambda { |extstr| {:select => "users.location_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
-     :conditions => [ " ( status='resolved' or status='rejected' or status='no answer') and external_app_id #{extstr} "], :group => " users.location_id" }  } 
+     :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " users.location_id" }  } 
           
    
 #activity named scopes
@@ -503,10 +503,10 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
    if extstr == " IS NULL";  return 0; end
    if (date1 && date2)
      return self.count(:all,
-      :conditions => ["status='submitted' and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2])
+      :conditions => ["status_state=#{STATUS_SUBMITTED} and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2])
    else
      return self.count(:all,
-     :conditions => "status='submitted' and external_app_id #{extstr}")
+     :conditions => "status_state=#{STATUS_SUBMITTED} and external_app_id #{extstr}")
    end
  end
  
@@ -515,17 +515,17 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
      if extstr == " IS NULL";  return 0; end
      if (date1 && date2)
        return self.count(:all,
-        :conditions => [" (status='submitted' || status='resolved' || status='rejected' || status='no answer' ) and external_app_id #{extstr} and created_at between ? and ?", date1, date2])
+        :conditions => [" (status_state > 0 ) and external_app_id #{extstr} and created_at between ? and ?", date1, date2])
      else
        return self.count(:all,
-       :conditions => " ( status='submitted' || status='resolved' || status='rejected' || status='no answer' ) and external_app_id #{extstr}")
+       :conditions => " ( status_state > 0 ) and external_app_id #{extstr}")
      end
  end
  
  def SubmittedQuestion.get_avg_response_time(date1, date2, pub, wgt)
     extstr = get_extapp_qual(pub, wgt) 
     if extstr == " IS NULL"; return 0; end
-    where_clause = " (status='resolved' or status='rejected' or status='no answer' ) and external_app_id #{extstr}"
+    where_clause = " (status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER} ) and external_app_id #{extstr}"
     if (date1 && date2)
       where_clause = [where_clause + " and created_at >= ? and created_at <= ?", date1, date2]
     end
@@ -536,10 +536,10 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
   def SubmittedQuestion.get_avg_open_time(date1, date2, dateTo, pub, wgt)
      extstr = get_extapp_qual(pub, wgt)
      if extstr == " IS NULL";  return 0; end
-     where_clause = " status='submitted' and external_app_id #{extstr}" 
+     where_clause = " status_state=#{STATUS_SUBMITTED} and external_app_id #{extstr}" 
      select_clause = " avg(timestampdiff(hour, created_at, now())) as cw "
      if (date1 && date2)
-       where_clause = ["( status='submitted' || ((status='resolved' || status='rejected' || status='no answer') and resolved_at >= ? and resolved_at <= ?)) and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2, date1, date2]
+       where_clause = ["( status_state=#{STATUS_SUBMITTED} || ((status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and resolved_at >= ? and resolved_at <= ?)) and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2, date1, date2]
        select_clause = " avg(timestampdiff(hour, created_at, '#{dateTo}')) as cw"
      end
      avg_open_times = find(:all, :select => select_clause, :conditions => where_clause)
@@ -578,9 +578,9 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
   def SubmittedQuestion.get_avg_response_time_past30(date1, date2, pub, wgt, nodays)
     extstr = get_extapp_qual(pub, wgt)
     if extstr == " IS NULL";  return 0; end
-    where_clause = " date_sub(curdate(),interval #{nodays} day) <= resolved_at and (status='resolved' || status='rejected' || status='no answer') and external_app_id #{extstr}"
+    where_clause = " date_sub(curdate(),interval #{nodays} day) <= resolved_at and (status_state=#{STATUS_RESOLVED} || status_state=#{STATUS_REJECTED} || status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr}"
     if (date1 && date2)
-      where_clause = [" date_sub(?, interval #{nodays} day) <= resolved_at and (status='resolved' || status='rejected' || status='no answer') and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date2, date1, date2]
+      where_clause = [" date_sub(?, interval #{nodays} day) <= resolved_at and (status_state=#{STATUS_RESOLVED} || status_state=#{STATUS_REJECTED} || status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date2, date1, date2]
     end
     avg_time_in_hours=find(:all, :select => "avg(timestampdiff(hour, created_at, resolved_at)) as ra", :conditions => where_clause) 
     avg_time_in_hours[0].ra.to_i

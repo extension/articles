@@ -205,7 +205,7 @@ class Aae::ReportsController < ApplicationController
                  @edits = "Resolved"
                end
              end
-              select_string = " sq.id squid, sq.updated_at updated_at, resolved_by, asked_question, sq.question_updated_at, sq.status status"
+              select_string = " sq.id squid, sq.updated_at updated_at, resolved_by, asked_question, sq.question_updated_at, sq.status_state status"
               jstring = " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id " + ((locid) ? " join locations on sq.location_id=locations.id " : "")
               (desc=="New") ? @pgt = " Newly Submitted Questions in '#{@cat.name}'  " : @pgt = " Questions Resolved from Ask an Expert for '#{@cat.name}'"
               (params[:locname]) ? @filtstr = "Filtered by Location = #{params[:locname]} "  : ""
@@ -284,7 +284,7 @@ class Aae::ReportsController < ApplicationController
            desc = params[:descriptor]; @numb = params[:num].to_i
 
              select_string = " sq.current_contributing_question question_id, sq.user_id, sq.id squid,  resolved_by, " +
-                " sq.status status, sq.created_at, sq.updated_at updated_at, asked_question " 
+                " sq.status_state status, sq.created_at, sq.updated_at updated_at, asked_question " 
             
              @pgt = "Questions #{@user.first_name} #{@user.last_name} #{desc} "
              @faq = nil; @idtype='sqid'
@@ -632,7 +632,7 @@ class Aae::ReportsController < ApplicationController
          
              (@edits[0..7]== "Resolved") ?  jrestring = " join users on sq.resolved_by=users.id " :  jrestring=""
              select_string = "sq.user_id, sq.id squid, resolved_by, sq.location_id, current_contributing_question question_id,  " +
-                " sq.status status, sq.created_at, sq.updated_at updated_at, asked_question " 
+                " sq.status_state status, sq.created_at, sq.updated_at updated_at, asked_question " 
             
               jstring= " as sq #{jrestring}"
              if @edits == 'Submitted'
@@ -883,7 +883,7 @@ class Aae::ReportsController < ApplicationController
       # avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr), "category_id",1.0)
       avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr)).map { |avgs| avgrh[avgs.category_id] = avgs.ra.to_f}
      #  avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "category")
-       noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " status = 'submitted' and external_app_id #{extstr} ", :group => 'category_id')
+       noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => 'category_id')
        # used to be [noq, avg4, avg30, noopen]
        [noq, avgr, noopen]
      end
@@ -937,7 +937,7 @@ class Aae::ReportsController < ApplicationController
        # avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "location")
         
          noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => "join users on submitted_questions.user_id=users.id", 
-              :conditions =>  " status = 'submitted' and external_app_id #{extstr} ", :group => "users.location_id")
+              :conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => "users.location_id")
         # [noq, avgr, avg30, noopen]
         [noq, avgr, noopen]
       end
@@ -1032,7 +1032,7 @@ class Aae::ReportsController < ApplicationController
           @dateFrom = params[:from] ;  @dateTo=params[:to]; desc = "Resolver" ; aux = @resolver.id.to_s
           @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
           @numb = params[:num].to_i
-            select_string = " sq.id squid, sq.updated_at, resolved_by, asked_question, status status  "
+            select_string = " sq.id squid, sq.updated_at, resolved_by, asked_question, status_state status  "
             jstring = " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id  "
             @pgt = " Questions Resolved by #{@resolver.first_name} #{@resolver.last_name} for '#{@cat.name}'"
             @faq = nil; @idtype='sqid'

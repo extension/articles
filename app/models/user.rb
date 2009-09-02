@@ -1572,7 +1572,7 @@ class User < ActiveRecord::Base
      end
     
      def get_avg_resp_time(date1, date2)
-       statuses = [ "", " and status='resolved'", "and status='rejected'","and status='no answer'"]
+       statuses = [ "", " and status_state=#{SubmittedQuestion::STATUS_RESOLVED}", "and status_state=#{SubmittedQuestion::STATUS_REJECTED}","and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER}"]
        n = statuses.size; i = 0; results=[]
        while i < n do
            if (date1 && date2)
