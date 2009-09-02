@@ -540,11 +540,12 @@ ActiveRecord::Schema.define(:version => 20090902170623) do
   add_index "privacy_settings", ["user_id"], :name => "index_privacy_settings_on_user_id"
 
   create_table "public_users", :force => true do |t|
-    t.string   "email",      :limit => 96,                   :null => false
-    t.string   "first_name",               :default => ""
-    t.string   "last_name",                :default => ""
-    t.string   "password",   :limit => 40, :default => ""
-    t.boolean  "valid",                    :default => true
+    t.string   "email",                        :null => false
+    t.string   "first_name", :default => ""
+    t.string   "last_name",  :default => ""
+    t.string   "password",   :default => ""
+    t.string   "salt",       :default => ""
+    t.boolean  "enabled",    :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
