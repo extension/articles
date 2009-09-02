@@ -9,16 +9,16 @@
 
 <fieldset>
     <p class="simplefield">
-        <label for="submitted_question[submitter_firstname]">First Name: <em class="required">*</em></label>
-        <%= text_field_tag "submitted_question[submitter_firstname]", @submitted_question.submitter_firstname %>
+        <label for="public_user[first_name]">First Name: <em class="required">*</em></label>
+        <%= text_field_tag "public_user[first_name]", @public_user.first_name %>
     </p>
-    <%= error_message_on "submitted_question", "submitter_firstname" %>
+    <%= error_message_on "public_user", "first_name" %>
 	<br class="clearing" />
     <p class="simplefield">
-        <label for="submitted_question[submitter_lastname]">Last Name: <em class="required">*</em></label>
-        <%= text_field_tag "submitted_question[submitter_lastname]", @submitted_question.submitter_lastname %>
+        <label for="public_user[last_name]">Last Name: <em class="required">*</em></label>
+        <%= text_field_tag "public_user[last_name]", @public_user.last_name %>
     </p>
-    <%= error_message_on "submitted_question", "submitter_lastname"%>
+    <%= error_message_on "public_user", "last_name" %>
 		<br class="clearing" />
     <p class="simplefield">
         <label for="submitted_question[zip_code]">Zip Code:</label>
@@ -27,10 +27,10 @@
     <%= error_message_on "submitted_question", "zip_code"%>
 <br class="clearing" />
     <p class="simplefield">
-        <label for="submitted_question[submitter_email]">Email: <em class="required">*</em></label>
-        <%= text_field_tag "submitted_question[submitter_email]", @submitted_question.submitter_email %>
+        <label for="public_user[email]">Email: <em class="required">*</em></label>
+        <%= text_field_tag "public_user[email]", @public_user.email %>
     </p>
-    <%= error_message_on "submitted_question", "submitter_email"%>
+    <%= error_message_on "public_user", "email"%>
 </fieldset>
 
 <h3>Category <span class="optional">(optional)</span></h3>

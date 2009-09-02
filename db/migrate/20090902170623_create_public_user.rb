@@ -23,7 +23,7 @@ class CreatePublicUser < ActiveRecord::Migration
     add_index "submitted_questions", "public_user_id"
     
     # go back and associate with the new public_user records
-    execute "UPDATE public_users,submitted_questions SET submitted_questions.public_user_id = public_users.id WHERE submitted_questions.submitter_email = public_users.email"
+    execute "UPDATE public_users,submitted_questions SET submitted_questions.public_user_id = public_users.id WHERE LOWER(submitted_questions.submitter_email) = public_users.email"
     
     # identify the spammers
     execute "UPDATE public_users, (SELECT public_users.id as userid, count(submitted_questions.id) as question_count, SUM(submitted_questions.spam) as spam_count from public_users,submitted_questions WHERE submitted_questions.public_user_id = public_users.id GROUP BY public_users.email HAVING spam_count > 0) as spammer_list SET public_users.enabled = 0 WHERE public_users.id = spammer_list.userid"

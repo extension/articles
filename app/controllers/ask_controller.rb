@@ -24,6 +24,12 @@ class AskController < ApplicationController
       flash.now[:googleanalytics] = '/ask-an-expert-edit-question'
       set_titletag("Edit your Question - eXtension")
       begin
+        if(params[:public_user])
+          @public_user = PublicUser.find_or_create_by_email(params[:public_user])
+        else
+          @public_user = PublicUser.new
+        end
+        
         @submitted_question = SubmittedQuestion.new(params[:submitted_question])
         @submitted_question.location_id = params[:location_id]
         @submitted_question.county_id = params[:county_id]
@@ -38,10 +44,13 @@ class AskController < ApplicationController
         end
         # run validator to display any input errors
         @submitted_question.valid?
+        @public_user.valid?
       rescue
+        @public_user = PublicUser.new
         @submitted_question = SubmittedQuestion.new
       end
     else
+      @public_user = PublicUser.new
       @submitted_question = SubmittedQuestion.new
     end
     
@@ -86,6 +95,7 @@ class AskController < ApplicationController
   
   def submit_question
     if request.post?
+      @public_user = PublicUser.find_or_create_by_email(params[:public_user])
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       @submitted_question.location_id = params[:location_id]
       @submitted_question.county_id = params[:county_id]
@@ -97,6 +107,10 @@ class AskController < ApplicationController
       @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
       @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
       @submitted_question.external_app_id = 'www.extension.org'
+      @submitted_question.public_user = @public_user
+      # for easier akismet checking, set the submitter_email attribute from the associated public_user
+      @submitted_question.submitter_email = @public_user.email
+      
     
       # let's check for spam
       begin
@@ -105,7 +119,7 @@ class AskController < ApplicationController
         logger.error "Error checking submitted question from pubsite aae form for spam via Akismet at #{Time.now.to_s}. Akismet webservice might be experiencing problems.\nError: #{ex.message}"
       end
     
-      if !@submitted_question.valid? || !@submitted_question.save
+      if !@submitted_question.valid? || !@public_user.valid? || !@submitted_question.save
         flash[:notice] = 'There was an error saving your question. Please try again.'
         redirect_to :action => 'index'
         return
