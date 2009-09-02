@@ -57,6 +57,8 @@ ANSWERED_TEXT = 'answered'
 NO_ANSWER_TEXT = 'not_answered'
 REJECTED_TEXT = 'rejected'
 
+STATUS_TO_STR = {STATUS_SUBMITTED => SUBMITTED_TEXT, STATUS_RESOLVED => RESOLVED_TEXT, STATUS_NO_ANSWER => NO_ANSWER_TEXT, STATUS_REJECTED => REJECTED_TEXT}
+
 EXPERT_DISCLAIMER = "This message for informational purposes only. " +  
                     "It is not intended to be a substitute for personalized professional advice. For specific local information, " + 
                     "contact your local county Cooperative Extension office or other qualified professionals." + 
