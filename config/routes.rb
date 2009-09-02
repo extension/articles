@@ -38,6 +38,7 @@ ActionController::Routing::Routes.draw do |map|
   ################################################################
   ### AaE ###
   
+  map.connect 'ask/:fingerprint', :controller => 'ask', :action => 'question'
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
   map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
   map.my_assigned 'aae/my_assigned', :controller => 'aae/my_assigned', :action => 'index'

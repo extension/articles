@@ -1,0 +1,24 @@
+<% @page_title = "Ask an Expert - \"" + @submitted_question.asked_question + "\""%>
+
+<%= render(:partial => "/partial/flashmessages") %>
+
+<h1>Ask an Expert Question Conversation</h1>
+
+<p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+
+<br />
+
+<h2 class="inc_question"><span><%= @submitted_question.asked_question %></span></h2>
+<br class="clear" />
+
+
+<h3>Answer</h3>
+<% if response = @submitted_question.current_response and response.strip != '' %>
+
+<p><%= response %></p>
+
+<% else %>
+
+<p>This question is awaiting a response from one of our experts.</p>
+
+<% end %>

@@ -75,6 +75,15 @@ class AskController < ApplicationController
       
   end
   
+  def question
+    @submitted_question = SubmittedQuestion.find_by_question_fingerprint(params[:fingerprint])
+    
+    if !@submitted_question
+      do_404
+      return
+    end
+  end
+  
   def submit_question
     if request.post?
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
