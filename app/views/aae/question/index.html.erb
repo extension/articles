@@ -159,8 +159,7 @@
 <% end %>
 
 <% if @currentuser.is_admin? %>
-
-    <% if @submitted_question.private == false %>
+    <% if @submitted_question.show_publicly == true %>
         <div class="admin_option" class="online">
             <p><strong>Admin only option</strong><br />This question is accessible online</p>
             <%= button_to 'Remove from Public View', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>

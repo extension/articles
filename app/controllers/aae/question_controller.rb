@@ -201,12 +201,12 @@ class Aae::QuestionController < ApplicationController
     if request.post?
       if @currentuser.is_admin?
         submitted_question = SubmittedQuestion.find(params[:id])
-        if submitted_question.private?
-          submitted_question.update_attribute(:private, false)
-          flash[:success] = "Question has been made publicly viewable."
-        else
-          submitted_question.update_attribute(:private, true)
+        if submitted_question.show_publicly?
+          submitted_question.update_attribute(:show_publicly, false)
           flash[:success] = "Question has been removed from public view."
+        else
+          submitted_question.update_attribute(:show_publicly, true)
+          flash[:success] = "Question has been made publicly viewable."
         end
       else
         flash[:warning] = "You must be an administrator to access this feature."
@@ -257,7 +257,7 @@ class Aae::QuestionController < ApplicationController
     if request.post?      
       submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
       if submitted_question
-        submitted_question.update_attributes(:spam => true, :private => true)
+        submitted_question.update_attributes(:spam => true, :show_publicly => false)
         SubmittedQuestionEvent.log_spam(submitted_question, @currentuser)       
         
         begin
@@ -278,7 +278,7 @@ class Aae::QuestionController < ApplicationController
     if request.post?
       submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
       if submitted_question
-        submitted_question.update_attributes(:spam => false, :private => false)
+        submitted_question.update_attributes(:spam => false, :show_publicly => true)
         SubmittedQuestionEvent.log_non_spam(submitted_question, @currentuser)
           
         begin
@@ -337,7 +337,7 @@ class Aae::QuestionController < ApplicationController
   def reactivate
     if request.post?
       @submitted_question = SubmittedQuestion.find_by_id(params[:id])
-      @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED, :resolved_by => nil, :current_response => nil, :resolved_at => nil, :resolver_email => nil, :private => false)
+      @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED, :resolved_by => nil, :current_response => nil, :resolved_at => nil, :resolver_email => nil, :show_publicly => true)
       SubmittedQuestionEvent.log_reactivate(@submitted_question, @currentuser)
       flash[:success] = "Question re-activated"
       redirect_to aae_question_url(:id => @submitted_question.id)
