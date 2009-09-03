@@ -337,6 +337,17 @@ class NotificationMailer < ActionMailer::Base
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :signature => signature, :urls => urls }
    end
    
+   def aae_public_submission(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s)
+     @subject = "[Message from eXtension] Thank you for your question submission."          
+     @recipients     = submitted_question.public_user.email
+     urls = Hash.new
+     urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :urls => urls }
+   end
+   
    
    ### NOTE: not based on a notification
    def aae_escalation_for_category(category, sincehours)

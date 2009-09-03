@@ -31,6 +31,7 @@ before_create :generate_fingerprint
 
 after_save :assign_parent_categories
 after_create :auto_assign_by_preference
+after_create :notify_submitter
 
 has_rakismet :author => proc { "#{self.submitter_firstname} #{self.submitter_lastname}" },
              :author_email => :submitter_email,
@@ -303,6 +304,11 @@ end
 
 def submitter_fullname
   return "#{self.submitter_firstname} #{self.submitter_lastname}"
+end
+
+# creates a notification to the submitter that we've received their question
+def notify_submitter
+  Notification.create(:notifytype => Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT, :user => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
 end
 
 def auto_assign_by_preference

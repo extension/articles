@@ -180,6 +180,18 @@ def notify_aae_public_response(notification)
   return true
 end
 
+def notify_aae_public_submission(notification)
+  puts "Sending aae submission notification to public..."
+  email = NotificationMailer.create_aae_public_submission(notification)
+  begin 
+    NotificationMailer.deliver(email)
+  rescue
+    puts "ERROR: Unable to deliver aae submission notification."
+    return false
+  end 
+  return true
+end
+
 # main
 notifications = Notification.tosend.find(:all, :limit => @limit)
 @notificationcount = notifications.size
@@ -241,6 +253,8 @@ notifications.each do |notification|
     notificationresult = notify_aae_reassignment(notification)  
   when Notification::AAE_PUBLIC_EXPERT_RESPONSE
     notificationresult = notify_aae_public_response(notification)    
+  when Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT
+    notificationresult = notify_aae_public_submission(notification)    
   else
     # nothing
   end

@@ -25,7 +25,7 @@ class AskController < ApplicationController
       set_titletag("Edit your Question - eXtension")
       begin
         if(params[:public_user])
-          @public_user = PublicUser.find_or_create_by_email(params[:public_user])
+          @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
         else
           @public_user = PublicUser.new
         end
@@ -95,7 +95,7 @@ class AskController < ApplicationController
   
   def submit_question
     if request.post?
-      @public_user = PublicUser.find_or_create_by_email(params[:public_user])
+      @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       @submitted_question.location_id = params[:location_id]
       @submitted_question.county_id = params[:county_id]

@@ -56,6 +56,7 @@ class Notification < ActiveRecord::Base
   AAE_ASSIGNMENT = 1001  # assignment notification
   AAE_REASSIGNMENT = 1002  # reassignment notification
   AAE_ESCALATION = 1003  # escalation notification
+  AAE_PUBLIC_EDIT = 1004  # a public user edited their question
   
     
   ##########################################
@@ -63,6 +64,7 @@ class Notification < ActiveRecord::Base
   
   NOTIFICATION_AAE_PUBLIC = [2000,2999]   # 'aae-public'
   AAE_PUBLIC_EXPERT_RESPONSE = 2001  # notification of an expert response, also "A Space Odyssey"
+  AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT = 2010  # notification of submission, also "The Year We Make Contact"
   
 
   belongs_to :user

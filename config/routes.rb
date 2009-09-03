@@ -40,7 +40,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.ask_form 'ask', :controller => 'ask', :action => 'index'
   # requires that if there is a parameter after the /ask, that it is in hexadecimal representation
-  map.connect 'ask/:fingerprint', :controller => 'ask', :action => 'question', :requirements => { :fingerprint => /[[:xdigit:]]+/ }
+  map.ask_question 'ask/:fingerprint', :controller => 'ask', :action => 'question', :requirements => { :fingerprint => /[[:xdigit:]]+/ }
   
   map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
   map.my_assigned 'aae/my_assigned', :controller => 'aae/my_assigned', :action => 'index'
