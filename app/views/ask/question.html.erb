@@ -5,6 +5,7 @@
 <div id="public_aae">
     <h1>Your Question</h1>
     
+    <div id="primary">
     <h2><%= @submitted_question.asked_question %></h2>
 
     <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
@@ -21,6 +22,10 @@
     </div>
     
     <p class="aae_pitch">Have another question? <%= link_to 'Ask one of our Experts', ask_form_url %></p>
+    
+    </div>
+    
+    
     
     <div id="privacy_options">
         <h4>Who can see this page?</h4>

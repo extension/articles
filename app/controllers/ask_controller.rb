@@ -85,6 +85,7 @@ class AskController < ApplicationController
   end
   
   def question
+    @right_column = false
     @submitted_question = SubmittedQuestion.find_by_question_fingerprint(params[:fingerprint])
     
     if !@submitted_question

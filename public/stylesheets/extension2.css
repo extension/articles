@@ -686,3 +686,10 @@ p.textcounter span.charcount-makeaware {color:#888;}
 .youtube    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/youtube.png) 0 0 no-repeat;}
 .mailto      {padding:0 0 0 26px; background: url(/images/common/email.png) 0 0 no-repeat;}
 
+
+
+#public_aae #privacy_options {background:#fcf0e3;padding:1em;-moz-border-radius: 8px;-webkit-border-radius: 8px;float:right;width:250px;color:#666;}
+
+#public_aae #privacy_options h4 {font-size:1.4em;background: url(/images/common/lock.png) 0 0 no-repeat; padding-left:22px;}
+#public_aae h1 {color:#777;}
+#public_aae #primary {float:left; width:500px;}
