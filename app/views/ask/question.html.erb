@@ -8,7 +8,8 @@
     <div id="primary">
     <h2 class="question"><%= @submitted_question.asked_question %></h2>
 
-    <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+    <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago.</p>
+    <p class="inc_descriptive"><%= link_to("Edit your question") %>. Need to clarify anything or correct any information? Your question is editable until one of our experts responds. Thanks!</p>
 
 
     <% if response = @submitted_question.current_response and response.strip != '' %>

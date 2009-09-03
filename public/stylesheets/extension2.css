@@ -699,3 +699,5 @@ p.textcounter span.charcount-makeaware {color:#888;}
 #public_aae #no_answer h2 {margin:1em 0 .5em; font-size: 2.1em; color:#000;font-weight:bold;}
 #public_aae #no_answer p {font-size:1.4em;}
 #public_aae .inc_descriptive {margin:1em 0 0 1em;color:#555;}
+#public_aae .inc_descriptive a {color:blue;}
+#public_aae .inc_descriptive a:hover {text-decoration:underline;}
