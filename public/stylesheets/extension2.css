@@ -691,5 +691,11 @@ p.textcounter span.charcount-makeaware {color:#888;}
 #public_aae #privacy_options {background:#fcf0e3;padding:1em;-moz-border-radius: 8px;-webkit-border-radius: 8px;float:right;width:250px;color:#666;}
 
 #public_aae #privacy_options h4 {font-size:1.4em;background: url(/images/common/lock.png) 0 0 no-repeat; padding-left:22px;}
-#public_aae h1 {color:#777;}
-#public_aae #primary {float:left; width:500px;}
+#public_aae h1 {color:#777;margin-top:.45em; margin-bottom: .25em;}
+#public_aae #primary {float:left; width:550px;}
+#public_aae h2.question {background: #ddf1f8;padding:1em;color:#000;font-family: "Georgia","Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;font-size:1.8em;}
+
+#public_aae #no_answer {border:3px solid #ddd;margin:3em 0 2em 0;text-align:center;padding:1em;}
+#public_aae #no_answer h2 {margin:1em 0 .5em; font-size: 2.1em; color:#000;font-weight:bold;}
+#public_aae #no_answer p {font-size:1.4em;}
+#public_aae .inc_descriptive {margin:1em 0 0 1em;color:#555;}

@@ -6,7 +6,7 @@
     <h1>Your Question</h1>
     
     <div id="primary">
-    <h2><%= @submitted_question.asked_question %></h2>
+    <h2 class="question"><%= @submitted_question.asked_question %></h2>
 
     <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
 
@@ -18,7 +18,7 @@
 
     <div id="no_answer">
         <h2>We don’t have an answer for you yet...</h2>
-        <p>When we have one, we’ll send an email to <em><%= @need_email_address %></em>.</p>
+        <p>As soon as we have one, we’ll send you an email.</p>
     </div>
     
     <p class="aae_pitch">Have another question? <%= link_to 'Ask one of our Experts', ask_form_url %></p>
