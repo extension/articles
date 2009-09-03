@@ -161,13 +161,18 @@
 <% if @currentuser.is_admin? %>
     <% if @submitted_question.show_publicly == true %>
         <div class="admin_option" class="online">
-            <p><strong>Admin only option</strong><br />This question is accessible online</p>
-            <%= button_to 'Remove from Public View', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+            <p><%= link_to_function 'View options (Admin only)', "Effect.toggle('adminoptions','blind', { duration: .4});" %></p>
+            <div id="adminoptions" style="display:none;">
+                <p>This question is currently accessible online</p>
+                <%= button_to 'Remove from Public View', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+            </div>
         </div>
     <% else %>
         <div class="admin_option offline" >
-            <p><strong>Admin only option</strong><br />This question is not accessible online</p>
-            <%= button_to 'Make Publicly Viewable', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+            <p><%= link_to_function 'This question is not accessible online (Admin only)', "Effect.toggle('adminoptions','blind', { duration: .4});" %></p>
+            <div id="adminoptions" style="display:none;">
+                <%= button_to 'Make Viewable', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+            </div>
         </div>
    <% end %>
     

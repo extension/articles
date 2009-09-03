@@ -14,13 +14,14 @@
 
     <% if response = @submitted_question.current_response and response.strip != '' %>
         <h3>Answer</h3>
-        <p><%= response %></p>
+        <p class="response"><%= response %></p>
     <% else %>
-        <p class="inc_descriptive"><%= link_to("Edit your question") %>. Need to clarify anything or correct any information? Your question is editable until one of our experts responds. Thanks!</p>
+        
     
         <div id="no_answer">
             <h2>We don’t have an answer for you yet...</h2>
             <p>As soon as we have one, we’ll send you an email.</p>
+            <p class="inc_descriptive"><%= link_to("Edit your question") %>. Need to clarify or correct any information? Your question is editable until one of our experts responds. Thanks!</p>
         </div>
     <% end %>
     

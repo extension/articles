@@ -699,5 +699,8 @@ p.textcounter span.charcount-makeaware {color:#888;}
 #public_aae #no_answer h2 {margin:1em 0 .5em; font-size: 2.1em; color:#000;font-weight:bold;}
 #public_aae #no_answer p {font-size:1.4em;}
 #public_aae .inc_descriptive {margin:1em 0 0 1em;color:#555;}
-#public_aae .inc_descriptive a {color:blue;}
+#public_aae .inc_descriptive a {color:blue;font-weight:bold;}
 #public_aae .inc_descriptive a:hover {text-decoration:underline;}
+#public_aae h3 {font-size:2em;}
+p.response {font-size:1.6em; margin-bottom:2em;}
+#public_aae .aae_pitch {margin-top:3em; font-size:1.5em; border-top:1px solid #ccc;padding-top:.55em;}
