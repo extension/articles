@@ -2,23 +2,32 @@
 
 <%= render(:partial => "/partial/flashmessages") %>
 
-<h1>Ask an Expert Question Conversation</h1>
+<div id="public_aae">
+    <h1>Your Question</h1>
+    
+    <h2><%= @submitted_question.asked_question %></h2>
 
-<p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
-
-<br />
-
-<h2 class="inc_question"><span><%= @submitted_question.asked_question %></span></h2>
-<br class="clear" />
+    <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
 
 
-<h3>Answer</h3>
-<% if response = @submitted_question.current_response and response.strip != '' %>
+    <% if response = @submitted_question.current_response and response.strip != '' %>
+        <h3>Answer</h3>
+        <p><%= response %></p>
+    <% else %>
 
-<p><%= response %></p>
+    <div id="no_answer">
+        <h2>We don’t have an answer for you yet...</h2>
+        <p>When we have one, we’ll send an email to <em><%= @need_email_address %></em>.</p>
+    </div>
+    
+    <p class="aae_pitch">Have another question? <%= link_to 'Ask one of our Experts', ask_form_url %></p>
+    
+    <div id="privacy_options">
+        <h4>Who can see this page?</h4>
+        <p>This page is private.</p>
 
-<% else %>
-
-<p>This question is awaiting a response from one of our experts.</p>
-
+        <p>To view this page you have to know its web address (which is not public) and the email address used to submit the question.</p>
+    </div>
+    
 <% end %>
+</div>
