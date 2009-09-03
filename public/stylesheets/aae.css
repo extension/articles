@@ -1441,3 +1441,7 @@ a.moreinfo:link, a.moreinfo:visited {color:#ccc;font-size:.9em;}
 a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
 
 .tooltip_categories {height:100px; overflow: auto; border:1px solid red;}
+
+.admin_option {background:#eee;padding:.5em .5em .1em;margin-top:4em;clear:both;}
+
+.admin_option.offline {background:#ee3a3a;color:#fff;}

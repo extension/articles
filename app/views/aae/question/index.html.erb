@@ -159,13 +159,19 @@
 <% end %>
 
 <% if @currentuser.is_admin? %>
-   <% if @submitted_question.private == false %>
-     <p>This question is publicly viewable</p>
-     <%= button_to 'Remove from Public View', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
-   <% else %>
-     <p>This question is not publicly viewable</p>
-      <%= button_to 'Make Publicly Viewable', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+
+    <% if @submitted_question.private == false %>
+        <div class="admin_option" class="online">
+            <p><strong>Admin only option</strong><br />This question is accessible online</p>
+            <%= button_to 'Remove from Public View', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+        </div>
+    <% else %>
+        <div class="admin_option offline" >
+            <p><strong>Admin only option</strong><br />This question is not accessible online</p>
+            <%= button_to 'Make Publicly Viewable', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+        </div>
    <% end %>
+    
 <% end %>
 
 </div>
