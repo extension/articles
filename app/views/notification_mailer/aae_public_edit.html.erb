@@ -1,0 +1,32 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+Hello <%= @notification.user.first_name %>,
+
+A question that is assigned to you at the eXtension Ask an Expert site:
+
+<%= @urls['question']%>  
+
+has been edited by the person that submitted it.  The question now is:
+
+"<%= @submitted_question.asked_question %>"
+
+Please resolve this question before 
+<%= @respond_by.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00). 
+
+Thanks for your help!
+
+p.s. To serve the public as quickly as possible, we 
+encourage anyone to answer a question if they have 
+the knowledge. Another expert may have stepped in and 
+already answered this question. Please visit the 
+question page before you start working.
+
+The question was assigned to you <%= @assigned_at.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00).
+
+*** PLEASE DO NOT REPLY TO THIS MESSAGE ***
+If you have questions please contact us at: 
+ 
+<%= @urls['contactus']%>
+
+--
+eXtension Staff
+http://about.extension.org

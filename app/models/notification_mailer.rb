@@ -311,6 +311,20 @@ class NotificationMailer < ActionMailer::Base
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
    end
+   
+   def aae_public_edit(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s)     
+     @subject        = @subjectlabel+'Incoming question edited by submitter'
+     @recipients     = notification.user.email
+     assigned_at = @sent_on     
+     respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
+     urls = Hash.new
+     urls['question'] = aae_question_url(:id => submitted_question.id)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
+   end
  
    def aae_reassigned(notification)
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])

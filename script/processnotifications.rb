@@ -156,6 +156,18 @@ def notify_aae_assignment(notification)
   return true
 end
 
+def notify_aae_public_edit(notification)
+  puts "Sending aae public edit notification..."
+  email = NotificationMailer.create_aae_public_edit(notification)
+  begin 
+    NotificationMailer.deliver(email)
+  rescue
+    puts "ERROR: Unable to deliver aae public edit notification."
+    return false
+  end 
+  return true
+end
+
 def notify_aae_reassignment(notification)
   puts "Sending aae reassignment notification..."
   email = NotificationMailer.create_aae_reassigned(notification)
@@ -250,7 +262,9 @@ notifications.each do |notification|
   when Notification::AAE_ASSIGNMENT
     notificationresult = notify_aae_assignment(notification)
   when Notification::AAE_REASSIGNMENT
-    notificationresult = notify_aae_reassignment(notification)  
+    notificationresult = notify_aae_reassignment(notification)
+  when Notification::AAE_PUBLIC_EDIT
+    notificationresult = notify_aae_public_edit(notification)
   when Notification::AAE_PUBLIC_EXPERT_RESPONSE
     notificationresult = notify_aae_public_response(notification)    
   when Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT
