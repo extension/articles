@@ -642,16 +642,8 @@ private
 
 def generate_fingerprint
   create_time = Time.now.to_s
-  if(!self.external_app_id.nil?)
-    if(self.external_app_id == 'widget')
-      appname = self.widget_id.to_s
-    else
-      appname = self.external_app_id
-    end
-  else
-    appname = 'unknown'
-  end
-  self.question_fingerprint = Digest::SHA1.hexdigest(appname + create_time + self.asked_question + self.submitter_email)
+  appname = self.external_app_id ? self.external_app_id : 'unknown'
+  self.question_fingerprint = Digest::MD5.hexdigest(appname + create_time + self.asked_question + self.submitter_email + AppConfig.configtable['sessionsecret'])
 end
 
 def pick_user_from_list(users)
