@@ -9,18 +9,20 @@
     <h2 class="question"><%= @submitted_question.asked_question %></h2>
 
     <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago.</p>
-    <p class="inc_descriptive"><%= link_to("Edit your question") %>. Need to clarify anything or correct any information? Your question is editable until one of our experts responds. Thanks!</p>
+    
 
 
     <% if response = @submitted_question.current_response and response.strip != '' %>
         <h3>Answer</h3>
         <p><%= response %></p>
     <% else %>
-
-    <div id="no_answer">
-        <h2>We don’t have an answer for you yet...</h2>
-        <p>As soon as we have one, we’ll send you an email.</p>
-    </div>
+        <p class="inc_descriptive"><%= link_to("Edit your question") %>. Need to clarify anything or correct any information? Your question is editable until one of our experts responds. Thanks!</p>
+    
+        <div id="no_answer">
+            <h2>We don’t have an answer for you yet...</h2>
+            <p>As soon as we have one, we’ll send you an email.</p>
+        </div>
+    <% end %>
     
     <p class="aae_pitch">Have another question? <%= link_to 'Ask one of our Experts', ask_form_url %></p>
     
@@ -33,5 +35,5 @@
         <p>To view this page you have to know its web address (which is not public) and the email address used to submit the question.</p>
     </div>
     
-<% end %>
+
 </div>
