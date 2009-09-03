@@ -159,7 +159,7 @@ def assign_parent_categories
 end
 
 def reject(user, message)
-  if self.update_attributes(:status => SubmittedQuestion::REJECTED_TEXT, :status_state => SubmittedQuestion::STATUS_REJECTED, :current_response => message, :resolved_by => user, :resolver_email => user.email)
+  if self.update_attributes(:status => SubmittedQuestion::REJECTED_TEXT, :status_state => SubmittedQuestion::STATUS_REJECTED, :current_response => message, :resolved_by => user, :resolver_email => user.email, :private => true)
     return true
   else
     return false

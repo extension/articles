@@ -158,4 +158,14 @@
 
 <% end %>
 
+<% if @currentuser.is_admin? %>
+   <% if @submitted_question.private == false %>
+     <p>This question is publicly viewable</p>
+     <%= button_to 'Remove from Public View', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+   <% else %>
+     <p>This question is not publicly viewable</p>
+      <%= button_to 'Make Publicly Viewable', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
+   <% end %>
+<% end %>
+
 </div>

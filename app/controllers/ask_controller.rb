@@ -91,6 +91,9 @@ class AskController < ApplicationController
     if !@submitted_question
       do_404
       return
+    elsif @submitted_question.private?
+      render :template => 'ask/question_status'
+      return
     end
   end
   
