@@ -1,4 +1,4 @@
-<% @page_title = "Ask an Expert - \"" + @submitted_question.asked_question + "\""%>
+<% @title_tag = "Ask an Expert Question - #{truncate_at_word(@submitted_question.asked_question, 80)}"%>
 
 <%= render(:partial => "/partial/flashmessages") %>
 
@@ -24,9 +24,7 @@
     <p class="aae_pitch">Have another question? <%= link_to 'Ask one of our Experts', ask_form_url %></p>
     
     </div>
-    
-    
-    
+
     <div id="privacy_options">
         <h4>Who can see this page?</h4>
         <p>This page is private.</p>
