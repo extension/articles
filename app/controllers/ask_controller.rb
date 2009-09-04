@@ -116,6 +116,7 @@ class AskController < ApplicationController
   
   
   def authorize_public_user
+    @right_column = false
     @submitted_question = SubmittedQuestion.find_by_question_fingerprint(params[:fingerprint])
     if !@submitted_question
       render :template => 'ask/question_status'
@@ -128,7 +129,7 @@ class AskController < ApplicationController
       return
     end
     
-    flash.now[:warning] = "You do not have access to view this page. Make sure you have filled out the email address form correctly."
+    flash.now[:warning] = "The email address you entered does not match the email used to submit the question. Please check the email address and try again."
     render :template => 'ask/question_signin'
   end
   

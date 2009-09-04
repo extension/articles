@@ -7,7 +7,7 @@
         
         <% form_tag(:action => :authorize_public_user, :fingerprint => @submitted_question.question_fingerprint) do %>
             <p>
-                <label for="emailaddress">Email used to submit question:</label>
+                <label for="email_address">Email used to submit question:</label>
     	        <%= text_field_tag("email_address")%>
     	        
                 <%= submit_tag 'View page', :class => "submit"  %>
