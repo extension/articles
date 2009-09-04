@@ -29,8 +29,8 @@ class WidgetController < ApplicationController
       begin
         # setup the question to be saved and fill in attributes with parameters
         create_question
-        if !@submitted_question.valid?
-          @argument_errors = @submitted_question.errors.full_messages.join('<br />')  
+        if(!@submitted_question.valid? or !@public_user.valid?)
+          @argument_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
           raise ArgumentError
         end
         
@@ -41,7 +41,7 @@ class WidgetController < ApplicationController
         end
         
         if @submitted_question.save
-          #session[:public_user_id] = @public_user.id
+          session[:public_user_id] = @public_user.id
           render :layout => false
         else
           raise InternalError
@@ -66,7 +66,9 @@ class WidgetController < ApplicationController
     params[:submitted_question].collect{|key, val| params[:submitted_question][key] = val.strip}
     widget = Widget.find_by_fingerprint(params[:id].strip) if params[:id]
     
+    @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:submitted_question]["submitter_email"]})
     @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+    @submitted_question.public_user = @public_user
     @submitted_question.widget = widget if widget
     @submitted_question.widget_name = widget.name if widget
     @submitted_question.user_ip = request.remote_ip
@@ -75,6 +77,7 @@ class WidgetController < ApplicationController
     @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
     @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
     @submitted_question.external_app_id = 'widget'
+    
     
     # check to see if question has location associated with it
     incoming_location = params[:location].strip if params[:location] and params[:location].strip != '' and params[:location].strip != Location::ALL

@@ -21,7 +21,7 @@ class PublicUser < ActiveRecord::Base
     return "#{self.first_name} #{self.last_name}"
   end
   
-  def self.find_and_update_or_create_by_email(providedparams)
+  def self.find_and_update_or_create_by_email(providedparams)    
     returnuser = nil
     if(!providedparams[:email].blank?)
       if(!(returnuser = self.find_by_email(providedparams[:email].mb_chars.downcase)))
