@@ -1576,12 +1576,12 @@ class User < ActiveRecord::Base
        n = statuses.size; i = 0; results=[]
        while i < n do
            if (date1 && date2)
-              avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as stdev from users join
-                submitted_questions on submitted_questions.resolved_by=users.id where users.id=#{self.id} and
+              avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as stdev from users join
+                submitted_questions on submitted_questions.resolved_by=users.id join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id where users.id=#{self.id} and event_type='assigned to' and
                 submitted_questions.created_at  between ? and ? #{statuses[i]}",  date1, date2])
             else
-              avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as stdev from users join
-              submitted_questions on submitted_questions.resolved_by=users.id where users.id=#{self.id} #{statuses[i]}"])
+              avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as stdev from users join
+              submitted_questions on submitted_questions.resolved_by=users.id join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id where event_type='assigned to' and users.id=#{self.id} #{statuses[i]}"])
             end
          results[i] = [avgstd[0].ra, avgstd[0].stdev, avgstd[0].count_all]
          i = i + 1
