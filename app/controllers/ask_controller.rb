@@ -54,7 +54,9 @@ class AskController < ApplicationController
         @submitted_question = SubmittedQuestion.new
       end
     else
-      if(!@currentuser.nil?)
+      if(!session[:public_user_id].nil?)
+        @public_user = PublicUser.find_by_id(session[:public_user_id]) || PublicUser.new
+      elsif(!@currentuser.nil?)
         # let's get cute and fill in the name/email
         @public_user = PublicUser.new(:email => @currentuser.email, :first_name => @currentuser.first_name, :last_name => @currentuser.last_name)
       else
