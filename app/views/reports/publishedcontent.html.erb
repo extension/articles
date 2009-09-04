@@ -17,23 +17,23 @@
     <tr>
         <td>Totals</td>
         <td>(all)</td>
-        <td><%= DailyNumber.all_item_count_for_date(Event,@date,'published events') %></td>
-        <td><%= DailyNumber.all_item_count_for_date(Faq,@date,'published faqs') %></td>
-        <td><%= DailyNumber.all_item_count_for_date(Article,@date,'published articles') %></td>
-        <td><%= DailyNumber.all_item_count_for_date(Article,@date,'published news') %></td>
-        <td><%= DailyNumber.all_item_count_for_date(Article,@date,'published learning lessons') %></td>
-        <td><%= DailyNumber.all_item_count_for_date(Article,@date,'published features') %></td>
+        <td><%= @published_values['Event']['published events'] %></td>
+        <td><%= @published_values['Faq']['published faqs'] %></td>
+        <td><%= @published_values['Article']['published articles'] %></td>
+        <td><%= @published_values['Article']['published news'] %></td>
+        <td><%= @published_values['Article']['published learning lessons']  %></td>
+        <td><%= @published_values['Article']['published features'] %></td>
     </tr>
     <%- Community.launched.all(:order => 'name').each do |c|  %>
     <tr>
         <td><%= c.name %></td>
         <td><%= c.content_tag_names %></td>        
-        <td><%= c.item_count_for_date(@date,'published events') %></td>
-        <td><%= c.item_count_for_date(@date,'published faqs') %></td>
-        <td><%= c.item_count_for_date(@date,'published articles') %></td>
-        <td><%= c.item_count_for_date(@date,'published news') %></td>
-        <td><%= c.item_count_for_date(@date,'published learning lessons') %></td>
-        <td><%= c.item_count_for_date(@date,'published features') %></td>
+        <td><%= @published_values[c]['published events']%></td>
+        <td><%= @published_values[c]['published faqs'] %></td>
+        <td><%= @published_values[c]['published articles'] %></td>
+        <td><%= @published_values[c]['published news'] %></td>
+        <td><%= @published_values[c]['published learning lessons'] %></td>
+        <td><%= @published_values[c]['published features'] %></td>
     </tr>
     <%- end -%>
     

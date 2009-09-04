@@ -8,7 +8,7 @@
 class DailyNumber < ActiveRecord::Base
   belongs_to :datasource, :polymorphic => true
   
-  PUBLISHED_ITEM_TYPES = ['published articles','published faqs','published events','published_news','published features','published learning lessons']
+  PUBLISHED_ITEM_TYPES = ['published articles','published faqs','published events','published news','published features','published learning lessons']
   
   
   # -----------------------------------
@@ -121,10 +121,20 @@ class DailyNumber < ActiveRecord::Base
     dnlist = self.find(:all, :include => :datasource, :conditions => "DATE(datadate) = '#{datadate.to_s(:db)}' AND datatype IN (#{published_item_list_string})")
     # collapse dnlist to a hash of a hash
     dnlist.each do |dn|
-      if(returnhash[dn.datasource].nil?)
-        returnhash[dn.datasource] = {}
+      if(dn.datasource_id == 0)
+        if(returnhash[dn.datasource_type].nil?)
+          returnhash[dn.datasource_type] = {}
+          returnhash[dn.datasource_type][dn.datatype] = dn.send(getvalue)
+        else
+          returnhash[dn.datasource_type][dn.datatype] = dn.send(getvalue)
+        end
       else
-        returnhash[dn.datasource][dn.datatype] = dn.send(getvalue)
+        if(returnhash[dn.datasource].nil?)
+          returnhash[dn.datasource] = {}
+          returnhash[dn.datasource][dn.datatype] = dn.send(getvalue)
+        else
+          returnhash[dn.datasource][dn.datatype] = dn.send(getvalue)
+        end
       end
     end
     return returnhash

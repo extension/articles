@@ -25,6 +25,7 @@ class ReportsController < ApplicationController
     set_titletag("Reports - eXtension")
     @right_column = false
     @date = fp.datadate.nil? ? Date.yesterday : fp.datadate
+    @published_values = DailyNumber.all_published_item_counts_for_date(@date)
   end
   
   def activitygraph
