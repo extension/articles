@@ -27,6 +27,9 @@ class AskController < ApplicationController
       begin
         if(params[:public_user])
           @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
+        elsif(!@currentuser.nil?)
+          # let's get cute and fill in the name/email
+          @public_user = PublicUser.new(:email => @currentuser.email, :first_name => @currentuser.first_name, :last_name => @currentuser.last_name)
         else
           @public_user = PublicUser.new
         end
@@ -51,7 +54,12 @@ class AskController < ApplicationController
         @submitted_question = SubmittedQuestion.new
       end
     else
-      @public_user = PublicUser.new
+      if(!@currentuser.nil?)
+        # let's get cute and fill in the name/email
+        @public_user = PublicUser.new(:email => @currentuser.email, :first_name => @currentuser.first_name, :last_name => @currentuser.last_name)
+      else
+        @public_user = PublicUser.new
+      end
       @submitted_question = SubmittedQuestion.new
     end
     
@@ -94,7 +102,7 @@ class AskController < ApplicationController
       return
     elsif !@currentuser.nil?
       return
-    elsif !@submitted_question.show_publicly?
+    elsif(!@submitted_question.show_publicly? or @submitted_question.public_user.nil?)
       render :template => 'ask/question_status'
       return
     else
