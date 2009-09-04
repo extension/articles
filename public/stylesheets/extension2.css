@@ -698,6 +698,16 @@ p.textcounter span.charcount-makeaware {color:#888;}
 #public_aae #no_answer {border:3px solid #ddd;margin:3em 0 2em 0;text-align:center;padding:1em;}
 #public_aae #no_answer h2 {margin:1em 0 .5em; font-size: 2.1em; color:#000;font-weight:bold;}
 #public_aae #no_answer p {font-size:1.4em;}
+
+#public_aae #signin {border:3px solid #ddd;margin:3em auto 2em 0;padding:2em; width:75%; background:#fff;}
+#public_aae #signin h1 {margin:0 0 .5em;color:#222;}
+#public_aae #signin h2 {margin-bottom:2em;}
+#public_aae #signin p {font-size:1.4em;}
+#public_aae #signin form { padding:2em;background:#f4f4f4;}
+#public_aae #signin form label {display:block;font-weight:bold; font-size:1.1em; margin-bottom:.5em;}
+#public_aae #signin form input {display:block; float:none; margin:.25em 0 1em; width:25em; padding:.25em;}
+#public_aae #signin form input.submit {width:auto;}
+
 #public_aae .inc_descriptive {margin:1em 0 0 1em;color:#555;}
 #public_aae .inc_descriptive a {color:blue;font-weight:bold;}
 #public_aae .inc_descriptive a:hover {text-decoration:underline;}
