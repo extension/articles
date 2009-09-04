@@ -1,6 +1,6 @@
 class AddShowPubliclyFlagToSqs < ActiveRecord::Migration
   def self.up
-    add_column :submitted_questions, :show_publicly, :boolean, :default => false
+    add_column :submitted_questions, :show_publicly, :boolean, :default => true
   end
 
   def self.down
