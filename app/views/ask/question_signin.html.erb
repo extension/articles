@@ -5,20 +5,16 @@
         <h1>You've reached an Ask an Expert Question page</h1>
         <h2>This page is locked to protect the privacy of the person who submitted the question. You can view this question by entering the email address used to submit it.</h2>
         
-        <% form_tag() do %>
+        <% form_tag(:action => :authorize_public_user, :fingerprint => @submitted_question.question_fingerprint) do %>
             <p>
                 <label for="emailaddress">Email used to submit question:</label>
-    	        <%= text_field_tag("emailaddress")%>
+    	        <%= text_field_tag("email_address")%>
     	        
                 <%= submit_tag 'View page', :class => "submit"  %>
             </p>
         <% end %>
         
         <p class="aae_pitch">Have another question? <%= link_to 'Ask one of our Experts', ask_form_url %></p>
-        
-        <%- if(!@currentuser.nil?) -%>
-                <p><%= link_to("Ask an Expert link", "/aae/question/#{@submitted_question.id}") %> (this link is only visible to authenticated eXID users.)</p>
-        <%- end -%>
         
     </div>
 </div>

@@ -642,7 +642,7 @@ ActiveRecord::Schema.define(:version => 20090903201647) do
     t.string   "zip_code"
     t.integer  "widget_id"
     t.integer  "public_user_id",                :default => 0
-    t.boolean  "show_publicly",                 :default => false
+    t.boolean  "show_publicly",                 :default => true
   end
 
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"

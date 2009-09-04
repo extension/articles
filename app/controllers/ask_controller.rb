@@ -92,10 +92,32 @@ class AskController < ApplicationController
     if !@submitted_question
       do_404
       return
+    elsif !@currentuser.nil?
+      return
     elsif !@submitted_question.show_publicly?
       render :template => 'ask/question_status'
       return
+    elsif !authorized_public_user
+      render :template => 'ask/question_signin'
+      return
     end
+  end
+  
+  def authorize_public_user
+    @submitted_question = SubmittedQuestion.find_by_question_fingerprint(params[:fingerprint])
+    if !@submitted_question
+      render :template => 'ask/question_status'
+      return
+    end
+    
+    if (params[:email_address] and params[:email_address].strip != '') and (public_user = PublicUser.find_by_email(params[:email_address])) and (request.post?)
+      session[:public_user_id] = public_user.id
+      redirect_to :action => :question, :fingerprint => params[:fingerprint]
+      return
+    end
+    
+    flash.now[:warning] = "You do not have access to view this page. Make sure you have filled out the email address form correctly."
+    render :template => 'ask/question_signin'
   end
   
   def submit_question
@@ -129,6 +151,8 @@ class AskController < ApplicationController
         redirect_to :action => 'index'
         return
       end
+      
+      session[:public_user_id] = @public_user.id
     
       flash[:notice] = 'Your question has been submitted and the answer will be sent to your email. Our experts try to answer within 48 hours.'
       flash[:googleanalytics] = '/ask-an-expert-question-submitted'
@@ -153,5 +177,5 @@ class AskController < ApplicationController
     
     render :partial => 'aae_subcats', :layout => false
   end
-  
+    
 end

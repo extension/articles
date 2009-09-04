@@ -41,6 +41,7 @@ class WidgetController < ApplicationController
         end
         
         if @submitted_question.save
+          #session[:public_user_id] = @public_user.id
           render :layout => false
         else
           raise InternalError
