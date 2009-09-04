@@ -97,11 +97,23 @@ class AskController < ApplicationController
     elsif !@submitted_question.show_publicly?
       render :template => 'ask/question_status'
       return
-    elsif !authorized_public_user
-      render :template => 'ask/question_signin'
-      return
+    else
+      # authorized public user check
+      if(!session[:public_user_id].nil? and (public_user = PublicUser.find_by_id(session[:public_user_id])))
+        # make sure that this question belongs to this user
+        if(@submitted_question.public_user != public_user)
+          session[:public_user_id] = nil
+          render :template => 'ask/question_status'
+          return
+        end
+      else
+        render :template => 'ask/question_signin'
+        return
+      end
     end
+    
   end
+  
   
   def authorize_public_user
     @submitted_question = SubmittedQuestion.find_by_question_fingerprint(params[:fingerprint])

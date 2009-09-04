@@ -66,11 +66,7 @@ class ApplicationController < ActionController::Base
     # set locale based on session or default 
     I18n.locale = session[:locale] || I18n.default_locale
   end
-  
-  def authorized_public_user
-    session[:public_user_id] and PublicUser.find_by_id(session[:public_user_id])
-  end
-  
+    
   # Account for the double encoding occuring at the webserver level by
   # decoding known trouble params again.
   def unescape_params
