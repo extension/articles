@@ -704,3 +704,4 @@ p.textcounter span.charcount-makeaware {color:#888;}
 #public_aae h3 {font-size:2em;}
 p.response {font-size:1.6em; margin-bottom:2em;}
 #public_aae .aae_pitch {margin-top:3em; font-size:1.5em; border-top:1px solid #ccc;padding-top:.55em;}
+#public_aae #aae_link {background:#eee;padding:1em;-moz-border-radius: 8px;-webkit-border-radius: 8px;float:right;width:250px;color:#666;margin-top:2em;}

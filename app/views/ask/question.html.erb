@@ -36,5 +36,9 @@
         <p>To view this page you have to know its web address (which is not public) and the email address used to submit the question.</p>
     </div>
     
+    <div id="aae_link">
+        <p><%= link_to("Ask an Expert link", "/aae/question/#{@submitted_question.id}") %> (this link is only visible to authenticated eXID users.)</p>
+    </div>
+    
 
 </div>

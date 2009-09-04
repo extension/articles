@@ -161,9 +161,9 @@
 <% if @currentuser.is_admin? %>
     <% if @submitted_question.show_publicly == true %>
         <div class="admin_option" class="online">
-            <p><%= link_to_function 'View options (Admin only)', "Effect.toggle('adminoptions','blind', { duration: .4});" %></p>
+            <p><%= link_to_function 'Public View options (Admin only)', "Effect.toggle('adminoptions','blind', { duration: .4});" %></p>
             <div id="adminoptions" style="display:none;">
-                <p>This question is currently accessible online</p>
+                <p>This question is accessible at a <%= link_to("private URL", "/ask/" + @submitted_question.question_fingerprint) %>. Authenticated eXID users and the person who submitted the question can view the page.</p>
                 <%= button_to 'Remove from Public View', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
             </div>
         </div>
