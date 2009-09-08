@@ -224,7 +224,7 @@ class User < ActiveRecord::Base
         when 'county'
           returnhash.merge!({:county => (self.county.nil? ? '' : self.county.name)})
         when 'interests'
-          returnhash.merge!({:interests => self.tag_displaylist_by_ownerid_and_kind(self.id,"all",true)})
+          returnhash.merge!({:interests => self.tag_displaylist_by_ownerid_and_kind(self.id,Tag::ALL,true)})
         end
       end  
     end
