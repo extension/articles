@@ -41,8 +41,8 @@
 
 <% elsif @community.memberfilter == Community::OPEN %>
 
-        <h3>Create a connection with this Community<a class="tooltip-help" href="#" id="source_trigger">?</a> <span id="memberoptions"><%= link_to_function 'membership options', "Effect.toggle('connection_options','blind', { duration: .4});" %></span></h3>
-        <div id="connection_options" style="display:none;">
+        <h3>Membership Options <a class="tooltip-help" href="#" id="source_trigger">?</a></h3>
+        <div id="connection_options">
 	    <p><%= change_community_connection_link('connectiontocommunity',@community,'Join Community','join') %></p>
 		<p><%= change_community_connection_link('connectiontocommunity',@community,'I am interested in this community','interest') %></p>
 		</div>
