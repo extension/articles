@@ -717,7 +717,7 @@ p.textcounter span.charcount-makeaware {color:#888;}
 p.response {font-size:1.6em; margin-bottom:2em;}
 #public_aae .aae_pitch {margin-top:3em; font-size:1.5em; border-top:1px solid #ccc;padding-top:.55em;}
 #public_aae #aae_link {background:#eee;padding:1em;-moz-border-radius: 8px;-webkit-border-radius: 8px;float:right;width:250px;color:#666;margin-top:2em;}
-#public_aae textarea {padding:0 0 0 8px;margin:0 auto 1em;width: 508px; border: 3px solid #ccc; font-family: Tahoma, sans-serif;}
-#editquestion {background: #ddf1f8;padding:1em;}
+#public_aae textarea {padding:0 0 0 8px;margin:0 auto 1em;width: 508px; border: 1px solid #71a2b3; font-family: "Georgia","Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;font-size:1.8em;}
+#editquestion {background: #ddf1f8;padding:2.25em 1.75em;}
 #public_aae .cancel {color:#000;}
 #public_aae .cancel:hover {text-decoration:underline;}

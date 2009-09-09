@@ -4,3 +4,5 @@
 div#app_location {position:absolute;top:0;left:0;}
 
 .rightcolumn {width: 265px;}
+
+#public_aae h2.question, #public_aae textarea {font-family: Arial, sans-serif;font-size:1.8em;}
