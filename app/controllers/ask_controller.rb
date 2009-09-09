@@ -12,6 +12,8 @@ class AskController < ApplicationController
   has_rakismet :only => [:submit_question]
   before_filter :login_optional
   
+  #TODO:  this controller needs to be refactored, there's too much duplication of validation logic across methods 
+  
   def index
     @right_column = false
     session[:return_to] = params[:redirect_to]
@@ -79,8 +81,9 @@ class AskController < ApplicationController
       set_titletag("Search Results for Ask an Expert - eXtension")
     
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-    
-      unless @submitted_question.valid?
+      @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
+   
+      unless (@submitted_question.valid? and !@public_user.nil? and @public_user.valid?)
         redirect_to :action => 'index', 
                     :submitted_question => params[:submitted_question], 
                     :location_id => params[:location_id], 
@@ -171,8 +174,15 @@ class AskController < ApplicationController
       @submitted_question.external_app_id = 'www.extension.org'
       @submitted_question.public_user = @public_user
       # for easier akismet checking, set the submitter_email attribute from the associated public_user
-      @submitted_question.submitter_email = @public_user.email
-      
+      if(!@public_user.nil?)
+        @submitted_question.submitter_email = @public_user.email
+      else
+        # TODO: this really should display a validation error
+        flash[:notice] = 'There was an error saving your question. Please try again.'
+        redirect_to :action => 'index'
+        return
+      end
+        
     
       # let's check for spam
       begin
