@@ -1,0 +1,5 @@
+<% form_tag :action => "edit_question", :squid => @submitted_question.id do %>
+    <%= text_area_tag("question", @submitted_question.asked_question, :cols => "60", :rows => "3") %>
+    <%= submit_tag "Edit Question" %>    
+    <%= button_to_remote "Cancel", :url => {:action => :cancel_question_edit, :squid => @submitted_question.id} %>
+<% end %>

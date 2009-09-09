@@ -6,8 +6,11 @@
     <h1>Your Question</h1>
     
     <div id="primary">
-    <h2 class="question"><%= @submitted_question.asked_question %></h2>
-
+    
+    <div id="question_area">
+    <%= render (:partial => "ask/question") %>
+    </div>
+     
     <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago.</p>
     
 
@@ -21,7 +24,14 @@
         <div id="no_answer">
             <h2>We don’t have an answer for you yet...</h2>
             <p>As soon as we have one, we’ll send you an email.</p>
-            <p class="inc_descriptive"><%= link_to("Edit your question") %>. Need to clarify or correct any information? Your question is editable until one of our experts responds. Thanks!</p>
+            
+            <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
+               <p class="inc_descriptive">
+               <%= link_to_remote 'Edit my question', 
+                                  :update => "question_area",
+                                  :url => { :action => "make_question_editable", :squid => @submitted_question.id }  %>
+               </p>
+            <% end %>
         </div>
     <% end %>
     

@@ -21,6 +21,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   NO_ANSWER_TEXT = 'no answer given'
   RECATEGORIZED_TEXT = 're-categorized by'
   WORKING_ON_TEXT = 'worked on by'
+  EDITED_QUESTION_TEXT = 'edited question'
   
   ASSIGNED_TO = 1
   RESOLVED = 2
@@ -31,6 +32,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   NO_ANSWER = 7
   RECATEGORIZED = 8
   WORKING_ON = 9
+  EDIT_QUESTION = 10
   
   #scopes for sq events
   named_scope :work_in_progress, lambda { |user_id, sq_id| {:conditions => {:event_state => WORKING_ON, :initiated_by_id => user_id, :submitted_question_id => sq_id}}}

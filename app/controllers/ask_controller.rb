@@ -124,6 +124,15 @@ class AskController < ApplicationController
     
   end
   
+  def cancel_question_edit
+    if request.post? and (@submitted_question = SubmittedQuestion.find(params[:squid]))
+      render :update do |page|
+        page.replace_html "question_area", :partial => '/ask/question'
+      end
+    else
+      do_404
+    end
+  end
   
   def authorize_public_user
     @right_column = false
@@ -187,6 +196,30 @@ class AskController < ApplicationController
     else
       flash[:warning] = "Please enter your question via the ask an expert form"
       redirect_to ask_form_url
+    end
+  end
+  
+  def edit_question
+    if request.post? and (@submitted_question = SubmittedQuestion.find_by_id(params[:squid]))
+      @submitted_question.submitted_question_events << SubmittedQuestionEvent.new(:event_type => SubmittedQuestionEvent::EDITED_QUESTION_TEXT, 
+                                                                                  :event_state => SubmittedQuestionEvent::EDIT_QUESTION, 
+                                                                                  :additionaldata => @submitted_question.asked_question)
+      @submitted_question.update_attribute(:asked_question, params[:question]) 
+      flash[:notice] = "Your question was successfully edited."
+      redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
+    else
+      do_404
+      return
+    end
+  end
+  
+  def make_question_editable
+    if request.post?
+      @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
+      render :layout => false
+    else
+      do_404
+      return
     end
   end
   

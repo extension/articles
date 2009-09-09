@@ -11,7 +11,7 @@ def stringify_submitted_question_event(sq_event)
   
   if sq_event.initiated_by_id == User.systemuserid
     initiated_by_full_name = "System"
-  else
+  elsif sq_event.initiated_by
     initiated_by_full_name = sq_event.initiated_by.fullname
   end
   
@@ -36,6 +36,8 @@ def stringify_submitted_question_event(sq_event)
     return "Question Recategorized by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::WORKING_ON
     return "Question worked on by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+  when SubmittedQuestionEvent::EDIT_QUESTION
+    return "Question edited by public user <span> #{humane_date(sq_event.created_at)}</span>"
   else
     return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.subject_user) ? sq_event.subject_user.fullname : '')} by #{initiated_by_full_name} <span> #{humane_date(sq_event.created_at)}</span>"
   end

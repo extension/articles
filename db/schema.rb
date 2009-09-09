@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090903201647) do
+ActiveRecord::Schema.define(:version => 20090904202302) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -606,6 +606,7 @@ ActiveRecord::Schema.define(:version => 20090903201647) do
     t.integer  "contributing_question"
     t.string   "category"
     t.integer  "event_state",           :null => false
+    t.text     "additionaldata"
   end
 
   add_index "submitted_question_events", ["initiated_by_id"], :name => "initiated_by_idx"
