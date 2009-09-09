@@ -201,10 +201,13 @@ class AskController < ApplicationController
   
   def edit_question
     if request.post? and (@submitted_question = SubmittedQuestion.find_by_id(params[:squid]))
+      previous_question = @submitted_question.asked_question
       @submitted_question.submitted_question_events << SubmittedQuestionEvent.new(:event_type => SubmittedQuestionEvent::EDITED_QUESTION_TEXT, 
                                                                                   :event_state => SubmittedQuestionEvent::EDIT_QUESTION, 
                                                                                   :additionaldata => @submitted_question.asked_question)
-      @submitted_question.update_attribute(:asked_question, params[:question]) 
+      @submitted_question.update_attribute(:asked_question, params[:question])
+      # create notification
+      Notification.create(:notifytype => Notification::AAE_PUBLIC_EDIT, :user => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :previous_question => previous_question})
       flash[:notice] = "Your question was successfully edited."
       redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
     else
