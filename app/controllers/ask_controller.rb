@@ -110,10 +110,10 @@ class AskController < ApplicationController
     else
       # authorized public user check
       if(!session[:public_user_id].nil? and (public_user = PublicUser.find_by_id(session[:public_user_id])))
-        # make sure that this question belongs to this user
+        # make sure - again - that this question belongs to this user
         if(@submitted_question.public_user != public_user)
           session[:public_user_id] = nil
-          render :template => 'ask/question_status'
+          render :template => 'ask/question_signin'
           return
         end
       else
@@ -143,9 +143,12 @@ class AskController < ApplicationController
     end
     
     if (params[:email_address] and params[:email_address].strip != '') and (public_user = PublicUser.find_by_email(params[:email_address])) and (request.post?)
-      session[:public_user_id] = public_user.id
-      redirect_to :action => :question, :fingerprint => params[:fingerprint]
-      return
+      # make sure that this question belongs to this user
+      if(@submitted_question.public_user == public_user)
+        session[:public_user_id] = public_user.id
+        redirect_to :action => :question, :fingerprint => params[:fingerprint]
+        return
+      end
     end
     
     flash.now[:warning] = "The email address you entered does not match the email used to submit the question. Please check the email address and try again."
