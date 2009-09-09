@@ -168,12 +168,18 @@
             </div>
         </div>
     <% else %>
+        <% if (@submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED) or (@submitted_question.spam) %>
+        <div class="admin_option offline" >
+            <p>This question is not accessible online</p>
+        </div>
+        <% else %>
         <div class="admin_option offline" >
             <p><%= link_to_function 'This question is not accessible online (Admin only)', "Effect.toggle('adminoptions','blind', { duration: .4});" %></p>
             <div id="adminoptions" style="display:none;">
                 <%= button_to 'Make Viewable', :controller => 'aae/question', :action => :toggle_public_view, :id => @submitted_question.id %>
             </div>
         </div>
+        <% end %>
    <% end %>
     
 <% end %>
