@@ -38,7 +38,7 @@
      
 </dl>	
 <br class="clear"/>
-<h3>Response Times in Hours</h3>
+<h3>Response Times in Hours</h3><p>Calculated from assigned to resolved, for those questions that were assigned.</p>
   <table cellspacing="0"  summary="user_response_stats">
       <tr>
 	<th scope="col"> </th>
@@ -48,27 +48,27 @@
 	</tr>
 	 <tr>
 		<td>Overall</td>
-		<td><%=@avgstdresults[0][0]%></td>
-		<td><%= @avgstdresults[0][1]%></td>
-		<td><%= @avgstdresults[0][2]%></td>
+		<td><%=(@avgstdresults[0][0] && @avgstdresults[0][0] != 0) ? ("%.2f"  % @avgstdresults[0][0]) : 0 %></td>
+		<td><%=( @avgstdresults[0][1] && @avgstdresults[0][1] != 0) ? ("%.2f" % @avgstdresults[0][1]) : 0%></td>
+		<td><%= @avgstdresults[0][2] %></td>
 	  </tr>
 	  <tr>
 		<td>Resolved</td>
-		<td><%= @avgstdresults[1][0]%></td>
-		<td><%= @avgstdresults[1][1]%></td>
+		<td><%= (@avgstdresults[1][0] && @avgstdresults[1][0] != 0) ? ("%.2f" % @avgstdresults[1][0]) : 0 %></td>
+		<td><%= (@avgstdresults[1][1] && @avgstdresults[1][1] != 0) ? ("%.2f" % @avgstdresults[1][1]) : 0 %></td>
 		<td><%= @avgstdresults[1][2]%></td>
 	  </tr>
 	    <tr>
 	  	<td>Rejected</td>
-			<td><%= @avgstdresults[2][0]%></td>
-			<td><%= @avgstdresults[2][1]%></td>
-			<td><%= @avgstdresults[2][2]%></td>
+	        <td><%= (@avgstdresults[2][0]  && @avgstdresults[2][0] != 0) ? ("%.2f" % @avgstdresults[2][0]) : 0 %></td>
+			<td><%= (@avgstdresults[2][1] && @avgstdresults[2][1] != 0) ? ("%.2f" % @avgstdresults[2][1]) : 0 %></td>
+			<td><%= @avgstdresults[2][2] %></td>
 	    </tr>
 	   	<tr>
 			<td>Answered that eXtension does not have this Expertise</td>
-			<td><%= @avgstdresults[3][0]%></td>
-			<td><%= @avgstdresults[3][1]%></td>
-			<td><%= @avgstdresults[3][2]%></td>
+			<td><%= (@avgstdresults[3][0] && @avgstdresults[3][0] != 0) ? ("%.2f" % @avgstdresults[3][0]) : 0 %></td>
+			<td><%= (@avgstdresults[3][1] && @avgstdresults[3][1] != 0) ? ("%.2f" % @avgstdresults[3][1]) : 0 %></td>
+			<td><%= @avgstdresults[3][2] %></td>
 	    </tr>
 		
   </table>

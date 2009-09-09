@@ -1571,19 +1571,64 @@ class User < ActiveRecord::Base
          " where ea.category_id=? order by users.last_name", catid ])
      end
     
+     def get_mean(avgstd, num)
+          if num == 0 ; return 0; end
+          sum = 0; diffarray = []; tmp = 0
+           avgstd.each do |av|
+              tmp = (Time.parse(av[2].to_s) - av[1]).to_f/(60*60)  #convert seconds to hours
+              diffarray << tmp
+              sum = sum + tmp
+           end
+          avg = sum.to_f/num 
+         [avg, diffarray]
+     end
+     
+     def get_stdev(avg, diffarray, num)
+       if num == 0 ; return 0; end
+       sum = 0;
+       diffarray.each do |av|
+        sum = sum +  (av - avg) ** 2
+       end
+       Math.sqrt(sum.to_f/num)
+     end
+    
      def get_avg_resp_time(date1, date2)
        statuses = [ "", " and status_state=#{SubmittedQuestion::STATUS_RESOLVED}", "and status_state=#{SubmittedQuestion::STATUS_REJECTED}","and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER}"]
-       n = statuses.size; i = 0; results=[]
+       n = statuses.size; i = 0; results=[]; avg = 0; stdev = 0
        while i < n do
            if (date1 && date2)
-              avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as stdev from users join
-                submitted_questions on submitted_questions.resolved_by=users.id join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id where users.id=#{self.id} and event_type='assigned to' and
-                submitted_questions.created_at  between ? and ? #{statuses[i]}",  date1, date2])
-            else
-              avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as stdev from users join
-              submitted_questions on submitted_questions.resolved_by=users.id join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id where event_type='assigned to' and users.id=#{self.id} #{statuses[i]}"])
+              
+             # avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as stdev from users join
+            #    submitted_questions on submitted_questions.resolved_by=users.id join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id where users.id=#{self.id} and event_type='assigned to' and
+            #    submitted_questions.created_at  between ? and ? #{statuses[i]}",  date1, date2])
+             table1 = User.find_by_sql(["Select submitted_question_events.submitted_question_id, submitted_question_events.created_at, users.id from users join submitted_questions on users.id=submitted_questions.resolved_by join submitted_question_events " +
+                " on submitted_question_events.submitted_question_id= submitted_questions.id where event_type='assigned to' and subject_user_id=#{self.id} and users.id=#{self.id} and submitted_questions.created_at between ? and ? #{statuses[i]}", date1, date2])
+              table2 = SubmittedQuestion.find_by_sql(["Select submitted_questions.id, resolved_at from submitted_questions where resolved_by=#{self.id} and submitted_questions.created_at between ? and ? #{statuses[i]}", date1, date2])   
+           else
+            #  avgstd= User.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(hour, submitted_question_events.created_at, resolved_at)) as stdev from users join
+            #  submitted_questions on submitted_questions.resolved_by=users.id join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id where event_type='assigned to' and users.id=#{self.id} #{statuses[i]}"])
+            table1 = User.find_by_sql(["Select submitted_question_events.submitted_question_id, submitted_question_events.created_at, users.id from users join submitted_questions on users.id=submitted_questions.resolved_by join submitted_question_events " +
+              " on submitted_question_events.submitted_question_id= submitted_questions.id where event_type='assigned to' and subject_user_id=#{self.id} and users.id=#{self.id} #{statuses[i]}"])
+            table2 = SubmittedQuestion.find_by_sql(["Select submitted_questions.id, resolved_at from submitted_questions where resolved_by=#{self.id} #{statuses[i]}"])
+           end
+            avgstd = []  # find places where assigned_to and resolved_at both exist
+            table1.each do |t1|
+              table2.each do |t2|
+                if (t1.submitted_question_id.to_i==t2.id)
+                  if (t1.created_at && t2.resolved_at)
+                    avgstd << [t2.id, t1.created_at, t2.resolved_at]
+                  end
+                  break
+                end
+              end
             end
-         results[i] = [avgstd[0].ra, avgstd[0].stdev, avgstd[0].count_all]
+            num = avgstd.size
+            (avg, diffarray) = get_mean(avgstd, num)
+            stdev= get_stdev(avg, diffarray, num)
+        
+          
+          results[i] = [avg, stdev, num]
+      #   results[i] = [avgstd[0].ra, avgstd[0].stdev, avgstd[0].count_all]
          i = i + 1
        end
        results
