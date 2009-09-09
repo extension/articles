@@ -348,6 +348,8 @@ class NotificationMailer < ActionMailer::Base
      @subject = "[Message from eXtension] Your question has been answered by one of our experts."          
      @recipients     = submitted_question.submitter_email
      urls = Hash.new
+     urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
+     urls['askanexpert'] = ask_form_url
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :signature => signature, :urls => urls }
    end
    
