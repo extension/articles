@@ -1,6 +1,6 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
 <% if (!@submitted_question.public_user.full_name.blank? and @submitted_question.public_user.full_name != SubmittedQuestion::DEFAULT_SUBMITTER_NAME )%>
-Hello <%= @submitted_question.submitter_fullname %>,
+Hello <%= @submitted_question.public_user.full_name %>,
 <% else %>
 Hello,
 <% end %>
