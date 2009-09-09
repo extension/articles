@@ -216,8 +216,10 @@ class AskController < ApplicationController
                                                                                   :event_state => SubmittedQuestionEvent::EDIT_QUESTION, 
                                                                                   :additionaldata => @submitted_question.asked_question)
       @submitted_question.update_attribute(:asked_question, params[:question])
-      # create notification
-      Notification.create(:notifytype => Notification::AAE_PUBLIC_EDIT, :user => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :previous_question => previous_question})
+      # create notification if assigned
+      if(!@submitted_question.assignee.nil?)
+        Notification.create(:notifytype => Notification::AAE_PUBLIC_EDIT, :user => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :previous_question => previous_question})
+      end
       flash[:notice] = "Your changes have been saved. Thanks for making your question better!"
       redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
     else
