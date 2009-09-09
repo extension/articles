@@ -12,6 +12,8 @@
     </div>
      
     <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
+    
+    <% if !((response = @submitted_question.current_response) and (response.strip != '')) %>
     <p class="inc_descriptive editpitch">
        <%= link_to_remote 'Edit my question', 
                           :update => "question_area",
@@ -19,10 +21,11 @@
          Need to clarify or correct any information? Your question is editable until one of our experts responds. Thanks!
     </p>
     <% end %>
+    
+    <% end %>
     <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago.</p>
 
-
-    <% if response = @submitted_question.current_response and response.strip != '' %>
+    <% if (response = @submitted_question.current_response) and (response.strip != '') %>
         <h3>Answer</h3>
         <p class="response"><%= response %></p>
     

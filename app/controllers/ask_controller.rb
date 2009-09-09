@@ -201,6 +201,13 @@ class AskController < ApplicationController
   
   def edit_question
     if request.post? and (@submitted_question = SubmittedQuestion.find_by_id(params[:squid]))
+
+      if (response = @submitted_question.current_response) and (response.strip != '')
+        flash[:warning] = "This question has already been responded to and cannot be edited."
+        redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
+        return  
+      end
+
       previous_question = @submitted_question.asked_question
       @submitted_question.submitted_question_events << SubmittedQuestionEvent.new(:event_type => SubmittedQuestionEvent::EDITED_QUESTION_TEXT, 
                                                                                   :event_state => SubmittedQuestionEvent::EDIT_QUESTION, 
