@@ -266,9 +266,10 @@ class Aae::ReportsController < ApplicationController
           end
           @oldest_date = SubmittedQuestion.find_oldest_date
           @user = User.find_by_id(params[:id]) 
-       
-          @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
-          @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
+          if @user
+            @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
+            @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
+           end
        #   @myid = @currentuser
           if @user.nil? #|| @myid.nil?
             redirect_to :controller => 'reports', :action => 'user_report'
