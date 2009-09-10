@@ -38,7 +38,7 @@
      
 </dl>	
 <br class="clear"/>
-<h3>Response Times in Hours</h3><p>Calculated from assigned to resolved, for those questions that were assigned.</p>
+<h3>Response Times in Hours</h3><p>Calculated from assigned to resolved, for those questions that were assigned to this user.</p>
   <table cellspacing="0"  summary="user_response_stats">
       <tr>
 	<th scope="col"> </th>
@@ -47,13 +47,13 @@
 	<th scope="col">N</th>
 	</tr>
 	 <tr>
-		<td>Overall</td>
+		<td>Overall Resolved</td>
 		<td><%=(@avgstdresults[0][0] && @avgstdresults[0][0] != 0) ? ("%.2f"  % @avgstdresults[0][0]) : 0 %></td>
 		<td><%=( @avgstdresults[0][1] && @avgstdresults[0][1] != 0) ? ("%.2f" % @avgstdresults[0][1]) : 0%></td>
 		<td><%= @avgstdresults[0][2] %></td>
 	  </tr>
 	  <tr>
-		<td>Resolved</td>
+		<td>Answered</td>
 		<td><%= (@avgstdresults[1][0] && @avgstdresults[1][0] != 0) ? ("%.2f" % @avgstdresults[1][0]) : 0 %></td>
 		<td><%= (@avgstdresults[1][1] && @avgstdresults[1][1] != 0) ? ("%.2f" % @avgstdresults[1][1]) : 0 %></td>
 		<td><%= @avgstdresults[1][2]%></td>

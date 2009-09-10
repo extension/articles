@@ -1572,7 +1572,7 @@ class User < ActiveRecord::Base
      end
     
      def get_mean(avgstd, num)
-          if num == 0 ; return 0; end
+          if num == 0 ; return [0, []]; end
           sum = 0; diffarray = []; tmp = 0
            avgstd.each do |av|
               tmp = (Time.parse(av[2].to_s) - av[1]).to_f/(60*60)  #convert seconds to hours
