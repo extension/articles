@@ -1525,15 +1525,15 @@ class User < ActiveRecord::Base
     def self.narrow_by_routers(users, route_role, location_fallback = false)
       if users and users.length > 0
         route_role_obj = Role.find_by_name(route_role)
-        user_ids = users.collect{|u| u.id}
+        user_ids = users.collect{|u| u.id}.join(',')
 
-        condition_str = "users.id IN (#{user_ids.join(',')})"
+        condition_str = "users.id IN (#{user_ids})"
         if location_fallback
           location_user_ids = UserPreference.find(:all, 
                                                   :conditions => "name = '#{UserPreference::AAE_LOCATION_ONLY}' or name = '#{UserPreference::AAE_COUNTY_ONLY}'" +
                                                                  " and user_id IN (#{user_ids})").collect{|up| up.user_id}.uniq
 
-          condition_str = "users.id IN (#{user_ids.join(',')}) and " + 
+          condition_str = "users.id IN (#{user_ids}) and " + 
                           "users.id NOT IN (#{location_user_ids.join(',')})" if (location_user_ids and location_user_ids.length > 0)
         end
         return route_role_obj.users.find(:all, :conditions => condition_str + " and users.retired = false") if route_role_obj
