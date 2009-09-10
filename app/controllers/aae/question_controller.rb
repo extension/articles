@@ -46,31 +46,31 @@ class Aae::QuestionController < ApplicationController
   end
   
   def assign
-    if !params[:id]
-      flash[:failure] = "You must select a question to assign."
-      go_back
-      return
-    end
-    
-    @submitted_question = SubmittedQuestion.find_by_id(params[:id])
-    @categories = Category.root_categories
-        
-    if !@submitted_question
-      flash[:failure] = "Invalid question."
-      go_back
-      return
-    end
-    
-    if @submitted_question.resolved?
-      flash[:failure] = "Question has already been resolved."
-      redirect_to :action => :question, :id => @submitted_question
-      return
-    end
-    
     if request.post?
+      if !params[:id]
+        flash[:failure] = "You must select a question to assign."
+        redirect_to incoming_url
+        return
+      end
+    
+      @submitted_question = SubmittedQuestion.find_by_id(params[:id])
+      @categories = Category.root_categories
+        
+      if !@submitted_question
+        flash[:failure] = "Invalid question."
+        redirect_to incoming_url
+        return
+      end
+    
+      if @submitted_question.resolved?
+        flash[:failure] = "Question has already been resolved."
+        redirect_to :action => :index, :id => @submitted_question
+        return
+      end
+    
       if !params[:assignee_login]
-        flash[:failure] = "You must select a user."
-        go_back
+        flash[:failure] = "You must select a user to reassign."
+        redirect_to :action => :index, :id => @submitted_question
         return
       end
       
@@ -79,7 +79,7 @@ class Aae::QuestionController < ApplicationController
       if !user or user.retired?
         !user ? err_msg = "User does not exist." : err_msg = "User is retired from the system"
         flash[:failure] = err_msg
-        go_back
+        redirect_to :action => :index, :id => @submitted_question
         return
       end
       
@@ -91,6 +91,9 @@ class Aae::QuestionController < ApplicationController
       
       @submitted_question.assign_to(user, @currentuser, assign_comment)
       redirect_to :action => 'index', :id => @submitted_question
+    else
+      do_404
+      return
     end
   end
   
