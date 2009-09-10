@@ -636,4 +636,5 @@ ul.simplelist {line-height:2em;}
 
 .dashmodule .tag_cloud ul {margin:0 !important;}
 
-.mailing_lists li span {width:50%;display:block;float:left;}
+.mailing_lists li span {width:50%;display:block;float:left; overflow:hidden;white-space: nowrap; position:relative;margin-right:10px;}
+.mailing_lists li span em {background: url(/images/common/transparent-white-fade.png) right 0 no-repeat;position:absolute;right:0;top:0; width:15px;height:3em;}
