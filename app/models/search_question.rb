@@ -14,8 +14,8 @@ class SearchQuestion < ActiveRecord::Base
   AAE = 2
   
   # faq foreign database
-  FAQDB = 'prod_faq'
-
+  FAQDB = 'prod_faq'  
+  
   named_scope :faq_questions, {:conditions => {:entrytype => FAQ}}
   named_scope :aae_questions, {:conditions => {:entrytype => AAE}}
 
@@ -29,7 +29,16 @@ class SearchQuestion < ActiveRecord::Base
     end
     {:select => "#{self.table_name}.*, MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => ["MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)}) AND status <> 'archived'"]}
   }
-
+  
+  
+  def aae_question
+    if self.entrytype == AAE
+      return SubmittedQuestion.find_by_id(self.foreignid)
+    else
+      return nil    
+    end
+  end
+  
 
   # -----------------------------------
   # Class-level methods
