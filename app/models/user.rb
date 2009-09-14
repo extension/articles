@@ -1574,22 +1574,16 @@ class User < ActiveRecord::Base
     
      def get_avg_resp_time(date1, date2)
        statuses = [ "", " and status_state=#{SubmittedQuestion::STATUS_RESOLVED}", "and status_state=#{SubmittedQuestion::STATUS_REJECTED}","and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER}"]
-       n = statuses.size; i = 0 ; results=[]; avg = 0; stdev = 0
-       while i < n do
+       results=[];  condstring = " and submitted_questions.created_at between ? and ? "
+       statuses.each do |stat|
+           cond = " event_type='assigned to' and subject_user_id=#{self.id}  and resolved_by=#{self.id} "
            if (date1 && date2)
-              
-              avgstd= SubmittedQuestionEvent.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as stdev from 
-                submitted_question_events join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id where ( event_type='assigned to' and subject_user_id=#{self.id} ) and
-                resolved_by=#{self.id } and submitted_questions.created_at  between ? and ? #{statuses[i]}",  date1, date2])   
-             
-           else
-            avgstd= SubmittedQuestionEvent.find_by_sql(["Select count(*) as count_all, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as stdev from
-            submitted_question_events join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id where (event_type='assigned to' and subject_user_id=#{self.id}) and resolved_by=#{self.id} #{statuses[i]}"])
-           
+               cond = cond + condstring 
            end
-        
-           results[i] = [(avgstd[0].ra.to_f)/(60*60), (avgstd[0].stdev.to_f)/(60*60), avgstd[0].count_all]
-           i = i + 1
+           avgstd = SubmittedQuestionEvent.find(:all, :select => " count(*) as count_all, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as stdev ",
+            :joins => [:submitted_question], :conditions => ((date1 && date2) ? [cond + stat, date1, date2] : cond + stat))
+            
+           results << [(avgstd[0].ra.to_f)/(60*60), (avgstd[0].stdev.to_f)/(60*60), avgstd[0].count_all]
        end
        results
      end
