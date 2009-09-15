@@ -83,14 +83,14 @@ class AskController < ApplicationController
       # again, this needs to be refactored, but sanity check this against the spammers
       if(params[:submitted_question].nil? or params[:public_user].nil?)
         invalid = true
-      }
+      end
     
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
    
       if(!@submitted_question.valid? or @public_user.nil? or !@public_user.valid?)
         invalid = true
-      }
+      end
       
       unless (invalid.nil? and !invalid)
         redirect_to :action => 'index', 
