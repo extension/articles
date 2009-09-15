@@ -1047,5 +1047,66 @@ class Aae::ReportsController < ApplicationController
            render  :template => "aae/reports/display_questions"
        end
    ####   End of Responders by Category Report ###
-  
+         ####  Start of Assignee Report ###
+         
+     def assignee
+         if (params[:from] && params[:to])
+            @dateFrom = params[:from] ;  @dateTo=params[:to]
+            @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+          else
+            (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
+            (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+          end
+        @oldest_date = SubmittedQuestion.find_oldest_date; 
+        userlist = [] ; @assgnlist = [];  baseset=[]
+        #get list of assignee users  (expertise users)
+        userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
+          alphabet= [['A','a'],['B','b'],['C','c'],['D','d'],['E','e'],['F','f'],['G','g'],['H','h'],['I','i'],['J','j'],['K','k'],['L','l'],['M','m'],
+                    ['N','n'], ['O','o'],['P','p'],['Q','q'],['R','r'],['S','s'],['T','t'],['U','u'],['V','v'],['W','w'],['X','x'],['Y','y'],['Z','z']]
+          i= 1; an = alphabet.size; n = 0; j = 0; k = 0
+          
+        userlist.each do |user|
+          if i > k  or n==0 
+            
+               while (user.last_name[0].chr != alphabet[j][0] and user.last_name[0].chr != alphabet[j][1] and j < an)
+                  j = j + 1
+                end
+                str = []; k = 0    #unfortunately, collect didn't work for this
+                userlist.each do |u|
+                   if u.last_name[0].chr.downcase == alphabet[j][1]
+                     str << '"' + u.last_name + '"'
+                     k = k + 1
+                   end
+                end
+                ulist = str.join(',')
+                cond = " event_type='assigned to' and subject_user_id > 0 and (users.last_name LIKE ? or users.last_name LIKE ?) and users.last_name IN (#{ulist}) "; 
+                 if (@date1 && @date2)
+                     cond = cond + " and submitted_questions.created_at between ? and ? "
+                 end
+              baseset = SubmittedQuestionEvent.find(:all, :select => "users.last_name, submitted_questions.id sqid, submitted_question_events.id sqeid, submitted_question_events.created_at sqecr, event_type, subject_user_id, resolved_at, resolved_by",
+                         :joins => "join submitted_questions on submitted_question_events.submitted_question_id=submitted_questions.id join users on users.id=submitted_question_events.subject_user_id",
+                         :conditions => ((@date1 && @date2) ? [cond , alphabet[j][0]+'%', alphabet[j][1]+ '%', @date1, @date2] : [cond, alphabet[j][0]+'%', alphabet[j][1]+ '%'] ), :order => "subject_user_id")
+                         
+                      n  = baseset.size; i = 1; j = j + 1
+          end
+           baselist = []; found = 0    #find the assigned-to's for this user
+           baseset.each do |b|
+             if b.subject_user_id.to_i == user.id
+               baselist << b
+               found = 1
+             end
+             if b.subject_user_id.to_i != user.id and found==1
+               break
+             end
+           end
+           @assgnlist << [((user.first_name) ? user.first_name : "") + " " + ((user.last_name) ? user.last_name : "Login: " + user.login),
+                            baselist.size, #user.get_num_times_assigned(baselist)
+                            user.get_avg_resp_time_only(baselist),
+                        #   user.get_avg_time_assigned_then_switched(@date1, @date2),
+                            user.get_num_times_assigned_then_incomplete(baselist)]
+           i = i + 1
+        end
+      
+        @repaction = 'assignee'   
+     end
 end

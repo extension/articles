@@ -1571,6 +1571,61 @@ class User < ActiveRecord::Base
          " where ea.category_id=? order by users.last_name", catid ])
      end
     
+     def get_avg_time_assigned_then_switched(baselist)
+         avghold = []
+         baselist.each do |sq|   # this is a nightmare, must do this all at once, cannot call the database for each of the thousand answerers
+            events = SubmittedQuestionEvent.find(:all, :conditions => "event_type='assigned to' and submitted_question_id=#{sq.sqid}")
+            n = events.size; i = 0
+            while i < n do
+              if events[i].id== sq.sqeid.to_i
+                if i + 1 < n      #find next assignee, and get that person's assign time
+                   avghold << [sq.sqecr, events[i+1].created_at]
+                  break
+                end
+              end
+              i = i + 1
+            end
+         end
+         sum = 0
+         avghold.each do |av|
+           sum = sum + (av[1] - Time.parse(av[0]))
+         end
+         if avghold.size > 0
+           return sum.to_f/(avghold.size*3600)   # put in hours
+         else
+           return 0
+         end
+     end
+     
+     def get_num_times_assigned(baselist)
+       #find count of number times assigned to this user
+       baselist.size
+     end
+     
+     def get_num_times_assigned_then_incomplete(baselist)
+       #find count of number of times assigned to this user but this user did not resolve
+       sum = 0
+       baselist.each do |assgns|
+        if  assgns.resolved_by.to_i != self.id
+           sum = sum + 1
+         end
+       end
+       sum    
+     end
+     
+     def get_avg_resp_time_only(baselist)
+        sum = 0; n = 0; avg = 0
+        baselist.each do |assgns|
+          if assgns.resolved_by.to_i == self.id
+            sum = sum + (Time.parse(assgns.resolved_at) - Time.parse(assgns.sqecr))
+            n = n + 1
+          end
+        end
+        if n > 0
+           avg = sum.to_f/(n * 3600)   #average and convert to seconds
+        end
+        avg
+      end
     
      def get_avg_resp_time(date1, date2)
        statuses = [ "", " and status_state=#{SubmittedQuestion::STATUS_RESOLVED}", "and status_state=#{SubmittedQuestion::STATUS_REJECTED}","and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER}"]

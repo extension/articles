@@ -1,0 +1,85 @@
+<% @page_title = "Assignee Report"%>
+
+<% genstring = "Assignee Report"%>
+
+
+<div id="report">
+    <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> <%= @page_title %></p>
+    
+<h1><%= genstring %></h1>
+<p><%= @filtstr%></p>
+
+
+<%= render(:partial => 'flashmessages') %>
+
+<div id="date_range">
+    <h4 id="selected_range"><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
+
+    <div id="calendar">
+        
+        <% form_tag({:action => @repaction}) do %>
+          
+
+            <%= calendar_date_select_tag "dateFrom", ((@dateFrom) ? @dateFrom : Time.parse(@oldest_date).strftime('%Y-%m-%d')), :popup => true %><span>to</span><%= calendar_date_select_tag "dateTo", ((@dateTo) ? @dateTo : Date.today), :popup => true%> 
+            <%= submit_tag 'Go' %>
+        <% end%>
+        
+        <% form_tag({ :action => @repaction}) do %>
+            <%= submit_tag 'Show all'%>
+        <% end%>
+    </div>
+</div>
+
+<% p = {:date1 => @date1, :date2 => @date2}%>
+
+<table cellspacing="0" class="stats" summary="<%= genstring %>">
+	<% even = false %> 
+    <tr
+	   
+        <th scope="col">Assignee Name</th>
+        <th scope="col">Number Times Assigned</th>
+        <th scope="col">Avg Response Time to Completion (hours)</th>
+   <!--     <th scope="col">Avg Response Time then Switched</th> -->
+        <th scope="col">Number Times Assigned Without Completion</th>
+ 
+    </tr>
+ 
+<% if @assgnlist%>
+  
+  <% @assgnlist.each do |x| %>
+
+    
+    <tr <%= ' class="shaded"' if even %>>
+	   <td class="left">
+		  <%= x[0] %>
+	   </td>
+	   <td>
+		<!-- number assigned to assignee -->
+	    <%= x[1] %>
+	    </td>
+        <td>
+	    <!-- avg response time when assignee resolved the question -->
+	    <%= ((x[2] && x[2] != 0) ? "%.2f" % x[2] : 0)%>
+	    </td>
+	  <!-- <td>
+		 - avg time question held when assigned, but question ultimately assigned to someone else -
+		 <%= ((x[3] && x[3] !=0) ? "%.2f" % x[3] : 0)%>
+		</td> -->
+	     <td>
+		  <!-- num of times assigned when the person did not complete the answering of the question -->
+		  <%= x[3]%>
+	     </td>
+
+	 </tr>
+	<% if even 
+         even = false 
+     else 
+         even = true 
+     end %>
+	
+   <% end %>
+<%end %>
+
+ </table>
+
+</div>
