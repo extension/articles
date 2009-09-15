@@ -79,11 +79,20 @@ class AskController < ApplicationController
       flash.now[:googleanalytics] = '/ask-an-expert-search-results'
       set_title("Ask an Expert - eXtension", "Confirmation")
       set_titletag("Search Results for Ask an Expert - eXtension")
+      
+      # again, this needs to be refactored, but sanity check this against the spammers
+      if(params[:submitted_question].nil? or params[:public_user].nil?)
+        invalid = true
+      }
     
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
    
-      unless (@submitted_question.valid? and !@public_user.nil? and @public_user.valid?)
+      if(!@submitted_question.valid? or @public_user.nil? or !@public_user.valid?)
+        invalid = true
+      }
+      
+      unless (invalid.nil? and !invalid)
         redirect_to :action => 'index', 
                     :submitted_question => params[:submitted_question], 
                     :location_id => params[:location_id], 
