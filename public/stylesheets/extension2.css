@@ -28,6 +28,8 @@
 ul li ul li {font-size: 1em !important;}
 ul li ul li ul li {font-size: 1em !important}
 ul li ul li ul li ul li {font-size: 1em !important}
+ul li ol {margin-top:1em;}
+ul li ol li {font-size: 1em !important; list-style:decimal !important;}
 
 body, html { height: 100%; margin:0; padding:0; background: #f4f4f4; font-family: "Arial", "sans-serif"; color: #333; text-align: center; }
 
