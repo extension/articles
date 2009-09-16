@@ -14,11 +14,11 @@
 	<% even = false %> 
     <tr>
 	    <th scope="col">Assignee Name</th> 
-	   <th scope="col">Number Times Assigned</th>
+	   <th scope="col">Number Questions Assigned</th>
        <!-- <th scope="col"><%= link_to "Number Times Assigned", { :action => 'common_sort_columns', :field=>'assgn' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%></th>-->
-        <th scope="col">Average Response Time to Completion (hours)</th>
+        <th scope="col">Average Response Time (hours)</th>
         <!--<th scope="col"><%= link_to "Avg Response Time to Completion (hours)",{ :action => 'common_sort_columns', :field=>'assgninc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>-->
-        <th scope="col">Number Times Assigned Without Completion</th>
+        <th scope="col">Number Questions Assigned Not Completed by Assignee</th>
       <!--   <th scope="col"><%= link_to "Number Questions Assigned Not Completed by This Assignee",{ :action => 'common_sort_columns', :field=>'avgscompl' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>-->
           
      </tr>

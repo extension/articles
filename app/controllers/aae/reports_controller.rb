@@ -1061,10 +1061,7 @@ class Aae::ReportsController < ApplicationController
         @userlist = [] ; @assgn={}; @assgninc={}; @avgscompl={}
         #get list of assignee users  (expertise users)
         @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
-          cond = " event_type='assigned to' and subject_user_id > 0"; 
-           if (@date1 && @date2)
-               cond = cond + " and submitted_questions.created_at between ? and ? "
-           end
+        
         # get counts for assigned, assigned but not completed, and avg response time
         assgns = User.get_num_times_assigned(@date1, @date2, "")
         assgns_inc= User.get_num_times_assigned(@date1, @date2 , " and resolved_by!=subject_user_id " )
@@ -1078,4 +1075,5 @@ class Aae::ReportsController < ApplicationController
       
         @repaction = 'assignee'   
      end
+     # End of Assignee Report
 end

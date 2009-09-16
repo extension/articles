@@ -1603,7 +1603,7 @@ class User < ActiveRecord::Base
             cond = cond + " and submitted_questions.created_at between ? and ? "
         end
        SubmittedQuestionEvent.count(:all,
-           :joins => "join submitted_questions on submitted_question_events.submitted_question_id=submitted_questions.id", 
+           :joins => [:submitted_question],
            :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "subject_user_id")
        
      end
@@ -1616,7 +1616,7 @@ class User < ActiveRecord::Base
                cond = cond + " and submitted_questions.created_at between ? and ? "
            end   
            avgs= SubmittedQuestionEvent.find(:all, :select => " subject_user_id, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra",
-            :joins => "join submitted_questions on submitted_question_events.submitted_question_id=submitted_questions.id", 
+            :joins => [:submitted_question], 
            :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :group => "subject_user_id")
             SubmittedQuestion.makehash(avgs,"subject_user_id", 3600)
       end
