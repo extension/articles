@@ -1058,27 +1058,22 @@ class Aae::ReportsController < ApplicationController
             (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
           end
         @oldest_date = SubmittedQuestion.find_oldest_date; 
-        userlist = [] ; @assgnlist = {};  
+        @userlist = [] ; @assgn={}; @assgninc={}; @avgscompl={}
         #get list of assignee users  (expertise users)
-        userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
+        @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
           cond = " event_type='assigned to' and subject_user_id > 0"; 
            if (@date1 && @date2)
                cond = cond + " and submitted_questions.created_at between ? and ? "
            end
         # get counts for assigned, assigned but not completed, and avg response time
-        @assgn = SubmittedQuestionEvent.count(:all, :select => " users.*,  count(event_type) as assgn_count",
-            :joins => "join submitted_questions on submitted_question_events.submitted_question_id=submitted_questions.id join users on users.id=subject_user_id", 
-            :conditions => ((@date1 && @date2) ? [cond, @date1, @date2] : cond), :group => "users.id")
-            condstr = cond + " and resolved_by!=users.id "
-        @assgn_inc =  SubmittedQuestionEvent.count(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login, count(*) as assgn_count",
-                :joins => "join submitted_questions on submitted_question_events.submitted_question_id=submitted_questions.id", 
-                :conditions => ((@date1 && @date2) ? [cond + condstr, @date1, @date2] : cond+condstr), :group => "users.id") 
-             condreslv = cond + " and resolved_by=users.id "
-        @avgcompl =  SubmittedQuestionEvent.count(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra",
-                       :joins => "join submitted_questions on submitted_question_events.submitted_question_id=submitted_questions.id", 
-                       :conditions => ((@date1 && @date2) ? [cond + condreslv, @date1, @date2] : cond+condreslv), :group => "users.id")
-        userlist.each do |u|
-          @assgnlist[u.id] = [u.first_name + " " + u.last_name, @assgn[u.id], @assgn_inc[u.id], @avgcompl[u.id]]
+        assgns = User.get_num_times_assigned(@date1, @date2, "")
+        assgns_inc= User.get_num_times_assigned(@date1, @date2 , " and resolved_by!=subject_user_id " )
+        avgs=User.get_avg_resp_time_only(@date1, @date2) 
+            
+        @userlist.each do |u|
+          @assgn[u.id] = assgns[u.id]
+          @assgninc[u.id] = assgns_inc[u.id]
+          @avgscompl[u.id] = avgs[u.id]
         end
       
         @repaction = 'assignee'   

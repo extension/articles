@@ -2,75 +2,49 @@
 
 <% genstring = "Assignee Report"%>
 
-
 <div id="report">
-    <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> <%= @page_title %></p>
+    <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %>  <%= @page_title %></p>
     
 <h1><%= genstring %></h1>
-<p><%= @filtstr%></p>
 
+<%= render(:partial => 'seldates') %>
 
-<%= render(:partial => 'flashmessages') %>
-
-<div id="date_range">
-    <h4 id="selected_range"><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
-
-    <div id="calendar">
-        
-        <% form_tag({:action => @repaction}) do %>
-          
-
-            <%= calendar_date_select_tag "dateFrom", ((@dateFrom) ? @dateFrom : Time.parse(@oldest_date).strftime('%Y-%m-%d')), :popup => true %><span>to</span><%= calendar_date_select_tag "dateTo", ((@dateTo) ? @dateTo : Date.today), :popup => true%> 
-            <%= submit_tag 'Go' %>
-        <% end%>
-        
-        <% form_tag({ :action => @repaction}) do %>
-            <%= submit_tag 'Show all'%>
-        <% end%>
-    </div>
-</div>
-
-<% p = {:date1 => @date1, :date2 => @date2}%>
-
+<p>Click on column header links to sort.</p>
 <table cellspacing="0" class="stats" summary="<%= genstring %>">
 	<% even = false %> 
-    <tr
-	   
-        <th scope="col">Assignee Name</th>
-        <th scope="col">Number Times Assigned</th>
-        <th scope="col">Avg Response Time to Completion (hours)</th>
-   <!--     <th scope="col">Avg Response Time then Switched</th> -->
+    <tr>
+	    <th scope="col">Assignee Name</th> 
+	   <th scope="col">Number Times Assigned</th>
+       <!-- <th scope="col"><%= link_to "Number Times Assigned", { :action => 'common_sort_columns', :field=>'assgn' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%></th>-->
+        <th scope="col">Average Response Time to Completion (hours)</th>
+        <!--<th scope="col"><%= link_to "Avg Response Time to Completion (hours)",{ :action => 'common_sort_columns', :field=>'assgninc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>-->
         <th scope="col">Number Times Assigned Without Completion</th>
- 
-    </tr>
- 
-<% if @assgnlist%>
+      <!--   <th scope="col"><%= link_to "Number Questions Assigned Not Completed by This Assignee",{ :action => 'common_sort_columns', :field=>'avgscompl' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>-->
+          
+     </tr>
+
+<% if @userlist%>
   
-  <% @assgnlist.each do |x| %>
+  <% @userlist.each do |u| %>
+ 
+  <% number_questions_assigned = @assgn[u.id] %>
+  <% number_questions_assigned_without_completion = @assgninc[u.id] %>
+  <% avg_resp_time = @avgscompl[u.id]%>
+ 
+  <% empty = ' class="empty"' %>
 
+<tr <%= ' class="shaded"' if even %>>
+    <td class="left">
+	
+	          <%= h(u.first_name + " " + u.last_name)%>
+		 
+     </td>
     
-    <tr <%= ' class="shaded"' if even %>>
-	   <td class="left">
-		  <%= x[0] %>
-	   </td>
-	   <td>
-		<!-- number assigned to assignee -->
-	    <%= x[1] %>
-	    </td>
-        <td>
-	    <!-- avg response time when assignee resolved the question -->
-	    <%= ((x[2] && x[2] != 0) ? "%.2f" % x[2] : 0)%>
-	    </td>
-	  <!-- <td>
-		 - avg time question held when assigned, but question ultimately assigned to someone else -
-		 <%= ((x[3] && x[3] !=0) ? "%.2f" % x[3] : 0)%>
-		</td> -->
-	     <td>
-		  <!-- num of times assigned when the person did not complete the answering of the question -->
-		  <%= x[3]%>
-	     </td>
-
-	 </tr>
+     <td><%= ((@assgn[u.id] && @assgn[u.id] !=0) ? number_questions_assigned : 0) %></td>
+     <td><%= ((@avgscompl[u.id] && @avgscompl[u.id] != 0) ? "%.2f" % avg_resp_time : 0)%></td>
+     <td><%= ((@assgninc[u.id] && @assgninc[u.id] != 0) ? number_questions_assigned_without_completion : 0)%></td>
+   
+</tr>
 	<% if even 
          even = false 
      else 
