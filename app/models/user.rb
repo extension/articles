@@ -1597,34 +1597,28 @@ class User < ActiveRecord::Base
          end
      end
      
-     def get_num_times_assigned(baselist)
-       #find count of number times assigned to this user
-       baselist.size
+     def self.get_num_times_assigned(date1, date2, auxcond)
+       cond = " event_type='assigned to' and subject_user_id > 0 " + auxcond 
+        if (date1 && date2)
+            cond = cond + " and submitted_questions.created_at between ? and ? "
+        end
+       SubmittedQuestionEvent.count(:all,
+           :joins => "join submitted_questions on submitted_question_events.submitted_question_id=submitted_questions.id", 
+           :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "subject_user_id")
+       
      end
      
-     def get_num_times_assigned_then_incomplete(baselist)
-       #find count of number of times assigned to this user but this user did not resolve
-       sum = 0
-       baselist.each do |assgns|
-        if  assgns.resolved_by.to_i != self.id
-           sum = sum + 1
-         end
-       end
-       sum    
-     end
+   
      
-     def get_avg_resp_time_only(baselist)
-        sum = 0; n = 0; avg = 0
-        baselist.each do |assgns|
-          if assgns.resolved_by.to_i == self.id
-            sum = sum + (Time.parse(assgns.resolved_at) - Time.parse(assgns.sqecr))
-            n = n + 1
-          end
-        end
-        if n > 0
-           avg = sum.to_f/(n * 3600)   #average and convert to seconds
-        end
-        avg
+     def self.get_avg_resp_time_only(date1, date2)
+         cond = " event_type='assigned to' and subject_user_id > 0 and resolved_by=subject_user_id"
+           if (date1 && date2)
+               cond = cond + " and submitted_questions.created_at between ? and ? "
+           end   
+           avgs= SubmittedQuestionEvent.find(:all, :select => " subject_user_id, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra",
+            :joins => "join submitted_questions on submitted_question_events.submitted_question_id=submitted_questions.id", 
+           :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :group => "subject_user_id")
+            SubmittedQuestion.makehash(avgs,"subject_user_id", 3600)
       end
     
      def get_avg_resp_time(date1, date2)
