@@ -1597,8 +1597,8 @@ class User < ActiveRecord::Base
          end
      end
      
-     def self.get_num_times_assigned(date1, date2, auxcond)
-       cond = " event_type='assigned to' and subject_user_id > 0 " + auxcond 
+     def self.get_num_times_assigned(date1, date2, auxcond, sqfilters)
+       cond = " event_type='assigned to' and subject_user_id > 0 " + auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
         if (date1 && date2)
             cond = cond + " and submitted_questions.created_at between ? and ? "
         end
@@ -1610,8 +1610,8 @@ class User < ActiveRecord::Base
      
    
      
-     def self.get_avg_resp_time_only(date1, date2)
-         cond = " event_type='assigned to' and subject_user_id > 0 and resolved_by=subject_user_id"
+     def self.get_avg_resp_time_only(date1, date2, sqfilters)
+         cond = " event_type='assigned to' and subject_user_id > 0 and resolved_by=subject_user_id " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
            if (date1 && date2)
                cond = cond + " and submitted_questions.created_at between ? and ? "
            end   
