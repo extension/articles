@@ -19,11 +19,14 @@
             <td><%= (sq.assignee) ? link_to(sq.assignee.login, aae_profile_url(:id => sq.assignee.login)) : "<span>nobody</span>" %></td>
             <td><%= (sq.assignee and (assign_date = sq.assigned_date)) ? time_ago_in_words(assign_date) : ""%></td>
             <% pctassgns= 0%>
-            <% if @totalassgns[sq.assignee.id] > 0%>
-                 <% pctassgns = (@assgnscompls[sq.assignee.id]).to_f/@totalassgns[sq.assignee.id]%>
+            <% assignee = sq.assignee.id.to_s%>
+            <% if (@totalassgns[assignee] && @totalassgns[assignee] > 0)%>
+               <% if (@assgnscompls[assignee])%>
+                 <% pctassgns = (@assgnscompls[assignee]).to_f/@totalassgns[assignee]%>
+               <% end%>
             <%end%>
-            <td><%= (( pctassgns != 0) ? ("%.2f" % pctassgns) + "%" : 0) %></td>
-            <td><%= ((@avgscompl[sq.assignee.id] && @avgscompl[sq.assignee.id] != 0) ? "%.2f" % @avgscompl[sq.assignee.id] : 0)%></td>
+            <td><%= (( pctassgns != 0) ? ("%.2f" % pctassgns) + "%" : "0%") %></td>
+            <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.2f" % @avgscompl[assignee] : "n/a")%></td>
             <td>[Most recent action]</td>
         </tr>
     <% end %>    

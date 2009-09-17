@@ -1063,14 +1063,14 @@ class Aae::ReportsController < ApplicationController
         @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
         
         # get counts for assigned, assigned but not completed, and avg response time
-        assgns = User.get_num_times_assigned(@date1, @date2, "", nil)
-        assgns_inc= User.get_num_times_assigned(@date1, @date2 , " and resolved_by!=subject_user_id " , nil)
-        avgs=User.get_avg_resp_time_only(@date1, @date2, nil) 
+        assgns = User.get_num_times_assigned(@date1, @date2, "", nil, nil)
+        assgns_inc= User.get_num_times_assigned(@date1, @date2 , " and resolved_by!=subject_user_id " , nil, nil)
+        avgs=User.get_avg_resp_time_only(@date1, @date2, nil, nil) 
             
         @userlist.each do |u|
-          @assgn[u.id] = assgns[u.id]
-          @assgninc[u.id] = assgns_inc[u.id]
-          @avgscompl[u.id] = avgs[u.id]
+          @assgn[u.id] = assgns[u.id.to_s]
+          @assgninc[u.id] = assgns_inc[u.id.to_s]
+          @avgscompl[u.id] = avgs[u.id.to_s]
         end
       
         @repaction = 'assignee'   
