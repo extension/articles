@@ -41,7 +41,7 @@
      </td>
     
      <td><%= ((@assgn[u.id] && @assgn[u.id] !=0) ? number_questions_assigned : 0) %></td>
-     <td><%= ((@avgscompl[u.id] && @avgscompl[u.id] != 0) ? "%.2f" % avg_resp_time : 0)%></td>
+     <td><%= ((@avgscompl[u.id] && @avgscompl[u.id] != 0) ? "%.2f" % avg_resp_time : " ")%></td>
      <td><%= ((@assgninc[u.id] && @assgninc[u.id] != 0) ? number_questions_assigned_without_completion : 0)%></td>
    
 </tr>
