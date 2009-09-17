@@ -22,7 +22,7 @@
             <% if @totalassgns[sq.assignee.id] > 0%>
                  <% pctassgns = (@assgnscompls[sq.assignee.id]).to_f/@totalassgns[sq.assignee.id]%>
             <%end%>
-            <td><%= ((pctassgns && pctassgns != 0) ? ("%.2f" % pctassgns) + "%" : 0) %></td>
+            <td><%= (( pctassgns != 0) ? ("%.2f" % pctassgns) + "%" : 0) %></td>
             <td><%= ((@avgscompl[sq.assignee.id] && @avgscompl[sq.assignee.id] != 0) ? "%.2f" % @avgscompl[sq.assignee.id] : 0)%></td>
             <td>[Most recent action]</td>
         </tr>
