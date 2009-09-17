@@ -6,8 +6,8 @@
         <th>Question Age</th>
         <th>Assigned to</th>
         <th>Length assigned</th>
-        <th>Completions</th>
-        <th>Avg response (hours)</th>
+        <th id="completions">Completions</th>
+        <th>Avg response</th>
         
         <th>Most recent action</th>
     <tr>
@@ -25,8 +25,8 @@
                  <% pctassgns = (@assgnscompls[assignee]).to_f/@totalassgns[assignee]%>
                <% end%>
             <%end%>
-            <td><%= (( pctassgns != 0) ? ("%.2f" % pctassgns) + "%" : "0%") %></td>
-            <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.2f" % @avgscompl[assignee] : "n/a")%></td>
+            <td class="completions" style="background-position: -<%=((100 - ("%.0f" % (pctassgns * 100)).to_f)*2) %>px 0"><%= (( pctassgns != 0) ? ("%.2f" % pctassgns) + "%" : "0%") %>  <%= "(out of " + @totalassgns[assignee].to_s + ")" %></td>
+            <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.0f hours" % @avgscompl[assignee] : "n/a")%></td>
             <td>[Most recent action]</td>
         </tr>
     <% end %>    

@@ -1448,3 +1448,6 @@ a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
 #adminoptions p {margin: 0 1em 1em;padding-top:1em;}
 .admin_option.offline a {background:#ee3a3a;padding:.5em;color:#fff;text-decoration:none;}
 .admin_option.offline a:hover {text-decoration:underline}
+
+#completions {width:200px;}
+.completions {width:200px; background: url(/images/aae/green_square.png) no-repeat;}
