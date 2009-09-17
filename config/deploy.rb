@@ -115,7 +115,7 @@ end
 namespace :email do 
   desc "Generate an email for the deploy"
   task :generate_report, :roles => [:app] do 
-    run "#{ruby} #{email_script} -m #{notify} -r #{repository_base} -a #{application} -t #{server_settings['host']} -u #{user}"
+    run "#{ruby} #{email_script} -m #{notify} -r #{repository} -a #{application} -t #{server_settings['host']} -u #{user}"
   end
 end
 
