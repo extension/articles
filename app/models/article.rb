@@ -194,7 +194,7 @@ class Article < ActiveRecord::Base
     atom_entries =  Atom::Feed.load_feed(xmlcontent).entries
     if(!atom_entries.blank?)
       atom_entries.each do |entry|
-        if entry.id == AppConfig.configtable['host_wikiarticle'] + "/wiki/Special:Log/delete"
+        if entry.id == AppConfig.configtable['changes_feed_base'] + "/wiki/Special:Log/delete"
           matches = entry.summary.match(/title=\"(.*)\"/)
           if matches
           title = matches[1]
