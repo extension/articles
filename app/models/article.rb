@@ -175,7 +175,6 @@ class Article < ActiveRecord::Base
      feed_url = (options[:feed_url].nil? ? AppConfig.configtable['changes_feed_wiki'] : options[:feed_url])
      updatetime = UpdateTime.find_or_create(self,'changes')
 
-
     if(have_refresh_since)
       refresh_since = options[:refresh_since]
     else
@@ -184,7 +183,6 @@ class Article < ActiveRecord::Base
  
     fetch_url = self.build_feed_url(feed_url,refresh_since,true)
      
-    
     # will raise errors on failure
     xmlcontent = self.fetch_url_content(fetch_url)
 
@@ -194,14 +192,15 @@ class Article < ActiveRecord::Base
     atom_entries =  Atom::Feed.load_feed(xmlcontent).entries
     if(!atom_entries.blank?)
       atom_entries.each do |entry|
-        if entry.id == AppConfig.configtable['changes_feed_base'] + "/wiki/Special:Log/delete"
+        if entry.title == "Special:Log/delete"
           matches = entry.summary.match(/title=\"(.*)\"/)
           if matches
-          title = matches[1]
+            title = matches[1]
             article = Article.find_by_title(title)
             if(!article.nil?)
               removed_time = entry.updated
               # if article is newer than delete record, then keep it
+              # conversely, if article is older than delete record, zap it
               if article.wiki_updated_at <= removed_time
                 article.destroy
                 deleted_items += 1
@@ -216,7 +215,7 @@ class Article < ActiveRecord::Base
     end # had atom entries
       
     # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
-    updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_itmes}})
+    updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_items}})
     return {:deleted => deleted_items, :last_updated_item_time => last_updated_item_time}
   end
   
