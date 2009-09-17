@@ -58,8 +58,8 @@ def retrieve_content_from_feed_locations(options)
       begin
         result = feed.retrieve_articles(options)
         puts "Result: #{result.inspect}"
-      rescue ContentRetrievalError => exception
-        puts exception.message
+      rescue Exception => e
+        puts e.message
       end
     end
   end
@@ -71,12 +71,12 @@ def retrieve_content_for_datatype(objectklass,options)
   begin
     result = objectklass.retrieve_content(options)
     puts "Result: #{result.inspect}"
-    if(objectklass.is_a?(Article))
-      objectklass.retrieve_deletes(options)
+    if(objectklass == Article)
+      result = objectklass.retrieve_deletes(options)
       puts "Deletes Result: #{result.inspect}"
     end
-  rescue ContentRetrievalError => exception
-    puts exception.message
+  rescue Exception => e
+    puts e.message
   end
 end
 
