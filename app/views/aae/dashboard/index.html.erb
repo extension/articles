@@ -25,7 +25,7 @@
                  <% pctassgns = (@assgnscompls[assignee]).to_f/@totalassgns[assignee]%>
                <% end%>
             <%end%>
-            <td class="completions" style="background-position: -<%=((100 - ("%.0f" % (pctassgns * 100)).to_f)*2) %>px 0"><%= (( pctassgns != 0) ? ("%.0f" % pctassgns) + "%" : "0%") %>  <%= "(out of " + @totalassgns[assignee].to_s + ")" %></td>
+            <td class="completions" style="background-position: -<%=((100 - ("%.0f" % (pctassgns * 100)).to_f)*2) %>px 0"><%= (( pctassgns != 0) ? ("%.0f" % (pctassgns * 100)) + "%" : "0%") %>  <%= "(out of " + @totalassgns[assignee].to_s + ")" %></td>
             <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.0f hours" % @avgscompl[assignee] : "n/a")%></td>
             <td>[Most recent action]</td>
         </tr>
