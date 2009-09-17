@@ -1,5 +1,5 @@
 <h1>Assignment Dashboard</h1>
-
+<p>Completions and Avg responses are computed over the last 6 months.</p>
 <table cellspacing="0">
     <tr>
         <th>Question</th>
@@ -7,7 +7,7 @@
         <th>Assigned to</th>
         <th>Length assigned</th>
         <th>Completions</th>
-        <th>Avg response</th>
+        <th>Avg response (hours)</th>
         
         <th>Most recent action</th>
     <tr>
@@ -18,8 +18,12 @@
             <td><%= time_ago_in_words(sq.created_at) %> ago</td>
             <td><%= (sq.assignee) ? link_to(sq.assignee.login, aae_profile_url(:id => sq.assignee.login)) : "<span>nobody</span>" %></td>
             <td><%= (sq.assignee and (assign_date = sq.assigned_date)) ? time_ago_in_words(assign_date) : ""%></td>
-            <td>[Completions]</td>
-            <td>[Avg response]</td>
+            <% pctassgns= 0%>
+            <% if @totalassgns[sq.assignee.id] > 0%>
+                 <% pctassgns = (@assgnscompls[sq.assignee.id]).to_f/@totalassgns[sq.assignee.id]%>
+            <%end%>
+            <td><%= ((pctassgns && pctassgns != 0) ? ("%.2f" % pctassgns) + "%" : 0) %></td>
+            <td><%= ((@avgscompl[sq.assignee.id] && @avgscompl[sq.assignee.id] != 0) ? "%.2f" % @avgscompl[sq.assignee.id] : 0)%></td>
             <td>[Most recent action]</td>
         </tr>
     <% end %>    

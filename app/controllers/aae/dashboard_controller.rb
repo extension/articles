@@ -22,14 +22,18 @@ class Aae::DashboardController < ApplicationController
     list_view
     set_filters
     filter_string_helper
-  
-    @reserved_questions = SubmittedQuestionEvent.reserved_questions.collect{|sq| sq.id}
-    @questions_status = SubmittedQuestion::STATUS_SUBMITTED
+    
+    t = Time.now
+    @last6months = (t - 180*24*60*60).strftime("%Y-%m-%d %H:%M:%S")
+    @today = (Time.now).strftime("%Y-%m-%d %H:%M:%S")
+    
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
     @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes
-    
-    
-    
+    @assgnscompls= User.get_num_times_assigned(@last6months,@today , " and resolved_by=subject_user_id ")
+    @totalassgns = User.get_num_times_assigned(@last6months,@today, "")
+    @avgscompl=User.get_avg_resp_time_only(@last6months, @today)
   end
+  
+  
   
 end
