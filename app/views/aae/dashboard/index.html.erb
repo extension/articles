@@ -1,5 +1,8 @@
 <h1>Assignment Dashboard</h1>
 <p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page.</p>
+
+<%= will_paginate @submitted_questions %>
+
 <table cellspacing="0" id="dashboard">
     <tr>
         <th>#</th>
