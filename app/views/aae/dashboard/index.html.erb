@@ -1,13 +1,13 @@
 <h1>Assignment Dashboard</h1>
-<p>Completions and Avg responses are computed over the last 6 months.</p>
-<table cellspacing="0">
+<p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page.</p>
+<table cellspacing="0" id="dashboard">
     <tr>
-        <th>Question</th>
+        <th>#</th>
         <th>Question Age</th>
-        <th>Assigned to</th>
-        <th>Length assigned</th>
-        <th id="completions">Completions</th>
-        <th>Avg response</th>
+        <th id="completions">Assigned to</th>
+        <th>Length<br/>assigned</th>
+        <th id="completions">Completions<br/>(last 6 months)</th>
+        <th>Avg response<br/>(last 6 months)</th>
         
         <th>Most recent action</th>
     <tr>
@@ -16,7 +16,8 @@
         <tr>
             <td><%= link_to sq.id, aae_question_url(:id => sq.id) %></td>
             <td><%= time_ago_in_words(sq.created_at) %> ago</td>
-            <td><%= (sq.assignee) ? link_to(sq.assignee.login, aae_profile_url(:id => sq.assignee.login)) : "<span>nobody</span>" %></td>
+            <td><%= (sq.assignee) ? link_to(sq.assignee.fullname, aae_profile_url(:id => sq.assignee.login), :title => "Ask an Expert profile") + 
+            link_to("#{sq.assignee.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => sq.assignee.login}, :title => "People profile", :class => "subtle") : "<span>nobody</span>" %></td>
             <td><%= (sq.assignee and (assign_date = sq.assigned_date)) ? time_ago_in_words(assign_date) : ""%></td>
             <% pctassgns= 0%>
             <% assignee = sq.assignee.id.to_s%>

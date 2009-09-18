@@ -1451,3 +1451,6 @@ a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
 
 #completions {width:200px;}
 .completions {width:200px; background: url(/images/aae/green_square.png) no-repeat;}
+#dashboard td a {display:inline; margin-right:.75em;}
+.subtle {color:#888 !important;}
+.subtle:hover {color:blue !important;}
