@@ -28,10 +28,15 @@ class Aae::DashboardController < ApplicationController
     today = (Time.now).strftime("%Y-%m-%d %H:%M:%S")
     
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
-    @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes
+    @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
     @assgnscompls= User.get_num_times_assigned(last6months,today , " and resolved_by=subject_user_id ", SubmittedQuestion.filterconditions(filteroptions)[:conditions],SubmittedQuestion.filterconditions(filteroptions)[:include])
     @totalassgns = User.get_num_times_assigned(last6months,today, "", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
     @avgscompl=User.get_avg_resp_time_only(last6months, today, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+    
+    #get set of last activities
+ #   acts = Activity.displayactivity.find(:all, :order => 'created_at DESC', :group => "user_id")
+   @last_activity={}
+  #  @last_activity = acts.map { |act| @last_activity[act.user_id] = act }
   end
   
   
