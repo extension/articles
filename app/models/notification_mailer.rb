@@ -252,9 +252,10 @@ class NotificationMailer < ActionMailer::Base
   #  email/signup confirmation
   # -----------------------------------
   
-  def confirm_email(notification,token)
+  def confirm_email(notification)
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
+     token = UserToken.find(notification.additionaldata[:token_id])
      @recipients     = token.user.email
      @subject        = @subjectlabel+'Please confirm your email address'
      urls = Hash.new
@@ -265,9 +266,10 @@ class NotificationMailer < ActionMailer::Base
      @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
    
-   def reconfirm_email(notification,token)
+   def reconfirm_email(notification)
       # base parameters for the email
       self.base_email(notification.notifytype_to_s)
+      token = UserToken.find(notification.additionaldata[:token_id])
       @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
@@ -279,9 +281,10 @@ class NotificationMailer < ActionMailer::Base
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
   
-   def reconfirm_signup(notification,token)
+   def reconfirm_signup(notification)
       # base parameters for the email
       self.base_email(notification.notifytype_to_s)
+      token = UserToken.find(notification.additionaldata[:token_id])
       @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new

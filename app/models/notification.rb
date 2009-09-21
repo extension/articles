@@ -8,8 +8,6 @@
 class Notification < ActiveRecord::Base
   
   NONE = 1
-  # notifytypes
-  
   
   ###############################
   #  People Notifications
@@ -20,26 +18,22 @@ class Notification < ActiveRecord::Base
   COMMUNITY_USER_WANTSTOJOIN = 102
   COMMUNITY_USER_LEFT= 103
   COMMUNITY_USER_ACCEPT_INVITATION= 104
-  COMMUNITY_USER_DECLINE_INVITATION= 105  
+  COMMUNITY_USER_DECLINE_INVITATION= 105
   COMMUNITY_USER_NOWANTSTOJOIN= 106
   COMMUNITY_USER_INTEREST = 107
   COMMUNITY_USER_NOINTEREST = 108
 
-  
   COMMUNITY_LEADER_INVITELEADER = 201
   COMMUNITY_LEADER_INVITEMEMBER = 202
   COMMUNITY_LEADER_RESCINDINVITATION = 203
-  
   COMMUNITY_LEADER_INVITEREMINDER = 204
-
   COMMUNITY_LEADER_ADDLEADER = 301
   COMMUNITY_LEADER_ADDMEMBER = 302
-  
   COMMUNITY_LEADER_REMOVELEADER = 401
   COMMUNITY_LEADER_REMOVEMEMBER = 402
   
   # eXtensionID Invitation
-  INVITATION_TO_EXTENSIONID = 500  
+  INVITATION_TO_EXTENSIONID = 500
   INVITATION_ACCEPTED = 501
   
   CONFIRM_EMAIL = 501
@@ -47,7 +41,7 @@ class Notification < ActiveRecord::Base
   RECONFIRM_SIGNUP = 503
   
   ## Other User actions
-  # new account created
+  # TODO: new account created?
   
   ##########################################
   #  Ask an Expert Notifications - Internal
@@ -66,6 +60,38 @@ class Notification < ActiveRecord::Base
   AAE_PUBLIC_EXPERT_RESPONSE = 2001  # notification of an expert response, also "A Space Odyssey"
   AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT = 2010  # notification of submission, also "The Year We Make Contact"
   
+  # method names for sending notificationmailer mailers for each notification
+  MAILERMETHODS = {}
+  MAILERMETHODS[COMMUNITY_USER_JOIN] = ['community_user']
+  MAILERMETHODS[COMMUNITY_USER_WANTSTOJOIN] = ['community_user']
+  MAILERMETHODS[COMMUNITY_USER_LEFT] = ['community_user']
+  MAILERMETHODS[COMMUNITY_USER_ACCEPT_INVITATION] = ['community_user']
+  MAILERMETHODS[COMMUNITY_USER_DECLINE_INVITATION] = ['community_user']
+  MAILERMETHODS[COMMUNITY_USER_NOWANTSTOJOIN] = ['community_user']
+  MAILERMETHODS[COMMUNITY_USER_INTEREST] = ['community_user']
+  MAILERMETHODS[COMMUNITY_USER_NOINTEREST] = ['community_user']
+  MAILERMETHODS[COMMUNITY_LEADER_INVITELEADER] = ['community_change_notifygroup','community_change_notifyuser']
+  MAILERMETHODS[COMMUNITY_LEADER_INVITEMEMBER] = ['community_change_notifygroup','community_change_notifyuser']
+  MAILERMETHODS[COMMUNITY_LEADER_RESCINDINVITATION] = ['community_change_notifygroup','community_change_notifyuser']
+  MAILERMETHODS[COMMUNITY_LEADER_INVITEREMINDER] = ['community_change_notifygroup','community_change_notifyuser']
+  MAILERMETHODS[COMMUNITY_LEADER_ADDLEADER] = ['community_change_notifygroup','community_change_notifyuser']
+  MAILERMETHODS[COMMUNITY_LEADER_ADDMEMBER] = ['community_change_notifygroup','community_change_notifyuser']
+  MAILERMETHODS[COMMUNITY_LEADER_REMOVELEADER] = ['community_change_notifygroup','community_change_notifyuser']
+  MAILERMETHODS[COMMUNITY_LEADER_REMOVEMEMBER] = ['community_change_notifygroup','community_change_notifyuser']
+  MAILERMETHODS[INVITATION_TO_EXTENSIONID] = ['invitation_to_extensionid']    
+  MAILERMETHODS[INVITATION_ACCEPTED] = ['accepted_extensionid_invitation']    
+  MAILERMETHODS[CONFIRM_EMAIL] = ['confirm_email']      
+  MAILERMETHODS[RECONFIRM_EMAIL] = ['reconfirm_email']    
+  MAILERMETHODS[RECONFIRM_SIGNUP] = ['reconfirm_signup']    
+  MAILERMETHODS[AAE_ASSIGNMENT] = ['aae_assigned']  
+  MAILERMETHODS[AAE_REASSIGNMENT] = ['aae_reassigned']    
+  # TODO: MAILERMETHODS[AAE_ESCALATION] = ['todo']    
+  MAILERMETHODS[AAE_PUBLIC_EDIT] = ['aae_public_edit']    
+  MAILERMETHODS[AAE_PUBLIC_EXPERT_RESPONSE] = ['aae_public_response']    
+  MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission']    
+  
+  # TODO: add description labels that can get strings from the locale tabel describing each 
+  
 
   belongs_to :user
   belongs_to :community # for many of the notification types
@@ -79,6 +105,27 @@ class Notification < ActiveRecord::Base
   named_scope :aae_public, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_AAE_PUBLIC[0]} and #{NOTIFICATION_AAE_PUBLIC[1]})"] 
   named_scope :people, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_PEOPLE[0]} and #{NOTIFICATION_PEOPLE[1]})"] 
   
+  def send_email
+    if(MAILERMETHODS[self.notifytype].blank?)
+      return false
+    else
+      MAILERMETHODS[self.notifytype].each do |methodname|
+        begin 
+          NotificationMailer.send("deliver_#{methodname}",self)
+        rescue Exception => exception
+          if(!self.additionaldata.nil?)
+            additionaldata = self.additionaldata.merge({:emailerror => exception.message})
+          else
+            additionaldata = {:emailerror => exception.message}
+          end
+          self.update_attributes({:send_error => true, :additionaldata => additionaldata})            
+          return false
+        end
+      end
+      self.update_attributes({:sent_email => true, :sent_email_at => Time.now})
+      return true
+    end
+  end
   
   def notifytype_to_s
     if(self.notifytype == NONE)
