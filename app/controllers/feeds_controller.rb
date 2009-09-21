@@ -218,11 +218,6 @@ class FeedsController < ApplicationController
     render :template => 'feeds/status', :status => status, :layout => false
   end
   
-  def establish_page_title_text  
-    puts " accessing "+controller_name+"/"+action_name
-    # this should be set in the controllers, but we set a sane default here  
-    @page_title_text = session[:category] + " : " + params[:controller] + " : " + params[:action]
-  end
   
   private
   
