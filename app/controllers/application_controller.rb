@@ -407,7 +407,3 @@ class ApplicationController < ActionController::Base
   end
   
 end
-
-# custom error classes
-class ContentRetrievalError < StandardError
-end
