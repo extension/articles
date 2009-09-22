@@ -21,14 +21,14 @@ class Aae::DashboardController < ApplicationController
     #set the instance variables based on parameters
     list_view
     set_filters
-    filter_string_helper
+  #  filter_string_helper
     
     t = Time.now
     last6months = (t - 180*24*60*60).strftime("%Y-%m-%d %H:%M:%S")
     today = (Time.now).strftime("%Y-%m-%d %H:%M:%S")
     
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
-    @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
+    @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes    #.paginate(:page => params[:page])
     @assgnscompls= User.get_num_times_assigned(last6months,today , " and resolved_by=subject_user_id ", SubmittedQuestion.filterconditions(filteroptions)[:conditions],SubmittedQuestion.filterconditions(filteroptions)[:include])
     @totalassgns = User.get_num_times_assigned(last6months,today, "", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
     @avgscompl=User.get_avg_resp_time_only(last6months, today, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])

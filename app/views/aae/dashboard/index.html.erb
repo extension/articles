@@ -1,7 +1,7 @@
 <h1>Assignment Dashboard</h1>
 <p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page.</p>
 
-<%= will_paginate @submitted_questions %>
+
 
 <table cellspacing="0" id="dashboard">
     <tr>
@@ -31,7 +31,7 @@
             <%end%>
             <td class="completions" style="background-position: -<%=((100 - ("%.0f" % (pctassgns * 100)).to_f)*2) %>px 0"><%= (( pctassgns != 0) ? ("%.0f" % (pctassgns * 100)) + "%" : "0%") %>  <%= "(out of " + @totalassgns[assignee].to_s + ")" %></td>
             <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.0f hours" % @avgscompl[assignee] : "n/a")%></td>
-            <td></td>
+            <td><%= ((@last_activity[sq.assignee.id]) ? activity_to_s(@last_activity[sq.assignee.id],{}) : "")%></td>
         </tr>
     <% end %>    
 </table>
