@@ -591,7 +591,7 @@ class List < ActiveRecord::Base
     return self.update_mailman_members
   end
   
-  private
+  protected
   
   def add_mailman_members(email_address_array)
     if email_address_array.size > 0

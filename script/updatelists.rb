@@ -31,7 +31,7 @@ end
 
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-# loop through all the root categories that we might have escalations for
+# loop through all the lists that need updating
 List.needs_mailman_update.managed.all.each do |list|
   puts "Updating mailman information for: #{list.name}"
   result = list.create_or_update_mailman_list
