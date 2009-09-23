@@ -108,7 +108,7 @@ class User < ActiveRecord::Base
   has_many :user_preferences
   has_many :assigned_questions, :class_name => "SubmittedQuestion", :foreign_key => "user_id"
   # TODO: this should be changed to something like .assigned_questions.open
-  has_many :open_questions, :class_name => "SubmittedQuestion", :foreign_key => "user_id", :conditions => "status_state = #{SubmittedQuestion::STATUS_SUBMITTED}"
+  has_many :open_questions, :class_name => "SubmittedQuestion", :foreign_key => "user_id", :conditions => "status_state = #{SubmittedQuestion::STATUS_SUBMITTED} AND spam = false"
   has_many :resolved_questions, :class_name => "SubmittedQuestion", :foreign_key => "resolved_by"
   has_many :expertise_areas
   has_many :categories, :through => :expertise_areas
