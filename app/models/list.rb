@@ -616,7 +616,7 @@ class List < ActiveRecord::Base
     if(!self.update_mailman?)
       return true
     end
-    if(self.has_mailman_list?)
+    if(!self.has_mailman_list?)
       process = "#{AppConfig.configtable['mailmanpath']}/newlist -l en #{self.name} #{AppConfig.configtable['default-list-owner']} #{self.password}"
       proc = IO.popen(process, "w+")
       proc.close_write
