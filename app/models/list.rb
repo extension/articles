@@ -440,13 +440,6 @@ class List < ActiveRecord::Base
   # -----------------------------------
   # MailMan methods
   # -----------------------------------
-  #get the names of the lists that are currently in mailman
-  def self.get_mailman_list_names()
-    process = "#{AppConfig.configtable['mailmanpath']}/list_lists -b"
-    output = %x{#{process}}
-    return output
-  end
-  
   def update_mailman?
     return (self.last_mailman_update.nil? or self.updated_at > self.last_mailman_update)
   end
@@ -546,6 +539,7 @@ class List < ActiveRecord::Base
     proc.close
     system("rm #{listconfig_file}")
     self.touch(:last_mailman_update)
+    return @mailman_configuration
   end
   
   def update_mailman_members
@@ -555,39 +549,8 @@ class List < ActiveRecord::Base
     remove_members = current_mailman_members - subscriber_emails
     self.add_mailman_members(add_members)
     self.remove_mailman_members(remove_members)
+    self.touch(:last_mailman_update)
     return {:add_count => add_members.size, :remove_count => remove_members.size}
-  end
-  
-  def add_mailman_members(email_address_array)
-    if email_address_array.size > 0
-      # # this needs to use a temporary file to avoid broken pipe errors.
-      # tmpfilename = "/tmp/" + self.name + ".addmembers.input" 
-      # # write to the output file
-      # f_addmembers = File.open(tmpfilename, "w+")
-      # f_addmembers.puts email_address_array.join("\n")
-      # f_addmembers.close
-      process = "#{AppConfig.configtable['mailmanpath']}/add_members --regular-members-file=- #{self.name}"
-      proc = IO.popen(process, "w+")
-      proc.puts email_address_array.join("\n")
-      proc.close_write
-      proc.readlines # read the response back, but we don't care about it
-      proc.close
-      # File.unlink(tmpfilename)
-    end
-    self.touch(:last_mailman_update)
-    return email_address_array.size
-  end    
-  
-  def remove_mailman_members(email_address_array)
-    if email_address_array.size > 0
-      process = "#{AppConfig.configtable['mailmanpath']}/remove_members --file=- #{self.name}"
-      proc = IO.popen(process, "w+")
-      proc.puts email_address_array.join("\n")
-      proc.close_write
-      proc.close
-    end
-    self.touch(:last_mailman_update)
-    return email_address_array.size
   end
   
   def default_mailman_configuration
@@ -626,6 +589,38 @@ class List < ActiveRecord::Base
     self.mailman_configuration=self.default_mailman_configuration  
     # update members
     return self.update_mailman_members
+  end
+  
+  private
+  
+  def add_mailman_members(email_address_array)
+    if email_address_array.size > 0
+      # # this needs to use a temporary file to avoid broken pipe errors.
+      # tmpfilename = "/tmp/" + self.name + ".addmembers.input" 
+      # # write to the output file
+      # f_addmembers = File.open(tmpfilename, "w+")
+      # f_addmembers.puts email_address_array.join("\n")
+      # f_addmembers.close
+      process = "#{AppConfig.configtable['mailmanpath']}/add_members --regular-members-file=- #{self.name}"
+      proc = IO.popen(process, "w+")
+      proc.puts email_address_array.join("\n")
+      proc.close_write
+      proc.readlines # read the response back, but we don't care about it
+      proc.close
+      # File.unlink(tmpfilename)
+    end
+    return email_address_array.size
+  end    
+  
+  def remove_mailman_members(email_address_array)
+    if email_address_array.size > 0
+      process = "#{AppConfig.configtable['mailmanpath']}/remove_members --file=- #{self.name}"
+      proc = IO.popen(process, "w+")
+      proc.puts email_address_array.join("\n")
+      proc.close_write
+      proc.close
+    end
+    return email_address_array.size
   end
   
 end
