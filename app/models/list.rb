@@ -497,12 +497,12 @@ class List < ActiveRecord::Base
     process = "#{AppConfig.configtable['mailmanpath']}/list_owners #{self.name}"
     output = %x{#{process}}
     if output.empty?
-      return false
+      return []
     else
       output.each { |address|
         self.mailman_owners << address.strip.downcase
       }
-      return true
+      return @mailman_owners
     end
   end
   
@@ -514,7 +514,7 @@ class List < ActiveRecord::Base
     process = "#{AppConfig.configtable['mailmanpath']}/config_list --outputfile=- #{self.name}"
     output = %x{#{process}}
     if output.empty?
-      return false
+      return []
     else
       output.each {|line|
         next if /^#/.match(line) or /"""/.match(line)
@@ -523,7 +523,7 @@ class List < ActiveRecord::Base
           @mailman_configuration[k.strip]=v.strip
         end
       }
-      return true
+      return @mailman_configuration
     end
   end
   
