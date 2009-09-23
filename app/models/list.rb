@@ -571,7 +571,7 @@ class List < ActiveRecord::Base
     default_configuration["admin_notify_mchanges"] = MAILMAN_FALSE
     owners = self.list_owners.reject(&:ineligible_for_mailman?).map{|listowner| "'#{listowner.email.downcase}'"}
     owners << "'#{AppConfig.configtable['default-list-owner']}'"
-    default_configuration["owner"] = "[#{owners.join(",")}]"
+    default_configuration["owner"] = "[#{owners.uniq.join(",")}]"
     return default_configuration
   end
   
@@ -603,7 +603,7 @@ class List < ActiveRecord::Base
       # f_addmembers.close
       process = "#{AppConfig.configtable['mailmanpath']}/add_members --regular-members-file=- #{self.name}"
       proc = IO.popen(process, "w+")
-      proc.puts email_address_array.join("\n")
+      proc.puts email_address_array.uniq.join("\n")
       proc.close_write
       proc.readlines # read the response back, but we don't care about it
       proc.close
@@ -616,7 +616,7 @@ class List < ActiveRecord::Base
     if email_address_array.size > 0
       process = "#{AppConfig.configtable['mailmanpath']}/remove_members --file=- #{self.name}"
       proc = IO.popen(process, "w+")
-      proc.puts email_address_array.join("\n")
+      proc.puts email_address_array.uniq.join("\n")
       proc.close_write
       proc.close
     end
