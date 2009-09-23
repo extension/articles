@@ -494,7 +494,7 @@ class List < ActiveRecord::Base
       return @mailman_owners
     end
     @mailman_owners = Array.new
-    process = "#{AppConfig.configtable['mailmanpath']}/list_owners #{@name}"
+    process = "#{AppConfig.configtable['mailmanpath']}/list_owners #{self.name}"
     output = %x{#{process}}
     if output.empty?
       return false
@@ -511,7 +511,7 @@ class List < ActiveRecord::Base
       return @mailman_configuration
     end
     @mailman_configuration = Hash.new
-    process = "#{AppConfig.configtable['mailmanpath']}/config_list --outputfile=- #{@name}"
+    process = "#{AppConfig.configtable['mailmanpath']}/config_list --outputfile=- #{self.name}"
     output = %x{#{process}}
     if output.empty?
       return false
@@ -533,14 +533,14 @@ class List < ActiveRecord::Base
     end
     @mailman_configuration.merge!(new_configuration_settings)    
     update_string = ""
-    listconfig_file = "/tmp/mailman_listconfig_#{@name}.txt"
+    listconfig_file = "/tmp/mailman_listconfig_#{self.name}.txt"
     if(File.exists?(listconfig_file))
       system("rm #{listconfig_file}")
     end
     @mailman_configuration.each{|k,v| update_string << "#{k}=#{v}\n"}
     system("rm #{listconfig_file}") if File.exists?("#{listconfig_file}") #get rid of any possible remnants from previous runs
     File.open("#{listconfig_file}", 'w') {|f| f.write(update_string) }
-    process = "#{AppConfig.configtable['mailmanpath']}/config_list --inputfile=#{listconfig_file} #{@name}"
+    process = "#{AppConfig.configtable['mailmanpath']}/config_list --inputfile=#{listconfig_file} #{self.name}"
     proc = IO.popen(process, "w+")
     proc.close_write
     proc.close
@@ -566,7 +566,7 @@ class List < ActiveRecord::Base
       # f_addmembers = File.open(tmpfilename, "w+")
       # f_addmembers.puts memberarray.join("\n")
       # f_addmembers.close
-      process = "#{AppConfig.configtable['mailmanpath']}/add_members --regular-members-file=- #{@name}"
+      process = "#{AppConfig.configtable['mailmanpath']}/add_members --regular-members-file=- #{self.name}"
       proc = IO.popen(process, "w+")
       proc.puts memberarray.join("\n")
       proc.close_write
@@ -580,7 +580,7 @@ class List < ActiveRecord::Base
   
   def remove_mailman_members(email_address_array)
     if memberarray.size > 0
-      process = "#{AppConfig.configtable['mailmanpath']}/remove_members --file=- #{@name}"
+      process = "#{AppConfig.configtable['mailmanpath']}/remove_members --file=- #{self.name}"
       proc = IO.popen(process, "w+")
       proc.puts memberarray.join("\n")
       proc.close_write
