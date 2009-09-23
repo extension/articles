@@ -4,7 +4,6 @@
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
-require 'TMail'
 class EmailAddress
   
   def self.is_valid_address?(email_address)
