@@ -564,11 +564,11 @@ class List < ActiveRecord::Base
       # tmpfilename = "/tmp/" + self.name + ".addmembers.input" 
       # # write to the output file
       # f_addmembers = File.open(tmpfilename, "w+")
-      # f_addmembers.puts memberarray.join("\n")
+      # f_addmembers.puts email_address_array.join("\n")
       # f_addmembers.close
       process = "#{AppConfig.configtable['mailmanpath']}/add_members --regular-members-file=- #{self.name}"
       proc = IO.popen(process, "w+")
-      proc.puts memberarray.join("\n")
+      proc.puts email_address_array.join("\n")
       proc.close_write
       proc.readlines # read the response back, but we don't care about it
       proc.close
@@ -579,10 +579,10 @@ class List < ActiveRecord::Base
   end    
   
   def remove_mailman_members(email_address_array)
-    if memberarray.size > 0
+    if email_address_array.size > 0
       process = "#{AppConfig.configtable['mailmanpath']}/remove_members --file=- #{self.name}"
       proc = IO.popen(process, "w+")
-      proc.puts memberarray.join("\n")
+      proc.puts email_address_array.join("\n")
       proc.close_write
       proc.close
     end
@@ -613,7 +613,7 @@ class List < ActiveRecord::Base
   end
   
   def create_or_update_mailman_list
-    if(self.update_mailman?)
+    if(!self.update_mailman?)
       return true
     end
     if(!self.has_mailman_list?)
