@@ -27,7 +27,7 @@ class SearchQuestion < ActiveRecord::Base
     else
       match_string = "#{query_string}"
     end
-    {:select => "#{self.table_name}.*, MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => ["MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)}) AND status <> 'archived'"]}
+    {:select => "#{self.table_name}.*, MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => ["MATCH(content,fulltitle) AGAINST (?) AND status <> 'archived'", sanitize(match_string)]}
   }
   
   
