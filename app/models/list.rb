@@ -613,7 +613,7 @@ class List < ActiveRecord::Base
   end
   
   def create_or_update_mailman_list
-    if(!self.update_mailman?)
+    if(self.update_mailman?)
       return true
     end
     if(!self.has_mailman_list?)

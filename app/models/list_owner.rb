@@ -9,6 +9,7 @@ class ListOwner < ActiveRecord::Base
   belongs_to :list, :touch => true
   belongs_to :user
   
+  after_update :touchlist
 
   named_scope :idowners,  :joins => [:user],  :conditions => "list_owners.user_id > 0", :order => "users.last_name"  
   named_scope :moderators,  :joins => [:user],  :conditions => "list_owners.ineligible = 0 and list_owners.moderator = 1 and list_owners.user_id > 0", :order => "users.last_name"
@@ -23,6 +24,9 @@ class ListOwner < ActiveRecord::Base
     return (self.ineligible or !self.moderator or !self.emailconfirmed)
   end
   
+  def touchlist
+    self.list.touch
+  end
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
