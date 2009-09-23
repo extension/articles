@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ListSubscription < ActiveRecord::Base
-  belongs_to :list
+  belongs_to :list, :touch => true
   belongs_to :user
 
   named_scope :subscribers,  :include => [:user],  :conditions => "list_subscriptions.ineligible = 0 and list_subscriptions.optout = 0 and list_subscriptions.user_id > 0", :order => "users.last_name"
@@ -25,6 +25,9 @@ class ListSubscription < ActiveRecord::Base
     return self.user.nil?
   end
 
+  def ineligible_for_mailman?
+    return (self.ineligible or self.optout or !self.emailconfirmed)
+  end
   # -----------------------------------
   # Class-level methods
   # -----------------------------------

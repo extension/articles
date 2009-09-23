@@ -9,9 +9,10 @@ require 'digest/sha1'
 class AppConfig
   
   @@configtable = Hash.new
-  cattr_accessor :configtable
+  cattr_reader :configtable
   
   def AppConfig.default_config
+
     @@configtable.clear
     @@configtable['app_location'] = "localdev"
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
@@ -95,6 +96,9 @@ class AppConfig
     @@configtable['list-announce'] = 'announce'
     @@configtable['list-announce-all'] = 'announce-all'
     @@configtable['default-list-owner'] = 'extensionlistsmanager@extension.org'
+    # mailman
+    @@configtable['mailmanpath'] = '/services/mailman/bin'
+    @@configtable['python-binary'] = '/usr/bin/python'
     
     # cache expiry
     @@configtable['cache-expiry'] = {}

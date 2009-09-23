@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ListOwner < ActiveRecord::Base
-  belongs_to :list
+  belongs_to :list, :touch => true
   belongs_to :user
   
 
@@ -20,7 +20,7 @@ class ListOwner < ActiveRecord::Base
   end
 
   def ineligible_for_mailman?
-    return (self.nomailman? or !self.emailconfirmed?)
+    return (self.ineligible or !self.moderator or !self.emailconfirmed)
   end
   
   # -----------------------------------
