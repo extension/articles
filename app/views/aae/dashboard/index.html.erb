@@ -1,5 +1,5 @@
 <h1>Assignment Dashboard</h1>
-<p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page.</p>
+<p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page: <%= @filter_string%></p>
 
 
 
@@ -15,23 +15,23 @@
         <th>Most recent login</th>
     <tr>
         
-    <% @submitted_questions.each do |sq| %>
+    <% @assignees.each do |sq| %>
         <tr>
-            <td><%= link_to sq.id, aae_question_url(:id => sq.id) %></td>
-            <td><%= time_ago_in_words(sq.created_at) %> ago</td>
-           <td><%= (sq.assignee) ? link_to(sq.assignee.fullname, aae_profile_url(:id => sq.assignee.login), :title => "Ask an Expert profile") + 
-            link_to("#{sq.assignee.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => sq.assignee.login}, :title => "People profile", :class => "subtle") : "<span>nobody</span>" %></td>
-            <td><%= (sq.assignee and (assign_date = sq.assigned_date)) ? time_ago_in_words(assign_date) : ""%></td>
-            <% pctassgns= 0%>
-            <% assignee = sq.assignee.id.to_s%>
-            <% if (@totalassgns[assignee] && @totalassgns[assignee] > 0)%>
-               <% if (@assgnscompls[assignee])%>
-                 <% pctassgns = (@assgnscompls[assignee]).to_f/@totalassgns[assignee]%>
-               <% end%>
-            <%end%>
-            <td class="completions" style="background-position: -<%=((100 - ("%.0f" % (pctassgns * 100)).to_f)*2) %>px 0"><%= (( pctassgns != 0) ? ("%.0f" % (pctassgns * 100)) + "%" : "0%") %>  <%= "(out of " + @totalassgns[assignee].to_s + ")" %></td>
-            <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.0f hours" % @avgscompl[assignee] : "n/a")%></td>
-            <td><%= sq.assignee.last_login_at%></td>
+            <td><%= link_to sq.id, aae_question_url(:id => sq.id.to_i) %></td>
+            <td><%= time_ago_in_words(Time.parse(sq.sqcreated_at)) %> ago</td>
+             <td><%= (sq) ? link_to("#{sq.first_name} #{sq.last_name}", aae_profile_url(:id => sq.login), :title => "Ask an Expert profile") + 
+	            link_to("#{sq.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => sq.login}, :title => "People profile", :class => "subtle") : "<span>nobody</span>" %></td>
+	            <td><%= (sq and (assign_date = sq.assigned_date)) ? time_ago_in_words(assign_date) : ""%></td>
+	            <% pctassgns= 0%>
+	            <% assignee = sq.user_id.to_s%>
+	            <% if (@totalassgns[assignee] && @totalassgns[assignee] > 0)%>
+	               <% if (@assgnscompls[assignee])%>
+	                 <% pctassgns = (@assgnscompls[assignee]).to_f/@totalassgns[assignee]%>
+	               <% end%>
+	            <%end%>
+	            <td class="completions" style="background-position: -<%=((100 - ("%.0f" % (pctassgns * 100)).to_f)*2) %>px 0"><%= (( pctassgns != 0) ? ("%.0f" % (pctassgns * 100)) + "%" : "0%") %>  <%= "(out of " + @totalassgns[assignee].to_s + ")" %></td>
+	            <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.0f hours" % @avgscompl[assignee] : "n/a")%></td>
+	            <td><%= sq.last_login_at%></td>
         </tr>
     <% end %>    
 </table>
