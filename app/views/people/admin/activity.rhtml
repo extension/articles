@@ -15,7 +15,7 @@
     
     <% for event in @eventslist %>
         <tr>
-            <td><%= link_to_login(event.login) %></td>
+            <td><%= link_to(event.login,:controller => '/people/admin', :action => :showuser, :id => event.login) %></td>
             <td><%= event.description %></td>
             <td><%= event.appname %><br /></td>
             <td><%= event.ip %></td>
