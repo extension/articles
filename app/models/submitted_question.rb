@@ -100,6 +100,7 @@ named_scope :escalated, lambda{|sincehours| {
 # TODO: see if this should be converged with the :ordered named scope used through the pubsite controllers
 named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_questions.resolved_at desc') }}
 
+#AAE Dashboard named scopes
 
 #Response times named scopes for by_category report
 named_scope :named_date_resp, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " submitted_questions.created_at between ? and ? ", date1, date2] : " date_sub(curdate(), interval 90 day) <= submitted_questions.created_at" } }
@@ -550,6 +551,24 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
      avg_open_times = find(:all, :select => select_clause, :conditions => where_clause)
      avg_open_times[0].cw.to_i
   end   
+    
+  def SubmittedQuestion.get_assignees(date1, date2, sqfilters, sqinclude)
+     #if sqinclude, cannot do a select with include, so must do this workaround
+       joinclause= [:assignee] 
+      if (sqinclude && sqinclude[0]=="categories".to_sym)
+        joinclause = " join users on users.id=submitted_questions.user_id join " +
+                       "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
+                       " on categories.id=categories_submitted_questions.category_id "                  
+      end
+      cond = " submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE" + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
+       if (date1 && date2)
+           cond = cond + " and submitted_questions.created_at between ? and ? "
+       end
+       SubmittedQuestion.find(:all, :select => "submitted_questions.created_at sqcreated_at, submitted_questions.id id, users.id uid, last_login_at, user_id, last_name, first_name, login", :joins => joinclause,
+          :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :order => "submitted_questions.created_at DESC")               
+  end
+    
+    
     
   def SubmittedQuestion.get_noq(date1, date2, extstr)
     noqr =SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on resolved_by=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id") 
