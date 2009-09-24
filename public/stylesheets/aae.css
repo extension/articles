@@ -1454,3 +1454,7 @@ a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
 #dashboard td a {display:inline; margin-right:.75em;}
 .subtle {color:#888 !important;}
 .subtle:hover {color:blue !important;}
+
+.rejectedaae {padding:1em; background:#fee6e6; border:3px solid red;margin-bottom:2em;}
+.rejectedaae h3 {margin-top:0em !important;;font-size: 2em !important; color:red !important;}
+.rejectedaae strong {display:block;}

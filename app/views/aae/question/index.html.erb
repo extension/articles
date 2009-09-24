@@ -110,7 +110,18 @@
     <% else %>
     <% if @submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED %>
         <% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED %>
-        <h3>This question has been rejected</h3>
+        <div class="rejectedaae">
+            <h3>This question has been rejected</h3>
+            <p>
+        	    <strong>Rejected by: </strong> 
+        	    <% if @submitted_question.resolved_by.id == User.systemuserid %>
+        	    System
+        	    <% else %>
+        	    <%= link_to @submitted_question.resolved_by.fullname, aae_profile_url(:id => @submitted_question.resolved_by.login), :class => "profile" %>
+        	    <% end %>
+        	</p>
+            <p><strong>Rejection comment:</strong> <%= wrap_text(response) %></p>
+        </div>
         <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
         <h3>This question was not answered</h3>
         <% else %>
