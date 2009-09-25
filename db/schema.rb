@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090925174258) do
+ActiveRecord::Schema.define(:version => 20090925174214) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -552,20 +552,6 @@ ActiveRecord::Schema.define(:version => 20090925174258) do
   end
 
   add_index "public_users", ["email"], :name => "index_public_users_on_email", :unique => true
-
-  create_table "response_logs", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "public_user_id"
-    t.integer  "submitted_question_id",                    :null => false
-    t.integer  "response_id",                              :null => false
-    t.text     "response",                                 :null => false
-    t.boolean  "sent",                  :default => false, :null => false
-    t.datetime "created_at"
-  end
-
-  add_index "response_logs", ["response_id"], :name => "index_response_logs_on_response_id"
-  add_index "response_logs", ["submitted_question_id"], :name => "index_response_logs_on_submitted_question_id"
-  add_index "response_logs", ["user_id"], :name => "index_response_logs_on_user_id"
 
   create_table "responses", :force => true do |t|
     t.integer  "user_id"
