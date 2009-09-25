@@ -9,8 +9,21 @@ class People::SignupController < ApplicationController
   include AuthCheck 
   layout 'people'
   before_filter :login_required, :only => [:confirm, :reconfirm, :confirmationsent, :review]
+
+  def readme
+    # just in case we got here from an openid login
+    session[:last_opierequest] = nil
+     
+    if(!params[:invite].nil?)
+      @invitation = Invitation.find_by_token(params[:invite])
+    end
+  end
   
   def new
+    if(!request.post?)
+      return redirect_to(:action => 'readme')
+    end
+    
     # just in case we got here from an openid login
     session[:last_opierequest] = nil
     

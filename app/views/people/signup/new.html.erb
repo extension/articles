@@ -9,16 +9,12 @@
     
     <div id="signup_help">
         <h4>Registration Help</h4>
-	    <p><a href="#who_can">Who can get an eXtensionID?</a></p>
-	    <p><a href="#cant_sign_in">I already created an account, but it's not letting me sign in</a></p>
         <p><%= link_to 'I forgot my password', :controller => 'people/account', :action => 'new_password' %></p>
         <p>Already registered? <%= link_to 'Sign-in', :action => 'login' %></p>
     </div>
         
 
     <div id="reg_form_directions">
-
-        <p><a href="#who_can">Am I eligible for an eXtensionID?</a></p>
     
         <p>Please choose a eXtensionID that is based on your real name.  Your user name will be associated with all of the eXtension content that you create. We recommend using <code>firstnamelastname</code> if it is available.</p>
 
@@ -61,15 +57,3 @@
     </div>
     
 <% end %>
-    
-<div id="signup_faq">
-    <h3>Registration Help</h3>
-    
-    <h4>Who can get an eXtensionID? <a name="who_can"></a></h4>
-    <p>eXtensionID's are currently limited to individuals closely associated with the U.S. Cooperative Extension system (either those working at a Land-Grant Institution, State college or U.S. Government personnel affiliated with Cooperative Extension), or individuals in Extension-related organizations working on projects with Cooperative Extension staff.</p>
-    
-    <h4>Help! I created an account, but it's not letting me sign in<a name="cant_sign_in"></a></h4>
-    <p>Did you sign up on the eXtension public site (<a href="http://www.extension.org">www.extension.org</a>)? That account is not the same as an eXtension ID. You'll need to create an eXtension ID account using the registration form above.</p>
-        
-    <p><a href="#reg_top">back to the registration form</a></p>
-</div>

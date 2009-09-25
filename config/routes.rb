@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
     people.notice  'welcome/notice', :controller => :welcome, :action => :notice
     people.connect 'colleagues/:action', :controller => :colleagues
     people.connect 'admin/:action', :controller => :admin
-    people.connect 'signup', :controller => :signup, :action => :new
+    people.connect 'signup', :controller => :signup, :action => :readme
     people.connect 'activity/:action', :controller => :activity
     people.connect 'activity/:action/:id/:filter', :controller => :activity
     people.connect 'numbers/:action', :controller => :numbers
