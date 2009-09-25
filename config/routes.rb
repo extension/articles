@@ -18,7 +18,7 @@ ActionController::Routing::Routes.draw do |map|
     people.connect 'activity/:action', :controller => :activity
     people.connect 'activity/:action/:id/:filter', :controller => :activity
     people.connect 'numbers/:action', :controller => :numbers
-    people.connect 'invite/:invite', :controller => :signup, :action => :new
+    people.connect 'invite/:invite', :controller => :signup, :action => :readme
     people.connect 'sp/:token', :controller => :account, :action => :set_password
     people.connect 'help', :controller => :help
     people.resources :lists, :collection => {:showpost => :get, :all => :get, :managed => :get, :nonmanaged => :get, :postactivity => :get, :postinghelp => :get, :about => :get}, :member => { :posts => :get, :subscriptionlist => :get , :ownerlist => :get, }
