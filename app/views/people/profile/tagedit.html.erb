@@ -7,7 +7,7 @@
 <h1>Your Interests and Expertise</h1>
 
 <%= render(:partial => 'partial/flashmessages') %>
-<p><strong>Tag yourself.</strong> Choose a few words that describe you, your interests, and areas of expertise. Your <%= link_to("colleagues", :controller => '/people/colleagues', :action => :index) %> colleagues can search and find you based on these tags.</p>
+<p><strong>Tag yourself.</strong> Choose a few words that describe you, your interests, and areas of expertise. Your <%= link_to("colleagues", :controller => '/people/colleagues', :action => :index) %> can search and find you based on these tags.</p>
 <p class="highlight2"><strong>For example:</strong> "maize, corn, crops, beans, peppers, biodiversity, agriculture"</p>
 
 <% form_tag({:action => 'tagedit'}, {:id => "tags"}) do %>
