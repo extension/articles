@@ -3,7 +3,7 @@
         <tr>     
                 <% if @questions_status and @questions_status == SubmittedQuestion::STATUS_SUBMITTED and @reserved_questions.include?(sq.id) %>
                 <td class="inc qs_taken">
-                  <p class="workalert">Someone is working on this question right now.</p>
+                    <p class="workalert"><%= @currentuser.id == sq.assignee.id ? "You are" : "Someone is" %> working on this question right now.</p>
                 <% else %>
                 <td class="inc">
                 <% end %>
