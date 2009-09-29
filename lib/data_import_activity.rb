@@ -357,8 +357,8 @@ module DataImportActivity
     mydatabase = self.connection.instance_variable_get("@config")[:database]
     activitydatabase = mydatabase
 
-    dtc = "#{activitydatabase}.submitted_question_events.event_type"
-    casestatement = "CASE #{dtc} WHEN 'resolved by' THEN #{Activity::AAE_RESOLVE} WHEN 'assigned to' THEN #{Activity::AAE_ASSIGN} WHEN 'rejected by' THEN #{Activity::AAE_REJECT} WHEN 'no answer given' THEN #{Activity::AAE_NOANSWER} ELSE #{Activity::AAE_OTHER} END"
+    dtc = "#{activitydatabase}.submitted_question_events.event_state"
+    casestatement = "CASE #{dtc} WHEN #{SubmittedQuestionEvent::RESOLVED} THEN #{Activity::AAE_RESOLVE} WHEN #{SubmittedQuestionEvent::ASSIGNED_TO} THEN #{Activity::AAE_ASSIGN} WHEN #{SubmittedQuestionEvent::REJECTED} THEN #{Activity::AAE_REJECT} WHEN #{SubmittedQuestionEvent::NO_ANSWER} THEN #{Activity::AAE_NOANSWER} ELSE #{Activity::AAE_OTHER} END"
 
     # build sql - ASSUMES FAQ ACCOUNTS == IDENTITY ACCOUNTS!
     sql = "INSERT IGNORE INTO #{mydatabase}.#{self.table_name} (created_at,user_id,activitytype,activitycode,activity_application_id,ipaddr,created_by,colleague_id,activity_object_id,privacy,responsetime)"
