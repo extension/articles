@@ -1432,7 +1432,7 @@ fieldset#add_location h3 {font-size:1.4em;}
 #aae td .workalert {display:none;}
 #aae td.qs_taken p.workalert {display:block;color:#fff !important;padding:0 .5em;margin:0;background:#a7b5cd;float:left;}
 
-#aae td.qs_taken p.inc_assigned a {background:url(/images/user-gray.gif) no-repeat #fff;}
+#aae td.qs_taken p.inc_assigned a {background:url(/images/common/user-gray.gif) no-repeat #fff;}
 #aae td.qs_taken .inc_question a {background: #f2f2f2;}
 
 .working_on_it {background:#fefc9e;padding:.1em .5em !important;margin:1em 0 !important;color:#25207d;}
