@@ -1575,7 +1575,7 @@ class User < ActiveRecord::Base
      def get_avg_time_assigned_then_switched(baselist)
          avghold = []
          baselist.each do |sq|   # this is a nightmare, must do this all at once, cannot call the database for each of the thousand answerers
-            events = SubmittedQuestionEvent.find(:all, :conditions => "event_type='assigned to' and submitted_question_id=#{sq.sqid}")
+            events = SubmittedQuestionEvent.find(:all, :conditions => "event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and submitted_question_id=#{sq.sqid}")
             n = events.size; i = 0
             while i < n do
               if events[i].id== sq.sqeid.to_i
@@ -1599,7 +1599,7 @@ class User < ActiveRecord::Base
      end
      
      def self.get_num_times_assigned(date1, date2, auxcond, sqfilters, sqinclude)
-       cond = " event_type='assigned to' and recipient_id > 0 " + auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+       cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id > 0 " + auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
         if (date1 && date2)
             cond = cond + " and submitted_questions.created_at between ? and ? "
         end
@@ -1619,7 +1619,7 @@ class User < ActiveRecord::Base
                            "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
                            " on categories.id=categories_submitted_questions.category_id "
           end
-         cond = " event_type='assigned to' and recipient_id > 0 and resolved_by=recipient_id " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
+         cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id > 0 and resolved_by=recipient_id " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
            if (date1 && date2)
                cond = cond + " and submitted_questions.created_at between ? and ? "
            end   
@@ -1633,7 +1633,7 @@ class User < ActiveRecord::Base
        statuses = [ "", " and status_state=#{SubmittedQuestion::STATUS_RESOLVED}", "and status_state=#{SubmittedQuestion::STATUS_REJECTED}","and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER}"]
        results=[];  condstring = " and submitted_questions.created_at between ? and ? "
        statuses.each do |stat|
-           cond = " event_type='assigned to' and recipient_id=#{self.id}  and resolved_by=#{self.id} "
+           cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}  and resolved_by=#{self.id} "
            if (date1 && date2)
                cond = cond + condstring 
            end

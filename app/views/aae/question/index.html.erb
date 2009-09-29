@@ -154,7 +154,7 @@
 
 
 <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
-     <% if @submitted_question.assignee.id == @currentuser.id %>
+     <% if (!@submitted_question.assignee.nil? and @submitted_question.assignee.id == @currentuser.id) %>
        <%= render(:partial => "aae/question/question_resolve") %> 
      <% else %>
        <% if !(work_time_remaining and work_time_remaining > 0) %>

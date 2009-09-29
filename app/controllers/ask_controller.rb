@@ -231,10 +231,9 @@ class AskController < ApplicationController
       end
 
       previous_question = @submitted_question.asked_question
-      @submitted_question.submitted_question_events << SubmittedQuestionEvent.new(:event_type => SubmittedQuestionEvent::EDITED_QUESTION_TEXT, 
-                                                                                  :event_state => SubmittedQuestionEvent::EDIT_QUESTION, 
-                                                                                  :additionaldata => @submitted_question.asked_question)
       @submitted_question.update_attribute(:asked_question, params[:question])
+      SubmittedQuestionEvent.log_event({:submitted_question => @submitted_question, :event_state => SubmittedQuestionEvent::EDIT_QUESTION, :additionaldata => @submitted_question.asked_question})
+      
       # create notification if assigned
       if(!@submitted_question.assignee.nil?)
         Notification.create(:notifytype => Notification::AAE_PUBLIC_EDIT, :user => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :previous_question => previous_question})

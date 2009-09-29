@@ -45,8 +45,9 @@ end
 
 def get_work_time_remaining(submitted_question)
   return nil if !submitted_question or submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED
+  return nil if submitted_question.assignee.nil?
   latest_claim = SubmittedQuestionEvent.work_in_progress(submitted_question.assignee.id, submitted_question.id).latest
-  return 0 if latest_claim.length == 0
+  return 0 if latest_claim.blank?
   elapsed_time = Time.now - latest_claim[0].created_at 
   # 7200 sec == 2 hours
   return 7200 - elapsed_time

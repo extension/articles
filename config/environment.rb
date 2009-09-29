@@ -21,6 +21,7 @@ Rails::Initializer.run do |config|
   config.gem 'ratom', :version => '~>0.6', :lib => 'atom', :source => 'http://systems.extension.org/rubygems/'
   config.gem 'hpricot', :version => '~>0.8', :source => 'http://systems.extension.org/rubygems/'
   config.gem 'tzinfo', :version => '~>0.3', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'geokit', :version => '~>1.5', :source => 'http://systems.extension.org/rubygems/'
   config.gem "calendar_date_select"
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
