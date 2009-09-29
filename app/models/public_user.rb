@@ -8,6 +8,7 @@ require 'digest/sha1'
 
 class PublicUser < ActiveRecord::Base
   has_many :submitted_questions
+  has_many :responses
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/
   attr_protected :password 
   

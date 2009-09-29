@@ -17,6 +17,7 @@ belongs_to :contributing_question, :class_name => "SearchQuestion", :foreign_key
 belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
 belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
 belongs_to :public_user
+has_many :responses
 
 
 # currently, no need to cache, we don't fulltext search tags
@@ -296,7 +297,7 @@ end
 def assigned_date
   sqevent = self.submitted_question_events.find(:first, :conditions => "event_state = '#{SubmittedQuestionEvent::ASSIGNED_TO}'", :order => "created_at desc")
   #make sure that this event is valid by making sure that the user between the event and the submitted question match up
-  if sqevent and (sqevent.subject_user_id == self.user_id)
+  if sqevent and (sqevent.recipient_id == self.user_id)
     return sqevent.created_at
   else
     return nil

@@ -30,7 +30,7 @@ class Aae::DashboardController < ApplicationController
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
   #  @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes    #.paginate(:page => params[:page]
     @assignees = SubmittedQuestion.get_assignees(last6months, today, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
-    @assgnscompls= User.get_num_times_assigned(last6months,today , " and resolved_by=subject_user_id ", SubmittedQuestion.filterconditions(filteroptions)[:conditions],SubmittedQuestion.filterconditions(filteroptions)[:include])
+    @assgnscompls= User.get_num_times_assigned(last6months,today , " and resolved_by=recipient_id ", SubmittedQuestion.filterconditions(filteroptions)[:conditions],SubmittedQuestion.filterconditions(filteroptions)[:include])
     @totalassgns = User.get_num_times_assigned(last6months,today, "", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
     @avgscompl=User.get_avg_resp_time_only(last6months, today, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
     

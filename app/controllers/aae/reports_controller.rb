@@ -1064,7 +1064,7 @@ class Aae::ReportsController < ApplicationController
         
         # get counts for assigned, assigned but not completed, and avg response time
         assgns = User.get_num_times_assigned(@date1, @date2, "", nil, nil)
-        assgns_inc= User.get_num_times_assigned(@date1, @date2 , " and resolved_by!=subject_user_id " , nil, nil)
+        assgns_inc= User.get_num_times_assigned(@date1, @date2 , " and resolved_by!=recipient_id " , nil, nil)
         avgs=User.get_avg_resp_time_only(@date1, @date2, nil, nil) 
             
         @userlist.each do |u|

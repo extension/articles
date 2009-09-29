@@ -17,7 +17,7 @@ def stringify_submitted_question_event(sq_event)
   
   case sq_event.event_state
   when SubmittedQuestionEvent::ASSIGNED_TO 
-    reassign_msg = "Assigned to <strong><a href='/aae/profile?id=#{sq_event.subject_user.login}'>#{sq_event.subject_user.fullname}</a></strong> by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    reassign_msg = "Assigned to <strong><a href='/aae/profile?id=#{sq_event.recipient.login}'>#{sq_event.recipient.fullname}</a></strong> by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
     reassign_msg = reassign_msg + " <span>Comments: #{sq_event.response}</span>" if sq_event.response
     return reassign_msg 
   when SubmittedQuestionEvent::RESOLVED 
@@ -39,7 +39,7 @@ def stringify_submitted_question_event(sq_event)
   when SubmittedQuestionEvent::EDIT_QUESTION
     return "Question edited by public user <span> #{humane_date(sq_event.created_at)}</span>"
   else
-    return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.subject_user) ? sq_event.subject_user.fullname : '')} by #{initiated_by_full_name} <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.recipient) ? sq_event.recipient.fullname : '')} by #{initiated_by_full_name} <span> #{humane_date(sq_event.created_at)}</span>"
   end
 end
 

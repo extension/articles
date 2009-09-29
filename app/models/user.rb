@@ -47,6 +47,7 @@ class User < ActiveRecord::Base
   
   has_many :widget_events
   has_many :widgets
+  has_many :responses
       
   belongs_to :institution
   belongs_to :position
@@ -1598,13 +1599,13 @@ class User < ActiveRecord::Base
      end
      
      def self.get_num_times_assigned(date1, date2, auxcond, sqfilters, sqinclude)
-       cond = " event_type='assigned to' and subject_user_id > 0 " + auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+       cond = " event_type='assigned to' and recipient_id > 0 " + auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
         if (date1 && date2)
             cond = cond + " and submitted_questions.created_at between ? and ? "
         end
        SubmittedQuestion.count(:all,
            :joins => [:submitted_question_events], :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
-           :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "subject_user_id")
+           :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "recipient_id")
        
      end
      
@@ -1618,21 +1619,21 @@ class User < ActiveRecord::Base
                            "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
                            " on categories.id=categories_submitted_questions.category_id "
           end
-         cond = " event_type='assigned to' and subject_user_id > 0 and resolved_by=subject_user_id " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
+         cond = " event_type='assigned to' and recipient_id > 0 and resolved_by=recipient_id " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
            if (date1 && date2)
                cond = cond + " and submitted_questions.created_at between ? and ? "
            end   
-           avgs= SubmittedQuestion.find(:all, :select => " subject_user_id, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra",
+           avgs= SubmittedQuestion.find(:all, :select => " recipient_id, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra",
             :joins => joinclause, 
-           :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :group => "subject_user_id")
-          SubmittedQuestion.makehash(avgs,"subject_user_id", 3600)
+           :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :group => "recipient_id")
+          SubmittedQuestion.makehash(avgs,"recipient_id", 3600)
       end
     
      def get_avg_resp_time(date1, date2)
        statuses = [ "", " and status_state=#{SubmittedQuestion::STATUS_RESOLVED}", "and status_state=#{SubmittedQuestion::STATUS_REJECTED}","and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER}"]
        results=[];  condstring = " and submitted_questions.created_at between ? and ? "
        statuses.each do |stat|
-           cond = " event_type='assigned to' and subject_user_id=#{self.id}  and resolved_by=#{self.id} "
+           cond = " event_type='assigned to' and recipient_id=#{self.id}  and resolved_by=#{self.id} "
            if (date1 && date2)
                cond = cond + condstring 
            end

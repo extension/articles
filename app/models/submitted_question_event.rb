@@ -8,7 +8,7 @@
 class SubmittedQuestionEvent < ActiveRecord::Base
   belongs_to :submitted_question
   belongs_to :initiated_by, :class_name => "User", :foreign_key => "initiated_by_id"
-  belongs_to :subject_user, :class_name => "User", :foreign_key => "subject_user_id"
+  belongs_to :recipient, :class_name => "User", :foreign_key => "recipient_id"
   
   RESERVE_WINDOW = "date_sub(NOW(), interval 2 hour)"
   
@@ -41,11 +41,11 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   named_scope :reserved_questions, {:select => "DISTINCT(submitted_question_events.submitted_question_id) AS id", :joins => :submitted_question, :conditions => "submitted_questions.user_id = submitted_question_events.initiated_by_id AND submitted_question_events.event_state = #{WORKING_ON} AND submitted_question_events.created_at > #{RESERVE_WINDOW}"}
   
   
-  def self.log_assignment(question, subject_user, initiated_by, assignment_comment)
+  def self.log_assignment(question, recipient, initiated_by, assignment_comment)
     SubmittedQuestionEvent.create(
       :submitted_question => question,
       :initiated_by => initiated_by,
-      :subject_user => subject_user,
+      :recipient => recipient,
       :event_type => ASSIGNED_TO_TEXT,
       :event_state => ASSIGNED_TO,
       :response => assignment_comment)

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090925174214) do
+ActiveRecord::Schema.define(:version => 20090929013054) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -558,7 +558,7 @@ ActiveRecord::Schema.define(:version => 20090925174214) do
     t.integer  "public_user_id"
     t.integer  "submitted_question_id",                    :null => false
     t.text     "response",                                 :null => false
-    t.datetime "duration_since_last",                      :null => false
+    t.integer  "duration_since_last",                      :null => false
     t.boolean  "sent",                  :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -615,17 +615,20 @@ ActiveRecord::Schema.define(:version => 20090925174214) do
     t.string   "event_type"
     t.integer  "submitted_question_id"
     t.integer  "initiated_by_id"
-    t.integer  "subject_user_id"
+    t.integer  "recipient_id"
     t.datetime "created_at"
     t.text     "response"
     t.integer  "contributing_question"
     t.string   "category"
-    t.integer  "event_state",           :null => false
+    t.integer  "event_state",                              :null => false
     t.text     "additionaldata"
+    t.integer  "response_id"
+    t.integer  "public_user_id"
+    t.boolean  "sent",                  :default => false, :null => false
   end
 
   add_index "submitted_question_events", ["initiated_by_id"], :name => "initiated_by_idx"
-  add_index "submitted_question_events", ["subject_user_id"], :name => "subject_user_idx"
+  add_index "submitted_question_events", ["recipient_id"], :name => "subject_user_idx"
   add_index "submitted_question_events", ["submitted_question_id"], :name => "submitted_question_id_idx"
 
   create_table "submitted_questions", :force => true do |t|
