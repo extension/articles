@@ -1,22 +1,24 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
-Hello <%= @notification.user.first_name %>,
 
 A question is assigned to you at the eXtension Ask an Expert site.
 
+Please click on this link to reply:
 <%= @urls['question']%>  
-
-The question is:
-"<%= @submitted_question.asked_question %>"
 
 <% if @submitted_question.current_response and @submitted_question.current_response.strip != '' %>
 Comment from the assigner:
 <%= @submitted_question.current_response %>
 <% end %>
 
+The question is:
+"<%= @submitted_question.asked_question %>"
+
+
 We need your help. Please either
 1) Answer the question
 2) Assign it to someone else
-3) Reject it (but only if it's a duplicate submission or inappropriate)
+3) Moderate it (duplicate submissions or otherwise inappropriate)
+<%= @urls['question']%>  
 
 Please resolve this question before 
 <%= @respond_by.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00). 
