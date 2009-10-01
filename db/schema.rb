@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090929231112) do
+ActiveRecord::Schema.define(:version => 20091001180356) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -167,7 +167,6 @@ ActiveRecord::Schema.define(:version => 20090929231112) do
     t.integer  "created_by",              :default => 0
     t.string   "uri"
     t.integer  "memberfilter",            :default => 1
-    t.boolean  "ismeta",                  :default => false
     t.boolean  "listeligible",            :default => true
     t.string   "shortname"
     t.string   "public_name"
@@ -189,7 +188,6 @@ ActiveRecord::Schema.define(:version => 20090929231112) do
     t.integer  "connected_by"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "refcount",          :default => 1
   end
 
   add_index "communityconnections", ["connectiontype"], :name => "index_communityconnections_on_connectiontype"
@@ -472,17 +470,6 @@ ActiveRecord::Schema.define(:version => 20090929231112) do
     t.datetime "created_at"
     t.integer  "db_file_id"
   end
-
-  create_table "metacommunityconnections", :force => true do |t|
-    t.integer  "metacommunity_id"
-    t.integer  "includedcommunity_id"
-    t.string   "connectiontype"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "metacommunityconnections", ["connectiontype"], :name => "index_metacommunityconnections_on_connectiontype"
-  add_index "metacommunityconnections", ["metacommunity_id", "includedcommunity_id"], :name => "meta_included", :unique => true
 
   create_table "notifications", :force => true do |t|
     t.integer  "notifytype",     :default => 0

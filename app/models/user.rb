@@ -530,29 +530,16 @@ class User < ActiveRecord::Base
     connector = options[:connector].nil? ? self : options[:connector]
     connectioncode = options[:connectioncode].nil? ? 0 : options[:connectioncode]
     connection = Communityconnection.find_by_user_id_and_community_id(self.id,community.id)
-    ismeta = (options[:ismeta].nil? ? false : options[:ismeta])
 
     case operation
     when 'add'
       if(connection.nil?)
         Communityconnection.create(:user => self, :community => community, :connectiontype => connectiontype, :sendnotifications => (connectiontype == 'leader'), :connector => connector, :connectioncode => connectioncode)
-      else
-        refcount = ismeta ? connection.refcount + 1 : connection.refcount
-        connection.update_attributes({:connectiontype => connectiontype, :connector => connector, :connectioncode => connectioncode, :refcount => refcount})
       end
       return true
     when 'remove'
       if(!connection.nil?)
-        if(ismeta)
-          refcount = connection.refcount - 1
-          if(refcount <= 0)
-            connection.destroy
-            # remove my tags from this community
-            community.remove_user_tags(self)
-          else
-            connection.update_attributes({:refcount => refcount})
-          end
-        elsif(connector != self)
+        if(connector != self)
           if(connectiontype == 'leader')
             # make them a member
             connection.update_attributes({:connectiontype => 'member', :connector => connector, :connectioncode => connectioncode})
@@ -583,6 +570,7 @@ class User < ActiveRecord::Base
       if(options[:activitycode])
         Activity.log_activity(:user => self,:creator => connector, :community => community, :activitycode => options[:activitycode], :appname => 'local')
       end
+      
       if(options[:notificationcode] and options[:notificationcode] != Notification::NONE)
         Notification.create(:notifytype => options[:notificationcode], :user => self, :creator => connector, :community => community)
         # FIXME: user events really shouldn't be based on notificationcodes, but such is life
@@ -593,39 +581,11 @@ class User < ActiveRecord::Base
           UserEvent.log_event(:etype => UserEvent::COMMUNITY,:user => self,:description => Notification.userevent(options[:notificationcode],self,community))
         end
       end
+      
       if(!options[:no_list_update])
-        ismeta = (options[:ismeta].nil? ? false : options[:ismeta])
-        if(ismeta)
-          # I have to update the full subscription list depending on the meta refcount
-          community.update_lists
-        else
-          operation = options[:operation]
-          connectiontype = options[:connectiontype]
-          community.update_lists_with_user(self,operation,connectiontype)
-        end
-      end
-      if(!options[:no_meta_update])
-        self.modify_or_create_metacommunityconnections(community,options)
-      end
-    end
-  end
-  
-  def modify_or_create_metacommunityconnections(community,options)
-    # are there metaconnections for this community
-    return if(community.metaconnections.empty?)
-    
-    connectiontype = options[:connectiontype]    
-    return if(connectiontype.nil?)   
-    community.metaconnections.each do |metaconnection|
-      logger.debug "=== metaconnection: #{metaconnection.inspect}"
-      if(metaconnection.makeconnection_by_connectiontype?(connectiontype))
-        # set connector to systemuser if this is a system community
-        if(metaconnection.metacommunity.entrytype == Community::SYSTEM)
-          connector = User.systemuser
-        else
-          connector = options[:connector].nil? ? self : options[:connector]
-        end
-        self.modify_or_create_communityconnection(metaconnection.metacommunity,{:operation => options[:operation], :connectiontype => 'member', :connector => connector, :ismeta => true})
+        operation = options[:operation]
+        connectiontype = options[:connectiontype]
+        community.update_lists_with_user(self,operation,connectiontype)
       end
     end
   end

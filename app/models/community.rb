@@ -67,17 +67,7 @@ class Community < ActiveRecord::Base
   has_many :communitylistconnections, :dependent => :destroy
   has_many :lists, :through => :communitylistconnections
   
-  # meta communities
-  has_many :metaconnections,  :foreign_key => 'includedcommunity_id',
-                       :class_name => 'Metacommunityconnection',
-                       :dependent => :destroy
-  has_many :metacommunities,     :through => :metaconnections
-  
-  has_many :includedconnections,  :foreign_key => 'metacommunity_id',
-                       :class_name => 'Metacommunityconnection',
-                       :dependent => :destroy
-  has_many :includedcommunities, :through => :includedconnections
-  
+
   
   # institutions
   has_many :institutions, :foreign_key => 'institutionalteam_id'
@@ -288,7 +278,7 @@ class Community < ActiveRecord::Base
   end
 
   def modify_or_create_userconnection(user,options)
-    user.modify_or_create_communityconnection(self,options) # handles lists, and metacommunities
+    user.modify_or_create_communityconnection(self,options) # handles lists
   end
   
   def remove_user_from_leadership(user,connector,notify=true)
@@ -331,12 +321,10 @@ class Community < ActiveRecord::Base
   end
   
   def mass_connect(userlist,options={})
-    logger.debug "=================================== Inside mass_connect: #{self.attributes.inspect}"
-    
     return if(userlist.blank?)
     
     # will do this ourselves - after
-    options.merge({:no_list_update => true, :no_meta_update => true})
+    options.merge({:no_list_update => true})
     
     # do each user
     userlist.each do |user|
@@ -345,14 +333,7 @@ class Community < ActiveRecord::Base
     
     # now update the lists
     self.update_lists
-    
-    # repeat for metacommunities, or recursion n. see recursion
-    if(!self.metacommunities.empty?)
-      metacommunities.each do |metacommunity|
-        metaoptions = options.merge({:ismeta => true})
-        metacommunity.mass_connect(userlist,metaoptions)
-      end
-    end
+  
   end
   
   def mass_invite(userlist,connector,asleader,notify=true)
@@ -405,55 +386,7 @@ class Community < ActiveRecord::Base
   end
   
   
-  def make_meta_connection(metacommunity,connectiontype,connector=nil)
-    logger.debug "=================================== Inside make_meta_connection: #{self.attributes.inspect}"
-    
-    # TODO: change? ONLY SYSTEM COMMUNITIES CAN BE META COMMUNITIES FOR NOW
-   return if(metacommunity.entrytype != Community::SYSTEM)
-    if connector.nil?
-      connector = User.find(1)
-    end
-    # must have already been designated a metacommunity
-    return if(!metacommunity.ismeta)
-    
-    # check for existing connection
-    metaconnection = Metacommunityconnection.find(:first, :conditions => ['metacommunity_id = ? and includedcommunity_id = ?',metacommunity.id, self.id])
-    if(metaconnection.nil?)
-      # create the connection
-      Metacommunityconnection.create(:metacommunity => metacommunity, :includedcommunity => self, :connectiontype => connectiontype)
-    elsif(metaconnection.connectiontype != connectiontype)
-      # just don't do anything
-      return metaconnection
-    end
-    
-    # mass add my group to the metacommunity members
-    massoptions = {:operation => 'add', :connectiontype => 'member', :ismeta => true, :connector => connector}
-    userlist = userlist_by_connectiontype(connectiontype)
-    metacommunity.mass_connect(userlist,massoptions)
-    return metaconnection
-  end
-  
-  def drop_meta_connection(metacommunity,connectiontype,connector=nil)
-    # TODO: change? ONLY SYSTEM COMMUNITIES CAN BE META COMMUNITIES FOR NOW
-    return if(metacommunity.entrytype != Community::SYSTEM)
-    if connector.nil?
-      connector = User.find(1)
-    end
-    # must have already been designated a metacommunity
-    return if(!metacommunity.ismeta)
-    
-    # make sure there's actually a connection in place
-    metaconnection = Metacommunityconnection.find(:first, :conditions => ['metacommunity_id = ? and includedcommunity_id = ?',metacommunity.id, self.id])
-    
-    return if(metaconnection.nil?)
-    
-    # mass remove my group to the metacommunity members
-    massoptions = {:operation => 'remove', :connectiontype => 'member', :ismeta => true, :connector => connector}
-    userlist = userlist_by_connectiontype(connectiontype)
-    metacommunity.mass_connect(userlist,massoptions)
-    
-    metaconnection.destroy
-  end
+
   
   def userlist_by_connectiontype(connectiontype)
     case connectiontype

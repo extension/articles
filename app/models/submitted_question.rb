@@ -126,6 +126,7 @@ def add_resolution
         self.resolved_at = t.strftime("%Y-%m-%dT%H:%M:%SZ")
         if self.status_state == STATUS_RESOLVED
           SubmittedQuestionEvent.log_resolution(self)
+          SubmittedQuestionEvent.log_event({:submitted_question => self})
         elsif self.status_state == STATUS_REJECTED
           SubmittedQuestionEvent.log_rejection(self)
         elsif self.status_state == STATUS_NO_ANSWER
@@ -393,7 +394,12 @@ def assign_to(user, assigned_by, comment)
     
   # update and log
   update_attributes(:assignee => user, :current_response => comment)
-  SubmittedQuestionEvent.log_assignment(self, user, assigned_by, comment)
+  SubmittedQuestionEvent.log_event({:submitted_question => self,
+                                    :recipient => user,
+                                    :initiated_by => assigned_by,
+                                    :event_state => SubmittedQuestionEvent::ASSIGNED_TO,
+                                    :response => comment})
+                                    
   
   # create notifications
   Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment})
