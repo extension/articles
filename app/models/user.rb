@@ -1532,32 +1532,7 @@ class User < ActiveRecord::Base
          " where ea.category_id=? order by users.last_name", catid ])
      end
     
-     def get_avg_time_assigned_then_switched(baselist)
-         avghold = []
-         baselist.each do |sq|   # this is a nightmare, must do this all at once, cannot call the database for each of the thousand answerers
-            events = SubmittedQuestionEvent.find(:all, :conditions => "event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and submitted_question_id=#{sq.sqid}")
-            n = events.size; i = 0
-            while i < n do
-              if events[i].id== sq.sqeid.to_i
-                if i + 1 < n      #find next assignee, and get that person's assign time
-                   avghold << [sq.sqecr, events[i+1].created_at]
-                  break
-                end
-              end
-              i = i + 1
-            end
-         end
-         sum = 0
-         avghold.each do |av|
-           sum = sum + (av[1] - Time.parse(av[0]))
-         end
-         if avghold.size > 0
-           return sum.to_f/(avghold.size*3600)   # put in hours
-         else
-           return 0
-         end
-     end
-     
+    
      def self.get_num_times_assigned(date1, date2, auxcond, sqfilters, sqinclude)
        cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id > 0 " + auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
         if (date1 && date2)
@@ -1569,6 +1544,23 @@ class User < ActiveRecord::Base
        
      end
      
+     def self.get_avg_handling_time(date1, date2, auxcond, sqfilters, sqinclude)
+         #if sqinclude, cannot do a select with include, so must do this workaround
+          joinclause= [:submitted_question_events] ; 
+         if (sqinclude && sqinclude[0]=="categories".to_sym)
+           joinclause = " join submitted_question_events on submitted_question_events.submitted_question_id=submitted_questions.id join " +
+                          "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
+                          " on categories.id=categories_submitted_questions.category_id "
+         end
+        cond = " (event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} or event_state=#{SubmittedQuestionEvent::RESOLVED}) " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
+          if (date1 && date2)
+              cond = cond + " and submitted_questions.created_at between ? and ? "
+          end   
+          avgs= SubmittedQuestion.find(:all, :select => " previous_handling_recipient_id, avg(duration_since_last_handling_event) as ra",
+           :joins => joinclause, 
+          :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :group => "previous_handling_recipient_id")
+         SubmittedQuestion.makehash(avgs,"previous_handling_recipient_id", 3600)
+     end
    
      
      def self.get_avg_resp_time_only(date1, date2, sqfilters, sqinclude)
