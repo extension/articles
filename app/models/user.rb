@@ -1544,7 +1544,7 @@ class User < ActiveRecord::Base
        
      end
      
-     def self.get_avg_handling_time(date1, date2, auxcond, sqfilters, sqinclude)
+     def self.get_avg_handling_time(date1, date2, sqfilters, sqinclude)
          #if sqinclude, cannot do a select with include, so must do this workaround
           joinclause= [:submitted_question_events] ; 
          if (sqinclude && sqinclude[0]=="categories".to_sym)
@@ -1552,9 +1552,13 @@ class User < ActiveRecord::Base
                           "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
                           " on categories.id=categories_submitted_questions.category_id "
          end
-        cond = " (event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} or event_state=#{SubmittedQuestionEvent::RESOLVED}) " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
+         cond=  ((sqfilters and sqfilters!="" ) ?  sqfilters : "")
           if (date1 && date2)
-              cond = cond + " and submitted_questions.created_at between ? and ? "
+              if (cond != "")
+                cond = cond + " and submitted_questions.created_at between ? and ? "
+              else
+                cond = "submitted_questions.created_at between ? and ? "
+              end
           end   
           avgs= SubmittedQuestion.find(:all, :select => " previous_handling_recipient_id, avg(duration_since_last_handling_event) as ra",
            :joins => joinclause, 

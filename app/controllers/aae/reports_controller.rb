@@ -1067,7 +1067,7 @@ class Aae::ReportsController < ApplicationController
         assgns_inc= User.get_num_times_assigned(@date1, @date2 , " and resolved_by!=recipient_id " , nil, nil)
         avgs=User.get_avg_resp_time_only(@date1, @date2, nil, nil)
         
-        avgsheld = User.get_avg_handling_time(@date1, @date2, nil, nil, nil)
+        avgsheld = User.get_avg_handling_time(@date1, @date2, nil, nil)
             
         @userlist.each do |u|
           @assgn[u.id] = assgns[u.id.to_s]
