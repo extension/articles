@@ -38,6 +38,10 @@ def stringify_submitted_question_event(sq_event)
     return "Question worked on by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::EDIT_QUESTION
     return "Question edited by public user <span> #{humane_date(sq_event.created_at)}</span>"
+  when SubmittedQuestionEvent::REOPEN
+    return "Question reopened by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+  when SubmittedQuestionEvent::CLOSED
+    return "Question closed by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   else
     return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.recipient) ? sq_event.recipient.fullname : '')} by #{initiated_by_full_name} <span> #{humane_date(sq_event.created_at)}</span>"
   end

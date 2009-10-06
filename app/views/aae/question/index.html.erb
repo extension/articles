@@ -46,8 +46,10 @@
     <% end %>
     
 
+<div id="inc_response">
+<div id="answered_FAQ">
 <% if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
-    <div id="inc_response">
+    
         <a name="question_resolution"></a>
         <h3>Question Resolution</h3>
         
@@ -56,7 +58,6 @@
             <p><strong>This question was not answered. The reason is given below.</strong></p>
         <% end %>
         
-	    <div id="answered_FAQ">
 	        <p>
         	    <strong>Resolved by: </strong> 
         	    <% if @submitted_question.resolved_by.id == User.systemuserid %>
@@ -75,18 +76,24 @@
     	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", aae_question_url(:id => @contributing_question.foreignid) %>
     	        <% end %>
     	        </strong></p>
-    	    <% end %>	        
-
-		    <% if response = @submitted_question.current_response %>
-		        <p><strong>Response <%= @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED ? '(no email sent):' : '(emailed):' %></strong></p>
-<p>
-<%= wrap_text(response) %>
-</p>
-		    <% end %>
-	    </div>
+    	    <% end %>
+    	    
+    	    <% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED %>
+    	    <p><strong>Rejection Comment:</strong></p>
+    	    <p><%= @submitted_question.current_response %></p>
+    	    <% end %>        
 	    
-	</div>
 <% end %>
+
+<% if @submitted_question.responses.length > 0 %>
+    <p><strong>Responses (emailed):</strong></p>
+
+<% @submitted_question.responses.each do |response| %>
+<p><%= wrap_text(response.response) %></p>
+<% end %>
+<% end %>
+</div>
+</div>
 
     <div id="history">
     <h3>History</h3>
@@ -120,7 +127,7 @@
         	    <%= link_to @submitted_question.resolved_by.fullname, aae_profile_url(:id => @submitted_question.resolved_by.login), :class => "profile" %>
         	    <% end %>
         	</p>
-            <p><strong>Rejection comment:</strong> <%= wrap_text(response) %></p>
+            <p><strong>Rejection comment:</strong> <%= wrap_text(@submitted_question.current_response) %></p>
         </div>
         <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
         <h3>This question was not answered</h3>
@@ -148,10 +155,18 @@
         <% end %>
     <% end %>
     
-<% if @submitted_question.status_state != SubmittedQuestion::STATUS_RESOLVED and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER %>
+    <% if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
+      <p>Need to reopen this question?</p>
+      <%= button_to 'Assign me this question', :action => :assign, :id => @submitted_question.id, :assignee_login => @currentuser.login %>
+      <%= render(:partial => 'manual_assign', :locals => { :work_time_remaining => work_time_remaining }) %>
+    <% end %>
+    
+<% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
+  <% if @submitted_question.has_response? %>
+    <%= button_to 'Close Question', :controller => 'aae/question', :action => :close_out, :squid => @submitted_question.id %>
+  <% end %>
   <%= render(:partial => 'manual_assign', :locals => { :work_time_remaining => work_time_remaining }) %>
 <% end %>
-
 
 <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
      <% if (!@submitted_question.assignee.nil? and @submitted_question.assignee.id == @currentuser.id) %>

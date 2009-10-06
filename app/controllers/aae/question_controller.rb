@@ -62,12 +62,6 @@ class Aae::QuestionController < ApplicationController
         return
       end
     
-      if @submitted_question.resolved?
-        flash[:failure] = "Question has already been resolved."
-        redirect_to :action => :index, :id => @submitted_question
-        return
-      end
-    
       if !params[:assignee_login]
         flash[:failure] = "You must select a user to reassign."
         redirect_to :action => :index, :id => @submitted_question
@@ -90,6 +84,12 @@ class Aae::QuestionController < ApplicationController
       end
       
       @submitted_question.assign_to(user, @currentuser, assign_comment)
+      # re-open the question if it's reassigned after resolution
+      if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER
+        @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED)
+        SubmittedQuestionEvent.log_reopen(@submitted_question, user, @currentuser, assign_comment)
+      end
+      
       redirect_to :action => 'index', :id => @submitted_question
     else
       do_404
@@ -148,7 +148,7 @@ class Aae::QuestionController < ApplicationController
     
     if @submitted_question.resolved?
       flash[:failure] = "This question has already been resolved.<br />It could have been resolved while you were working on it.<br />We appreciate your help in resolving these questions!"
-      redirect_to :action => :question, :id => @submitted_question.id
+      redirect_to :action => :index, :id => @submitted_question.id
       return
     end
     
@@ -173,7 +173,7 @@ class Aae::QuestionController < ApplicationController
       @question ? contributing_question = @question.id : contributing_question = nil
       (@status and @status.to_i == SubmittedQuestion::STATUS_NO_ANSWER) ? sq_status = SubmittedQuestion::STATUS_NO_ANSWER : sq_status = SubmittedQuestion::STATUS_RESOLVED
       
-      @submitted_question.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => @currentuser, :current_response => answer, :resolver_email => @currentuser.email, :current_contributing_question => contributing_question)  
+      @submitted_question.add_resolution(sq_status, @currentuser, answer, contributing_question)
           
       if params[:signature] and params[:signature].strip != ''
         @signature = params[:signature]
@@ -198,6 +198,13 @@ class Aae::QuestionController < ApplicationController
       return
     end
 
+  end
+  
+  def close_out
+    @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
+    @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, :status_state => SubmittedQuestion::STATUS_RESOLVED)
+    SubmittedQuestionEvent.log_close(@submitted_question, @currentuser)
+    redirect_to :action => :index, :id => @submitted_question.id
   end
   
   def toggle_public_view
@@ -323,13 +330,10 @@ class Aae::QuestionController < ApplicationController
           return
         end   
 
-        if @submitted_question.reject(@currentuser, message)
-          flash[:success] = "The question has been rejected."
-          redirect_to aae_question_url(:id => @submitted_question)
-        else
-          flash[:failure] = "The question did not get properly saved. Please try again."
-          render :action => :reject
-        end
+        @submitted_question.add_resolution(SubmittedQuestion::STATUS_REJECTED, @currentuser, message)
+        flash[:success] = "The question has been rejected."
+        redirect_to aae_question_url(:id => @submitted_question)
+        
       end        
     else
       flash[:failure] = "Question not found."

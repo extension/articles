@@ -26,6 +26,9 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   RECATEGORIZED_TEXT = 're-categorized by'
   WORKING_ON_TEXT = 'worked on by'
   EDITED_QUESTION_TEXT = 'edited question'
+  PUBLIC_RESPONSE_TEXT = 'public response'
+  REOPEN_TEXT = 'reopened'
+  CLOSED_TEXT = 'closed'
   
   ASSIGNED_TO = 1
   RESOLVED = 2
@@ -37,7 +40,9 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   RECATEGORIZED = 8
   WORKING_ON = 9
   EDIT_QUESTION = 10
-  
+  PUBLIC_RESPONSE = 11
+  REOPEN = 12
+  CLOSED = 13
   
   
   #scopes for sq events
@@ -109,6 +114,20 @@ class SubmittedQuestionEvent < ActiveRecord::Base
       :event_state => RESOLVED,
       :response => question.current_response,
       :contributing_question => contributing_question})
+  end
+  
+  def self.log_reopen(question, recipient, initiated_by, assignment_comment)
+    return self.log_event({:submitted_question => question,
+      :initiated_by => initiated_by,
+      :recipient => recipient,
+      :event_state => REOPEN,
+      :response => assignment_comment})
+  end
+  
+  def self.log_close(question, initiated_by)
+    return self.log_event({:submitted_question => question,
+      :initiated_by => initiated_by,
+      :event_state => CLOSED})
   end
   
   def self.log_no_answer(question)

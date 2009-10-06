@@ -6,7 +6,7 @@
 <div id="response_form">
     <h2>Your response will be sent via email using the following format</h2>
     <div id="email_content">
-        <p><strong>Subject:</strong> [Message from eXtension] Your question has been answered by one of our experts.</p>
+        <p><strong>Subject:</strong> [Message from eXtension] Your question has been responded to by one of our experts.</p>
         <p><strong>From:</strong> noreplies@extension.org</p>
     
             <% if @external_name %>
@@ -15,7 +15,7 @@
                 <p>Hello,</p>
             <% end %>
 
-            <p>A question you asked via eXtension's 'Ask an Expert' tool has been answered!</p>
+            <p>You have a response from the question you asked via eXtension's 'Ask an Expert' tool!</p>
 
             <p>Question asked:</p> 
             <p><%= @submitted_question.asked_question %></p>

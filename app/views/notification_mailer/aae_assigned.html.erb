@@ -6,7 +6,7 @@ Please click on this link to reply:
 <%= @urls['question']%>  
 
 <% if @submitted_question.current_response and @submitted_question.current_response.strip != '' %>
-Comment from the assigner:
+Comment from <%= @assigner.fullname %>:
 <%= @submitted_question.current_response %>
 <% end %>
 

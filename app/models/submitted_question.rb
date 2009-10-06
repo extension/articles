@@ -27,7 +27,6 @@ validates_presence_of :asked_question
 # check the format of the question submitter's email address
 validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
 
-before_update :add_resolution
 before_create :generate_fingerprint
 
 after_save :assign_parent_categories
@@ -116,25 +115,28 @@ named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(tim
 #activity named scopes
 named_scope :date_subs, lambda { |date1, date2| { :conditions => (date1 && date2) ? [ "submitted_questions.created_at between ? and ?", date1, date2] : ""}}
 
-# adds resolved date to submitted questions on save or update and also 
+# updates the submitted question, creates a response and  
 # calls the function to log a new resolved submitted question event 
-def add_resolution
-  if !id.nil?      
-    if self.status_state == STATUS_RESOLVED || self.status_state == STATUS_REJECTED || self.status_state == STATUS_NO_ANSWER
-      if self.status_state_changed? or self.current_response_changed? or self.resolved_by_changed?        
-        t = Time.now
-        self.resolved_at = t.strftime("%Y-%m-%dT%H:%M:%SZ")
-        if self.status_state == STATUS_RESOLVED
-          SubmittedQuestionEvent.log_resolution(self)
-          SubmittedQuestionEvent.log_event({:submitted_question => self})
-        elsif self.status_state == STATUS_REJECTED
-          SubmittedQuestionEvent.log_rejection(self)
-        elsif self.status_state == STATUS_NO_ANSWER
-          SubmittedQuestionEvent.log_no_answer(self)
-        end
-      end
-    end
+def add_resolution(sq_status, resolver, response, contributing_question = nil)
+  
+  t = Time.now
+  
+  case sq_status
+    when STATUS_RESOLVED    
+      self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
+      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true)
+      @response.save
+      SubmittedQuestionEvent.log_resolution(self)    
+    when STATUS_NO_ANSWER
+      self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
+      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true)
+      @response.save
+      SubmittedQuestionEvent.log_no_answer(self)  
+    when STATUS_REJECTED
+      self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state => sq_status, :current_response => response, :resolved_by => resolver, :resolver_email => resolver.email, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"), :show_publicly => false)
+      SubmittedQuestionEvent.log_rejection(self)
   end
+  
 end
 
 def category_names
@@ -150,7 +152,7 @@ def category_names
 end
 
 def resolved?
-  !self.resolved_at.nil?
+  !self.status_state == STATUS_SUBMITTED
 end
 
 def assign_parent_categories
@@ -158,14 +160,6 @@ def assign_parent_categories
     if category.parent and !categories.include?(category.parent)
       categories << category.parent
     end
-  end
-end
-
-def reject(user, message)
-  if self.update_attributes(:status => SubmittedQuestion::REJECTED_TEXT, :status_state => SubmittedQuestion::STATUS_REJECTED, :current_response => message, :resolved_by => user, :resolver_email => user.email, :show_publicly => false)
-    return true
-  else
-    return false
   end
 end
 
@@ -189,6 +183,15 @@ def sub_category
     return self.categories.detect{|c| c.parent_id == top_level_cat.id}
   else
     return nil
+  end
+end
+
+def has_response?
+  sqe = self.submitted_question_events.find(:first, :conditions => {:event_state => SubmittedQuestionEvent::RESOLVED})
+  if sqe
+    return true
+  else
+    return false
   end
 end
 
@@ -317,9 +320,7 @@ end
 def auto_assign_by_preference
   if existing_sq = SubmittedQuestion.find(:first, :conditions => ["id != #{self.id} and asked_question = ? and submitter_email = '#{self.submitter_email}'", self.asked_question])
     reject_msg = "This question was a duplicate of incoming question ##{existing_sq.id}"
-    if !self.reject(User.systemuser, reject_msg)
-      logger.error("Submitted Question #{self.id} did not get properly saved on rejection.")
-    end
+    self.add_resolution(STATUS_REJECTED, User.systemuser, reject_msg)
     return
   end
   
@@ -393,7 +394,7 @@ def assign_to(user, assigned_by, comment)
   end
     
   # update and log
-  update_attributes(:assignee => user, :current_response => comment)
+  update_attributes(:assignee => user)
   SubmittedQuestionEvent.log_event({:submitted_question => self,
                                     :recipient => user,
                                     :initiated_by => assigned_by,

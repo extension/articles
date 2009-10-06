@@ -5,12 +5,12 @@ Hello <%= @submitted_question.public_user.full_name %>,
 Hello,
 <% end %>
 
-A question you asked via eXtension's 'Ask an Expert' tool has been answered! 
+You have a response from the question you asked via eXtension's 'Ask an Expert' tool!
 
 Question asked:
 <%= @submitted_question.asked_question %>
 
-Answer:
+Response:
 <%= @submitted_question.current_response %>
 
 <% if !@signature.blank? %>

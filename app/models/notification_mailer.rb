@@ -303,6 +303,7 @@ class NotificationMailer < ActionMailer::Base
    
    def aae_assigned(notification)
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     assigner = User.find(notification.created_by)
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
      @subject        = @subjectlabel+'Incoming question assigned to you'
@@ -312,7 +313,7 @@ class NotificationMailer < ActionMailer::Base
      urls = Hash.new
      urls['question'] = aae_question_url(:id => submitted_question.id)
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
-     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls }
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls, :assigner => assigner }
    end
    
    def aae_public_edit(notification)
@@ -348,7 +349,7 @@ class NotificationMailer < ActionMailer::Base
      signature = notification.additionaldata[:signature]
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
-     @subject = "[Message from eXtension] Your question has been answered by one of our experts."          
+     @subject = "[Message from eXtension] Your question has been responded to by one of our experts."          
      @recipients     = submitted_question.submitter_email
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)

@@ -1,5 +1,6 @@
 <div id="assignment">
     <% if @submitted_question.assignee %>
+        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
         <p>Assigned to 
                 <%= link_to (@submitted_question.assignee.fullname, 
             aae_profile_url(:id => @submitted_question.assignee.login), :title => "view user profile") %>
@@ -13,9 +14,15 @@
         <% end %>
         
         <div id="assign_container">
-            <h4>Assign to someone else:</h4> 
+            <h4>Assign to someone else:</h4>
+       <% else %> 
+       <div id="assign_container">
+            <h4>Assign to someone:</h4>
+       <% end %>
     <% else %>
+        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
         <p class="inc_descriptive">Nobody</p>
+        <% end %>
         <div id="assign_container">
         <strong>Assign to someone:</strong>
     <% end %>
