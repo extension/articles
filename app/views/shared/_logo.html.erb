@@ -20,7 +20,7 @@
    <div id="multipicker">
        <h3><strong>Welcome!</strong> What's your local institution?</h3>
        <ul>
-          <%= render :partial => 'shared/institution_select_list', :locals => {:institutions => Institution.find(:all, :conditions => ["entrytype = #{Institution::LANDGRANT} and location_abbreviation = ?", session[:multistate]])} %>
+          <%= render :partial => 'shared/institution_select_list', :locals => {:institutions => Institution.landgrant.find(:all, :include => :location, :conditions => ["locations.abbreviation = ?", session[:multistate]])} %>
           <li class="changeint"><%= link_to_function 'Select a different institution', "Effect.toggle('institution_picker','blind', { duration: .4}); setTimeout(set_select_focus, 500);", :class => "sample" %></li>
        </ul>
        <div class="institution_actions_wrapper">

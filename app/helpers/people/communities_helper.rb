@@ -37,7 +37,7 @@ module People::CommunitiesHelper
      csvstring += ((user.phonenumber.nil? or user.phonenumber == '') ? 'not specified' : number_to_phone(user.phonenumber,:area_code => true))+','
      csvstring += ((user.title.nil? or user.title == '') ? 'not specified' : user.title.tr(',',' '))+','
      csvstring += ((user.position.nil? or user.position == '') ? 'not specified' : user.position.name.tr(',',' '))+','
-     csvstring += ((user.institution.nil? or user.institution == '') ? 'not specified' : user.institution.name.tr(',',' '))+','
+     csvstring += ((user.institution.nil?) ? 'not specified' : user.institution.name.tr(',',' '))+','
      csvstring += ((user.location.nil? or user.location == '') ? 'not specified' : user.location.name.tr(',',' '))+','
      csvstring += ((user.county.nil? or user.county == '') ? 'not specified' : user.county.name.tr(',',' '))+','
 

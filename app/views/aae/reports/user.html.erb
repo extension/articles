@@ -19,9 +19,9 @@
     <dt>Email</dt>
     <dd><%= @user.email %></dd>
     <dt>Location</dt>
-    <dd><%= @user.location.nil? ? ' ' : @user.location.name %></dd>
+    <dd><%= @user.location.blank? ? ' ' : @user.location.name %></dd>
     <dt>County</dt>
-    <dd><%= @user.county.nil? ? ' ' : @user.county.name %></dd>
+    <dd><%= @user.county.blank? ? ' ' : @user.county.name %></dd>
     <dt>Institution</dt>
     <dd><%= @user.institution.nil? ? ' ' : @user.institution.name %></dd>
 </dl>

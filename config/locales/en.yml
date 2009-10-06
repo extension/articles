@@ -96,3 +96,13 @@ en:
       syswiki_page: "Systems Wiki Page"
       justcode_changeset: "JustCode Changeset"
       justcode_issue: "JustCode Issue"
+  communities:
+      approved: 'eXtension Community of Practice'
+      user_contributed: 'User created community'
+      institutionalteam: 'Institutional Team'
+      unknown: 'Unknown community type'
+  institutions:
+      land_grant: 'Land Grant Institution'
+      federal: 'Federal Organization'
+      other_institution: 'Other Institution'
+      unknown: 'Unknown institution type'

@@ -153,7 +153,7 @@ class NumberSummary
     end
   end
   
-  def institutions(wants = ['system','usercontributed'])
+  def institutions(wants = ['system'])
     get_or_set_data_value(this_method.to_sym) do   
       returnhash = {}
       wants.each do |institutionstype|

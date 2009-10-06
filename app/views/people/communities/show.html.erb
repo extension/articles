@@ -8,7 +8,7 @@
 	    
 	    <div id="titleblock">
 	        <h1><%= @community.name%></h1>
-	        <p><%= @community.entrytype_to_s == "User created community" ? "a" : "an" %>  <%= @community.entrytype_to_s %></p>
+	        <p><%= @community.entrytype_to_s %></p>
 	    </div>
     	
     	<% if !@community.description.nil? %>

@@ -135,7 +135,7 @@ class MainController < ApplicationController
       else
         state = params[:zip_or_state].upcase
       end
-      insts = Institution.find(:all, :conditions => ["entrytype = #{Institution::LANDGRANT} and location_abbreviation = ?", state])
+      insts = Institution.landgrant.find(:all, :include => :location, :conditions => ["locations.abbreviation = ?", state])
       if insts and insts.length > 0
         if insts[0].shared_logo or insts.length == 1
           render :partial => "shared/institution_selected", :locals => {:state => state}, :layout => false

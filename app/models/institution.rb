@@ -11,20 +11,9 @@ class Institution < ActiveRecord::Base
   serialize :additionaldata
   
   # entrytype
-  INSTITUTION_INVALID = 0
   LANDGRANT = 1
-  STATE = 2
   FEDERAL = 3
-  USERCONTRIBUTED = 4
-  
-  # landgrantypes
-  UNCATEGORIZED = 0
-  MORRILL_1862 = 1
-  MORRILL_1890 = 2
-  TRIBAL = 3
-  
-  
-  
+    
   has_many :users
   belongs_to :location
   
@@ -36,9 +25,7 @@ class Institution < ActiveRecord::Base
   before_update :normalizemyname
 
   named_scope :landgrant, :conditions => {:entrytype => Institution::LANDGRANT}
-  named_scope :state, :conditions => {:entrytype => Institution::STATE}
   named_scope :federal, :conditions => {:entrytype => Institution::FEDERAL}
-  named_scope :usercontributed, :conditions => {:entrytype => Institution::USERCONTRIBUTED}
 
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
@@ -86,17 +73,13 @@ class Institution < ActiveRecord::Base
     def label_to_entrytypes(label)
       case label
       when 'system'
-        [Institution::LANDGRANT, Institution::STATE,Institution::FEDERAL]
+        [Institution::LANDGRANT,Institution::FEDERAL]
       when 'landgrant'
         [Institution::LANDGRANT]
-      when 'state'
-        [Institution::STATE]
       when 'federal'
         [Institution::FEDERAL]
-      when 'usercontributed'
-        [Institution::USERCONTRIBUTED]
       when 'all'
-        [Institution::LANDGRANT, Institution::STATE,Institution::FEDERAL,Institution::USERCONTRIBUTED]
+        [Institution::LANDGRANT,Institution::FEDERAL]
       else
         return nil
       end

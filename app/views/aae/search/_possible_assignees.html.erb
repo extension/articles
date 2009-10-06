@@ -24,7 +24,7 @@
             <h4><%= user.title %></h4>
         <% end %>
 
-        <% if user.institution %>
+        <% if !user.institution.nil? %>
             <h4><%= user.institution.name %></h4>
         <% end %>
         

@@ -19,8 +19,8 @@
 		            <td><%= showuser.email %></td>
 		            <td><%= showuser.first_name %></td>
 		            <td><%= showuser.last_name %></td>
-			        <td><%= (showuser.institution.nil? or showuser.institution == '') ? '(Not specified)': showuser.institution.name %></td>
-			        <td><%= (showuser.location.nil? or showuser.location == '') ? 'N/A': showuser.location.abbreviation %></td>
+			        <td><%= (showuser.institution.nil?) ? '(Not specified)': showuser.institution.name %></td>
+			        <td><%= (showuser.location.nil?) ? 'N/A': showuser.location.abbreviation %></td>
 		        </tr>
 		    <% end%>
 		</table>

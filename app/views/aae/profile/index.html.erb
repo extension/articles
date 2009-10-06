@@ -18,22 +18,22 @@
     	</p>
     	<p class="item">
     		<span class="vcardLabel">Title:</span>
-    		<span class="title"><%= (@user.title.nil? or @user.title == '') ? '&nbsp;': @user.title %></span>
+    		<span class="title"><%= (@user.title.blank?) ? '&nbsp;': @user.title %></span>
     	</p>
     	<div class="org">
     		<p class="item">
     			<span class="vcardLabel">Institution:</span>
-    			<span class="organization-name"><%= (!@user.institution) ? '&nbsp;': @user.institution.name %></span>
+    			<span class="organization-name"><%= (@user.institution.nil?) ? '&nbsp;': @user.institution.name %></span>
     		</p>
     	</div>
     	<div class="adr">	
     		<p class="item">
     			<span class="vcardLabel">State:</span>
-    			<span class="region"><%= (!@user.location) ? '&nbsp;': @user.location.name %></span>
+    			<span class="region"><%= (@user.location.blank?) ? '&nbsp;': @user.location.name %></span>
     		</p>
     		<p class="item">
     			<span class="vcardLabel">County:</span>
-    			<span class="county-name"><%= (!@user.county) ? '&nbsp;': @user.county.name %></span>
+    			<span class="county-name"><%= (@user.county.blank?) ? '&nbsp;': @user.county.name %></span>
     		</p>
     	</div>
     </div>

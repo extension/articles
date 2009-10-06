@@ -17,15 +17,13 @@ class Community < ActiveRecord::Base
   # types
   APPROVED = 1
   USERCONTRIBUTED = 2
-  EMERGING = 3
-  SYSTEM = 4
-  INSTITUTIONALTEAM = 5
-  
-  ENTRYTYPES = {APPROVED => {:label => 'eXtension Community of Practice', :allowadmincreate => true},
-           USERCONTRIBUTED => {:label => 'User created community', :allowadmincreate => true},
-           EMERGING => {:label => 'Emerging Community of Practice', :allowadmincreate => false},
-           INSTITUTIONALTEAM => {:label => 'Institutional Team', :allowadmincreate => true},
-           SYSTEM => {:label => 'System managed community', :allowadmincreate => false}}
+  INSTITUTIONALTEAM = 3
+
+  # institution types
+  ENTRYTYPES = Hash.new
+  ENTRYTYPES[APPROVED] = {:locale_key => 'approved', :allowadmincreate => true}
+  ENTRYTYPES[USERCONTRIBUTED] = {:locale_key => 'user_contributed', :allowadmincreate => true}
+  ENTRYTYPES[INSTITUTIONALTEAM] = {:locale_key => 'institutionalteam', :allowadmincreate => true}
            
   # membership
   OPEN = 1
@@ -67,11 +65,9 @@ class Community < ActiveRecord::Base
   has_many :communitylistconnections, :dependent => :destroy
   has_many :lists, :through => :communitylistconnections
   
-
-  
   # institutions
   has_many :institutions, :foreign_key => 'institutionalteam_id'
-
+ 
   # topics for public site
   belongs_to :topic, :foreign_key => 'public_topic_id'
   
@@ -98,7 +94,7 @@ class Community < ActiveRecord::Base
   named_scope :approved, :conditions => {:entrytype => Community::APPROVED}
   named_scope :usercontributed, :conditions => {:entrytype => Community::USERCONTRIBUTED}
   
-  named_scope :filtered, lambda {|options| userfilter_conditions(options)}
+  named_scope :filtered, lambda {|options| self.userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
   
   named_scope :launched, {:conditions => {:is_launched => true}}
@@ -225,16 +221,16 @@ class Community < ActiveRecord::Base
   
   def entrytype_to_s
     if !ENTRYTYPES[self.entrytype].nil?
-      ENTRYTYPES[self.entrytype][:label]
+      I18n.translate("communities.#{ENTRYTYPES[self.entrytype][:locale_key]}")     
     else
-      "Unknown community type"
+      I18n.translate("communities.unknown")     
+      
+      
     end
   end
   
   def memberfilter_to_s
-    if(self.entrytype == Community::SYSTEM)
-      "Managed Membership"
-    elsif !MEMBERFILTERS[self.memberfilter].nil?
+    if !MEMBERFILTERS[self.memberfilter].nil?
       MEMBERFILTERS[self.memberfilter]
     else
       "Unknown community membership status"
@@ -485,9 +481,7 @@ class Community < ActiveRecord::Base
   end
   
   
-  def update_lists_with_user(user,operation,connectiontype)
-    logger.debug "=================================== Inside update_lists_with_user: #{user.login} #{operation} #{connectiontype}"
-    
+  def update_lists_with_user(user,operation,connectiontype)  
     (adds,removes)= self.listconnectionchecks(connectiontype,operation)
     return if (adds.empty? and removes.empty?)
     
@@ -614,7 +608,6 @@ class Community < ActiveRecord::Base
   # -----------------------------------
     
   def self.communitytype_condition(communitytype)
-    
     if(communitytype.nil?)
       return "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
     end

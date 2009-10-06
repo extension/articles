@@ -1,8 +1,8 @@
 <td><%= link_to("#{showuser.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => showuser.login) %></td>
 <td><%= showuser.login %></td>
 <td><%= showuser.email %></td>            
-<td><%= (showuser.institution.nil? or showuser.institution == '') ? '<span class="na">not specified</span>': showuser.institution.name %></td>
-<td><%= (showuser.location.nil? or showuser.location == '') ? '<span class="na">n/a</span>': showuser.location.abbreviation %></td>		    
+<td><%= (showuser.institution.nil?) ? '<span class="na">not specified</span>': showuser.institution.name %></td>
+<td><%= (showuser.location.nil?) ? '<span class="na">n/a</span>': showuser.location.abbreviation %></td>		    
 <td><%= showuser.connection_display(community) %></td>            
 <% if isleader %>
     <td class="connectionactions" id="connectionactions_<%= showuser.id %>"><%= community_connection_links("connectionactions_#{showuser.id}",community,showuser,connectaction) %></td>

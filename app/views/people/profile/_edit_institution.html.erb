@@ -1,5 +1,5 @@
 <div id="institutional-edit" class="autocomplete"> 
-<p><%= text_field_with_auto_complete :institution, :name, {:class => "medsize", :value => @user.institution.nil? ? '' : @user.institution.name }, {:skip_style => true, :selected => 'selected_institution_name',:min_chars => 1} %></p>
+<p><%= text_field_with_auto_complete :institution, :name, {:class => "medsize", :value => (@user.institution.nil? ? '' : @user.institution.name) }, {:skip_style => true, :selected => 'selected_institution_name',:min_chars => 1} %></p>
 </div>
 
 <p><%= link_to_remote("cancel", {:url => {:controller => '/people/profile', :action => :canceleditinstitution}, :method => :post}, :title => "Cancel Editing", :class => "autocomplete_cancel") %></p>

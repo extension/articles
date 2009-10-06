@@ -18,35 +18,35 @@
 	<div>
 	
 		<span class="vcardLabel">Preferred Phone:</span>
-		<span class="tel"><%= (showuser.phonenumber.nil? or showuser.phonenumber == '') ? '&nbsp;' : number_to_phone(showuser.phonenumber, :area_code => true)%></span>
+		<span class="tel"><%= (showuser.phonenumber.blank?) ? '&nbsp;' : number_to_phone(showuser.phonenumber, :area_code => true)%></span>
 	
 	</div>
 	<div>
 	
 		<span class="vcardLabel">Title:</span>
-		<span class="title"><%= (showuser.title.nil? or showuser.title == '') ? '&nbsp;': showuser.title %></span>
+		<span class="title"><%= (showuser.title.blank?) ? '&nbsp;': showuser.title %></span>
 	
 	</div>
 	<div>
 	
 		<span class="vcardLabel">Position:</span>
-		<span class="role"><%= (showuser.position.nil? or showuser.position == '') ? '&nbsp;': showuser.position.name %></span>
+		<span class="role"><%= (showuser.position.nil?) ? '&nbsp;': showuser.position.name %></span>
 	
 	</div>
 	<div class="org">
 		
 			<span class="vcardLabel">Institution:</span>
-			<span class="organization-name"><%= (showuser.institution.nil? or showuser.institution == '') ? '&nbsp;': showuser.institution.name %></span>
+			<span class="organization-name"><%= (showuser.institution.nil?) ? '&nbsp;': showuser.institution.name %></span>
 		
 	</div>
 	<div class="adr">	
 		
 			<span class="vcardLabel">Location:</span>
-			<span class="region"><%= (showuser.location.nil? or showuser.location == '') ? '&nbsp;': showuser.location.name %></span>
+			<span class="region"><%= (showuser.location.nil?) ? '&nbsp;': showuser.location.name %></span>
 		
 		
 			<span class="vcardLabel">County:</span>
-			<span class="county-name"><%= (showuser.county.nil? or showuser.county == '') ? '&nbsp;': showuser.county.name %></span>
+			<span class="county-name"><%= (showuser.county.nil?) ? '&nbsp;': showuser.county.name %></span>
 		
 	</div>
 </div>

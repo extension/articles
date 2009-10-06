@@ -46,7 +46,7 @@ class AdminController < ApplicationController
   
   def manage_institutions
     set_titletag("Manage Institutions - Pubsite Admin")    
-    @landgrant_institutions =  Institution.public_list.all(:order => 'location_abbreviation')
+    @landgrant_institutions =  Institution.public_list.all(:include => :location, :order => 'locations.abbreviation')
   end
     
   def manage_locations_office_links

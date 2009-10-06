@@ -90,7 +90,7 @@ class User < ActiveRecord::Base
   has_many :communityjoins, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader'"
   has_many :communityopenjoins, :through => :communityconnections, :source => :community, :conditions => "(communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader') and communities.memberfilter = #{Community::OPEN}"
   
-  has_many :communityinvitejoins, :through => :communityconnections, :source => :community, :conditions => "((communityconnections.connectiontype = 'member' and communities.memberfilter = #{Community::OPEN} and communities.entrytype != #{Community::SYSTEM}) or communityconnections.connectiontype = 'leader')"
+  has_many :communityinvitejoins, :through => :communityconnections, :source => :community, :conditions => "((communityconnections.connectiontype = 'member' and communities.memberfilter = #{Community::OPEN}) or communityconnections.connectiontype = 'leader')"
   
   has_many :connectjoins, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader'"
   has_many :communityinvitations, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'invited'"
@@ -850,11 +850,6 @@ class User < ActiveRecord::Base
       matching_community_list = matching_community_list - self.communities
     end
     
-    if(skipsystem)
-      systemcommunities = Community.find(:all, :conditions => {:entrytype => Community::SYSTEM})
-      matching_community_list = matching_community_list - systemcommunities
-    end
-
     return [] if matching_community_list.length == 0
     
     # step four, get the sums and counts

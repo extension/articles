@@ -16,7 +16,7 @@
 	<%= render(:partial => 'warning_agreement') %>   
 	<% end %>
 
-	<% if((@currentuser.institution_id == 0) or (@currentuser.position_id == 0) or (@currentuser.location_id == 0)) %>
+	<% if((@currentuser.institution.nil?) or (@currentuser.position.nil?) or (@currentuser.location.nil?)) %>
 	<%= render(:partial => 'warning_missingdata') %>   	
 	<% end %>
 

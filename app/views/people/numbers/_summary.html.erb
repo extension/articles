@@ -47,12 +47,8 @@
     <% if !total.institutions.nil? and !total.institutions.empty? %>
     
     <tr>
-        <td><%= link_to("Land-Grant, State, and Federal Institutions",url_for_itemlist(:institutions,total.findoptions,{:displayfilter => 'system'})) %></td>
+        <td><%= link_to("Land-Grant and Federal Institutions",url_for_itemlist(:institutions,total.findoptions,{:displayfilter => 'system'})) %></td>
         <td class="bignumber"><%= number_with_delimiter(total.institutions[:system]) %></td>
-    </tr>
-    <tr>
-        <td><%= link_to("People-contributed Institutions",url_for_itemlist(:institutions,total.findoptions,{:displayfilter => 'usercontributed'})) %></td>
-        <td class="bignumber"><%= number_with_delimiter(total.institutions[:usercontributed]) %></td>
     </tr>
     <% end %>
     <% if !total.locations.nil? and !total.locations != 0 %>
