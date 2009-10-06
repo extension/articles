@@ -1552,13 +1552,10 @@ class User < ActiveRecord::Base
                           "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
                           " on categories.id=categories_submitted_questions.category_id "
          end
-         cond=  ((sqfilters and sqfilters!="" ) ?  sqfilters : "")
+         cond = " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO},#{SubmittedQuestionEvent::RESOLVED},#{SubmittedQuestionEvent::REJECTED},#{SubmittedQuestionEvent::NO_ANSWER}) " +
+           ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
           if (date1 && date2)
-              if (cond != "")
                 cond = cond + " and submitted_questions.created_at between ? and ? "
-              else
-                cond = "submitted_questions.created_at between ? and ? "
-              end
           end   
           avgs= SubmittedQuestion.find(:all, :select => " previous_handling_recipient_id, avg(duration_since_last_handling_event) as ra",
            :joins => joinclause, 
