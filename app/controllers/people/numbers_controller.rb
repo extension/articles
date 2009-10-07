@@ -41,15 +41,22 @@ class People::NumbersController < ApplicationController
      case @displayfilter
      when 'system'
        @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
+       @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
        @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
      when 'landgrant'
        @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
+     when 'state'
+       @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
      when 'federal'
        @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
+     when 'usercontributed'
+       @usercontributed = Institution.find_all_by_entrytype(Institution::USERCONTRIBUTED, :order => 'name') 
      else
        @filter = 'all'
        @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
+       @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
        @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
+       @usercontributed = Institution.find_all_by_entrytype(Institution::USERCONTRIBUTED, :order => 'name') 
      end
   end
   
@@ -90,15 +97,22 @@ class People::NumbersController < ApplicationController
     case @displayfilter
     when 'system'
       @landgrant = Institution.filtered(@findoptions.merge({:entrytype => Institution::LANDGRANT})).displaylist
+      @state = Institution.filtered(@findoptions.merge({:entrytype => Institution::STATE})).displaylist 
       @federal = Institution.filtered(@findoptions.merge({:entrytype => Institution::FEDERAL})).displaylist
     when 'landgrant'
       @landgrant = Institution.filtered(@findoptions.merge({:entrytype => Institution::LANDGRANT})).displaylist
+    when 'state'
+      @state = Institution.filtered(@findoptions.merge({:entrytype => Institution::STATE})).displaylist 
     when 'federal'
       @federal = Institution.filtered(@findoptions.merge({:entrytype => Institution::FEDERAL})).displaylist
+    when 'usercontributed'
+      @usercontributed = Institution.filtered(@findoptions.merge({:entrytype => Institution::USERCONTRIBUTED})).displaylist
     else
       @filter = 'all'
       @landgrant = Institution.filtered(@findoptions.merge({:entrytype => Institution::LANDGRANT})).displaylist
+      @state = Institution.filtered(@findoptions.merge({:entrytype => Institution::STATE})).displaylist 
       @federal = Institution.filtered(@findoptions.merge({:entrytype => Institution::FEDERAL})).displaylist
+      @usercontributed = Institution.filtered(@findoptions.merge({:entrytype => Institution::USERCONTRIBUTED})).displaylist
     end
     
     @institutioncounts = Institution.userfilter_count(@findoptions)

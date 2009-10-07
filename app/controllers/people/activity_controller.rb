@@ -79,15 +79,22 @@ class People::ActivityController < ApplicationController
     case @displayfilter
     when 'system'
       @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
+      @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
       @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
     when 'landgrant'
       @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
+    when 'state'
+      @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
     when 'federal'
       @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
+    when 'usercontributed'
+      @usercontributed = Institution.find_all_by_entrytype(Institution::USERCONTRIBUTED, :order => 'name') 
     else
       @filter = 'all'
       @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
+      @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
       @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
+      @usercontributed = Institution.find_all_by_entrytype(Institution::USERCONTRIBUTED, :order => 'name') 
     end
   end
   

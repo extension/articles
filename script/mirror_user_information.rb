@@ -42,7 +42,8 @@ def update_from_identity_users(connection,userinfodb,mydatabase)
   identitysql += " FROM users"
   identitysql += " LEFT JOIN locations ON users.location_id = locations.id"
   identitysql += " LEFT JOIN counties ON users.county_id = counties.id"
-  identitysql += " LEFT JOIN communities ON (users.institution_id = communities.id AND communities.type = 'Institution')"
+  identitysql += " LEFT JOIN institutions ON users.institution_id = institutions.id"
+#  identitysql += " LEFT JOIN communities ON (users.institution_id = communities.id AND communities.type = 'Institution')"
   identitysql += " WHERE (users.vouched = 1 OR users.retired = 1)"
   identitysql += " AND users.emailconfirmed = 1"
   # keep peoplebot out of the data
