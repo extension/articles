@@ -1528,20 +1528,22 @@ class User < ActiveRecord::Base
      end
     
     
-     def self.get_num_times_assigned(date1, date2, auxcond, sqfilters, sqinclude)
-       cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id > 0 " + auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+     def self.get_num_times_assigned(date1, date2, auxjoin, auxcond, sqfilters, sqinclude)
+       cond = " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO}, #{SubmittedQuestionEvent::RESOLVED}, #{SubmittedQuestionEvent::REJECTED}, #{SubmittedQuestionEvent::NO_ANSWER}) " + 
+                  auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
         if (date1 && date2)
             cond = cond + " and submitted_questions.created_at between ? and ? "
         end
        SubmittedQuestion.count(:all,
-           :joins => [:submitted_question_events], :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
-           :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "recipient_id")
+           :joins => "join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id " + auxjoin,
+            :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
+           :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "users.id")
        
      end
      
      def self.get_avg_handling_time(date1, date2, sqfilters, sqinclude)
          #if sqinclude, cannot do a select with include, so must do this workaround
-          joinclause= [:submitted_question_events] ; 
+          joinclause= [:submitted_question_events] 
          if (sqinclude && sqinclude[0]=="categories".to_sym)
            joinclause = " join submitted_question_events on submitted_question_events.submitted_question_id=submitted_questions.id join " +
                           "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +

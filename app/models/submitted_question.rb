@@ -417,7 +417,7 @@ def assign_to(user, assigned_by, comment, public_reopen = false)
                                     :event_state => SubmittedQuestionEvent::ASSIGNED_TO,
                                     :response => comment})
                                     
-  
+   
   # create notifications
   Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment})
   if(is_reassign)
@@ -599,19 +599,27 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
   def SubmittedQuestion.get_noq(date1, date2, extstr)
     noqr =SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on resolved_by=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id") 
     noqu = SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on submitted_questions.user_id=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id")
-    noq = self.add_vals(noqr, noqu)
+    noq = self.add_vals(noqr, noqu, '+')
     noq
   end
 
     
-  def self.add_vals(noqr, noqu)
+  def self.add_vals(noqr, noqu, oper)
     # merge and add the resolved and the assigned counts
-    maxlen = [noqr, noqu].max { |a, b| a.size <=> b.size}; n1 = noqr.size
+    maxlen = [noqr.size, noqu.size].max { |a, b| a <=> b}; n1 = noqr.size
     if n1==maxlen; lrg = noqr; sml = noqu; else; lrg=noqu; sml = noqr; end
     noq = {}
     lrg.each do |id, val|
        if sml[id]
-         noq[id]= val + sml[id]
+         if oper=='+'
+           noq[id]= val + sml[id]
+         else
+           if n1==maxlen    # '-' = order dependent, first hash given value - second
+             noq[id] = val - sml[id]
+           else
+             noq[id] = sml[id] - val
+           end
+         end
        else
          noq[id]= val
        end

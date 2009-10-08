@@ -30,10 +30,30 @@ class Aae::DashboardController < ApplicationController
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
   #  @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes    #.paginate(:page => params[:page]
     @assignees = SubmittedQuestion.get_assignees(last6months, today, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
-    @assgnscompls= User.get_num_times_assigned(last6months,today , " and resolved_by=recipient_id ", SubmittedQuestion.filterconditions(filteroptions)[:conditions],SubmittedQuestion.filterconditions(filteroptions)[:include])
-    @totalassgns = User.get_num_times_assigned(last6months,today, "", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
-    @avgscompl=User.get_avg_resp_time_only(last6months, today, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+       
+     # on this one we limit being the recipient to resolving (resolved, rejected, no answer) or assigning to someone, no dangling recipients...
+     # because we cannot tell when something is assigned if it got resolved until later, some of the resolved are counted twice here, standing in for an 'assigned'
+   #count the 'previously assigned'
+   assigned_resolved = User.get_num_times_assigned(last6months,today ," join users on users.id=initiated_by_id ", " and initiated_by_id=previous_handling_recipient_id  ", 
+           SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+   #count any initiating (resolved, rejected, no answer) entries
+   all_resolved = User.get_num_times_assigned(last6months, today, " join users on users.id=initiated_by_id ", " and initiated_by_id=users.id ",
+            SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+   #count those who assigned themselves explicitly as dups since they were counted above already in assigned_resolved assuming not their own assigner, and for an 'initiator of resolution'  
+   dup_set = User.get_num_times_assigned(last6months, today, " join users on users.id=initiated_by_id ", " and initiated_by_id=recipient_id ", 
+            SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])  
+   subtotasgn = SubmittedQuestion.add_vals(all_resolved, assigned_resolved, '+')
+   @assgnscompls = SubmittedQuestion.add_vals(subtotasgn, dup_set, '-')
+   
+      #  This is user id touching any initiated_by_id or recipient_id for ASSIGNED_TO or any resolved (resolved, rejected, no answer) id; in 3 steps because one statement can't handle a multiple join on users.id in MAMP (goes to never-never land)
     
+   totrecips = User.get_num_times_assigned(last6months, today, "join users on users.id=recipient_id " ," and recipient_id=users.id ", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+   totboth = User.get_num_times_assigned(last6months, today, "join users on users.id=initiated_by_id " ," and (initiated_by_id=users.id and recipient_id=users.id) ", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+   subtot = SubmittedQuestion.add_vals(all_resolved, totrecips, '+')
+   @totalassgns = SubmittedQuestion.add_vals(subtot, totboth, '-')
+ 
+    @avgscompl=User.get_avg_resp_time_only(last6months, today, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+    @avgsheld = User.get_avg_handling_time(last6months, today, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include]) 
     
   
   end

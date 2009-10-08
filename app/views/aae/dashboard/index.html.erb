@@ -9,8 +9,9 @@
         <th>Question Age</th>
         <th id="completions">Assigned to</th>
         <th>Length<br/>assigned</th>
-        <th id="completions">Completions<br/>(last 6 months)</th>
-        <th>Avg response<br/>(last 6 months)</th>
+        <th id="completions">Handled <br> or Completed</br><br/>(last 6 months)</th>
+        <th>Avg response (where <br> assignee completed)</br><br/>(last 6 months)</th>
+        <th>Avg handling time<br> (anytime assigned)</br> <br/>(last 6 months)</th>
         
         <th>Most recent login</th>
     <tr>
@@ -23,14 +24,16 @@
 	            link_to("#{sq.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => sq.login}, :title => "People profile", :class => "subtle") : "<span>nobody</span>" %></td>
 	            <td><%= (sq and (assign_date = sq.assigned_date)) ? time_ago_in_words(assign_date) : ""%></td>
 	            <% pctassgns= 0%>
-	            <% assignee = sq.user_id.to_s%>
+	            <% assignee = sq.user_id%>
 	            <% if (@totalassgns[assignee] && @totalassgns[assignee] > 0)%>
 	               <% if (@assgnscompls[assignee])%>
 	                 <% pctassgns = (@assgnscompls[assignee]).to_f/@totalassgns[assignee]%>
 	               <% end%>
 	            <%end%>
 	            <td class="completions" style="background-position: -<%=((100 - ("%.0f" % (pctassgns * 100)).to_f)*2) %>px 0"><%= (( pctassgns != 0) ? ("%.0f" % (pctassgns * 100)) + "%" : "0%") %>  <%= "(out of " + @totalassgns[assignee].to_s + ")" %></td>
+	            <% assignee = sq.user_id.to_s%>
 	            <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.0f hours" % @avgscompl[assignee] : "n/a")%></td>
+	            <td><%= ((@avgsheld[assignee] && @avgsheld[assignee] != 0) ? "%.0f hours" % @avgsheld[assignee] : "n/a")%></td>
 	            <td><%= (sq.last_login_at) ? time_ago_in_words(sq.last_login_at): nil%></td>
         </tr>
     <% end %>    
