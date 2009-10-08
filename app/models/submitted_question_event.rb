@@ -5,6 +5,8 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+require 'hpricot'
+
 class SubmittedQuestionEvent < ActiveRecord::Base
   belongs_to :submitted_question
   belongs_to :initiated_by, :class_name => "User", :foreign_key => "initiated_by_id"
@@ -13,6 +15,8 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   belongs_to :previous_initiator,  :class_name => "User", :foreign_key => "previous_initiator_id"
   belongs_to :previous_handling_recipient, :class_name => "User", :foreign_key => "previous_handling_recipient_id"
   belongs_to :previous_handling_initiator,  :class_name => "User", :foreign_key => "previous_handling_initiator_id"
+  
+  before_create :clean_response_and_additionaldata
   
   RESERVE_WINDOW = "date_sub(NOW(), interval 2 hour)"
   
@@ -89,6 +93,16 @@ class SubmittedQuestionEvent < ActiveRecord::Base
     end
 
     return SubmittedQuestionEvent.create(create_attributes)    
+  end
+  
+  def clean_response_and_additionaldata
+    if self.response and self.response.strip != ''
+      self.response = Hpricot(self.response).to_html 
+    end
+    
+    if self.additionaldata and self.additionaldata.strip != ''
+      self.additionaldata = Hpricot(self.additionaldata).to_html 
+    end
   end
   
     

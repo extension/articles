@@ -1,0 +1,10 @@
+<% if @submitted_question and @submitted_question.responses.length > 0 %>
+<h3>All Responses:</h3>
+  <% @submitted_question.responses.each do |response| %>
+    <p><%= response.response %><p>
+  <% end %>
+<% end %>
+
+<% if @err_msg %>
+  <div class="feedback_banner failure"><p><%= @err_msg %></p></div>    
+<% end %>

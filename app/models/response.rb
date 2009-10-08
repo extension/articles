@@ -5,12 +5,14 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+require 'hpricot'
+
 class Response < ActiveRecord::Base
   belongs_to :submitted_question
   belongs_to :resolver, :class_name => "User", :foreign_key => "user_id"
   belongs_to :public_responder, :class_name => "PublicUser", :foreign_key => "public_user_id"
   
-  before_create :calculate_duration_since_last
+  before_create :calculate_duration_since_last, :clean_response
   
   
   def calculate_duration_since_last
@@ -21,6 +23,10 @@ class Response < ActiveRecord::Base
     else
       self.duration_since_last = 0
     end
+  end
+  
+  def clean_response
+    self.response = Hpricot(self.response).to_html 
   end
   
 end

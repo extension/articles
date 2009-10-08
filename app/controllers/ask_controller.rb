@@ -136,6 +136,44 @@ class AskController < ApplicationController
     
   end
   
+  def post_public_response
+    if request.post? and params[:public_user_id] and params[:public_user_id].strip != '' and params[:squid] and params[:squid].strip != ''
+      
+      @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
+      public_user = PublicUser.find_by_id(params[:public_user_id])
+      
+      if @submitted_question and public_user
+        
+        if !params[:public_user_response] or params[:public_user_response].strip == ''
+          @err_msg = "The response form field is a required field to submit your response."  
+          render :partial => 'public_response'
+          return
+        end
+        
+        # don't accept duplicates
+        if Response.find(:first, :conditions => {:submitted_question_id => @submitted_question.id, :response => params[:public_user_response], :public_user_id => public_user.id})
+          render :partial => 'public_response'
+          return
+        end
+         
+        response = Response.new(:public_responder => public_user, :submitted_question => @submitted_question, :response => params[:public_user_response], :sent => true)
+        response.save
+        if @submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED
+          @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED)
+          SubmittedQuestionEvent.log_reopen(@submitted_question, @submitted_question.assignee, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT)
+          @submitted_question.assign_to(@submitted_question.assignee, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT, true)
+        end
+      else
+        @err_msg = "There was an error submitting your response. Please try again later."  
+      end
+    else
+      do_404
+      return
+    end
+    
+    render :partial => 'public_response'
+  end
+  
   def cancel_question_edit
     if request.post? and (@submitted_question = SubmittedQuestion.find(params[:squid]))
       render :update do |page|

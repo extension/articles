@@ -5,6 +5,8 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+require 'hpricot'
+
 class SubmittedQuestion < ActiveRecord::Base
 
 belongs_to :county
@@ -27,7 +29,8 @@ validates_presence_of :asked_question
 # check the format of the question submitter's email address
 validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
 
-before_create :generate_fingerprint
+before_create :generate_fingerprint, :clean_question_and_answer
+before_update :clean_question_and_answer
 
 after_save :assign_parent_categories
 after_create :auto_assign_by_preference
@@ -66,6 +69,9 @@ EXPERT_DISCLAIMER = "This message for informational purposes only. " +
                     "that may be mentioned. Reliance on any information provided by eXtension Foundation, employees, suppliers, member universities, or other " + 
                     "third parties through eXtension is solely at the user’s own risk. All eXtension content and communication is subject to  the terms of " + 
                     "use http://www.extension.org/main/termsofuse which may be revised at any time."
+                    
+PUBLIC_RESPONSE_REASSIGNMENT_COMMENT = "This question has been reassigned to you by the system because the submitter of the question has posted a new response. Please either " +
+"reply to the response or close the question out if there is no need for a reply. Thank You!"
                     
 DEFAULT_SUBMITTER_NAME = "External Submitter"
 
@@ -308,6 +314,14 @@ def assigned_date
   end
 end
 
+def clean_question_and_answer  
+  if self.current_response and self.current_response.strip != ''
+    self.current_response = Hpricot(self.current_response).to_html 
+  end
+  
+  self.asked_question = Hpricot(self.asked_question).to_html
+end
+
 def submitter_fullname
   return "#{self.submitter_firstname} #{self.submitter_lastname}"
 end
@@ -381,10 +395,12 @@ end
 # Assigns the question to the user, logs the assignment, and sends an email
 # to the assignee letting them know that the question has been assigned to
 # them.
-def assign_to(user, assigned_by, comment)
+def assign_to(user, assigned_by, comment, public_reopen = false)
   raise ArgumentError unless user and user.instance_of?(User)
-  # don't bother doing anything if this is assignment to the person already assigned
-  return true if assignee and user.id == assignee.id
+  # don't bother doing anything if this is assignment to the person already assigned unless it's 
+  # a question that's been responded to by the public after it's been resolved that then gets 
+  # assigned to whomever the question was last assigned to.
+  return true if assignee and user.id == assignee.id and public_reopen == false
   
   if(!self.assignee.nil? and (assigned_by != self.assignee))
     is_reassign = true
