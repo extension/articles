@@ -129,14 +129,14 @@ class People::AccountController < ApplicationController
       if(AUTH_SUCCESS != result[:code] and result[:localfail])
         if(result[:localfail])
           flash.now[:failure]  = explainauthresult(result[:code])
-          UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_FAILED,:user => result[:user], :description => 'login failed ('+authlogmsg(result[:code])+')',:additionaldata => additionaldata_from_params(params))                  
+          UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_FAILED,:user => result[:user], :description => 'login failed ('+authlogmsg(result[:code])+')')                  
         end
       else
         @currentuser = result[:user]
         @currentuser.update_attribute(:last_login_at,Time.now.utc)
         session[:userid] = @currentuser.id
         flash.now[:success] = "Login successful."
-        UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login',:additionaldata => additionaldata_from_params(params))        
+        UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login')        
         log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_PASSWORD, :appname => 'local')
         redirect_back_or_default(people_welcome_url)
       end

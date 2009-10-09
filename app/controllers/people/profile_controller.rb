@@ -70,7 +70,7 @@ class People::ProfileController < ApplicationController
   def socialnetworks
     if request.post?      
       @currentuser.modify_social_networks(params[:socialnetworks])
-      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "social networks updated",:additionaldata => additionaldata_from_params(params))
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "social networks updated")
       log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')                    
       flash[:success] = 'Networks updated.'
       redirect_to(:controller => 'profile', :action => 'me')
@@ -83,7 +83,7 @@ class People::ProfileController < ApplicationController
   def otheremails
     if request.post?      
       @currentuser.modify_user_emails(params[:useremails])
-      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "other emails updated",:additionaldata => additionaldata_from_params(params))
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "other emails updated")
       log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')                    
       flash[:success] = 'Emails updated.'
       redirect_to(:controller => 'profile', :action => 'me')
@@ -139,7 +139,7 @@ class People::ProfileController < ApplicationController
       announcechange = @currentuser.announcements_changed?
       
       if @currentuser.save
-        UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "profile updated",:additionaldata => additionaldata_from_params(params))
+        UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "profile updated")
         log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')   
         if announcechange
           @currentuser.reload
@@ -240,7 +240,7 @@ class People::ProfileController < ApplicationController
   def tagedit
     if request.post?
       @currentuser.tag_myself_with(params[:tag_list].strip)
-      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "interests updated",:additionaldata => additionaldata_from_params(params))
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "interests updated")
       log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')                    
       flash[:success] = 'Interests updated.'
       redirect_to(:controller => 'profile', :action => 'me')

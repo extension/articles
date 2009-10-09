@@ -8,16 +8,6 @@
 
 module ControllerExtensions
 
-  def additionaldata_from_params(params)
-    additionaldata = params
-    additionaldata[:remoteaddr] = request.env["REMOTE_ADDR"]
-    additionaldata[:password] = '[FILTERED]' if(!additionaldata[:password].nil?)
-    additionaldata[:user_password] = '[FILTERED]' if(!additionaldata[:user_password].nil?)
-    additionaldata[:password_confirmation] = '[FILTERED]' if(!additionaldata[:password_confirmation].nil?)
-    additionaldata[:login] = params[:user_login] if(!additionaldata[:user_login].nil?)
-    return additionaldata
-  end
-
   def log_user_activity(opts = {})
     # creator check
     if(opts[:creator].nil?)

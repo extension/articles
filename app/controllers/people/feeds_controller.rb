@@ -192,12 +192,12 @@ class People::FeedsController < ApplicationController
       if(!@feedkey.nil?)
         @currentuser = User.find_by_feedkey(@feedkey)
         if(!@currentuser.nil?)
-          ActivityEvent.log_event(:event => ActivityEvent::FEEDREQUEST,:user => @currentuser,:eventdata => additionaldata_from_params(params))            
+          ActivityEvent.log_event(:event => ActivityEvent::FEEDREQUEST,:user => @currentuser)            
           return true
         end
       end
       
-      ActivityEvent.log_event(:event => ActivityEvent::INVALIDFEEDREQUEST,:user => @currentuser,:eventdata => additionaldata_from_params(params))                  
+      ActivityEvent.log_event(:event => ActivityEvent::INVALIDFEEDREQUEST,:user => @currentuser)                  
       show_invalid_feed_output 
       return false
     end

@@ -101,7 +101,7 @@ class People::SignupController < ApplicationController
       else
         signupdata = nil
       end
-      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "initialsignup",:additionaldata => additionaldata_from_params(params))        
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "initialsignup")        
       @currentuser.send_signup_confirmation(signupdata)
       return redirect_to(:action => :confirmationsent)
     end
