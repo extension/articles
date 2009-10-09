@@ -48,11 +48,7 @@
 
 <div id="inc_response">
 <div id="answered_FAQ">
-<% if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
-    
-        <a name="question_resolution"></a>
-        <h3>Question Resolution</h3>
-        
+<% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
         
         <% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
             <p><strong>This question was not answered. The reason is given below.</strong></p>
@@ -67,7 +63,40 @@
         	    <% end %>
         	</p>
 	        <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
-            
+    	    
+    	    <% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED %>
+    	    <p><strong>Rejection Comment:</strong></p>
+    	    <p><%= @submitted_question.current_response %></p>
+    	    <% end %>        
+	    
+<% end %>
+
+<a name="question_resolution"></a>
+<h3>Question Responses</h3>
+
+<% if @submitted_question.responses.length > 0 %>
+
+<% @submitted_question.responses.each do |response| %>
+    <% if is_public_responder(response) %>
+        
+        <div class="commentblock public">
+            <p class="comment"><%= wrap_text(response.response) %></p>
+            <p>Comment posted by public user</p>
+            <p><%= humane_date(response.created_at) %></p>
+        </div>
+        
+    <% else %>
+    
+        <div class="commentblock expert">
+            <p class="comment"><%= wrap_text(response.response) %></p>
+            <p><strong>Resolved by: </strong> 
+    	    <% if @submitted_question.resolved_by.id == User.systemuserid %>
+    	    System
+    	    <% else %>
+    	    <%= link_to @submitted_question.resolved_by.fullname, aae_profile_url(:id => @submitted_question.resolved_by.login), :class => "profile" %>
+    	    <% end %>
+    	    </p>
+            <p><%= humane_date(@submitted_question.resolved_at) %></p>
             <% if @contributing_question %>
     	        <p><strong>This question was answered with 
     	        <% if @type == 'FAQ' %>
@@ -77,19 +106,9 @@
     	        <% end %>
     	        </strong></p>
     	    <% end %>
-    	    
-    	    <% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED %>
-    	    <p><strong>Rejection Comment:</strong></p>
-    	    <p><%= @submitted_question.current_response %></p>
-    	    <% end %>        
-	    
-<% end %>
-
-<% if @submitted_question.responses.length > 0 %>
-    <p><strong>Responses (emailed):</strong></p>
-
-<% @submitted_question.responses.each do |response| %>
-<p><%= wrap_text(response.response) %></p>
+        </div>
+    <% end %>
+    
 <% end %>
 <% end %>
 </div>
@@ -128,6 +147,7 @@
         	    <% end %>
         	</p>
             <p><strong>Rejection comment:</strong> <%= wrap_text(@submitted_question.current_response) %></p>
+            <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
         </div>
         <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
         <h3>This question was not answered</h3>

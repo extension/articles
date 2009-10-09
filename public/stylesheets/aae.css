@@ -1459,4 +1459,10 @@ a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
 .rejectedaae h3 {margin-top:0em !important;;font-size: 2em !important; color:red !important;}
 .rejectedaae strong {display:block;}
 
-#assignment {clear:both;}
+/*#assignment {clear:both;}*/
+
+.commentblock {margin-bottom:1em;padding:1em;}
+.commentblock.public {background:#edffee;border:solid 2px #b5ffba;}
+.commentblock.expert {border:2px solid #efcfb8;}
+.commentblock p {margin-bottom:0;}
+p.comment {padding:0;color:#000;font-family: "Georgia","Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;font-size:1.6em;margin:0 0 1em;}
