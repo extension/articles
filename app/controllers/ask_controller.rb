@@ -110,7 +110,7 @@ class AskController < ApplicationController
   def question
     @right_column = false
     @submitted_question = SubmittedQuestion.find_by_question_fingerprint(params[:fingerprint])
-    @submitted_question_responses = @submitted_question.responses.find(:all, :order => 'created_at DESC') if @submitted_question
+    @submitted_question_responses = @submitted_question.responses if @submitted_question
     
     if !@submitted_question
       do_404
