@@ -10,6 +10,10 @@ module ApplicationHelper
   def selected_tab_if(tab_name)
     'class="selected"' if @selected_tab == tab_name
   end
+  
+  def is_public_responder(question_response)
+    question_response.public_responder ? return true : return false
+  end
     
   #old time print
   def micro_time_print(time, class_name)

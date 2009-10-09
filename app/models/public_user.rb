@@ -18,7 +18,7 @@ class PublicUser < ActiveRecord::Base
     write_attribute(:email, emailstring.mb_chars.downcase)
   end
   
-  def full_name 
+  def fullname 
     return "#{self.first_name} #{self.last_name}"
   end
   
