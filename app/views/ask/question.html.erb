@@ -41,9 +41,9 @@
     <% end %>
     
     <div id="responses">
-    <% if @submitted_question.responses.length > 0 %>
+    <% if @submitted_question_responses.length > 0 %>
     <h3>Responses:</h3>
-      <% @submitted_question.responses.each do |response| %>
+      <% @submitted_question_responses.each do |response| %>
         <div class="commentblock">
             <p class="comment"><%= response.response %></p>
             <p class="meta">Posted <%= time_ago_in_words(response.created_at) %> ago</p>
@@ -53,7 +53,7 @@
     </div>
     <p class="aae_pitch">Have another question? <%= link_to 'Ask one of our Experts', ask_form_url %></p>
     
-    <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
+    <% if @submitted_question_responses.length > 0 and ((@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email)) %>
     <p>Responses or comments related to this question:</p>
     <% form_remote_tag :update => 'responses', :url => {:controller => :ask, :action => :post_public_response, :squid => @submitted_question.id, :public_user_id => @submitted_question.public_user_id}, :loading => "Element.show('loading_response')", :complete => "Element.hide('loading_response')" do %>
     <%= text_area_tag("public_user_response", nil, :cols => "20", :rows => "3") %>
