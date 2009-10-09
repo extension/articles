@@ -399,6 +399,9 @@ class User < ActiveRecord::Base
           self.vouched_by = invitation.user.id
           self.vouched_at = now
         else
+          # TODO:  what we really should do here is send an email to the person that made the invitation
+          # and ask them to vouch for the person with the different email that used the right invitation code
+          # but a different, non-whitelisted email.
           invitation.status = Invitation::INVALID_DIFFERENTEMAIL
           invitation.additionaldata = {:invalid_reason => 'invitation email does not match signup email', :signup_email => self.email}
           invitation.save
@@ -406,12 +409,13 @@ class User < ActiveRecord::Base
       end
     end
     
-    # is there an unaccepted invitation with this email address in it?
+    # is there an unaccepted invitation with this email address in it? - then let's call it an accepted invitation
     invitation = Invitation.find(:first, :conditions => ["email = '#{self.email}' and status = #{Invitation::PENDING}"])
     if(!invitation.nil?)
-      invitation.status = Invitation::HASACCOUNT
-      invitation.colleague_id = self.id
-      invitation.save
+      invitation.accept(self,now)
+      self.vouched = true 
+      self.vouched_by = invitation.user.id
+      self.vouched_at = now
     end  
   
     # email settings

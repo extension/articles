@@ -21,7 +21,7 @@ class People::SignupController < ApplicationController
   
   def new
     if(!request.post?)
-      return redirect_to(:action => 'readme')
+      return redirect_to(:action => 'readme', :invite => params[:invite])
     end
     
     # just in case we got here from an openid login

@@ -231,7 +231,7 @@ class NotificationMailer < ActionMailer::Base
     @subject        = @subjectlabel+'You have been invited to get an eXtensionID'
     
     urls = Hash.new
-    urls['signup'] = url_for(:controller => '/people/signup', :action => 'new', :invite => notification.additionaldata[:invitation_token])
+    urls['signup'] = url_for(:controller => '/people/signup', :action => 'readme', :invite => notification.additionaldata[:invitation_token])
     urls['contactus'] = url_for(:controller => '/people/help', :action => 'contactform')
     @body           = {:isdemo => @isdemo, :notification => notification, :urls => urls }  
   end
