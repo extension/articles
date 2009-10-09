@@ -12,7 +12,11 @@ module ApplicationHelper
   end
   
   def is_public_responder(question_response)
-    question_response.public_responder ? return true : return false
+    if question_response.public_responder 
+      return true 
+    else
+      return false
+    end
   end
     
   #old time print
