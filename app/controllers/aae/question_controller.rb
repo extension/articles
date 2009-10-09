@@ -281,6 +281,9 @@ class Aae::QuestionController < ApplicationController
         flash[:failure] = "Incoming question does not exist."
       end
       redirect_to incoming_url
+    else
+      do_404
+      return
     end
   end
 
