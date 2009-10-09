@@ -27,8 +27,6 @@
     
 
     <% if (response = @submitted_question.current_response) and (response.strip != '') %>
-        <h3>Current Answer</h3>
-        <p class="response"><%= response %></p>
     
     <% else %>
         <div id="no_answer">
@@ -44,9 +42,12 @@
     
     <div id="responses">
     <% if @submitted_question.responses.length > 0 %>
-    <h3>All Responses:</h3>
+    <h3>Responses:</h3>
       <% @submitted_question.responses.each do |response| %>
-        <p><%= response.response %><p>
+        <div class="commentblock">
+            <p class="comment"><%= response.response %></p>
+            <p class="meta">Posted <%= time_ago_in_words(response.created_at) %> ago</p>
+        </div>
       <% end %>
     <% end %>
     </div>

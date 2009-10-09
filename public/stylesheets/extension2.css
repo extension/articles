@@ -723,3 +723,8 @@ p.response {font-size:1.6em; margin-bottom:2em;}
 #editquestion {background: #ddf1f8;padding:2.25em 1.75em;}
 #public_aae .cancel {color:#000;}
 #public_aae .cancel:hover {text-decoration:underline;}
+#public_aae .commentblock {/*border-bottom:1px solid #ccc;*/ margin:0 1.5em 4.5em;}
+#public_aae .commentblock .meta {color:#888;border-top:1px solid #ccc;margin:.5em 0;padding-top:.25em;}
+
+#responses h3 {color:#c45614;margin-top:.45em; margin: 1.25em  0 .5em;font-weight:normal;font-size:1.8em;}
+#responses p.comment {padding:0;color:#000;font-family: "Georgia","Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;font-size:1.6em;margin:0;}
