@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class UserEvent < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :user, :dependent => :destroy
   validates_presence_of :etype, :ip
   serialize :additionaldata
 
@@ -49,7 +49,7 @@ class UserEvent < ActiveRecord::Base
   def self.log_event(opts = {})    
     # user and login convenience column
     if(opts[:user].nil?)
-      opts[:login] = opts[:additionaldata][:login].nil? ? 'unknown' : opts[:additionaldata][:login]
+      opts[:login] = ((opts[:additionaldata].nil? or opts[:additionaldata][:login].nil?) ? 'unknown' : opts[:additionaldata][:login])
     else
       opts[:login] = opts[:user].login
     end
