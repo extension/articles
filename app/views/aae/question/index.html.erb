@@ -48,9 +48,9 @@
 
 <div id="inc_response">
 <div id="answered_FAQ">
-<% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
+<% if @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
         
-        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
+        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
             <p><strong>This question was not answered. The reason is given below.</strong></p>
         <% end %>
         
@@ -63,18 +63,12 @@
         	    <% end %>
         	</p>
 	        <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
-    	    
-    	    <% if @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED %>
-    	    <p><strong>Rejection Comment:</strong></p>
-    	    <p><%= @submitted_question.current_response %></p>
-    	    <% end %>        
 	    
 <% end %>
 
+<% if @submitted_question.responses.length > 0 %>
 <a name="question_resolution"></a>
 <h3>Question Responses</h3>
-
-<% if @submitted_question.responses.length > 0 %>
 
 <% @submitted_question.responses.each do |response| %>
     <% if is_public_responder(response) %>
@@ -100,7 +94,7 @@
             <% if @contributing_question %>
     	        <p><strong>This question was answered with 
     	        <% if @type == 'FAQ' %>
-    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", view_search_question_url(:qid => @contributing_question.foreignid, :type => @contributing_question.entrytype) %>
+    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", "http://faq.extension.org/questions/show/#{@contributing_question.foreignid}" %>
     	        <% else %>
     	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", aae_question_url(:id => @contributing_question.foreignid) %>
     	        <% end %>
@@ -129,9 +123,11 @@
 
 <div id="user_actions">
     <% if @submitted_question.spam %>
-    <h3>This question has been marked as spam.</h3>
-    <p><%= link_to "This is not spam", aae_report_ham_url(:id => @submitted_question.id),
+        <div class="rejectedaae">
+            <h3>This question has been marked as spam.</h3>
+            <p><%= link_to "This is not spam", aae_report_ham_url(:id => @submitted_question.id),
                                        :confirm => "Are you sure you want to report this question as non-spam?", :method => :post %></p>
+        </div>
     
     <% else %>
     <% if @submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED %>
@@ -154,7 +150,6 @@
         <% else %>
         <h3>This question has been resolved</h3>
         <% end %>
-        <p><%= link_to("Skip to resolution details", "#question_resolution") %></p>
         <% if !@submitted_question.contributing_question and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER %>
         <br/> 
 
@@ -174,6 +169,7 @@
           <%= button_to 'Reactivate Question', :controller => 'aae/question', :action => :reactivate, :id => @submitted_question.id %>
         <% end %>
     <% end %>
+    
     
     <% if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
       <p>Need to reopen this question?</p>
@@ -216,7 +212,7 @@
     <% else %>
         <% if (@submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED) or (@submitted_question.spam) %>
         <div class="admin_option offline" >
-            <p>This question is not accessible online</p>
+            <p>This question is not accessible online. (You're seeing this message because you are an Admin.)</p>
         </div>
         <% else %>
         <div class="admin_option offline" >
