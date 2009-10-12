@@ -75,7 +75,7 @@ class AskController < ApplicationController
   
   def question_confirmation
     if params[:q] and params[:q].strip != '' 
-      params[:submitted_question][:asked_question] = params[:q]
+      params[:submitted_question][:asked_question] = params[:q].sanitize
       flash.now[:googleanalytics] = '/ask-an-expert-search-results'
       set_title("Ask an Expert - eXtension", "Confirmation")
       set_titletag("Search Results for Ask an Expert - eXtension")

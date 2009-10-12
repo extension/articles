@@ -316,10 +316,10 @@ end
 
 def clean_question_and_answer  
   if self.current_response and self.current_response.strip != ''
-    self.current_response = Hpricot(self.current_response).to_html 
+    self.current_response = Hpricot(self.current_response.sanitize).to_html 
   end
   
-  self.asked_question = Hpricot(self.asked_question).to_html
+  self.asked_question = Hpricot(self.asked_question.sanitize).to_html
 end
 
 def submitter_fullname

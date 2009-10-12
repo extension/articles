@@ -26,7 +26,7 @@ class Response < ActiveRecord::Base
   end
   
   def clean_response
-    self.response = Hpricot(self.response).to_html 
+    self.response = Hpricot(self.response.sanitize).to_html 
   end
   
 end
