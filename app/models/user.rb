@@ -897,34 +897,6 @@ class User < ActiveRecord::Base
     end
   end
  
-  def search_invite_communities(opts = {})
-    
-    # TODO: search the description and the tags
-    
-    tmpterm = opts.delete(:searchterm)
-    if tmpterm.nil?
-      return nil
-    end
-    # remove any leading * to avoid borking mysql
-    searchterm = tmpterm.gsub(/^\*/,'$').strip
-    findvalues = {
-      :findname => searchterm,
-      :findtext => searchterm,
-      :findtag => searchterm
-    }
-    conditions = ["name rlike :findname or description rlike :findtext or cached_tags.fulltextlist rlike :findtag",findvalues]
-
-    finder_opts = {:include => [:cached_tags], :conditions => conditions, :group => 'communities.id'}
-    
-    dopaginate = opts.delete(:paginate)
-
-    if(dopaginate)
-      self.communityinvitejoins.paginate(:all,opts.merge(finder_opts))
-    else
-      self.communityinvitejoins.find(:all,opts.merge(finder_opts))
-    end
-  end
-  
   def is_sudoer?
     return AppConfig.configtable['sudoers'][self.login.downcase]
   end

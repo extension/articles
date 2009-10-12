@@ -334,11 +334,7 @@ class People::ColleaguesController < ApplicationController
       return(redirect_to(:action => 'index'))
     end
     
-    if(params[:findcommunity] and params[:findcommunity].strip != "" )
-      if ( params[:findcommunity].strip.length >= 3 )
-        @currentuser.search_invite_communities({:order => 'name', :limit => 11, :searchterm => params[:findcommunity]})
-      end
-    elsif(@currentuser.communityinvitejoins.count > 0)
+    if(@currentuser.communityinvitejoins.count > 0)
       @communitylist = @currentuser.communityinvitejoins.find(:all, :order => 'name')
     end
     
