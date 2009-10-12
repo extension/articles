@@ -1,28 +1,28 @@
+<% @page_title = "Reply to question ##{@submitted_question.id}"%>
 <%= render(:partial => "partial/flashmessages") %>
 
-<h3><%= link_to "Incoming Question #{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %></h3>
-<h1>Write an Answer</h1>
+<h3><%= link_to "AaE ##{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %></h3>
+<h1>Write a Reply</h1>
 
 <div id="response_form">
     <h2>Your response will be sent via email using the following format</h2>
     <div id="email_content">
         <p><strong>Subject:</strong> [Message from eXtension] Your question has been responded to by one of our experts.</p>
         <p><strong>From:</strong> noreplies@extension.org</p>
-    
-            <% if @external_name %>
-                <p>Hello <%= @external_name %>,</p>
-            <% else %>
-                <p>Hello,</p>
-            <% end %>
 
-            <p>You have a response from the question you asked via eXtension's 'Ask an Expert' tool!</p>
+            <p>There is a response to the question you asked via eXtension's 'Ask an Expert' tool!</p>
+            
+            <p>View your question and response:<br />
+                https://www.extension.org/ask/<%= @submitted_question.question_fingerprint %></p>
 
-            <p>Question asked:</p> 
-            <p><%= @submitted_question.asked_question %></p>
+            <p>Please don't reply to this email. You can post a reply at the link above.</p>
+            <br />
+            
+            <p>Your question:<br /><%= @submitted_question.asked_question %></p>
             
             <% form_tag answer_question_url(:squid => @submitted_question.id, :status_state => @status, :question => @question ? @question.id : nil) do %>
 
-            <p><label for="current_response">Answer:</label>
+            <p><label for="current_response">Response:</label>
             
             <% if (@sampletext || @question) %>
                 <% @answer = (@sampletext ? @sampletext : @question.content)%>
@@ -34,11 +34,12 @@
 
             <p><label for="signature" class="helptext">Your default email signature can be set in your preferences</label> 
             <%= text_area_tag 'signature', @signature, "rows" => 3 %></p>
-
-            <p>Looking for more? See what's new at the eXtension public site:</p>
-            <p>http://www.extension.org</p>
+            
             
             <p>Thank you for using our 'Ask an Expert' system.</p>
+            <p>Have another question? Please ask!
+                <br />http://www.extension.org/ask/</p>
+            
             <p>***PLEASE DO NOT REPLY TO THIS MESSAGE***</p/>
             
             <p><%= SubmittedQuestion::EXPERT_DISCLAIMER %></p>

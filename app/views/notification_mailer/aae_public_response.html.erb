@@ -1,13 +1,14 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
-<% if (!@submitted_question.public_user.fullname.blank? and @submitted_question.public_user.fullname != SubmittedQuestion::DEFAULT_SUBMITTER_NAME )%>
-Hello <%= @submitted_question.public_user.fullname %>,
-<% else %>
-Hello,
-<% end %>
 
-You have a response from the question you asked via eXtension's 'Ask an Expert' tool!
+There is a response to the question you asked via eXtension's 'Ask an Expert' tool!
 
-Question asked:
+View your question and response:
+<%= @urls['question']%>
+
+Please don't reply to this email. You can post a reply at the link above.
+
+
+Your question:
 <%= @submitted_question.asked_question %>
 
 Response:
@@ -17,15 +18,12 @@ Response:
 <%= @signature %>
 <% end %>
 
-You can also view this answer at our website by going to:
-
-<%= @urls['question']%>
-
-Have another question?  Please ask!
-
-<%= @urls['askanexpert']%>
 
 Thank you for using our 'Ask an Expert' system.
+
+Have another question? Please ask!
+<%= @urls['askanexpert']%>
+
 
 *** PLEASE DO NOT REPLY TO THIS MESSAGE ***
 
