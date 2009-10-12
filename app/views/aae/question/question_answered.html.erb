@@ -1,11 +1,17 @@
 <% @page_title = "Thanks for answering the question" %>
 <div id="inc_body">
-    <h3><%= link_to "Incoming Question ##{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %> > Convert to a FAQ?</h3>
 
+<h1>Thanks for Answering the Question</h1>
 
+<ul class="larger">
+    <li>Everything is saved, you can simply close your browser window, or...</li>
+    <li><strong><%= link_to "View the resolved question page", aae_question_url(:id => @submitted_question.id) %></strong></li>
+    <li><strong><%= link_to "View Incoming Questions", incoming_url %></strong></li>
+</ul>
 
-<h1>Thanks for answering the question!</h1>
-<br/>
+<br />
+<br />
+<br />
 <h2>Would you like to convert your response into an FAQ?</h2>
 
 
@@ -15,13 +21,5 @@
     <%= hidden_field_tag(:aae_answer, @submitted_question.current_response) %>
     <p><%= submit_tag 'Convert into a FAQ' %> (Edit it on the next screen)</p>
 <% end %>
-<br/>
-<h2>I'm done <small>(You can always convert to a FAQ later)</small></h2>
-<ul>
-    <li>Everything is saved, you can simply close your browser window, or...</li>
-    <li><%= link_to "View the resolved question page", aae_question_url(:id => @submitted_question.id) %></li>
-    <li><%= link_to "View Incoming Questions", incoming_url %></li>
-</ul>
-<br/>
-<p>Thanks again for answering the question!</p>
+
 </div>
