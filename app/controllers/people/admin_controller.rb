@@ -568,7 +568,7 @@ class People::AdminController < ApplicationController
             :downloadreport => 'csv'
           }
         end
-        @csvreporturl = url_for(:controller => '/people/colleagues', :action => action, :params => otherparams)
+        @csvreporturl = url_for(:controller => 'people/admin', :action => action, :params => otherparams)
       end
     end
     
