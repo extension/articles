@@ -26,6 +26,7 @@ class Communityconnection < ActiveRecord::Base
   belongs_to :user
   belongs_to :connector, :class_name => "User", :foreign_key => "connected_by"
   
+  
   # -----------------------------------
   # Class-level methods
   # -----------------------------------

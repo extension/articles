@@ -257,7 +257,6 @@ class People::ColleaguesController < ApplicationController
   end
   
 
-  
   def showuser
     if(!params[:userid].nil?)
       findid = params[:userid]
@@ -321,32 +320,7 @@ class People::ColleaguesController < ApplicationController
       format.html
     end
   end
-  
-  def xhrfindcommunity
-    begin
-      @showuser = User.find(params[:id])
-    rescue ActiveRecord::RecordNotFound  
-      flash[:error] = 'User not found.'  
-    end
     
-    if(@showuser.retired?)  
-      flash[:warning] = 'This user account is retired.'
-    else        
-      if (params[:findcommunity] and params[:findcommunity].strip != "" and params[:findcommunity].strip.length >= 3 )
-        if(admin_mode?)
-          @communitylist = Community.search({:order => 'name', :limit => 11, :searchterm => params[:findcommunity]})
-        else
-          @currentuser.search_invite_communities({:order => 'name', :limit => 11, :searchterm => params[:findcommunity]})
-        end
-      end
-    end
-    
-    respond_to do |format|
-      format.js
-    end
-    
-  end  
-  
   def invitetocommunity
     begin
       @showuser = User.find(params[:id])
@@ -362,16 +336,10 @@ class People::ColleaguesController < ApplicationController
     
     if(params[:findcommunity] and params[:findcommunity].strip != "" )
       if ( params[:findcommunity].strip.length >= 3 )
-        if(admin_mode?)
-          @communitylist = Community.search({:order => 'name', :limit => 11, :searchterm => params[:findcommunity]})
-        else
-          @currentuser.search_invite_communities({:order => 'name', :limit => 11, :searchterm => params[:findcommunity]})
-        end
+        @currentuser.search_invite_communities({:order => 'name', :limit => 11, :searchterm => params[:findcommunity]})
       end
-    elsif(admin_mode?)
-      @communitylist = Community.newest(11,Community::APPROVED)
     elsif(@currentuser.communityinvitejoins.count > 0)
-      @communitylist = @currentuser.communityinvitejoins
+      @communitylist = @currentuser.communityinvitejoins.find(:all, :order => 'name')
     end
     
     respond_to do |format|

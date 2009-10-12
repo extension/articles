@@ -91,7 +91,7 @@ class User < ActiveRecord::Base
   has_many :communityopenjoins, :through => :communityconnections, :source => :community, :conditions => "(communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader') and communities.memberfilter = #{Community::OPEN}"
   
   has_many :communityinvitejoins, :through => :communityconnections, :source => :community, :conditions => "((communityconnections.connectiontype = 'member' and communities.memberfilter = #{Community::OPEN}) or communityconnections.connectiontype = 'leader')"
-  
+
   has_many :connectjoins, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader'"
   has_many :communityinvitations, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'invited'"
   has_many :connectinvitations, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype = 'invited'"
@@ -914,9 +914,10 @@ class User < ActiveRecord::Base
     }
     conditions = ["name rlike :findname or description rlike :findtext or cached_tags.fulltextlist rlike :findtag",findvalues]
 
-    finder_opts = {:joins => [:cached_tags], :conditions => conditions, :group => 'communities.id'}
+    finder_opts = {:include => [:cached_tags], :conditions => conditions, :group => 'communities.id'}
     
     dopaginate = opts.delete(:paginate)
+
     if(dopaginate)
       self.communityinvitejoins.paginate(:all,opts.merge(finder_opts))
     else
@@ -1621,8 +1622,10 @@ class User < ActiveRecord::Base
     :order => 'users.last_name,users.first_name')
   end
     
+  def self.cleanup_accounts
+    # 
     
-    # end faq user model
+  end
   
   protected
   

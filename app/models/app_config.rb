@@ -78,6 +78,9 @@ class AppConfig
     # invitation timeout is in days
     @@configtable['invitation_token_timeout'] = 30
     
+    # if an account is stuck in signup or pending review for over 30 days, we are going to delete the accounts
+    @@configtable['account_cleanup_delta'] = 30
+    
     # recent deltas are in days
     @@configtable['recent_account_delta'] = 7
     @@configtable['recent_activity_delta'] = 7
