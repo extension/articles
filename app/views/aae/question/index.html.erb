@@ -171,18 +171,9 @@
     <% end %>
     
     
-    <% if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
-      <p>Need to reopen this question?</p>
-      <%= button_to 'Assign me this question', :action => :assign, :id => @submitted_question.id, :assignee_login => @currentuser.login %>
+    <% if @submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER or @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
       <%= render(:partial => 'manual_assign', :locals => { :work_time_remaining => work_time_remaining }) %>
     <% end %>
-    
-<% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
-  <% if @submitted_question.has_response? %>
-    <%= button_to 'Close Question', :controller => 'aae/question', :action => :close_out, :squid => @submitted_question.id %>
-  <% end %>
-  <%= render(:partial => 'manual_assign', :locals => { :work_time_remaining => work_time_remaining }) %>
-<% end %>
 
 <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
      <% if (!@submitted_question.assignee.nil? and @submitted_question.assignee.id == @currentuser.id) %>
