@@ -90,10 +90,10 @@
         <div class="commentblock expert">
             <p class="comment"><%= wrap_text(response.response) %></p>
             <p><strong>Resolved by: </strong> 
-    	    <% if @submitted_question.resolved_by.id == User.systemuserid %>
+    	    <% if response.user_id == User.systemuserid %>
     	    System
     	    <% else %>
-    	    <%= link_to @submitted_question.resolved_by.fullname, aae_profile_url(:id => @submitted_question.resolved_by.login), :class => "profile" %>
+    	    <%= link_to response.resolver.fullname, aae_profile_url(:id => response.resolver.login), :class => "profile" %>
     	    <% end %>
     	    </p>
             <p><%= humane_date(@submitted_question.resolved_at) %></p>
