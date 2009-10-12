@@ -1196,7 +1196,8 @@ class User < ActiveRecord::Base
       end
       # remove any leading * to avoid borking mysql
       # remove any '\' characters because it's WAAAAY too close to the return key
-      searchterm = tmpterm.gsub(/\\/,'').gsub(/^\*/,'$').strip
+      # strip '+' characters because it's causing a repitition search error
+      searchterm = tmpterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
       # in the format wordone wordtwo?
       words = searchterm.split(%r{\s*,\s*|\s+})
       if(words.length > 1)

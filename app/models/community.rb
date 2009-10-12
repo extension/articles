@@ -661,8 +661,9 @@ class Community < ActiveRecord::Base
     if tmpterm.nil?
       return nil
     end
-    # remove any leading * to avoid borking mysql
-    searchterm = tmpterm.gsub(/^\*/,'$').strip
+    # remove any leading * to avoid borking mysql - also strip the + out which generates a repitition error
+    # and remove the '\' in case it's a trailing backslash
+    searchterm = tmpterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
     findvalues = {
       :findname => searchterm,
       :findtext => searchterm,
