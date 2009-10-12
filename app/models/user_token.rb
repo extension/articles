@@ -7,7 +7,7 @@
 require 'digest/sha1'
 
 class UserToken < ActiveRecord::Base
-  belongs_to :user, :dependent => :destroy
+  belongs_to :user
   EMAIL = 1
   RESETPASS = 2
   ADMIN_REVOKEAGREENT = 3

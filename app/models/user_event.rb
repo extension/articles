@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class UserEvent < ActiveRecord::Base
-  belongs_to :user, :dependent => :destroy
+  belongs_to :user
   validates_presence_of :etype, :ip
   serialize :additionaldata
 
