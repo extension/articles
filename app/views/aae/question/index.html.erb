@@ -49,21 +49,7 @@
 <div id="inc_response">
 <div id="answered_FAQ">
 <% if @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
-        
-        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
-            <p><strong>This question was not answered. The reason is given below.</strong></p>
-        <% end %>
-        
-	        <p>
-        	    <strong>Resolved by: </strong> 
-        	    <% if @submitted_question.resolved_by.id == User.systemuserid %>
-        	    System
-        	    <% else %>
-        	    <%= link_to @submitted_question.resolved_by.fullname, aae_profile_url(:id => @submitted_question.resolved_by.login), :class => "profile" %>
-        	    <% end %>
-        	</p>
-	        <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
-	    
+    <p><strong>This question was not answered. The reason is given below.</strong></p>
 <% end %>
 
 <% if @submitted_question.responses.length > 0 %>
@@ -83,7 +69,7 @@
     
         <div class="commentblock expert">
             <p class="comment"><%= wrap_text(response.response) %></p>
-            <p><strong>Resolved by: </strong> 
+            <p>Response by  
     	    <% if response.user_id == User.systemuserid %>
     	    System
     	    <% else %>
@@ -146,7 +132,9 @@
             <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
         </div>
         <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
-        <h3>This question was not answered</h3>
+        <div class="rejectedaae">
+            <h3>This question was not answered</h3>
+        </div>
         <% else %>
         <h3>This question has been resolved</h3>
         <% end %>
@@ -159,7 +147,7 @@
              <%= hidden_field_tag(:aae_question, @submitted_question.asked_question) %>
              <%= hidden_field_tag(:aae_answer, @submitted_question.current_response) %>
              <p>
-             <%= submit_tag 'Convert this Question & Answer into a FAQ', :class => "submit" %>
+             <%= submit_tag 'Convert this question into a FAQ', :class => "submit" %>
              <br />(you can edit on the next screen)
              </p>  
            <% end %>
