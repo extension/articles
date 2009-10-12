@@ -14,18 +14,7 @@ require 'openid/extensions/sreg'
 
 module OpenID
   module SReg
-    DATA_FIELDS = {
-      'fullname'=>'Full Name',
-      'nickname'=>'Nickname',
-      'dob'=>'Date of Birth',
-      'email'=>'E-mail Address',
-      'gender'=>'Gender',
-      'postcode'=>'Postal Code',
-      'country'=>'Country',
-      'language'=>'Language',
-      'timezone'=>'Time Zone',
-      'extensionid'=>'eXtension ID',
-    }
+    DATA_FIELDS.merge!({'extensionid'=>'eXtension ID'})
   end
 end
 

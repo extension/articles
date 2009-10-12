@@ -286,7 +286,7 @@ class FeedsController < ApplicationController
       end
       
       if !resources.empty?
-        xml.updated (resources.max{|a,b| a[:updated] <=> b[:updated]}[:updated].xmlschema)
+        xml.updated(resources.max{|a,b| a[:updated] <=> b[:updated]}[:updated].xmlschema)
       else
         xml.updated Time.now.utc.xmlschema
       end
