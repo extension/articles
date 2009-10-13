@@ -52,18 +52,22 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   #scopes for sq events
   named_scope :work_in_progress, lambda { |user_id, sq_id| {:conditions => {:event_state => WORKING_ON, :initiated_by_id => user_id, :submitted_question_id => sq_id}}}
   named_scope :latest, {:order => "created_at desc", :limit => 1}
-  named_scope :latest_handling, {:conditions => "event_state IN (#{ASSIGNED_TO},#{RESOLVED})",:order => "created_at desc", :limit => 1}
+  named_scope :latest_handling, {:conditions => "event_state IN (#{ASSIGNED_TO},#{RESOLVED},#{REJECTED},#{NO_ANSWER})",:order => "created_at desc", :limit => 1}
   # get all the questions with a 'I'm working on this' status (make sure the current question assignee is the one who claimed the question to work on it)
   named_scope :reserved_questions, {:select => "DISTINCT(submitted_question_events.submitted_question_id) AS id", :joins => :submitted_question, :conditions => "submitted_questions.user_id = submitted_question_events.initiated_by_id AND submitted_question_events.event_state = #{WORKING_ON} AND submitted_question_events.created_at > #{RESERVE_WINDOW}"}
   
   
   def is_handling_event?
-    return ((self.event_state == ASSIGNED_TO) or (self.event_state == RESOLVED))
+    return ((self.event_state == ASSIGNED_TO) or (self.event_state == RESOLVED) or (self.event_state==REJECTED) or (self.event_state==NO_ANSWER))
   end
+  
   
   def self.log_event(create_attributes = {})
     time_of_this_event = Time.now.utc
     submitted_question = create_attributes[:submitted_question]
+    if create_attributes[:event_state] == ASSIGNED_TO
+      SubmittedQuestion.update(submitted_question.id, {:last_assigned_at => time_of_this_event})
+    end
 
     # get last event
     if(last_events = submitted_question.submitted_question_events.latest and !last_events.empty?)
