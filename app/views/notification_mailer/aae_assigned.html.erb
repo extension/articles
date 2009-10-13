@@ -2,16 +2,17 @@
 
 A question is assigned to you at the eXtension Ask an Expert site.
 
-Please click on this link to reply:
+Please click this link to reply:
 <%= @urls['question']%>  
 
 <% if @reassign_comment and @reassign_comment.strip != '' %>
-Comment from <%= @assigner.fullname %>:
+<%= @assigner.fullname %> posted a comment when assigning the question:
 <%= @reassign_comment %>
 <% end %>
 
 <% if @public_comment %>
-New comment made from the asker of the question:
+*** Update ***
+There's a new comment from the person who submitted the question:
 <%= @public_comment %>
 <% end %>
 
@@ -20,7 +21,7 @@ The question is:
 
 
 We need your help. Please either
-1) Answer the question
+1) Answer the question. You can also ask for more information from the submitter if something needs to be clarified.
 2) Assign it to someone else
 3) Moderate it (duplicate submissions or otherwise inappropriate)
 <%= @urls['question']%>  
