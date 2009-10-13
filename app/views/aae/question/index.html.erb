@@ -77,12 +77,12 @@
     	    <% end %>
     	    </p>
             <p><%= humane_date(response.created_at) %></p>
-            <% if @contributing_question %>
-    	        <p><strong>This question was answered with 
-    	        <% if @type == 'FAQ' %>
-    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", "http://faq.extension.org/questions/show/#{@contributing_question.foreignid}" %>
+            <% if contributing_question = response.contributing_question %>
+    	        <p><strong>This response used 
+    	        <% if contributing_question.entrytype == SearchQuestion::FAQ %>
+    	          <%= link_to "FAQ # #{contributing_question.foreignid}", "http://faq.extension.org/questions/show/#{contributing_question.foreignid}" %>
     	        <% else %>
-    	          <%= link_to "#{@type} # #{@contributing_question.foreignid}", aae_question_url(:id => @contributing_question.foreignid) %>
+    	          <%= link_to "AaE Question # #{contributing_question.foreignid}", aae_question_url(:id => contributing_question.foreignid) %>
     	        <% end %>
     	        </strong></p>
     	    <% end %>

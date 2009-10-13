@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091009215941) do
+ActiveRecord::Schema.define(:version => 20091013141551) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -543,12 +543,13 @@ ActiveRecord::Schema.define(:version => 20091009215941) do
   create_table "responses", :force => true do |t|
     t.integer  "user_id"
     t.integer  "public_user_id"
-    t.integer  "submitted_question_id",                    :null => false
-    t.text     "response",                                 :null => false
-    t.integer  "duration_since_last",                      :null => false
-    t.boolean  "sent",                  :default => false, :null => false
+    t.integer  "submitted_question_id",                       :null => false
+    t.text     "response",                                    :null => false
+    t.integer  "duration_since_last",                         :null => false
+    t.boolean  "sent",                     :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "contributing_question_id"
   end
 
   add_index "responses", ["submitted_question_id"], :name => "index_responses_on_submitted_question_id"

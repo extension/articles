@@ -130,12 +130,12 @@ def add_resolution(sq_status, resolver, response, contributing_question = nil)
   case sq_status
     when STATUS_RESOLVED    
       self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
-      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true)
+      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true, :contributing_question_id => contributing_question)
       @response.save
       SubmittedQuestionEvent.log_resolution(self)    
     when STATUS_NO_ANSWER
       self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
-      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true)
+      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true, :contributing_question_id => contributing_question)
       @response.save
       SubmittedQuestionEvent.log_no_answer(self)  
     when STATUS_REJECTED
