@@ -304,6 +304,9 @@ class NotificationMailer < ActionMailer::Base
    def aae_assigned(notification)
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      assigner = User.find(notification.created_by)
+     public_comment = notification.additionaldata[:asker_comment] if notification.additionaldata[:asker_comment]
+     reassign_comment = notification.additionaldata[:comment] if notification.additionaldata[:comment]
+     
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
      @subject        = @subjectlabel+'Incoming question assigned to you'
@@ -313,7 +316,7 @@ class NotificationMailer < ActionMailer::Base
      urls = Hash.new
      urls['question'] = aae_question_url(:id => submitted_question.id)
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
-     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls, :assigner => assigner }
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls, :assigner => assigner, :reassign_comment => reassign_comment, :public_comment => public_comment }
    end
    
    def aae_public_edit(notification)
@@ -332,6 +335,7 @@ class NotificationMailer < ActionMailer::Base
  
    def aae_reassigned(notification)
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
      @subject        = @subjectlabel+'Incoming question reassigned'
@@ -366,6 +370,21 @@ class NotificationMailer < ActionMailer::Base
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :urls => urls }
+   end
+   
+   def aae_public_comment(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     response = Response.find(notification.additionaldata[:response_id])
+     assigned_at = submitted_question.assigned_date
+     respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s)
+     @subject = "[Message from eXtension] A question you have been assigned has been commented on by the asker."          
+     @recipients     = notification.user.email
+     urls = Hash.new
+     urls['question'] = aae_question_url(:id => submitted_question.id)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :respond_by => respond_by, :assigned_at => assigned_at, :response => response, :urls => urls}
    end
    
    

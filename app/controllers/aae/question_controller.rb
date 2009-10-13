@@ -19,10 +19,10 @@ class Aae::QuestionController < ApplicationController
       return
     end
     
-    @contributing_question = @submitted_question.contributing_question
-    if @contributing_question
-      @contributing_question.entrytype == SearchQuestion::FAQ ? @type = 'FAQ' : @type = 'AaE Question'
-    end
+    #@contributing_question = @submitted_question.contributing_question
+    #if @contributing_question
+    #  @contributing_question.entrytype == SearchQuestion::FAQ ? @type = 'FAQ' : @type = 'AaE Question'
+    #end
     
     @categories = Category.root_categories
     @category_options = @categories.map{|c| [c.name,c.id]}

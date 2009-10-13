@@ -5,9 +5,14 @@ A question is assigned to you at the eXtension Ask an Expert site.
 Please click on this link to reply:
 <%= @urls['question']%>  
 
-<% if @submitted_question.current_response and @submitted_question.current_response.strip != '' %>
+<% if @reassign_comment and @reassign_comment.strip != '' %>
 Comment from <%= @assigner.fullname %>:
-<%= @submitted_question.current_response %>
+<%= @reassign_comment %>
+<% end %>
+
+<% if @public_comment %>
+New comment made from the asker of the question:
+<%= @public_comment %>
 <% end %>
 
 The question is:

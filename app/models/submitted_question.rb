@@ -70,7 +70,7 @@ EXPERT_DISCLAIMER = "This message for informational purposes only. " +
                     "third parties through eXtension is solely at the user’s own risk. All eXtension content and communication is subject to  the terms of " + 
                     "use http://www.extension.org/main/termsofuse which may be revised at any time."
                     
-PUBLIC_RESPONSE_REASSIGNMENT_COMMENT = "This question has been reassigned to you by the system because the submitter of the question has posted a new response. Please either " +
+PUBLIC_RESPONSE_REASSIGNMENT_COMMENT = "This question has been reassigned to you by the system because the submitter of the question has posted a new comment. Please either " +
 "reply to the response or close the question out if there is no need for a reply. Thank You!"
                     
 DEFAULT_SUBMITTER_NAME = "External Submitter"
@@ -395,7 +395,7 @@ end
 # Assigns the question to the user, logs the assignment, and sends an email
 # to the assignee letting them know that the question has been assigned to
 # them.
-def assign_to(user, assigned_by, comment, public_reopen = false)
+def assign_to(user, assigned_by, comment, public_reopen = false, public_comment = nil)
   raise ArgumentError unless user and user.instance_of?(User)
   # don't bother doing anything if this is assignment to the person already assigned unless it's 
   # a question that's been responded to by the public after it's been resolved that then gets 
@@ -416,12 +416,18 @@ def assign_to(user, assigned_by, comment, public_reopen = false)
                                     :initiated_by => assigned_by,
                                     :event_state => SubmittedQuestionEvent::ASSIGNED_TO,
                                     :response => comment})
-                                    
-   
+    
+  # if this is a reopen reassignment due to the public user commenting on the sq                                  
+  if public_comment
+    asker_comment = public_comment.response
+  else
+    asker_comment = nil
+  end
+     
   # create notifications
-  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment})
+  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment, :asker_comment => asker_comment})
   if(is_reassign)
-    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :user => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment})
+    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :user => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
   end
 end
 

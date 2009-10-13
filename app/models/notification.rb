@@ -51,7 +51,7 @@ class Notification < ActiveRecord::Base
   AAE_REASSIGNMENT = 1002  # reassignment notification
   AAE_ESCALATION = 1003  # escalation notification
   AAE_PUBLIC_EDIT = 1004  # a public user edited their question
-  
+  AAE_PUBLIC_COMMENT = 1005 # a public user posted another comment
     
   ##########################################
   #  Ask an Expert Notifications - Public
@@ -88,7 +88,8 @@ class Notification < ActiveRecord::Base
   # TODO: MAILERMETHODS[AAE_ESCALATION] = ['todo']    
   MAILERMETHODS[AAE_PUBLIC_EDIT] = ['aae_public_edit']    
   MAILERMETHODS[AAE_PUBLIC_EXPERT_RESPONSE] = ['aae_public_response']    
-  MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission']    
+  MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission'] 
+  MAILERMETHODS[AAE_PUBLIC_COMMENT] = ['aae_public_comment']   
   
   # TODO: add description labels that can get strings from the locale tabel describing each 
   

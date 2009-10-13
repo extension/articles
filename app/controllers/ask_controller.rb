@@ -161,8 +161,12 @@ class AskController < ApplicationController
         response.save
         if @submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED
           @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED)
+          SubmittedQuestionEvent.log_public_response(@submitted_question, public_user.id)
           SubmittedQuestionEvent.log_reopen(@submitted_question, @submitted_question.assignee, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT)
-          @submitted_question.assign_to(@submitted_question.assignee, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT, true)
+          @submitted_question.assign_to(@submitted_question.assignee, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT, true, response)  
+        else
+          Notification.create(:notifytype => Notification::AAE_PUBLIC_COMMENT, :user => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :response_id => response.id})
+          SubmittedQuestionEvent.log_public_response(@submitted_question, public_user.id)
         end
       else
         @err_msg = "There was an error submitting your response. Please try again later."  
