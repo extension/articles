@@ -18,7 +18,7 @@ class Aae::DashboardController < ApplicationController
       return
     end
     
-    #set the instance variables based on parameters
+    #set the instance variables based on parameters 
    list_view
    set_filters
    filter_string_helper
@@ -46,7 +46,7 @@ class Aae::DashboardController < ApplicationController
    @assgnscompls = SubmittedQuestion.add_vals(subtotasgn, dup_set, '-')
    
       #  This is user id touching any initiated_by_id or recipient_id for ASSIGNED_TO or any resolved (resolved, rejected, no answer) id; in 3 steps because one statement can't handle a multiple join on users.id in MAMP (goes to never-never land)
-    
+      #  This methodology is due to the constraints of MAMP
    totrecips = User.get_num_times_assigned(last6months, today, "join users on users.id=recipient_id " ," and recipient_id=users.id ", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
    totboth = User.get_num_times_assigned(last6months, today, "join users on users.id=initiated_by_id " ," and (initiated_by_id=users.id and recipient_id=users.id) ", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
    subtot = SubmittedQuestion.add_vals(all_resolved, totrecips, '+')
