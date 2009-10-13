@@ -1,13 +1,18 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
-Hello <%= @notification.user.first_name %>,
 
-A question that is assigned to you at the eXtension Ask an Expert site:
-
-<%= @urls['question']%>  
-
-Has been commented on by the question submitter.  Here is the comment:
-
+There's a new comment on a question assigned to you:
 "<%= @response.response %>"
+
+
+You can view the question and all responses here:
+<%= @urls['question']%>
+
+
+Please either...
+1) visit the link above and reply
+or
+2) close the question if no response is needed
+
 
 Please resolve this question before 
 <%= @respond_by.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00). 
