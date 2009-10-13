@@ -718,7 +718,8 @@ a.help {font-size: 90%;}
     }
     
     
-.save_it {background: #caffbe;padding: .5em;}
+.save_it {background: #caffbe;padding: .5em;font-size:1.4em;}
+.save_it input {font-size:1.6em !important;}
     
 h2 small {font-weight:normal;}
 
@@ -774,19 +775,22 @@ div.answer h2 {
     background: #fff url(/images/common/email.png) left 50% no-repeat;
 }
 #email_content {
-    width: 60em;
-    font-family: Monaco, Verdana !important;
+    width: 70em;
     color:#222;
     border: 4px solid #ccc;
-    padding: 1em 1em 0;
+    padding: 0;
     margin-bottom:2em;
     background: #eee;
+    font-size:1.2em;
 }
 #response_form input, #response_form textarea {font-size:1.1em;}
 
+.headerinfo {background:#ddd;padding:1em 1em .5em;border-bottom:1px solid #aaa;}
+.bodyinfo {padding:2em 1em 1em;}
+
 /*#email_content p {font-family: Verdana !important;}*/
 #email_content textarea {
-   font-family: Monaco, Verdana !important;
+    font-size:1em;
    margin-top: .5em;
 }
 .helptext {
@@ -1470,3 +1474,9 @@ p.comment {padding:0;color:#000;font-family: "Georgia","Lucida Sans", "Lucida Gr
 
 #closebutton .button-to {float:left;}
 ul.larger {font-size:1.1em;}
+
+#noanswer {padding-top:1em; clear:both;}
+span.new {background:yellow;font-weight:normal;font-size:.8em;padding:.2em;-moz-border-radius: 4px;-webkit-border-radius: 4px;}
+a span.new {text-decoration:underline;}
+
+#tooltip_hook h2 {color:#000; font-size:1.5em;}

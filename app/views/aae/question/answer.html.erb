@@ -5,17 +5,20 @@
 <h1>Write a Reply</h1>
 
 <div id="response_form">
-    <h2>Your response will be sent via email using the following format</h2>
+    <h2>Your response will be sent via email and posted to the submitter's AaE question page</h2>
+    <p class="save_it"><%= submit_tag 'Send Reply' %></p>
     <div id="email_content">
-        <p><strong>Subject:</strong> [Message from eXtension] Your question has been responded to by one of our experts.</p>
-        <p><strong>From:</strong> noreplies@extension.org</p>
-
+        <div class="headerinfo">
+            <p><strong>Subject:</strong> [Message from eXtension] Your question has been responded to by one of our experts.
+                <br /><strong>From:</strong> noreplies@extension.org</p>
+        </div>
+        <div class="bodyinfo">
             <p>There is a response to the question you asked via eXtension's 'Ask an Expert' tool!</p>
             
             <p>View your question and response:<br />
-                https://www.extension.org/ask/<%= @submitted_question.question_fingerprint %></p>
+                <%= link_to("https://www.extension.org/ask/#{@submitted_question.question_fingerprint}", "https://www.extension.org/ask/#{@submitted_question.question_fingerprint}") %></p>
 
-            <p>Please don't reply to this email. You can post a reply at the link above.</p>
+            <p>Please don't reply to this no-reply email. Instead, click the link above to send a reply. Thanks!</p>
             <br />
             
             <p>Your question:<br /><%= @submitted_question.asked_question %></p>
@@ -45,8 +48,9 @@
             <p><%= SubmittedQuestion::EXPERT_DISCLAIMER %></p>
             
             <p><span class="helptext">-- end of email message --</span></p>
+        </div>
     </div>
-    <p class="save_it"><%= submit_tag 'Send Email' %> (If you want, you can then convert your response into an FAQ.)</p>
+    <p class="save_it"><%= submit_tag 'Send Reply' %></p>
 </div>
 
 
