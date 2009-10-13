@@ -6,6 +6,7 @@
 
 <div id="response_form">
     <h2>Your response will be sent via email and posted to the submitter's AaE question page</h2>
+    <% form_tag answer_question_url(:squid => @submitted_question.id, :status_state => @status, :question => @question ? @question.id : nil) do %>
     <p class="save_it"><%= submit_tag 'Send Reply' %></p>
     <div id="email_content">
         <div class="headerinfo">
@@ -22,8 +23,6 @@
             <br />
             
             <p>Your question:<br /><%= @submitted_question.asked_question %></p>
-            
-            <% form_tag answer_question_url(:squid => @submitted_question.id, :status_state => @status, :question => @question ? @question.id : nil) do %>
 
             <p><label for="current_response">Response:</label>
             
