@@ -29,7 +29,9 @@ def stringify_submitted_question_event(sq_event)
   when SubmittedQuestionEvent::MARKED_NON_SPAM
     return "Marked as non-spam by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::REJECTED
-    return "Question Rejected by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    reject_msg = "Question Rejected by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    reject_msg = reject_msg + " <span>Reject Comments: #{sq_event.response}</span>"
+    return reject_msg
   when SubmittedQuestionEvent::REACTIVATE
     return "Question Reactivated by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
   when SubmittedQuestionEvent::RECATEGORIZED
