@@ -330,7 +330,12 @@ def clean_question_and_answer
 end
 
 def submitter_fullname
-  return "#{self.submitter_firstname} #{self.submitter_lastname}"
+  submitter_name = self.public_user.fullname
+  if submitter_name.strip == ''
+    submitter_name = DEFAULT_SUBMITTER_NAME 
+  end
+  
+  return submitter_name
 end
 
 # creates a notification to the submitter that we've received their question

@@ -21,7 +21,7 @@ class Aae::QuestionController < ApplicationController
     
     @categories = Category.root_categories
     @category_options = @categories.map{|c| [c.name,c.id]}
-      
+    
     @submitter_name = @submitted_question.submitter_fullname
       
     if @submitted_question.categories and @submitted_question.categories.length > 0
