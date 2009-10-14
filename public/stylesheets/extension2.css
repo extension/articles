@@ -429,7 +429,10 @@ h3.instructions {color: #829500; font-weight:normal;}
 #content_css_reset table p {font-size:1em;}
 #content_css_reset table li {font-size:1em;}
 #content_css_reset th {white-space: normal;}
-#content_css_reset ul {padding:0 1.5em 0;overflow:auto;margin:0 0 1em;}
+
+/* Removed overflow:auto from ul lists because it was preventing the block from flowing around floated content. the problem is that I know this was solving another issue, will have to wait and see what breaks. */
+#content_css_reset ul {padding:0 1.5em 0;margin:0 0 1em;}
+
 #content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;font-size:1.4em;}
 #content_css_reset p {font-size:1.4em;}
 
