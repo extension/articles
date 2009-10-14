@@ -522,6 +522,7 @@ class User < ActiveRecord::Base
   end
 
   def modify_or_create_connection_to_community(community,options = {})
+    logger.debug "=================================== Inside modify_or_create_connection_to_community: #{options.inspect}"
     logger.debug "=================================== Inside modify_or_create_connection_to_community: #{self.attributes.inspect}"
     
     operation = options[:operation]
@@ -539,6 +540,8 @@ class User < ActiveRecord::Base
     when 'add'
       if(connection.nil?)
         Communityconnection.create(:user => self, :community => community, :connectiontype => connectiontype, :sendnotifications => (connectiontype == 'leader'), :connector => connector, :connectioncode => connectioncode)
+      else
+        connection.update_attributes({:connectiontype => connectiontype, :connector => connector, :connectioncode => connectioncode})
       end
       return true
     when 'remove'
