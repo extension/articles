@@ -18,7 +18,7 @@ class Response < ActiveRecord::Base
   
   def calculate_duration_since_last
     parent_submitted_question_id = self.submitted_question_id
-    last_response = Response.find(:first, :conditions => {:submitted_question_id => :parent_submitted_question_id}, :order => "created_at DESC")
+    last_response = Response.find(:first, :conditions => {:submitted_question_id => parent_submitted_question_id}, :order => "created_at DESC")
     if last_response
       self.duration_since_last = Time.now - last_response.created_at
     else
