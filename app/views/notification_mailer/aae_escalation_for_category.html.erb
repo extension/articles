@@ -1,5 +1,5 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
-The questions below were submitted more than <%= @sincehours%> hours ago and have not
+The questions below were either created or reopened more than <%= @sincehours%> hours ago and have not
 yet been resolved. To view this list within the Ask an Expert application, please
 visit:
 
@@ -12,7 +12,7 @@ Link: <%= aae_question_url(:id => question.id, :only_path => false) %>
 The question is:
 "<%= question.asked_question %>"
 
-Submitted <%= time_ago_in_words(question.created_at) %> ago
+Question opened <%= time_ago_in_words(question.last_opened_at) %> ago
 <% end %>
 
 *** PLEASE DO NOT REPLY TO THIS MESSAGE ***
