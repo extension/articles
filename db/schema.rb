@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091013141551) do
+ActiveRecord::Schema.define(:version => 20091014035055) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -659,6 +659,7 @@ ActiveRecord::Schema.define(:version => 20091013141551) do
     t.integer  "public_user_id",                :default => 0
     t.boolean  "show_publicly",                 :default => true
     t.datetime "last_assigned_at"
+    t.datetime "last_opened_at",                                   :null => false
   end
 
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"

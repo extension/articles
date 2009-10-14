@@ -29,12 +29,12 @@ validates_presence_of :asked_question
 # check the format of the question submitter's email address
 validates_format_of :zip_code, :with => %r{\d{5}(-\d{4})?}, :message => "should be like XXXXX or XXXXX-XXXX", :allow_blank => true, :allow_nil => true
 
-before_create :generate_fingerprint, :clean_question_and_answer
+before_create :generate_fingerprint, :clean_question_and_answer, :set_last_opened
 before_update :clean_question_and_answer
 
 after_save :assign_parent_categories
-after_create :auto_assign_by_preference
-after_create :notify_submitter
+after_create :auto_assign_by_preference, :notify_submitter 
+
 
 has_rakismet :author => proc { "#{self.submitter_firstname} #{self.submitter_lastname}" },
              :author_email => :submitter_email,
@@ -99,8 +99,11 @@ named_scope :resolved_since, lambda{|date_expression| {:conditions => "#{self.ta
 named_scope :created_since, lambda{|date_expression| {:conditions => "#{self.table_name}.created_at > #{date_expression}"}}
 
 named_scope :escalated, lambda{|sincehours| {
-  :conditions => "#{self.table_name}.created_at < '#{(Time.now.utc - sincehours.hours).to_s(:db)}' AND #{self.table_name}.status_state = #{STATUS_SUBMITTED} AND #{self.table_name}.spam = FALSE"  
+  :conditions => "#{self.table_name}.last_opened_at < '#{(Time.now.utc - sincehours.hours).to_s(:db)}' AND #{self.table_name}.status_state = #{STATUS_SUBMITTED} AND #{self.table_name}.spam = FALSE"  
 }}
+
+
+
 
 
 # TODO: see if this should be converged with the :ordered named scope used through the pubsite controllers
@@ -143,6 +146,10 @@ def add_resolution(sq_status, resolver, response, contributing_question = nil)
       SubmittedQuestionEvent.log_rejection(self)
   end
   
+end
+
+def set_last_opened
+  self.last_opened_at = Time.now
 end
 
 def category_names

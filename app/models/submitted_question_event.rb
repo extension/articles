@@ -135,6 +135,8 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   end
   
   def self.log_reopen(question, recipient, initiated_by, assignment_comment)
+    question.update_attribute(:last_opened_at, Time.now)
+    
     return self.log_event({:submitted_question => question,
       :initiated_by => initiated_by,
       :recipient => recipient,
