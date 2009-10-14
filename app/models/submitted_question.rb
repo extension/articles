@@ -433,7 +433,7 @@ def assign_to(user, assigned_by, comment, public_reopen = false, public_comment 
      
   # create notifications
   Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment, :asker_comment => asker_comment})
-  if(is_reassign)
+  if(is_reassign and public_reopen = false)
     Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :user => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
   end
 end
