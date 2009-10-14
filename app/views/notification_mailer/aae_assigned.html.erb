@@ -6,7 +6,11 @@ Please click this link to reply:
 <%= @urls['question']%>  
 
 <% if @reassign_comment and @reassign_comment.strip != '' %>
+<% if @assigner.id == User.systemuser.id %>
+The System posted a comment when assigning the question:
+<% else %>
 <%= @assigner.fullname %> posted a comment when assigning the question:
+<% end %>
 <%= @reassign_comment %>
 <% end %>
 
