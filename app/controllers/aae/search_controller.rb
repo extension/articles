@@ -41,8 +41,8 @@ class Aae::SearchController < ApplicationController
   def enable_search_by_cat_loc
     @submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]])
     @category = @submitted_question.categories.find(:first, :conditions => "categories.parent_id IS NULL")
-    @location = @submitted_question.location
-    @county = @submitted_question.county
+    @location = ExpertiseLocation.find_by_fipsid(@submitted_question.location.fipsid) if @submitted_question.location
+    @county = ExpertiseCounty.find_by_fipsid(@submitted_question.county.fipsid) if @submitted_question.county
     setup_cat_loc
     
     render :layout => false
