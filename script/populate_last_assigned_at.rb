@@ -51,61 +51,61 @@ def update_from_submitted_question_events(connection)
         #####        START OF SECTION A...RUN WITH LOGGING OFF...SET    config.level= :error    in production.rb
         #####  This is an Active Record way of doing this, more readable and maintainable for the one-time production run ####
         #####   This takes 3 minutes to run in production ,  ~ 5.5 hours to run in development (see section B below for an alternative for deveopment) (both prod and dev with logging off)#######
+        #####    Reversing the comments here as section B is actually also faster in production. Uncomment if you prefer to run this, comment out section B below.  #####
         
-   sqlist = SubmittedQuestion.find(:all)
+#   sqlist = SubmittedQuestion.find(:all)
   
-   sqlist.each do |sq|
+#   sqlist.each do |sq|
   
-     sqevent = Array.new
-     sqevent = sq.submitted_question_events.all( :conditions => "submitted_question_id=#{sq.id} and event_state=#{SubmittedQuestionEvent::ASSIGNED_TO}", :order => "created_at DESC")
+#     sqevent = Array.new
+#     sqevent = sq.submitted_question_events.all( :conditions => "submitted_question_id=#{sq.id} and event_state=#{SubmittedQuestionEvent::ASSIGNED_TO}", :order => "created_at DESC")
      
-      puts "sqid= " + sq.id.to_s
+#      puts "sqid= " + sq.id.to_s
 
-     if !sqevent.empty?
-       puts "updating sqid= " + sq.id.to_s
+#     if !sqevent.empty?
+#       puts "updating sqid= " + sq.id.to_s
        
-       sq.update_attribute(:last_assigned_at, sqevent[0].created_at)
-     end
+#       sq.update_attribute(:last_assigned_at, sqevent[0].created_at)
+#     end
      
-   end
+#   end
  
     #######                    END OF SECTION A                            ##########
+  
     
-       ##########   ******IF****** anyone ever wants to run this in development   ######
-    
-    ####     START OF SECTION B...RUN WITH LOGGING OFF, set    config.log_level= :error    in your development.rb #######
-   #####  This section B here takes 1 hour currently (20000+ submitted questions) to run in development. ######
-   #####    Un-comment this section to run in development, specify 'development' above, and comment out the section A above    #####
-#####  START OF SECTION B (FOR DEVELOPMENT MODE)   ######
-#  sqs = [] 
-#  sqsql = "Select id from submitted_questions"
-#  result = runsql(connection, sqsql)
-#  while sqh=result.fetch_hash do
-#    sqs << sqh['id']
-#  end
+    ####     START OF SECTION B...RUN WITH LOGGING OFF, set    config.log_level= :error    in your development.rb or production.rb #######
+   #####  This section B here takes 1 hour currently (20000+ submitted questions) to run in development. 2 minutes to run in production. ######
+   #####    To run in development, specify 'development' above    #####
+#####  START OF SECTION B  ######
+  sqs = [] 
+  sqsql = "Select id from submitted_questions"
+  result = runsql(connection, sqsql)
+  while sqh=result.fetch_hash do
+    sqs << sqh['id']
+  end
 
-#  sqs.each do |sqid|
+  sqs.each do |sqid|
  
-#    sql = "SELECT created_at from submitted_question_events " + 
-#        " where submitted_question_id=#{sqid} and event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} order by created_at DESC LIMIT 1"
-#    result = runsql(connection, sql)
-#    sqevents = []
+    sql = "SELECT created_at from submitted_question_events " + 
+        " where submitted_question_id=#{sqid} and event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} order by created_at DESC LIMIT 1"
+    result = runsql(connection, sql)
+    sqevents = []
  
-#    while sqef=result.fetch_hash do
-#      sqevents << sqef['created_at']    
-#      break
-#    end
+    while sqef=result.fetch_hash do
+      sqevents << sqef['created_at']    
+      break
+    end
 
-#    puts  " sqevents.size= " + sqevents.size.to_s
-#    if sqevents.size > 0
-#      puts "updating sq id= " + sqid.to_s
-#         # form sql
-#      sql = " UPDATE submitted_questions SET last_assigned_at='#{sqevents[0]}'"
-#      sql += " where submitted_questions.id=#{sqid}"
+    puts  " sqevents.size= " + sqevents.size.to_s
+    if sqevents.size > 0
+      puts "updating sq id= " + sqid.to_s
+         # form sql
+      sql = " UPDATE submitted_questions SET last_assigned_at='#{sqevents[0]}'"
+      sql += " where submitted_questions.id=#{sqid}"
        
-#      res = runsql(connection, sql)
-#    end
-#  end
+      res = runsql(connection, sql)
+    end
+  end
    ##############                End of  SECTION B  to be run for development            ############
   
   
