@@ -623,7 +623,7 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
        if (date1 && date2)
            cond = cond + " and submitted_questions.created_at between ? and ? "
        end
-       SubmittedQuestion.find(:all, :select => "submitted_questions.created_at sqcreated_at, submitted_questions.id id, users.id uid, last_login_at, user_id, last_name, first_name, login", :joins => joinclause,
+       SubmittedQuestion.find(:all, :select => "submitted_questions.created_at sqcreated_at, submitted_questions.id id, last_assigned_at, users.id uid, last_login_at, user_id, last_name, first_name, login", :joins => joinclause,
           :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :order => "submitted_questions.created_at DESC")               
   end
     
