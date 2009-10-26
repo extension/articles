@@ -269,7 +269,7 @@ class People::CommunitiesController < ApplicationController
               log_user_activity(:activitycode => Activity::COMMUNITY_CREATED_LIST,:user => @currentuser,:community => @community,:appname => 'local')   
             else
               if(!existinglist.community.nil?)
-                @errors = "A list with that name already exists, connected to the #{link_to_people_community(existinglist.community)} community."
+                @errors = "A list with that name already exists, connected to the #{existinglist.community.name} community."
               else
                 @errors = "A list with that name already exists."
               end
@@ -485,7 +485,5 @@ class People::CommunitiesController < ApplicationController
     response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
     render(:template => 'people/communities/community_csvuserlist', :layout => false)
   end
-  
-
   
 end
