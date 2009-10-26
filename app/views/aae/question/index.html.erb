@@ -142,7 +142,7 @@
         <br/> 
 
         
-           <% form_tag(AppConfig.configtable['faq_create_url']) do %>
+           <% form_tag(AppConfig.configtable['faq_create_url'], :method => :get) do %>
              <%= hidden_field_tag(:squid, @submitted_question.id) %>
              <%= hidden_field_tag(:aae_question, @submitted_question.all_public_responses) %>
              <%= hidden_field_tag(:aae_answer, @submitted_question.all_expert_responses) %>

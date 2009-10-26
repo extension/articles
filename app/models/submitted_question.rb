@@ -211,15 +211,15 @@ end
 def all_public_responses
   pub_resp = self.asked_question
   if additional_responses = self.responses.find(:all, :conditions => "public_user_id IS NOT NULL") and additional_responses.length > 0
-    pub_resp.concat('\r\n(**response divider**)\r\n')
-    pub_resp.concat(additional_responses.collect{|r| r.response}.join('\r\n(**response divider**)\r\n'))
+    pub_resp.concat('  (**response divider**)  ')
+    pub_resp.concat(additional_responses.collect{|r| r.response}.join('  (**response divider**)  '))
   end
   
   return pub_resp
 end
 
 def all_expert_responses
-  self.responses.find(:all, :conditions => "user_id IS NOT NULL").collect{|r| r.response}.join('\r\n(**response divider**)\r\n')
+  self.responses.find(:all, :conditions => "user_id IS NOT NULL").collect{|r| r.response}.join('  (**response divider**)  ')
 end
 
 
