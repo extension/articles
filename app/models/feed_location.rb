@@ -39,7 +39,7 @@ class FeedLocation < ActiveRecord::Base
     
     results = Article.retrieve_content(retrieve_options)
     if(!results[:last_updated_item_time].nil?)
-      updatetime.update_attributes({:last_datasourced_at => results[:last_updated_item_time] + 1, :additionaldata => {:deleted => results[:deleted], :added => results[:added], :updated => results[:updated]}})        
+      updatetime.update_attributes({:last_datasourced_at => results[:last_updated_item_time] + 1, :additionaldata => {:deleted => results[:deleted], :added => results[:added], :updated => results[:updated], :notchanged => results[:notchanged]}})        
     else
       updatetime.touch
     end

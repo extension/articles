@@ -148,16 +148,20 @@ class Article < ActiveRecord::Base
     article.url = entry.links[0].href if article.url.blank?
     article.author = entry.authors[0].name
     article.original_content = entry.content.to_s
-  
-    if(article.new_record?)
-      returndata = [article.wiki_updated_at, 'added']
-    else
-      returndata = [article.wiki_updated_at, 'updated']
-    end 
-    
+      
     # flag as dpl
     if !entry.categories.blank? and entry.categories.map(&:term).include?('dpl')
       article.is_dpl = true
+    end
+        
+    if(article.new_record?)
+      returndata = [article.wiki_updated_at, 'added']
+    elsif(article.original_content_changed?)
+      returndata = [article.wiki_updated_at, 'updated']
+    else
+      # content didn't change, bail here.
+      returndata = [article.wiki_updated_at, 'nochange']
+      return returndata
     end
      
     article.save
