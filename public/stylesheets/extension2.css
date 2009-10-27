@@ -738,3 +738,5 @@ p.response {font-size:1.6em; margin-bottom:2em;}
 #responses p.comment img {width:50px;height:50px; margin-left:1em;padding:4px; border:solid 1px #ccc;}
 #responses .commentblock.expert p.comment img {float:right;}
 #responses .commentblock.public p.comment img {float:left; margin-left:0;margin-right:1em; display:none;}
+
+.publictags {margin-top:1.5em;margin-bottom:2em;}

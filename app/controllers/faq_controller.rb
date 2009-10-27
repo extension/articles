@@ -44,6 +44,8 @@ class FaqController < ApplicationController
       
       # get the tags on this article that are content tags on communities
       @community_content_tags = (Tag.community_content_tags({:launchedonly => true}) & faq_content_tags)
+      
+      @faq_public_tags = faq_content_tags
     
       if(!@community_content_tags.blank?)
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized

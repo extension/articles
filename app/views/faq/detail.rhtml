@@ -36,6 +36,9 @@
             </div>
         <% end %>
     <%= simple_format @faq.answer %>
+    <p class="caption publictags">Browse related FAQs by tag: 
+    <%= @faq_public_tags.collect{|tag| link_to(tag.name, :controller => tag.name, :action => "faqs") }.join(', ') if @faq_public_tags %>    
+    </p>
     </div>
 </div>
 
