@@ -1058,7 +1058,7 @@ class Aae::ReportsController < ApplicationController
             (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
           end
         @oldest_date = SubmittedQuestion.find_oldest_date; 
-        @userlist = [] ; @assgn={}; @assgninc={}; @avgscompl={}, @avgsheld = {}
+        @userlist = [] ; @assgn={}; @assgninc={}; @avgscompl={}, @avgsheld = {}; @num_current_q = {}
         #get list of assignee users  (expertise users)
         @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
         
@@ -1066,7 +1066,7 @@ class Aae::ReportsController < ApplicationController
         assgns = User.get_num_times_assigned(@date1, @date2," join users on users.id= recipient_id ", "", nil, nil)
         assgns_inc= User.get_num_times_assigned(@date1, @date2 ," join users on users.id=recipient_id ",  " and resolved_by!=recipient_id " , nil, nil)
         avgs=User.get_avg_resp_time_only(@date1, @date2, nil, nil)
-        
+        current_q = User.get_current_q(@date1, @date2)
         avgsheld = User.get_avg_handling_time(@date1, @date2, nil, nil)
             
         @userlist.each do |u|
@@ -1074,6 +1074,7 @@ class Aae::ReportsController < ApplicationController
           @assgninc[u.id] = assgns_inc[u.id]
           @avgscompl[u.id] = avgs[u.id.to_s]
           @avgsheld[u.id] = avgsheld[u.id.to_s]
+          @num_current_q[u.id] = current_q[u.id.to_s]
         end
       
         @repaction = 'assignee'   

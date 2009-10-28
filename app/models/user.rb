@@ -1522,6 +1522,14 @@ class User < ActiveRecord::Base
        
      end
      
+     def self.get_current_q(date1, date2)
+       cond = "event_state = #{SubmittedQuestionEvent::ASSIGNED_TO} and last_assigned_at=submitted_question_events.created_at and status_state=#{SubmittedQuestion::STATUS_SUBMITTED} "
+        if (date1 && date2)
+             cond = cond + " and submitted_questions.created_at between ? and ? "
+         end
+        SubmittedQuestion.count(:all, :joins => [:submitted_question_events],  :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "recipient_id")
+     end
+     
      def self.get_avg_handling_time(date1, date2, sqfilters, sqinclude)
          #if sqinclude, cannot do a select with include, so must do this workaround
           joinclause= [:submitted_question_events] 

@@ -14,12 +14,13 @@
 	<% even = false %> 
     <tr>
 	    <th scope="col">Assignee Name</th> 
-	   <th scope="col">Questions Assigned</th>
+	   <th scope="col">Questions Assigned <br>(over time period)</br></th>
        <!-- <th scope="col"><%= link_to "Number Times Assigned", { :action => 'common_sort_columns', :field=>'assgn' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%></th>-->
+        <!--<th scope="col"><%= link_to "Avg Response Time to Completion (hours)",{ :action => 'common_sort_columns', :field=>'assgninc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>-->
+        <th scope="col">Questions Assigned Not <br>Completed by Assignee</br></th>
+        <th scope="col">Assigned Questions <br>Currently Open </br></th>
          <th scope="col">Average Time Handling (hours)<br> anytime Assigned</br></th>
         <th scope="col">Average Response Time (hours)<br> where Assignee Answered</br></th>
-        <!--<th scope="col"><%= link_to "Avg Response Time to Completion (hours)",{ :action => 'common_sort_columns', :field=>'assgninc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>-->
-        <th scope="col">Questions Assigned Not Completed by Assignee</th>
       <!--   <th scope="col"><%= link_to "Number Questions Assigned Not Completed by This Assignee",{ :action => 'common_sort_columns', :field=>'avgscompl' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>-->
           
      </tr>
@@ -32,6 +33,7 @@
   <% number_questions_assigned_without_completion = @assgninc[u.id] %>
   <% avg_resp_time = @avgscompl[u.id]%>
   <% avg_held_time = @avgsheld[u.id]%>
+  <% num_current_q = @num_current_q[u.id]%>
  
   <% empty = ' class="empty"' %>
 
@@ -43,9 +45,11 @@
      </td>
     
      <td><%= ((@assgn[u.id] && @assgn[u.id] !=0) ? number_questions_assigned : 0) %></td>
+      <td><%= ((@assgninc[u.id] && @assgninc[u.id] != 0) ? number_questions_assigned_without_completion : 0)%></td>
+       <td><%= ((@num_current_q[u.id] && @num_current_q[u.id] !=0) ? num_current_q : 0) %></td>
       <td><%= ((@avgsheld[u.id] && @avgsheld[u.id] != 0) ? "%.2f" % avg_held_time : " ")%></td>
      <td><%= ((@avgscompl[u.id] && @avgscompl[u.id] != 0) ? "%.2f" % avg_resp_time : " ")%></td>
-     <td><%= ((@assgninc[u.id] && @assgninc[u.id] != 0) ? number_questions_assigned_without_completion : 0)%></td>
+    
    
 </tr>
 	<% if even 
