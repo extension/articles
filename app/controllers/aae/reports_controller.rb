@@ -386,8 +386,11 @@ class Aae::ReportsController < ApplicationController
          @filteredparams = FilterParams.new(params) 
          @filteredoptions = @filteredparams.findoptions 
           if params[:id]
-            @catname = Category.find_by_id(params[:id]).name
-            catid = params[:id]
+            catobj = Category.find_by_id(params[:id])
+            if catobj
+              @catname = catobj.name
+              catid = params[:id]
+            end
           else
             if params[:category]
               @catname=params[:category]
