@@ -159,7 +159,7 @@ function processColumns() {
    if ( twocol ) {
 	  twocol = twocol.remove();
 	  $('article').style.float = 'left';
-	  $('article').setAttribute("class", "primarycolumn")
+	  $('article').setAttribute((document.all ? "className" : "class"), "primarycolumn")
 	  
 	  if(twocol.firstDescendant() && twocol.firstDescendant().nodeName == 'P'){
 	  	var first =twocol.firstDescendant();
@@ -201,3 +201,4 @@ toggle_table_of_contents = function() {
 	}
 	return;
 }
+
