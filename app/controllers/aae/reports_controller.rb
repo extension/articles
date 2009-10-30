@@ -85,6 +85,11 @@ class Aae::ReportsController < ApplicationController
          nar = []; typl.map { |nm| nar << [nm.name] } 
          nar
        end  
+       
+      def transform_userlist(typl)
+       nar = [];  typl.map { |nm| nar << [((nm.first_name) ? nm. first_name : "")  + " " + ((nm.last_name) ? nm.last_name : "")]}
+       nar
+      end
 
        def show_active_cats
          @filteredparams = FilterParams.new(params)  #can this be useful here? for hackers of the url? filter by location as well...
@@ -144,11 +149,18 @@ class Aae::ReportsController < ApplicationController
        def common_sort_columns
            typ = params[:type]; fld = params[:field] ; sortdir = params[:sdir]; report = params[:report]; params[:bysort]="y"
             if fld == 'State'   #get the original summary back
-                self.send((report+"_by_#{typ.downcase}").intern)
+                if typ == 'Assignee'
+                  self.send(report.intern)
+                  render :template => 'aae/reports/assignee'
+                else
+                  self.send((report+"_by_#{typ.downcase}").intern)
+                end
             else
               case typ    #remake the variable lists 
                 when 'Institution', 'State'
                   self.send(("state_univ_"+report).intern)
+                when 'Assignee'
+                  self.send(report.intern)
                 else
                   self.send(("#{typ.downcase}_"+report).intern)
               end
@@ -168,6 +180,8 @@ class Aae::ReportsController < ApplicationController
                  render :template=>'aae/reports/common_sorted_lists'
               when 'response_times'
                  render :template => 'aae/reports/common_resptimes_lists'
+              when 'assignee'
+                 render :template => 'aae/reports/assignee'
               end
            end
        end
@@ -1061,25 +1075,27 @@ class Aae::ReportsController < ApplicationController
             (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
           end
         @oldest_date = SubmittedQuestion.find_oldest_date; 
-        @userlist = [] ; @assgn={}; @assgninc={}; @avgscompl={}, @avgsheld = {}; @num_current_q = {}
+        @type = "Assignee"
+        @userlist = [] ; @assgn={}; @assgninc={}; @avgsheld = {}; @num_current_q = {}; @avc = Hash.new
         #get list of assignee users  (expertise users)
         @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
         
         # get counts for assigned, assigned but not completed, avg response time, avg time held before reassigned 
         assgns = User.get_num_times_assigned(@date1, @date2," join users on users.id= recipient_id ", "", nil, nil)
         assgns_inc= User.get_num_times_assigned(@date1, @date2 ," join users on users.id=recipient_id ",  " and resolved_by!=recipient_id " , nil, nil)
-        avgs=User.get_avg_resp_time_only(@date1, @date2, nil, nil)
+        avgs = User.get_avg_resp_time_only(@date1, @date2, nil, nil)
         current_q = User.get_current_q(@date1, @date2)
         avgsheld = User.get_avg_handling_time(@date1, @date2, nil, nil)
             
         @userlist.each do |u|
-          @assgn[u.id] = assgns[u.id]
-          @assgninc[u.id] = assgns_inc[u.id]
-          @avgscompl[u.id] = avgs[u.id.to_s]
-          @avgsheld[u.id] = avgsheld[u.id.to_s]
-          @num_current_q[u.id] = current_q[u.id.to_s]
+          name = ((u.first_name) ? u.first_name : "")  + " " + ((u.last_name) ? (u.last_name) : "")
+          @assgn[name] = assgns[u.id]
+          @assgninc[name] = assgns_inc[u.id]
+          @avc[name] = avgs[u.id.to_s]
+          @avgsheld[name] = avgsheld[u.id.to_s]
+          @num_current_q[name] = current_q[u.id.to_s]
         end
-      
+        @typelist = transform_userlist(@userlist)
         @repaction = 'assignee'   
      end
      # End of Assignee Report
