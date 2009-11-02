@@ -808,7 +808,7 @@ class Community < ActiveRecord::Base
       referer_domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
     end
     if(referer_domain)
-      return find(:first, :conditions => ["referer_domain = #{referer_domain} and entrytype = #{INSTITUTION}"])
+      return find(:first, :conditions => ["referer_domain = '#{referer_domain}' and entrytype = #{INSTITUTION}"])
     else
       return nil
     end
