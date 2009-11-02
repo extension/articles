@@ -14,7 +14,6 @@ class ApplicationController < ActionController::Base
   
   include LoginSystem
   include ExceptionNotifiable
-  include InstitutionalLogo
   include ControllerExtensions
 
   # Scrub sensitive parameters from your log
