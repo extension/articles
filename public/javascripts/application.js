@@ -159,7 +159,8 @@ function processColumns() {
    if ( twocol ) {
 	  twocol = twocol.remove();
 	  $('article').style.float = 'left';
-	  $('article').setAttribute((document.all ? "className" : "class"), "primarycolumn")
+	  $('article').setAttribute("className", "primarycolumn") // fix for IE7
+	  $('article').setAttribute("class", "primarycolumn")
 	  
 	  if(twocol.firstDescendant() && twocol.firstDescendant().nodeName == 'P'){
 	  	var first =twocol.firstDescendant();
