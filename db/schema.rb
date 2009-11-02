@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091014182913) do
+ActiveRecord::Schema.define(:version => 20091102154017) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -158,26 +158,32 @@ ActiveRecord::Schema.define(:version => 20091014182913) do
   add_index "chat_accounts", ["username"], :name => "username", :unique => true
 
   create_table "communities", :force => true do |t|
-    t.integer  "entrytype",               :default => 0,     :null => false
-    t.string   "name",                                       :null => false
+    t.integer  "entrytype",                             :default => 0,     :null => false
+    t.string   "name",                                                     :null => false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "open",                    :default => false
-    t.integer  "created_by",              :default => 0
+    t.integer  "created_by",                            :default => 0
     t.string   "uri"
-    t.integer  "memberfilter",            :default => 1
-    t.boolean  "listeligible",            :default => true
+    t.integer  "memberfilter",                          :default => 1
     t.string   "shortname"
     t.string   "public_name"
     t.text     "public_description"
-    t.boolean  "is_launched",             :default => false
+    t.boolean  "is_launched",                           :default => false
     t.integer  "public_topic_id"
     t.text     "cached_content_tag_data"
-    t.boolean  "show_in_public_list",     :default => false
+    t.boolean  "show_in_public_list",                   :default => false
+    t.integer  "location_id",                           :default => 0
+    t.string   "normalizedname"
+    t.string   "public_uri"
+    t.boolean  "shared_logo",                           :default => false
+    t.string   "referer_domain"
+    t.string   "institution_code",        :limit => 10
+    t.integer  "logo_id",                               :default => 0
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
+  add_index "communities", ["referer_domain"], :name => "index_communities_on_referer_domain"
 
   create_table "communityconnections", :force => true do |t|
     t.integer  "user_id"
@@ -345,29 +351,6 @@ ActiveRecord::Schema.define(:version => 20091014182913) do
     t.datetime "updated_at"
   end
 
-  create_table "institutions", :force => true do |t|
-    t.integer  "entrytype",                           :default => 0,     :null => false
-    t.string   "location_abbreviation", :limit => 4
-    t.string   "name",                                                   :null => false
-    t.string   "code",                  :limit => 10
-    t.string   "uri"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "normalizedname"
-    t.integer  "location_id",                         :default => 0
-    t.integer  "created_by",                          :default => 0
-    t.string   "creatorlogin"
-    t.integer  "institutionalteam_id",                :default => 0
-    t.string   "public_uri"
-    t.string   "referer_domain"
-    t.boolean  "shared_logo",                         :default => false
-    t.boolean  "show_in_public_list",                 :default => false
-  end
-
-  add_index "institutions", ["location_abbreviation"], :name => "STATE_ABBR"
-  add_index "institutions", ["name"], :name => "NAME", :unique => true
-  add_index "institutions", ["referer_domain"], :name => "index_institutions_on_referer_domain"
-
   create_table "invitations", :force => true do |t|
     t.integer  "user_id",                      :default => 0, :null => false
     t.string   "token",          :limit => 40,                :null => false
@@ -460,7 +443,6 @@ ActiveRecord::Schema.define(:version => 20091014182913) do
 
   create_table "logos", :force => true do |t|
     t.string   "filename"
-    t.string   "type"
     t.string   "content_type"
     t.integer  "size"
     t.integer  "width"
@@ -469,6 +451,7 @@ ActiveRecord::Schema.define(:version => 20091014182913) do
     t.string   "thumbnail"
     t.datetime "created_at"
     t.integer  "db_file_id"
+    t.integer  "logotype",     :default => 0
   end
 
   create_table "notifications", :force => true do |t|
@@ -486,6 +469,29 @@ ActiveRecord::Schema.define(:version => 20091014182913) do
 
   add_index "notifications", ["send_error"], :name => "index_notifications_on_send_error"
   add_index "notifications", ["sent_email"], :name => "index_notifications_on_sent_email"
+
+  create_table "old_institutions", :force => true do |t|
+    t.integer  "entrytype",                           :default => 0,     :null => false
+    t.string   "location_abbreviation", :limit => 4
+    t.string   "name",                                                   :null => false
+    t.string   "code",                  :limit => 10
+    t.string   "uri"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "normalizedname"
+    t.integer  "location_id",                         :default => 0
+    t.integer  "created_by",                          :default => 0
+    t.string   "creatorlogin"
+    t.integer  "institutionalteam_id",                :default => 0
+    t.string   "public_uri"
+    t.string   "referer_domain"
+    t.boolean  "shared_logo",                         :default => false
+    t.boolean  "show_in_public_list",                 :default => false
+  end
+
+  add_index "old_institutions", ["location_abbreviation"], :name => "STATE_ABBR"
+  add_index "old_institutions", ["name"], :name => "NAME", :unique => true
+  add_index "old_institutions", ["referer_domain"], :name => "index_institutions_on_referer_domain"
 
   create_table "open_id_associations", :force => true do |t|
     t.binary  "server_url", :null => false
@@ -795,6 +801,8 @@ ActiveRecord::Schema.define(:version => 20091014182913) do
     t.string   "feedkey"
     t.boolean  "announcements",                          :default => true
     t.datetime "retired_at"
+    t.integer  "organization_entrytype",                 :default => 0
+    t.string   "organization_name"
   end
 
   add_index "users", ["email"], :name => "email", :unique => true

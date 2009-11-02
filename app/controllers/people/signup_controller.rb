@@ -56,7 +56,7 @@ class People::SignupController < ApplicationController
     
     # institution
     if(!params[:institution].nil? and !params[:institution][:name].nil?)
-      @user.institution = Institution.find_existing_or_create_new_user_institution(params[:institution][:name],@user.login)
+      # nothing
     end
     
     # STATUS_SIGNUP

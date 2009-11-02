@@ -5,8 +5,8 @@
 <p>Occurred at: <%= @activity.created_at %></p>
 <p>More activity from:
 	<%= link_to("#{@activity.user.first_name}",:action => :showuser, :id => @activity.user.id) %>, 
-	<% if !@activity.user.institution.nil? %>
-		<%= link_to("#{@activity.user.institution.name}",:action => :summary, :institution => @activity.user.institution.id) %>, 
+	<% if !@activity.user.communities.institutions.nil? %>
+		<%= link_to("#{@activity.user.communities.institutions[0].name}",:action => :summary, :institution => @activity.user.institution.id) %>, 
 	<% end %> 
 	<% if !@activity.user.location.nil?  %>
 		<%= link_to("#{@activity.user.location.name}",:action => :summary, :location => @activity.user.location.id) %>, 

@@ -6,7 +6,7 @@ You have been invited by a colleague to sign up for an eXtensionID.
 Your colleague:
 <%= @notification.user.fullname %>
 <%= @notification.user.email %>
-Institution: <%= (@notification.user.institution.nil?) ? '(Not specified)': @notification.user.institution.name %> 
+Institution: <%= (@notification.user.communities.institutions.nil?) ? '(Not specified)': @notification.user.communities.institutions[0].name %> 
 
 <% if !@notification.additionaldata[:invitation_message].nil? %><%= "Message from Colleague:\n" + @notification.additionaldata[:invitation_message] + "\n=====\n" %><% end %>
 Signing up is easy - just visit:

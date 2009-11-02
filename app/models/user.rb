@@ -219,7 +219,7 @@ class User < ActiveRecord::Base
         when 'position'
           returnhash.merge!({:position => self.position.name})
         when 'institution'
-          returnhash.merge!({:institution => (self.institution.nil? ? '' : self.institution.name)})
+          returnhash.merge!({:institution => (self.communities.institutions.nil? ? '' : self.communities.institutions[0].name)})
         when 'location'
           returnhash.merge!({:location => (self.location.nil? ? '' : self.location.name)})
         when 'county'

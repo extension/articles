@@ -1,8 +1,0 @@
---- 
-format: 1
-handler: 
-  commit: 9c154000c3a86f2a35fb83a5ec05db6ff15608c1
-  branch: master
-repository_url: git://github.com/DarkSwoop/attachment_fu_hacks.git
-lock: 
-repository_class: Piston::Git::Repository

@@ -14,16 +14,18 @@ class Community < ActiveRecord::Base
 
   UNKNOWN = 0
   
-  # types
+  # community types
   APPROVED = 1
   USERCONTRIBUTED = 2
-  INSTITUTIONALTEAM = 3
+  INSTITUTION = 3
+  
 
-  # institution types
+  # labels and keys
   ENTRYTYPES = Hash.new
   ENTRYTYPES[APPROVED] = {:locale_key => 'approved', :allowadmincreate => true}
   ENTRYTYPES[USERCONTRIBUTED] = {:locale_key => 'user_contributed', :allowadmincreate => true}
-  ENTRYTYPES[INSTITUTIONALTEAM] = {:locale_key => 'institutionalteam', :allowadmincreate => true}
+  ENTRYTYPES[INSTITUTION] = {:locale_key => 'institution', :allowadmincreate => true}
+  
            
   # membership
   OPEN = 1
@@ -66,10 +68,13 @@ class Community < ActiveRecord::Base
   has_many :lists, :through => :communitylistconnections
   
   # institutions
-  has_many :institutions, :foreign_key => 'institutionalteam_id'
+  named_scope :institutions, :conditions => {:entrytype => INSTITUTION}
  
   # topics for public site
   belongs_to :topic, :foreign_key => 'public_topic_id'
+  belongs_to :location
+  belongs_to :logo
+  
   
   has_many :cached_tags, :as => :tagcacheable
   
@@ -98,6 +103,7 @@ class Community < ActiveRecord::Base
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
   
   named_scope :launched, {:conditions => {:is_launched => true}}
+  named_scope :notinstitutions, :conditions => ["entrytype != #{INSTITUTION}"]
   named_scope :public_list, {:conditions => ["show_in_public_list = 1 or is_launched = 1"]}
   
   named_scope :ordered_by_topic, {:include => :topic, :order => 'topics.name ASC, communities.public_name ASC'}
@@ -776,5 +782,37 @@ class Community < ActiveRecord::Base
     
     find_by_sql(sql)
   end
+  
+  # TODO: this function is a little silly no?
+  def self.find_institution_by_referer(referer)
+    return nil unless referer
+    begin
+      uri = URI.parse(referer)
+    rescue URI::InvalidURIError => e
+      nil
+    end
+    return nil unless uri.kind_of? URI::HTTP
+    return nil unless uri.host
+    return nil if uri.host.empty?
+    referer_domain = uri.host.split('.').slice(-2, 2).join(".") rescue nil
+    # handle some exceptions
+    if(referer_domain == 'bia.edu')
+      referer_domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
+    elsif(referer_domain == 'nd.us')
+      referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
+    elsif(referer_domain == 'mt.us')
+      referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
+    elsif(referer_domain == 'nm.us')
+      referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
+    elsif(referer_domain == 'clu.edu')
+      referer_domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
+    end
+    if(referer_domain)
+      return find(:first, :conditions => ["referer_domain = #{referer_domain} and entrytype = #{INSTITUTION}"])
+    else
+      return nil
+    end
+  end   
+  
         
 end

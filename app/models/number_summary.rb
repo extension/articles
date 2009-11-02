@@ -152,17 +152,7 @@ class NumberSummary
       returnhash
     end
   end
-  
-  def institutions(wants = ['system','usercontributed'])
-    get_or_set_data_value(this_method.to_sym) do   
-      returnhash = {}
-      wants.each do |institutionstype|
-        returnhash[institutionstype.to_sym] =  Institution.filtered(self.findoptions.merge({:entrytypes => Institution.label_to_entrytypes(institutionstype)})).count(:id, :distinct => true)
-      end
-      returnhash
-    end
-  end  
-    
+      
   def communities(wants = ['approved','usercontributed'],wantconnections = ['joined'])
     get_or_set_data_value(this_method.to_sym) do   
       returnhash = {}

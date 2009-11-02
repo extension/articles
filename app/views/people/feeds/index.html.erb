@@ -22,8 +22,8 @@
     <h1>Activity Related to You</h1>
 	<h2>Institution, Location, and Position</h2>
 
-	<% if !@currentuser.institution.nil? %>
-		<p class="syndication"><%= link_to("Your Institution - #{@currentuser.institution.name}",{:controller => '/people/feeds', :action => :institution, :id => @currentuser.institution.id, :feedkey => @currentuser.feedkey})%></p>
+	<% if !@currentuser.communities.institutions.nil? %>
+		<p class="syndication"><%= link_to("Your Institution - #{@currentuser.communities.institutions[0].name}",{:controller => '/people/feeds', :action => :institution, :id => @currentuser.institution.id, :feedkey => @currentuser.feedkey})%></p>
 	<% end %>
 	<% if !@currentuser.location.nil? %>	
 	<p class="syndication"><%= link_to("Your Location - #{@currentuser.location.name}",{:controller => '/people/feeds', :action => :location, :id => @currentuser.location.id, :feedkey => @currentuser.feedkey})%></p>

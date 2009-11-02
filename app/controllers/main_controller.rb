@@ -135,7 +135,7 @@ class MainController < ApplicationController
       else
         state = params[:zip_or_state].upcase
       end
-      insts = Institution.landgrant.find(:all, :include => :location, :conditions => ["locations.abbreviation = ?", state])
+      insts = Community.institutions.public_list.find(:all, :include => :location, :conditions => ["locations.abbreviation = ?", state])
       if insts and insts.length > 0
         if insts[0].shared_logo or insts.length == 1
           render :partial => "shared/institution_selected", :locals => {:state => state}, :layout => false
@@ -156,11 +156,10 @@ class MainController < ApplicationController
     
   def find_institution
     @personal[:location] = Location.find_by_abbreviation(params[:state])
-    if(@personal[:location] && @personal[:location].institutions.public_list.length > 0)
-      if @personal[:location].institutions.public_list[0].shared_logo or
-         @personal[:location].institutions.public_list.length == 1
+    if(@personal[:location] and public_institutions_for_location = @personal[:location].communities.institutions.public_list)
+      if(public_institutions_for_location[0].shared_logo or public_institutions_for_location.size == 1)
         @personal[:state] = params[:state]
-        @personal[:institution] = @personal[:location].institutions.public_list[0]
+        @personal[:institution] = public_institutions_for_location[0]
         session[:institution_id] = @personal[:institution].id.to_s
         session[:multistate] = nil
       else

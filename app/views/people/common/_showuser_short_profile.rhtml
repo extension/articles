@@ -36,7 +36,7 @@
 	<div class="org">
 		
 			<span class="vcardLabel">Institution:</span>
-			<span class="organization-name"><%= (showuser.institution.nil?) ? '&nbsp;': showuser.institution.name %></span>
+			<span class="organization-name"><%= (showuser.communities.institutions.nil?) ? '&nbsp;': showuser.communities.institutions[0].name %></span>
 		
 	</div>
 	<div class="adr">	

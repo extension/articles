@@ -17,7 +17,7 @@
     <% open_question_count = user_bio.open_question_count %>
     <p><strong><%= open_question_count %> <%= (open_question_count > 1 or open_question_count == 0) ? ' questions' : ' question' %></strong> currently assigned.</p>
     <p><%= user_bio.title ? user_bio.title : "No professional title specified" %></p>
-    <p><%= user_bio.institution ? user_bio.institution.name : "Not associated with an institution" %></p>
+    <p><%= user_bio.institution ? user_bio.communities.institutions[0].name : "Not associated with an institution" %></p>
     <p><%= user_bio.categories.collect { |cat| cat.full_name }.join(", ") %></p>
 </div>
 <br class="clearing" />

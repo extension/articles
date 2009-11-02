@@ -1,10 +1,8 @@
 <%if person[:institution] %>
     <h1 class="logo">
 <%   inst = person[:institution]
-	if inst.img
-	   image = "#{RAILS_ROOT}/public/images/" + inst.img
-	   img = ImageSize.new(File.open(image, 'rb')) %>
-		<%= link_to(image_tag(inst.img, :width => img.width, :alt => inst.name ), home_url, {:style => ''}) %>
+	if !inst.logo.nil? %>
+		<%= link_to(render_inline_logo(inst.logo), home_url, {:style => ''}) %>
 	<%else%>
 		<%= link_to(inst.name, home_url, {:style => ''}) %>
 	<%end%>

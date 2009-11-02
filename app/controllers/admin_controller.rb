@@ -46,7 +46,7 @@ class AdminController < ApplicationController
   
   def manage_institutions
     set_titletag("Manage Institutions - Pubsite Admin")    
-    @landgrant_institutions =  Institution.public_list.all(:include => :location, :order => 'locations.abbreviation')
+    @landgrant_institutions =  Community.institutions.public_list.all(:include => :location, :order => 'locations.abbreviation')
   end
     
   def manage_locations_office_links
@@ -118,7 +118,7 @@ class AdminController < ApplicationController
   end
   
   def update_public_institution
-    @institution =  Institution.find(params['id'])
+    @institution =  Community.find(params['id'])
     @institution.referer_domain = params['institution']['referer_domain']
     @institution.public_uri = params['institution']['public_uri']
 
@@ -135,7 +135,7 @@ class AdminController < ApplicationController
   def edit_public_institution
     set_title('Edit Institution Public Options')
     set_titletag("Edit Institution - Pubsite Admin")
-    @institution = Institution.find(params[:id])
+    @institution = Community.find(params[:id])
   end
   
   def show_config

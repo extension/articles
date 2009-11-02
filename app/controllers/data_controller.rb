@@ -153,9 +153,6 @@ class DataController < ApplicationController
     when 'position'
       returnobj = Position.find_by_id(id)
       datalabel = (returnobj.nil? ? "Position: #{id}" : returnobj.name)                   
-    when 'institution'
-      returnobj = Institution.find_by_id(id)
-      datalabel = (returnobj.nil? ? "Institution: #{id}" : returnobj.name)
     when 'dateinterval'
       returnobj = id
       datalabel = "DateInterval: #{id}"

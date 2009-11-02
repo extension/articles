@@ -24,8 +24,8 @@
             <h4><%= user.title %></h4>
         <% end %>
 
-        <% if !user.institution.nil? %>
-            <h4><%= user.institution.name %></h4>
+        <% if !user.communities.institutions.nil? %>
+            <h4><%= user.communities.institutions[0].name %></h4>
         <% end %>
         
         <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>

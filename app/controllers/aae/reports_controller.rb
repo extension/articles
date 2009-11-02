@@ -32,8 +32,6 @@ class Aae::ReportsController < ApplicationController
         (@date1, @date2, @dateFrom, @dateTo)=parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)   #parmcheck()
         if (@type=="State")
           @typelist  = Location.find(:all, :order => "entrytype, name")
-        else
-          @typelist = Institution.find(:all, :order => 'name', :conditions => {:entrytype => Institution::LANDGRANT})
         end
           typel= @type.downcase
          @rept = Aaereport.new({:name => "ActivityGroup", :filters => {:g => typel, :date1 => @date1, :date2 => @date2}})
@@ -75,11 +73,6 @@ class Aae::ReportsController < ApplicationController
        params[:type]="State"
        common_display
      end
-
-    def activity_by_institution
-      params[:type] = "Institution"
-      common_display
-    end
 
       def transform_typelist(typl)
          nar = []; typl.map { |nm| nar << [nm.name] } 

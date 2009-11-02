@@ -36,7 +36,6 @@ module ParamExtensions
         when :location    then Location.find_by_id(value)
         when :county      then County.find_by_id(value)
         when :position    then Position.find_by_id(value)
-        when :institution then Institution.find_by_id(value)
         when :user        then User.find_by_email_or_extensionid_or_id(value)
         when :category    then Category.find_by_name_or_id(value)
         when :activity_application then ActivityApplication.find_by_id(value)
@@ -57,7 +56,6 @@ module ParamExtensions
         when :location   then "Location.find_by_id(#{var_name})"
         when :county     then "County.find_by_id(#{var_name})"
         when :position   then "Position.find_by_id(#{var_name})"
-        when :institution then "Institution.find_by_id(#{var_name})"
         when :user       then "User.find_by_email_or_extensionid_or_id(#{var_name})"
         when :category   then "Category.find_by_name_or_id(#{var_name})"
         when :activity_application then "ActivityApplication.find_by_id(#{var_name})"

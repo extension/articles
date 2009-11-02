@@ -21,9 +21,6 @@
     <h1>Activity Related to You</h1>
 	<h2>Activity This Past Week</h2>
 
-	<% if !@currentuser.institution.nil? %>	
-		<p><span class="bignumber"><%= Activity.count_active_users({:dateinterval => 'withinlastweek', :institution => @currentuser.institution})%></span> <%= link_to("active users from your institution",{:action => :list, :institution => @currentuser.institution, :dateinterval => 'withinlastweek'} )%> logging activity </p>
-	<% end %>
 	<% if !@currentuser.location.nil? %>	
 		<p><span class="bignumber"><%= Activity.count_active_users({:dateinterval => 'withinlastweek', :location => @currentuser.location})%></span> <%= link_to("active users from your location",{:action => :list, :location => @currentuser.location, :dateinterval => 'withinlastweek'} )%> logging activity </p>
 	<% end %>

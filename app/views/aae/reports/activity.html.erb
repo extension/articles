@@ -37,7 +37,6 @@
     <h3>Browse Statistics</h3>
     <ul>
         <li><%= link_to "General Statistics by State", { :action => 'activity_by_state', :FromDate => @dateFrom, :ToDate=> @dateTo}  %></li>
-        <li><%= link_to "General Statistics by Institution", {:action => 'activity_by_institution', :FromDate => @dateFrom, :ToDate=> @dateTo}%></li>
        <li><% form_tag({:action => :show_active_cats, :FromDate => @dateFrom, :ToDate=> @dateTo }) do %>
 
         <% options_array= Array.new%>

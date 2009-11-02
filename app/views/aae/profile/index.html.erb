@@ -23,7 +23,7 @@
     	<div class="org">
     		<p class="item">
     			<span class="vcardLabel">Institution:</span>
-    			<span class="organization-name"><%= (@user.institution.nil?) ? '&nbsp;': @user.institution.name %></span>
+    			<span class="organization-name"><%= (@user.communities.institutions.nil?) ? '&nbsp;': @user.communities.institutions[0].name %></span>
     		</p>
     	</div>
     	<div class="adr">	

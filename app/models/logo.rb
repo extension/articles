@@ -6,6 +6,11 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Logo < ActiveRecord::Base
+  
+  # logotypes
+  SPONSOR = 1
+  COMMUNITY = 2 
+  
   has_attachment  :storage => :db_file, 
                   :content_type => :image,
                   :max_size => 1.megabytes,

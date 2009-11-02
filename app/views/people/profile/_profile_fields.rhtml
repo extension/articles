@@ -47,7 +47,7 @@
 <div class="form_section">
 <h3>Your Institution/Affiliation</h3>
 	<div id="institution">
-		<% if @user.institution.nil? or signup %>
+		<% if @user.communities.institutions.nil? or signup %>
 			<%= render(:partial => 'people/profile/edit_institution') %>
 		<% else %>
 			<%= render(:partial => 'people/profile/profile_field_institution', :locals => {:user => @user}) %>

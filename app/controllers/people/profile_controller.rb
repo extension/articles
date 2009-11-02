@@ -125,9 +125,9 @@ class People::ProfileController < ApplicationController
       # institution
       if(!params[:institution].nil?)
         if(!params[:institution][:name].blank?)
-          @currentuser.institution = Institution.find_existing_or_create_new_user_institution(params[:institution][:name],@currentuser.login)
+          # nothing
         else
-          @currentuser.institution = nil
+          # nothing
         end
       end
       @currentuser.attributes=(params[:user])

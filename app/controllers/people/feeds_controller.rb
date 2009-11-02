@@ -7,39 +7,13 @@
 
 class People::FeedsController < ApplicationController
   include People::ActivityDisplayHelper
-  before_filter :login_required, :only => [:index, :institutions, :locations, :positions,:applications]
-  before_filter :check_purgatory, :only => [:index, :institutions, :locations, :positions,:applications]  
+  before_filter :login_required, :only => [:index, :locations, :positions,:applications]
+  before_filter :check_purgatory, :only => [:index, :locations, :positions,:applications]  
   
   before_filter :validate_feedkey, :except => [:index,:institutions, :locations, :positions,:invalid,:applications]
   ATOM_FEED_LIMIT = 100  # TODO: paginated atom feeds!
   
   def index
-    render(:layout => 'activity')
-  end
-  
-  def institutions
-    @displayfilter = params[:displayfilter].nil? ? 'all' : params[:displayfilter]
-    
-    case @displayfilter
-    when 'system'
-      @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
-      @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
-      @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
-    when 'landgrant'
-      @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
-    when 'state'
-      @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
-    when 'federal'
-      @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
-    when 'usercontributed'
-      @usercontributed = Institution.find_all_by_entrytype(Institution::USERCONTRIBUTED, :order => 'name') 
-    else
-      @filter = 'all'
-      @landgrant = Institution.find_all_by_entrytype(Institution::LANDGRANT, :order => 'name') 
-      @state = Institution.find_all_by_entrytype(Institution::STATE, :order => 'name') 
-      @federal = Institution.find_all_by_entrytype(Institution::FEDERAL, :order => 'name') 
-      @usercontributed = Institution.find_all_by_entrytype(Institution::USERCONTRIBUTED, :order => 'name') 
-    end
     render(:layout => 'activity')
   end
   

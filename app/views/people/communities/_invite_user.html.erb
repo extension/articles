@@ -1,6 +1,5 @@
 <h2><%= user.fullname %></h2>
 <p><%= user.login %> <%= user.email %></p>
-<%= (user.institution.nil?) ? '': '<p>' + user.institution.name + '</p>' %>
 <% if user.connection_with_community(community) == 'none' or user.connection_with_community(community) == 'interest' or user.connection_with_community(community) == 'nointerest' %>
           <p id="community_<%= community.id %>_user_<%= user.id %>_connection"> <%= link_to_function 'invitation options', "Effect.toggle('community_#{community.id}_user_#{user.id}_inviteform_block','blind', { duration: .4});" %></p>
 	
