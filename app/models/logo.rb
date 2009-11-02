@@ -9,7 +9,9 @@ class Logo < ActiveRecord::Base
   
   # logotypes
   SPONSOR = 1
-  COMMUNITY = 2 
+  COMMUNITY = 2
+  
+  named_scope :sponsorlogos, :conditions => {:logotype => SPONSOR} 
   
   has_attachment  :storage => :db_file, 
                   :content_type => :image,

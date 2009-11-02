@@ -12,7 +12,7 @@ class Admin::LogosController < ApplicationController
 
   def index
     set_titletag('Manage Logos- Pubsite Admin')
-    @logos = Logo.find(:all, :conditions => { :parent_id => nil }, :order => 'created_at DESC')
+    @logos = Logo.sponsorlogos.find(:all, :conditions => { :parent_id => nil }, :order => 'created_at DESC')
   end
 
   def new
@@ -21,6 +21,7 @@ class Admin::LogosController < ApplicationController
 
   def create
     @logo = Logo.new(params[:logo])
+    @logo.logotype = Logo::SPONSOR
 
     if @logo.save
       flash[:notice] = 'Logo was successfully uploaded.'
