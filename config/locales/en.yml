@@ -99,4 +99,5 @@ en:
   communities:
       approved: 'eXtension Community of Practice'
       user_contributed: 'User created community'
+      institution: 'Institution'
       unknown: 'Unknown community type'

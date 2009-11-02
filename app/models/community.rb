@@ -111,8 +111,12 @@ class Community < ActiveRecord::Base
   before_create :clean_description_and_shortname, :show_in_public_if_approved
   before_update :clean_description_and_shortname, :show_in_public_if_approved
 
-  def primary_content_tag_name(force_cache_update=false)
-    
+
+  def is_institution?
+    return (self.entrytype == INSTITUTION)
+  end
+  
+  def primary_content_tag_name(force_cache_update=false)    
     self.cached_content_tags(force_cache_update)[0]
   end
     
