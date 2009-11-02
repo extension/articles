@@ -194,9 +194,9 @@ class FeedsController < ApplicationController
                         
       when 'articles'
         if category_array
-          entries = Article.notdpl.tagged_with_content_tags(category_array).ordered.limit(limit).find(:all, :select => select, :conditions => conditions)
+          entries = Article.tagged_with_content_tags(category_array).ordered.limit(limit).find(:all, :select => select, :conditions => conditions)
         else
-          entries = Article.notdpl.ordered("articles.wiki_updated_at DESC").limit(limit).find(:all, :select => select, :joins => joins, :conditions => conditions)
+          entries = Article.ordered("articles.wiki_updated_at DESC").limit(limit).find(:all, :select => select, :joins => joins, :conditions => conditions)
         end  
               
       when 'events'

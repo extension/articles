@@ -29,9 +29,7 @@ class Article < ActiveRecord::Base
   named_scope :bucketed_as, lambda{|bucketname|
     {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
-  
-  named_scope :notdpl, {:conditions => {:is_dpl => false}}
-  
+    
   def put_in_buckets(categoryarray)
     namearray = []
     categoryarray.each do |name|
