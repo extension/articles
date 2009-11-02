@@ -86,14 +86,4 @@ module DataHelper
     return '<img height="135" '+src+' alt="" />'
   end
   
-  def community_image(community)
-    category_name = community.primary_content_tag_name
-    file_name = category_name.gsub(/[,_]/,'').gsub(/ /,'_').downcase
-    if File.exists?(File.join('public', "images/layout/copad_#{file_name}.gif"))
-      image_tag("/images/layout/copad_#{file_name}.gif", :border => 0, :alt => "") 
-    elsif File.exists?(File.join('public', "images/layout/copad_#{file_name}.jpg"))
-      image_tag("/images/layout/copad_#{file_name}.jpg", :border => 0, :alt => "")
-    end
-  end
-
 end
