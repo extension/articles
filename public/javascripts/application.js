@@ -183,9 +183,9 @@ function processTableOfContents() {
 	  })
 	  var div = document.createElement('div')
 	  div.id = 'table_of_contents'
-	  div.innerHTML = '<h3>Table of Contents</span> <a href="#" id="table_of_contents_button" onclick="toggle_table_of_contents()"> (Show)</a></h3>'
+	  div.innerHTML = '<h3>Table of Contents</span> <a href="#" id="table_of_contents_button" onclick="toggle_table_of_contents()"> (Hide)</a></h3>'
 	  div.appendChild(ul)
-	  ul.style.display = 'none'
+      // ul.style.display = 'none'
 	  $('article').insert({before: div})
 	  toc.remove();
    }
