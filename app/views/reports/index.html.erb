@@ -19,6 +19,9 @@
        <td><%= Event.all.count %></td>
     <tr>
 </table>
+<h3><%= link_to "Numbers (People Report)", :controller => "people/numbers", :action => "index"%></h3>
 
+
+<h3><%= link_to "Ask an Expert Reports (requires login)", :controller => "aae/reports", :action => "index" %></h3>
 
 
