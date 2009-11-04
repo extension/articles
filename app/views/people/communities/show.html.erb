@@ -6,7 +6,7 @@
 <div id="community">
     <div id="primary_column" class="dashboard">
 	    
-	    <div id="titleblock">
+	    <div id="titleblock" <%= @community.is_institution? ? 'class="institution"' : 'class="community"' %>>
 	        <h1><%= @community.name%></h1>
 	        <p><%= @community.entrytype_to_s %></p>
 	    </div>

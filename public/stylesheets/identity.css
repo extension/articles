@@ -169,7 +169,9 @@ legend {font-size:1.3em;font-weight:bold;}
 .dashboard h1 {font-weight:600;margin-bottom:.25em; line-height:1.1em;}
 .dashboard h2 {font-size: 1.4em; font-weight:bold; color:#000;}
 
-#titleblock {background:transparent url(/images/people/group-icon.png) no-repeat left top;padding:0 0 0 72px; margin-bottom:1em;min-height:72px;}
+#titleblock {padding:0 0 0 72px; margin-bottom:1em;min-height:72px;}
+#titleblock.institution {background:transparent url(/images/people/institution-icon.png) no-repeat left top;}
+#titleblock.community {background:transparent url(/images/people/group-icon.png) no-repeat left top;}
 #titleblock p {padding-left:4px;}
 
 .dashmodule {border: 2px solid #ddd; margin-bottom:2.5em;padding:1.5em; -moz-border-radius: 8px;-webkit-border-radius: 8px;}
