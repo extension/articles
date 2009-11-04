@@ -149,7 +149,7 @@ class MainController < ApplicationController
   end
   
   def set_institution
-    session[:institution_id] = params[:institution_id]
+    session[:institution_community_id] = params[:institution_id]
     session[:multistate] = nil
     request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url) 
   end
@@ -167,7 +167,7 @@ class MainController < ApplicationController
     if(public_institutions_for_location[0].shared_logo or public_institutions_for_location.size == 1)
       @personal[:state] = params[:state]
       @personal[:institution] = public_institutions_for_location[0]
-      session[:institution_id] = @personal[:institution].id.to_s
+      session[:institution_community_id] = @personal[:institution].id.to_s
       session[:multistate] = nil
     else
       session[:multistate] = params[:state]

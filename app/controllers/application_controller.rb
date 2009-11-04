@@ -105,18 +105,18 @@ class ApplicationController < ActionController::Base
   def personalize
     @personal = {}
     
-    if session[:institution_id]
-      if(inst = Community.find_by_entrytype_and_id(Community::INSTITUTION,session[:institution_id]))
+    if session[:institution_community_id]
+      if(inst = Community.find_by_entrytype_and_id(Community::INSTITUTION,session[:institution_community_id]))
         @personal[:institution] = inst
       else
-        session[:institution_id] = nil
+        session[:institution_community_id] = nil
       end
       @personal[:institution] = inst if inst
       if (inst and @personal[:location].nil?)
         @personal[:location] = @personal[:institution].location
       end
     elsif(refering_institution = Community.find_institution_by_referer(request.referer))
-      session[:institution_id] = {:value => refering_institution.id.to_s, :expires => 1.month.from_now}
+      session[:institution_community_id] = {:value => refering_institution.id.to_s, :expires => 1.month.from_now}
       @personal[:institution] = refering_institution
       @personal[:location] = refering_institution.location
     end
