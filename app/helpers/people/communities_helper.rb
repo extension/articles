@@ -22,11 +22,12 @@ module People::CommunitiesHelper
     returnarray = []
     Community::ENTRYTYPES.keys.sort.each do |key|
       if(Community::ENTRYTYPES[key][:allowadmincreate])
-        returnarray << [Community::ENTRYTYPES[key][:label],key]
+        returnarray << [I18n.translate("communities.#{Community::ENTRYTYPES[key][:locale_key]}"),key]
       end
     end
     returnarray
   end
+  
   
   def makecommunityusercsvstring(user,community)
      #eXtensionID,First Name,Last Name,Email,Title,Position,Institution,Location,County,Agreement Status,Connection,Account Created,Connection Created,Connection Updated
