@@ -155,18 +155,22 @@ class MainController < ApplicationController
   end
     
   def find_institution
-    @personal[:location] = Location.find_by_abbreviation(params[:state])
-    if(@personal[:location] and public_institutions_for_location = @personal[:location].communities.institutions.public_list)
-      if(public_institutions_for_location[0].shared_logo or public_institutions_for_location.size == 1)
-        @personal[:state] = params[:state]
-        @personal[:institution] = public_institutions_for_location[0]
-        session[:institution_id] = @personal[:institution].id.to_s
-        session[:multistate] = nil
-      else
-        session[:multistate] = params[:state]
-      end
-    else
+    if(!(@personal[:location] = Location.find_by_abbreviation(params[:state])))
       return render(:partial => "shared/no_institution", :layout => false)
+    end
+    
+    public_institutions_for_location = @personal[:location].communities.institutions.public_list
+    if(public_institutions_for_location.blank?)
+      return render(:partial => "shared/no_institution", :layout => false)
+    end
+    
+    if(public_institutions_for_location[0].shared_logo or public_institutions_for_location.size == 1)
+      @personal[:state] = params[:state]
+      @personal[:institution] = public_institutions_for_location[0]
+      session[:institution_id] = @personal[:institution].id.to_s
+      session[:multistate] = nil
+    else
+      session[:multistate] = params[:state]
     end
     render :partial => "shared/logo", :locals => {:person => @personal}, :layout => false
   end
