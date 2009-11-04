@@ -117,8 +117,8 @@ class Aae::PrefsController < ApplicationController
         county_to_add = ExpertiseCounty.find(:first, :conditions => ["expertise_counties.fipsid = ?", params[:new_county_fips]] )
       end
       
-      @currentuser.expertise_locations << @location if !@currentuser.expertise_locations.include?(@location)
-      @currentuser.expertise_counties << county_to_add if !@currentuser.expertise_counties.include?(county_to_add)
+      @currentuser.expertise_locations << @location if !@currentuser.expertise_locations.find(:first, :conditions => "expertise_locations.id = #{@location.id}")
+      @currentuser.expertise_counties << county_to_add if !@currentuser.expertise_counties.find(:first, :conditions => "expertise_counties.id = #{county_to_add.id}")
       @currentuser.save
       
       @new_county_list = @currentuser.expertise_counties.find(:all, :conditions => "expertise_counties.state_fipsid = #{@location.fipsid}")
