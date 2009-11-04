@@ -56,6 +56,13 @@
     	    <div class="dashmodule">
     	        <div id="sharedtaglist">
             		<%= render(:partial => 'shared_tag_list') %>
+            		<div id='tags_tooltip' style="display:none;" class="tooltip">
+                        <p id="tooltip_hook"><strong>Community Tags</strong> These tags describe the community and can be searched on. They are set by community leaders.</p>
+                    </div>
+
+                    <script type="text/javascript">
+                        var my_tooltip = new Tooltip('tags_trigger', 'tags_tooltip')
+                    </script>
             	</div>
         	</div>
         	
