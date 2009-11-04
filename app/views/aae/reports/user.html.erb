@@ -34,7 +34,8 @@
    
    <dt>Questions answered from the Public (Ask an Expert)</dt>
     <dd><%= link_to "#{@uresolved} total", :action => "display_questions", :user => @user.id, :descriptor => "Answered as an Expert" , :olink => "Answered as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uresolved %></dd>
-    
+   <dt>Questions assigned to answer (Ask an Expert)</dt>
+    <dd><%= link_to "#{@uassigned} total",:action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert" , :olink => "Assigned as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uassigned %></dd>
      
 </dl>	
 <br class="clear"/>

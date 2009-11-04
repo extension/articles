@@ -1508,6 +1508,13 @@ class User < ActiveRecord::Base
          " where ea.category_id=? order by users.last_name", catid ])
      end
     
+    def ever_assigned_questions(date1, date2)
+       cond = " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}"
+       if (date1 && date2)
+            cond = cond + " and submitted_questions.created_at between ? and ? "
+        end
+      SubmittedQuestion.find(:all, :joins => [:submitted_question_events], :conditions =>  ((date1 && date2) ? [cond, date1, date2] : cond), :group => "submitted_question_id")
+    end
     
      def self.get_num_times_assigned(date1, date2, auxjoin, auxcond, sqfilters, sqinclude)
        cond = " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO}, #{SubmittedQuestionEvent::RESOLVED}, #{SubmittedQuestionEvent::REJECTED}, #{SubmittedQuestionEvent::NO_ANSWER}) " + 

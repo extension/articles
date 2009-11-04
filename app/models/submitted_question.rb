@@ -252,16 +252,18 @@ end
             end
      when "Answered as an Expert"
           cdstring = " sq.resolved_by = #{cat.id}"
+     when "Assigned as an Expert"
+          cdstring = " recipient_id= #{cat.id} "
    end
    if (date1 && date2)
      case desc
-     when  "New", "Resolved", "Resolver", "Answered as an Expert"
+     when  "New", "Resolved", "Resolver", "Answered as an Expert", "Assigned as an Expert"
         tstring =" and sq.created_at between ? and  ?"
      end
      cdstring = [cdstring + tstring, date1, date2]
    end
 
-   with_scope(:find => {:conditions => cdstring, :limit => 100}) do
+   with_scope(:find => {:conditions => cdstring, :limit => ((desc == "Assigned as an Expert") ? nil : 100)}) do
        paginate(*args)
     end
   end

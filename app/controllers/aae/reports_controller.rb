@@ -275,6 +275,7 @@ class Aae::ReportsController < ApplicationController
           @user = User.find_by_id(params[:id]) 
           if @user
             @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
+            @uassigned = @user.ever_assigned_questions(@date1,@date2).count
             @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
            end
        #   @myid = @currentuser
@@ -289,20 +290,28 @@ class Aae::ReportsController < ApplicationController
            @olink = params[:olink];  @comments=nil; @edits=nil; 
            @dateFrom = params[:from] ;  @dateTo=params[:to]
            @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-           desc = params[:descriptor]; @numb = params[:num].to_i
+           desc = params[:descriptor]; @numb = params[:num].to_i; join_string = ""; group_name = nil
+           descl = desc
 
              select_string = " sq.current_contributing_question question_id, sq.user_id, sq.id squid,  resolved_by, " +
                 " sq.status_state status, sq.created_at, sq.updated_at updated_at, asked_question " 
+           if desc=="Assigned as an Expert"
+             select_string = select_string + " , recipient_id "
+             join_string = " join submitted_question_events on sq.id=submitted_question_events.submitted_question_id "
+             group_name = "submitted_question_id"
+             descl = "was Assigned as an Expert"
+           end
             
-             @pgt = "Questions #{@user.first_name} #{@user.last_name} #{desc} "
+             @pgt = "Questions #{@user.first_name} #{@user.last_name} #{descl} "
              @faq = nil; @idtype='sqid'
         
         
              @questions = SubmittedQuestion.find_questions(@user, desc,nil,nil, @date1, @date2,
                                                             :all,
                                                             :select => select_string,
-                                                            :joins => " as sq ",
+                                                            :joins => " as sq #{join_string} ",
                                                             :order => order_clause("sq.updated_at", "desc"),
+                                                            :group => group_name,
                                                             :page => params[:page],
                                                             :per_page => AppConfig.configtable['items_per_page'])
     
@@ -1069,7 +1078,7 @@ class Aae::ReportsController < ApplicationController
           end
         @oldest_date = SubmittedQuestion.find_oldest_date; 
         @type = "Assignee"
-        @userlist = [] ; @assgn={}; @assgninc={}; @avgsheld = {}; @num_current_q = {}; @avc = Hash.new
+        @userlist = [] ; @assgn={}; @assgninc={}; @avgsheld = {}; @num_current_q = {}; @avc = {}
         #get list of assignee users  (expertise users)
         @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
         
