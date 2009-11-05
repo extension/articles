@@ -44,7 +44,7 @@ class People::ColleaguesController < ApplicationController
               UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "vouched by #{@currentuser.login}",:additionaldata => params[:explanation])
               log_user_activity(:user => @user,:activitycode => Activity::VOUCHED_FOR, :appname => 'local',:colleague => @showuser, :additionaldata => {:explanation => params[:explanation]})              
               log_user_activity(:user => @showuser,:activitycode => Activity::VOUCHED_BY, :appname => 'local',:additionaldata => {:explanation => params[:explanation]})              
-              @showuser.send_welcome(true)
+              Notification.create(:notifytype => Notification::WELCOME, :user => @showuser, :send_on_create => true)
               flash.now[:success] = "Vouched for #{@showuser.fullname}"      
             else
               flash.now[:failure] = 'Failed to vouch for user, reported status may not be correct'      

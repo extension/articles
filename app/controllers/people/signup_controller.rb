@@ -134,10 +134,10 @@ class People::SignupController < ApplicationController
       @currentuser.confirm_signup(@token)
 
       if (@currentuser.vouched?)            
-        @currentuser.send_welcome
+        Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
         return redirect_to(people_welcome_url)
       else
-        @currentuser.send_review_request
+        Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :user => @currentuser, :send_on_create => true)        
         return redirect_to(:controller => 'signup', :action => 'review')
       end
     end    

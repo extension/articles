@@ -1,4 +1,4 @@
-<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
 
 
 <% if @reassign_comment and @reassign_comment.strip != '' and @assigner.id == User.systemuser.id %>

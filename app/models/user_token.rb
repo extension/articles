@@ -9,9 +9,7 @@ require 'digest/sha1'
 class UserToken < ActiveRecord::Base
   belongs_to :user
   EMAIL = 1
-  RESETPASS = 2
-  ADMIN_REVOKEAGREENT = 3
-  
+  RESETPASS = 2  
   SIGNUP = 4
   
   serialize :tokendata
@@ -52,8 +50,6 @@ class UserToken < ActiveRecord::Base
       daysvalid = AppConfig.configtable['token_timeout_email']
     when RESETPASS
       daysvalid = AppConfig.configtable['token_timeout_resetpass']
-    when ADMIN_REVOKEAGREENT
-      daysvalid = AppConfig.configtable['token_timeout_revokeagreement']
     else
       return
     end

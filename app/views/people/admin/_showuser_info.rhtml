@@ -88,9 +88,9 @@
     <tr>
         <td scope="row" class="label">Contributor Agreement reviewed: </td>
 		<% if @showuser.contributor_agreement %>
-       	<td>Yes - Accepted Agreement <%= link_to "Revoke", :action => 'confirm_revoke_agreement', :id => @showuser.login %></td>
+       	<td>Yes - Accepted Agreement</td>
 		<% else %>	
-       	<td>Yes - Did not accept Agreement <%= link_to "Revoke", :action => 'confirm_revoke_agreement', :id => @showuser.login %></td>
+       	<td>Yes - Did not accept Agreement</td>
 		<% end %>	
     </tr>
     <tr>

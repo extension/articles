@@ -1,14 +1,4 @@
-<% if @isdemo %>
-	-=-=-=-=-= PLEASE DISREGARD:  DEMONSTRATION EMAIL =-=-=-=-=-
-
-	This is a demo email being sent from a demo/test/development 
-	install of our Identity application.  
-
-	We are currently testing functionality in the application that 
-	generated this test email.  You may ignore this email message.
-
-	-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-<% end %>
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
 Hi <%= @token.user.first_name %>,
 <% if(!@additionaloptions[:fromfixemail].nil? and @additionaloptions[:fromfixemail]) %>
 We have edited the email address that is associated with your eXtensionID. Your previous email address was flagged as invalid, most likely because of a typo. We attempted to correct your email address by searching for your published listing at your institution.

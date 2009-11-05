@@ -77,7 +77,6 @@ class AppConfig
     # token timeouts are in days
     @@configtable['token_timeout_email'] = 7
     @@configtable['token_timeout_resetpass'] = 1
-    @@configtable['token_timeout_revokeagreement'] = 1
     
     # invitation timeout is in days
     @@configtable['invitation_token_timeout'] = 30

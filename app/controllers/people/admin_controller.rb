@@ -178,55 +178,6 @@ class People::AdminController < ApplicationController
     end    
   end
   
-  def confirm_revoke_agreement
-    if not params[:id].nil?
-      @revokeuser = User.find_by_login(params[:id])      
-      if @revokeuser
-        @token = UserToken.create(:user=>@currentuser,:tokentype=>UserToken::ADMIN_REVOKEAGREENT, :tokendata => {:revokeuser => @revokeuser.login})
-        send_token_confirmation(@token,@revokeuser)
-        AdminEvent.log_event(@currentuser, AdminEvent::REVOKEAGREEMENT_REQUEST,@revokeuser.login)
-      end    
-    end
-  end
-
-  def revoke_agreement
-    @notoken = true
-    @tokenexpired = false
-    @revocationfailed = false
-    
-    if params[:token] != nil
-      @token = UserToken.find_by_user_id_and_token_and_tokentype(@currentuser.id,params[:token],UserToken::ADMIN_REVOKEAGREENT)
-      if nil == @token
-        flash[:failure] = 'Token not found.'
-      elsif @token.token_expired?
-        @notoken = false
-        @tokenexpired = true
-      else
-        @notoken = false
-        @revokeuser = User.find_by_login(@token.tokendata[:revokeuser])
-        if(@revokeuser)
-          @revokeuser.contributor_agreement = nil
-          @revokeuser.contributor_agreement_at = nil
-          if @revokeuser.save
-            @token.destroy
-            UserToken.delete_all("user_id = #{@currentuser.id} AND tokentype=#{UserToken::ADMIN_REVOKEAGREENT} AND tokendata LIKE '#{@revokeuser.login}'")            
-            AdminEvent.log_event(@currentuser, AdminEvent::REVOKEAGREEMENT,@revokeuser.login)
-            UserEvent.log_event(:etype => UserEvent::AGREEMENT,:user => @revokeuser,:description => "contributor agreement revoked by #{@currentuser.login}")                                                                                        
-            send_revocation_email(@currentuser,@revokeuser)
-          else
-            @revocationfailed = true
-            flash.now[:failure] = "Unable to save user information for #{@revokeuser.login}."
-          end
-        else
-          @revocationfailed = true
-          flash.now[:failure] = "Unable to find user information for #{@token.tokendata}."
-        end          
-      end
-    else
-      # show token confirmation form
-    end
-  end
-  
   def index
     @recent_users = User.validusers.count(:conditions => "created_at > date_sub(curdate(), interval #{AppConfig.configtable['recent_account_delta']} day)")
     @recent_logins = User.validusers.count(:conditions => "last_login_at > date_sub(curdate(), interval #{AppConfig.configtable['recent_login_delta']} day)")
@@ -473,61 +424,7 @@ class People::AdminController < ApplicationController
   end  
   
   private
-  
-  def send_token_confirmation(token,revokeuser)
-    urls = Hash.new
-    case token.tokentype
-      when UserToken::ADMIN_REVOKEAGREENT
-        urls['directurl'] = url_for(:controller => '/people/admin', :action => :revoke_agreement, :token => token.token)
-        urls['manualurl'] = url_for(:controller => '/people/admin', :action => :revoke_agreement)
-        urls['contactus'] = people_contact_url        
-        email = AccountMailer.create_confirm_revocation(token,revokeuser,urls)
-      else 
-        logger.error("Invalid token type.");
-        return false
-    end
     
-    begin
-      AccountMailer.deliver(email)    
-    rescue
-      logger.error("Unable to deliver confirmation email.");
-      return false
-    end
-    return true
-  end
-  
-  def send_revocation_email(adminuser,revokeuser)
-    urls = Hash.new
-    urls['agreementurl'] = url_for(:controller => '/people/account', :action => :contributor_agreement)
-    urls['execurl'] = 'http://about.extension.org/wiki/Executive_Team'
-    urls['contactus'] = people_contact_url
-    email = AccountMailer.create_revocation_agreement(adminuser,revokeuser,urls)
-    begin
-      AccountMailer.deliver(email)    
-    rescue
-      logger.error("Unable to deliver revocation email.");
-      return false
-    end
-    return true
-  end
-  
-  def send_email_change(token,oldemail)
-    urls = Hash.new
-    urls['directurl'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => token.token)
-    urls['manualurl'] = url_for(:controller => '/people/account', :action => :confirmemail)        
-    urls['newtoken'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = people_contact_url
-    email = AccountMailer.create_confirm_email_change(token,urls,oldemail)
-    
-    begin
-      AccountMailer.deliver(email)    
-    rescue
-      logger.error("Unable to deliver confirmation email.");
-      return false
-    end
-    return true
-  end
-  
   def csvuserlist(userlist,filename,title)
       @title = title
       @userlist = userlist

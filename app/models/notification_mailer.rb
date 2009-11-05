@@ -252,6 +252,20 @@ class NotificationMailer < ActionMailer::Base
   #  email/signup confirmation
   # -----------------------------------
   
+  def confirm_email_change(notification)
+    # base parameters for the email
+    self.base_email(notification.notifytype_to_s)
+    token = UserToken.find(notification.additionaldata[:token_id])
+    @recipients     = token.user.email
+    @subject        = @subjectlabel+'Please confirm your email address'
+    urls = Hash.new
+    urls['directurl'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => token.token)
+    urls['manualurl'] = url_for(:controller => 'people/account', :action => :confirmemail)        
+    urls['newtoken'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => 'send')        
+    urls['contactus'] = people_contact_url
+    @body           = {:isdemo => @isdemo, :token => token, :urls => urls }
+  end
+  
   def confirm_email(notification)
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
@@ -280,6 +294,20 @@ class NotificationMailer < ActionMailer::Base
       urls['contactus'] = people_contact_url
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
+   
+   def confirm_signup(notification)
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s)
+     token = UserToken.find(notification.additionaldata[:token_id])
+     @recipients     = token.user.email
+     @subject        = @subjectlabel+'Please confirm your email address'
+     urls = Hash.new
+     urls['directurl'] = url_for(:controller => 'people/signup', :action => :confirm, :token => token.token)
+     urls['manualurl'] = url_for(:controller => 'people/signup', :action => :confirm)        
+     urls['newtoken'] = url_for(:controller => 'people/signup', :action => :confirmemail, :token => 'send')        
+     urls['contactus'] = people_contact_url    
+     @body           = {:isdemo => @isdemo, :token => token, :urls => urls,:additionaloptions => additionaloptions}  
+   end
   
    def reconfirm_signup(notification)
       # base parameters for the email
@@ -296,10 +324,37 @@ class NotificationMailer < ActionMailer::Base
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
    
+   def welcome(notification)
+     self.base_email(notification.notifytype_to_s)
+     @recipients     = notification.user.email
+     @subject        = @subjectlabel+'Welcome!'
+     urls = Hash.new
+     urls['profile'] = url_for(:controller => 'people/profile', :action => 'me')
+     urls['contactus'] = people_contact_url
+     @body           = {:isdemo => @isdemo, :user => notification.user, :urls => urls }  
+   end
+   
+   
+   # -----------------------------------
+   #  review
+   # -----------------------------------
+   
+   def review_request(notification)
+     self.base_email(notification.notifytype_to_s)      
+     reviewuser = notification.user
+     @from           = "\"#{reviewuser.first_name} #{reviewuser.last_name}\" <#{reviewuser.email}>"
+     @recipients     = AppConfig.configtable['emailsettings']['people']['review']
+     @subject        = @subjectlabel+'Account Review Request'    
+     urls = Hash.new
+     urls['reviewurl'] = url_for(:controller => 'people/colleagues', :action => 'showuser', :id => reviewuser.login)
+     urls['contactus'] = people_contact_url
+     @body           = {:isdemo => @isdemo, :reviewuser => reviewuser, :urls => urls }  
+   end
+   
+   
    # -----------------------------------
    #  passwords
    # -----------------------------------
-   
    
    def confirm_password(notification)
       # base parameters for the email
@@ -314,6 +369,8 @@ class NotificationMailer < ActionMailer::Base
       urls['contactus'] = people_contact_url
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
     end
+
+
 
    
    # -----------------------------------

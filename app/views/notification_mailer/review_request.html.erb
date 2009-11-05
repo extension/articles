@@ -1,14 +1,4 @@
-<% if @isdemo %>
-	-=-=-=-=-= PLEASE DISREGARD:  DEMONSTRATION EMAIL =-=-=-=-=-
-
-	This is a demo email being sent from a demo/test/development 
-	install of our Identity application.  
-
-	We are currently testing functionality in the application that 
-	generated this test email.  You may ignore this email message.
-
-	-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-<% end %>
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
 Hi eXtensionHelp,
 
 We are sending this email to request that you review the eXtensionID account for: 

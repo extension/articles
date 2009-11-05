@@ -1,4 +1,4 @@
-<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
 Hello <%= @oncolleague.first_name %>,
 
 <%= @actionstring %> <% if !@bycolleague.is_systemuser? %>by a colleague that's currently a leader or member in the community.

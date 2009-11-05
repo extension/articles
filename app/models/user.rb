@@ -960,15 +960,8 @@ class User < ActiveRecord::Base
       self.update_attributes(:account_status => STATUS_CONFIRMEMAIL,:email_event_at => now, :emailconfirmed => false)
       self.updatelistemails
     end
-    
     token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email, :oldemail => old_email_address})
-    email = AccountMailer.create_confirm_email_change(token)
-    begin
-      AccountMailer.deliver(email)    
-    rescue
-      logger.error("Unable to deliver email confirmation")
-    end
-    
+    Notification.create(:notifytype => Notification::CONFIRM_EMAIL_CHANGE, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})    
     return true
   end
   
@@ -985,13 +978,7 @@ class User < ActiveRecord::Base
     else
       token.extendtoken
     end
-    email = AccountMailer.create_confirm_signup(token,options)
-    begin
-      AccountMailer.deliver(email)
-    rescue
-      logger.error("Unable to deliver signup email")
-      return false
-    end
+    Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
     return true 
   end
   
@@ -1020,38 +1007,10 @@ class User < ActiveRecord::Base
     
     # create token
     token = UserToken.create(:user=>self,:tokentype=>UserToken::SIGNUP, :tokendata => tokendata)
-    email = AccountMailer.create_confirm_signup(token)
-    begin
-      AccountMailer.deliver(email)
-    rescue
-      logger.error("Unable to deliver signup email")
-      return false
-    end
+    Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
     return true
   end
-  
-  def send_welcome(is_after_review=false)
-    email = AccountMailer.create_welcome(self,is_after_review)
-    begin
-      AccountMailer.deliver(email)
-    rescue
-      logger.error("Unable to deliver welcome email")
-      return false
-    end
-    return true
-  end 
-  
-  def send_review_request
-    email = AccountMailer.create_review_request(self)
-    begin
-      AccountMailer.deliver(email)    
-    rescue
-      logger.error("Unable to deliver review request email.");
-      return false
-    end
-    return true    
-  end
-  
+    
   def send_email_confirmation(sendnow=true)
     # update attributes
     if(self.account_status != STATUS_CONFIRMEMAIL or self.emailconfirmed != false)
@@ -1063,19 +1022,8 @@ class User < ActiveRecord::Base
     token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email})
     
     # send email or create notification
-    if(sendnow)
-      email = AccountMailer.create_confirm_email(token)
-      begin
-        AccountMailer.deliver(email)    
-      rescue
-        logger.error("Unable to deliver email confirmation")
-        return false
-      end
-      return true
-    else
-      Notification.create(:notifytype => Notification::CONFIRM_EMAIL, :user => self, :additionaldata => {:token_id => token.id})
-      return true
-    end
+    Notification.create(:notifytype => Notification::CONFIRM_EMAIL, :user => self, :send_on_create => sendnow, :additionaldata => {:token_id => token.id})
+    return true
   end
   
   def send_email_reconfirmation

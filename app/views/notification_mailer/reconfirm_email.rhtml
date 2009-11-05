@@ -1,4 +1,4 @@
-<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
 Hi <%= @token.user.first_name %>,
 
 You signed up for an account with us at <%= @urls['home']%> on:
