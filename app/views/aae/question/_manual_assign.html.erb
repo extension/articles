@@ -6,6 +6,7 @@
     <% end %>
     
     <% if @submitted_question.assignee %>
+        
         <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
         <p>Assigned to 
                 <%= link_to (@submitted_question.assignee.fullname, 
@@ -14,7 +15,6 @@
             <!-- Show the assigned date of the submitted question if it exists and is valid -->
             <%= (assign_date = @submitted_question.assigned_date) ? time_ago_in_words(assign_date) + ' ago' : ""%> 
         </p>
-        
         
         <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED and @submitted_question.has_response? %>
             <div id="closebutton">
@@ -45,10 +45,16 @@
         <%= link_to_remote 'By location or category', :update => "search_experts",
             :url => aae_cat_loc_search_url(:id => @submitted_question.id), :html => { :class  => "off" }%>
         </p>
+        
 <div id="search_experts">  
 </div>
 		</div>
-</div>
+		
+        <% if @currentuser.id == @submitted_question.assignee.id %>
+          <br /><br /><p><%= button_to "Hand off to a Question Wrangler", :action => :assign_to_wrangler, :squid => @submitted_question.id %></p>
+        <% end %>
+
+</div>		
 
 <div id='source_tooltip' style="display:none;" class="tooltip">
 	<p id="tooltip_hook">If no response is needed to the last reply from the public user, please close this question.</p>

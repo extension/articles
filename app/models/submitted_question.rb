@@ -81,6 +81,8 @@ ALL_RESOLVED_STATII = [STATUS_RESOLVED, STATUS_REJECTED, STATUS_NO_ANSWER]
 
 AAEHOST = "http://#{AppConfig.configtable['url_options']['host']}"
 
+WRANGLER_REASSIGN_COMMENT = "This question has been assigned to you because the previous assignee has elected to have this question assigned to the pool of Question Wranglers."
+
 # scoping it out for various question states
 named_scope :resolved, :conditions => "submitted_questions.status_state IN (#{ALL_RESOLVED_STATII.join(',')}) AND submitted_questions.spam = FALSE"
 named_scope :answered, :conditions => "submitted_questions.status_state = #{STATUS_RESOLVED} AND submitted_questions.spam = FALSE"
@@ -458,6 +460,35 @@ def assign_to(user, assigned_by, comment, public_reopen = false, public_comment 
   if(is_reassign and public_reopen == false)
     Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :user => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
   end
+end
+
+# this is the method that gets invoked when someone wants to 
+# give up their assigned question to a question wrangler.
+def assign_to_question_wrangler(assigned_by, comment = '')
+  wranglers = User.uncategorized_wrangler_routers
+  wrangler_ids = wranglers.map{|qw| qw.id}.join(',')
+  
+  if self.county
+    expertise_county = ExpertiseCounty.find(:first, :conditions => {:fipsid => self.county.fipsid}) 
+    eligible_wranglers = expertise_county.users.find(:all, :conditions => "users.id IN (#{wrangler_ids})")
+  end
+  
+  if self.location and (!eligible_wranglers or eligible_wranglers.length == 0)
+    expertise_location = ExpertiseLocation.find(:first, :conditions => {:fipsid => self.location.fipsid})
+    eligible_wranglers = expertise_location.users.find(:all, :conditions => "users.id IN (#{wrangler_ids})")
+  end
+  
+  if !eligible_wranglers or eligible_wranglers.length == 0
+    assignee = pick_user_from_list(wranglers)
+  else
+    assignee = pick_user_from_list(eligible_wranglers)
+  end
+  
+  if comment.strip == ''
+    comment = WRANGLER_REASSIGN_COMMENT
+  end
+  
+  assign_to(assignee, assigned_by, comment)
 end
 
 

@@ -92,6 +92,18 @@ class Aae::QuestionController < ApplicationController
     end
   end
   
+  def assign_to_wrangler
+    if request.post? and params[:squid]
+      submitted_question = SubmittedQuestion.find_by_id(params[:squid])
+      submitted_question.assign_to_question_wrangler(@currentuser)
+    else
+      do_404
+      return
+    end
+    
+    redirect_to :action => :index, :id => submitted_question.id
+  end
+  
   def enable_category_change
     if request.post?
       @submitted_question = SubmittedQuestion.find_by_id(params[:id])
