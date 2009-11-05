@@ -95,7 +95,13 @@ class Aae::QuestionController < ApplicationController
   def assign_to_wrangler
     if request.post? and params[:squid]
       submitted_question = SubmittedQuestion.find_by_id(params[:squid])
-      submitted_question.assign_to_question_wrangler(@currentuser)
+      recipient = submitted_question.assign_to_question_wrangler(@currentuser)
+      # re-open the question if it's reassigned after resolution
+      if submitted_question.status_state == SubmittedQuestion::STATUS_RESOLVED or submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER
+        submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED)
+        SubmittedQuestionEvent.log_reopen(submitted_question, recipient, @currentuser, SubmittedQuestion::WRANGLER_REASSIGN_COMMENT)
+      end
+      
     else
       do_404
       return

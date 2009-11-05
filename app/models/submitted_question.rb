@@ -464,7 +464,7 @@ end
 
 # this is the method that gets invoked when someone wants to 
 # give up their assigned question to a question wrangler.
-def assign_to_question_wrangler(assigned_by, comment = '')
+def assign_to_question_wrangler(assigned_by)
   wranglers = User.uncategorized_wrangler_routers
   wrangler_ids = wranglers.map{|qw| qw.id}.join(',')
   
@@ -484,11 +484,10 @@ def assign_to_question_wrangler(assigned_by, comment = '')
     assignee = pick_user_from_list(eligible_wranglers)
   end
   
-  if comment.strip == ''
-    comment = WRANGLER_REASSIGN_COMMENT
-  end
-  
+  comment = WRANGLER_REASSIGN_COMMENT
+
   assign_to(assignee, assigned_by, comment)
+  return assignee
 end
 
 
