@@ -129,6 +129,9 @@ class People::AccountController < ApplicationController
       if(AUTH_SUCCESS != result[:code] and result[:localfail])
         if(result[:localfail])
           flash.now[:failure]  = explainauthresult(result[:code])
+          if(AUTH_PASSWORD_EXPIRED == result[:code])
+            result[:user].send_resetpass_confirmation
+          end
           UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_FAILED,:user => result[:user], :description => 'login failed ('+authlogmsg(result[:code])+')')                  
         end
       else

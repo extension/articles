@@ -39,6 +39,7 @@ class Notification < ActiveRecord::Base
   CONFIRM_EMAIL = 501
   RECONFIRM_EMAIL = 502
   RECONFIRM_SIGNUP = 503
+  CONFIRM_PASSWORD = 504
   
   ## Other User actions
   # TODO: new account created?
@@ -83,6 +84,7 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[CONFIRM_EMAIL] = ['confirm_email']      
   MAILERMETHODS[RECONFIRM_EMAIL] = ['reconfirm_email']    
   MAILERMETHODS[RECONFIRM_SIGNUP] = ['reconfirm_signup']    
+  MAILERMETHODS[CONFIRM_PASSWORD] = ['confirm_password']    
   MAILERMETHODS[AAE_ASSIGNMENT] = ['aae_assigned']  
   MAILERMETHODS[AAE_REASSIGNMENT] = ['aae_reassigned']    
   # TODO: MAILERMETHODS[AAE_ESCALATION] = ['todo']    
@@ -100,6 +102,7 @@ class Notification < ActiveRecord::Base
   serialize :additionaldata
   
   before_create :createnotification?
+  after_create :send_now?
   
   named_scope :tosend, :conditions => {:sent_email => false,:send_error => false}, :order => "created_at ASC"
   named_scope :aae_internal, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_AAE_INTERNAL[0]} and #{NOTIFICATION_AAE_INTERNAL[1]})"]
@@ -142,6 +145,11 @@ class Notification < ActiveRecord::Base
     end
   end
   
+  def send_now?
+    if(self.send_on_create?)
+      self.send_email
+    end
+  end
   
   def createnotification?
     case self.notifytype

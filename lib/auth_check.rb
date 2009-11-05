@@ -18,6 +18,7 @@ module AuthCheck
   AUTH_INVALID_APIKEY = 7
   AUTH_ACCOUNT_NOTVOUCHED = 8
   AUTH_SIGNUP_CONFIRM = 9
+  AUTH_PASSWORD_EXPIRED = 10
 
   
   def explainauthresult(resultcode)
@@ -46,6 +47,8 @@ module AuthCheck
       when AUTH_ACCOUNT_RETIRED
         gourl = "<a href='"+url_for(:controller => '/people/help', :action => :index)+"'>contact us</a>"
         explanation = "<p>Your eXtensionID has been retired. Please #{gourl} for more information.</p>"
+      when AUTH_PASSWORD_EXPIRED
+        explanation = "<p>Your eXtensionID password has expired due to inactivity or a retired account. An email has been sent to you with instructions on how to set a new password.</p>"
       when AUTH_INVALID_APIKEY
         explanation = "<p>An internal configuration error has occurred.  Please let us know about this by emailing us at <a href='mailto:eXtensionBugs@extension.org'>eXtensionBugs@extension.org</a>"        
       when AUTH_UNKNOWN
@@ -64,6 +67,8 @@ module AuthCheck
         logmsg = 'account retired'
       when AUTH_INVALID_PASSWORD
         logmsg = 'incorrect password'
+      when AUTH_PASSWORD_EXPIRED
+        logmsg = 'expired password'
       when AUTH_EMAIL_NOTCONFIRM
         logmsg = 'waiting email confirmation'
       when AUTH_SIGNUP_CONFIRM
@@ -143,6 +148,8 @@ module AuthCheck
       returnvalues = {:code => AUTH_INVALID_ID, :user => nil, :localfail => true}
     elsif(checkuser.retired?)
       returnvalues = {:code => AUTH_ACCOUNT_RETIRED, :user => checkuser, :localfail => true}
+    elsif(checkuser.password.blank?)
+      returnvalues = {:code => AUTH_PASSWORD_EXPIRED, :user => checkuser, :localfail => true}      
     elsif (!checkuser.checkpass(password))
       returnvalues = {:code => AUTH_INVALID_PASSWORD, :user => checkuser, :localfail => true}
     else

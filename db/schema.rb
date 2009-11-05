@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091102154017) do
+ActiveRecord::Schema.define(:version => 20091105162605) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -465,6 +465,7 @@ ActiveRecord::Schema.define(:version => 20091102154017) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "additionaldata"
+    t.boolean  "send_on_create", :default => false
   end
 
   add_index "notifications", ["send_error"], :name => "index_notifications_on_send_error"
@@ -774,7 +775,8 @@ ActiveRecord::Schema.define(:version => 20091102154017) do
 
   create_table "users", :force => true do |t|
     t.string   "login",                    :limit => 80,                    :null => false
-    t.string   "password",                 :limit => 40,                    :null => false
+    t.string   "password",                                                  :null => false
+    t.string   "password_salt"
     t.string   "first_name",                                                :null => false
     t.string   "last_name",                                                 :null => false
     t.string   "email",                    :limit => 96

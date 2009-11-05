@@ -54,10 +54,14 @@ class AppConfig
     @@configtable['emailsettings']['aae_internal'] = {'address' => 'aaenotify@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['people'] = {'address' => 'peoplemail@extension.org', 'name' => 'eXtension People Notification - Do Not Reply', 'bcc' => 'people.bcc.mirror@extension.org', 'review' => 'eXtensionHelp@extension.org'}
     @@configtable['emailsettings']['default'] = {'address' => 'noreply@extension.org', 'name' => 'eXtension Notification - Do Not Reply', 'bcc' => 'default.bcc.mirror@extension.org'}
-    
-    
+        
     # in hours
     @@configtable['aae_escalation_delta'] = 24
+    
+    # password expirations (days)
+    @@configtable['password_activity_expiration'] = 180
+    @@configtable['password_retire_expiration'] = 7
+        
   
     #Default sites
     @@configtable['faq_site'] = 'http://faq.extension.org'

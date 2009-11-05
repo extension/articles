@@ -47,7 +47,7 @@ class AccountMailer < ActionMailer::Base
     urls['directurl'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => token.token)
     urls['manualurl'] = url_for(:controller => 'people/account', :action => :confirmemail)        
     urls['newtoken'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => 'people/help', :action => :index)
+    urls['contactus'] = people_contact_url
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
   end
 
@@ -60,7 +60,7 @@ class AccountMailer < ActionMailer::Base
     urls['directurl'] = url_for(:controller => 'people/signup', :action => :confirm, :token => token.token)
     urls['manualurl'] = url_for(:controller => 'people/signup', :action => :confirm)        
     urls['newtoken'] = url_for(:controller => 'people/signup', :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => 'people/help', :action => :index)    
+    urls['contactus'] = people_contact_url    
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls,:additionaloptions => additionaloptions}  
   end
   
@@ -70,7 +70,7 @@ class AccountMailer < ActionMailer::Base
     @subject        = @subjectlabel+'Welcome!'
     urls = Hash.new
     urls['profile'] = url_for(:controller => 'people/profile', :action => 'me')
-    urls['contactus'] = url_for(:controller => 'people/help', :action => 'contactform')
+    urls['contactus'] = people_contact_url
     @body           = {:isdemo => @isdemo, :user => user, :is_after_review => is_after_review, :urls => urls }  
   end
   
@@ -83,7 +83,7 @@ class AccountMailer < ActionMailer::Base
     @subject        = @subjectlabel+'Account Review Request'    
     urls = Hash.new
     urls['reviewurl'] = url_for(:controller => 'people/colleagues', :action => 'showuser', :id => reviewuser.login)
-    urls['contactus'] = url_for(:controller => 'people/help', :action => :index)
+    urls['contactus'] = people_contact_url
     @body           = {:isdemo => @isdemo, :reviewuser => reviewuser, :urls => urls }  
     
   end
@@ -97,28 +97,15 @@ class AccountMailer < ActionMailer::Base
     urls['directurl'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => token.token)
     urls['manualurl'] = url_for(:controller => 'people/account', :action => :confirmemail)        
     urls['newtoken'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => 'send')        
-    urls['contactus'] = url_for(:controller => 'people/help', :action => :index)
+    urls['contactus'] = people_contact_url
     @body           = {:isdemo => @isdemo, :token => token, :urls => urls }
-  end
-
-  def confirm_password(token)
-    # base parameters for the email
-    self.base_email
-    @recipients     = token.user.email
-    @subject        = @subjectlabel+'Please confirm your new password request'
-    urls = Hash.new        
-    urls['directurl'] = url_for(:controller => 'people/account', :action => 'set_password', :token => token.token)
-    urls['manualurl'] = url_for(:controller => 'people/account', :action => 'set_password') 
-    urls['contactus'] = url_for(:controller => 'people/help', :action => 'contactform')
-    urls['newtoken'] = url_for(:controller => 'people/account', :action => :new_password)        
-    @body           = {:isdemo => @isdemo, :urls => urls, :token => token}
   end
 
   def confirm_revocation(token, revokeuser, urls, sent_at = Time.now)
     self.base_email
     @subject        = subjectlabel+'Please confirm your revocation request'
     urls = Hash.new
-    urls['contactus'] = url_for(:controller => 'people/help', :action => 'contactform')
+    urls['contactus'] = people_contact_url
     @body           = {:isdemo => isdemo, :revokeuser => revokeuser, :urls => urls, :token => token }
     @recipients     = token.user.email
   end
@@ -127,7 +114,7 @@ class AccountMailer < ActionMailer::Base
     self.base_email
     @subject        = subjectlabel+'Your Contributor Agreement has been revoked'
     urls = Hash.new
-    urls['contactus'] = url_for(:controller => 'people/help', :action => 'contactform')
+    urls['contactus'] = people_contact_url
     @body           = {:isdemo => isdemo, :revokeuser => revokeuser, :urls => urls, :adminuser => adminuser, :agreetime => sent_at}
     @recipients     = adminuser.email,revokeuser.email
   end

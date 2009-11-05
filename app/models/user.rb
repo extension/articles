@@ -5,7 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'digest/sha1'
-
 class User < ActiveRecord::Base 
   extend ConditionExtensions
   ordered_by :default => "last_name,first_name ASC"
@@ -128,8 +127,8 @@ class User < ActiveRecord::Base
   after_update :update_chataccount
   before_validation :convert_phonenumber
   before_save  :check_status, :generate_feedkey
-  before_create :encrypt_password
-  before_update :encrypt_password
+  before_create :set_encrypted_password
+  before_update :set_encrypted_password
   
   validates_uniqueness_of :login, :on => :create
   
@@ -446,12 +445,13 @@ class User < ActiveRecord::Base
     end
   end
     
-  def checkpass(comparepass)
-    if(comparepass.nil? or comparepass.empty?)
+  def checkpass(clear_password_string)
+    if(clear_password_string.nil? or clear_password_string.empty?)
       return false
     end
-    encodepass = self.encodepass(comparepass)
-    if(encodepass == self.password)
+    encrypted_password = self.encrypt_password_string(clear_password_string)
+    if(encrypted_password == self.password)
+      
       return true
     else
       return false
@@ -1007,13 +1007,7 @@ class User < ActiveRecord::Base
       passtoken = UserToken.create(:user=>self,:tokentype=>UserToken::RESETPASS)
     end
 
-    email = AccountMailer.create_confirm_password(passtoken)
-    begin
-      AccountMailer.deliver(email)    
-    rescue
-      logger.error("Unable to deliver reset password confirmation email.");
-      return false
-    end
+    Notification.create(:notifytype => Notification::CONFIRM_PASSWORD, :user => self, :send_on_create => true, :additionaldata => {:token_id => passtoken.id})
     UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "requested new password confirmation")                                         
     return true
   end
@@ -1614,10 +1608,19 @@ class User < ActiveRecord::Base
   end
     
   def self.cleanup_accounts
-    # 
-    
+    # TODO
   end
   
+  def expire_password
+    # note, will not call before_update (good, not encrypting '') 
+    # but it will call after_update to update the chat_account password
+    self.update_attribute('password','')
+  end
+  
+  def self.expire_passwords
+    # TODO: en masse password update using SQL
+  end
+    
   protected
   
   def check_status
@@ -1640,13 +1643,12 @@ class User < ActiveRecord::Base
   end
   
   
-  def encodepass(pass)
-    Digest::SHA1.hexdigest(pass)
+  def encrypt_password_string(clear_password_string)
+    Digest::SHA1.hexdigest(clear_password_string)
   end
     
-  
-  def encrypt_password
-    self.password = self.encodepass(self.password) if (!password.empty? && self.password_changed?)
+  def set_encrypted_password
+    self.password = self.encrypt_password_string(self.password) if (!password.empty? && self.password_changed?)
   end
   
   def convert_phonenumber

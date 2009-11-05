@@ -86,7 +86,7 @@ class NotificationMailer < ActionMailer::Base
     
     urls = Hash.new
     urls['showcolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => bycolleague.login)
-    urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
+    urls['contactus'] = people_contact_url
     urls['showcommunity'] = url_for(:controller => '/people/communities', :action => :show, :id => community.id)
 
 
@@ -143,7 +143,7 @@ class NotificationMailer < ActionMailer::Base
     urls = Hash.new
     urls['bycolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => bycolleague.login)
     urls['oncolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => oncolleague.login)
-    urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
+    urls['contactus'] = people_contact_url
     urls['showcommunity'] = url_for(:controller => '/people/communities', :action => :show, :id => community.id)
 
 
@@ -211,7 +211,7 @@ class NotificationMailer < ActionMailer::Base
     
     urls = Hash.new
     urls['bycolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => bycolleague.login)
-    urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
+    urls['contactus'] = people_contact_url
     urls['showcommunity'] = url_for(:controller => '/people/communities', :action => :show, :id => community.id)
 
 
@@ -232,7 +232,7 @@ class NotificationMailer < ActionMailer::Base
     
     urls = Hash.new
     urls['signup'] = url_for(:controller => '/people/signup', :action => 'readme', :invite => notification.additionaldata[:invitation_token])
-    urls['contactus'] = url_for(:controller => '/people/help', :action => 'contactform')
+    urls['contactus'] = people_contact_url
     @body           = {:isdemo => @isdemo, :notification => notification, :urls => urls }  
   end
   
@@ -244,7 +244,7 @@ class NotificationMailer < ActionMailer::Base
     
     urls = Hash.new
     urls['showcolleague'] = url_for(:controller => '/people/colleagues', :action => :showuser, :id => notification.creator.login)
-    urls['contactus'] = url_for(:controller => '/people/help', :action => 'contactform')
+    urls['contactus'] = people_contact_url
     @body           = {:isdemo => @isdemo, :notification => notification, :urls => urls }  
   end
   
@@ -262,7 +262,7 @@ class NotificationMailer < ActionMailer::Base
      urls['directurl'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => token.token)
      urls['manualurl'] = url_for(:controller => '/people/account', :action => :confirmemail)        
      urls['newtoken'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => 'send')        
-     urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
+     urls['contactus'] = people_contact_url
      @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
    
@@ -277,7 +277,7 @@ class NotificationMailer < ActionMailer::Base
       urls['directurl'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => token.token)
       urls['manualurl'] = url_for(:controller => '/people/account', :action => :confirmemail)        
       urls['newtoken'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => 'send')        
-      urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
+      urls['contactus'] = people_contact_url
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
   
@@ -292,10 +292,29 @@ class NotificationMailer < ActionMailer::Base
       urls['directurl'] = url_for(:controller => '/people/signup', :action => :confirm, :token => token.token)
       urls['manualurl'] = url_for(:controller => '/people/signup', :action => :confirm)        
       urls['newtoken'] = url_for(:controller => '/people/signup', :action => :confirm, :token => 'send')        
-      urls['contactus'] = url_for(:controller => '/people/help', :action => :index)
+      urls['contactus'] = people_contact_url
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
    end
    
+   # -----------------------------------
+   #  passwords
+   # -----------------------------------
+   
+   
+   def confirm_password(notification)
+      # base parameters for the email
+      self.base_email(notification.notifytype_to_s)
+      token = UserToken.find(notification.additionaldata[:token_id])
+      @recipients     = token.user.email
+      @subject        = @subjectlabel+'Please confirm your email address'
+      urls = Hash.new
+      urls['directurl'] = url_for(:controller => '/people/account', :action => :set_password, :token => token.token)
+      urls['manualurl'] = url_for(:controller => '/people/account', :action => :set_password)        
+      urls['newtoken'] = url_for(:controller => '/people/account', :action => :new_password, :token => 'send')        
+      urls['contactus'] = people_contact_url
+      @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
+    end
+
    
    # -----------------------------------
    #  Ask an Expert
