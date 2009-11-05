@@ -66,7 +66,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
     time_of_this_event = Time.now.utc
     submitted_question = create_attributes[:submitted_question]
     if create_attributes[:event_state] == ASSIGNED_TO
-      SubmittedQuestion.update(submitted_question.id, {:last_assigned_at => time_of_this_event})
+       submitted_question.update_attribute(:last_assigned_at, time_of_this_event)
     end
 
     # get last event
