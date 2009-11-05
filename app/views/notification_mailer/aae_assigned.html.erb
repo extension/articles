@@ -1,26 +1,27 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo %>
 
-A question is assigned to you at the eXtension Ask an Expert site.
+
+<% if @reassign_comment and @reassign_comment.strip != '' and @assigner.id == User.systemuser.id %>
+    <%= @reassign_comment #reassignment message from system %>
+<% else %>
+    A question is assigned to you at the eXtension Ask an Expert site.
+<% end %>
+
 
 Please click this link to reply:
 <%= @urls['question']%>  
 
-<% if @reassign_comment and @reassign_comment.strip != '' %>
-<% if @assigner.id == User.systemuser.id %>
-The System posted a comment when assigning the question:
-<% else %>
-<%= @assigner.fullname %> posted a comment when assigning the question:
-<% end %>
-<%= @reassign_comment %>
+<% if @reassign_comment and @reassign_comment.strip != '' and @assigner.id != User.systemuser.id%>
+    <%= @assigner.fullname %> posted a comment when assigning the question:
+    <%= @reassign_comment %>
 <% end %>
 
 <% if @public_comment %>
-*** Update ***
 There's a new comment from the person who submitted the question:
 <%= @public_comment %>
 <% end %>
 
-The question is:
+The original question was:
 "<%= @submitted_question.asked_question %>"
 
 

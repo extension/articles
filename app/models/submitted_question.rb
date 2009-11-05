@@ -70,8 +70,8 @@ EXPERT_DISCLAIMER = "This message for informational purposes only. " +
                     "third parties through eXtension is solely at the user’s own risk. All eXtension content and communication is subject to  the terms of " + 
                     "use http://www.extension.org/main/termsofuse which may be revised at any time."
                     
-PUBLIC_RESPONSE_REASSIGNMENT_COMMENT = "This question has been reassigned to you by the system because the submitter of the question has posted a new comment. Please either " +
-"reply to the response or close the question out if there is no need for a reply. Thank You!"
+PUBLIC_RESPONSE_REASSIGNMENT_COMMENT = "This question has been reassigned to you because a new comment has been posted to your response. Please " +
+"reply using the link below or close the question out if no reply is needed. Thank You."
                     
 DEFAULT_SUBMITTER_NAME = "External Submitter"
 
