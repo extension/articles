@@ -1,11 +1,12 @@
 <% @page_title = "Assignee Report"%>
 
-<% genstring = "Assignee Report"%>
+<% genstring = "Assignee Report for Questions Assigned in Ask an Expert"%>
 
 <div id="report">
     <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %>  <%= @page_title %></p>
     
 <h1><%= genstring %></h1>
+<p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page: <%= @filter_string%></p>
 
 <%= render(:partial => 'seldates') %>
 
@@ -16,7 +17,7 @@
 	    <!--<th scope="col">Assignee Name</th> -->
 	    <th scope="col"><%= link_to "Assignee Name" , { :action => 'common_sort_columns', :field=>'State' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%> </th>
 	   <!--<th scope="col">Questions Assigned <br>(over time period)</br></th>-->
-        <th scope="col"><%= link_to "Questions Assigned" , { :action => 'common_sort_columns', :field=>'assgn' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%> <br/> (over time period)</th>
+        <th scope="col"><%= link_to "No. Times Assigned" , { :action => 'common_sort_columns', :field=>'assgn' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%> <br/> (over time period)</th>
         
        <!--<th scope="col"> Not Completed by Assignee</th>-->
          <th scope="col"><%= link_to "Not Completed by Assignee",{ :action => 'common_sort_columns', :field=>'assgninc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>

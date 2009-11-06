@@ -275,7 +275,7 @@ class Aae::ReportsController < ApplicationController
           @user = User.find_by_id(params[:id]) 
           if @user
             @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
-            @uassigned = @user.ever_assigned_questions(@date1,@date2).count
+            @uassigned = @user.ever_assigned_questions(@date1,@date2, nil, nil).count
             @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
            end
        #   @myid = @currentuser
@@ -1079,15 +1079,20 @@ class Aae::ReportsController < ApplicationController
         @oldest_date = SubmittedQuestion.find_oldest_date; 
         @type = "Assignee"
         @userlist = [] ; @assgn={}; @assgninc={}; @avgsheld = {}; @num_current_q = {}; @avc = {}
+        list_view
+        set_filters    #pick up filters set in aae
+        filter_string_helper
+        filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
+        
         #get list of assignee users  (expertise users)
-        @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id=3 or role_id=5 or role_id=6").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
+        @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
         
         # get counts for assigned, assigned but not completed, avg response time, avg time held before reassigned 
-        assgns = User.get_num_times_assigned(@date1, @date2," join users on users.id= recipient_id ", "", nil, nil)
-        assgns_inc= User.get_num_times_assigned(@date1, @date2 ," join users on users.id=recipient_id ",  " and resolved_by!=recipient_id " , nil, nil)
-        avgs = User.get_avg_resp_time_only(@date1, @date2, nil, nil)
-        current_q = User.get_current_q(@date1, @date2)
-        avgsheld = User.get_avg_handling_time(@date1, @date2, nil, nil)
+        assgns = User.get_num_times_assigned(@date1, @date2," join users on users.id= recipient_id ", "", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+        assgns_inc= User.get_num_times_assigned(@date1, @date2 ," join users on users.id=recipient_id ",  " and resolved_by!=recipient_id " ,  SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+        avgs = User.get_avg_resp_time_only(@date1, @date2,  SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+        current_q = User.get_current_q(@date1, @date2, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+        avgsheld = User.get_avg_handling_time(@date1, @date2, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
             
         @userlist.each do |u|
           name = ((u.first_name) ? u.first_name : "")  + " " + ((u.last_name) ? (u.last_name) : "")

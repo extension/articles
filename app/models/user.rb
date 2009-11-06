@@ -1450,12 +1450,13 @@ class User < ActiveRecord::Base
          " where ea.category_id=? order by users.last_name", catid ])
      end
     
-    def ever_assigned_questions(date1, date2)
-       cond = " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}"
+    def ever_assigned_questions(date1, date2, sqfilters, sqinclude)
+       cond = " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}" + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
        if (date1 && date2)
             cond = cond + " and submitted_questions.created_at between ? and ? "
         end
-      SubmittedQuestion.find(:all, :joins => [:submitted_question_events], :conditions =>  ((date1 && date2) ? [cond, date1, date2] : cond), :group => "submitted_question_id")
+      SubmittedQuestion.find(:all, :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
+             :joins => [:submitted_question_events], :conditions =>  ((date1 && date2) ? [cond, date1, date2] : cond), :group => "submitted_question_id")
     end
     
      def self.get_num_times_assigned(date1, date2, auxjoin, auxcond, sqfilters, sqinclude)
@@ -1471,12 +1472,15 @@ class User < ActiveRecord::Base
        
      end
      
-     def self.get_current_q(date1, date2)
-       cond = "event_state = #{SubmittedQuestionEvent::ASSIGNED_TO} and last_assigned_at=submitted_question_events.created_at and status_state=#{SubmittedQuestion::STATUS_SUBMITTED} "
+     def self.get_current_q(date1, date2, sqfilters, sqinclude)
+       cond = "event_state = #{SubmittedQuestionEvent::ASSIGNED_TO} and last_assigned_at=submitted_question_events.created_at and status_state=#{SubmittedQuestion::STATUS_SUBMITTED} " +
+              ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
         if (date1 && date2)
              cond = cond + " and submitted_questions.created_at between ? and ? "
          end
-        SubmittedQuestion.count(:all, :joins => [:submitted_question_events],  :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "recipient_id")
+        SubmittedQuestion.count(:all, :joins => [:submitted_question_events],
+                      :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
+                    :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "recipient_id")
      end
      
      def self.get_avg_handling_time(date1, date2, sqfilters, sqinclude)
