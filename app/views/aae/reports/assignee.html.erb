@@ -15,21 +15,21 @@
 	<% even = false %> 
     <tr>
 	    <!--<th scope="col">Assignee Name</th> -->
-	    <th scope="col"><%= link_to "Assignee Name" , { :action => 'common_sort_columns', :field=>'State' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%> </th>
+	    <th scope="col"><%= link_to "Assignee Name" , { :action => 'common_sort_columns', :field=>'State' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo }%> </th>
 	   <!--<th scope="col">Questions Assigned <br>(over time period)</br></th>-->
-        <th scope="col"><%= link_to "No. Times Assigned" , { :action => 'common_sort_columns', :field=>'assgn' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%> <br/> (over time period)</th>
+        <th scope="col"><%= link_to "No. Times Assigned" , { :action => 'common_sort_columns', :field=>'assgn' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo }%> <br/> (over time period)</th>
         
        <!--<th scope="col"> Not Completed by Assignee</th>-->
-         <th scope="col"><%= link_to "Not Completed by Assignee",{ :action => 'common_sort_columns', :field=>'assgninc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %></th>
+         <th scope="col"><%= link_to "Not Completed by Assignee",{ :action => 'common_sort_columns', :field=>'assgninc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %></th>
 		
        <!-- <th scope="col">Currently Open</th>-->
-          <th scope="col"><%= link_to "Currently Open", { :action => 'common_sort_columns', :field=>'num_current_q' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo }%></th>
+          <th scope="col"><%= link_to "Currently Open", { :action => 'common_sort_columns', :field=>'num_current_q' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo }%></th>
 
       <!--   <th scope="col">Average Time Handling (hours)<br> anytime Assigned</br></th>-->
-        <th scope="col"><%= link_to "Avg Response Time Held (hours)",{ :action => 'common_sort_columns', :field=>'avgsheld' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %><br/> anytime Assigned</th>
+        <th scope="col"><%= link_to "Avg Response Time Held (hours)",{ :action => 'common_sort_columns', :field=>'avgsheld' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %><br/> anytime Assigned</th>
 
       <!--  <th scope="col">Average Response Time (hours)<br> where Assignee Answered</br></th> -->
-         <th scope="col"><%= link_to "Avg Response Time to Completion (hours)",{ :action => 'common_sort_columns', :field=>'avc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "a") ? "a" : "d",:from => @dateFrom, :to=>@dateTo  } %> <br/> where Assignee Answered</th>
+         <th scope="col"><%= link_to "Avg Response Time to Completion (hours)",{ :action => 'common_sort_columns', :field=>'avc' ,:type => @type, :report => 'assignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %> <br/> where Assignee Answered</th>
         
 
           

@@ -1088,11 +1088,13 @@ class Aae::ReportsController < ApplicationController
         @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
         
         # get counts for assigned, assigned but not completed, avg response time, avg time held before reassigned 
-        assgns = User.get_num_times_assigned(@date1, @date2," join users on users.id= recipient_id ", "", SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
-        assgns_inc= User.get_num_times_assigned(@date1, @date2 ," join users on users.id=recipient_id ",  " and resolved_by!=recipient_id " ,  SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
-        avgs = User.get_avg_resp_time_only(@date1, @date2,  SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
-        current_q = User.get_current_q(@date1, @date2, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
-        avgsheld = User.get_avg_handling_time(@date1, @date2, SubmittedQuestion.filterconditions(filteroptions)[:conditions], SubmittedQuestion.filterconditions(filteroptions)[:include])
+        filtered_conds = SubmittedQuestion.filterconditions(filteroptions)[:conditions]
+        filtered_includes = SubmittedQuestion.filterconditions(filteroptions)[:include]
+        assgns = User.get_num_times_assigned(@date1, @date2," join users on users.id= recipient_id ", "", filtered_conds, filtered_includes)
+        assgns_inc= User.get_num_times_assigned(@date1, @date2 ," join users on users.id=recipient_id ",  " and resolved_by!=recipient_id " ,  filtered_conds, filtered_includes)
+        avgs = User.get_avg_resp_time_only(@date1, @date2,  filtered_conds, filtered_includes)
+        current_q = User.get_current_q(@date1, @date2, filtered_conds, filtered_includes)
+        avgsheld = User.get_avg_handling_time(@date1, @date2, filtered_conds, filtered_includes)
             
         @userlist.each do |u|
           name = ((u.first_name) ? u.first_name : "")  + " " + ((u.last_name) ? (u.last_name) : "")
