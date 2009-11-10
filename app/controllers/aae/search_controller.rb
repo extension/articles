@@ -44,6 +44,8 @@ class Aae::SearchController < ApplicationController
     @location = ExpertiseLocation.find_by_fipsid(@submitted_question.location.fipsid) if @submitted_question.location
     @county = ExpertiseCounty.find_by_fipsid(@submitted_question.county.fipsid) if @submitted_question.county
     setup_cat_loc
+    get_pctassign
+    
     
     render :layout => false
   end
@@ -115,6 +117,7 @@ class Aae::SearchController < ApplicationController
     else
       @users = User.find(:all, :include => [:expertise_locations, :open_questions, :categories], :limit => 20, :conditions => ['(login like ? or first_name like ? or last_name like ?) and users.retired = false', user_name[0] + '%', user_name[0] + '%', user_name[0] + '%'], :order => 'first_name')
     end
+    get_pctassign
     
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
     
@@ -185,6 +188,26 @@ class Aae::SearchController < ApplicationController
     # ToDo: need to change this id parameter name to something more descriptive
     @submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]]) if not @submitted_question
     @users = User.find_by_cat_loc(@category, @location, @county)
+  end
+  
+  def get_pctassign
+     assigned_resolved = User.get_num_times_assigned(nil, nil," join users on users.id=initiated_by_id ", " and initiated_by_id=previous_handling_recipient_id  ", nil, nil)
+           
+     #count any initiating (resolved, rejected, no answer) entries
+     all_resolved = User.get_num_times_assigned(nil, nil, " join users on users.id=initiated_by_id ", " and initiated_by_id=users.id ", nil, nil)
+          
+     #count those who assigned themselves explicitly as dups since they were counted above already in assigned_resolved assuming not their own assigner, and for an 'initiator of resolution'  
+     dup_set = User.get_num_times_assigned(nil, nil,  " join users on users.id=initiated_by_id ", " and initiated_by_id=recipient_id ", nil, nil)
+             
+     subtotasgn = SubmittedQuestion.add_vals(all_resolved, assigned_resolved, '+')
+     @assgnscompls = SubmittedQuestion.add_vals(subtotasgn, dup_set, '-')
+
+        #  This is user id touching any initiated_by_id or recipient_id for ASSIGNED_TO or any resolved (resolved, rejected, no answer) id; in 3 steps because one statement can't handle a multiple join on users.id in MAMP (goes to never-never land)
+        #  This methodology is due to the constraints of MAMP
+     totrecips = User.get_num_times_assigned(nil, nil, "join users on users.id=recipient_id " ," and recipient_id=users.id ", nil, nil)
+     totboth = User.get_num_times_assigned(nil, nil, "join users on users.id=initiated_by_id " ," and (initiated_by_id=users.id and recipient_id=users.id) ", nil, nil)
+     subtot = SubmittedQuestion.add_vals(all_resolved, totrecips, '+')
+     @totalassgns = SubmittedQuestion.add_vals(subtot, totboth, '-')
   end
   
 end
