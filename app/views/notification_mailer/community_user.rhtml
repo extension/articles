@@ -5,7 +5,7 @@ As leaders for the <%= @community.name %> community, we are sending this email t
 
  <%= @bycolleague.fullname %>
  <%= @bycolleague.email %>
- Institution: <%= (@bycolleague.communities.institutions.nil? or @bycolleague.institution == '') ? '(Not specified)': @bycolleague.communities.institutions[0].name %> 
+ Institution: <%= @bycolleague.communities.primary_institution_name('(Not specified)') %> 
  <%= @urls['showcolleague']%>  
 
 <%= @actionstring%>

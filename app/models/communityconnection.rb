@@ -22,6 +22,10 @@ class Communityconnection < ActiveRecord::Base
   INVITEDLEADER = 201
   INVITEDMEMBER = 202
   
+  # used to indicate institution connection
+  PRIMARY = 101
+  
+  
   belongs_to :community
   belongs_to :user
   belongs_to :connector, :class_name => "User", :foreign_key => "connected_by"

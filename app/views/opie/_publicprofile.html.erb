@@ -30,7 +30,7 @@
 	<div class="org">
 		<p class="item">
 			<span class="vcardLabel">Institution:</span>
-			<span class="organization-name"><%= (showuser.communities.institutions.nil?) ? '&nbsp;': showuser.communities.institutions[0].name %></span>
+			<span class="organization-name"><%= showuser.primary_institution_name('&nbsp;') %></span>
 		</p>
 	</div>
 	<% end %>

@@ -194,6 +194,19 @@ class User < ActiveRecord::Base
     return "#{openid_url_prefix}/#{self.login.downcase}"
   end  
   
+  def primary_institution
+    # communityconnections is automatically included with the :communities association
+    return self.communities.institutions.find(:first, :conditions => "communityconnections.connectioncode = #{Communityconnection::PRIMARY}")
+  end
+  
+  def primary_institution_name(niltext = 'not specified')
+    if(institution = self.primary_institution)
+      return institution.name
+    else
+      return niltext
+    end
+  end
+  
   # returns a hash of public attributes
   def public_attributes
     returnhash = {}
@@ -218,7 +231,7 @@ class User < ActiveRecord::Base
         when 'position'
           returnhash.merge!({:position => self.position.name})
         when 'institution'
-          returnhash.merge!({:institution => (self.communities.institutions.nil? ? '' : self.communities.institutions[0].name)})
+          returnhash.merge!({:institution => self.primary_institution_name('')})
         when 'location'
           returnhash.merge!({:location => (self.location.nil? ? '' : self.location.name)})
         when 'county'

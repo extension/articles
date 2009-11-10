@@ -12,7 +12,6 @@
 	<p class="syndication"><%= link_to("Community Activity - user-contributed communities",{:controller => '/people/feeds', :action => :communities, :filter => 'usercontributed', :feedkey => @currentuser.feedkey})%></p>
 
 	<h2>Indexes</h2>
-	<p><%= link_to("Institutions",{:action => :institutions, :displayfilter => 'all'})%></p>
 	<p><%= link_to("Locations",{:action => :locations})%></p>
 	<p><%= link_to("Positions",{:action => :positions})%></p>
 	<p><%= link_to("Applications",{:action => :applications})%></p>
@@ -20,11 +19,8 @@
 
 <div id="activity_two" class="activity_summary">
     <h1>Activity Related to You</h1>
-	<h2>Institution, Location, and Position</h2>
+	<h2>Location, and Position</h2>
 
-	<% if !@currentuser.communities.institutions.nil? %>
-		<p class="syndication"><%= link_to("Your Institution - #{@currentuser.communities.institutions[0].name}",{:controller => '/people/feeds', :action => :institution, :id => @currentuser.institution.id, :feedkey => @currentuser.feedkey})%></p>
-	<% end %>
 	<% if !@currentuser.location.nil? %>	
 	<p class="syndication"><%= link_to("Your Location - #{@currentuser.location.name}",{:controller => '/people/feeds', :action => :location, :id => @currentuser.location.id, :feedkey => @currentuser.feedkey})%></p>
 	<% end %>
