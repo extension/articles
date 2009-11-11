@@ -23,17 +23,13 @@
 </div>
     
 <div class="form_section">
-   <%= render(:partial => 'people/profile/profile_position', :locals => { :positionslist => Position.geteditlist}) %>
-</div>
-
-<div class="form_section">
 <h3>Location</h3>
 	<div id="location">
 		<p>
 		    <label for="user_location_id">Location:</label>
 		<%= select(:user, :location_id, @locations.map {|loc| [loc.name,loc.id]}, :include_blank => true) %>
 		<%= observe_field(:user_location_id,
-		                  :url       => { :controller => '/people/profile', :action => :xhr_countylist },
+		                  :url       => { :controller => '/people/profile', :action => :xhr_county_and_institution },
 		                  :with      => "'location='+value") %>
 		</p>
 	</div>
@@ -47,13 +43,18 @@
 <div class="form_section">
 <h3>Your Institution/Affiliation</h3>
 	<div id="institution">
-		<% if @user.communities.institutions.nil? or signup %>
-			<%= render(:partial => 'people/profile/edit_institution') %>
+		<% if !@institutionlist.nil? %>
+			<%= render(:partial => 'people/profile/institutionlist', :locals => {:countylist => @institutionlist}) %>
 		<% else %>
-			<%= render(:partial => 'people/profile/profile_field_institution', :locals => {:user => @user}) %>
+		    <p><em>select a location to show institutions for that location</em></p>
 		<% end %>
 	</div>
 </div>
+
+<div class="form_section">
+   <%= render(:partial => 'people/profile/profile_position', :locals => { :positionslist => Position.geteditlist}) %>
+</div>
+
 
 <div class="form_section">
 <h3>Announcements</h3>

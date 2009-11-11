@@ -27,8 +27,6 @@ class User < ActiveRecord::Base
   TIMECOLUMN_UPDATED_AT = 4
   TIMECOLUMN_LAST_LOGIN_AT = 5
     
-
-  
   attr_protected :is_admin 
   
   has_many :sentinvitations, :class_name  => "Invitation"
@@ -48,7 +46,6 @@ class User < ActiveRecord::Base
   has_many :widgets
   has_many :responses
       
-  belongs_to :institution
   belongs_to :position
   belongs_to :location
   belongs_to :county
@@ -1014,8 +1011,8 @@ class User < ActiveRecord::Base
   
   def send_signup_confirmation(additionaldata = {})
     tokendata = {:email => self.email}
-    if(!additionaldata.nil? and !additionaldata[:invitation].nil?)
-      tokendata[:invitation_id] = additionaldata[:invitation].id
+    if(!additionaldata.blank?)
+      tokendata[:invitation_id] = additionaldata[:invitation].id if !additionaldata[:invitation].nil?
     end
     
     # create token

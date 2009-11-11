@@ -54,14 +54,9 @@ class People::SignupController < ApplicationController
     
     @user = User.new(params[:user])
     
-    # institution
-    if(!params[:institution].nil? and !params[:institution][:name].nil?)
-      # nothing
-    end
-    
     # STATUS_SIGNUP
     @user.account_status = User::STATUS_SIGNUP
-
+    
     begin
       didsave = @user.save
     rescue ActiveRecord::StatementInvalid => e
@@ -96,10 +91,9 @@ class People::SignupController < ApplicationController
       # automatically log them in
       @currentuser = User.find_by_id(@user.id)
       session[:userid] = @currentuser.id
+      signupdata = {}     
       if(@invitation)
-        signupdata = {:invitation => @invitation}
-      else
-        signupdata = nil
+        signupdata.merge!(:invitation => @invitation}
       end
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "initialsignup")        
       @currentuser.send_signup_confirmation(signupdata)
@@ -132,7 +126,6 @@ class People::SignupController < ApplicationController
       return redirect_to(:controller => 'signup', :action => 'reconfirm', :reason => 'expiredtoken')
     else
       @currentuser.confirm_signup(@token)
-
       if (@currentuser.vouched?)            
         Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
         return redirect_to(people_welcome_url)
@@ -154,27 +147,6 @@ class People::SignupController < ApplicationController
   end
   
   def review
-  end
-  
-  
-  def auto_complete_for_institution_name
-    if(!params[:institution].nil? and !params[:institution][:name].nil?)
-      institutionlist = Institution.searchmatching({:order => 'entrytype ASC,name', :searchterm => params[:institution][:name],:limit => 11}) 
-    end
-    render(:partial => 'people/profile/institutionlist', :locals => { :institutionlist => institutionlist })
-  end
-  
-  def fetch_signup_county_and_institution
-    @globalinstitutions = Institution.get_federal_nolocation
-    if(!params[:location].nil? and params[:location] != "")
-      selected_location = Location.find(:first, :conditions => ["id = ?", params[:location]])	  
-      @counties = selected_location.counties
-      @locationinstitutions = get_location_institutions(selected_location)
-    end
-
-    render(:update) do |page|
-        page.replace_html  :location, :partial => 'signup_county_and_institution'
-    end
   end
   
 end

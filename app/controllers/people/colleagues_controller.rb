@@ -74,6 +74,16 @@ class People::ColleaguesController < ApplicationController
     @locations = Location.find(:all, :order => 'entrytype,name')
   end
   
+  def institutions
+    @institutions = Community.institutions.find(:all, :order => 'name')
+  end
+  
+  def communities
+    @approved
+    @usercontributed
+  end
+  
+  
   def positions
     @positions = Position.find(:all, :order => 'entrytype,name') 
   end  

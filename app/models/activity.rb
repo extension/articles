@@ -172,7 +172,7 @@ class Activity < ActiveRecord::Base
   }
   
   ######
-  # location, county, position, institution of user
+  # location, county, position of user
   named_scope :byuserassociation, lambda {|options|
     {:joins => [:user], :conditions => User.build_association_conditions(options)}
   }
@@ -188,12 +188,7 @@ class Activity < ActiveRecord::Base
   named_scope :position, lambda {|position|
     {:joins => [:user], :conditions => { :users => {:position_id => position.id}}}
   }
-  
-  named_scope :institution, lambda {|institution|
-    {:joins => [:user], :conditions => { :users => {:institution_id => institution.id}}}
-  }
-  
-  
+    
   # -----------------------------------
   # Class-level methods
   # -----------------------------------

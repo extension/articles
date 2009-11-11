@@ -24,7 +24,6 @@ class Location < ActiveRecord::Base
   has_many :users
   has_many :counties
   has_many :communities
-  has_many :institutions, :source => :community, :conditions => "communities.entrytype = #{Community::INSTITUTION}"
   has_many :submitted_questions
   
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}

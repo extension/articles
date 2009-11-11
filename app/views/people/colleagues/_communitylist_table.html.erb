@@ -2,14 +2,14 @@
 <% 
        list_count = 1
        item_count = 0
-       column_limit = (linkobjectlist.length / 3) + 1
+       column_limit = ( communitylist.length / 3) + 1
    %>
-   <% linkobjectlist.each do |linkobject| %>
+   <%  communitylist.each do |community| %>
         <%= (item_count == 0) ? '<ul class="alpha_sort col1">' : '' %>
-        <li><%= link_to(linkobject.name, :action => :list, linkobject.class.name.downcase.to_sym => linkobject.id)%></li>
+        <li><%= link_to(community.name, people_community_url(community.id))%></li>
         <%
             item_count += 1
-            if item_count > linkobjectlist.length
+            if item_count > communitylist.length
                 %></ul><%
             elsif (item_count % column_limit) == 0
                 list_count += 1 %>

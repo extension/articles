@@ -7,7 +7,7 @@
 
 class People::ProfileController < ApplicationController
   layout 'people'
-  before_filter :login_required, :except => [:xhr_countylist]
+  before_filter :login_required, :except => [:xhr_county_and_institution]
   
   def me
   end
@@ -120,6 +120,7 @@ class People::ProfileController < ApplicationController
       @locations = Location.displaylist
       if(!(@currentuser.location.nil?))  
         @countylist = @currentuser.location.counties
+        @institutionlist = @currentuser.location.communities.institutions
       end
     else
       # institution
@@ -171,44 +172,21 @@ class People::ProfileController < ApplicationController
     # convenience method to do redirection to new communities controller
     return redirect_to(:controller => '/people/communities', :action => :mine)
   end
-  
-  def auto_complete_for_institution_name
-    institutionlist = Institution.searchmatching({:order => 'entrytype,name', :searchterm => params[:institution][:name],:limit => 11}) 
-    render(:partial => 'institutionlist', :locals => { :institutionlist => institutionlist })
-  end
-  
-  def editinstitution
-    @user = @currentuser
-    render(:update) do |page|
-      page.replace_html "institution", :partial => 'edit_institution'
-    end
-  end
-  
-  def editinstitution
-    @user = @currentuser
-    render(:update) do |page|
-      page.replace_html "institution", :partial => 'edit_institution'
-    end
-  end
-  
-  def canceleditinstitution
-    @user = @currentuser
-    render(:update) do |page|
-      page.replace_html("institution", :partial => 'profile_field_institution', :locals => {:user => @user})
-    end		
-  end
-  
-  def xhr_countylist
+      
+  def xhr_county_and_institution
     @user = @currentuser
     if(!params[:location].nil? and params[:location] != "")
       selected_location = Location.find(:first, :conditions => ["id = ?", params[:location]])	  
       @countylist = selected_location.counties
+      @institutionlist = selected_location.communities.institutions.find(:all, :order => 'name')
     end
 
     render(:update) do |page|
         page.replace_html  :county, :partial => 'county', :locals => {:countylist => @countylist}
+        page.replace_html  :institution, :partial => 'institutionlist', :locals => {:institutionlist => @institutionlist}
     end    
   end
+  
   
   def xhr_socialnetworkurl
     fieldid = (!params[:fieldid].nil?) ? params[:fieldid] : 'blah' 
