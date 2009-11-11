@@ -165,11 +165,8 @@ class User < ActiveRecord::Base
   named_scope :experts_by_location_only, :joins => "join user_preferences ON users.id = user_preferences.user_id", :conditions => "user_preferences.name = '#{UserPreference::AAE_LOCATION_ONLY}'"
   named_scope :experts_by_county_only, :joins => "join user_preferences ON users.id = user_preferences.user_id", :conditions => "user_preferences.name = '#{UserPreference::AAE_COUNTY_ONLY}'"
   
-  named_scope :question_wranglers, lambda {
-    qw_community = Community.find_by_shortname('questionwranglers')
-    {:joins => "join communityconnections AS cc on cc.user_id = users.id", :conditions => "cc.community_id = #{qw_community.id} AND (cc.connectiontype = 'member' OR cc.connectiontype = 'leader') AND users.retired = 0 AND users.vouched = 1"}
-  }
-  
+  named_scope :question_wranglers, :joins => :communityconnections, :conditions => "communityconnections.community_id = #{Community::QUESTION_WRANGLERS_COMMUNITY_ID} and (communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader')"
+    
   named_scope :experts_by_county, lambda {|county| {:joins => "join expertise_counties_users as ecu on ecu.user_id = users.id", :conditions => "ecu.expertise_county_id = #{county.id}"}}
   named_scope :experts_by_location, lambda {|location| {:joins => "join expertise_locations_users as elu on elu.user_id = users.id", :conditions => "elu.expertise_location_id = #{location.id}"}}
   named_scope :routers_outside_location, lambda {
@@ -1474,7 +1471,7 @@ class User < ActiveRecord::Base
     end
     
     def is_question_wrangler?
-      return User.question_wranglers.include?(self)
+      return self.community_ids.include?(Community::QUESTION_WRANGLERS_COMMUNITY_ID)
     end
     
     def open_question_count

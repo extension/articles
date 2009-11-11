@@ -11,6 +11,9 @@ class Community < ActiveRecord::Base
   extend ConditionExtensions
   has_content_tags
   ordered_by :default => "#{self.table_name}.name ASC"
+  
+  # hardcoded question wrangler community for AaE integration
+  QUESTION_WRANGLERS_COMMUNITY_ID = 38
 
   UNKNOWN = 0
   
