@@ -29,9 +29,9 @@
     </fieldset>
     
     <fieldset>
-        <p><%= check_box_tag "answer_uncat", "1", @answer_uncat %> Be a Question Wrangler</p>
+        <p>Be a Question Wrangler &nbsp <%= link_to("Join the Question Wrangler Community", :controller => '/people', :action => 'communities', :id => 38) %></p>
         <ul>
-            <li>Question Wranglers monitor uncategorized incoming questions and route them to the right person. They also follow-up with experts to make sure questions are answered in timely manner. <%= link_to("Learn more about this group", :controller => '/people', :action => 'communities', :id => 38) %>.</li>
+            <li>Question Wranglers monitor uncategorized incoming questions and route them to the right person. They also follow-up with experts to make sure questions are answered in timely manner. <%= link_to("Learn more about this group and sign up", :controller => '/people', :action => 'communities', :id => 38) %>.</li>
         </ul>
     </fieldset>
     <fieldset>

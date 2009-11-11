@@ -144,7 +144,7 @@ class Aae::SearchController < ApplicationController
     if (!params[:legacycategory].nil? and @category = Category.find_by_name_or_id(params[:legacycategory]))
       if @category == Category::UNASSIGNED
         @category_name = "AaE Uncategorized Question Wrangler"
-        @users = User.aae_wranglers 
+        @users = User.question_wranglers 
         @combined_users = get_answering_users(@users) if @users.length > 0
       else  
         @category_name = @category.name

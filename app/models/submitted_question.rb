@@ -465,24 +465,8 @@ end
 # this is the method that gets invoked when someone wants to 
 # give up their assigned question to a question wrangler.
 def assign_to_question_wrangler(assigned_by)
-  wranglers = User.uncategorized_wrangler_routers
-  wrangler_ids = wranglers.map{|qw| qw.id}.join(',')
-  
-  if self.county
-    expertise_county = ExpertiseCounty.find(:first, :conditions => {:fipsid => self.county.fipsid}) 
-    eligible_wranglers = expertise_county.users.find(:all, :conditions => "users.id IN (#{wrangler_ids})")
-  end
-  
-  if self.location and (!eligible_wranglers or eligible_wranglers.length == 0)
-    expertise_location = ExpertiseLocation.find(:first, :conditions => {:fipsid => self.location.fipsid})
-    eligible_wranglers = expertise_location.users.find(:all, :conditions => "users.id IN (#{wrangler_ids})")
-  end
-  
-  if !eligible_wranglers or eligible_wranglers.length == 0
-    assignee = pick_user_from_list(wranglers)
-  else
-    assignee = pick_user_from_list(eligible_wranglers)
-  end
+  wranglers = User.uncategorized_wrangler_routers(self.location, self.county)
+  assignee = pick_user_from_list(wranglers)
   
   comment = WRANGLER_REASSIGN_COMMENT
 
@@ -841,8 +825,7 @@ def pick_user_from_county(county, question_categories)
     # if there is no category or no users for the category, then get 
     # the intersection of the uncat. quest. wranglers and the users for this county
     if !cat_county_users or cat_county_users.length == 0
-      uncat_wranglers = User.uncategorized_wrangler_routers
-      uncat_county_users = county.users.find(:all, :conditions => "users.id IN (#{uncat_wranglers.collect{|u| u.id}.join(',')})")
+      uncat_county_users = User.uncategorized_wrangler_routers(county.expertise_location, county)
       # if there are no uncat. quest. wranglers with the preference set for this county, then route by location with no category
       if !uncat_county_users or uncat_county_users.length == 0
         return pick_user_from_state(county.expertise_location, nil)
@@ -891,8 +874,7 @@ def pick_user_from_state(location, question_categories)
     # if there is no category or no users for the category, then find the 
     # uncategorized question wranglers with this location preference set
     if !cat_location_users or cat_location_users.length == 0
-      uncat_wranglers = User.uncategorized_wrangler_routers
-      uncat_location_users = all_county_loc.users.find(:all, :conditions => "users.id IN (#{uncat_wranglers.collect{|u| u.id}.join(',')})")
+      uncat_location_users = User.uncategorized_wrangler_routers(location, all_county_loc)
       # if there are no common users amongst uncat. quest. wranglers and location users
       if !uncat_location_users or uncat_location_users.length == 0
         return nil

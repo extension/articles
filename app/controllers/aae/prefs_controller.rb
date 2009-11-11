@@ -307,17 +307,6 @@ class Aae::PrefsController < ApplicationController
           escalation_role.users.delete(@currentuser)
         end
       end
-      
-      if params[:answer_uncat]
-        if !uncat_role.users.include?(@currentuser)
-          uncat_role.users << @currentuser
-        end
-      else
-        if uncat_role.users.include?(@currentuser)
-          uncat_role.user_roles.find(:first, :conditions => "user_id = #{@currentuser.id}").destroy
-          uncat_role.users.delete(@currentuser)
-        end
-      end
         
       if params[:signature]
         if signature_pref.nil?
@@ -347,7 +336,6 @@ class Aae::PrefsController < ApplicationController
     
     (auto_route_role.users.include?(@currentuser)) ? @auto_route = true : @auto_route = false
     (escalation_role.users.include?(@currentuser)) ? @auto_escalate = true : @auto_escalate = false  
-    (uncat_role.users.include?(@currentuser)) ? @answer_uncat = true : @answer_uncat = false
     
     render :layout => 'aae'   
   end

@@ -162,6 +162,22 @@ class User < ActiveRecord::Base
     {:joins => [:roles, :categories], :conditions => ["roles.name = '#{Role::ESCALATION}' AND categories.name = '#{category.name}'"] }
   }
   
+  named_scope :experts_by_location_only, :joins => "join user_preferences ON users.id = user_preferences.user_id", :conditions => "user_preferences.name = '#{UserPreference::AAE_LOCATION_ONLY}'"
+  named_scope :experts_by_county_only, :joins => "join user_preferences ON users.id = user_preferences.user_id", :conditions => "user_preferences.name = '#{UserPreference::AAE_COUNTY_ONLY}'"
+  
+  named_scope :question_wranglers, lambda {
+    qw_community = Community.find_by_shortname('questionwranglers')
+    {:joins => "join communityconnections AS cc on cc.user_id = users.id", :conditions => "cc.community_id = #{qw_community.id} AND (cc.connectiontype = 'member' OR cc.connectiontype = 'leader') AND users.retired = 0 AND users.vouched = 1"}
+  }
+  
+  named_scope :experts_by_county, lambda {|county| {:joins => "join expertise_counties_users as ecu on ecu.user_id = users.id", :conditions => "ecu.expertise_county_id = #{county.id}"}}
+  named_scope :experts_by_location, lambda {|location| {:joins => "join expertise_locations_users as elu on elu.user_id = users.id", :conditions => "elu.expertise_location_id = #{location.id}"}}
+  named_scope :routers_outside_location, lambda {
+    location_routers = UserPreference.find(:all, :conditions => "name = '#{UserPreference::AAE_LOCATION_ONLY}' or name = '#{UserPreference::AAE_COUNTY_ONLY}'").collect{|up| up.user_id}.uniq.join(',')
+    {:conditions => "users.id NOT IN (#{location_routers})"}
+  
+  }
+  
   # override login write
   def login=(loginstring)
     write_attribute(:login, loginstring.mb_chars.downcase)
@@ -1434,17 +1450,33 @@ class User < ActiveRecord::Base
       return []
     end
 
-    def self.uncategorized_wrangler_routers
-      location_routers = UserPreference.find(:all, :conditions => "name = '#{UserPreference::AAE_LOCATION_ONLY}' or name = '#{UserPreference::AAE_COUNTY_ONLY}'").collect{|up| up.user_id}.uniq.join(',')
-      (location_routers and location_routers.strip != '') ? (condition_str = "user_id NOT IN (#{location_routers})") : (condition_str = nil)
-      condition_str ? condition_str += ' and users.retired = false' : condition_str = 'users.retired = false'
-      return Role.find_by_name(Role::UNCATEGORIZED_QUESTION_WRANGLER).users.find(:all, :conditions => condition_str)
+    def self.uncategorized_wrangler_routers(location = nil, county = nil)
+      if (location and county) and (location.fipsid != county.state_fipsid)
+        return User.question_wranglers.routers_outside_location 
+      end
+      
+      if county
+        expertise_county = ExpertiseCounty.find(:first, :conditions => {:fipsid => county.fipsid}) 
+        eligible_wranglers = User.question_wranglers.experts_by_county(expertise_county)
+      end
+    
+      if location and (!eligible_wranglers or eligible_wranglers.length == 0) 
+        eligible_wranglers = get_wranglers_in_location(location)
+      end
+      
+      # get the list of wranglers who don't have the pref set for location only
+      
+      if !eligible_wranglers or eligible_wranglers.length == 0
+        eligible_wranglers = User.question_wranglers.routers_outside_location
+      end
+      
+      return eligible_wranglers
     end
     
-    def self.aae_wranglers
-      return Role.find_by_name(Role::UNCATEGORIZED_QUESTION_WRANGLER).users.find(:all)
+    def is_question_wrangler?
+      return User.question_wranglers.include?(self)
     end
-
+    
     def open_question_count
       self.open_questions.count
     end
@@ -1624,6 +1656,13 @@ class User < ActiveRecord::Base
     if(self.feedkey.nil? or self.feedkey == '' or self.password_changed?)
       self.feedkey = Digest::SHA1.hexdigest(self.password + 'feedkey!feedkey!feedkey!' + Time.now.to_s)
     end
+  end
+      
+  def self.get_wranglers_in_location(location)
+    expertise_location = ExpertiseLocation.find(:first, :conditions => {:fipsid => location.fipsid})
+    # get experts signed up to receive questions from that location but take out anyone who 
+    # elected to only receive questions in their county
+    location_wranglers = User.question_wranglers.experts_by_location(expertise_location) - User.experts_by_county_only
   end
   
 end

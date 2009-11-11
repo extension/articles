@@ -70,5 +70,9 @@
             <li><%= ur %></li>
         <% end %>
     </ul>
+    
+    <% if @user.is_question_wrangler? %>
+    <p>*Belongs to the Question Wrangler Community</p>
+    <% end %>
 
 </div>
