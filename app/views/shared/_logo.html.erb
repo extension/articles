@@ -2,7 +2,7 @@
     <h1 class="logo">
 <%   inst = person[:institution]
 	if !inst.logo.nil? %>
-		<%= link_to(render_inline_logo(inst.logo), home_url, {:style => ''}) %>
+		<%= link_to(render_inline_logo(inst.logo, inst), home_url, {:style => "width: #{inst.logo.width}px;"}) %>
 	<%else%>
 		<%= link_to(inst.name, home_url, {:style => ''}) %>
 	<%end%>

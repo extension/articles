@@ -187,11 +187,11 @@ module ApplicationHelper
           '</h3>'
   end
     
-  def render_inline_logo(logo, show_thumbnail = false)
+  def render_inline_logo(logo, inst, show_thumbnail = false)
     return "<img alt='error'></img>" unless logo && logo.image?
     url = "#{logo_path({:file => logo.filename})}"
     url += "?thumb=true" if show_thumbnail
-    image_tag url
+    image_tag(url, :width => logo.width, :alt => inst.name)
   end
     
   def link_by_count(count,text,params,htmloptions={})
