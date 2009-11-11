@@ -7,7 +7,7 @@
 
 class People::ProfileController < ApplicationController
   layout 'people'
-  before_filter :login_required, :except => [:xhr_county_and_institution]
+  before_filter :login_required, :except => [:xhr_county]
   
   def me
   end
@@ -173,17 +173,15 @@ class People::ProfileController < ApplicationController
     return redirect_to(:controller => '/people/communities', :action => :mine)
   end
       
-  def xhr_county_and_institution
+  def xhr_county
     @user = @currentuser
     if(!params[:location].nil? and params[:location] != "")
       selected_location = Location.find(:first, :conditions => ["id = ?", params[:location]])	  
       @countylist = selected_location.counties
-      @institutionlist = selected_location.communities.institutions.find(:all, :order => 'name')
     end
 
     render(:update) do |page|
         page.replace_html  :county, :partial => 'county', :locals => {:countylist => @countylist}
-        page.replace_html  :institution, :partial => 'institutionlist', :locals => {:institutionlist => @institutionlist}
     end    
   end
   
