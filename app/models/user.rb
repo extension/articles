@@ -532,9 +532,6 @@ class User < ActiveRecord::Base
   end
 
   def modify_or_create_connection_to_community(community,options = {})
-    logger.debug "=================================== Inside modify_or_create_connection_to_community: #{options.inspect}"
-    logger.debug "=================================== Inside modify_or_create_connection_to_community: #{self.attributes.inspect}"
-    
     operation = options[:operation]
     connectiontype = options[:connectiontype]
     
@@ -548,6 +545,10 @@ class User < ActiveRecord::Base
 
     case operation
     when 'add'
+      # is this community an institution?  if so, do I have a primary institution connection?  if not, make this primary
+      if(community.is_institution? and self.primary_institution.nil?)
+        connectioncode = Communityconnection::PRIMARY
+      end
       if(connection.nil?)
         Communityconnection.create(:user => self, :community => community, :connectiontype => connectiontype, :sendnotifications => (connectiontype == 'leader'), :connector => connector, :connectioncode => connectioncode)
       else
@@ -701,13 +702,15 @@ class User < ActiveRecord::Base
     when 'none'
       return 'No Connection'
     when 'invitedleader'
-      return 'Invited (Leader)'
+      return (community.is_institution? ? 'Institutional Team' : 'Invited (Institutional Team)')
     when 'invitedmember'
       return 'Invited (Member)'
     when 'wantstojoin'
       return 'Wants to Join'
     when 'nointerest'
       return 'Not Interested'
+    when 'leader'
+      return (community.is_institution? ? 'Institutional Team' : 'Leader')
     else
       return connection.capitalize
     end

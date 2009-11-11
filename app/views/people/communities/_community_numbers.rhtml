@@ -1,7 +1,7 @@
 <ul id="comm_population">
     <li>
         <span><%= @community.leaders.count %></span>
-        <%= link_by_count(@community.leaders.count, 'Leaders', userlist_people_community_url(@community.id, :connectiontype => 'leaders')) %>
+        <%= link_by_count(@community.leaders.count, (@community.is_institution? ? 'Institutional Team' : 'Leaders') , userlist_people_community_url(@community.id, :connectiontype => 'leaders')) %>
     </li>
     <li>
         <span><%= (@community.members.count) %></span>

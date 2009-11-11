@@ -30,7 +30,7 @@
     	    </div>
     	
     	
-    	    <h2>Community Mailing Lists <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', editlists_people_community_path(@community) %></small><% end %></h2>
+    	    <h2><%= @community.viewlabel.capitalize %> Mailing Lists <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', editlists_people_community_path(@community) %></small><% end %></h2>
         	<div id="communitymailinglists" class="dashmodule">
                	<%= render(:partial => 'community_mailinglists') %>
         	</div>
@@ -52,12 +52,12 @@
                 <p><small>"All Articles" includes all published pages, news, features, dpls, learning lessons, etc.</small></p>
     	    </div>
     	    <% end %>
-    	    <h2>Community Tags <a class="tooltip-help" href="#" id="tags_trigger">?</a></h2>
+    	    <h2><%= @community.viewlabel.capitalize %> Tags <a class="tooltip-help" href="#" id="tags_trigger">?</a></h2>
     	    <div class="dashmodule">
     	        <div id="sharedtaglist">
             		<%= render(:partial => 'shared_tag_list') %>
             		<div id='tags_tooltip' style="display:none;" class="tooltip">
-                        <p id="tooltip_hook"><strong>Community Tags</strong> These tags describe the community and can be searched on. They are set by community leaders.</p>
+                        <p id="tooltip_hook"><strong><%= @community.viewlabel.capitalize %>  Tags</strong> These tags describe the <%= @community.viewlabel %> and can be searched on. They are set by <%= (@community.is_institution? ? 'institutional team members' : 'community leaders')%>.</p>
                     </div>
 
                     <script type="text/javascript">
@@ -66,7 +66,7 @@
             	</div>
         	</div>
         	
-        	<h2>Community Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_people_community_path(@community) %></small><% end %></h2>
+        	<h2><%= @community.viewlabel.capitalize %> Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_people_community_path(@community) %></small><% end %></h2>
         	<div class="dashmodule">
                     <p><%= link_to("Reports: Numbers and Activity", :controller => '/people/numbers', :action => :community, :id => @community.id) %></p>
             	    <dl>

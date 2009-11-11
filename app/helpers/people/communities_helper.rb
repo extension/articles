@@ -80,10 +80,10 @@ module People::CommunitiesHelper
   end 
   
   def community_connection_links(container,community,showuser,connectaction)
-    remove_leader_link = community_connection_link(container,community,showuser,'remove leadership','removeleader',"Remove user from leadership")
+    remove_leader_link = community_connection_link(container,community,showuser,(community.is_institution? ? 'remove from inst. team' : 'remove leadership'),'removeleader',(community.is_institution? ? 'Remove from the Institutional Team' : 'Remove user from leadership'))
     remove_member_link = community_connection_link(container,community,showuser,'remove','removemember',"Remove user from this community","Are you sure you want to remove this person from the community?")
     add_member_link = community_connection_link(container,community,showuser,'make member','addmember',"Make user a member")
-    add_leader_link = community_connection_link(container,community,showuser,'make leader','addleader',"Make user a community leader")
+    add_leader_link = community_connection_link(container,community,showuser,(community.is_institution? ? 'add to inst. team' : 'make leader'),'addleader',(community.is_institution? ? 'Add to Institutional Team' : 'Make user a community leader'))
     sendagain_invite_link = community_connection_link(container,community,showuser,'send again','invitereminder',"Send an invitation reminder")
     rescind_invite_link = community_connection_link(container,community,showuser,'rescind','rescindinvitation',"Rescind community invitation","Are you sure you want rescind this invitation?")
     invite_member_link = community_connection_link(container,community,showuser,'invite as member','invitemember',"Invite user to be a community member")

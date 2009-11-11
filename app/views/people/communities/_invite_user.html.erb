@@ -10,9 +10,13 @@
 				<% if @currentuser.is_community_leader?(@community) or admin_mode? %>
 			        <p>
 			            <%= check_box_tag("inviteasleader","yesinviteleader",false,{:id => "community_#{community.id}_user_#{user.id}_invite_makeleader"}) %>
-			            <label for="">Make a community leader (optional)</label>
-			        </p>
-			        <p>Leaders can invite and remove community members and will receive email notifications when changes occur in the community membership.</p>
+			            <%- if community.is_institution? -%>
+           	         <label for="">Add to Institutional Team (optional)</label></p><p>Institutional Team members can invite and remove community members and receive email notifications of institution membership changes.</p>
+           		        <%- else -%>
+    			            <label for="">Make a community leader (optional)</label>
+    			        </p>
+    			        <p>Leaders can invite and remove community members and will receive email notifications when changes occur in the community membership.</p>
+           		        <%- end -%>
 				<% end %>
 		        <p><%= submit_tag('Send Invite',{:id=>"community_#{community.id}_user_#{user.id}_invite_commit"}) %></p>
 		</fieldset>

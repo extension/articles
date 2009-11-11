@@ -1,7 +1,7 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
 Hello all,
 
-As leaders for the <%= @community.name %> community, we are sending this email to let you know that <%= sprintf(@actionstring,@oncolleague.fullname) %>
+As <%= (@community.is_institution? ? 'institutional team members' : 'leaders') %> for the <%= @community.name %> community, we are sending this email to let you know that <%= sprintf(@actionstring,@oncolleague.fullname) %>
 
 Information about <%= @oncolleague.first_name %>:
 

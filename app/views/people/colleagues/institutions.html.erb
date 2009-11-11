@@ -1,0 +1,5 @@
+<% @page_title = "Find Colleagues by Institution" %>
+<% @selected_tab = :colleagues %>
+<%= render(:partial => 'navtabs') %>
+<h1><%= @page_title %></h1>
+<%= render(:partial => 'communitylist_table', :locals => { :communitylist => @institutions}) %>

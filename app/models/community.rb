@@ -116,6 +116,16 @@ class Community < ActiveRecord::Base
     return (self.entrytype == INSTITUTION)
   end
   
+  def viewlabel
+    if(self.entrytype == INSTITUTION)
+      return 'institution'
+    else
+      return 'community'
+    end
+  end
+  
+  
+  
   def primary_content_tag_name(force_cache_update=false)    
     self.cached_content_tags(force_cache_update)[0]
   end
