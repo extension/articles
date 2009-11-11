@@ -16,7 +16,7 @@
   
 <% for logo in @logos %>
   <tr>
-	<td><%= render_inline_logo(logo, true) %></td>
+	<td><%= render_inline_logo({:logo => logo, :show_thumbnail => true}) %></td>
     <td><%=h logo.filename %></td>
     <td><%=h logo.created_at %></td>
     <td><%= link_to 'Delete', admin_logo_url(logo), :confirm => 'Are you sure?', :method => :delete %></td>

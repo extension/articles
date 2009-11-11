@@ -3,6 +3,6 @@
         <p>This resource area was created by the: <span><%=@homage ? @homage.content : link_to_public_community(@community) %> community</span></p>
     </div>
     <div class = "homagepic">
-        <%= render_inline_logo(@community.logo)%>
+        <%= render_inline_logo({:logo => @community.logo})%>
     </div>  
 <% end %>

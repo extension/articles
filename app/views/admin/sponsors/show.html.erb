@@ -2,7 +2,7 @@
     <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %> &gt; <%= link_to('Sponsors',admin_sponsors_url)  %></p>    
     <h2>Sponsor</h2>
     
-    <%= render_inline_logo(@sponsor.logo, false) %>
+    <%= render_inline_logo({:logo => @sponsor.logo, :show_thumbnail => false}) %>
 
     <p>Graphic: <%= link_to(@sponsor.logo.filename, logo_url if @sponsor.image) %></p>
     <p>Tags: <%= @sponsor.content_tag_names %></p>

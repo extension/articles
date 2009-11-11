@@ -14,7 +14,7 @@
                     <%= link_to("edit", edit_admin_sponsor_url(sponsor)) %>
                     <%= link_to('delete',admin_sponsor_url(sponsor) , {:confirm => 'Are you sure?', :method => :delete, :class => "delete"}) %>
                 </span>
-                <%= render_inline_logo(sponsor.logo, true) %>
+                <%= render_inline_logo({:logo => sponsor.logo, :show_thumbnail => true}) %>
                 
             </li>
         <% end %>

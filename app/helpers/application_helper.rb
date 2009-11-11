@@ -187,11 +187,13 @@ module ApplicationHelper
           '</h3>'
   end
     
-  def render_inline_logo(logo, show_thumbnail = false, alt_text = false)
+  def render_inline_logo(options = {})
+    logo = options[:logo]
+    show_thumbnail = (options[:show_thumbnail].nil? ? false : options[:show_thumbnail])
+    alt_text = (options[:alt_text].nil? ? logo.filename : options[:alt_text])
     return "<img alt='error'></img>" unless logo && logo.image?
     url = "#{logo_path({:file => logo.filename})}"
     url += "?thumb=true" if show_thumbnail
-    alt_text = alt_text ? alt_text : logo.filename
     image_tag(url, :width => logo.width, :alt => alt_text)
   end
     
