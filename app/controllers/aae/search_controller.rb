@@ -87,8 +87,9 @@ class Aae::SearchController < ApplicationController
     @category = Category.find(:first, :conditions => ["id = ?", params[:category]]) if params[:category] and params[:category].strip != ''
     @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:location]]) if params[:location] and params[:location].strip != ''
     @county = ExpertiseCounty.find(:first, :conditions => ["fipsid = ? and state_fipsid = ?", params[:county], @location.fipsid]) if @location and params[:county] and params[:county].strip != ''
-    
+
     setup_cat_loc
+    get_pctassign
     render :partial => "search_expert", :layout => false
   end
   
