@@ -163,8 +163,8 @@ class User < ActiveRecord::Base
     {:joins => [:roles, :categories], :conditions => ["roles.name = '#{Role::ESCALATION}' AND categories.name = '#{category.name}'"] }
   }
   
-  named_scope :experts_by_location_only, :joins => "join user_preferences ON users.id = user_preferences.user_id", :conditions => "user_preferences.name = '#{UserPreference::AAE_LOCATION_ONLY}'"
-  named_scope :experts_by_county_only, :joins => "join user_preferences ON users.id = user_preferences.user_id", :conditions => "user_preferences.name = '#{UserPreference::AAE_COUNTY_ONLY}'"
+  named_scope :experts_by_location_only, :joins => :user_preferences, :conditions => "user_preferences.name = '#{UserPreference::AAE_LOCATION_ONLY}'"
+  named_scope :experts_by_county_only, :joins => :user_preferences, :conditions => "user_preferences.name = '#{UserPreference::AAE_COUNTY_ONLY}'"
   
   named_scope :question_wranglers, :joins => :communityconnections, :conditions => "communityconnections.community_id = #{Community::QUESTION_WRANGLERS_COMMUNITY_ID} and (communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader')"
     
