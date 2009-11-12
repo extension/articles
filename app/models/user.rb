@@ -73,6 +73,7 @@ class User < ActiveRecord::Base
   has_many :list_owners, :dependent => :destroy
   has_many :listownerships, :through => :list_owners, :source => :list
   
+  # TODO - this is a ridiculously insane number of has many associations - this needs to be fixed.
   has_many :communitywantstojoins, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'wantstojoin'"
   has_many :communitymemberships, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'member'"
   has_many :communityleaderships, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'leader'"
@@ -81,14 +82,9 @@ class User < ActiveRecord::Base
   has_many :communityinterests, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'interest'"
   has_many :communitynointerests, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'nointerest'"
   has_many :communitiesofanyinterest, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype != 'nointerest'", :order => "communities.name"
-
-
-
   has_many :communityjoins, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader'"
   has_many :communityopenjoins, :through => :communityconnections, :source => :community, :conditions => "(communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader') and communities.memberfilter = #{Community::OPEN}"
-  
   has_many :communityinvitejoins, :through => :communityconnections, :source => :community, :conditions => "((communityconnections.connectiontype = 'member' and communities.memberfilter = #{Community::OPEN}) or communityconnections.connectiontype = 'leader')"
-
   has_many :connectjoins, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader'"
   has_many :communityinvitations, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'invited'"
   has_many :connectinvitations, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype = 'invited'"
@@ -96,6 +92,7 @@ class User < ActiveRecord::Base
   has_many :connectwantstojoins, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype = 'wantstojoin'"  
   has_many :connectinterests, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype = 'interest'"  
   has_many :connectionsofanyinterest, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype != 'nointerest'"  
+  # TODO: end insane set of associations
   
   # tags and taggings
   has_many :ownedtaggings, :class_name => "Tagging"
