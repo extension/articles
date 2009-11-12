@@ -29,13 +29,24 @@
 		    <label for="user_location_id">Location:</label>
 		<%= select(:user, :location_id, @locations.map {|loc| [loc.name,loc.id]}, :include_blank => true) %>
 		<%= observe_field(:user_location_id,
-		                  :url       => { :controller => '/people/profile', :action => :xhr_county },
+		                  :url       => { :controller => '/people/profile', :action => :xhr_county_and_institution },
 		                  :with      => "'location='+value") %>
 		</p>
 	</div>
 	<div id="county">
 		<% if !@countylist.nil? %>
 			<%= render(:partial => 'people/profile/county', :locals => {:countylist => @countylist}) %>
+		<% end %>
+	</div>
+</div>
+
+<div class="form_section">
+<h3>Your Institution/Affiliation</h3>
+	<div id="institution">
+		<% if !@institutionlist.nil? %>
+			<%= render(:partial => 'people/profile/institutionlist', :locals => {:countylist => @institutionlist}) %>
+		<% else %>
+		    <p><em>select a location to show institutions for that location</em></p>
 		<% end %>
 	</div>
 </div>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091105162605) do
+ActiveRecord::Schema.define(:version => 20091112022829) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -796,7 +796,6 @@ ActiveRecord::Schema.define(:version => 20091105162605) do
     t.integer  "vouched_by",                             :default => 0
     t.datetime "vouched_at"
     t.boolean  "emailconfirmed",                         :default => false
-    t.boolean  "is_staff",                               :default => false
     t.boolean  "is_admin",                               :default => false
     t.string   "phonenumber"
     t.string   "feedkey"
@@ -804,6 +803,7 @@ ActiveRecord::Schema.define(:version => 20091105162605) do
     t.datetime "retired_at"
     t.integer  "organization_entrytype",                 :default => 0
     t.string   "organization_name"
+    t.text     "additionaldata"
   end
 
   add_index "users", ["email"], :name => "email", :unique => true

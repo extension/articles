@@ -7,8 +7,9 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base 
   extend ConditionExtensions
+  serialize :additionaldata
   ordered_by :default => "last_name,first_name ASC"
-  
+
   STATUS_CONTRIBUTOR = 0
   STATUS_REVIEW = 1
   STATUS_CONFIRMEMAIL = 2
@@ -366,6 +367,9 @@ class User < ActiveRecord::Base
     self.vouched_at = Time.now.utc
     if(self.save)
       self.updatelistemails
+      if(!self.additionaldata.nil? and !self.additionaldata[:signup_institution_id].nil?)
+        self.change_profile_community(Community.find(self.additionaldata[:signup_institution_id]))
+      end
       return true
     else
       return false
@@ -636,6 +640,27 @@ class User < ActiveRecord::Base
     activitycode = Activity::COMMUNITY_WANTSTOJOIN
     notificationcode = notify ? Notification.translate_connection_to_code('wantstojoin') : Notification::NONE
     self.modify_or_create_communityconnection(community,{:activitycode => activitycode, :notificationcode => notificationcode, :operation => 'add', :connectiontype => 'wantstojoin'})
+  end
+  
+  def change_profile_community(newcommunity,oldcommunity = nil)
+    if(newcommunity.nil?)
+      return false
+    end
+    
+    if(!oldcommunity.nil?)
+      if(newcommunity == oldcommunity)
+        return true
+      end
+      self.leave_community(oldcommunity)
+    end
+    
+    if(newcommunity.memberfilter == Community::OPEN)
+      self.join_community(newcommunity)
+    elsif(newcommunity.memberfilter == Community::MODERATED)
+      self.wantstojoin_community(newcommunity)
+    end
+    
+    return true
   end
   
   def interest_community(community,notify=true)

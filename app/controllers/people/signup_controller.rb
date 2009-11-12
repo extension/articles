@@ -54,6 +54,11 @@ class People::SignupController < ApplicationController
     
     @user = User.new(params[:user])
     
+    # institution?
+    if(!params[:institution_id].nil? and !params[:institution_id] == 0)
+      @user.additionaldata = {:signup_institution_id => params[:institution_id]}
+    end
+    
     # STATUS_SIGNUP
     @user.account_status = User::STATUS_SIGNUP
     
@@ -126,7 +131,11 @@ class People::SignupController < ApplicationController
       return redirect_to(:controller => 'signup', :action => 'reconfirm', :reason => 'expiredtoken')
     else
       @currentuser.confirm_signup(@token)
-      if (@currentuser.vouched?)            
+      if (@currentuser.vouched?)
+        if(!@currentuser.additionaldata.nil? and !@currentuser.additionaldata[:signup_institution_id].nil?)
+          @currentuser.change_profile_community(Community.find(@currentuser.additionaldata[:signup_institution_id]))
+          # TODO: clean up signup_institution_id
+        end       
         Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
         return redirect_to(people_welcome_url)
       else
