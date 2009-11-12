@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091112133938) do
+ActiveRecord::Schema.define(:version => 20091105162605) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -786,7 +786,6 @@ ActiveRecord::Schema.define(:version => 20091112133938) do
     t.datetime "contributor_agreement_at"
     t.integer  "account_status"
     t.datetime "last_login_at"
-    t.integer  "institution_id",                         :default => 0
     t.integer  "position_id",                            :default => 0
     t.integer  "location_id",                            :default => 0
     t.integer  "county_id",                              :default => 0
@@ -800,8 +799,6 @@ ActiveRecord::Schema.define(:version => 20091112133938) do
     t.string   "feedkey"
     t.boolean  "announcements",                          :default => true
     t.datetime "retired_at"
-    t.integer  "organization_entrytype",                 :default => 0
-    t.string   "organization_name"
     t.text     "additionaldata"
   end
 
