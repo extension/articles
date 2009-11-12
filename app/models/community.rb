@@ -813,17 +813,6 @@ class Community < ActiveRecord::Base
     return nil if uri.host.empty?
     referer_domain = uri.host.split('.').slice(-2, 2).join(".") rescue nil
     # handle some exceptions
-    if(referer_domain == 'bia.edu')
-      referer_domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
-    elsif(referer_domain == 'nd.us')
-      referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
-    elsif(referer_domain == 'mt.us')
-      referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
-    elsif(referer_domain == 'nm.us')
-      referer_domain = uri.host.split('.').slice(-4, 4).join(".") rescue nil
-    elsif(referer_domain == 'clu.edu')
-      referer_domain = uri.host.split('.').slice(-3, 3).join(".") rescue nil
-    end
     if(referer_domain)
       return find(:first, :conditions => ["referer_domain = '#{referer_domain}' and entrytype = #{INSTITUTION}"])
     else
