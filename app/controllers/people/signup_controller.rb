@@ -93,7 +93,7 @@ class People::SignupController < ApplicationController
       session[:userid] = @currentuser.id
       signupdata = {}     
       if(@invitation)
-        signupdata.merge!(:invitation => @invitation}
+        signupdata.merge!({:invitation => @invitation})
       end
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "initialsignup")        
       @currentuser.send_signup_confirmation(signupdata)
