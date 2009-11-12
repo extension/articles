@@ -1,5 +1,5 @@
 <% if @community.lists.blank? %>
-	<p>No lists have been created for this community.</p>
+	<p>No lists have been created for this <%= @community.viewlabel %>.</p>
 <% else %>
 <ul class="mailing_lists">
 	<% @community.lists.each do |mailinglist| %>

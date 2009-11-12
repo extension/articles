@@ -34,7 +34,7 @@ class ConvertInstitutionsToCommunities < ActiveRecord::Migration
     execute "UPDATE users,communities SET users.temp_institution_id = communities.id WHERE users.organization_name = communities.name AND communities.entrytype = 3"        
   
     # finally, create community connection records for these
-    execute "INSERT INTO communityconnections (user_id,community_id,connectiontype,connectioncode,connected_by,created_at,updated_at) SELECT id,temp_institution_id,'member',#{Communityconnection::PRIMARY},1,created_at,NOW() from users WHERE temp_institution_id !=0 and temp_institution_id IS NOT NULL"  
+    execute "INSERT INTO communityconnections (user_id,community_id,connectiontype,connectioncode,connected_by,created_at,updated_at) SELECT id,temp_institution_id,'member',#{Communityconnection::PRIMARY},1,created_at,NOW() from users WHERE retired = 0 and vouched = 1 and temp_institution_id !=0 and temp_institution_id IS NOT NULL"  
   
     # drop temporary institution id
     remove_column :users, "temp_institution_id"
