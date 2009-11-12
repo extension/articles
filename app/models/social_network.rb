@@ -36,6 +36,8 @@ class SocialNetwork < ActiveRecord::Base
     'gtalk' => {:displayname => 'Google Talk', :urlformat => 'xmpp:%s', :editableurl => false, :autocomplete => true},
     'jabber' => {:displayname => 'Jabber/XMPP', :urlformat => 'xmpp:%s', :editableurl => false, :autocomplete => true}, 
     'skype' => {:displayname => 'Skype', :urlformat => 'skype:%s', :editableurl => false, :autocomplete => true},
+    'gizmo' => {:displayname => 'Gizmo5', :urlformat => 'gizmo:%s', :editableurl => false, :autocomplete => true},
+    'wave' => {:displayname => 'Google Wave', :editableurl => false, :autocomplete => false},
     'blog' => {:displayname => 'Blog/Website', :editableurl => true, :autocomplete => false},
     'secondlife' => {:displayname => 'Second Life', :editableurl => false, :autocomplete => false}
   }
