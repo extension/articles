@@ -23,8 +23,7 @@
     <% end %>
 </table>
 
-<% if !total.communities.nil? and !total.communities.empty? %>
-
+<%- if (@filteredparams.community.nil?) -%>
 <h2>Communities</h2>
 <table cellspacing="0">
     <tr><th></th><th class="righttext">Total</th><th class="righttext">Members</th></tr>
@@ -39,7 +38,7 @@
         <td class="bignumber"><%= number_with_delimiter(total.communities[:usercontributed][:joined]) %></td>
     </tr>
 </table>
-<% end %>
+<%- end -%>
 
 <h2>Places</h2>
 <table cellspacing="0">
