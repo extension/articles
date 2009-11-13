@@ -193,7 +193,6 @@ class People::AdminController < ApplicationController
     # @agreement_pending = User.validusers.count(:conditions => "contributor_agreement is NULL")
     
     @missing = Hash.new
-    @missing['institution'] = User.validusers.count(:conditions => "institution_id = 0 or institution_id is NULL")
     @missing['location'] = User.validusers.count(:conditions => "location_id = 0 or location_id is NULL")
     @missing['position'] = User.validusers.count(:conditions => "position_id = 0 or position_id is NULL")
     
