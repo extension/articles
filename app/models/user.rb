@@ -941,6 +941,41 @@ class User < ActiveRecord::Base
   
   end
   
+  def set_primary_institution(community)
+    if(self.primary_institution == community)
+      return true
+    end
+    
+    # clear current primary institution
+    if(!self.primary_institution.nil?)
+      currentprimary = self.communityconnections.find(:first, :conditions => "community_id = #{self.primary_institution.id}")
+      if(!currentprimary.nil?)
+        currentprimary.update_attribute(:connectioncode,nil)
+      end
+    end
+        
+    # set this one to primary
+    newprimary = self.communityconnections.find(:first, :conditions => "community_id = #{community.id}")
+    if(!newprimary.nil?)
+      newprimary.update_attribute(:connectioncode,Communityconnection::PRIMARY)
+    end
+    return true
+  end
+  
+  def clear_primary_institution(community)
+    if(self.primary_institution != community)
+      return true
+    end
+    
+    # set this one to primary
+    clearprimary = self.communityconnections.find(:first, :conditions => "community_id = #{community.id}")
+    if(!clearprimary.nil?)
+      clearprimary.update_attribute(:connectioncode,nil)
+    end
+    # TODO: this might should find another institution that the person belongs to and force it primary - maybe
+    # at the least, it's a known issue.
+  end
+  
   def update_notification_for_community(community,notification)
     connection = self.communityconnections.find(:first, :conditions => "community_id = #{community.id}")
     if(!connection.nil?)

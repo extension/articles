@@ -1,0 +1,5 @@
+<div id="primaryinstitutionhighlight">
+	<p><%= check_box_tag("institution_primary","yes",(@currentuser.primary_institution == @community), {:id => "institution_primary_#{@community.id}"}) %> This is my primary institution.</p>
+	<%= observe_field("institution_primary_#{@community.id}", :update => "institution_primary", :url => {:controller => '/people/communities', :action => :change_my_primary, :id => @community.id}, :with => "'primaryinstitution=' + value") %>
+</div>
+

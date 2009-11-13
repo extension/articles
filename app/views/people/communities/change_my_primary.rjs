@@ -1,0 +1,2 @@
+page.replace_html "primaryinstitutioncheck", :partial => '/people/communities/institution_primary'
+page.visual_effect :highlight, "primaryinstitutionhighlight"

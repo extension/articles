@@ -75,7 +75,6 @@ class People::CommunitiesController < ApplicationController
 
   
   def change_my_connection
-    # assumes @currentuser
     begin
       @community = Community.find(params[:id])
     rescue ActiveRecord::RecordNotFound  
@@ -112,8 +111,27 @@ class People::CommunitiesController < ApplicationController
     end
   end
   
+  def change_my_primary
+    begin
+      @community = Community.find(params[:id])
+    rescue ActiveRecord::RecordNotFound  
+      # need to render something
+    end
+    
+    if(params[:primaryinstitution] && params[:primaryinstitution] == 'yes' )
+       @currentuser.set_primary_institution(@community)
+       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "set #{@community.name} as primary institution")   
+     else
+      @currentuser.clear_primary_institution(@community)
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed #{@community.name} as primary institution")
+    end
+    
+    respond_to do |format|
+      format.js
+    end
+  end  
+  
   def change_my_notification
-    # assumes @currentuser
     begin
       @community = Community.find(params[:id])
     rescue ActiveRecord::RecordNotFound  
@@ -131,7 +149,8 @@ class People::CommunitiesController < ApplicationController
     respond_to do |format|
       format.js
     end
-  end  
+  end
+  
 
   # GET /communities/1
   
