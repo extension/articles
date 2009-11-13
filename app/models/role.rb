@@ -9,7 +9,6 @@ class Role < ActiveRecord::Base
   has_many :user_roles
   has_many :users, :through => :user_roles
 
-  UNCATEGORIZED_QUESTION_WRANGLER = "Uncategorized Question Wrangler"
   ESCALATION = "Receive Escalations"
   AUTO_ROUTE = 'Auto Route Questions'
   ADMINISTRATOR = 'Administrator'

@@ -1,29 +1,11 @@
-
 <ul class="users">
-    <% i = 0%>
-   <% found_wrang = 0%>
-   <% found_auto = 0%>
-    <% while i < @usize do%>
-       
-          
-        <li><%= link_to "#{@userlist[i][1]}"+ " " + "#{@userlist[i][2]}", aae_profile_url(:id => (@userlist[i])[3])%> <%= @userlist[i][6] %> <%= @userlist[i][7]%></li>
-        <% if found_auto == 0%>
-           <% if @userlist[i][6]=="*"%>
-             <% found_auto = 1%>
-           <% end%>
-        <% end%>
-        <% if found_wrang == 0%>
-           <% if @userlist[i][7]=="+"%>
-             <% found_wrang = 1%>
-           <% end%>
-        <% end%>
-    <% i = i + 1%>	
-    <% end%>
-     <br></br>
-     <% if found_auto == 1%>
-        <p>* = Volunteers receiving auto-routed questions</p>
-     <% end%>
-     <% if found_wrang == 1%>
-	    <p>+ = Volunteers dealing with uncategorized questions</p>
-	 <% end%>
+    <% @user_list.each do |user| %>
+    <li>
+    <%= link_to user.fullname + get_aae_symbols(user, @question_wrangler_ids, @auto_router_ids), aae_profile_url(:id => user.login) %>
+    </li>
+    <% end %>   
+            
+    <br></br>
+    <p>* = Volunteers receiving auto-routed questions</p>
+    <p>+ = Volunteers dealing with uncategorized questions</p> 
 </ul>

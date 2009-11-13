@@ -258,7 +258,7 @@ class Aae::PrefsController < ApplicationController
     @categories = Category.root_categories
     auto_route_role = Role.find_by_name(Role::AUTO_ROUTE)
     escalation_role = Role.find_by_name(Role::ESCALATION)
-    uncat_role = Role.find_by_name(Role::UNCATEGORIZED_QUESTION_WRANGLER)
+    
     user_root_cats = @currentuser.categories.select{|c| !c.parent_id}
     signature_pref = @currentuser.user_preferences.find_by_name('signature')
     signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.fullname}"

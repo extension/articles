@@ -32,6 +32,14 @@ module Aae::ReportsHelper
       end
 
   end
+  
+  def get_aae_symbols(user, question_wranglers, auto_routers)
+    ret_string = ''
+    
+    ret_string << ' *' if auto_routers.include?(user.id)
+    ret_string << ' +' if question_wranglers.include?(user.id)
+    return ret_string
+  end
  
   
 end

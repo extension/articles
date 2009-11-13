@@ -415,12 +415,14 @@ class Aae::ReportsController < ApplicationController
           end 
           if (@catname  && @catname != "")
             @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
-           # @loccnt = ExpertiseLocation.count_answerers_for_states_in_category(@catname)
             @loccnt = ExpertiseLocation.expert_loc_userfilter_count(@filteredoptions)
-            @userlist = consolidate(User.get_answerers_in_category(catid))
+            @user_list = catobj.users.find(:all, :order => "users.last_name")
+            @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
+            @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+            
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             @lsize = @locs.size
-            @usize = @userlist.size
+            @usize = @user_list.size
           else
             redirect_to :action => 'answerers'
           end
@@ -438,8 +440,12 @@ class Aae::ReportsController < ApplicationController
            #  @locations = ExpertiseCounty.filtered(@findoptions).displaylist
              @catcnt = Category.catuserfilter_count(@filteredoptions)
              @cntycnt = ExpertiseCounty.expert_county_userfilter_count(@filteredoptions)
-             @userlist = consolidate(ExpertiseLocation.get_users_in_state(params[:location]))
-             @usize = @userlist.size ; @locid = params[:location]
+             
+             @user_list = ExpertiseLocation.find_by_id(params[:location]).users.find(:all, :order => "users.last_name")
+             @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
+             @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+             
+             @usize = @user_list.size ; @locid = params[:location]
              @statename = ExpertiseLocation.find_by_id(params[:location]).name
              
               # heureka's way....translated to darmok, that works
@@ -480,14 +486,19 @@ class Aae::ReportsController < ApplicationController
           if (@statename && @county && @statename != "" && @county != "")
              @cats = Category.find(:all, :conditions => "parent_id is null ", :order => 'name')
              @csize = @cats.size
-          #   @ctycnt = Category.count_users_for_rootcats_in_county(@county, @statename)
              @ctycnt = Category.catuserfilter_count(@filteredoptions)
-             @userlist= consolidate(ExpertiseCounty.get_users_for_cats_in_county(params[:county]))
-             @usize = @userlist.size
+             
+             @user_list = ExpertiseCounty.find_by_id(params[:county]).users.find(:all, :order => "users.last_name")
+             @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
+             @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+             
+             @usize = @user_list.size
           end
         end
 
         def category_county_users
+          # todo -- need validation of county id, state id, and category - ATH
+          
           if params[:State]
             @statename = params[:State]
             @locid = ExpertiseLocation.find_by_name(@statename)
@@ -497,45 +508,23 @@ class Aae::ReportsController < ApplicationController
           end
           if params[:Category]
             @catname = params[:Category]
+            category = Category.find_by_name(params[:Category])
           end
           if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
-            @userlist = consolidate(ExpertiseCounty.get_users_for_counties(countyid, @statename, @catname))
-            @usize = @userlist.size
+            
+            @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(params[:county])).routers_by_category(category.id)  
+            @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
+            @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+          
+            @usize = @user_list.size
           end
         end
 
-        def consolidate(uarray)
-          # if more than one of the same userid appears with different roles, consolidate 
-           newarr = Array.new
-           len = uarray.length
-           i = 0
-           while i < len do
-             if ((i == 0) || (uarray[i].id != uarray[i-1].id))
-               wrangsymb = " "; autorsymb = " "
-               if uarray[i].rid == "3"
-                 wrangsymb = "+"
-               end  
-               if uarray[i].rid == "4"
-                  autorsymb = "*"
-                end 
-               newarr << [ uarray[i].id, uarray[i].first_name, uarray[i].last_name, uarray[i].login, uarray[i].name, uarray[i].rid , autorsymb, wrangsymb]  
-             else
-               if uarray[i].rid == "3"
-                 newarr[newarr.length() - 1][7] = "+"     
-               else
-                 if uarray[i].rid == "4"
-                   newarr[newarr.length() -1][6]= "*"
-                 end
-               end
-             end
-             i = i + 1
-           end
-           newarr
-        end
-
         def county_answerers
+          # todo -- need validation of county id, state id, and category - ATH
+          
           if params[:id]
              @statename = ExpertiseLocation.find_by_id(params[:id]).name
              @locid = params[:id]
@@ -549,6 +538,9 @@ class Aae::ReportsController < ApplicationController
           if (!@catname || @catname == "")
               redirect_to :action => 'answerers'
           end
+          
+          category = Category.find_by_name(params[:Category])
+          
           if params[:dir]
             @dir = params[:dir]
           end
@@ -556,15 +548,21 @@ class Aae::ReportsController < ApplicationController
             @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{Location.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}
             @cntycnt = ExpertiseCounty.count_answerers_for_county_and_category(@catname, @statename)
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
-            @userlist = consolidate(ExpertiseCounty.get_users_for_counties(nil, @statename, @catname))
+            
+            @user_list = User.experts_by_location(ExpertiseLocation.find_by_id(@locid)).routers_by_category(category.id)
+            @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
+            @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+            
             @csize = @cnties.size
-            @usize = @userlist.size
+            @usize = @user_list.size
           else
             redirect_to :action => 'state_answerers', :Category => @catname
           end  
         end
 
         def answerers_lists
+          # todo -- need validation of county id, state id, and category - ATH
+          
           @statename = params[:State]
           @catname = params[:Category]
           @county = params[:County]
@@ -574,6 +572,9 @@ class Aae::ReportsController < ApplicationController
           if (!@catname || @catname=="")
             redirect_to :action => 'answerers'
           end
+          
+          category = Category.find_by_name(params[:Category])
+          
           if (!@statename || @statename =="") 
             redirect_to :action => 'state_answerers', :Category => @catname
           end
@@ -581,8 +582,12 @@ class Aae::ReportsController < ApplicationController
             countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
           # form array of users for selected county
-            @userlist = consolidate(ExpertiseCounty.get_users_for_counties(countyid, @statename, @catname))
-            @usize = @userlist.size
+        
+            @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(countyid)).routers_by_category(category.id)
+            @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
+            @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+            
+            @usize = @user_list.size
           else
             redirect_to :action => 'county_answerers', :State => @statename, :Category => @catname
           end
