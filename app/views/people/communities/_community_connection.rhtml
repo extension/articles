@@ -1,7 +1,9 @@
 <% if @currentuser.communityjoins.include?(@community) %>
 	    <h3>You are a <%= @currentuser.connection_display(@community) %> <span id="memberoptions"><%= link_to_function 'membership options', "Effect.toggle('connection_options','blind', { duration: .4});" %></span></h3>
 	    <% if (@am_i_leader) %>
+	        <div id="communitynotification">
         	<%= render(:partial => 'community_notification') %>
+        	</div>
         <% end %>
         <div id="connection_options" style="display:none;">
             <p class="leave"><%= change_community_connection_link('connectiontocommunity',@community,'Leave Community','leave',{:class => "delete"}) %></p>
