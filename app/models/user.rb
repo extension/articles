@@ -559,10 +559,17 @@ class User < ActiveRecord::Base
 
     case operation
     when 'add'
-      # is this community an institution?  if so, do I have a primary institution connection?  if not, make this primary
-      if(community.is_institution? and self.primary_institution.nil?)
-        connectioncode = Communityconnection::PRIMARY
+      if(community.is_institution?)
+        # do I have a primary institution connection?  if not, make this primary
+        if(community.is_institution? and self.primary_institution.nil?)
+          connectioncode = Communityconnection::PRIMARY
+        end
+        # is this a leadership connection?  if so, add them to the institutional teams community
+        if(connectiontype == 'leader')
+          Community.find(Community::INSTITUTIONAL_TEAMS_COMMUNITY_ID).add_user_to_membership(self,User.systemuser)
+        end
       end
+        
       if(connection.nil?)
         Communityconnection.create(:user => self, :community => community, :connectiontype => connectiontype, :sendnotifications => (connectiontype == 'leader'), :connector => connector, :connectioncode => connectioncode)
       else
@@ -573,21 +580,21 @@ class User < ActiveRecord::Base
       if(!connection.nil?)
         if(connector != self)
           if(connectiontype == 'leader')
+            # is this an institution - remove from institutional teams community
+            if(community.is_institution?)
+              Community.find(Community::INSTITUTIONAL_TEAMS_COMMUNITY_ID).remove_user_from_membership(self,User.systemuser)
+            end
             # make them a member
             connection.update_attributes({:connectiontype => 'member', :connector => connector, :connectioncode => connectioncode})
           else  # TODO:  deal with interest change/wants to join removal
             connection.destroy
-            # remove my tags from this community
-            community.remove_user_tags(self)
           end
         else
+          if(community.is_institution?)
+            Community.find(Community::INSTITUTIONAL_TEAMS_COMMUNITY_ID).remove_user_from_membership(self,User.systemuser)
+          end
           connection.destroy
-          # remove my tags from this community
-          community.remove_user_tags(self)
         end
-      else
-        # remove my tags from this community
-        community.remove_user_tags(self)
       end
       return true
     else

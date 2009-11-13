@@ -14,7 +14,12 @@
 	        <%= community.text_area(:description, {:cols => "30", :rows => "5"}) %>
             </label>
         </p>
-	        
+	    
+	    <p>
+    		<label for="community_location_id">Location:</label>
+    		<%= select(:community, :location_id, Location.displaylist.map {|loc| [loc.name,loc.id]}, :include_blank => true) %>
+    	</p>
+    	    
 	    <p>
 		    <label for="community_memberfilter">Community Membership Filter<em class="required">*</em><a class="tooltip-help" href="#" id="source_trigger">?</a></label>
     			<%= select(:community, :memberfilter, Community::MEMBERFILTERS.invert, {:include_blank => false}) %>

@@ -158,7 +158,7 @@ class MainController < ApplicationController
     if(!(@personal[:location] = Location.find_by_abbreviation(params[:state])))
       return render(:partial => "shared/no_institution", :layout => false)
     end
-    
+        
     public_institutions_for_location = @personal[:location].communities.institutions.public_list
     if(public_institutions_for_location.blank?)
       return render(:partial => "shared/no_institution", :layout => false)

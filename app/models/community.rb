@@ -15,6 +15,9 @@ class Community < ActiveRecord::Base
   # hardcoded question wrangler community for AaE integration
   QUESTION_WRANGLERS_COMMUNITY_ID = 38
 
+  # hardcoded institutional teams community for Institution integration
+  INSTITUTIONAL_TEAMS_COMMUNITY_ID = 80
+  
   UNKNOWN = 0
   
   # community types
@@ -278,10 +281,6 @@ class Community < ActiveRecord::Base
   
   def update_user_tags(taglist,owner)
     self.replace_tags_with_and_cache(taglist,owner.id,Tag::USER)
-  end
-  
-  def remove_user_tags(owner)
-    self.remove_tags_and_update_cache(self.user_tag_list(owner),owner.id,Tag::USER)
   end
     
   def system_sharedtags_displaylist
