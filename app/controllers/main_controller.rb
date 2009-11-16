@@ -140,7 +140,7 @@ class MainController < ApplicationController
         if(public_institutions_for_location.length == 1)
           render :partial => "shared/institution_selected", :locals => {:state => state}, :layout => false
         else
-          render :partial => "shared/institution_select", :locals => {:institutions => insts}, :layout => false
+          render :partial => "shared/institution_select", :locals => {:institutions => public_institutions_for_location}, :layout => false
         end
         return
       end
