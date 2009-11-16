@@ -417,8 +417,7 @@ class Aae::ReportsController < ApplicationController
             @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
             @loccnt = ExpertiseLocation.expert_loc_userfilter_count(@filteredoptions)
             @user_list = catobj.users.find(:all, :order => "users.last_name")
-            @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
-            @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+            setup_routers_and_wranglers
             
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             @lsize = @locs.size
@@ -442,8 +441,7 @@ class Aae::ReportsController < ApplicationController
              @cntycnt = ExpertiseCounty.expert_county_userfilter_count(@filteredoptions)
              
              @user_list = ExpertiseLocation.find_by_id(params[:location]).users.find(:all, :order => "users.last_name")
-             @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
-             @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+             setup_routers_and_wranglers
              
              @usize = @user_list.size ; @locid = params[:location]
              @statename = ExpertiseLocation.find_by_id(params[:location]).name
@@ -489,8 +487,7 @@ class Aae::ReportsController < ApplicationController
              @ctycnt = Category.catuserfilter_count(@filteredoptions)
              
              @user_list = ExpertiseCounty.find_by_id(params[:county]).users.find(:all, :order => "users.last_name")
-             @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
-             @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+             setup_routers_and_wranglers
              
              @usize = @user_list.size
           end
@@ -514,9 +511,8 @@ class Aae::ReportsController < ApplicationController
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             
-            @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(params[:county])).routers_by_category(category.id)  
-            @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
-            @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+            @user_list = User.experts_by_county(ExpertiseCounty.find_by_name(params[:County])).routers_by_category(category.id)  
+            setup_routers_and_wranglers
           
             @usize = @user_list.size
           end
@@ -550,8 +546,7 @@ class Aae::ReportsController < ApplicationController
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             
             @user_list = User.experts_by_location(ExpertiseLocation.find_by_id(@locid)).routers_by_category(category.id)
-            @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
-            @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+            setup_routers_and_wranglers
             
             @csize = @cnties.size
             @usize = @user_list.size
@@ -584,8 +579,7 @@ class Aae::ReportsController < ApplicationController
           # form array of users for selected county
         
             @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(countyid)).routers_by_category(category.id)
-            @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
-            @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+            setup_routers_and_wranglers
             
             @usize = @user_list.size
           else
@@ -1113,4 +1107,12 @@ class Aae::ReportsController < ApplicationController
         @repaction = 'assignee'   
      end
      # End of Assignee Report
+
+    private 
+
+    def setup_routers_and_wranglers
+      @question_wrangler_ids = User.question_wranglers.map{|qw| qw.id}
+      @auto_router_ids = User.auto_routers.map{|ar| ar.id}
+    end   
+      
 end
