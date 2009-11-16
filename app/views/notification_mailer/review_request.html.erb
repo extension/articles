@@ -8,7 +8,9 @@ We are sending this email to request that you review the eXtensionID request for
 
 <%- if (!@reviewuser.additionaldata.blank? and !@reviewuser.additionaldata[:signup_affiliation].blank?) -%>
 Additional information from <%= @reviewuser.first_name %> about their Extension involvement:
-<%=  Hpricot(@reviewuser.additionaldata[:signup_affiliation]).to_plain_text %>
+
+"<%=  Hpricot(@reviewuser.additionaldata[:signup_affiliation]).to_plain_text %>"
+
 <%- end -%>
 
 Please review the account at (People Administrators only):

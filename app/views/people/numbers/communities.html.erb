@@ -1,7 +1,7 @@
 <% if @filterstring.blank? %>
-	<% @page_title = "Numbers by Community"%>
+	<% @page_title = "Numbers by Community or Institution"%>
 <% else %>
-	<% @page_title = "Numbers by Community - (Filtered)"%>
+	<% @page_title = "Numbers by Community or Institution - (Filtered)"%>
 <% end %>
 <% @selected_tab = :numbers %>
 <%= render(:partial => 'navtabs') %>

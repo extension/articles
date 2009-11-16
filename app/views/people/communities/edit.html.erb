@@ -53,10 +53,12 @@
         	</label>		
 		</p>
 		
+		<%- if(!@community.is_institution?) -%>
 		<p>
 	        <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
 	         <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
 	    </p>
+	    <%- end -%>
 	    </fieldset>
         
 	<% end %>
