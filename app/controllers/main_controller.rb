@@ -135,9 +135,9 @@ class MainController < ApplicationController
       else
         state = params[:zip_or_state].upcase
       end
-      insts = Community.institutions.public_list.find(:all, :include => :location, :conditions => ["locations.abbreviation = ?", state])
-      if insts and insts.length > 0
-        if insts[0].shared_logo or insts.length == 1
+      public_institutions_for_location = Community.institutions.public_list.find(:all, :include => :location, :conditions => ["locations.abbreviation = ?", state])
+      if(!public_institutions_for_location.blank?)
+        if(public_institutions_for_location.length == 1)
           render :partial => "shared/institution_selected", :locals => {:state => state}, :layout => false
         else
           render :partial => "shared/institution_select", :locals => {:institutions => insts}, :layout => false
@@ -164,7 +164,7 @@ class MainController < ApplicationController
       return render(:partial => "shared/no_institution", :layout => false)
     end
     
-    if(public_institutions_for_location[0].shared_logo or public_institutions_for_location.size == 1)
+    if(public_institutions_for_location.size == 1)
       @personal[:state] = params[:state]
       @personal[:institution] = public_institutions_for_location[0]
       session[:institution_community_id] = @personal[:institution].id.to_s
