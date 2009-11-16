@@ -306,7 +306,7 @@ class NotificationMailer < ActionMailer::Base
      urls['manualurl'] = url_for(:controller => 'people/signup', :action => :confirm)        
      urls['newtoken'] = url_for(:controller => 'people/signup', :action => :confirmemail, :token => 'send')        
      urls['contactus'] = people_contact_url    
-     @body           = {:isdemo => @isdemo, :token => token, :urls => urls,:additionaloptions => additionaloptions}  
+     @body           = {:isdemo => @isdemo, :token => token, :urls => urls,:additionaloptions => notification.additionaldata}  
    end
   
    def reconfirm_signup(notification)
