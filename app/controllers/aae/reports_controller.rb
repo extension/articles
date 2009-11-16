@@ -395,7 +395,7 @@ class Aae::ReportsController < ApplicationController
          @lsize = @locs.size 
          #@locsum=ExpertiseLocation.count_answerers_by_state
          @locsum = ExpertiseLocation.count(:joins => " join expertise_locations_users as elu on expertise_locations.id=elu.expertise_location_id join users on users.id=elu.user_id",
-                 :group => "users.location_id", :order => "entrytype, name")
+                 :group => "elu.expertise_location_id", :order => "entrytype, name")
         end
 
         def state_answerers
