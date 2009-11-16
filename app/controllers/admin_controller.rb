@@ -99,7 +99,7 @@ class AdminController < ApplicationController
       flash[:notice] = "The following tag names are in use by other communities or are not allowed for community use: #{invalid_tags.join(Tag::JOINER)}"
       return(render(:action => "edit_public_community"))
     end
-
+        
     if @community.save
       flash[:notice] = 'Community Updated'
       @community.content_tag_names=(params['community']['content_tag_names'])
