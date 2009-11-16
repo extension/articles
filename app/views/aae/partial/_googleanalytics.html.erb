@@ -1,8 +1,8 @@
 <%
 case AppConfig.configtable['app_location']
-    when 'production'   then puts @gaprofile = "UA-155321-27"
-    when 'demo'         then puts @gaprofile = "UA-155321-27" 
-    when 'localdev'     then puts @gaprofile = "UA-155321-0"
+    when 'production'   then @gaprofile = "UA-155321-27"
+    when 'demo'         then @gaprofile = "UA-155321-27" 
+    when 'localdev'     then @gaprofile = "UA-155321-0"
 end
 %>
 
