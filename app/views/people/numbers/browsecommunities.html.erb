@@ -5,6 +5,7 @@
 <a name='list'/><% if @displayfilter == 'all' %>
 	<ul>
 		<% if !@approved_communities.nil? %><li><a href='#approved'>eXtension Communities of Practice</a></li><% end %>
+		<% if !@institution_communities.nil? %><li><a href='#institutions'>Institutions</a></li><% end %>
 		<% if !@usercontributed_communities.nil? %><li><a href='#usercontributed'>User-contributed Communities</a></li><% end %>
 	</ul>
 <% end %>
@@ -14,6 +15,14 @@
 	<a name='approved'/><h3>eXtension Communities of Practice</h3>
 	<%= render(:partial => 'itemlist_table', :locals => { :linkobjectlist => @approved_communities }) %>
 	</div>
+<% end %>
+
+<% if !@institution_communities.nil? %>
+<div class="section">
+<a name='institutions'/><h3>Institutions</h3>
+<% if @displayfilter == 'all' %> <p>(<a href='#list'>back to top</a>)</p><% end %>
+<%= render(:partial => 'itemlist_table', :locals => { :linkobjectlist => @institution_communities }) %>
+</div>
 <% end %>
 
 <% if !@usercontributed_communities.nil? %>

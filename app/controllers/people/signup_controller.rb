@@ -77,7 +77,7 @@ class People::SignupController < ApplicationController
     # affiliation/involvement?
     if(!params[:signup_affiliation].blank?)
       @user.additionaldata = {} if @user.additionaldata.nil?
-      @user.additionaldata.merge!({:signup_affiliation => params[:signup_affiliation]})
+      @user.additionaldata.merge!({:signup_affiliation => Hpricot(params[:signup_affiliation].sanitize).to_html})
     end
     
     

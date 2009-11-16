@@ -1,12 +1,15 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
 Hi eXtensionHelp,
 
-We are sending this email to request that you review the eXtensionID account for: 
+We are sending this email to request that you review the eXtensionID request for: 
 
 <%= @reviewuser.first_name %> <%= @reviewuser.last_name %> 
 <%= @reviewuser.email %>
 
-This account is either new, or has had an email change that triggered this review request.
+<%- if (!@reviewuser.additionaldata.blank? and !@reviewuser.additionaldata[:signup_affiliation].blank? -%>
+Additional information from <%= @reviewuser.first_name %> about their Extension involvement:
+<%=  Hpricot(@reviewuser.additionaldata[:signup_affiliation]).to_plain_text %>
+<%- end -%>
 
 Please review the account at (People Administrators only):
 

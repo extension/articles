@@ -29,9 +29,12 @@ class People::NumbersController < ApplicationController
       @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @findoptions[:order]) 
     when 'usercontributed'
       @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @findoptions[:order]) 
+    when 'institutions'
+      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, @findoptions[:order]) 
     else
       @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @findoptions[:order]) 
       @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @findoptions[:order]) 
+      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, @findoptions[:order]) 
     end
   end
   
