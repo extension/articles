@@ -138,11 +138,12 @@ class MainController < ApplicationController
       public_institutions_for_location = Community.institutions.public_list.find(:all, :include => :location, :conditions => ["locations.abbreviation = ?", state])
       if(!public_institutions_for_location.blank?)
         if(public_institutions_for_location.length == 1)
-          render :partial => "shared/institution_selected", :locals => {:state => state}, :layout => false
+          return render :partial => "shared/institution_selected", :locals => {:state => state}, :layout => false
         else
-          render :partial => "shared/institution_select", :locals => {:institutions => public_institutions_for_location}, :layout => false
+          return render :partial => "shared/institution_select", :locals => {:institutions => public_institutions_for_location}, :layout => false
         end
-        return
+      else
+        return render :partial => "shared/institution_selected", :locals => {:state => state}, :layout => false
       end
     end
     render :nothing => true
