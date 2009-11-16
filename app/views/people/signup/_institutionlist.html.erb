@@ -2,7 +2,7 @@
     <% institutionlist.each do |institution| %>
         <li>
 			<% 	buttonopts = Hash.new(:class => "radio")
-			   	if(!@user.nil? and !@user.primary_institution.nil? and institution.id == @user.primary_institution.id)
+			   	if(!params[:primary_institution_id].blank? and institution.id == params[:primary_institution_id].to_i)
 					checked = "checked"
 				else
 				    checked = nil
@@ -14,7 +14,7 @@
     <% end %>
     <!-- add in "other" -->
 	<% 	buttonopts = Hash.new(:class => "radio")
-	   	if(@user.nil? or @user.primary_institution.nil?)
+	   	if(params[:primary_institution_id].blank?)
 			checked = "checked"
 		else
 		    checked = nil

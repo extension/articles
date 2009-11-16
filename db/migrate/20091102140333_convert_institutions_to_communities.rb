@@ -112,7 +112,7 @@ class ConvertInstitutionsToCommunities < ActiveRecord::Migration
     
     # expand NIFA name
     execute "UPDATE old_institutions SET old_institutions.name = 'National Institute of Food and Agriculture' WHERE old_institutions.name LIKE 'NIFA'"    
-        
+            
     # get originally typed - or more likely - the email modified organization name back into user model
     execute "UPDATE users, old_institutions SET users.temp_organization_name = old_institutions.name WHERE users.institution_id = old_institutions.id"
     
@@ -196,6 +196,8 @@ class ConvertInstitutionsToCommunities < ActiveRecord::Migration
     remove_column :users, "temp_organization_name"
     remove_column :users, "temp_organization_name_typed"
     
+    # finally, copy institution name to public name so that it can be edited later if necessary
+    execute "UPDATE communities SET communities.public_name = communities.name WHERE communities.entrytype = 3"
   end
   
 

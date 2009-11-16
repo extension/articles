@@ -25,6 +25,16 @@
 
 	    <div class="form_section">
 	        <fieldset>	
+	            <p>
+                    <label for="user_first_name">First Name: <em class="required">*</em></label>
+                    <%= text_field "user", "first_name" %>
+                </p>
+
+                <p>
+                    <label for="user_last_name">Last Name: <em class="required">*</em></label>
+                    <%= text_field "user", "last_name" %>
+                </p>
+                
 	            <p>	
     		        <label for="user_login">eXtensionID <em class="required">*</em></label>
     		        <%= text_field "user", "login", :class => "medsize" %>
@@ -47,11 +57,70 @@
                     <label for="user_password_confirmation">Confirm Password <em class="required">*</em></label>
                     <%= password_field "user", "password_confirmation", :class => "medsize", :value => '' %>
                 </p>
+                
+                
+                <p>
+                    <label for="user_phonenumber">Preferred Phone Number:</label>
+                    <%= text_field("user", "phonenumber", {:value => number_to_phone(@user.phonenumber,:area_code => true)}) %>
+                </p>
+
+                <p>
+                    <label for="user_title">Title:</label>
+                    <%= text_field "user", "title", :class => "medsize" %>
+                </p>
+                
+                <p>
+                    <label>Your Involvement with Cooperative Extension:</label>
+                    <%= text_area_tag(:signup_affiliation, params[:signup_affiliation], :rows => 3) %>                
+                <p>
 	
             </fieldset>
         </div>
+        
+        <div class="form_section">
+        <h3>Location</h3>
+        	<div id="location">
+        		<p>
+        		    <label for="user_location_id">Location:</label>
+        		<%= select(:user, :location_id, @locations.map {|loc| [loc.name,loc.id]}, :include_blank => true) %>
+        		<%= observe_field(:user_location_id,
+        		                  :url       => { :controller => '/people/signup', :action => :xhr_county_and_institution },
+        		                  :with      => "'location='+value") %>
+        		</p>
+        	</div>
+        	<div id="county">
+        		<% if !@countylist.nil? %>
+        			<%= render(:partial => 'people/signup/county', :locals => {:countylist => @countylist}) %>
+        		<% end %>
+        	</div>
+        </div>
 
-        <%= render(:partial => 'people/profile/profile_fields',:locals => {:signup => true}) %>
+        <div class="form_section">
+        <h3>Your Institution/Affiliation</h3>
+        	<div id="institution">
+        		<% if !@institutionlist.nil? %>
+        			<%= render(:partial => 'people/signup/institutionlist', :locals => {:countylist => @institutionlist}) %>
+        		<% else %>
+        		    <p><em>select a location to show institutions for that location</em></p>
+        		<% end %>
+        	</div>
+        </div>
+
+        <div class="form_section">
+           <%= render(:partial => 'people/profile/profile_position', :locals => { :positionslist => Position.geteditlist}) %>
+        </div>
+
+
+        <div class="form_section">
+        <h3>Announcements</h3>
+        	<div id="announcements">
+        	    <p>
+        	        <label>
+        	            <%= check_box(:user,:announcements) %>Subscribe me to the eXtension.org "announcements" mailing list.
+        	        </label>
+        	    </p>
+        	</div>
+        </div>
 		
         <p><%= submit_tag 'Submit Registration' %></p>
     </div>

@@ -19,6 +19,20 @@ class People::SignupController < ApplicationController
     end
   end
   
+  def xhr_county_and_institution
+    @user = @currentuser
+    if(!params[:location].nil? and params[:location] != "")
+      selected_location = Location.find(:first, :conditions => ["id = ?", params[:location]])	  
+      @countylist = selected_location.counties
+      @institutionlist = selected_location.communities.institutions.find(:all, :order => 'name')
+    end
+
+    render(:update) do |page|
+        page.replace_html  :county, :partial => 'county', :locals => {:countylist => @countylist}
+        page.replace_html  :institution, :partial => 'institutionlist', :locals => {:institutionlist => @institutionlist}
+    end    
+  end
+  
   def new
     if(!request.post?)
       return redirect_to(:action => 'readme', :invite => params[:invite])
@@ -53,11 +67,19 @@ class People::SignupController < ApplicationController
     end
     
     @user = User.new(params[:user])
-    
+        
     # institution?
-    if(!params[:institution_id].nil? and !params[:institution_id] == 0)
-      @user.additionaldata = {:signup_institution_id => params[:institution_id]}
+    if(!params[:primary_institution_id].nil? and !params[:primary_institution_id] == 0)
+      @user.additionaldata = {} if @user.additionaldata.nil?
+      @user.additionaldata.merge!({:signup_institution_id => params[:primary_institution_id]})
     end
+    
+    # affiliation/involvement?
+    if(!params[:signup_affiliation].blank?)
+      @user.additionaldata = {} if @user.additionaldata.nil?
+      @user.additionaldata.merge!({:signup_affiliation => params[:signup_affiliation]})
+    end
+    
     
     # STATUS_SIGNUP
     @user.account_status = User::STATUS_SIGNUP
@@ -90,6 +112,7 @@ class People::SignupController < ApplicationController
       @locations = Location.displaylist
       if(!(@user.location.nil?))  
         @countylist = @user.location.counties
+        @institutionlist = @user.location.communities.institutions.find(:all, :order => 'name')
       end
       render :action => "new"
     else        
@@ -144,6 +167,7 @@ class People::SignupController < ApplicationController
       end
     end    
   end
+  
   
   def confirmationsent
   end
