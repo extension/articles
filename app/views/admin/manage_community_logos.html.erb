@@ -1,0 +1,31 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %></p>
+    
+    <h1>Community Logos</h1>
+    
+    <table class="logos">
+        <tr>
+            <th scope="col">&nbsp;</th>
+            <th scope="col">Live</th>
+            <th scope="col">Community Name</th>
+            <th scope="col">Image</th>	
+        </tr>
+
+        <%- @communitieslist.each do |community| -%>
+        <tr class="<%= (community.is_institution? ? community.show_in_public_list : community.is_launched) %>">
+            <td><%= link_to('edit', :action => 'edit_community_logo', :id => community.id)%></td>
+            <td class="islive"><%= (community.is_institution? ? community.show_in_public_list : community.is_launched) %></td>
+            <td><%= link_to_people_community(community) %></td>
+            <%- if community.logo.nil? %>
+                <td>Not yet provided.</td>
+        	<%- else -%>
+        	    <td><%= render_inline_logo({:logo => community.logo, :show_thumbnail => false }) %></td>
+            <%- end -%>
+        </tr>
+        <%- end -%>
+</table>
+
+
+
+
+</div>

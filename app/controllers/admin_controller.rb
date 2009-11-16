@@ -44,6 +44,23 @@ class AdminController < ApplicationController
     @other_public_communities = Community.usercontributed.public_list.all(:order => 'name')
   end
   
+  def manage_community_logos
+    set_titletag("Manage Community Logos - Pubsite Admin")
+    if(!params[:communitytype].nil? and params[:communitytype] == 'institutions')  
+      @communitieslist = Community.institutions.all(:order => 'name')
+    else
+      @communitieslist = Community.approved.all(:order => 'name') + Community.usercontributed.public_list.all(:order => 'name')
+    end
+  end
+  
+  def edit_community_logo
+    @community = Community.find_by_id(params[:id])
+    if(@community.nil?)
+      flash[:error] = 'Invalid community'
+      redirect_to :action => :index
+    end
+  end
+  
   def manage_institutions
     set_titletag("Manage Institutions - Pubsite Admin")    
     @landgrant_institutions =  Community.institutions.public_list.all(:include => :location, :order => 'locations.abbreviation')

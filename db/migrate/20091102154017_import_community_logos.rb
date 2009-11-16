@@ -11,16 +11,18 @@ class ImportCommunityLogos < ActiveRecord::Migration
 
     # institutions first
     Community.institutions.find(:all).each do |i|
-      gif = "#{Rails.root.to_s}/public/images/logos/universities/#{i.institution_code}.gif"
-      jpg = "#{Rails.root.to_s}/public/images/logos/universities/#{i.institution_code}.jpg"
-      if(File.exists?(gif))
-        @logo = Logo.new(:uploaded_data => ActionController::TestUploadedFile.new(gif, 'image/gif'))
-      elsif(File.exists?(jpg))
-        @logo = Logo.new(:uploaded_data => ActionController::TestUploadedFile.new(jpg, 'image/jpeg'))
+      gif_file = "#{Rails.root.to_s}/public/images/logos/universities/#{i.institution_code}.gif"
+      jpg_file = "#{Rails.root.to_s}/public/images/logos/universities/#{i.institution_code}.jpg"
+      if(File.exists?(gif_file))
+        logo = Logo.new(:uploaded_data => ActionController::TestUploadedFile.new(gif_file, 'image/gif'))
+      elsif(File.exists?(jpg_file))
+        logo = Logo.new(:uploaded_data => ActionController::TestUploadedFile.new(jpg_file, 'image/jpeg'))
       end
-      @logo.logotype = Logo::COMMUNITY
-      @logo.save
-      i.update_attribute('logo_id',@logo.id)
+      if(!logo.nil?)
+        logo.logotype = Logo::COMMUNITY
+        logo.save
+        i.update_attribute('logo_id',logo.id)
+      end
     end
     
     # now copads
@@ -28,16 +30,18 @@ class ImportCommunityLogos < ActiveRecord::Migration
       content_tag_name = c.primary_content_tag_name
       if(!content_tag_name.nil?)
         file_name = content_tag_name.gsub(/[,_]/,'').gsub(/ /,'_').downcase
-        gif = "#{Rails.root.to_s}/public/images/layout/copad_#{file_name}.gif"
-        jpg = "#{Rails.root.to_s}/public/images/layout/copad_#{file_name}.jpg"
-        if(File.exists?(gif))
-          @logo = Logo.new(:uploaded_data => ActionController::TestUploadedFile.new(gif, 'image/gif'))
-        elsif(File.exists?(jpg))
-          @logo = Logo.new(:uploaded_data => ActionController::TestUploadedFile.new(jpg, 'image/jpeg'))
+        gif_file = "#{Rails.root.to_s}/public/images/layout/copad_#{file_name}.gif"
+        jpg_file = "#{Rails.root.to_s}/public/images/layout/copad_#{file_name}.jpg"
+        if(File.exists?(gif_file))
+          logo = Logo.new(:uploaded_data => ActionController::TestUploadedFile.new(gif_file, 'image/gif'))
+        elsif(File.exists?(jpg_file))
+          logo = Logo.new(:uploaded_data => ActionController::TestUploadedFile.new(jpg_file, 'image/jpeg'))
         end
-        @logo.logotype = Logo::COMMUNITY
-        @logo.save
-        c.update_attribute('logo_id',@logo.id)
+        if(!logo.nil?)
+          logo.logotype = Logo::COMMUNITY
+          logo.save
+          c.update_attribute('logo_id',logo.id)
+        end
       end
     end
   end
