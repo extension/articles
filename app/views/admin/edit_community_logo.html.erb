@@ -1,7 +1,25 @@
 <div id="admin">
-    <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Community Logos', :action => 'manage_communities', :communitytype => (@community.is_institution? ? 'institutions' : 'approved') %></p>
+    <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Community Logos', :action => 'manage_community_logos', :communitytype => (@community.is_institution? ? 'institutions' : 'approved') %></p>
     <h1>Edit Community Logo</h1>
+	<p> Current Logo:
+		<%- if @logo.nil? %>
+            <td>Not yet provided.</td>
+    	<%- else -%>
+    	    <td><%= render_inline_logo({:logo => @logo, :show_thumbnail => false }) %></td>
+        <%- end -%></p>
     
-<p>Not yet implemented.</p>
+    <%= error_messages_for :logo %>
+
+    <% form_for(:logo, @logo, :html => { :multipart => true }) do |f| %>
+    	<%= hidden_field_tag(:community_id, @community.id) %>
+
+      <p>
+        <label for="logo">Browse:</label>
+        <%= f.file_field :uploaded_data %>
+      </p>
+      <p>
+        <%= submit_tag 'Upload' %> or <%= link_to 'delete', url_for(:action => 'delete_community_logo', :id => @community.id), :confirm => 'Are you sure?', :method => :delete %>
+      </p>
+    <% end -%>
 
 </div>

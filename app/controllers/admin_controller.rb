@@ -59,6 +59,28 @@ class AdminController < ApplicationController
       flash[:error] = 'Invalid community'
       redirect_to :action => :index
     end
+    @logo = @community.logo
+    if(request.post?)
+      @newlogo = Logo.new(params[:logo])
+      @newlogo.logotype = Logo::COMMUNITY
+      if @newlogo.save
+        @logo.destroy if !(@logo.nil?)
+        @community.update_attribute(:logo_id, @newlogo.id)
+        flash[:notice] = 'Logo was successfully uploaded.'
+        redirect_to(:action => 'manage_community_logos', :communitytype => (@community.is_institution? ? 'institutions' : 'approved'))
+      end
+    end
+  end
+  
+  def delete_community_logo
+    @community = Community.find_by_id(params[:id])
+    if(@community.nil?)
+      flash[:error] = 'Invalid community'
+      redirect_to :action => :index
+    end
+    @community.logo.destroy
+    flash[:notice] = 'Logo was successfully removed.'
+    redirect_to(:action => 'manage_community_logos', :communitytype => (@community.is_institution? ? 'institutions' : 'approved'))
   end
   
   def manage_institutions
