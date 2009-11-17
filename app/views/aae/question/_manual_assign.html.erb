@@ -34,7 +34,7 @@
        <% end %>
     <% else %>
         <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
-        <p class="inc_descriptive">Nobody</p>
+        <p class="inc_descriptive">Assigned to Nobody</p>
         <% end %>
         <div id="assign_container">
         <strong>Assign to someone:</strong>
@@ -50,7 +50,7 @@
 </div>
 		</div>
 		
-        <% if @currentuser.id == @submitted_question.assignee.id %>
+        <% if (!@submitted_question.assignee) or (@currentuser.id == @submitted_question.assignee.id) %>
           <br /><br /><p><%= button_to "Hand off to a Question Wrangler", :action => :assign_to_wrangler, :squid => @submitted_question.id %></p>
         <% end %>
 

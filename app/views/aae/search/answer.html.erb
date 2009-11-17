@@ -12,7 +12,7 @@
 </div>
 
 <div class="clearing">
-    <% if @submitted_question.assignee.id != @currentuser.id %>
+    <% if !@submitted_question.assignee or (@submitted_question.assignee.id != @currentuser.id) %>
     <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", aae_question_url(:id => @submitted_question.id) %>.</h3>
     <% else %>
     <h3><%= link_to "This is a relevant answer. Use it to write my response.", :controller => 'aae/question', :action => 'answer', :question => @aae_search_item, 
