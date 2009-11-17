@@ -14,13 +14,15 @@
         </p>
 
         <p>
-            <label>URL ("about this institution" link)</label>
+            <label>Public URL</label>
             <%= text_field_tag 'institution[public_uri]', @institution.public_uri %>
+            <span class="instructions">Used for the "about this institution" link.</span>
         </p>
         
         <p>
-        <label>Show Community in Public List?</label>
-        <%= check_box_tab('institution[show_in_public_list]', "1", @institution.show_in_public_list) %>
+            <label>Publicity</label>
+            <%= check_box_tag('institution[show_in_public_list]', "1", @institution.show_in_public_list) %>Show Institution to Public?
+            <span class="instructions">Visitors can pick this institution when entering a location for branding.</span>
         </p>
 
         <p>
