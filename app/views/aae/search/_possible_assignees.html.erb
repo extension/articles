@@ -1,3 +1,6 @@
+
+
+
 <% if users.length == 0 %>
     <p><span class="alert">There are no matching experts.</span></p>
 <% else %>
@@ -10,10 +13,12 @@
     {:id => "user_trigger_#{user.id}", :class => 'userlink', :class => 'profile'}) %>
     
     <%= user.expertise_locations.length > 0 ? '(' + user.expertise_locations.map{|l| l.abbreviation}.join(', ') + ')' : '' %>
+    <% if user.is_question_wrangler? %>
+    Question Wrangler 
+    <% end %>
     </li>
 <% end %>
 </ul>
-
 
 <% users.each do |user| %>
     <div id='user_tooltip_<%= user.id %>' style="display:none;" class="usertooltip">
@@ -29,11 +34,19 @@
         <% end %>
         
         <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>
-    <!-- looking to put pct from assignees here -->
+
+        <% if user.is_question_wrangler? %>
+            <h5>Question Wrangler</h5>
+        <% end %>
+        
         <% if user.assigned_questions.length > 0%>
-           <h5>Handling + Completion Rate:</h5>
-           <p><%= ("%.2f" % (((@assgnscompls[user.id]).to_f/@totalassgns[user.id]).to_f * 100)) + "%" %></p>
+           <h5>Handling rate for assigned questions:</h5>
+           <p><span class="completions" style="background-position: -<%=((100 - ("%.0f" % (((@assgnscompls[user.id]).to_f/@totalassgns[user.id]).to_f * 100)).to_f)*2) %>px 0"><em><%= ("%.0f" % (((@assgnscompls[user.id]).to_f/@totalassgns[user.id]).to_f * 100)) + "%" %></em></span></p>
+        <% else %>
+            <p>This person hasn't handled any questions in the last 6 months.</p>
         <% end%>
+        
+        
         
         <% if user.expertise_locations.length > 0 %>
             <h5>Expertise Locations:</h5>
@@ -42,7 +55,7 @@
         
         <% if user.categories.length > 0 %>
             <h5>Expertise Categories:</h5>
-            <p><%= user.categories.collect { |cat| cat.full_name }.join(", ") %></p>
+            <p><%= user.categories.collect { |cat| cat.full_name }.join(",<br />") %></p>
         <% end %>
             
         <% if user.categories.length == 0 %>
@@ -59,6 +72,7 @@
         <% end %>
         </div>
     </div>
+
 <% end %>
 
 <% end %>

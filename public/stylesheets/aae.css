@@ -876,6 +876,7 @@ div.answer h2 {
 	width: 300px !important;
 	background: transparent url(/images/common/soft_shadow.png) left bottom no-repeat;
 	position:relative;
+	
 }
 #usertooltip_hook {
     margin: -12px -12px 12px 12px ;
@@ -883,6 +884,8 @@ div.answer h2 {
     border: 1px solid navy;
     padding: 0 0 1em !important;
 	position:relative;
+	max-height:450px;
+	overflow:auto;
 }
 
 #usertooltip_hook h3,
@@ -900,6 +903,8 @@ div.answer h2 {
 .usertooltip #usertooltip_hook h3 small {
     font-weight: normal;
 }
+.usertooltip .completions em {font-style:normal;padding:0 .3em;}
+.usertooltip .completions {display:block;padding:.3em 0;border:1px solid #ccc;width:200px !important; background: url(/images/aae/green_square.png) no-repeat;}
 #usertooltip_hook h4 {
     font-size: 140% !important;
     font-family: Arial, Helvetica, sans-serif;
