@@ -349,8 +349,8 @@ def clean_question_and_answer
 end
 
 def submitter_fullname
-  submitter_name = self.public_user.fullname
-  if submitter_name.strip == ''
+  submitter_name = self.public_user.fullname if self.public_user
+  if !submitter_name or submitter_name.strip == ''
     submitter_name = DEFAULT_SUBMITTER_NAME 
   end
   
