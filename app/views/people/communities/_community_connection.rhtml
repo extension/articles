@@ -11,7 +11,7 @@
         	</div>
         <%- end -%>
         <div id="connection_options" style="display:none;">
-            <p class="leave"><%= change_community_connection_link('connectiontocommunity',@community,'Leave Community','leave',{:class => "delete"}) %></p>
+            <p class="leave"><%= change_community_connection_link('connectiontocommunity',@community,"Leave #{@community.viewlabel.capitalize}",'leave',{:class => "delete"}) %></p>
         </div> 
 
 <% elsif @currentuser.communityinvitations.include?(@community) %>
@@ -50,7 +50,7 @@
 
         <h3>Membership Options <a class="tooltip-help" href="#" id="source_trigger">?</a></h3>
         <div id="connection_options">
-	    <p><%= change_community_connection_link('connectiontocommunity',@community,'Join Community','join') %></p>
+	    <p><%= change_community_connection_link('connectiontocommunity',@community,"Join #{@community.viewlabel.capitalize}",'join') %></p>
 		<p><%= change_community_connection_link('connectiontocommunity',@community,'I am interested in this community','interest') %></p>
 		</div>
 		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :interest => true, :nointerest => false}}) %>
