@@ -2,7 +2,8 @@
 
 
 <% if @reassign_comment and @reassign_comment.strip != '' and @assigner.id == User.systemuser.id %>
-    <%= @reassign_comment #reassignment message from system %>
+    <% #reassignment message from system %>
+    <%= @reassign_comment %>
 <% else %>
     A question is assigned to you at the eXtension Ask an Expert site.
 <% end %>
