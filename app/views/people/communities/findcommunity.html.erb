@@ -4,18 +4,6 @@
 	<h1><%= (@page_title) ? @page_title : "Communities" %></h1>
 	
 	<%= render(:partial => 'find_community_form') %>
-
-	<div id="paginator_wrapper">
-    
-		<% if @communitylist.length > 0 %>
-		    <p class="display_results">Displaying <strong><%= @communitylist.offset + 1 %>-<%= @communitylist.offset + @communitylist.length %></strong>
-			 of <strong><%= @communitylist.total_entries %></strong></p>
-		<% else %>
-		    <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
-		<% end %>
-
-		<%= will_paginate(@communitylist,:params => {:q => params[:q]}) %>
-	</div>
 	
 	<%= render(:partial => 'community_list', :locals => { :communitylist => @communitylist }) %>
 

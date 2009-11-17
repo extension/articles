@@ -678,32 +678,6 @@ class Community < ActiveRecord::Base
     end
   end
   
-  def self.search(opts = {})
-    tmpterm = opts.delete(:searchterm)
-    if tmpterm.nil?
-      return nil
-    end
-    # remove any leading * to avoid borking mysql - also strip the + out which generates a repitition error
-    # and remove the '\' in case it's a trailing backslash
-    searchterm = tmpterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
-    findvalues = {
-      :findname => searchterm,
-      :findtext => searchterm,
-      :findtag => searchterm
-    }
-    conditions = ["name rlike :findname or description rlike :findtext or cached_tags.fulltextlist rlike :findtag",findvalues]
-    
-    finder_opts = {:joins => [:cached_tags], :conditions => conditions, :group => "communities.id"}
-    
-    dopaginate = opts.delete(:paginate)
-    if(dopaginate)
-      paginate(:all,opts.merge(finder_opts))
-    else
-      find(:all,opts.merge(finder_opts))
-    end
-  end
-  
-  
   def self.userfilter_conditions(options={})
     joins = [:users]
     

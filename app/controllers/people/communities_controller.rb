@@ -374,18 +374,27 @@ class People::CommunitiesController < ApplicationController
   def findcommunity
     if (params[:q].nil? or params[:q].empty?)
       flash[:warning] = "Empty search term"
-      redirect_to :action => 'index'
-    else    
-      
-      @communitylist = Community.search({:order => 'name', :limit => 10, :searchterm => params[:q], :page => params[:page], :paginate => true})
+      return redirect_to :action => 'index'
+    end
+    searchterm = params[:q].gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
+    
+    # exact match?
+    if(exact = Community.find(:first, :conditions => {:name => searchterm}))
+      return redirect_to :action => :show, :id => exact.id
+    end
+    
+    # query twice, first by name, and then by description and tags
+    @namelist = Community.find(:all, :conditions => ["name like ?",'%' + searchterm + '%'], :order => "name" )
+    @description_and_tags_list = Community.find(:all, :joins => [:cached_tags], :conditions => ["description like ? or cached_tags.fulltextlist like ?",'%' + searchterm + '%','%' + searchterm + '%'], :order => "name" )
+    
+    @communitylist = (@namelist + @description_and_tags_list).compact 
           
-      if @communitylist.nil? || @communitylist.length == 0
-        flash[:warning] = "No community was found that matches your search term"
-        redirect_to :action => 'index'
-      else
-        if @communitylist.length == 1
-          redirect_to :action => :show, :id => @communitylist[0].id
-        end
+    if @communitylist.nil? || @communitylist.length == 0
+      flash[:warning] = "No community was found that matches your search term"
+      return redirect_to :action => 'index'
+    else
+      if @communitylist.length == 1
+        return redirect_to :action => :show, :id => @communitylist[0].id
       end
     end
   end  

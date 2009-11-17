@@ -153,7 +153,7 @@ class NumberSummary
     end
   end
       
-  def communities(wants = ['approved','usercontributed'],wantconnections = ['joined'])
+  def communities(wants = ['approved','usercontributed','institution'],wantconnections = ['joined'])
     get_or_set_data_value(this_method.to_sym) do   
       returnhash = {}
       wants.each do |communitytype|

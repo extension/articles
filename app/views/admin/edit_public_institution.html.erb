@@ -17,6 +17,11 @@
             <label>URL ("about this institution" link)</label>
             <%= text_field_tag 'institution[public_uri]', @institution.public_uri %>
         </p>
+        
+        <p>
+        <label>Show Community in Public List?</label>
+        <%= check_box_tab('institution[show_in_public_list]', "1", @institution.show_in_public_list) %>
+        </p>
 
         <p>
             <input type="submit" value="Update"> 
