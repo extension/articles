@@ -38,15 +38,15 @@
         <% if user.is_question_wrangler? %>
             <h5>Question Wrangler</h5>
         <% end %>
-        
-        <% if user.assigned_questions.length > 0%>
+            
+        <% if user.assigned_questions.length > 0 %>
+           <% aae_handling_event_count =  user.aae_handling_event_count %>
            <h5>Handling rate for assigned questions:</h5>
-           <p><span class="completions" style="background-position: -<%=((100 - ("%.0f" % (((@assgnscompls[user.id]).to_f/@totalassgns[user.id]).to_f * 100)).to_f)*2) %>px 0"><em><%= ("%.0f" % (((@assgnscompls[user.id]).to_f/@totalassgns[user.id]).to_f * 100)) + "%" %></em></span></p>
+           <p><span class="completions" style="background-position: -<%=(100 - ((aae_handling_event_count[:ratio]*100).to_i * 2)) %>px 0">
+           <em><%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %></em></span></p>
         <% else %>
             <p>This person hasn't handled any questions in the last 6 months.</p>
         <% end%>
-        
-        
         
         <% if user.expertise_locations.length > 0 %>
             <h5>Expertise Locations:</h5>

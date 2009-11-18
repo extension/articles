@@ -1186,6 +1186,33 @@ class User < ActiveRecord::Base
     return displaystring
   end
   
+  # returns a hash of the aae_handling_event_counts
+  def aae_handling_event_count(dateinterval = '6 MONTHS')
+    # get the total number of handling events for which I am the previous recipient
+    conditions = ["previous_handling_recipient_id = #{self.id}"]
+    if(!dateinterval.nil? )
+      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+    end
+    total = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '))
+    
+    # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
+    conditions = ["initiated_by_id = previous_handling_recipient_id"]
+    conditions << "previous_handling_recipient_id = #{self.id}"
+    if(!dateinterval.nil?)
+      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+    end
+    handled = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '))
+    
+    # calculate a floating point ratio
+    if(handled > 0)
+      ratio = handled.to_f / total.to_f
+    else
+      ratio = 0
+    end
+    return {:total => total, :handled => handled, :ratio => ratio}
+    
+  end
+  
   
 
   # -----------------------------------

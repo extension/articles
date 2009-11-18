@@ -8,6 +8,7 @@
 require 'hpricot'
 
 class SubmittedQuestionEvent < ActiveRecord::Base
+  extend ConditionExtensions
   belongs_to :submitted_question
   belongs_to :initiated_by, :class_name => "User", :foreign_key => "initiated_by_id"
   belongs_to :recipient, :class_name => "User", :foreign_key => "recipient_id"
@@ -53,6 +54,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   named_scope :work_in_progress, lambda { |user_id, sq_id| {:conditions => {:event_state => WORKING_ON, :initiated_by_id => user_id, :submitted_question_id => sq_id}}}
   named_scope :latest, {:order => "created_at desc", :limit => 1}
   named_scope :latest_handling, {:conditions => "event_state IN (#{ASSIGNED_TO},#{RESOLVED},#{REJECTED},#{NO_ANSWER})",:order => "created_at desc", :limit => 1}
+  named_scope :handling_events, :conditions => "event_state IN (#{ASSIGNED_TO},#{RESOLVED},#{REJECTED},#{NO_ANSWER})"
   # get all the questions with a 'I'm working on this' status (make sure the current question assignee is the one who claimed the question to work on it)
   named_scope :reserved_questions, {:select => "DISTINCT(submitted_question_events.submitted_question_id) AS id", :joins => :submitted_question, :conditions => "submitted_questions.user_id = submitted_question_events.initiated_by_id AND submitted_question_events.event_state = #{WORKING_ON} AND submitted_question_events.created_at > #{RESERVE_WINDOW}"}
   
