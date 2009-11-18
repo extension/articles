@@ -8,7 +8,9 @@
 	<% end %>
 </ul>
 <% else %>
+<% if @selected_tab != :login %>
 <ul id="userinfo">
 	<li><%= link_to "sign in", :controller => "account", :action => "login" %></li>
 </ul>
+<% end %>
 <% end %>

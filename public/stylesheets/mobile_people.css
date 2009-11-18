@@ -1,0 +1,47 @@
+body {
+    -webkit-text-size-adjust:none;
+    padding:0;margin:0;
+}
+
+body * { font-family: Arial;}
+
+p {word-wrap: break-word;}
+div#app_location {color:#fff; padding:8px;text-align:left;}
+div#app_location p {margin:0;line-height:1em;}
+div#app_location.localdev {background: #ccc;border:1px solid #888;color:#222;padding:4px;}
+div#app_location.demo {background: #ff00ff;border:1px solid #000;color:#222;}
+div#app_location.preview {background: #229ec0;}
+div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
+div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5em;}
+
+#skiplist, .print, .view_as_web_page {display:none;}
+
+#userinfo {float:left;background: #eee; margin: 0 0 4px; padding:0;width:100%;}
+#userinfo li {float:left; background: #eee;list-style:none; padding:4px 10px;}
+
+#pageContent {clear:both;}
+#primaryNav {clear:both;}
+
+#content {padding:8px;}
+
+input {display:block;}
+input, option, select, textarea {font-size: 1em;margin-bottom:6px;}
+fieldset {border: 0;}
+
+#footer {padding:8px;}
+
+h1 {font-size:1.4em;}
+h2 {font-size:1em;}
+h3 {font-size:1em;background:#ddd; padding:4px; clear:both;}
+
+
+#masthead h1 {
+	margin: 0 0 10px;
+	padding: 0;
+	height: 85px;
+	font-size: 1.5em;
+	color: #000b53 !important;
+	text-indent: -9000px;
+	background: url(/images/people/header_people.gif) no-repeat;
+}
+#masthead h1 a {display: block;height: 85px;}
