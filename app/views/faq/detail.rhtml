@@ -9,7 +9,9 @@
     <% if not @youth %>
       <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', ask_form_url %></p>
     <% end %>
-    <p class="print"><%= link_to 'Print', request.request_uri + "/print/" unless params[:print]%></p>
+    <p class="print_and_share">
+    <%= link_to 'Print', (request.request_uri + "/print/" unless params[:print] ), :class => "print" %>
+        <a class="a2a_dd" href="http://www.addtoany.com/share_save"><img src="http://static.addtoany.com/buttons/share_save_106_16.gif" width="106" height="16" border="0" alt="Share/Bookmark"/></a><script type="text/javascript">a2a_linkname=document.title;a2a_linkurl=location.href;</script><script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script></p>
     
 </div>
 

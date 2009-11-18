@@ -632,13 +632,12 @@ dl.events dd {font-size:1.2em;}
 dl.events dd span {color:#999;}
 .updatedmeta {border-right:1px solid #ddd;padding-right:.75em;margin-right:.25em;}
 .aboutexforprint {display:none;}
-.print {/*margin:12pt 0 0;*//*border:1px solid #ddd;*//*padding:.75em;*/padding-right:.75em;float:right;}
-.print a {background: url(/images/layout/printer.png) 0 50% no-repeat;margin:0;padding:0 0 0 20px;display:block;line-height:1.5em;}
-.print a:link, .print a:hover {background: url(/images/layout/printer.png) 0 50% no-repeat;}
-.print a:hover {text-decoration:underline;}
+.print_and_share {padding-right:.75em;float:right;padding:.5em 0 0;}
+a.print {background: url(/images/layout/printer.png) 0 50% no-repeat;margin:0 0 .5em;padding:0 0 0 20px;display:block;line-height:1.5em;}
+a:link.print, a:hover.print {background: url(/images/layout/printer.png) 0 50% no-repeat;}
+a:hover.print {text-decoration:underline;}
 
 .pageextras {float:right;width:112px;margin-right:10px;}
-.pageextras .print {margin:0;padding:1em 0 0;}
 .view_as_web_page {display:none;}
 
 .homesection iframe {display:none;}

@@ -1,6 +1,6 @@
 body {
     -webkit-text-size-adjust:none;
-    padding:0;margin:0;
+    padding:0;margin:0;word-wrap: break-word;
 }
 
 body * { font-family: Arial;}
@@ -16,7 +16,7 @@ div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5
 
 #skiplist, .print, .view_as_web_page {display:none;}
 
-#wrap {padding:8px; border:1px solid red;}
+#wrap {padding:8px;}
 
 #footer {padding:8px;}
 
