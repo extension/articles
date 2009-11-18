@@ -67,9 +67,9 @@ class People::SignupController < ApplicationController
     end
     
     @user = User.new(params[:user])
-        
+
     # institution?
-    if(!params[:primary_institution_id].nil? and !params[:primary_institution_id] == 0)
+    if(!params[:primary_institution_id].nil? and params[:primary_institution_id] != 0)
       @user.additionaldata = {} if @user.additionaldata.nil?
       @user.additionaldata.merge!({:signup_institution_id => params[:primary_institution_id]})
     end

@@ -579,7 +579,12 @@ class User < ActiveRecord::Base
       if(connection.nil?)
         Communityconnection.create(:user => self, :community => community, :connectiontype => connectiontype, :sendnotifications => (connectiontype == 'leader'), :connector => connector, :connectioncode => connectioncode)
       else
-        connection.update_attributes({:connectiontype => connectiontype, :connector => connector, :connectioncode => connectioncode})
+        attributes_to_update = {:connectiontype => connectiontype, :connector => connector, :connectioncode => connectioncode}
+        if(connectiontype == 'leader')
+          # force notifications to be on
+          attributes_to_update.merge!({:sendnotifications => true})
+        end
+        connection.update_attributes(attributes_to_update)
       end
       return true
     when 'remove'
