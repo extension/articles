@@ -14,11 +14,9 @@ div#app_location.preview {background: #229ec0;}
 div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
 div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5em;}
 
-#skiplist, .print, .view_as_web_page {display:none;}
+#skiplist, .print, .view_as_web_page, .clearing  {display:none;}
 
 #wrap {padding:8px;}
-
-#footer {padding:8px;}
 
 h1 {font-size:1.4em;}
 h2 {font-size:1em;}
@@ -37,3 +35,24 @@ h1.missionstatement {font-size:1em;}
 
 #eXlogo {background:url(/images/layout/extensionlogo.gif) no-repeat left top;text-indent:-5000px;overflow:none;padding:0;margin:0 0 10px;}
 #eXlogo a {width:216px; height: 81px;display:block;overflow:hidden;}
+
+
+/* Forms
+-----------------------------------------------------------------------------*/
+fieldset {border:0; padding:0;}
+input {display:block;}
+input, option, select, textarea {font-size: 1em;margin-bottom:6px;}
+textarea {width:90%;}
+label {font-weight:bold;}
+.aae fieldset p.simplefield input {width:90%;}
+.searchbar input {display:inline;}
+
+
+#footer {padding-bottom:2em;float:left; width:100%;}
+#footer p {padding:8px;}
+#footer ul {padding:8px;margin:0;}
+#footer ul li {float:left; list-style:none; padding: 4px 6px; margin: 0;}
+.copyright {color:#888;}
+
+#homage, .homagepic {background:#eee; padding:8px;}
+#homage p {padding:0;margin:0;}

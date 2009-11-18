@@ -9,13 +9,13 @@
 
 <fieldset>
     <p class="simplefield">
-        <label for="public_user[first_name]">First Name: <em class="required">*</em></label>
+        <label for="public_user[first_name]">First Name:<em class="required">*</em></label>
         <%= text_field_tag "public_user[first_name]", @public_user.first_name %>
     </p>
     <%= error_message_on "public_user", "first_name" %>
 	<br class="clearing" />
     <p class="simplefield">
-        <label for="public_user[last_name]">Last Name: <em class="required">*</em></label>
+        <label for="public_user[last_name]">Last Name:<em class="required">*</em></label>
         <%= text_field_tag "public_user[last_name]", @public_user.last_name %>
     </p>
     <%= error_message_on "public_user", "last_name" %>
@@ -27,7 +27,7 @@
     <%= error_message_on "submitted_question", "zip_code"%>
 <br class="clearing" />
     <p class="simplefield">
-        <label for="public_user[email]">Email: <em class="required">*</em></label>
+        <label for="public_user[email]">Email:<em class="required">*</em></label>
         <%= text_field_tag "public_user[email]", @public_user.email %>
     </p>
     <%= error_message_on "public_user", "email"%>
@@ -49,16 +49,16 @@
 </fieldset>
 
 <h3>Your location</h3>
-<p class="instructions">Enter the location where you want the question to be directed</p>
+<p class="instructions">Where should the question be directed?</p>
 <fieldset class="stack_labels">
 	<%= render(:partial => 'shared/location_county') %>
 </fieldset>
 
 <h3>Your question</h3> 
-<p class="instructions">Before submitting your question, we will search eXtension and show you the results.</p>
+<p class="instructions">Before submitting your question, we search eXtension and show the results.</p>
 <fieldset>
     <label for="submitted_question[asked_question]" class="field-textarea"> 
-    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :cols => "60", :rows => "3", :id => "submitted_question_asked_question", :disabled => @disableform %> <%= error_message_on "submitted_question", "asked_question"%>
+    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :rows => "3", :id => "submitted_question_asked_question", :disabled => @disableform %> <%= error_message_on "submitted_question", "asked_question"%>
     </label>
 </fieldset>
 <p>

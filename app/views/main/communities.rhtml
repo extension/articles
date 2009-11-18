@@ -3,13 +3,13 @@
     <h2><%=@header_description%></h2>
 </div>
 
-<div class = "left" style = "width: 250px">
+<div class = "left resource_area_list">
     <div class = "communitylist">
         <%= render(:partial => "shared/communities", :locals => {:topics  => Topic.topics_list({:launchedonly => true})}) %>
     </div>
 </div>
 
-<div class = "left" style = "width: 300px; padding-left: 50px">
+<div class="left resource_area">
     <div id="article">
         <%= @article.content if @article %>
     </div>
