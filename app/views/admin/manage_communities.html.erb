@@ -22,7 +22,7 @@
           <td><%= link_to_people_community(community) %></td>
           <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
           <td <%= community.topic.nil? ? 'class="notset"' : '' %>><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
-          <td <%= community.cached_content_tags.blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags.blank? ? 'not set' : community.cached_content_tags.join(Tag::JOINER) %></td>
+          <td <%= community.cached_content_tags.blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags.blank? ? 'not set' : community.cached_content_tags.join(Tag::JOINER) %></td></tr>
       <% end%>
   </table>
   
@@ -45,7 +45,7 @@
           <td><%= link_to_people_community(community) %></td>
           <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
           <td <%= community.topic.nil? ? 'class="notset"' : '' %>><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
-          <td <%= community.cached_content_tags.blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags.blank? ? 'not set' : community.cached_content_tags.join(Tag::JOINER) %></td>
+          <td <%= community.cached_content_tags.blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags.blank? ? 'not set' : community.cached_content_tags.join(Tag::JOINER) %></td></tr>
       <% end%>
   </table>
   <% end%>
