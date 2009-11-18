@@ -387,7 +387,7 @@ class People::CommunitiesController < ApplicationController
     @namelist = Community.find(:all, :conditions => ["name like ?",'%' + searchterm + '%'], :order => "name" )
     @description_and_tags_list = Community.find(:all, :joins => [:cached_tags], :conditions => ["description like ? or cached_tags.fulltextlist like ?",'%' + searchterm + '%','%' + searchterm + '%'], :order => "name" )
     
-    @communitylist = (@namelist + @description_and_tags_list).compact 
+    @communitylist = @namelist | @description_and_tags_list 
           
     if @communitylist.nil? || @communitylist.length == 0
       flash[:warning] = "No community was found that matches your search term"
