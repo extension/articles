@@ -65,7 +65,7 @@ class ArticlesController < ApplicationController
         title_to_lookup = title_to_lookup.gsub(/\/print(\/)?$/, '')
       end
 
-      @article = get_article_by_title(title_to_lookup)
+      @article = Article.find_by_title_url(title_to_lookup)
     else
       # using find_by to avoid exception
       @article = Article.find_by_id(params[:id])
@@ -127,8 +127,6 @@ class ArticlesController < ApplicationController
 
     flash.now[:googleanalytics] = request.request_uri + "?" + @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_content_tags and @community_content_tags.length > 0
     
-    # Specify view since we want sub class (external articles) to go here too
-    #render :template => 'articles/page', :locals => { :article => article }
   end
   
   def news
@@ -162,14 +160,5 @@ class ArticlesController < ApplicationController
     render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true
   end
     
-  private
-  
-  def get_article_by_title(title_to_lookup)
-    @article_by_title ||= Article.find_by_title_url(title_to_lookup)
-  end
-
-  def get_class
-    @class = Article
-  end
   
 end
