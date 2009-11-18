@@ -58,6 +58,7 @@
 	<!--[if lt IE 7]>
 	    <%= stylesheet_link_tag 'ie6.css' %>
     <![endif]-->
+    <% if !@mobile_device %>
    <script type="text/javascript" src="/javascripts/swfobject.js"></script>
    
 	<script type="text/javascript" src="/javascripts/contentslider.js">
@@ -69,6 +70,7 @@
       * for this script and 100s more
       ***********************************************/
    </script>
+   <% end %>
 </head>
 <body>
     <% if(AppConfig.configtable['app_location'] != 'production' and AppConfig.configtable['app_location'] != 'shownav' )%>
@@ -82,7 +84,9 @@
 
     <div id="masthead_wrap">
         <div id="masthead">
+            <% if !@mobile_device %>
             <p class="aboutex">These resources are brought to you by the Cooperative Extension System and your Local Institution</p>
+            <% end %>
             
             <% if @personal[:institution] and ['KY', 'TX'].include?(@personal[:institution].location.abbreviation) %>
                <div class="branding_wrapper doublewide">
@@ -118,6 +122,7 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
         </div>
     </div>
    <div class="navbar">
+       <% if !@mobile_device %>
      <div class="globalnav">
          <ul>
            <li class="home"><a href = "/">Home</a></li>
@@ -130,6 +135,7 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
            <li class="feeds"><a href = "/feeds">Feeds</a></li>
          </ul>
      </div>
+        <% end %>
     
      <%= render(:partial => 'shared/search') %>
    </div>
@@ -155,6 +161,21 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
         
 </div> <!-- end #main_content -->
 </div> <!-- end #wrap -->
+
+<% if @mobile_device %>
+ <div class="globalnav">
+     <ul>
+       <li class="home"><a href = "/">Home</a></li>
+       <li class="about"><a href = "/main/about">About</a></li>
+       <li class="topics"><a href = "/main/communities">Resource Areas</a></li>
+       <li class="news"><%= link_to 'News', site_news_url(with_content_tag?)%></li>
+       <li class="answers"><%= link_to 'Answers', site_faqs_url(with_content_tag?)%></li>
+       <li class="calendar"><%= link_to 'Calendar', site_events_url(with_content_tag?)%></li>
+       <li class="lessons"><%= link_to 'Self Learning', site_learning_lessons_url(with_content_tag?)%></li>
+       <li class="feeds"><a href = "/feeds">Feeds</a></li>
+     </ul>
+ </div>
+    <% end %>
 
 <div id="footer">
     <p><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is an educational partnership of 74 universities in the United States.</p>
