@@ -189,4 +189,10 @@ class AdminController < ApplicationController
     redirect_to :action => :show_config 
   end
   
+  # list recent notifications
+  def notifications
+    dateinterval = params[:dateinterval] || 'withinlastweek'
+    @notifications = Notification.find(:all, :include => [:user,:creator], :conditions => Notification.build_date_condition({:dateinterval => dateinterval}), :order => 'created_at DESC')
+  end
+  
 end

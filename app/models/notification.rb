@@ -6,6 +6,8 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Notification < ActiveRecord::Base
+  extend ConditionExtensions
+  extend ClassconstantUtilities
   
   NONE = 1
   
@@ -36,7 +38,6 @@ class Notification < ActiveRecord::Base
   INVITATION_TO_EXTENSIONID = 500
   INVITATION_ACCEPTED = 501
   
-  CONFIRM_EMAIL = 501
   RECONFIRM_EMAIL = 502
   RECONFIRM_SIGNUP = 503
   CONFIRM_PASSWORD = 504
@@ -44,6 +45,7 @@ class Notification < ActiveRecord::Base
   ACCOUNT_REVIEW = 506
   CONFIRM_EMAIL_CHANGE = 507
   CONFIRM_SIGNUP = 508
+  CONFIRM_EMAIL = 509  
     
   ## Other User actions
   # TODO: new account created?
@@ -116,6 +118,7 @@ class Notification < ActiveRecord::Base
   named_scope :aae_internal, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_AAE_INTERNAL[0]} and #{NOTIFICATION_AAE_INTERNAL[1]})"]
   named_scope :aae_public, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_AAE_PUBLIC[0]} and #{NOTIFICATION_AAE_PUBLIC[1]})"] 
   named_scope :people, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_PEOPLE[0]} and #{NOTIFICATION_PEOPLE[1]})"] 
+  named_scope :failed, :conditions => {:send_error => true}, :order => "created_at ASC"
   
   def send_email
     if(MAILERMETHODS[self.notifytype].blank?)
@@ -151,6 +154,11 @@ class Notification < ActiveRecord::Base
     else
       return nil
     end
+  end
+  
+  def notifytype_to_constant_string
+    constant_string = Notification.code_to_constant_string(self.notifytype) || 'unknown'
+    return constant_string
   end
   
   def send_now?

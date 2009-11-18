@@ -7,8 +7,6 @@
 
 module ConditionExtensions
 
-
-
   def count_cache_expiry
     if(!AppConfig.configtable['cache-expiry'][self.name].nil?)
       AppConfig.configtable['cache-expiry'][self.name]
