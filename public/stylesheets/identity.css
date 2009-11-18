@@ -261,9 +261,6 @@ a.action:hover {text-decoration:none !important; background:#efb85b;color:#111 !
 
 .adminmode {color:#7b0000;background:#eebaba;text-align:center;}
 .adminmode span {font-weight:normal;}
-#admintoggle strong {color:#680706;}
-#admintoggle strong.on {background:#e2babb;padding:.1em .3em;color:#000;}
-#admintoggle strong.off {background:#ddd;padding:.1em .3em;color:#000;}
 
 h3 {margin:1em 0 .5em;padding-bottom:.3em;border-bottom:1px solid #ccc;}
 

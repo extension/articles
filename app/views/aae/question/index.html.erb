@@ -179,7 +179,7 @@
 
 <% end %>
 
-<% if @currentuser.is_admin? %>
+<% if admin_mode? %>
     <% if @submitted_question.show_publicly == true %>
         <div class="admin_option" class="online">
             <p><%= link_to_function 'Public View options (Admin only)', "Effect.toggle('adminoptions','blind', { duration: .4});" %></p>

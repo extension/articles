@@ -74,6 +74,9 @@
                     <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
                     <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
                     <li><%= link_to "Logout", :controller => 'people/account', :action => :logout %></li>
+                    <% if @currentuser.is_admin? %>
+                		<li id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></li>
+                	<% end %>
                 <%- end -%>
 
             </ul>

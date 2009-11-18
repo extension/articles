@@ -168,6 +168,10 @@ span.button a {
 	background: transparent url(/images/people/button-a.png) 0 bottom repeat-x;
 }
 
+#admintoggle strong {color:#680706;}
+#admintoggle strong.on {background:#e2babb;padding:.1em .3em;color:#000;}
+#admintoggle strong.off {background:#ddd;padding:.1em .3em;color:#000;}
+
 
 /* Styles from Get Satisfaction */
 div#gsfn_search_widget img { border:none;}
