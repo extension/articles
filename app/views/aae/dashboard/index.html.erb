@@ -10,31 +10,32 @@
         <th id="completions">Assigned to</th>
         <th>Length<br/>assigned</th>
         <th id="completions">Handled <br> or Completed</br><br/>(last 6 months)</th>
-        <th>Avg response (where <br> assignee completed)</br><br/>(last 6 months)</th>
-        <th>Avg handling time<br> (anytime assigned)</br> <br/>(last 6 months)</th>
-        
+        <th>Avg handling time<br> (anytime assigned)</br> <br/>(last 6 months)</th>        
         <th>Most recent login</th>
     <tr>
         
-    <% @assignees.each do |sq| %>
+    <% @submitted_questions.each do |submitted_question| %>
         <tr>
-            <td><%= link_to sq.id, aae_question_url(:id => sq.id.to_i) %></td>
-            <td><%= time_ago_in_words(Time.parse(sq.sqcreated_at)) %> ago</td>
-             <td><%= (sq) ? link_to("#{sq.first_name} #{sq.last_name}", aae_profile_url(:id => sq.login), :title => "Ask an Expert profile") + 
-	            link_to("#{sq.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => sq.login}, :title => "People profile", :class => "subtle") : "<span>nobody</span>" %></td>
-	            <td><%= (sq and sq.last_assigned_at) ? time_ago_in_words(sq.last_assigned_at) : ""%></td> 
-	            <% pctassgns= 0%>
-	            <% assignee = sq.user_id%>
-	            <% if (@totalassgns[assignee] && @totalassgns[assignee] > 0)%>
-	               <% if (@assgnscompls[assignee])%>
-	                 <% pctassgns = (@assgnscompls[assignee]).to_f/@totalassgns[assignee]%>
-	               <% end%>
-	            <%end%>
-	            <td class="completions" style="background-position: -<%=((100 - ("%.0f" % (pctassgns * 100)).to_f)*2) %>px 0"><%= (( pctassgns != 0) ? ("%.0f" % (pctassgns * 100)) + "%" : "0%") %>  <%= "(out of " + @totalassgns[assignee].to_s + ")" %></td>
-	            <% assignee = sq.user_id.to_s%>
-	            <td><%= ((@avgscompl[assignee] && @avgscompl[assignee] != 0) ? "%.0f hours" % @avgscompl[assignee] : "n/a")%></td>
-	            <td><%= ((@avgsheld[assignee] && @avgsheld[assignee] != 0) ? "%.0f hours" % @avgsheld[assignee] : "n/a")%></td>
-	            <td><%= (sq.last_login_at) ? time_ago_in_words(sq.last_login_at) + ' ago': nil%></td>
+            <td><%= link_to(submitted_question.id, aae_question_url(submitted_question)) %></td>
+            <td><%= time_ago_in_words(submitted_question.created_at) %> ago</td>
+            <td>
+                <%- if !submitted_question.assignee.nil? -%>
+                    <%= link_to("#{submitted_question.assignee.fullname}", aae_profile_url(:id => submitted_question.assignee.login), :title => "Ask an Expert profile") %><%= link_to("#{submitted_question.assignee.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => submitted_question.assignee.login}, :title => "People profile", :class => "subtle") %>
+                <%- else -%>
+                    <span>nobody</span>
+                <%- end -%>
+            </td>
+            <td><%= (!submitted_question.last_assigned_at.nil? ?  time_ago_in_words(submitted_question.last_assigned_at) : '' )%></td>
+            <%- if !submitted_question.assignee.nil? -%>
+                <% aae_handling_event_count =  submitted_question.assignee.aae_handling_event_count({:submitted_question_filter => @filteroptions}) %>
+                <td class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
+                <%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %> (out of <%= aae_handling_event_count[:total] %>)
+                <td><%= (aae_handling_event_count[:handled] > 0 ? "#{number_with_precision(submitted_question.assignee.aae_handling_average / 3600, :precision => 0)} hours" : 'n/a') %></td>
+            <% else %>
+                <td>n/a</td>
+                <td>n/a</td> 
+            <% end%>
+            <td><%= (!submitted_question.assignee.nil? and submitted_question.assignee.last_login_at) ? time_ago_in_words(submitted_question.assignee.last_login_at) + ' ago': ''%></td>
         </tr>
     <% end %>    
 </table>

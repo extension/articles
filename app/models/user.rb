@@ -1187,13 +1187,21 @@ class User < ActiveRecord::Base
   end
   
   # returns a hash of the aae_handling_event_counts
-  def aae_handling_event_count(dateinterval = '6 MONTHS')
+  def aae_handling_event_count(options = {})
+    dateinterval = options[:dateinterval] || '6 MONTHS'
+              
     # get the total number of handling events for which I am the previous recipient
     conditions = ["previous_handling_recipient_id = #{self.id}"]
     if(!dateinterval.nil? )
       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
     end
-    total = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '))
+    
+    # is there a submitted_question filter present? then limit to events only within a range of questions
+    if(!options[:submitted_question_filter].nil?)
+      total = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '))
+    else
+      total = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '))
+    end
     
     # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
     conditions = ["initiated_by_id = previous_handling_recipient_id"]
@@ -1201,7 +1209,13 @@ class User < ActiveRecord::Base
     if(!dateinterval.nil?)
       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
     end
-    handled = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '))
+    
+    # is there a submitted_question filter present? then limit to events only within a range of questions
+    if(!options[:submitted_question_filter].nil?)
+      handled = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '))
+    else
+      handled = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '))
+    end
     
     # calculate a floating point ratio
     if(handled > 0)
@@ -1209,12 +1223,30 @@ class User < ActiveRecord::Base
     else
       ratio = 0
     end
-    return {:total => total, :handled => handled, :ratio => ratio}
     
+    returnvalues = {:total => total, :handled => handled, :ratio => ratio}
+    return returnvalues
   end
   
   
-
+  def aae_handling_average(options = {})
+    dateinterval = options[:dateinterval] || '6 MONTHS'
+    
+    # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
+    conditions = ["initiated_by_id = previous_handling_recipient_id"]
+    conditions << "previous_handling_recipient_id = #{self.id}"
+    if(!dateinterval.nil?)
+      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+    end
+    
+    # is there a submitted_question filter present? then limit to events only within a range of questions
+    if(!options[:submitted_question_filter].nil?)
+      handlingaverage = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND '))
+    else
+      handlingaverage = SubmittedQuestionEvent.handling_events.average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND ')) 
+    end
+  end
+  
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
