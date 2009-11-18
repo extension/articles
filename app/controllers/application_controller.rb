@@ -28,14 +28,14 @@ class ApplicationController < ActionController::Base
   before_filter :set_request_url_options
   before_filter :set_default_request_ip_address
   
-  has_mobile_fu(true)
+  has_mobile_fu
+  skip_before_filter :set_mobile_format
   before_filter :mobile_detection
 
   def mobile_detection
     if is_mobile_device?
       @mobile_device = true
     end
-    request.format = :html
   end
     
   def set_request_url_options
