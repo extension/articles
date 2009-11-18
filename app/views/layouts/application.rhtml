@@ -9,14 +9,20 @@
 	<% end %>
 	
 	<title><%= @title_tag %></title>
-	<% if params[:print] %>
-	    <%= stylesheet_link_tag 'print-for-screen' %>
-	    <%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
-	    <%= stylesheet_link_tag 'print', :media => 'print' %>
-	<% else %>
-	    <%= stylesheet_link_tag 'common' %>
-    	<%= stylesheet_link_tag 'extension2' %>
-    	<%= stylesheet_link_tag 'extension2', :media => 'print' %>
+	<% if @mobile_device %>
+        <meta name = "viewport" content = "width = device-width, user-scalable = yes">
+        <%= stylesheet_link_tag 'mobile' %>
+    <% else %>
+	
+    	<% if params[:print] %>
+    	    <%= stylesheet_link_tag 'print-for-screen' %>
+    	    <%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
+    	    <%= stylesheet_link_tag 'print', :media => 'print' %>
+    	<% else %>
+    	    <%= stylesheet_link_tag 'common' %>
+        	<%= stylesheet_link_tag 'extension2' %>
+        	<%= stylesheet_link_tag 'extension2', :media => 'print' %>
+    	<% end %>
 	<% end %>
     
   <% if @youth %>
