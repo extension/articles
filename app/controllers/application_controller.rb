@@ -115,8 +115,9 @@ class ApplicationController < ActionController::Base
   def personalize
     @personal = {}
     
-    if session[:institution_community_id]
-      if(inst = Community.find_by_entrytype_and_id(Community::INSTITUTION,session[:institution_community_id]))
+    if(!session[:institution_community_id].nil? and !session[:institution_community_id][:value].nil?)
+      search_id = session[:institution_community_id][:value]
+      if(inst = Community.find_by_entrytype_and_id(Community::INSTITUTION,search_id))
         @personal[:institution] = inst
       else
         session[:institution_community_id] = nil
