@@ -33,8 +33,8 @@ before_create :generate_fingerprint, :clean_question_and_answer, :set_last_opene
 before_update :clean_question_and_answer
 
 after_save :assign_parent_categories
-#after_create :auto_assign_by_preference, :notify_submitter 
-after_create :notify_submitter
+after_create :auto_assign_by_preference, :notify_submitter 
+
 
 
 has_rakismet :author => proc { "#{self.submitter_firstname} #{self.submitter_lastname}" },
