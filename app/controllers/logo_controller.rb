@@ -7,8 +7,6 @@
 
 class LogoController < ApplicationController
   skip_before_filter :set_locale, :unescape_params, :personalize
-
-
   def display
     begin
       @logo = Logo.find_by_filename(params[:file].to_s + "." + params[:format].to_s)
