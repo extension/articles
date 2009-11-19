@@ -116,13 +116,14 @@ class ApplicationController < ActionController::Base
     @personal = {}
     
     if(!session[:institution_community_id].nil?)
-      if(inst = Community.find_by_entrytype_and_id(Community::INSTITUTION,session[:institution_community_id]))
-        @personal[:institution] = inst
-      else
+      search_id = session[:institution_community_id]
+      begin
+        personalized_institution = Community.find_by_entrytype_and_id(Community::INSTITUTION,search_id)        
+      rescue
         session[:institution_community_id] = nil
       end
-      @personal[:institution] = inst if inst
-      if (inst and @personal[:location].nil?)
+      @personal[:institution] = personalized_institution if(!personalized_institution.nil?)
+      if (personalized_institution and @personal[:location].nil?)
         @personal[:location] = @personal[:institution].location
       end
     elsif(refering_institution = Community.find_institution_by_referer(request.referer))
@@ -130,7 +131,6 @@ class ApplicationController < ActionController::Base
       @personal[:institution] = refering_institution
       @personal[:location] = refering_institution.location
     end
-        
   end
   
   def set_title(main, sub = nil)
