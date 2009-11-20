@@ -132,6 +132,7 @@ ActionController::Routing::Routes.draw do |map|
   map.faq_page 'faq/:id', :controller => 'faq', :action => 'detail'
   map.events_page 'events/:id', :controller => 'events', :action => 'detail'
   map.wiki_page 'pages/*title', :controller => 'articles', :action => 'page'
+  map.preview_page 'preview/*title', :controller => 'preview', :action => 'page'
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
   map.site_news ':content_tag/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
