@@ -441,7 +441,7 @@ class User < ActiveRecord::Base
       Activity.log_activity(:user => self, :creator => self, :activitycode => Activity::SIGNUP, :appname => 'local')       
       self.checklistemails
       self.user_tokens.signups.delete_all
-      training_invitation.update_attribute(:user_id,self.id)
+      training_invitation.update_attributes({:user_id => self.id, :completed_at => now})
       return true
     else
       return false

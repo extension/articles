@@ -17,7 +17,7 @@ config.action_controller.perform_caching             = false
 config.action_mailer.raise_delivery_errors = false
 
 # development gems
-# config.gem 'josevalim-rails-footnotes', :version => '~>3.6', :lib => "rails-footnotes"
+config.gem 'josevalim-rails-footnotes', :version => '~>3.6', :lib => "rails-footnotes"
 
 # email settings
 config.action_mailer.delivery_method = :smtp

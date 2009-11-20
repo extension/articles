@@ -1,3 +1,6 @@
+<% @selected_tab = :colleagues %>
+<%= render(:partial => 'navtabs', :locals => { :selected => 'home' }) %>
+<h1><%= (@page_title) ? @page_title : "Training Invitations" %></h1>
 <div id="paginator_wrapper">
     
 <% if @training_invititation_list.length > 0 %>
@@ -27,7 +30,7 @@
 					<%= link_to_user(invitation.creator) %>
 				<%- end -%>			
 			</td>
-            <td><%= invitation.created_at %></td>
+            <td><%= humane_date(invitation.created_at) %></td>
             <td>
 				<%- if(!invitation.user.nil?)-%>
 					Completed by <%= link_to_user(invitation.user) %> on <%= humane_date(invitation.completed_at) %>
