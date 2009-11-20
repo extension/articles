@@ -884,8 +884,8 @@ div.answer h2 {
     border: 1px solid navy;
     padding: 0 0 1em !important;
 	position:relative;
-	max-height:450px;
-	overflow:auto;
+/*  max-height:450px;*/
+/*  overflow:auto;*/
 }
 
 #usertooltip_hook h3,
