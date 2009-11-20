@@ -6,7 +6,9 @@
 </p>
 <% end %>
 
+<% if !@mobile_device %>
 <%= will_paginate @submitted_questions %>
+<% end %>
 
 <% else %>
 <% if @submitted_questions.length > 0 %>
