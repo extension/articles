@@ -402,6 +402,29 @@ class People::ColleaguesController < ApplicationController
     respond_to do |format|
       format.js
     end
+  end
+  
+  def traininginvitations
+    @filterparams = FilterParams.new(params)
+    filter_conditions = []
+    show = @filterparams.status.nil? ? 'all' : @filterparams.status
+    creator = @filterparams.author
+    if(!creator.nil?)
+      filter_conditions << "created_by = #{creator.id}"
+    end
+    case show
+    when 'all'
+      show = 'all'
+    when 'completed'
+      filter_conditions << '(user_id NOT NULL and user_id != 0)'
+    when 'pending'
+      filter_conditions << '(user_id IS NULL or user_id = 0)'
+    else # 'all'
+      show = 'all'
+    end
+    
+    @training_invititation_list = TrainingInvitation.paginate(:all, :include => [:user,:creator], :conditions => filter_conditions.join(' AND '), :order => 'created_at desc',:page => params[:page])
+    
   end    
   
  

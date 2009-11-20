@@ -1,0 +1,43 @@
+<div id="paginator_wrapper">
+    
+<% if @training_invititation_list.length > 0 %>
+    <p class="display_results">Displaying <strong><%= @training_invititation_list.offset + 1 %>-<%= @training_invititation_list.offset + @training_invititation_list.length %></strong> of <strong><%= @training_invititation_list.total_entries %></strong></p>
+<% else %>
+    <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+<% end %>
+<%= will_paginate @training_invititation_list %>
+</div>
+
+<table cellspacing="0" border="1">
+    <tr>
+        <th>Email Address</th>
+        <th>Invited By</th>
+        <th>Invited On</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    
+    <% for invitation in @training_invititation_list %>
+        <tr>
+            <td><%= invitation.email %></td>
+            <td>
+				<%- if invitation.creator == @currentuser -%>
+					You
+				<%- else -%>
+					<%= link_to_user(invitation.creator) %>
+				<%- end -%>			
+			</td>
+            <td><%= invitation.created_at %></td>
+            <td>
+				<%- if(!invitation.user.nil?)-%>
+					Completed by <%= link_to_user(invitation.user) %> on <%= humane_date(invitation.completed_at) %>
+				<%- else -%>
+					Not yet completed.
+				<%- end -%>			
+			</td>
+	        <td>
+		
+			</td>
+        </tr>
+    <% end%>
+</table>

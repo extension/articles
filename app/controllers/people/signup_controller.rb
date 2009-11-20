@@ -123,9 +123,18 @@ class People::SignupController < ApplicationController
       if(@invitation)
         signupdata.merge!({:invitation => @invitation})
       end
-      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "initialsignup")        
-      @currentuser.send_signup_confirmation(signupdata)
-      return redirect_to(:action => :confirmationsent)
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "initialsignup")
+      # TODO: check training invitations   
+      if(!@currentuser.training_signup?)     
+        @currentuser.send_signup_confirmation(signupdata)
+        return redirect_to(:action => :confirmationsent)
+      else
+        if(!@currentuser.additionaldata.nil? and !@currentuser.additionaldata[:signup_institution_id].nil?)
+          @currentuser.change_profile_community(Community.find(@currentuser.additionaldata[:signup_institution_id]))
+        end       
+        Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
+        return redirect_to(people_welcome_url)
+      end
     end
   end
   
@@ -157,7 +166,6 @@ class People::SignupController < ApplicationController
       if (@currentuser.vouched?)
         if(!@currentuser.additionaldata.nil? and !@currentuser.additionaldata[:signup_institution_id].nil?)
           @currentuser.change_profile_community(Community.find(@currentuser.additionaldata[:signup_institution_id]))
-          # TODO: clean up signup_institution_id
         end       
         Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
         return redirect_to(people_welcome_url)
