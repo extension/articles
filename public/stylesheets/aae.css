@@ -905,6 +905,8 @@ div.answer h2 {
 }
 .usertooltip .completions em {font-style:normal;padding:0 .3em;}
 .usertooltip .completions {display:block;padding:.3em 0;border:1px solid #ccc;width:200px !important; background: url(/images/aae/green_square.png) no-repeat;}
+#user_profile .completions em {font-style:normal;padding:0 .3em;}
+#user_profile .completions {display:block;padding:.3em 0;border:1px solid #ccc;width:200px !important; background: url(/images/aae/green_square.png) no-repeat;}
 #usertooltip_hook h4 {
     font-size: 140% !important;
     font-family: Arial, Helvetica, sans-serif;

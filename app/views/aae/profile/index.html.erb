@@ -38,6 +38,19 @@
     	</div>
     </div>
     
+    <h2>Handling rate for assigned questions for the last 6 months:</h2>
+    <% if @user.assigned_questions.length > 0 %>
+       <% aae_handling_event_count =  @user.aae_handling_event_count %>
+       
+       <p><span class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
+       <em><%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %></em></span></p>
+    <% else %>
+        <p><strong>This person hasn't handled any questions in the last 6 months.</strong></p>
+    <% end%>
+    
+    <p>The handling rate tries to answer the question "How likely is a person going to do something with a question that is assigned to her/him?" It is calculated by counting the number of times a person was assigned a question and either resolved or reassigned it, and dividing that by the total number of questions assigned to that person. Resolved includes answered, responded with 'no answer' or marked as spam. Rejected questions are excluded from this calculation because rejections usually involve duplicates or bounced emails and the assignee may not be aware of these circumstances.</p>
+    
+    <p>You can see a <%= link_to "list of all question you have been assigned",:controller => "reports", :action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert" , :olink => "Assigned as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uassigned %> in the AaE User reports</p>
 
 
     <h2>Area of Expertise <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'aae/prefs', :action => 'expertise' %></small><% end %></h2>
