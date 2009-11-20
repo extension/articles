@@ -1,26 +1,26 @@
 <% @selected_tab = :colleagues %>
-<%= render(:partial => 'navtabs', :locals => { :selected => 'home' }) %>
+<%= render(:partial => 'traininginvitation_navtabs', :locals => { :selected => 'home' }) %>
 <h1><%= (@page_title) ? @page_title : "Training Invitations" %></h1>
+<%- if !@training_invitation_list.blank? -%>
 <div id="paginator_wrapper">
     
-<% if @training_invititation_list.length > 0 %>
-    <p class="display_results">Displaying <strong><%= @training_invititation_list.offset + 1 %>-<%= @training_invititation_list.offset + @training_invititation_list.length %></strong> of <strong><%= @training_invititation_list.total_entries %></strong></p>
+<% if @training_invitation_list.length > 0 %>
+    <p class="display_results">Displaying <strong><%= @training_invitation_list.offset + 1 %>-<%= @training_invitation_list.offset + @training_invitation_list.length %></strong> of <strong><%= @training_invitation_list.total_entries %></strong></p>
 <% else %>
     <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
 <% end %>
-<%= will_paginate @training_invititation_list %>
+<%= will_paginate @training_invitation_list %>
 </div>
-
 <table cellspacing="0" border="1">
     <tr>
         <th>Email Address</th>
         <th>Invited By</th>
         <th>Invited On</th>
         <th>Status</th>
-        <th>Actions</th>
+        <th>&nbsp;</th>
     </tr>
     
-    <% for invitation in @training_invititation_list %>
+    <% for invitation in @training_invitation_list %>
         <tr>
             <td><%= invitation.email %></td>
             <td>
@@ -39,8 +39,13 @@
 				<%- end -%>			
 			</td>
 	        <td>
-		
+	            <%- if(invitation.user.nil?)-%>
+				    <p><%= link_to 'remove', { :action => 'destroy_traininginvitation', :id => invitation.id }, :confirm => 'Are you sure?', :method => :post %></p>
+                <%- end -%>
 			</td>
         </tr>
     <% end%>
 </table>
+<%- else -%>
+ <p>No training invitations have been created.</p>
+<%- end -%>

@@ -1,0 +1,6 @@
+<ul id="nav">
+	<li><%= link_to "All Training Invitations", :action => 'traininginvitations' %></li>
+	<li><%= link_to "Your Invitations", :action => 'traininginvitations', :author => @currentuser.login %></li>
+	<li><%= link_to "Create Training Invitations", :action => 'new_traininginvitations' %></li>
+</ul>
+<br class="clear"/>

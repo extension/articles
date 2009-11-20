@@ -423,11 +423,36 @@ class People::ColleaguesController < ApplicationController
       show = 'all'
     end
     
-    @training_invititation_list = TrainingInvitation.paginate(:all, :include => [:user,:creator], :conditions => filter_conditions.join(' AND '), :order => 'created_at desc',:page => params[:page])
+    @training_invitation_list = TrainingInvitation.paginate(:all, :include => [:user,:creator], :conditions => filter_conditions.join(' AND '), :order => 'created_at desc',:page => params[:page])
     
   end    
   
- 
+  def new_traininginvitations
+    @page_title = "Create New Training Invitations"
+    if(request.post?)
+      @showresults = true
+      @successes = {}
+      @failures = {}
+      email_address_list = params[:invitations_list].split(%r{,\s*|\s+|\s*\n\s*|\s*\r\n\s*})    
+      email_address_list.each do |email|
+        i = TrainingInvitation.create(:email => email, :creator => @currentuser)
+        if(!i.nil? and i.valid?)
+          @successes[email] = i
+        else
+          @failures[email] = i.errors.full_messages
+        end
+      end
+    end
+  end
+  
+  def destroy_traininginvitation
+    if(request.post?)
+      if(invitation = TrainingInvitation.find_by_id(params[:id]))
+        invitation.destroy
+      end
+    end
+    return redirect_to :action => :traininginvitations
+  end
   
   #----------------------------------
   # protected functions
