@@ -8,7 +8,8 @@
 class TrainingInvitation < ActiveRecord::Base
   belongs_to :user
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
-  validate :validate_email_address, :validate_no_existing_account
+  validate :validate_email_address
+  validate_on_create :validate_no_existing_account
   validates_uniqueness_of :email
     
   def validate_email_address
