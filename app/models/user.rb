@@ -1203,9 +1203,9 @@ class User < ActiveRecord::Base
     
     # is there a submitted_question filter present? then limit to events only within a range of questions
     if(!options[:submitted_question_filter].nil?)
-      total = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '))
+      total = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '))
     else
-      total = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '))
+      total = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.count(:all, :conditions => conditions.compact.join(' AND '))
     end
     
     # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
@@ -1217,9 +1217,9 @@ class User < ActiveRecord::Base
     
     # is there a submitted_question filter present? then limit to events only within a range of questions
     if(!options[:submitted_question_filter].nil?)
-      handled = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '))
+      handled = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '))
     else
-      handled = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '))
+      handled = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.count(:all, :conditions => conditions.compact.join(' AND '))
     end
     
     # calculate a floating point ratio
@@ -1246,9 +1246,9 @@ class User < ActiveRecord::Base
     
     # is there a submitted_question filter present? then limit to events only within a range of questions
     if(!options[:submitted_question_filter].nil?)
-      handlingaverage = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND '))
+      handlingaverage = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND '))
     else
-      handlingaverage = SubmittedQuestionEvent.handling_events.average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND ')) 
+      handlingaverage = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND ')) 
     end
   end
   

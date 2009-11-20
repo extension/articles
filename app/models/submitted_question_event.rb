@@ -60,6 +60,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   named_scope :reserved_questions, {:select => "DISTINCT(submitted_question_events.submitted_question_id) AS id", :joins => :submitted_question, :conditions => "submitted_questions.user_id = submitted_question_events.initiated_by_id AND submitted_question_events.event_state = #{WORKING_ON} AND submitted_question_events.created_at > #{RESERVE_WINDOW}"}
   
   named_scope :submitted_question_filtered, lambda {|options| SubmittedQuestion.filterconditions(options).merge({:joins => :submitted_question})}  
+  named_scope :submitted_question_not_rejected, :joins => :submitted_question, :conditions => ["submitted_questions.status_state != #{SubmittedQuestion::STATUS_REJECTED}"]   
   
   def is_handling_event?
     return ((self.event_state == ASSIGNED_TO) or (self.event_state == RESOLVED) or (self.event_state==REJECTED) or (self.event_state==NO_ANSWER))

@@ -484,7 +484,7 @@ end
 def self.filterconditions(options={})
   includes = []
   conditions = []
-
+  
   if(!options[:category].nil?)
     includes << :categories
     if options[:category] == Category::UNASSIGNED
