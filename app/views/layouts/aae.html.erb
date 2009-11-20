@@ -6,12 +6,18 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
     <title>eXtension Ask: <%= @page_title || controller.action_name %></title>
-    <%= stylesheet_link_tag 'common' %>
-    <%= stylesheet_link_tag 'aae' %>
-    <%= stylesheet_link_tag 'aae_print', :media => 'print' %>
-    <!--[if gt IE 6]>
-        <%= stylesheet_link_tag 'ie' %>
-    <![endif]-->
+    
+    <% if @mobile_device %>
+        <meta name = "viewport" content = "width = device-width, user-scalable = yes">
+        <%= stylesheet_link_tag 'mobile_aae' %>
+    <% else %>
+        <%= stylesheet_link_tag 'common' %>
+        <%= stylesheet_link_tag 'aae' %>
+        <%= stylesheet_link_tag 'aae_print', :media => 'print' %>
+        <!--[if gt IE 6]>
+            <%= stylesheet_link_tag 'ie' %>
+        <![endif]-->
+    <% end %>
 
     <%= javascript_include_tag 'prototype' %>
     <%= javascript_include_tag 'effects' %>
@@ -23,10 +29,12 @@
     
 <body id="aae">
     <% if (AppConfig.configtable['app_location'] != 'production') %>
-    <div id="app_location" class="<%= AppConfig.configtable['app_location'] %>">
-        <p>You are viewing the <strong><%= AppConfig.configtable['app_location'] %></strong> site.</p>
-    </div>
+        <div id="app_location" class="<%= AppConfig.configtable['app_location'] %>">
+            <p>You are viewing the <strong><%= AppConfig.configtable['app_location'] %></strong> site.</p>
+        </div>
     <% end %>
+    
+    <% if !@mobile_device %>
     <ul id="extensionNav">
         <li class="begin"><a href="<%= AppConfig.configtable['events_site'] %>">Events</a></li>
         <li><a href="<%= AppConfig.configtable['faq_site'] %>" title="FAQ / Ask an Expert Tool">FAQ/AaE</a></li>
@@ -36,7 +44,7 @@
         <li><a href="<%= AppConfig.configtable['about_site'] %>">About Wiki</a></li>
         <li><a href="<%= AppConfig.configtable['about_blog'] %>">About Blog</a></li>
     </ul>
-
+    <% end %>
     <div id="pageContainer">
         <div id="masthead">
             <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
@@ -61,6 +69,8 @@
                 <% end %>
                 <li><%= link_to_unless_current '<span>Spam Review</span>', spam_url %></li>
             </ul>
+            
+            <% if !@mobile_device %>
             <ul id="userinfo">
                 <% if @help_title %>
                     <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help:_<%= @help_title.gsub(/\s/, '_').gsub(/\W/, '') %>">Help</a></li>
@@ -78,8 +88,9 @@
                 		<li id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></li>
                 	<% end %>
                 <%- end -%>
-
             </ul>
+            <% end %>
+            
             <div id="content" <%= 'class="narrow"' if @menu_partial_to_display %>>
                 <%= yield :layout %>
             </div>
@@ -90,6 +101,37 @@
             
         </div>
         <!-- end #pageContent -->
+        
+        <% if @mobile_device %>
+        <ul id="userinfo">
+            <% if @help_title %>
+                <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help:_<%= @help_title.gsub(/\s/, '_').gsub(/\W/, '') %>">Help</a></li>
+            <% elsif @page_title %>
+                <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help:_<%= @page_title.gsub(/\s/, '_').gsub(/\W/, '') %>">Help</a></li>
+            <% else %>
+                <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help">Help</a></li>
+            <% end%>
+            <%- if(!@currentuser.nil?) -%>
+                <li><%= link_to "Reports", {:controller => "reports"} %></li>
+                <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
+                <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
+                <li><%= link_to "Logout", :controller => 'people/account', :action => :logout %></li>
+                <% if @currentuser.is_admin? %>
+            		<li id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></li>
+            	<% end %>
+            <%- end -%>
+        </ul>
+
+        <ul id="extensionNav">
+            <li class="begin"><a href="<%= AppConfig.configtable['events_site'] %>">Events</a></li>
+            <li><a href="<%= AppConfig.configtable['faq_site'] %>" title="FAQ / Ask an Expert Tool">FAQ/AaE</a></li>
+            <li><a href="<%= AppConfig.configtable['people_site'] %>">People</a></li>
+            <li><a href="<%= AppConfig.configtable['cop_site'] %>">CoP Wiki</a></li>
+            <li><a href="<%= AppConfig.configtable['collaborate_site'] %>">Collaborate Wiki</a></li>
+            <li><a href="<%= AppConfig.configtable['about_site'] %>">About Wiki</a></li>
+            <li><a href="<%= AppConfig.configtable['about_blog'] %>">About Blog</a></li>
+        </ul>
+        <% end %>
         
         <div id="footer">
             <ul>
