@@ -9,11 +9,17 @@ class PreviewController < ApplicationController
   before_filter :login_required
   before_filter :set_content_tag_and_community_and_topic
   
+  def override_app_location
+    @app_location_for_display = 'preview'
+  end
+  
   def index
     
   end
   
   def page
+    override_app_location
+    
     # folks chop off the page name and expect the url to give them something
     if not (params[:title] or params[:id])
       redirect_to site_articles_url(with_content_tag?), :status=>301

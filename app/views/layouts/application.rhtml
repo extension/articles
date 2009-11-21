@@ -73,8 +73,8 @@
    <% end %>
 </head>
 <body>
-    <% if(AppConfig.configtable['app_location'] != 'production' and AppConfig.configtable['app_location'] != 'shownav' )%>
-    	<div id="app_location" class="<%= AppConfig.configtable['app_location'] %>"><p>You are viewing the <strong><%= AppConfig.configtable['app_location'] %></strong> site. <%= link_to("more info", "http://about.extension.org/wiki/Pubsite/Testing") %></p></div>
+    <% if(@app_location_for_display != 'production' and @app_location_for_display != 'shownav' )%>
+    	<div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://about.extension.org/wiki/Pubsite/Testing") %></p></div>
     <% end %>
     
     <ul id="skiplist">

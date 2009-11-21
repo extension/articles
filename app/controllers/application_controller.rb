@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   require 'zip_code_to_state'
   require 'image_size'
   
+  before_filter :set_app_location
   before_filter :set_locale
   before_filter :unescape_params
   before_filter :personalize
@@ -32,6 +33,10 @@ class ApplicationController < ActionController::Base
   skip_before_filter :set_mobile_format
   before_filter :mobile_detection
 
+  def set_app_location
+    @app_location_for_display_for_display = AppConfig.configtable['app_location']
+  end
+  
   def mobile_detection
     if is_mobile_device?
       @mobile_device = true

@@ -12,9 +12,9 @@
 </head>
 
 <body>
-    <% if (AppConfig.configtable['app_location'] != 'production') %>
-    <div id="app_location" class="<%= AppConfig.configtable['app_location'] %>">
-        <p>You are viewing the <strong><%= AppConfig.configtable['app_location'] %></strong> site.</p>
+    <% if (@app_location_for_display != 'production') %>
+    <div id="app_location" class="<%= @app_location_for_display %>">
+        <p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p>
     </div>
     <% end %>
     <div id="masthead">
