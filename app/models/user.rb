@@ -1291,7 +1291,7 @@ class User < ActiveRecord::Base
       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
     end
     
-    if(options[:limit_to_handler_ids])
+    if(!options[:limit_to_handler_ids].blank?)
       conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
     end
       
@@ -1309,7 +1309,7 @@ class User < ActiveRecord::Base
       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
     end
     
-    if(options[:limit_to_handler_ids])
+    if(!options[:limit_to_handler_ids].blank?)
       conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
     end
           
@@ -1349,7 +1349,7 @@ class User < ActiveRecord::Base
       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
     end
     
-    if(options[:limit_to_handler_ids])
+    if(!options[:limit_to_handler_ids].blank?)
       conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
     end
     
