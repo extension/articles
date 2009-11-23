@@ -84,8 +84,8 @@ class Aae::SearchController < ApplicationController
     @category = Category.find(:first, :conditions => ["id = ?", params[:category]]) if params[:category] and params[:category].strip != ''
     @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:location]]) if params[:location] and params[:location].strip != ''
     @county = ExpertiseCounty.find(:first, :conditions => ["fipsid = ? and state_fipsid = ?", params[:county], @location.fipsid]) if @location and params[:county] and params[:county].strip != ''
-
-    setup_cat_loc
+    setup_cat_loc # sets @users
+    @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id)})
     render :partial => "search_expert", :layout => false
   end
   
@@ -114,6 +114,8 @@ class Aae::SearchController < ApplicationController
     else
       @users = User.find(:all, :include => [:expertise_locations, :open_questions, :categories], :limit => 20, :conditions => ['(login like ? or first_name like ? or last_name like ?) and users.retired = false', user_name[0] + '%', user_name[0] + '%', user_name[0] + '%'], :order => 'first_name')
     end
+    
+    @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id)})
     
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
     

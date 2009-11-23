@@ -1273,6 +1273,71 @@ class User < ActiveRecord::Base
     return returnvalues
   end
   
+  #
+  # this is the group version of the query above - almost entirely the same exact code
+  # returns a hash keyed by user object or user_id if the group_by_id option is present
+  def self.aae_handling_event_count(options = {})
+    if(options[:group_by_id])
+      group_clause = 'previous_handling_recipient_id'
+    else
+      group_clause = 'previous_handling_recipient'
+    end
+          
+    dateinterval = options[:dateinterval] || '6 MONTHS'
+    
+    conditions = []          
+    # get the total number of handling events for which I am the previous recipient
+    if(!dateinterval.nil? )
+      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+    end
+    
+    if(options[:limit_to_handler_ids])
+      conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
+    end
+      
+    
+    # is there a submitted_question filter present? then limit to events only within a range of questions
+    if(!options[:submitted_question_filter].nil?)
+      totals_hash = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
+    else
+      totals_hash = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
+    end
+    
+    # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
+    conditions = ["initiated_by_id = previous_handling_recipient_id"]
+    if(!dateinterval.nil?)
+      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+    end
+    
+    if(options[:limit_to_handler_ids])
+      conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
+    end
+          
+    # is there a submitted_question filter present? then limit to events only within a range of questions
+    if(!options[:submitted_question_filter].nil?)
+      handled_hash = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '),:group => group_clause)
+    else
+      handled_hash = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.count(:all, :conditions => conditions.compact.join(' AND '),:group => group_clause)
+    end
+    
+    # loop through the total list, build a return hash
+    # that will return the values per user_id (or user object)
+    
+    returnvalues = {}
+    totals_hash.keys.each do |groupkey|
+      total = totals_hash[groupkey]
+      handled = (handled_hash[groupkey].nil?? 0 : handled_hash[groupkey])
+      # calculate a floating point ratio
+      if(handled > 0)
+        ratio = handled.to_f / total.to_f
+      else
+        ratio = 0
+      end
+      returnvalues[groupkey] = {:total => total, :handled => handled, :ratio => ratio}
+    end
+        
+    return returnvalues
+  end
   
   def aae_handling_average(options = {})
     dateinterval = options[:dateinterval] || '6 MONTHS'
@@ -1284,12 +1349,50 @@ class User < ActiveRecord::Base
       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
     end
     
+    if(options[:limit_to_handler_ids])
+      conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
+    end
+    
     # is there a submitted_question filter present? then limit to events only within a range of questions
     if(!options[:submitted_question_filter].nil?)
       handlingaverage = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND '))
     else
       handlingaverage = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND ')) 
     end
+    return handlingaverage
+  end
+  
+  #
+  # this is the group version of the query above - almost entirely the same exact code
+  # returns a hash keyed by user object or user_id if the group_by_id option is present
+  #
+  def self.aae_handling_average(options = {})
+    if(options[:group_by_userid])
+      group_clause = 'previous_handling_recipient_id'
+    else
+      group_clause = 'previous_handling_recipient'
+    end
+    dateinterval = options[:dateinterval] || '6 MONTHS'
+    
+    # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
+    conditions = ["initiated_by_id = previous_handling_recipient_id"]
+    conditions << "previous_handling_recipient_id = #{self.id}"
+    if(!dateinterval.nil?)
+      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+    end
+    
+    if(options[:limit_to_handler_ids])
+      conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
+    end
+    
+    # is there a submitted_question filter present? then limit to events only within a range of questions
+    if(!options[:submitted_question_filter].nil?)
+      handlingaverages = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND '),:group => group_clause)
+    else
+      handlingaverages = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND '),:group => group_clause) 
+    end
+    
+    return handlingaverages
   end
   
   # -----------------------------------
@@ -1788,6 +1891,9 @@ class User < ActiveRecord::Base
   def self.expire_passwords
     # TODO: en masse password update using SQL
   end
+  
+  
+
     
   protected
   

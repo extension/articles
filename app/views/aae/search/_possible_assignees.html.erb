@@ -40,7 +40,11 @@
         <% end %>
             
         <% if user.assigned_questions.length > 0 %>
-           <% aae_handling_event_count =  user.aae_handling_event_count %>
+           <% if !@handling_counts.nil? and !@handling_counts[user.id].nil?
+               aae_handling_event_count =  @handling_counts[user.id] 
+              else
+               aae_handling_event_count =  user.aae_handling_event_count 
+              end %>
            <h5>Handling rate for assigned questions:</h5>
            <p><span class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
            <em><%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %></em></span></p>
