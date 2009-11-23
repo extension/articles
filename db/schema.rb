@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091119215115) do
+ActiveRecord::Schema.define(:version => 20091123125719) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -628,6 +628,7 @@ ActiveRecord::Schema.define(:version => 20091119215115) do
     t.integer  "previous_handling_initiator_id"
   end
 
+  add_index "submitted_question_events", ["created_at", "event_state", "previous_handling_recipient_id"], :name => "handling_idx"
   add_index "submitted_question_events", ["initiated_by_id"], :name => "initiated_by_idx"
   add_index "submitted_question_events", ["recipient_id"], :name => "subject_user_idx"
   add_index "submitted_question_events", ["submitted_question_id"], :name => "submitted_question_id_idx"
@@ -675,6 +676,7 @@ ActiveRecord::Schema.define(:version => 20091119215115) do
   add_index "submitted_questions", ["question_fingerprint"], :name => "index_submitted_questions_on_question_fingerprint"
   add_index "submitted_questions", ["resolved_at"], :name => "resolved_at_idx"
   add_index "submitted_questions", ["resolved_by"], :name => "resolved_by_idx"
+  add_index "submitted_questions", ["status_state"], :name => "index_submitted_questions_on_status_state"
   add_index "submitted_questions", ["user_id"], :name => "fk_usr_sq"
   add_index "submitted_questions", ["user_id"], :name => "user_id_idx"
   add_index "submitted_questions", ["widget_name"], :name => "index_submitted_questions_on_widget_name"
