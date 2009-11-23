@@ -116,7 +116,7 @@ function popUpDecision(e) {
 // remove links from all images
 function processImages() {
    checkFabricatedHomeSize();
-	$$('.leftcolumn img').each(function(img){
+	$$('#main_content img').each(function(img){
 	  if ( img.parentNode.nodeName == 'A' ) {
          var linknode = img.parentNode;
          if ( linknode.href.indexOf('Image:') > 1 ) {
