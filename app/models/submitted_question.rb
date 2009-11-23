@@ -82,7 +82,7 @@ ALL_RESOLVED_STATII = [STATUS_RESOLVED, STATUS_REJECTED, STATUS_NO_ANSWER]
 
 AAEHOST = "http://#{AppConfig.configtable['url_options']['host']}"
 
-WRANGLER_REASSIGN_COMMENT = "This question has been assigned to you because the previous assignee has elected to have this question assigned to the pool of Question Wranglers."
+WRANGLER_REASSIGN_COMMENT = "This question has been assigned to you because the previous assignee clicked the 'Hand off to a Question Wrangler' button."
 
 # scoping it out for various question states
 named_scope :resolved, :conditions => "submitted_questions.status_state IN (#{ALL_RESOLVED_STATII.join(',')}) AND submitted_questions.spam = FALSE"
