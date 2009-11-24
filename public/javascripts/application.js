@@ -1,6 +1,8 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+
+
 function showAndHide(toShow,toHide) {
 	toShow.show();
 	toHide.hide();
@@ -55,10 +57,21 @@ function startmeup() {
    processTableOfContents();
    processBreaks();
    processFlash();
+   if (location.href.include('/preview')) {
+       getBodyHeight();
+    }
    return;
 }
 
 Event.observe(window, 'load', startmeup)
+
+function getBodyHeight() {
+    var dimensions = $('page_wrapper').getDimensions();
+    $("preview_wrapper").setStyle({
+        height: dimensions.height + 'px',
+    });    
+}
+
 
 function findInstitution(city, state) {
    new Ajax.Updater({ success:'logo', failure:'flash_notice' },

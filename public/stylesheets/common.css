@@ -69,6 +69,8 @@ div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5
 div#app_location a:visited {color:#222; text-decoration:underline;}
 div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
 
+div#app_location.preview {background: #229ec0; position:absolute; top:30px; left: 25%; right: 25%; font-size:1.5em;width:50%; margin: 0 auto;color:#fff; padding:.5em;border:2px solid #fff;}
+div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5em;}
 
 .usericon {padding-left: 18px;background: transparent url(/images/common/user.gif) no-repeat left center;}
 

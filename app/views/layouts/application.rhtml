@@ -69,10 +69,15 @@
       * Visit Dynamic Drive at http://www.dynamicdrive.com/
       * for this script and 100s more
       ***********************************************/
-   </script>
+      
+      
+      
+</script>
    <% end %>
 </head>
 <body>
+    <div id="page_wrapper">
+    <div id="preview_wrapper"></div>
     <% if(@app_location_for_display != 'production' and @app_location_for_display != 'shownav' )%>
     	<div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://about.extension.org/wiki/Pubsite/Testing") %></p></div>
     <% end %>
@@ -81,6 +86,13 @@
         <li class="skip"><a href="#main_content">Skip Navigation</a></li>
         <li class="skip"><a href="#sidebar">Jump to Side Bar</a></li>
     </ul>
+
+    <% if @mobile_device %>
+        <div id="mobileheader">
+            <%= render(:partial => 'shared/search') %>
+            <h3 id="eXlogo"><a href="/">eXtension: more mind reach</a></h3>    
+        </div>
+     <% end %>
 
     <div id="masthead_wrap">
         <div id="masthead">
@@ -96,10 +108,12 @@
               <div id="logo">
                  <%=render :partial => 'shared/logo', :locals => {:person => @personal} %>
               </div>
-
+              
+              <% if !@mobile_device %>
                 <h3 id="eXlogo"><a href="/">eXtension: more mind reach</a></h3>
                 <% if params[:print] %>
                 <img id="print-logo" src="/images/pubsite/ex-hires-logo-color.png" width="145pt" height="53pt" alt="eXtension: more mind reach" />
+                <% end %>
                 <% end %>
             </div>
             
@@ -120,6 +134,7 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
     		    <div id="institution_list" style="display:none;"></div>
     		<% end %>
         </div>
+        
     </div>
    <div class="navbar">
        <% if !@mobile_device %>
@@ -136,13 +151,14 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
          </ul>
      </div>
         <% end %>
-    
+    <% if !@mobile_device %>
      <%= render(:partial => 'shared/search') %>
+     <% end %>
    </div>
 
 <div id="wrap">
 <div id="main_content">
-
+    
     <div class = "leftcolumn <%if @right_column == false%> fullwidth<% end %>">
        <% flash_names = [:notice, :warning, :message, :error]
           flash_names.each do |flash_type| 
@@ -195,5 +211,6 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
    <% if params[:print] %>
         <p id="pageurl">View this page: <script type="text/javascript">document.write(location.href.replace(/\/print(\/)?$/, ''));</script></p>
     <% end %>
+</div>
 </body>
 </html>
