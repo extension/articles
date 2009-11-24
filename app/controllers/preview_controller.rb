@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class PreviewController < ApplicationController
-  before_filter :login_required
+  before_filter :login_optional
   before_filter :set_content_tag_and_community_and_topic
   
   def override_app_location
@@ -15,6 +15,13 @@ class PreviewController < ApplicationController
   
   def index
     
+  end
+  
+  def community
+    if(@community.nil?)
+      return render(:template => 'preview/nocommunity')
+    end
+    @title_tag = "#{@community.name} - eXtension Content Checklist"
   end
   
   def showpage
