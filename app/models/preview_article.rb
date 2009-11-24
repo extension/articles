@@ -107,7 +107,7 @@ class PreviewArticle
        when Net::HTTPSuccess
          self.atom_url_content  = response.body
        else
-         raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{parse_url} failed: #{response.code}/#{response.message}"          
+         raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{self.atom_url} failed: #{response.code}/#{response.message}"          
        end    
      else # unsupported URL scheme
        raise ContentRetrievalError, "Fetch URL Content:  Unsupported scheme #{feed_url}"          

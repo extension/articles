@@ -17,7 +17,7 @@ class PreviewController < ApplicationController
     
   end
   
-  def page
+  def showpage
     override_app_location
     
     # folks chop off the page name and expect the url to give them something
@@ -37,7 +37,7 @@ class PreviewController < ApplicationController
       # this does not work...but did work at one time
       #title_to_lookup = params[:title].to_s
       # this works, but should give anyone reading this code heartburn
-      title_to_lookup = CGI.unescape(request.request_uri.gsub('/preview/', ''))
+      title_to_lookup = CGI.unescape(request.request_uri.gsub('/preview/pages/', ''))
       # comes in double-escaped from apache to handle the infamous '?'
       title_to_lookup = CGI.unescape(title_to_lookup)
       # why is this?
