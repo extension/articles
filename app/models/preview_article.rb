@@ -15,22 +15,13 @@ class PreviewArticle
   
   # ATOM SOURCES
   UNKNOWN = 0
-  EXTENSIONORG_COPWIKI = 1
-  EXTENSIONORG_DEMOWIKI = 2
-  OTHER_SOURCE = 3
+  EXTENSIONORG_WIKI = 1
+  OTHER_SOURCE = 2
   
-  def self.new_from_wiki_page(pagetitle)
+  def self.new_from_extensionwiki_page(pagetitle)
     article = PreviewArticle.new
     article.atom_url = AppConfig.configtable['content_feed_wiki_previewpage'] + pagetitle
-    atom_uri = URI.parse(article.atom_url)
-    case atom_uri.host
-    when AppConfig.configtable['extensionorg_copwiki_host']
-      article.atom_source = EXTENSIONORG_COPWIKI
-    when AppConfig.configtable['extensionorg_demowiki_host']
-      article.atom_source = EXTENSIONORG_DEMOWIKI
-    else
-      article.atom_source = EXTENSIONORG_COPWIKI
-    end
+    article.atom_source = EXTENSIONORG_WIKI
     article.parse_atom_content
     return article
   end
@@ -46,8 +37,14 @@ class PreviewArticle
   end
   
   def content
-    self.convert_links
-    return @converted_content.to_html
+    case self.atom_source
+    when EXTENSIONORG_WIKI
+      self.convert_wiki_links
+      return @converted_content.to_html
+    else
+      return self.original_content
+    end
+
   end
   
   #
@@ -83,16 +80,9 @@ class PreviewArticle
   # converts relative hrefs and hrefs that refer to the feed source
   # to something relative to /preview/pages/
   #
-  def convert_links
-    # only going to deal with wiki source articles for now    
-    case self.atom_source
-    when EXTENSIONORG_COPWIKI
-      host_to_make_relative = AppConfig.configtable['extensionorg_copwiki_host']
-    when EXTENSIONORG_DEMOWIKI
-      host_to_make_relative = AppConfig.configtable['extensionorg_demowiki_host']
-    else
-      return
-    end
+  def convert_wiki_links
+    wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wiki_previewpage'])
+    host_to_make_relative = wikisource_uri.host
       
     if(@converted_content.nil?)
       @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)

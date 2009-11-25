@@ -67,7 +67,7 @@ class PreviewController < ApplicationController
         title_to_lookup = title_to_lookup.gsub(/\/print(\/)?$/, '')
       end
 
-      @article =  PreviewArticle.new_from_wiki_page(title_to_lookup)
+      @article =  PreviewArticle.new_from_extensionwiki_page(title_to_lookup)
     else
       # # using find_by to avoid exception
       # @article = Article.find_by_id(params[:id])

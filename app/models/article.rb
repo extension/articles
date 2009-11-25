@@ -337,6 +337,82 @@ class Article < ActiveRecord::Base
     end #do
   end
   
+  # 
+  # converts relative hrefs and hrefs that refer to the feed source
+  # to something relative to /pages - this conversion doesn't bother
+  # to look ahead and see if the target article is published
+  # because WikiAtomizer was already responsible for handling that
+  #
+  # TODO: revisit doing a lookahead for wiki articles too.
+  #
+  def convert_wiki_links_and_images
+    if(@converted_content.nil?)
+      @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
+    end
+
+    wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wikiarticles'])
+    host_to_make_relative = wikisource_uri.host
+  
+    convert_links_count = 0
+    @converted_content.css('a').each do |anchor|
+      if(anchor['href'])
+        if(anchor['href'] =~ /^\#/) # in-page anchor, don't change
+          newhref = anchor['href']
+          next
+        end    
+        
+        original_uri = URI.parse(anchor['href'])
+        if(original_uri.scheme.nil?)
+          # does path start with '/wiki'? - then strip it out
+          if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
+            newhref =  '/preview/pages/' + $1
+          elsif(original_uri.path =~ /^\/mediawiki\/(.*)/) # does path start with '/mediawiki'? hmmmm = linking directly to a file I think, leave as is.
+            newhref = original_uri.path
+          else
+            newhref =  '/preview/pages/'+ original_uri.path
+          end
+          convert_links_count += 1              
+        elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
+          if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
+            newhref =  '/preview/pages/' + $1
+          elsif(original_uri.path =~ /^\/mediawiki\/(.*)/) # does path start with '/mediawiki'? hmmmm = linking directly to a file I think, leave as is, relative to me - will fail at www.demo
+            newhref = original_uri.path
+          else
+            newhref =  '/preview/pages/'+ original_uri.path
+          end
+          convert_links_count += 1     
+        else
+          newhref = anchor['href']
+        end
+        anchor.set_attribute('href',newhref)
+      end
+    end
+    
+    convert_image_count = 0
+    # if we are running in the "production" app location - then we need to rewrite image references that
+    # refer to the host of the feed to reference a relative URL
+    if(AppConfig.configtable['app_location'] == 'production')
+      @converted_content.css('img').each do |image|
+        if(image['src'])
+          original_uri = URI.parse(image['src'])
+          if(original_uri.scheme.nil?) 
+            # leave as is - most likely relative
+            newsrc = image['src']
+          elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
+            # make relative
+            newsrc = original_uri.path
+          else
+            newsrc = image['src']
+          end
+          image.set_attribute('src',newsrc)
+        end
+      end
+    end
+    
+    self.content = @converted_content
+    return [convert_links_count,convert_image_count]
+  end
+  
   private
     
   def store_original_url
@@ -345,7 +421,7 @@ class Article < ActiveRecord::Base
   
   def store_new_url
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
-      self.url = article_page_url(:id => self.id)
+      self.url = id_and_link
       self.save
     else
       return true
@@ -367,7 +443,7 @@ class Article < ActiveRecord::Base
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
       self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
     else
-      self.content = self.original_content
+      self.convert_wiki_links_and_images # sets self.content
     end
     self.save    
   end

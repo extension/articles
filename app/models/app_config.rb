@@ -39,7 +39,7 @@ class AppConfig
     
     @@configtable['content_feed_events'] = 'http://events.extension.org/events_after'
     @@configtable['content_feed_faqs'] = 'http://faq.extension.org/faq_export'
-    @@configtable['content_feed_wikiarticles'] = 'http://pubwiki.extension.org/wiki/Special:Feeds/?max-results=500&updated-min='
+    @@configtable['content_feed_wikiarticles'] = 'http://cop.extension.org/wiki/Special:Feeds/?unpublished=1&published=1&dpls=1&updated-min='
     @@configtable['content_feed_wiki_previewpage'] = 'http://cop.extension.org/wiki/Special:Feeds/' # + page name
     @@configtable['extensionorg_copwiki_host'] = 'cop.extension.org'
     @@configtable['extensionorg_demowiki_host'] = 'cop.demo.extension.org'
