@@ -101,11 +101,13 @@ class PreviewArticle
     convert_count = 0
     @converted_content.css('a').each do |anchor|
       if(anchor['href'])
-        newhref = anchor['href']
+        if(anchor['href'] =~ /^\#/) # in-page anchor, don't change
+          newhref = anchor['href']
+          next
+        end
         original_uri = URI.parse(anchor['href'])
         if(original_uri.scheme.nil?)
-          # does path start with '/wiki'? - then strip it out
-          if(original_uri.path =~ /^\/wiki\/(.*)/)
+          if(original_uri.path =~ /^\/wiki\/(.*)/)  # does path start with '/wiki'? - then strip it out
             newhref =  '/preview/pages/' + $1
           else
             newhref =  '/preview/pages/'+ original_uri.path
@@ -113,8 +115,7 @@ class PreviewArticle
           convert_count += 1              
         elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
           # make relative
-          # does path start with '/wiki'? - then strip it out
-          if(original_uri.path =~ /^\/wiki\/(.*)/)
+          if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
             newhref =  '/preview/pages/' + $1
           else
             newhref =  '/preview/pages/'+ original_uri.path
@@ -127,54 +128,6 @@ class PreviewArticle
       end
     end
     convert_count
-  end
-  
-  
-  
-  # Make sure incoming links that point to relative urls
-  # are either made absolute if the content the point
-  # to doesn't exist in pubsite or are made to point to
-  # pubsite content if it has been imported.
-  def resolve_links
-    # Pull out each link
-    self.content = self.original_content.gsub(/href="(.+?)"/) do
-      
-      # Pull match from regex cruft
-      link_uri = $1
-      full_uri = $&
-      
-      # Only if it's not already an extension.org url nor a fragment do
-      # we want to try and resolve it
-      if not (link_uri.extension_url? or link_uri.fragment_only_url?)
-        begin
-          # Calculate the absolute path to the original location of this link
-          uri = link_uri.relative_url? ?
-            URI.parse(self.original_url).swap_path!(link_uri) :
-            URI.parse(link_uri)
-          
-          # See if we've imported the original article.
-          new_link_uri = (existing_article = Article.find(:first, :select => 'url', :conditions => { :original_url => uri.to_s })) ?
-            existing_article.url : nil
-          
-          if new_link_uri
-            # found published article, replace link
-            result = "href=\"#{new_link_uri}\""
-          elsif link_uri.relative_url?
-            # link was relative and no published article found
-            result = "name=\"not-published-#{uri.to_s}\""
-          else
-            # appears to be an ext. ref, just pass it
-            result = "href=\"#{uri.to_s}\""
-          end
-        rescue
-          result = full_uri
-        end #rescue block
-      else
-        result = full_uri
-      end #if
-            
-      result
-    end #do
   end
   
   def set_content_tags(tagarray)
