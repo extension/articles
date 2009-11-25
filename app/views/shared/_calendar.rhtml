@@ -14,6 +14,6 @@
         <%= link_to event.title, events_page_url(:id => event), {:class => htmlClass} %></li>
         <%last_date = event.date %>
     <%end%>
-    </ul>
+    <%= '</ul>' if last_date%>
     </div>
 </div>
