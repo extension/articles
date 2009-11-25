@@ -22,8 +22,9 @@
         </div>
         <div class="pagination" id="paginate-slider2"></div>
 	<script type="text/javascript">
+	//<![CDATA[
 		ContentSlider("slider2", 10000)
-	
+	//]]>
 	</script>
 <%end%>
 
@@ -102,8 +103,8 @@
 	    <div class = "whatsnewbox">
             <%for lesson in @recent_learning_lessons%>
              <dl>
-               <dt><%= expanded_time_print(lesson.wiki_updated_at)%><dt>
-               <dd><%= link_to lesson.title, lesson.id_and_link %><dd>
+               <dt><%= expanded_time_print(lesson.wiki_updated_at)%></dt>
+               <dd><%= link_to lesson.title, lesson.id_and_link %></dd>
              </dl>
             <%end%>
         </div>

@@ -20,8 +20,9 @@
     </div>
     <div class="pagination" id="paginate-slider2"></div>
 	<script type="text/javascript">
+	//<![CDATA[
 		ContentSlider("slider2", 10000)
-	
+	//]]>
 	</script>
 
     <div style = "padding-top: 30px; border: 0px solid #000">
@@ -30,7 +31,7 @@
             <h3 class="headerdescription">Our latest and greatest.</h3>
             <div class="whatsnewbox">
                 <dl>
-                    <dt><%=expanded_time_print(@latest_article.wiki_updated_at)%><dt>
+                    <dt><%=expanded_time_print(@latest_article.wiki_updated_at)%></dt>
                     <dd><%= link_to truncate_at_word(@latest_article.title,60), @latest_article.id_and_link %></dd>
                 </dl>
                 <% if @latest_faq %>
@@ -40,7 +41,7 @@
                     </dl>
                 <%end%>
                 <dl>
-                    <dt><%=expanded_time_print(@latest_learning_lesson.wiki_updated_at)%><dt>
+                    <dt><%=expanded_time_print(@latest_learning_lesson.wiki_updated_at)%></dt>
                     <dd><%= link_to truncate_at_word(@latest_learning_lesson.title,60), @latest_learning_lesson.id_and_link %></dd>
                 </dl>
                 <dl>
