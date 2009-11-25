@@ -68,6 +68,7 @@ class People::AdminController < ApplicationController
   
   
   def setadminmode
+    logger.info "STARTING SET ADMIN MODE"
     if(params[:mode] && params[:mode] == 'on')
       session[:adminmode] = @currentuser.id.to_s
       @mode = 'on'
@@ -78,6 +79,7 @@ class People::AdminController < ApplicationController
     
     if(!params[:currenturi].nil?)
       @refreshuri = Base64.decode64(params[:currenturi])
+      logger.info "URI: #{@refreshuri}"
     end
     respond_to do |format|
       format.js
