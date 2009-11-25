@@ -1,8 +1,6 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-
-
 function showAndHide(toShow,toHide) {
 	toShow.show();
 	toHide.hide();
@@ -63,13 +61,11 @@ function startmeup() {
    return;
 }
 
-Event.observe(window, 'load', startmeup)
+Event.observe(window, 'load', startmeup);
 
 function getBodyHeight() {
     var dimensions = $('page_wrapper').getDimensions();
-    $("preview_wrapper").setStyle({
-        height: dimensions.height + 'px',
-    });    
+    $("preview_wrapper").style.height = dimensions.height + 'px';
 }
 
 
@@ -172,8 +168,8 @@ function processColumns() {
    if ( twocol ) {
 	  twocol = twocol.remove();
 	  $('article').style.float = 'left';
-	  $('article').setAttribute("className", "primarycolumn") // fix for IE7
-	  $('article').setAttribute("class", "primarycolumn")
+      $('article').setAttribute("className", "primarycolumn") // fix for IE7
+      $('article').setAttribute("class", "primarycolumn")
 	  
 	  if(twocol.firstDescendant() && twocol.firstDescendant().nodeName == 'P'){
 	  	var first =twocol.firstDescendant();
