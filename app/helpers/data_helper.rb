@@ -32,6 +32,14 @@ module DataHelper
     end
   end
   
+  def link_to_preview_community(community)
+    if(community.content_tag_names.empty?)
+      return community.public_name
+    else
+      return link_to(h(community.public_name), preview_community_url(:content_tag => community.primary_content_tag_name))
+    end
+  end
+  
   def link_to_page(result)
     params[:controller]
     value = result.send(result.representative_field)

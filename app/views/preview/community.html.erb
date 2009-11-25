@@ -3,7 +3,7 @@
 <%- if @community.public_description.blank? -%>
     <p>A public community description for your community has not yet been created.  Contact your content staff representative to create your public community description.</p>
 <%- else -%>
-    <p><%= @community.public_description %></p>
+    <p><%= html_escape(@community.public_description) %></p>
 <%- end -%>
 
 <h2>Public Homage</h2>

@@ -9,15 +9,172 @@
 
 class PreviewArticle
   
-  attr_accessor :atom_url, :atom_url_content
-  attr_accessor :title, :original_content, :content, :updated_at, :published_at, :url, :author, :is_dpl
-  attr_accessor :content_buckets, :content_tags  
+  attr_accessor :atom_url, :atom_url_content, :atom_source
+  attr_accessor :title, :original_content, :updated_at, :published_at, :url, :author, :is_dpl
+  attr_accessor :content_buckets, :content_tags
+  
+  # ATOM SOURCES
+  UNKNOWN = 0
+  EXTENSIONORG_COPWIKI = 1
+  EXTENSIONORG_DEMOWIKI = 2
+  OTHER_SOURCE = 3
   
   def self.new_from_wiki_page(pagetitle)
     article = PreviewArticle.new
     article.atom_url = AppConfig.configtable['content_feed_wiki_previewpage'] + pagetitle
+    atom_uri = URI.parse(article.atom_url)
+    case atom_uri.host
+    when AppConfig.configtable['extensionorg_copwiki_host']
+      article.atom_source = EXTENSIONORG_COPWIKI
+    when AppConfig.configtable['extensionorg_demowiki_host']
+      article.atom_source = EXTENSIONORG_DEMOWIKI
+    else
+      article.atom_source = EXTENSIONORG_COPWIKI
+    end
     article.parse_atom_content
     return article
+  end
+
+  #
+  # parses original_content with Nokogiri
+  #
+  def parsed_content
+    if(@parsed_content.nil?)
+      @parsed_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
+    end
+    @parsed_content
+  end
+  
+  def content
+    self.convert_links
+    return @converted_content.to_html
+  end
+  
+  #
+  # puts together a hash of the <a href>'s in the content
+  # [href] = link text
+  #
+  def content_links
+    if(@content_links.nil?)
+      @content_links = {}
+      self.parsed_content.css('a').each do |anchor|
+        if(anchor['href'])
+          @content_links[anchor['href']] = anchor.content
+        end
+      end
+    end
+    @content_links
+  end
+  
+  def converted_links
+    if(@converted_links.nil?)
+      @converted_links = {}
+      self.convert_links if(@converted_content.nil?)
+      @converted_content.css('a').each do |anchor|
+        if(anchor['href'])
+          @converted_links[anchor['href']] = anchor.content
+        end
+      end
+    end
+    @converted_links
+  end
+  
+  # 
+  # converts relative hrefs and hrefs that refer to the feed source
+  # to something relative to /preview/pages/
+  #
+  def convert_links
+    # only going to deal with wiki source articles for now    
+    case self.atom_source
+    when EXTENSIONORG_COPWIKI
+      host_to_make_relative = AppConfig.configtable['extensionorg_copwiki_host']
+    when EXTENSIONORG_DEMOWIKI
+      host_to_make_relative = AppConfig.configtable['extensionorg_demowiki_host']
+    else
+      return
+    end
+      
+    if(@converted_content.nil?)
+      @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
+    end
+    
+    convert_count = 0
+    @converted_content.css('a').each do |anchor|
+      if(anchor['href'])
+        newhref = anchor['href']
+        original_uri = URI.parse(anchor['href'])
+        if(original_uri.scheme.nil?)
+          # does path start with '/wiki'? - then strip it out
+          if(original_uri.path =~ /^\/wiki\/(.*)/)
+            newhref =  '/preview/pages/' + $1
+          else
+            newhref =  '/preview/pages/'+ original_uri.path
+          end
+          convert_count += 1              
+        elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
+          # make relative
+          # does path start with '/wiki'? - then strip it out
+          if(original_uri.path =~ /^\/wiki\/(.*)/)
+            newhref =  '/preview/pages/' + $1
+          else
+            newhref =  '/preview/pages/'+ original_uri.path
+          end
+          convert_count += 1              
+        else
+          newhref = anchor['href']
+        end
+        anchor.set_attribute('href',newhref)
+      end
+    end
+    convert_count
+  end
+  
+  
+  
+  # Make sure incoming links that point to relative urls
+  # are either made absolute if the content the point
+  # to doesn't exist in pubsite or are made to point to
+  # pubsite content if it has been imported.
+  def resolve_links
+    # Pull out each link
+    self.content = self.original_content.gsub(/href="(.+?)"/) do
+      
+      # Pull match from regex cruft
+      link_uri = $1
+      full_uri = $&
+      
+      # Only if it's not already an extension.org url nor a fragment do
+      # we want to try and resolve it
+      if not (link_uri.extension_url? or link_uri.fragment_only_url?)
+        begin
+          # Calculate the absolute path to the original location of this link
+          uri = link_uri.relative_url? ?
+            URI.parse(self.original_url).swap_path!(link_uri) :
+            URI.parse(link_uri)
+          
+          # See if we've imported the original article.
+          new_link_uri = (existing_article = Article.find(:first, :select => 'url', :conditions => { :original_url => uri.to_s })) ?
+            existing_article.url : nil
+          
+          if new_link_uri
+            # found published article, replace link
+            result = "href=\"#{new_link_uri}\""
+          elsif link_uri.relative_url?
+            # link was relative and no published article found
+            result = "name=\"not-published-#{uri.to_s}\""
+          else
+            # appears to be an ext. ref, just pass it
+            result = "href=\"#{uri.to_s}\""
+          end
+        rescue
+          result = full_uri
+        end #rescue block
+      else
+        result = full_uri
+      end #if
+            
+      result
+    end #do
   end
   
   def set_content_tags(tagarray)
@@ -69,7 +226,7 @@ class PreviewArticle
      self.title = parsed_atom_entry.title
      self.url = parsed_atom_entry.links[0].href if self.url.blank?
      self.author = parsed_atom_entry.authors[0].name
-     self.content = parsed_atom_entry.content.to_s
+     self.original_content = parsed_atom_entry.content.to_s
 
      # flag as dpl
      if !parsed_atom_entry.categories.blank? and parsed_atom_entry.categories.map(&:term).include?('dpl')
