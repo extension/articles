@@ -36,15 +36,28 @@ body, html { height: 100%; margin:0; padding:0; background: #f4f4f4; font-family
 body { text-align: center }
 
 #wrap {width: 100%}
-#main_content { background: url(/images/layout/rightnavbgnd.gif) left #fff repeat-y; border-bottom: 1px solid #ebebeb; border-right: 1px solid #ebebeb; width:962px; text-align: left; padding: 0px; margin-bottom: 0px; margin-left: auto; margin-right: auto; height:auto !important; /* real browsers */ height:100%; /* IE6: treaded as min-height*/ min-height:100%; /* real browsers */ position: relative; }
-
-#container {
-	position: relative;
-	min-height: 100%;
+#main_content {
+    background: url(/images/layout/rightnavbgnd.gif) left #fff repeat-y;
+    border-bottom: 1px solid #ebebeb;
+    border-right: 1px solid #ebebeb;
+    width:962px;
+    text-align: left;
+    margin: 0 auto;
+    height:auto !important; /* real browsers */
+    height:100%; /* IE6: treaded as min-height*/
+    min-height:100%; /* real browsers */
+    /* position: relative; removed. does not seem to serve any purpose. interferred with z-index in IE7 */
 }
 
+/*    I don't think this is used anywhere. to be removed
+#container {
+  position: relative;
+  min-height: 100%;
+}
+*/
+
 /* RIGHT COLUMN */
-.fullwidth {/*border:1px solid red;*/float:left;}
+.fullwidth {float:left;}
 
 
 #homage { width: 240px; margin-top: .5em; margin-left: 10px; color: white; background-color: black; padding: 5px;font-size:1.2em;}
@@ -72,7 +85,17 @@ body { text-align: center }
 
 /* COLUMN SETUP */
 
-.leftcolumn {float: left; margin-right: 0px; width: 658px; padding: 15px 15px 150px; margin-top: 0px; background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;  border-left: 1px solid #ebebeb; position:relative; z-index:25;}
+.leftcolumn {
+    float: left;
+    margin-right: 0px;
+    width: 658px;
+    padding: 15px 15px 150px;
+    margin-top: 0px;
+    background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;
+    border-left: 1px solid #ebebeb;
+    position:relative;
+    z-index:25;
+}
 .rightcolumn {float: left; margin-right: 0px; width: 273px; margin-top: 0px;/*padding-top:1em;*/}
 .leftcolumn.fullwidth {width:932px;}
 
