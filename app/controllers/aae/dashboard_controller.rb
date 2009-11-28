@@ -24,7 +24,12 @@ class Aae::DashboardController < ApplicationController
    filter_string_helper
   
    @filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
-   @submitted_questions = SubmittedQuestion.submitted.filtered(@filteroptions).ordered(@order).listdisplayincludes.all    
+   @submitted_questions = SubmittedQuestion.submitted.filtered(@filteroptions).ordered(@order).listdisplayincludes.all
+   # get the assignees
+   assignee_ids = @submitted_questions.collect(&:assignee).map(&:id)
+   # handling rates and averages
+   @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => assignee_ids,:submitted_question_filter => @filteroptions})
+   @handling_averages = User.aae_handling_average({:group_by_id => true, :limit_to_handler_ids => assignee_ids,:submitted_question_filter => @filteroptions})  
   end
   
   

@@ -27,10 +27,21 @@
             </td>
             <td><%= (!submitted_question.last_assigned_at.nil? ?  time_ago_in_words(submitted_question.last_assigned_at) : '' )%></td>
             <%- if !submitted_question.assignee.nil? -%>
-                <% aae_handling_event_count =  submitted_question.assignee.aae_handling_event_count({:submitted_question_filter => @filteroptions}) %>
+                <%- 
+                    if @handling_counts[submitted_question.assignee.id]
+                        aae_handling_event_count = @handling_counts[submitted_question.assignee.id] 
+                    else 
+                        aae_handling_event_count = {:total => 0, :handled => 0, :ratio => 0} 
+                    end
+                    if @handling_averages[submitted_question.assignee.id]
+                        aae_handling_average = @handling_averages[submitted_question.assignee.id] 
+                    else 
+                        aae_handling_average = 0
+                    end                    
+                -%>
                 <td class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
                 <%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %> (out of <%= aae_handling_event_count[:total] %>)
-                <td><%= (aae_handling_event_count[:handled] > 0 ? "#{number_with_precision(submitted_question.assignee.aae_handling_average / 3600, :precision => 0)} hours" : 'n/a') %></td>
+                <td><%= (aae_handling_event_count[:handled] > 0 ? "#{number_with_precision(aae_handling_average / 3600, :precision => 0)} hours" : 'n/a') %></td>
             <% else %>
                 <td>n/a</td>
                 <td>n/a</td> 
