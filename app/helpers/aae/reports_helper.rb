@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 module Aae::ReportsHelper
-  
+ 
   
   def is_marked(type, via_conduit)
     #if not here before

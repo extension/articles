@@ -26,4 +26,38 @@ module ControllerExtensions
     end
   end
   
+  
+  def validate_datepicker(options = {})
+    flipdates = (options[:flipdates].nil? ? 'true' : options[:flipdates])
+    if(params[:datefrom])
+      begin
+        datefrom = Date.strptime(params[:datefrom])
+      rescue
+        datefrom = options[:default_datefrom]
+      end
+    else
+      datefrom = options[:default_datefrom]
+    end
+  
+    if(params[:dateto])
+      begin
+        dateto = Date.strptime(params[:dateto])
+      rescue
+        dateto = options[:default_dateto]
+      end
+    else
+      dateto = options[:default_dateto]
+    end
+    
+    datefrom = options[:earliest_date] if (options[:earliest_date] and (datefrom < options[:earliest_date]))
+    dateto = options[:latest_date] if (options[:latest_date] and (dateto > options[:latest_date]))
+    
+    if(flipdates and datefrom > dateto)
+      tmp_datefrom = datefrom
+      datefrom = dateto
+      dateto = tmp_datefrom
+    end
+    
+    return [datefrom,dateto]
+  end  
 end

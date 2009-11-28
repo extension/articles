@@ -88,7 +88,7 @@ module ConditionExtensions
           return nil
         end
       end
-      
+            
       return "TRIM(DATE(#{datecolumn})) BETWEEN '#{start_date.to_s}' AND '#{end_date.to_s}'"
     end
     

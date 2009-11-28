@@ -226,9 +226,8 @@ def all_expert_responses
 end
 
 
- def SubmittedQuestion.find_oldest_date
-   sarray=find_by_sql("Select created_at from submitted_questions group by created_at order by created_at")
-   sarray[0].created_at.to_s
+ def self.find_earliest_record
+   return self.find(:first, :order => 'created_at')
  end
 
   def self.find_questions(cat, desc, aux, locid, date1, date2, *args)
@@ -484,6 +483,10 @@ end
 def self.filterconditions(options={})
   includes = []
   conditions = []
+  
+  if(options[:notrejected])
+    conditions << "#{self.table_name}.status_state != #{SubmittedQuestion::STATUS_REJECTED}"
+  end
   
   if(!options[:category].nil?)
     includes << :categories

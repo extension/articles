@@ -28,8 +28,8 @@ class Aae::DashboardController < ApplicationController
    # get the assignees
    assignee_ids = @submitted_questions.collect(&:assignee).map(&:id)
    # handling rates and averages
-   @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => assignee_ids,:submitted_question_filter => @filteroptions})
-   @handling_averages = User.aae_handling_average({:group_by_id => true, :limit_to_handler_ids => assignee_ids,:submitted_question_filter => @filteroptions})  
+   @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => assignee_ids,:submitted_question_filter => @filteroptions.merge({:notrejected => true})})
+   @handling_averages = User.aae_handling_average({:group_by_id => true, :limit_to_handler_ids => assignee_ids,:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
   end
   
   

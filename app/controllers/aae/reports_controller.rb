@@ -19,7 +19,7 @@ class Aae::ReportsController < ApplicationController
     def activity
        (@date1,@date2, @dateFrom,@dateTo)= valid_date("dateFrom", "dateTo")
        (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-       @oldest_date = SubmittedQuestion.find_oldest_date
+       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
        @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
        @rept = Aaereport.new(:name => "Activity")
        @repaction = "activity"
@@ -28,7 +28,7 @@ class Aae::ReportsController < ApplicationController
 
      def state_univ_activity
       @typelist = [];  @new={}; @reslvd={}; @answ={}; @rej={}; @noexp={} ; openquestions={}
-        @type = params[:type]; @oldest_date = SubmittedQuestion.find_oldest_date
+        @type = params[:type]; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
         (@date1, @date2, @dateFrom, @dateTo)=parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)   #parmcheck()
         if (@type=="State")
           @typelist  = Location.find(:all, :order => "entrytype, name")
@@ -79,11 +79,6 @@ class Aae::ReportsController < ApplicationController
          nar
        end  
        
-      def transform_userlist(typl)
-       nar = [];  typl.map { |nm| nar << [((nm.first_name) ? nm. first_name : "")  + " " + ((nm.last_name) ? nm.last_name : "")]}
-       nar
-      end
-
        def show_active_cats
          @filteredparams = FilterParams.new(params)  #can this be useful here? for hackers of the url? filter by location as well...
           @filteredoptions = @filteredparams.findoptions
@@ -106,7 +101,7 @@ class Aae::ReportsController < ApplicationController
            @filteredoptions.merge!({:location => Location.find_by_id(@locid)}) if (@locid && !params[:location])  ##should probably add :State into the FilterParams wantsparameter lists
             cat = Category.find_by_name(@typename); ((@locid) ? @filtstr = "Filtered by Location= #{@locname}" : "") 
             @type = "Category" ; @typel="category"; @typet="Tag"
-            @oldest_date = SubmittedQuestion.find_oldest_date; 
+            @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date; 
            (@date1, @date2, @dateFrom, @dateTo)=parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)  #parmcheck()
             @typelist = [cat]
             if !cat.nil?
@@ -271,7 +266,7 @@ class Aae::ReportsController < ApplicationController
             (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
             (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
           end
-          @oldest_date = SubmittedQuestion.find_oldest_date
+          @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
           @user = User.find_by_id(params[:id]) 
           if @user
             @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
@@ -608,7 +603,7 @@ class Aae::ReportsController < ApplicationController
        @typename = params[:State]; 
        if (@typename && @typename != "") 
          @typeobj = Location.find_by_name(params[:State]) 
-         @type = "State" ; @typel="state" ;  @oldest_date = SubmittedQuestion.find_oldest_date
+         @type = "State" ; @typel="state" ;  @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
          locabbr=@typeobj.abbreviation; locid = @typeobj.id
      
          if !@typeobj.nil?  
@@ -643,7 +638,7 @@ class Aae::ReportsController < ApplicationController
              @edits = @edits[0..8]
            end
          end
-         @dateFrom = params[:from] ;  @dateTo=params[:to] ; @oldest_date = SubmittedQuestion.find_oldest_date
+         @dateFrom = params[:from] ;  @dateTo=params[:to] ; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
          @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
          
          @limit_string = "Only up to 100 are shown."
@@ -731,7 +726,7 @@ class Aae::ReportsController < ApplicationController
          locabbr = loc.abbreviation
         
          @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])
-         @type="County"; @typel="county" ;   @oldest_date = SubmittedQuestion.find_oldest_date
+         @type="County"; @typel="county" ;   @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
          if !@typeobj.nil? 
        
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
@@ -881,7 +876,7 @@ class Aae::ReportsController < ApplicationController
        @sec_set = nil; @first_set= nil; @clear1="n"; @clear2="n"
        @first_set = session[:first_set] if session[:first_set]
        @sec_set = session[:sec_set] if session[:sec_set]
-       @oldest_date = SubmittedQuestion.find_oldest_date
+       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
        @repaction = 'response_times'
        @nodays = 30; @nocdays = 30
        @number_questions_all = SubmittedQuestion.find_externally_submitted(nil, nil, true, true )
@@ -1065,48 +1060,72 @@ class Aae::ReportsController < ApplicationController
            render  :template => "aae/reports/display_questions"
        end
    ####   End of Responders by Category Report ###
-         ####  Start of Assignee Report ###
-         
-     def assignee
-         if (params[:from] && params[:to])
-            @dateFrom = params[:from] ;  @dateTo=params[:to]
-            @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-          else
-            (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
-            (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-          end
-        @oldest_date = SubmittedQuestion.find_oldest_date; 
-        @type = "Assignee"
-        @userlist = [] ; @assgn={}; @assgninc={}; @avgsheld = {}; @num_current_q = {}; @avc = {}
-        list_view
-        set_filters    #pick up filters set in aae
-        filter_string_helper
-        filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
-        
-        #get list of assignee users  (expertise users)
-        @userlist = User.find(:all, :select => "distinct users.id, users.first_name, users.last_name, users.login ", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)").sort {|a,b| a.last_name.downcase <=> b.last_name.downcase}
-        
-        # get counts for assigned, assigned but not completed, avg response time, avg time held before reassigned 
-        filtered_conds = SubmittedQuestion.filterconditions(filteroptions)[:conditions]
-        filtered_includes = SubmittedQuestion.filterconditions(filteroptions)[:include]
-        assgns = User.get_num_times_assigned(@date1, @date2," join users on users.id= recipient_id ", "", filtered_conds, filtered_includes)
-        assgns_inc= User.get_num_times_assigned(@date1, @date2 ," join users on users.id=recipient_id ",  " and resolved_by!=recipient_id " ,  filtered_conds, filtered_includes)
-        avgs = User.get_avg_resp_time_only(@date1, @date2,  filtered_conds, filtered_includes)
-        current_q = User.get_current_q(@date1, @date2, filtered_conds, filtered_includes)
-        avgsheld = User.get_avg_handling_time(@date1, @date2, filtered_conds, filtered_includes)
-            
-        @userlist.each do |u|
-          name = ((u.first_name) ? u.first_name : "")  + " " + ((u.last_name) ? (u.last_name) : "")
-          @assgn[name] = assgns[u.id]
-          @assgninc[name] = assgns_inc[u.id]
-          @avc[name] = avgs[u.id.to_s]
-          @avgsheld[name] = avgsheld[u.id.to_s]
-          @num_current_q[name] = current_q[u.id.to_s]
-        end
-        @typelist = transform_userlist(@userlist)
-        @repaction = 'assignee'   
-     end
-     # End of Assignee Report
+      
+
+	def assignee
+		# validate dates
+		@earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+		@latest_date = Date.today
+		@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+   
+		# aae filter routines
+		# TODO: simplify!!
+		list_view
+		set_filters    #pick up filters set in aae
+		filter_string_helper
+		@filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
+   
+		#get list of assignee users  (expertise users)
+		# Roles (id,name)
+		# 1,Administrator
+		# 2,Community Administrator
+		# 3,Uncategorized Question Wrangler
+		# 4,Auto Route Questions
+		# 5,Receive Escalations
+		# 6,Auto Route Widget Questions
+
+		# sortorder
+		if(params[:sortorder] and ['d','descending','desc'].include?(params[:sortorder].downcase))
+			@sortorder = 'desc'
+		else
+			@sortorder = 'asc'
+		end
+		
+		if(params[:orderby] and ['name','total','handled','ratio','handled_average','hold_average'].include?(params[:orderby]))
+			@orderby = params[:orderby]
+		else 
+			@orderby = 'name'
+		end
+		
+		@userlist = User.find(:all, :select => "DISTINCT users.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name,first_name #{@sortorder}")
+  
+		# this will get assigned, handled, and the ratio - assigned could be actual # of assignments minus 1 if the person is currently assigned something
+	   handlingcounts = User.aae_handling_event_count({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}) 
+		handlingaverages = User.aae_handling_average({:group_by_id => true, :dateinterval => @dateinterval,:limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
+		holdaverages = User.aae_hold_average({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
+   
+		# let's merge this together
+		@tmp_valuelist = []
+		@userlist.each do |u|
+			values = {}
+			values[:user] = u
+			values[:total] = handlingcounts[u.id].nil? ? 0 : handlingcounts[u.id][:total]
+			values[:handled] = handlingcounts[u.id].nil? ? 0 : handlingcounts[u.id][:handled]
+			values[:ratio] = handlingcounts[u.id].nil? ? 0 : handlingcounts[u.id][:ratio]
+			values[:handled_average] = handlingaverages[u.id].nil? ? 0 : handlingaverages[u.id]
+			values[:hold_average] = holdaverages[u.id].nil? ? 0 : holdaverages[u.id]
+			@tmp_valuelist << values
+		end
+	
+		# now sort it, if the orderby is name, don't bother, it's already sorted from the mysql query
+		if(@orderby == 'name')
+			@display_list = @tmp_valuelist
+		else
+			@display_list = ((@sortorder == 'asc') ? @tmp_valuelist.sort{|a,b| a[@orderby.to_sym] <=> b[@orderby.to_sym]} : @tmp_valuelist.sort{|a,b| b[@orderby.to_sym] <=> a[@orderby.to_sym]})
+		end	
+	end
+
+     
 
     private 
 
