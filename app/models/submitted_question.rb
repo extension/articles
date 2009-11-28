@@ -533,7 +533,13 @@ def self.filterconditions(options={})
     end
   end
 
-  return {:include => includes.compact, :conditions => conditions.compact.join(' AND ')}
+  # is this part of a named_scope with another model? if so, the includes have to be nested
+  # this happens when this is tacked on to a named_scope with the SubmittedQuestionEvents
+  if(options[:is_subfilter])
+    return {:include => {:submitted_question => includes.compact}, :conditions => conditions.compact.join(' AND ')}
+  else
+    return {:include => includes.compact, :conditions => conditions.compact.join(' AND ')}
+  end
 end
 
 def self.find_uncategorized(*args)
