@@ -1097,7 +1097,7 @@ class Aae::ReportsController < ApplicationController
 			@orderby = 'name'
 		end
 		
-		@userlist = User.find(:all, :select => "DISTINCT users.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name,first_name #{@sortorder}")
+		@userlist = User.find(:all, :select => "DISTINCT users.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name #{@sortorder.upcase}")
   
 		# this will get assigned, handled, and the ratio - assigned could be actual # of assignments minus 1 if the person is currently assigned something
 	   handlingcounts = User.aae_handling_event_count({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}) 
@@ -1105,7 +1105,7 @@ class Aae::ReportsController < ApplicationController
 		holdaverages = User.aae_hold_average({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
    
 		# let's merge this together
-		@tmp_valuelist = []
+		@display_list = []
 		@userlist.each do |u|
 			values = {}
 			values[:user] = u
@@ -1114,14 +1114,12 @@ class Aae::ReportsController < ApplicationController
 			values[:ratio] = handlingcounts[u.id].nil? ? 0 : handlingcounts[u.id][:ratio]
 			values[:handled_average] = handlingaverages[u.id].nil? ? 0 : handlingaverages[u.id]
 			values[:hold_average] = holdaverages[u.id].nil? ? 0 : holdaverages[u.id]
-			@tmp_valuelist << values
+			@display_list << values
 		end
 	
 		# now sort it, if the orderby is name, don't bother, it's already sorted from the mysql query
-		if(@orderby == 'name')
-			@display_list = @tmp_valuelist
-		else
-			@display_list = ((@sortorder == 'asc') ? @tmp_valuelist.sort{|a,b| a[@orderby.to_sym] <=> b[@orderby.to_sym]} : @tmp_valuelist.sort{|a,b| b[@orderby.to_sym] <=> a[@orderby.to_sym]})
+		if(@orderby != 'name')
+			@display_list = ((@sortorder == 'asc') ? @display_list.sort!{|a,b| a[@orderby.to_sym] <=> b[@orderby.to_sym]} : @display_list.sort!{|a,b| b[@orderby.to_sym] <=> a[@orderby.to_sym]})
 		end	
 	end
 
