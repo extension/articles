@@ -1233,48 +1233,16 @@ class User < ActiveRecord::Base
   
   # returns a hash of the aae_handling_event_counts
   def aae_handling_event_count(options = {})
-    dateinterval = options[:dateinterval] || '6 MONTHS'
-              
-    # get the total number of handling events for which I am the previous recipient
-    conditions = ["previous_handling_recipient_id = #{self.id}"]
-    if(!dateinterval.nil? )
-      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
-    end
-    
-    # is there a submitted_question filter present? then limit to events only within a range of questions
-    if(!options[:submitted_question_filter].nil?)
-      total = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '))
+    myoptions = options.merge({:group_by_id => true, :limit_to_handler_ids => [self.id]})
+    result = User.aae_handling_event_count(myoptions)
+    if(result and result[self.id])
+      returnvalues = result[self.id]
     else
-      total = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.count(:all, :conditions => conditions.compact.join(' AND '))
+      returnvalues = {:total => 0, :handled => 0, :ratio => 0}
     end
-    
-    # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
-    conditions = ["initiated_by_id = previous_handling_recipient_id"]
-    conditions << "previous_handling_recipient_id = #{self.id}"
-    if(!dateinterval.nil?)
-      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
-    end
-    
-    # is there a submitted_question filter present? then limit to events only within a range of questions
-    if(!options[:submitted_question_filter].nil?)
-      handled = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '))
-    else
-      handled = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.count(:all, :conditions => conditions.compact.join(' AND '))
-    end
-    
-    # calculate a floating point ratio
-    if(handled > 0)
-      ratio = handled.to_f / total.to_f
-    else
-      ratio = 0
-    end
-    
-    returnvalues = {:total => total, :handled => handled, :ratio => ratio}
     return returnvalues
   end
   
-  #
-  # this is the group version of the query above - almost entirely the same exact code
   # returns a hash keyed by user object or user_id if the group_by_id option is present
   def self.aae_handling_event_count(options = {})
     if(options[:group_by_id])
@@ -1340,34 +1308,21 @@ class User < ActiveRecord::Base
   end
   
   def aae_handling_average(options = {})
-    dateinterval = options[:dateinterval] || '6 MONTHS'
-    
-    # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
-    conditions = ["initiated_by_id = previous_handling_recipient_id"]
-    conditions << "previous_handling_recipient_id = #{self.id}"
-    if(!dateinterval.nil?)
-      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
-    end
-    
-    if(!options[:limit_to_handler_ids].blank?)
-      conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
-    end
-    
-    # is there a submitted_question filter present? then limit to events only within a range of questions
-    if(!options[:submitted_question_filter].nil?)
-      handlingaverage = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.submitted_question_filtered(options[:submitted_question_filter]).average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND '))
+    myoptions = options.merge({:group_by_id => true, :limit_to_handler_ids => [self.id]})
+    result = User.aae_handling_average(myoptions)
+    if(result and result[self.id])
+      returnvalues = result[self.id]
     else
-      handlingaverage = SubmittedQuestionEvent.handling_events.submitted_question_not_rejected.average('duration_since_last_handling_event', :conditions => conditions.compact.join(' AND ')) 
+      returnvalues = 0
     end
-    return handlingaverage
+    return returnvalues
   end
   
   #
-  # this is the group version of the query above - almost entirely the same exact code
   # returns a hash keyed by user object or user_id if the group_by_id option is present
   #
   def self.aae_handling_average(options = {})
-    if(options[:group_by_userid])
+    if(options[:group_by_id])
       group_clause = 'previous_handling_recipient_id'
     else
       group_clause = 'previous_handling_recipient'
@@ -1376,7 +1331,6 @@ class User < ActiveRecord::Base
     
     # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
     conditions = ["initiated_by_id = previous_handling_recipient_id"]
-    conditions << "previous_handling_recipient_id = #{self.id}"
     if(!dateinterval.nil?)
       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
     end
