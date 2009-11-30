@@ -170,57 +170,7 @@ class Article < ActiveRecord::Base
     returndata << article
     return returndata
   end
-  
-  def self.retrieve_deletes(options = {})
-     current_time = Time.now.utc
-     have_refresh_since = (!options[:refresh_since].nil?)
-     feed_url = (options[:feed_url].nil? ? AppConfig.configtable['changes_feed_wiki'] : options[:feed_url])
-     updatetime = UpdateTime.find_or_create(self,'changes')
-
-    if(have_refresh_since)
-      refresh_since = options[:refresh_since]
-    else
-      refresh_since = (updatetime.last_datasourced_at.nil? ? AppConfig.configtable['changes_feed_refresh_since'] : updatetime.last_datasourced_at)           
-    end
- 
-    fetch_url = self.build_feed_url(feed_url,refresh_since,true)
-     
-    # will raise errors on failure
-    xmlcontent = self.fetch_url_content(fetch_url)
-
-    # create new objects from the atom entries
-    deleted_items = 0
-    last_updated_item_time = refresh_since
-    atom_entries =  Atom::Feed.load_feed(xmlcontent).entries
-    if(!atom_entries.blank?)
-      atom_entries.each do |entry|
-        if entry.title == "Special:Log/delete"
-          matches = entry.summary.match(/title=\"(.*)\"/)
-          if matches
-            title = matches[1]
-            article = Article.find_by_title(title)
-            if(!article.nil?)
-              removed_time = entry.updated
-              # if article is newer than delete record, then keep it
-              # conversely, if article is older than delete record, zap it
-              if article.wiki_updated_at <= removed_time
-                article.destroy
-                deleted_items += 1
-                if(removed_time > last_updated_item_time )
-                  last_updated_item_time = removed_time
-                end
-              end 
-            end
-          end # matched title
-        end # deleted entry check
-      end # atom_entries array
-    end # had atom entries
-      
-    # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
-    updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_items}})
-    return {:deleted => deleted_items, :last_updated_item_time => last_updated_item_time}
-  end
-  
+   
   def id_and_link
     default_url_options[:host] = AppConfig.get_url_host
     default_url_options[:protocol] = AppConfig.get_url_protocol
@@ -365,20 +315,20 @@ class Article < ActiveRecord::Base
         if(original_uri.scheme.nil?)
           # does path start with '/wiki'? - then strip it out
           if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
-            newhref =  '/preview/pages/' + $1
+            newhref =  '/pages/' + $1
           elsif(original_uri.path =~ /^\/mediawiki\/(.*)/) # does path start with '/mediawiki'? hmmmm = linking directly to a file I think, leave as is.
             newhref = original_uri.path
           else
-            newhref =  '/preview/pages/'+ original_uri.path
+            newhref =  '/pages/'+ original_uri.path
           end
           convert_links_count += 1              
         elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
           if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
-            newhref =  '/preview/pages/' + $1
+            newhref =  '/pages/' + $1
           elsif(original_uri.path =~ /^\/mediawiki\/(.*)/) # does path start with '/mediawiki'? hmmmm = linking directly to a file I think, leave as is, relative to me - will fail at www.demo
             newhref = original_uri.path
           else
-            newhref =  '/preview/pages/'+ original_uri.path
+            newhref =  '/pages/'+ original_uri.path
           end
           convert_links_count += 1     
         else
@@ -401,6 +351,7 @@ class Article < ActiveRecord::Base
           elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
             # make relative
             newsrc = original_uri.path
+				convert_image_count += 1
           else
             newsrc = image['src']
           end
@@ -409,7 +360,7 @@ class Article < ActiveRecord::Base
       end
     end
     
-    self.content = @converted_content
+    self.content = @converted_content.to_html
     return [convert_links_count,convert_image_count]
   end
   
@@ -433,6 +384,8 @@ class Article < ActiveRecord::Base
       if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
         self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
         self.content = nil
+		elsif(self.datatype == 'WikiArticle')
+	      self.convert_wiki_links_and_images # sets self.content
       else
         self.content = self.original_content
       end
@@ -442,7 +395,7 @@ class Article < ActiveRecord::Base
   def store_content #ac
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
       self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
-    else
+    elsif(self.datatype == 'WikiArticle')
       self.convert_wiki_links_and_images # sets self.content
     end
     self.save    

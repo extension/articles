@@ -43,13 +43,7 @@ class AppConfig
     @@configtable['content_feed_wiki_previewpage'] = 'http://cop.extension.org/wiki/Special:Feeds/' # + page name
     @@configtable['extensionorg_copwiki_host'] = 'cop.extension.org'
     @@configtable['extensionorg_demowiki_host'] = 'cop.demo.extension.org'
-    
-
-    @@configtable['changes_feed_base'] = 'http://pubwiki.extension.org'
-    @@configtable['changes_feed_wiki'] = @@configtable['changes_feed_base'] + '/wiki/Special:Recentchanges?limit=500&feed=atom&ignore='
-    @@configtable['changes_feed_refresh_since'] = Time.parse('2005-11-01 00:00:00 UTC')
-    
-    
+        
     @@configtable['emailsettings'] = {}
     @@configtable['emailsettings']['errors'] = 'eXtensionAppErrors@extension.org'
     
