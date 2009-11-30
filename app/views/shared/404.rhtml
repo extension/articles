@@ -5,5 +5,8 @@
 <% end %>
 
 <p>The site address may have been typed incorrectly or the page may have been removed for some reason.</p>
-
+<%- if !@missing_message.nil? -%>
+   <p><strong>Additional Information:</strong></p>
+   <p><%= @missing_message %></p> 
+<%- end -%>
 <p>Visit the <a style="text-decoration: underline;" href="/">eXtension home page</a>.</p>

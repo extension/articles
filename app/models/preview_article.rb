@@ -20,7 +20,7 @@ class PreviewArticle
   
   def self.new_from_extensionwiki_page(pagetitle)
     article = PreviewArticle.new
-    article.atom_url = AppConfig.configtable['content_feed_wiki_previewpage'] + pagetitle
+    article.atom_url = AppConfig.configtable['content_feed_wiki_previewpage'] + CGI::escape(pagetitle)
     article.atom_source = EXTENSIONORG_WIKI
     article.parse_atom_content
     return article

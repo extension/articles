@@ -72,30 +72,21 @@ class PreviewController < ApplicationController
 		#title_to_lookup = params[:title].to_s
 		# this works, but should give anyone reading this code heartburn
 		title_to_lookup = CGI.unescape(request.request_uri.gsub('/preview/pages/', ''))
-		# comes in double-escaped from apache to handle the infamous '?'
-		title_to_lookup = CGI.unescape(title_to_lookup)
-		# why is this?
-		title_to_lookup = title_to_lookup.gsub('??.html', '?')
-	 
-		if title_to_lookup =~ /\s+/
-		  redirect_to wiki_page_url(title_to_lookup.gsub(' ', '_')), :status=>301
-		  return
-		end
-	 
-		# special handling for mediawiki-like "Categoy:bob" - style titles
-		if title_to_lookup =~ /Category\:(.+)/
-		  content_tag = $1.gsub(/_/, ' ')
-		  redirect_to content_tag_index_url(:content_tag => content_tag), :status=>301
-		  return
-		end
+		title_to_lookup.gsub!(' ', '_')
 	 
 		if title_to_lookup =~ /\/print(\/)?$/
 		  params[:print] = true
 		  title_to_lookup = title_to_lookup.gsub(/\/print(\/)?$/, '')
 		end
-
-		@article =	PreviewArticle.new_from_extensionwiki_page(title_to_lookup)
-	 else
+		
+		begin 
+			@article =	PreviewArticle.new_from_extensionwiki_page(title_to_lookup)
+	 	rescue ContentRetrievalError => exception
+	  		@missing = title_to_lookup
+			@missing_message = "Preview Page Retrieval failed, reason:<br/> #{exception.message}"
+			return do_404
+		end
+	else
 		# # using find_by to avoid exception
 		# @article = Article.find_by_id(params[:id])
 		# # Resolve links so they point to extension.org content where possible
