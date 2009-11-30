@@ -175,7 +175,7 @@ class User < ActiveRecord::Base
   
   }
   
-  named_scope :routers_by_category, lambda { |category_id| 
+  named_scope :experts_by_category, lambda { |category_id| 
 	 {:include => :expertise_areas, :conditions => "expertise_areas.category_id = #{category_id}", :order => "last_name,first_name ASC"}
   }
   

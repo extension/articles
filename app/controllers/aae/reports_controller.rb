@@ -506,7 +506,7 @@ class Aae::ReportsController < ApplicationController
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             
-            @user_list = User.experts_by_county(ExpertiseCounty.find_by_name(params[:County])).routers_by_category(category.id)  
+            @user_list = User.experts_by_county(ExpertiseCounty.find_by_name(params[:County])).experts_by_category(category.id)  
             setup_routers_and_wranglers
           
             @usize = @user_list.size
@@ -540,7 +540,7 @@ class Aae::ReportsController < ApplicationController
             @cntycnt = ExpertiseCounty.count_answerers_for_county_and_category(@catname, @statename)
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             
-            @user_list = User.experts_by_location(ExpertiseLocation.find_by_id(@locid)).routers_by_category(category.id)
+            @user_list = User.experts_by_location(ExpertiseLocation.find_by_id(@locid)).experts_by_category(category.id)
             setup_routers_and_wranglers
             
             @csize = @cnties.size
@@ -573,7 +573,7 @@ class Aae::ReportsController < ApplicationController
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
           # form array of users for selected county
         
-            @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(countyid)).routers_by_category(category.id)
+            @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(countyid)).experts_by_category(category.id)
             setup_routers_and_wranglers
             
             @usize = @user_list.size
