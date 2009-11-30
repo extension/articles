@@ -1,0 +1,59 @@
+<%- if @content_tag.nil? %>
+   <p>Invalid content tag</p>
+<%- else -%>
+   <%- if !@articlefilter.nil? %>
+      <h1><%= @articlefilter %> Articles for Tag: <%= @content_tag.name %></h1>
+   <%- else -%>
+      <h1>All Articles for Tag: <%= @content_tag.name %></h1>
+   <%- end -%>
+
+   <div id="paginator_wrapper"> 
+   <% if @articles.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @articles.offset + 1 %>-<%= @articles.offset + @articles.length %></strong> of <strong><%= @articles.total_entries %></strong></p>
+   <% else %>
+       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+   <% end %>
+
+   <%= will_paginate @articles, :params => {:articlefilter => params[:articlefilter]} %>
+   </div>
+
+
+   <table cellspacing="0" border="1">
+       <tr>
+           <th>Published Title</th>
+           <th>Published At</th>
+           <th>Updated At</th>
+           <th>Preview Link</th>
+           <th>Source</th> 
+       </tr>
+    
+       <% for article in @articles %>
+           <tr id="article_row_<%= article.id %>">
+              <td><%= link_to(article.title, article.id_and_link) %></td>
+              <td><%= humane_date(article.wiki_created_at) %></td>
+              <td><%= humane_date(article.wiki_updated_at) %></td>
+              <%- if article.datatype == 'WikiArticle' -%>
+                 <td><%= link_to('Preview Latest Version',preview_page_url(:title => article.title)) %></td>
+              <%- else -%>
+                 <td>&nbsp;</td>
+              <%- end -%>
+              <%- if article.datatype == 'WikiArticle' -%>
+               <td><!-- <%= link_to('CoP Wiki Link',article.original_url)%> --> &nbsp;</td>
+              <%- else -%>
+               <td><%= link_to('Source Link',article.original_url)%></td> <!-- unavailable for now -->
+              <%- end -%>
+           </tr>
+       <% end%>
+   </table>
+
+
+   <div id="paginator_wrapper"> 
+   <% if @articles.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @articles.offset + 1 %>-<%= @articles.offset + @articles.length %></strong> of <strong><%= @articles.total_entries %></strong></p>
+   <% else %>
+       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+   <% end %>
+
+   <%= will_paginate @articles, :params => {:articlefilter => params[:articlefilter]} %>
+   </div>
+<%- end -%>

@@ -26,15 +26,15 @@
    <h2>Events and FAQs</h2>
    <ul>
       <!-- events -->
-      <%- if @events_count > 0 -%>                
-         <li><span><%= @events_count %></span> Published Events</li>
+      <%- if @events_count > 0 -%>
+         <li><%= link_to("<span>#{@events_count}</span> Published Events", preview_eventlist_url(:content_tag => @content_tag.name)) %></li>                                   
       <%- else -%>
          <li><span>No</span> Published Events</li>
       <%- end -%>
       
       <!-- faqs -->
-      <%- if @faqs_count > 0 -%>                
-         <li><span><%= @faqs_count %></span> Published Faqs</li>
+      <%- if @faqs_count > 0 -%>
+         <li><%= link_to("<span>#{@faqs_count}</span> Published Faqs", preview_faqlist_url(:content_tag => @content_tag.name)) %></li>             
       <%- else -%>
          <li><span>No</span> Published Faqs</li>
       <%- end -%>   
@@ -45,21 +45,21 @@
    <ul>
       <!-- Articles -->
       <%- if @articles_count > 0 -%>                
-         <li><span><%= @articles_count %></span> Published Articles</li>
+         <li><%= link_to("<span>#{@articles_count}</span> Published Articles", preview_articlelist_url(:content_tag => @content_tag.name)) %></li>
       <%- else -%>
          <li><span>No</span> Published Articles</li>
       <%- end -%>
       
       <!-- News -->
-      <%- if @news_count > 0 -%>                
-         <li><span><%= @news_count %></span> Published Articles categorized as "news"</li>
+      <%- if @news_count > 0 -%>
+         <li><%= link_to("<span>#{@news_count}</span> Published Articles categorized as \"news\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'news')) %></li>
       <%- else -%>
          <li><span>No</span> Published Articles categorized as "news"</li>
       <%- end -%>
       
       <!-- Learning Lessons -->
-      <%- if @learning_lessons_count > 0 -%>                
-         <li><span><%= @learning_lessons_count %></span> Published Articles categorized as "learning lesson"</li>
+      <%- if @learning_lessons_count > 0 -%>      
+      <li><%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'learning lessons')) %></li>                
       <%- else -%>
          <li><span>No</span> Published Articles categorized as "learning lesson"</li>
       <%- end -%>              
@@ -68,15 +68,15 @@
    <h2>Special Features</h2>
    <ul>
       <!-- Features -->
-      <%- if @features_count > 0 -%>                
-         <li><span><%= @features_count %></span> Published Articles categorized as "feature"</li>
+      <%- if @features_count > 0 -%>
+      <li><%= link_to("<span>#{@features_count}</span> Published Articles categorized as \"feature\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'feature')) %></li>
       <%- else -%>
          <li><span>No</span> Published Articles categorized as "feature"</li>
       <%- end -%>
       
       <!-- Contents -->
-      <%- if @contents_count > 1 -%>                
-         <li><span><%= @contents_count %></span> Published Articles categorized as "contents"
+      <%- if @contents_count > 1 -%>
+         <li><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'contents')) %></li>                      
          (<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
          </li>
       <%- elsif @contents_count == 1 -%>                
@@ -86,8 +86,8 @@
       <%- end -%>
       
       <!-- Homage -->
-      <%- if @homage_count > 1 -%>                
-         <li><span><%= @homage_count %></span> Published Articles categorized as "homage"
+      <%- if @homage_count > 1 -%>
+         <li><%= link_to("<span>#{@homage_count}</span> Published Articles categorized as \"homage\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'homage')) %></li>                                      
          (<%= link_to("#{@homage.title} is currently chosen for the homage view", @homage.id_and_link) %>)
          </li>
       <%- elsif @homage_count == 1 -%>                

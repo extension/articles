@@ -45,6 +45,7 @@ class PreviewController < ApplicationController
 		@homage_count = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).count
 		
       @homage = Article.homage_for_content_tag({:content_tag => @content_tag})
+		# TODO: "learn more" - but articles categorized as that ARE NOT treated special inside darmok :-/
       @contents_page = Article.contents_for_content_tag({:content_tag => @content_tag})
       
 		@expertise_category = Category.find_by_name(@content_tag.name)
@@ -52,10 +53,58 @@ class PreviewController < ApplicationController
 			@aae_expertise_count = User.experts_by_category(@expertise_category.id).count
 			@aae_autorouting_count = User.experts_by_category(@expertise_category.id).auto_routers.count
 		end
-		# TODO: "learn more" - but articles categorized as that ARE NOT treated special inside darmok :-/
+	end
+	
+	def articlelist
+		@right_column = false
+	
+		if(!@content_tag.nil?)
+			if(params[:articlefilter].nil?)
+				@articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+			else
+				case params[:articlefilter]
+				when 'news'
+					@articlefilter = 'News'
+					@articles = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+				when 'feature'
+					@articlefilter = 'Feature'
+					@articles = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+				when 'learning lessons'
+					@articlefilter = 'Learning Lesson'
+					@articles = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+				when 'contents'
+					@articlefilter = 'Contents'
+					@articles = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+				when 'homage'
+					@articlefilter = 'Homage'
+					@articles = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+				else
+					@articlefilter = nil
+					@articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+				end
+			end
+		end
+	end
+	
+	def faqlist
+		@right_column = false
+		if(!@content_tag.nil?)
+			@faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+		end
+	end
+	
+	def eventlist
+		@right_column = false
+		if(!@content_tag.nil?)
+			@events = Event.tagged_with_content_tag(@content_tag.name).paginate(:page => params[:page], :per_page => 100, :order => 'xcal_updated_at DESC')
+		end
+	end
+	
+	
+	
+	def expertlist
 	end
 		
-
   def showpage
 	 override_app_location
 	 
