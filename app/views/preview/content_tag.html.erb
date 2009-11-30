@@ -97,8 +97,25 @@
       <%- end -%>
    </ul>
 
-<h2>People</h2>
-<ul>
-    <li>Todo: get experts</li>
-</ul>
+   <h2>Ask an Expert</h2>
+   <%- if @expertise_category.nil? -%>
+      <p class="missing">"<%= @content_tag.name %>" is not currently entered as a category for Ask an Expert - please ask your content staff representative to create this top-level AaE category</p>
+   <%- else -%>
+      <ul>
+         <!-- Experts -->
+         <%- if @aae_expertise_count > 0 -%>                
+            <li><span><%= @aae_expertise_count %></span> Experts have indicated that this content tag is an area of expertise</li>
+         <%- else -%>
+            <li><span>No</span> Experts have indicated that this content tag is an area of expertise</li>
+         <%- end -%>
+         
+         <!-- Auto Routed Experts -->
+         <%- if @aae_autorouting_count > 0 -%>                
+            <li><span><%= @aae_autorouting_count %></span> Experts have indicated that they will receive auto-routed questions</li>
+         <%- else -%>
+            <li><span>No</span> Experts have indicated that they will receive auto-routed questions</li>
+         <%- end -%>
+      </ul>
+   <%- end -%>
+   
 </div>

@@ -47,6 +47,11 @@ class PreviewController < ApplicationController
       @homage = Article.homage_for_content_tag({:content_tag => @content_tag})
       @contents_page = Article.contents_for_content_tag({:content_tag => @content_tag})
       
+		@expertise_category = Category.find_by_name(@content_tag.name)
+		if(@expertise_category)
+			@aae_expertise_count = User.experts_by_category(@expertise_category.id).count
+			@aae_autorouting_count = User.experts_by_category(@expertise_category.id).auto_routers.count
+		end
 		# TODO: "learn more" - but articles categorized as that ARE NOT treated special inside darmok :-/
 	end
 		
