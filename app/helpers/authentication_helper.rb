@@ -18,8 +18,8 @@ module AuthenticationHelper
   end
   
   def admin_mode_text(mode='checkcookie')
-    turned_on_text = "<strong class=\"on\">ON</strong> "+link_to_remote('turn off', {:url => {:controller => '/people/admin', :action => :setadminmode, :mode => 'off', :currenturi => Base64.encode64(request.request_uri)}, :method => :post}, :title => "Turn off admin mode for your account")
-    turned_off_text = "<strong class=\"off\">OFF</strong> "+link_to_remote('turn on', {:url => {:controller => '/people/admin', :action => :setadminmode, :mode => 'on', :currenturi => Base64.encode64(request.request_uri)}, :method => :post}, :title => "Turn on admin mode for your account")
+    turned_on_text = "<strong class=\"on\">ON</strong> "+link_to_remote('turn off', {:url => {:controller => '/admin', :action => :setadminmode, :mode => 'off', :currenturi => Base64.encode64(request.request_uri)}, :method => :post}, :title => "Turn off admin mode for your account")
+    turned_off_text = "<strong class=\"off\">OFF</strong> "+link_to_remote('turn on', {:url => {:controller => '/admin', :action => :setadminmode, :mode => 'on', :currenturi => Base64.encode64(request.request_uri)}, :method => :post}, :title => "Turn on admin mode for your account")
     if(mode == 'on')
       "#{turned_on_text}"
     elsif(mode == 'off')

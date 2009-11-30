@@ -66,25 +66,6 @@ class People::AdminController < ApplicationController
   # End - Sudo Actions
   # -----------------------------------
   
-  
-  def setadminmode
-    if(params[:mode] && params[:mode] == 'on')
-      session[:adminmode] = @currentuser.id.to_s
-      @mode = 'on'
-    else
-      session[:adminmode] = 0
-      @mode = 'off'
-    end
-    
-    if(!params[:currenturi].nil?)
-      @refreshuri = Base64.decode64(params[:currenturi])
-    end
-    respond_to do |format|
-      format.js
-    end
-    
-  end
-
   def retire
     if not params[:id].nil?
       @showuser = User.find_by_login(params[:id])

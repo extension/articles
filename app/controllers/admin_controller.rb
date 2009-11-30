@@ -10,6 +10,24 @@ class AdminController < ApplicationController
   before_filter :turn_off_right_column
   before_filter :sudo_required, :only => [:reload_config]
 
+  def setadminmode
+    if(params[:mode] and params[:mode] == 'on')
+      session[:adminmode] = @currentuser.id.to_s
+      @mode = 'on'
+    else
+      session[:adminmode] = 0
+      @mode = 'off'
+    end
+    
+    if(!params[:currenturi].nil?)
+      @refreshuri = Base64.decode64(params[:currenturi])
+    end
+    respond_to do |format|
+      format.js
+    end
+    
+  end
+
   def index
     set_titletag("eXtension Pubsite Admin")
   end
