@@ -76,7 +76,7 @@
 </head>
 <body>
     <div id="page_wrapper">
-    <div id="preview_wrapper"></div>
+    <div id="preview_wrapper" class="<%= @app_location_for_display %>"></div>
     <% if(@app_location_for_display != 'production' and @app_location_for_display != 'shownav' )%>
     	<div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://about.extension.org/wiki/Pubsite/Testing") %></p></div>
     <% end %>
