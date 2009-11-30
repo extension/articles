@@ -776,3 +776,9 @@ p.response {font-size:1.6em; margin-bottom:2em;}
 #app_location.preview p {font-size: 1em; color:#fff; font-weight:normal; margin:0 0 .5em;line-height:1.3;}
 div#app_location.preview {background: #345f6b; border:2px solid #aaa;}
 div#app_location.preview a:hover {color:#666; }
+#community_checklist { width:500px;}
+#community_checklist h1 {text-transform:uppercase; font-size:1.8em;}
+.missing {background: #ffebf3 url(/images/common/failure.gif) 4px 3px no-repeat; padding-left:25px;}
+.launchready {background: #fff url(/images/common/success.gif) 4px 3px no-repeat; padding-left:25px;}
+.homage_image {background:#ddd; padding:10px;}
+.homage_image img {border:1px solid #ccc;}

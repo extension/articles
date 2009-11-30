@@ -18,6 +18,7 @@ class PreviewController < ApplicationController
   end
   
   def community
+    @right_column = false
     if(@community.nil?)
       return render(:template => 'preview/nocommunity')
     end
