@@ -133,7 +133,7 @@ ActionController::Routing::Routes.draw do |map|
   map.events_page 'events/:id', :controller => 'events', :action => 'detail'
   map.wiki_page 'pages/*title', :controller => 'articles', :action => 'page'
   map.preview_page 'preview/pages/:title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
-  map.preview_community 'preview/:content_tag', :controller => 'preview', :action => 'community'
+  map.preview_community 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
   map.site_news ':content_tag/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }

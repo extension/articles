@@ -1,0 +1,104 @@
+<div id="community_checklist">
+    <h1>Launch Checklist for Content Tagged With "<%= @content_tag.name %>"</h1>
+    <p>This page provides a listing of all elements needed correctly display a launched content page for an eXtension Community of Practice on the Public Site.</p>
+    
+    <%- if @community.nil? -%>
+      <h2>Community name</h2>
+      <p>There is not a community yet associated with content tagged "<%= @content_tag.name %>"</p>
+   <%- else -%>
+      <h2>Community name</h2>
+      <p class="launchready"><%= html_escape(@community.public_name)%></p>
+      <h2>Public Description</h2>
+      <%- if @community.public_description.blank? -%>
+         <p class="missing">A public community description for your community has not yet been created.  Contact your content staff representative to create your public community description.</p>
+      <%- else -%>
+        <p class="launchready"><%= html_escape(@community.public_description) %></p>
+      <%- end -%>
+
+       <h2>Homage Image</h2>
+       <%- if @community.logo.nil? -%>
+           <p class="missing">A public homage has not been uploaded for your community. Contact your content staff representative to upload your community homage logo.</p>
+       <%- else -%>
+           <p class="homage_image"><%= render_inline_logo({:logo => @community.logo, :show_thumbnail => false }) %></p>
+       <%- end -%>
+   <%- end -%>
+
+   <h2>Events and FAQs</h2>
+   <ul>
+      <!-- events -->
+      <%- if @events_count > 0 -%>                
+         <li><span><%= @events_count %></span> Published Events</li>
+      <%- else -%>
+         <li><span>No</span> Published Events</li>
+      <%- end -%>
+      
+      <!-- faqs -->
+      <%- if @faqs_count > 0 -%>                
+         <li><span><%= @faqs_count %></span> Published Faqs</li>
+      <%- else -%>
+         <li><span>No</span> Published Faqs</li>
+      <%- end -%>   
+         
+   </ul>
+   
+   <h2>Articles</h2>
+   <ul>
+      <!-- Articles -->
+      <%- if @articles_count > 0 -%>                
+         <li><span><%= @articles_count %></span> Published Articles</li>
+      <%- else -%>
+         <li><span>No</span> Published Articles</li>
+      <%- end -%>
+      
+      <!-- News -->
+      <%- if @news_count > 0 -%>                
+         <li><span><%= @news_count %></span> Published Articles categorized as "news"</li>
+      <%- else -%>
+         <li><span>No</span> Published Articles categorized as "news"</li>
+      <%- end -%>
+      
+      <!-- Learning Lessons -->
+      <%- if @learning_lessons_count > 0 -%>                
+         <li><span><%= @learning_lessons_count %></span> Published Articles categorized as "learning lesson"</li>
+      <%- else -%>
+         <li><span>No</span> Published Articles categorized as "learning lesson"</li>
+      <%- end -%>              
+ </ul>
+   
+   <h2>Special Features</h2>
+   <ul>
+      <!-- Features -->
+      <%- if @features_count > 0 -%>                
+         <li><span><%= @features_count %></span> Published Articles categorized as "feature"</li>
+      <%- else -%>
+         <li><span>No</span> Published Articles categorized as "feature"</li>
+      <%- end -%>
+      
+      <!-- Contents -->
+      <%- if @contents_count > 1 -%>                
+         <li><span><%= @contents_count %></span> Published Articles categorized as "contents"
+         (<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
+         </li>
+      <%- elsif @contents_count == 1 -%>                
+         <li><span>Yes</span> <%= link_to('Published Article categorized as "contents"', @contents_page.id_and_link) %></li>
+      <%- else -%>
+         <li><span>No</span> Published Article categorized as "contents"</li>
+      <%- end -%>
+      
+      <!-- Homage -->
+      <%- if @homage_count > 1 -%>                
+         <li><span><%= @homage_count %></span> Published Articles categorized as "homage"
+         (<%= link_to("#{@homage.title} is currently chosen for the homage view", @homage.id_and_link) %>)
+         </li>
+      <%- elsif @homage_count == 1 -%>                
+         <li><span>Yes</span> <%= link_to('Published Article categorized as "homage"', @homage.id_and_link) %></li>
+      <%- else -%>
+         <li><span>No</span> Published Article categorized as "homage"</li>
+      <%- end -%>
+   </ul>
+
+<h2>People</h2>
+<ul>
+    <li>Todo: get experts</li>
+</ul>
+</div>
