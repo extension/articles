@@ -13,7 +13,7 @@
         <% end %>
         
         <p class="print_and_share"><%= link_to 'Print', (request.request_uri + "/print/" unless params[:print] ), :class => "print" %>
-            <%= image_tag("/images/common/share_save_image.gif", :size => "106x16", :alt => "Share/Bookmark") %> 
+            <%= image_tag("/images/common/share_save_image.gif", :size => "106x16", :title => "The Share/Save feature is disabled in Preview mode", :alt => "Share/Save") %> 
         </p>
     </div>
     
