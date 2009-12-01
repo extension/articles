@@ -110,70 +110,66 @@ class Article < ActiveRecord::Base
 	 end
   end
 	 
-  def self.create_or_update_from_atom_entry(entry,datatype = 'WikiArticle')
-	if(datatype == 'WikiArticle')
-		article = find_by_title(entry.title) || self.new
-	else
-		article = find_by_original_url(entry.links[0].href) || self.new
+	def self.create_or_update_from_atom_entry(entry,datatype = 'WikiArticle')
+		if(datatype == 'WikiArticle')
+			article = find_by_title(entry.title) || self.new
+		else
+			article = find_by_original_url(entry.links[0].href) || self.new
+		end
+
+		article.datatype = datatype
+
+		if entry.updated.nil?
+			updated = Time.now.utc
+		else
+			updated = entry.updated
+		end
+		article.wiki_updated_at = updated
+
+		if entry.published.nil?
+			pubdate = updated
+		else
+			pubdate = entry.published
+		end
+		article.wiki_created_at = pubdate
+
+		if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
+			returndata = [article.wiki_updated_at, 'deleted', nil]
+			article.destroy
+			return returndata
+		end
+
+		article.title = entry.title
+		article.url = entry.links[0].href if article.url.blank?
+		article.author = entry.authors[0].name
+		article.original_content = entry.content.to_s
+
+		# flag as dpl
+		if !entry.categories.blank? and entry.categories.map(&:term).include?('dpl')
+			article.is_dpl = true
+		end
+ 
+		if(article.new_record?)
+			returndata = [article.wiki_updated_at, 'added']
+			article.save
+		elsif(article.original_content_changed?)
+			returndata = [article.wiki_updated_at, 'updated']
+			article.save
+		else
+			# content didn't change, don't save the article - most useful for dpl's
+			returndata = [article.wiki_updated_at, 'nochange']
+		end
+
+		# handle categories - which will include updating categories/tags
+		# even if the content didn't change
+		if(!entry.categories.blank?)
+			article.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)
+			article.put_in_buckets(entry.categories.map(&:term))	  
+		end
+
+		returndata << article
+		return returndata
 	end
-	
-	article.datatype = datatype
-	 
-	 if entry.updated.nil?
-		updated = Time.now.utc
-	 else
-		updated = entry.updated
-	 end
-	 
-	 # if article.wiki_updated_at
-	 #	  if article.wiki_updated_at > updated
-	 #		 # if ours is newer, skip this update
-	 #		 return
-	 #	  end
-	 # end
-	 article.wiki_updated_at = updated
-	 
-	 if entry.published.nil?
-		pubdate = updated
-	 else
-		pubdate = entry.published
-	 end
-	 article.wiki_created_at = pubdate
-		
-	 if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
-		returndata = [article.wiki_updated_at, 'deleted', nil]
-		article.destroy
-		return returndata
-	 end
-	 
-	 article.title = entry.title
-	 article.url = entry.links[0].href if article.url.blank?
-	 article.author = entry.authors[0].name
-	 article.original_content = entry.content.to_s
-		
-	 # flag as dpl
-	 if !entry.categories.blank? and entry.categories.map(&:term).include?('dpl')
-		article.is_dpl = true
-	 end
-		  
-	 if(article.new_record?)
-		returndata = [article.wiki_updated_at, 'added']
-	 elsif(article.original_content_changed?)
-		returndata = [article.wiki_updated_at, 'updated']
-	 else
-		# content didn't change, bail here.
-		returndata = [article.wiki_updated_at, 'nochange']
-		return returndata
-	 end
-	  
-	 article.save
-	 if(!entry.categories.blank?)
-		article.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)
-		article.put_in_buckets(entry.categories.map(&:term))	  
-	 end
-	 returndata << article
-	 return returndata
-  end
 	
   def id_and_link
 	 default_url_options[:host] = AppConfig.get_url_host
