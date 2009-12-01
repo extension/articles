@@ -11,10 +11,11 @@
         <% if not @youth %>
           <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', ask_form_url %></p>
         <% end %>
-        
-        <p class="print_and_share"><%= link_to 'Print', (request.request_uri + "/print/" unless params[:print] ), :class => "print" %>
+        <%- if(!params[:print]) -%>
+        <p class="print_and_share"><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %>
             <%= image_tag("/images/common/share_save_image.gif", :size => "106x16", :title => "The Share/Save feature is disabled in Preview mode", :alt => "Share/Save") %> 
         </p>
+        <%- end -%>
     </div>
     
     <div class = "headline left">
