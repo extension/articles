@@ -126,7 +126,9 @@
       <ul>
          <!-- Experts -->
          <%- if @aae_expertise_count > 0 -%>                
-            <li><span class="launchready">Yes</span> <span><%= @aae_expertise_count %></span> Experts have indicated that this content tag is an area of expertise</li>
+            <li><span class="launchready">Yes</span>    	       	
+               <%= link_to("<span>#{@aae_expertise_count}</span> Experts have indicated that this content tag is an area of expertise", :controller => '/aae/reports', :action => "state_answerers", :id => @expertise_category.id, :category => @expertise_category.name) %>
+               </li>
          <%- else -%>
             <li class="missing">No Experts have indicated that this content tag is an area of expertise</li>
          <%- end -%>
