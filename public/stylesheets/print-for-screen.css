@@ -88,3 +88,5 @@ table td {padding:.45em;font-size:1em !important;}
 
 .calloutbox {border:1px solid #ccc;padding:.5em 1em;}
 #pageurl {font-size:.8em;}
+
+#preview_wrapper {display:none;}
