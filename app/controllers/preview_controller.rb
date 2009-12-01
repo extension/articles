@@ -6,19 +6,18 @@
 #	see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class PreviewController < ApplicationController
-  before_filter :login_optional
-  before_filter :set_content_tag_and_community_and_topic
-  
-  def override_app_location
-	 @app_location_for_display = 'preview'
-  end
-  
-  def index
-	 
-  end
+	before_filter :login_optional
+	before_filter :set_content_tag_and_community_and_topic
+
+	def index
+		@right_column = false
+		@approved_communities =  Community.approved.all(:order => 'name')
+		@other_public_communities = Community.usercontributed.public_list.all(:order => 'name')
+	end
   
 	def content_tag
 		@right_column = false
+		
 		if(@content_tag.nil?)
 			return render(:template => 'preview/invalid_tag')
 		end
@@ -106,7 +105,9 @@ class PreviewController < ApplicationController
 	end
 		
   def showpage
-	 override_app_location
+	# force applocation to be preview
+	@app_location_for_display = 'preview'
+	
 	 
 	 # folks chop off the page name and expect the url to give them something
 	 if not (params[:title] or params[:id])
@@ -141,15 +142,9 @@ class PreviewController < ApplicationController
 			return do_404
 		end
 	else
-		# # using find_by to avoid exception
-		# @article = Article.find_by_id(params[:id])
-		# # Resolve links so they point to extension.org content where possible
-		# if @article and @article.content.nil?
-		#	 @article.resolve_links!
-		# end
 		do_404
 		return
-	 end
+	end
 	 
 	 if @article
 		@published_content = true

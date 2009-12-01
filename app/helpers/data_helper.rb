@@ -36,7 +36,7 @@ module DataHelper
     if(community.content_tag_names.empty?)
       return community.public_name
     else
-      return link_to(h(community.public_name), preview_community_url(:content_tag => community.primary_content_tag_name))
+      return link_to(h(community.public_name), preview_tag_url(:content_tag => community.primary_content_tag_name))
     end
   end
   

@@ -136,7 +136,8 @@ ActionController::Routing::Routes.draw do |map|
   map.preview_articlelist 'preview/articlelist/:content_tag', :controller => 'preview', :action => 'articlelist'
   map.preview_faqlist 'preview/faqlist/:content_tag', :controller => 'preview', :action => 'faqlist'
   map.preview_eventlist 'preview/eventlist/:content_tag', :controller => 'preview', :action => 'eventlist'
-  map.preview_community 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
+  map.preview_tag 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
+  map.preview_home 'preview', :controller => 'preview', :action => 'index'
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
   map.site_news ':content_tag/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
