@@ -296,6 +296,9 @@ class Article < ActiveRecord::Base
   # TODO: revisit doing a lookahead for wiki articles too.
   #
   def convert_wiki_links_and_images
+	if(self.original_content.blank?)
+		return [0,0]
+	end
 	 if(@converted_content.nil?)
 		@converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
 	 end
