@@ -81,7 +81,7 @@
         <% if(@app_location_for_display == 'preview' )%>
             <div id="app_location" class="preview">
                 <h3>This is the Pubsite Preview Tool</h3> 
-                <p>This view displays exactly how your page will look when published to the Public Site. The navigation areas are grayed out because those sections are not available in preview mode. However, all links within your article do work. <%= link_to("more info", "http://about.extension.org/wiki/Pubsite/Testing") %></p>
+                <p>This view displays exactly how your page will look when published to the Public Site. The navigation areas are grayed out because those sections are not available in preview mode. However, all links within your article do work.</p>
             </div>
     	<% else %>
     	    <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://about.extension.org/wiki/Pubsite/Testing") %></p></div>
