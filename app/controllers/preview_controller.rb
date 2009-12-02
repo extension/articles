@@ -27,7 +27,7 @@ class PreviewController < ApplicationController
 			# youth styling
 			@youth = true if @content_tag.name == 'youth'
 		else
-			@title_tag = "eXtension Content Checklist for tag: #{@content_tag} (#{@community.name})"
+			@title_tag = "Launch checklist for content tagged \"#{@content_tag.name}\" (#{@community.name})"
 			# youth styling
 			@youth = true if @topic and @topic.name == 'Youth'
 			@other_community_content_tag_names = @community.cached_content_tags(true).reject{|name| name == @content_tag.name}
