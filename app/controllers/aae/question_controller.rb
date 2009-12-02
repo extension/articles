@@ -249,7 +249,7 @@ class Aae::QuestionController < ApplicationController
           redirect_to aae_question_url(:id => @submitted_question.id)
           return
         end
-        if @currentuser.id != @submitted_question.assignee.id
+        if (@submitted_question.assignee) and (@currentuser.id != @submitted_question.assignee.id)
           previous_assignee_email = @submitted_question.assignee.email
           @submitted_question.assign_to(@currentuser, @currentuser, nil) 
         end

@@ -73,6 +73,14 @@
  *
  * You can use my_tooltip.destroy() to remove the event observers and thereby the tooltip.
  */
+ 
+ /*
+ * Edited by Aaron Hundley on 12/1/09 
+ * Took out the mouse move event in order to not have the tooltip follow the mouse and 
+ * edited the moveToolTip function for this change and to allow the tooltip to be positioned 
+ * around the element that gets tooltipped at a fixed location so that you can 
+ * mouse over the tooltip and scroll b/c the tooltip is now a fixed size for contents that are large.
+ */
 
 var Tooltip = Class.create();
 Tooltip.prototype = {
@@ -82,8 +90,8 @@ Tooltip.prototype = {
       margin: "0px",
 	    padding: "5px",
 	    backgroundColor: "#d6d6fc",
-	    min_distance_x: 15,
-      min_distance_y: 15,
+	    min_distance_x: 10,
+      min_distance_y: 10,
       delta_x: 15,
       delta_y: 15,
       zindex: 1000
@@ -108,7 +116,7 @@ Tooltip.prototype = {
 
     this.eventMouseOver = this.showTooltip.bindAsEventListener(this);
     this.eventMouseOut   = this.hideTooltip.bindAsEventListener(this);
-    this.eventMouseMove  = this.moveTooltip.bindAsEventListener(this);
+    //this.eventMouseMove  = this.moveTooltip.bindAsEventListener(this);
 
     this.registerEvents();
   },
@@ -116,50 +124,48 @@ Tooltip.prototype = {
   destroy: function() {
     Event.stopObserving(this.element, "mouseover", this.eventMouseOver);
     Event.stopObserving(this.element, "mouseout", this.eventMouseOut);
-    Event.stopObserving(this.element, "mousemove", this.eventMouseMove);
+    //Event.stopObserving(this.element, "mousemove", this.eventMouseMove);
   },
 
   registerEvents: function() {
     Event.observe(this.element, "mouseover", this.eventMouseOver);
     Event.observe(this.element, "mouseout", this.eventMouseOut);
-    Event.observe(this.element, "mousemove", this.eventMouseMove);
+    //Event.observe(this.element, "mousemove", this.eventMouseMove);
   },
 
   moveTooltip: function(event){
 	  Event.stop(event);
-	  // get Mouse position
-    var mouse_x = Event.pointerX(event);
-	  var mouse_y = Event.pointerY(event);
-	
-	  // decide if wee need to switch sides for the tooltip
+	  
+	  // decide if we need to switch sides for the tooltip
 	  var dimensions = Element.getDimensions( this.tool_tip );
 	  var element_width = dimensions.width;
 	  var element_height = dimensions.height;
-	
-	  if ( (element_width + mouse_x) >= ( this.getWindowWidth() - this.options.min_distance_x) ){ // too big for X
-		  mouse_x = mouse_x - element_width;
-		  // apply min_distance to make sure that the mouse is not on the tool-tip
-		  mouse_x = mouse_x - this.options.min_distance_x;
-	  } else {
-		  mouse_x = mouse_x + this.options.min_distance_x;
+	  
+	  // get the left most and top most positions for the element having the tooltip
+	  var left_offset = this.element.offsetLeft;
+	  var top_offset = this.element.offsetTop;
+	  
+	  // figure out where to place the tooltip
+	  tooltip_x = left_offset + this.options.min_distance_x;
+	  tooltip_y = top_offset - element_height - this.options.min_distance_y;
+	  
+	  if ((element_width + tooltip_x) >= ( this.getWindowWidth() )) { //going off the screen horizontally
+	      tooltip_x = left_offset - element_width - this.options.min_distance_x;
 	  }
+	  
+	  if (tooltip_y >= this.getWindowHeight()) { //going off the screen vertically
+	      tooltip_y = top_offset + this.options.min_distance_y;
+	  }
+	  
+	  // set the styles for positioning the tool tip
+	  this.setStyles(tooltip_x, tooltip_y);
 	
-	  if ( (element_height + mouse_y) >= ( this.getWindowHeight() - this.options.min_distance_y) ){ // too big for Y
-		  mouse_y = mouse_y - element_height;
-	    // apply min_distance to make sure that the mouse is not on the tool-tip
-		  mouse_y = mouse_y - this.options.min_distance_y;
-	  } else {
-		  mouse_y = mouse_y + this.options.min_distance_y;
-	  } 
-	
-	  // now set the right styles
-	  this.setStyles(mouse_x, mouse_y);
   },
 	
 		
   showTooltip: function(event) {
     Event.stop(event);
-    this.moveTooltip(event);
+      this.moveTooltip(event);
 	  new Element.show(this.tool_tip);
   },
   
