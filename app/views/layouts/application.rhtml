@@ -81,7 +81,7 @@
         <% if(@app_location_for_display == 'preview' )%>
             <div id="app_location" class="preview">
                 
-                <% if(@app_location_for_display == 'preview' )%>
+                <% if params[:print] %>
                     <h3>This is the Print View for the Pubsite Preview Tool</h3> 
                     <p>This view displays exactly how your page will look when printed from the Public Site.</p>
                 <% else %>
