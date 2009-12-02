@@ -82,11 +82,9 @@ namespace :deploy do
     ln -nfs #{shared_path}/config/robots.txt #{release_path}/public/robots.txt &&
     ln -nfs #{shared_path}/config/appconfig.yml #{release_path}/config/appconfig.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
-    ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu
+    ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
+    ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki 
     CMD
-    # TODO: add this:
-    # ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki &&
-    # or something similar to above.
   end
 
   desc "Setup the app version file (valid after an update code invocation)"
