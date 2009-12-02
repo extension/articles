@@ -19,7 +19,7 @@ class Aae::ReportsController < ApplicationController
     def activity
        (@date1,@date2, @dateFrom,@dateTo)= valid_date("dateFrom", "dateTo")
        (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
        @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
        @rept = Aaereport.new(:name => "Activity")
        @repaction = "activity"
@@ -28,7 +28,7 @@ class Aae::ReportsController < ApplicationController
 
      def state_univ_activity
       @typelist = [];  @new={}; @reslvd={}; @answ={}; @rej={}; @noexp={} ; openquestions={}
-        @type = params[:type]; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+        @type = params[:type]; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
         (@date1, @date2, @dateFrom, @dateTo)=parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)   #parmcheck()
         if (@type=="State")
           @typelist  = Location.find(:all, :order => "entrytype, name")
@@ -101,7 +101,7 @@ class Aae::ReportsController < ApplicationController
            @filteredoptions.merge!({:location => Location.find_by_id(@locid)}) if (@locid && !params[:location])  ##should probably add :State into the FilterParams wantsparameter lists
             cat = Category.find_by_name(@typename); ((@locid) ? @filtstr = "Filtered by Location= #{@locname}" : "") 
             @type = "Category" ; @typel="category"; @typet="Tag"
-            @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date; 
+            @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s; 
            (@date1, @date2, @dateFrom, @dateTo)=parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)  #parmcheck()
             @typelist = [cat]
             if !cat.nil?
@@ -266,7 +266,7 @@ class Aae::ReportsController < ApplicationController
             (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
             (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
           end
-          @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+          @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
           @user = User.find_by_id(params[:id]) 
           if @user
             @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
@@ -603,7 +603,7 @@ class Aae::ReportsController < ApplicationController
        @typename = params[:State]; 
        if (@typename && @typename != "") 
          @typeobj = Location.find_by_name(params[:State]) 
-         @type = "State" ; @typel="state" ;  @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+         @type = "State" ; @typel="state" ;  @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
          locabbr=@typeobj.abbreviation; locid = @typeobj.id
      
          if !@typeobj.nil?  
@@ -638,7 +638,7 @@ class Aae::ReportsController < ApplicationController
              @edits = @edits[0..8]
            end
          end
-         @dateFrom = params[:from] ;  @dateTo=params[:to] ; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+         @dateFrom = params[:from] ;  @dateTo=params[:to] ; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
          @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
          
          @limit_string = "Only up to 100 are shown."
@@ -726,7 +726,7 @@ class Aae::ReportsController < ApplicationController
          locabbr = loc.abbreviation
         
          @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])
-         @type="County"; @typel="county" ;   @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+         @type="County"; @typel="county" ;   @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
          if !@typeobj.nil? 
        
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
@@ -876,7 +876,7 @@ class Aae::ReportsController < ApplicationController
        @sec_set = nil; @first_set= nil; @clear1="n"; @clear2="n"
        @first_set = session[:first_set] if session[:first_set]
        @sec_set = session[:sec_set] if session[:sec_set]
-       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
        @repaction = 'response_times'
        @nodays = 30; @nocdays = 30
        @number_questions_all = SubmittedQuestion.find_externally_submitted(nil, nil, true, true )
