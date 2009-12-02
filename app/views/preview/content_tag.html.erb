@@ -96,8 +96,8 @@
       
       <!-- Contents -->
       <%- if @contents_count > 1 -%>
-        <li><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'contents')) %> <span>(C)</span></li>
-         (<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
+        <li class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'contents')) %> <span>(C)</span>
+         <br />(<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
          </li>
       <%- elsif @contents_count == 1 -%>                
          <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "contents"', @contents_page.id_and_link) %> <span>(C)</span></li>
@@ -107,7 +107,8 @@
       
       <!-- Homage -->
       <%- if @homage_count > 1 -%>
-         <li><%= link_to("<span>#{@homage_count}</span> Published Articles categorized as \"homage\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'homage')) %> <span>(G)</span></li>
+         <li class="missing"><%= link_to("<span>#{@homage_count}</span> Published Articles categorized as \"homage\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'homage')) %> <span>(G)</span>
+             <br />
          (<%= link_to("#{@homage.title} is currently chosen for the homage view", @homage.id_and_link) %>)
          </li>
       <%- elsif @homage_count == 1 -%>                
