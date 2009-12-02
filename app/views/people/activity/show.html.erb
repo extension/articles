@@ -3,19 +3,4 @@
 <h1><%= @activity_text[:title]%></h1>
 <p><%= @activity_text[:body]%></p>
 <p>Occurred at: <%= @activity.created_at %></p>
-<p>More activity from:
-	<%= link_to("#{@activity.user.first_name}",:action => :showuser, :id => @activity.user.id) %>, 
-	<% if !@activity.user.location.nil?  %>
-		<%= link_to("#{@activity.user.location.name}",:action => :summary, :location => @activity.user.location.id) %>, 
-	<% end %> 
-	<% if !@activity.user.position.nil?  %>
-		<%= link_to("#{@activity.user.position.name}",:action => :summary, :position => @activity.user.position.id) %>, 
-	<% end %>	
-	<% if !@activity.community.nil?  %>
-		<%= link_to("#{@activity.community.name}",:action => :summary, :community => @activity.community.id) %>, 
-	<% end %> 
-	<% if !@activity.activity_application.nil?  %>
-		<%= link_to("#{@activity.activity_application.displayname}",:action => :summary, :activityapplication => @activity.activity_application.id) %>, 
-	<% end %>
-</p>
 
