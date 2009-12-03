@@ -22,13 +22,13 @@
 		<br class="clearing" />
     <p class="simplefield">
         <label for="submitted_question[zip_code]">Zip Code:</label>
-        <%= text_field_tag "submitted_question[zip_code]", @submitted_question.zip_code %>
+        <%= text_field_tag "submitted_question[zip_code]", @submitted_question.zip_code, :type => "text", :pattern => "[0-9]*" %>
     </p>
     <%= error_message_on "submitted_question", "zip_code"%>
 <br class="clearing" />
     <p class="simplefield">
         <label for="public_user[email]">Email:<em class="required">*</em></label>
-        <%= text_field_tag "public_user[email]", @public_user.email %>
+        <%= text_field_tag "public_user[email]", @public_user.email, :type => "email",  :autocapitalize => "off" %>
     </p>
     <%= error_message_on "public_user", "email"%>
 </fieldset>

@@ -85,6 +85,6 @@ input {
 .logo a img {border:none;}
 
 
-
+#flash_notice.notice {background:yellow;}
 
 #app_location {display:none;}
