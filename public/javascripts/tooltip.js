@@ -84,7 +84,14 @@
 
 var Tooltip = Class.create();
 Tooltip.prototype = {
-  initialize: function(element, tool_tip) {
+  initialize: function(element, tool_tip, x_offset) {
+      if (typeof x_offset != "undefined") {
+        var x_offset_val = x_offset;
+      }
+      else {
+        var x_offset_val = 10;
+      }
+    
     var options = Object.extend({
       default_css: false,
       margin: "0px",
@@ -94,12 +101,14 @@ Tooltip.prototype = {
       min_distance_y: 10,
       delta_x: 15,
       delta_y: 15,
-      zindex: 1000
+      zindex: 1000,
+      x_offset: x_offset_val
     }, arguments[2] || {});
 
     this.element      = $(element);
 
     this.options      = options;
+
     
     // use the supplied tooltip element or create our own div
     if($(tool_tip)) {
@@ -134,21 +143,34 @@ Tooltip.prototype = {
   },
 
   moveTooltip: function(event){
-	  Event.stop(event);
-	  
-	  // decide if we need to switch sides for the tooltip
-	  var dimensions = Element.getDimensions( this.tool_tip );
-	  var element_width = dimensions.width;
-	  var element_height = dimensions.height;
-	  
-	  // get the left most and top most positions for the element having the tooltip
-	  var left_offset = this.element.offsetLeft;
-	  var top_offset = this.element.offsetTop;
-	  
-	  // figure out where to place the tooltip
-	  tooltip_x = left_offset + this.options.min_distance_x;
-	  tooltip_y = top_offset - element_height - this.options.min_distance_y;
-	  
+	 Event.stop(event);
+
+	 // decide if we need to switch sides for the tooltip
+	 var dimensions = Element.getDimensions( this.tool_tip );
+	 var element_width = dimensions.width;
+	 var element_height = dimensions.height;
+	 
+	 // get the left most and top most positions for the element having the tooltip
+	 if (navigator.appVersion.indexOf('MSIE')>0) {
+	   var element_offsets = this.element.getBoundingClientRect();
+       var left_offset = element_offsets.left + this.options.x_offset;
+       var top_offset = element_offsets.top;   
+     
+       // figure out where to place the tooltip
+   	   tooltip_x = left_offset + this.options.min_distance_x;
+   	   tooltip_y = top_offset + element_height;
+     
+     }
+     else {
+       var left_offset = this.element.offsetLeft + this.options.x_offset;
+       var top_offset = this.element.offsetTop;
+       
+       // figure out where to place the tooltip
+   	   tooltip_x = left_offset + this.options.min_distance_x;
+   	   tooltip_y = top_offset - element_height;
+     }
+	
+	    
 	  if ((element_width + tooltip_x) >= ( this.getWindowWidth() )) { //going off the screen horizontally
 	      tooltip_x = left_offset - element_width - this.options.min_distance_x;
 	  }
@@ -159,7 +181,6 @@ Tooltip.prototype = {
 	  
 	  // set the styles for positioning the tool tip
 	  this.setStyles(tooltip_x, tooltip_y);
-	
   },
 	
 		

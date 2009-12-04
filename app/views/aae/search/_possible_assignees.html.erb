@@ -79,6 +79,6 @@
 
 <script type="text/javascript">
 <% users.each do |user| %>
-  var my_tooltip = new Tooltip('user_trigger_<%= user.id %>', 'user_tooltip_<%= user.id %>')
+  var my_tooltip = new Tooltip('user_trigger_<%= user.id %>', 'user_tooltip_<%= user.id %>', <%= user.login.length + 80 %>)
 <% end %>
 </script>
