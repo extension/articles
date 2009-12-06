@@ -38,6 +38,10 @@
         <p><%= check_box_tag "auto_escalate", "1", @auto_escalate %> Send me an email if a question in my area of expertise is still unanswered after 48 hours</p>
     </fieldset>
     
+    <fieldset>
+        <p><%= check_box_tag "no_assign", "1", !@currentuser.aae_responder %>Do not assign any questions to me (includes auto and manual assign)</p>
+    </fieldset>
+    
 </div>
 
     <br /><br />

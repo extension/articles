@@ -427,7 +427,8 @@ end
 # to the assignee letting them know that the question has been assigned to
 # them.
 def assign_to(user, assigned_by, comment, public_reopen = false, public_comment = nil)
-  raise ArgumentError unless user and user.instance_of?(User)
+  raise ArgumentError unless user and user.instance_of?(User)  
+  
   # don't bother doing anything if this is assignment to the person already assigned unless it's 
   # a question that's been responded to by the public after it's been resolved that then gets 
   # assigned to whomever the question was last assigned to.

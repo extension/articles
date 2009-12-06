@@ -160,7 +160,7 @@ class User < ActiveRecord::Base
 	 {:joins => [:roles, :categories], :conditions => ["roles.name = '#{Role::ESCALATION}' AND categories.name = '#{category.name}'"], :order => "last_name,first_name ASC" }
   }
   
-  named_scope :auto_routers, {:include => :roles, :conditions => "roles.name = '#{Role::AUTO_ROUTE}'", :order => "last_name,first_name ASC"}
+  named_scope :auto_routers, {:include => :roles, :conditions => "roles.name = '#{Role::AUTO_ROUTE}' AND users.aae_responder = true", :order => "last_name,first_name ASC"}
   
   named_scope :experts_by_location_only, :joins => :user_preferences, :conditions => "user_preferences.name = '#{UserPreference::AAE_LOCATION_ONLY}'", :order => "last_name,first_name ASC"
   named_scope :experts_by_county_only, :joins => :user_preferences, :conditions => "user_preferences.name = '#{UserPreference::AAE_COUNTY_ONLY}'", :order => "last_name,first_name ASC"
@@ -170,14 +170,16 @@ class User < ActiveRecord::Base
   named_scope :experts_by_county, lambda {|county| {:joins => "join expertise_counties_users as ecu on ecu.user_id = users.id", :conditions => "ecu.expertise_county_id = #{county.id}", :order => "last_name,first_name ASC"}}
   named_scope :experts_by_location, lambda {|location| {:joins => "join expertise_locations_users as elu on elu.user_id = users.id", :conditions => "elu.expertise_location_id = #{location.id}", :order => "last_name,first_name ASC"}}
   named_scope :routers_outside_location, lambda {
-	 location_routers = UserPreference.find(:all, :conditions => "name = '#{UserPreference::AAE_LOCATION_ONLY}' or name = '#{UserPreference::AAE_COUNTY_ONLY}'").collect{|up| up.user_id}.uniq.join(',')
-	 {:conditions => "users.id NOT IN (#{location_routers})", :order => "last_name,first_name ASC"}
+	 location_routers = UserPreference.find(:all, :conditions => "name = '#{UserPreference::AAE_LOCATION_ONLY}' OR name = '#{UserPreference::AAE_COUNTY_ONLY}'").collect{|up| up.user_id}.uniq.join(',')
+	 {:conditions => "users.id NOT IN (#{location_routers}) AND users.aae_responder = true", :order => "last_name,first_name ASC"}
   
   }
   
   named_scope :experts_by_category, lambda { |category_id| 
 	 {:include => :expertise_areas, :conditions => "expertise_areas.category_id = #{category_id}", :order => "last_name,first_name ASC"}
   }
+  
+  named_scope :question_responders, :conditions => {:aae_responder => true}
   
   # override login write
   def login=(loginstring)
@@ -1526,7 +1528,7 @@ class User < ActiveRecord::Base
 		pubsite_answering_role = Role.find_by_name(Role::AUTO_ROUTE)
 		widget_answering_role = Role.find_by_name(Role::WIDGET_AUTO_ROUTE)
 
-		if UserRole.find(:first, :conditions => "(role_id = #{pubsite_answering_role.id} or role_id = #{widget_answering_role.id}) and user_id = #{self.id}") 
+		if UserRole.find(:first, :conditions => "(role_id = #{pubsite_answering_role.id} or role_id = #{widget_answering_role.id}) and user_id = #{self.id}") and (self.aae_responder == true)
 		  return true
 		else
 		  return false
@@ -1547,8 +1549,8 @@ class User < ActiveRecord::Base
 																  :conditions => "name = '#{UserPreference::AAE_LOCATION_ONLY}' or name = '#{UserPreference::AAE_COUNTY_ONLY}'" +
 																					  " and user_id IN (#{user_ids})").collect{|up| up.user_id}.uniq
 
-			 condition_str = "users.id IN (#{user_ids}) and " + 
-								  "users.id NOT IN (#{location_user_ids.join(',')})" if (location_user_ids and location_user_ids.length > 0)
+			 condition_str = "users.id IN (#{user_ids}) AND " + 
+								  "users.id NOT IN (#{location_user_ids.join(',')}) AND users.aae_responder = true" if (location_user_ids and location_user_ids.length > 0)
 		  end
 		  return route_role_obj.users.find(:all, :conditions => condition_str + " and users.retired = false") if route_role_obj
 		end
@@ -1563,7 +1565,7 @@ class User < ActiveRecord::Base
 		
 		if county
 		  expertise_county = ExpertiseCounty.find(:first, :conditions => {:fipsid => county.fipsid}) 
-		  eligible_wranglers = User.question_wranglers.experts_by_county(expertise_county)
+		  eligible_wranglers = User.question_wranglers.experts_by_county(expertise_county).question_responders
 		end
 	 
 		if location and (!eligible_wranglers or eligible_wranglers.length == 0) 
@@ -1991,7 +1993,7 @@ class User < ActiveRecord::Base
 	 expertise_location = ExpertiseLocation.find(:first, :conditions => {:fipsid => location.fipsid})
 	 # get experts signed up to receive questions from that location but take out anyone who 
 	 # elected to only receive questions in their county
-	 location_wranglers = User.question_wranglers.experts_by_location(expertise_location) - User.experts_by_county_only
+	 location_wranglers = User.question_wranglers.experts_by_location(expertise_location).question_responders - User.experts_by_county_only
   end
   
 end

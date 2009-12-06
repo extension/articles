@@ -264,7 +264,9 @@ class Aae::PrefsController < ApplicationController
     signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.fullname}"
     @location_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
     @county_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
-
+    @no_assign = !@currentuser.aae_responder
+    
+    
     if request.post?
       if params[:auto_route]
         if !auto_route_role.users.include?(@currentuser)
@@ -323,6 +325,16 @@ class Aae::PrefsController < ApplicationController
         end
 
         @signature = params[:signature].strip
+      end
+      
+      if params[:no_assign]
+        if @currentuser.aae_responder
+          @currentuser.update_attribute(:aae_responder, false)
+        end
+      else
+        if !@currentuser.aae_responder
+          @currentuser.update_attribute(:aae_responder, true)
+        end
       end
       
       @currentuser.save

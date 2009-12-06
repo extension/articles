@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091201231824) do
+ActiveRecord::Schema.define(:version => 20091204185212) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -813,6 +813,7 @@ ActiveRecord::Schema.define(:version => 20091201231824) do
     t.boolean  "announcements",                          :default => true
     t.datetime "retired_at"
     t.text     "additionaldata"
+    t.boolean  "aae_responder",                          :default => true
   end
 
   add_index "users", ["email"], :name => "email", :unique => true

@@ -72,6 +72,12 @@ class Aae::QuestionController < ApplicationController
         return
       end
       
+      if !user.aae_responder and @currentuser.id != user.id
+        flash[:failure] = "This user has elected not to receive questions."
+        redirect_to :action => :index, :id => @submitted_question
+        return
+      end
+      
       (params[:assign_comment] and params[:assign_comment].strip != '') ? assign_comment = params[:assign_comment] : assign_comment = nil
       
       if (previous_assignee = @submitted_question.assignee) and (@currentuser != previous_assignee)
