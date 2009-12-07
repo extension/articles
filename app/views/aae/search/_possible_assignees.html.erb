@@ -32,7 +32,11 @@
     <% end %>
     
     <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>
-
+    
+    <% if !user.aae_responder %>
+    <h5>* Does not want to be assigned questions</h5>
+    <% end %>
+    
     <% if user.is_question_wrangler? %>
         <h5>Question Wrangler</h5>
     <% end %>

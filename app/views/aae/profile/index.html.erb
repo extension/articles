@@ -38,6 +38,10 @@
     	</div>
     </div>
     
+    <% if !@user.aae_responder %>    
+    <h3>* Does not want to be assigned questions <% if @myid == @user.id %><%= link_to "edit", :controller => 'aae/prefs', :action => 'index' %><% end %></h3>
+    <% end %>
+    
     <h2>Handling rate for assigned questions for the last 6 months:</h2>
     <% if @user.assigned_questions.length > 0 %>
        <% aae_handling_event_count =  @user.aae_handling_event_count %>
