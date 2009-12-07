@@ -25,6 +25,7 @@
 
 <% users.each do |user| %>
 
+<% if user.aae_responder %>
 <div id='user_tooltip_<%= user.id %>' style="display:none;" class="usertooltip">
     <div id="usertooltip_hook">
     <h3><%= user.fullname %> <small>(<%= user.login %>)</small></h3>
@@ -86,9 +87,12 @@
 </div>
 <% end %>
 <% end %>
+<% end %>
 
 <script type="text/javascript">
 <% users.each do |user| %>
+  <% if user.aae_responder %>
   var my_tooltip = new Tooltip('user_trigger_<%= user.id %>', 'user_tooltip_<%= user.id %>', <%= user.login.length + 80 %>)
+  <% end %>
 <% end %>
 </script>
