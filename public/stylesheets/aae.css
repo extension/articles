@@ -563,6 +563,9 @@ a.profile {
     padding-left: 16px !important;
     background:url(/images/common/user.gif) no-repeat transparent;
 }
+.profile.mute {
+    background:url(/images/common/user-gray.gif) no-repeat transparent;
+}
 .resolved {
     color: #333;
     font-family: verdana;
@@ -1487,3 +1490,5 @@ span.new {background:yellow;font-weight:normal;font-size:.8em;padding:.2em;-moz-
 a span.new {text-decoration:underline;}
 
 #tooltip_hook h2 {color:#000; font-size:1.5em;}
+
+.mute {color:#777 !important;} /* try to use this as class of descriptive styles */
