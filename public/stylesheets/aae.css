@@ -1292,7 +1292,7 @@ h1, h2 {
     color:blue;
 }
 #aae_pref_section {margin-bottom:0em;}
-#aae_pref_section fieldset {background:none;margin:0 1.5em .5em;padding:.5em;border:0;}
+#aae_pref_section fieldset {background:none;margin:1em 1.5em 1.5em;padding:.5em .5em 1.5em;border:0; border-bottom:2px solid #ddd;}
 #aae_pref_section small {color:#888; font-size:.8em;font-weight:normal;margin-left:1em;}
 #aae_pref_section h3 {/*font-size:1.2em;*/border-bottom:1px solid #ccc;padding:.1em .4em;margin:0 0 .4em;}
 #aae_pref_section fieldset p {margin:0 0 .3em;font-weight:bold;}
@@ -1300,7 +1300,11 @@ h1, h2 {
 #aae_pref_section fieldset li {font-family: Helvetica, sans-serif;color:#000;}
 #aae_pref_section fieldset ul {list-style:none;padding:0;margin:0 2em 0;}
 #aae_pref_section fieldset li {padding:0;margin:0 0 .2em;}
-
+#aae_pref_section label {font-weight:bold;}
+#aae_pref_section label em {font-weight:normal;font-style:normal;display:block;}
+#aae_pref_section fieldset p {padding-left:1.5em;}
+#aae_pref_section fieldset p input {margin-left:-1.5em; float:left;}
+#aae_pref_section fieldset p em {font-weight:normal;font-style:normal;display:block;}
 
 fieldset#add_location {
     width: 500px;

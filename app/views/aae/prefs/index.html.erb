@@ -18,10 +18,20 @@
 <h2>General Preferences</h2>
 
 <div id="aae_pref_section">
-
-    <h3>Volunteer to Receive Incoming Questions <small><a href="#how_are_incoming" class="help">How are questions assigned?</a></small> <small><a href="#widget" class="help">Answering questions from the Ask Widget?</a></small></h3>
+    
     <fieldset>
-        <p><%= check_box_tag "auto_route", "1", @auto_route %> Automatically assign me incoming questions that match my expertise or location</p>
+        <p>
+            <label><%= check_box_tag "no_assign", "1", !@currentuser.aae_responder %> Don't assign me questions 
+                <em>Checking this option means questions can not be assigned to you at all.</em>
+            </label>
+        </p>
+    </fieldset>
+    
+    <fieldset id="disable-example">
+        <p>
+            <label><%= check_box_tag "auto_route", "1", @auto_route %> Automatically assign me incoming questions that match my expertise or location</label>
+            <em>( <a href="#how_are_incoming" class="help">How are questions automatically assigned?</a> )</em>
+        </p>                
         <ul>
             <li><%= check_box_tag "county_only", "1", @county_only %> Don't assign me questions outside of my county(ies)</li>
             <li><%= check_box_tag "location_only", "1", @location_only %> Don't assign me questions outside of my state(s)</li>
@@ -29,38 +39,36 @@
     </fieldset>
     
     <fieldset>
-        <p>Be a Question Wrangler &nbsp <%= link_to("Join the Question Wrangler Community", :controller => '/people', :action => 'communities', :id => 38) %></p>
-        <ul>
-            <li>Question Wranglers monitor uncategorized incoming questions and route them to the right person. They also follow-up with experts to make sure questions are answered in timely manner. <%= link_to("Learn more about this group and sign up", :controller => '/people', :action => 'communities', :id => 38) %>.</li>
-        </ul>
-    </fieldset>
-    <fieldset>
-        <p><%= check_box_tag "auto_escalate", "1", @auto_escalate %> Send me an email if a question in my area of expertise is still unanswered after 48 hours</p>
+        <p>
+            <label><%= check_box_tag "auto_escalate", "1", @auto_escalate %> Send me an email if a question in my area of expertise is still unanswered after 48 hours</label>
+        </p>
     </fieldset>
     
     <fieldset>
-        <p><%= check_box_tag "no_assign", "1", !@currentuser.aae_responder %>Do not assign any questions to me (includes auto and manual assign)</p>
+    <p><%= link_to("Become a Question Wrangler", :controller => '/people', :action => 'communities', :id => 38) %>. Question Wranglers monitor uncategorized incoming questions and route them to the right person. They also follow-up with experts to make sure questions are answered in timely manner. <%= link_to("Learn more about this group and sign up", :controller => '/people', :action => 'communities', :id => 38) %>.</p>
     </fieldset>
-    
-</div>
 
-    <br /><br />
     
-<div class="form_section">
+<fieldset>
     <p>
         <label for="signature">'Ask an Expert' Email Signature
-        <span class="help">Added to your response when answering incoming questions. You can always edit this on a per-question basis.</span>
+        <em>Added to your response when answering incoming questions. You can always edit this on a per-question basis.</em>
         </label>
     <%= text_area_tag("signature", @signature, :cols => "20", :rows => "3") %>
     </p>
-</div>
-    
+</fieldset>
+</div>    
     <br class="clear"/>
     <p class="save_it"><%= submit_tag "Save changes" %></p>
 <% end %>
 </div>
 <br /><br />
 <div class="directions">
+    
+
+    <p><a href="#widget" class="help">Answering questions from the Ask Widget?</a></p>
+    
+    
     <a name="how_are_incoming" ></a>
     <h2>How are incoming questions from the public site (www.extension.org) assigned?</h2>
     <p>The AaE system assigns incoming questions from our public site based on <strong>Areas of Expertise</strong>, <strong>Geographic Location</strong> and <strong>User Workload</strong>. When more than one expert is available, <strong>the question is given to the user with the fewest assigned questions</strong>. Questions are matched to experts based on the following criteria:</p>
