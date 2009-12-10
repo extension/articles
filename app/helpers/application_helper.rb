@@ -133,17 +133,10 @@ module ApplicationHelper
     return removed[0, last_index]+truncate_string
   end
   
-  def strip_title(text)
-    return "" unless text
-    idx = text.index(/\n/)
-    text = text[idx, text.length] if idx
-    return text
-  end
-  
-  def get_title(text)
-    return "" unless text
-    idx = text.index(/\n/)
-    text = text[0,idx] if idx
+  def get_title(html_content)
+    return "" unless html_content
+    sushi = Nokogiri::HTML::DocumentFragment.parse(html_content)
+    text = sushi.css("div#wow").text
     return text
   end
   

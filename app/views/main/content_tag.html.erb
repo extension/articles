@@ -13,7 +13,7 @@
                     <dl>
                         <dt><%= link_to highlight.title, highlight.id_and_link %></dt>
                         <dd class="img"><%=first_image highlight.content%></dd>
-                        <dd><%= truncate_at_word(get_title(strip_tags(highlight.content)), 160) %></dd>
+                        <dd><%= truncate_at_word(get_title(highlight.content), 160) %></dd>
                         <dd class="more"><%= link_to "More...", highlight.id_and_link %></dd>
                     </dl>
                 </div>
