@@ -241,11 +241,11 @@ class User < ActiveRecord::Base
 		  when 'email'
 			 returnhash.merge!({:email => self.email})
 		  when 'phone'
-			 returnhash.merge!({:phone => self.phonenumber})
+			 returnhash.merge!({:phone => self.phonenumber.nil? ? '' : self.phonenumber})
 		  when 'title'
-			 returnhash.merge!({:title => self.title})
+			 returnhash.merge!({:title => self.title.nil? ? '' : self.title})
 		  when 'position'
-			 returnhash.merge!({:position => self.position.name})
+			 returnhash.merge!({:position => self.position.nil? ? '' : self.position.name})
 		  when 'institution'
 			 returnhash.merge!({:institution => self.primary_institution_name('')})
 		  when 'location'
@@ -321,8 +321,24 @@ class User < ActiveRecord::Base
 	 end
 	 return returnhash
   end
-	 
   
+  def aae_auto_route_role
+    if auto_route_role = self.user_roles.find_by_role_id(Role.find_by_name(Role::AUTO_ROUTE).id)
+      return auto_route_role
+    else
+      return nil
+    end
+  end
+	
+	def aae_escalation_role
+	  if escalation_role = self.user_roles.find_by_role_id(Role.find_by_name(Role::ESCALATION).id)  
+	    return escalation_role
+	  else
+	    return nil
+    end
+  end
+	
+	 
   def clear_all_list_and_community_connections
 	 # WARNING WARNING DANGER WILL ROBINSON
 	 # log for recovery if we need to...
