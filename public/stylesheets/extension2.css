@@ -96,7 +96,7 @@ body { text-align: center }
     position:relative;
     z-index:25;
 }
-.rightcolumn {float: left; margin-right: 0px; width: 273px; margin-top: 0px;/*padding-top:1em;*/}
+.rightcolumn {float: left; margin-right: 0px; width: 272px; margin-top: 0px;}
 .leftcolumn.fullwidth {width:932px;}
 
 
@@ -162,7 +162,7 @@ label em.required {
 .rightcolumn dl {margin-bottom:18px;line-height:1.2em;}
 .rightcolumn h3 {font-weight:normal;font-size:1.6em;margin: 0 0 .6em 0;color:#000;}
 .rightcolumn ul {margin:0 10px 1em 20px;padding:0 10px 0 20px;}
-.rightcolumn li {color:#909090;margin: 0 10px .5em .6em;line-height:1.1em; list-style:disc;}
+.rightcolumn li {color:#909090;margin: 0 8px .5em .6em;line-height:1.1em; list-style:disc;}
 .rightcolumn .sidenote {margin-top: 10px; color: #696969; font-size: 1.2em;}
 
 /* SUBHEADERS */
