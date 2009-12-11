@@ -255,101 +255,173 @@ class Aae::PrefsController < ApplicationController
   end
   
   def index
-    @categories = Category.root_categories
     auto_route_role = Role.find_by_name(Role::AUTO_ROUTE)
     escalation_role = Role.find_by_name(Role::ESCALATION)
     
-    user_root_cats = @currentuser.categories.select{|c| !c.parent_id}
-    signature_pref = @currentuser.user_preferences.find_by_name('signature')
+    signature_pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_SIGNATURE)
     signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.fullname}"
     @location_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
     @county_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
     @no_assign = !@currentuser.aae_responder
+  
+    (auto_route_role.users.include?(@currentuser)) ? @auto_route = true : @auto_route = false
+    (escalation_role.users.include?(@currentuser)) ? @auto_escalate = true : @auto_escalate = false  
     
-    
+    render :layout => 'aae'   
+  end
+  
+  # when the 'do not assign me anything' box is checked, not only is the flag set to 
+  # disable any assignment to this person, but also their auto-route preference is removed
+  def toggle_no_assign
     if request.post?
-      if params[:auto_route]
-        if !auto_route_role.users.include?(@currentuser)
-          auto_route_role.users << @currentuser
-        end
-      else
-        if auto_route_role.users.include?(@currentuser)
-          auto_route_role.user_roles.find(:first, :conditions => "user_id = #{@currentuser.id}").destroy
-          auto_route_role.users.delete(@currentuser)
-        end
-      end
-      
-      if params[:location_only]
-        if !@location_only
-          @currentuser.user_preferences << UserPreference.new(:name => UserPreference::AAE_LOCATION_ONLY, :setting => 1)
-        end
-      else
-        if @location_only
-          @location_only.destroy
-        end
-      end
-      
-      if params[:county_only]
-        if !@county_only
-          @currentuser.user_preferences << UserPreference.new(:name => UserPreference::AAE_COUNTY_ONLY, :setting => 1)
-        end
-      else
-        if @county_only
-          @county_only.destroy
-        end
-      end
-      
-      if params[:auto_escalate]
-        if !escalation_role.users.include?(@currentuser)
-          escalation_role.users << @currentuser
-        end
-      else
-        if escalation_role.users.include?(@currentuser)
-          escalation_role.user_roles.find(:first, :conditions => "user_id = #{@currentuser.id}").destroy
-          escalation_role.users.delete(@currentuser)
-        end
-      end
-        
-      if params[:signature]
-        if signature_pref.nil?
-          @currentuser.user_preferences << UserPreference.new(:name => 'signature', :setting => params[:signature].strip)
-          if !@currentuser.save
-            flash.now[:failure] = "The signature preference did not save successfully."
-            return
-          end
-        else
-          if !signature_pref.update_attribute(:setting, params[:signature].strip)
-            flash.now[:failure] = "The signature preference did not save successfully."
-            return
-          end
-        end
-
-        @signature = params[:signature].strip
-      end
-      
-      if params[:no_assign]
+      # if they checked the box
+      if params[:check_box_value] == "1"
         if @currentuser.aae_responder
           @currentuser.update_attribute(:aae_responder, false)
+          # take away their auto-route preference
+          if role_to_delete = @currentuser.aae_auto_route_role
+            role_to_delete.destroy
+          end
         end
+      # if they unchecked the box
       else
         if !@currentuser.aae_responder
           @currentuser.update_attribute(:aae_responder, true)
         end
       end
-      
-      @currentuser.save
-      
-      @location_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
-      @county_only = @currentuser.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
-      
-      user_msg = "Ask an Expert Preferences have been successfully updated."
-      flash.now[:success] = user_msg
-    end 
+      render :update do |page|
+        page.visual_effect :highlight, "no_assign_fieldset"
+        # uncheck auto route box and disable the fields for it if they checked to not get routed anything
+        if !@currentuser.aae_responder
+          page.replace_html :auto_assign_warning, "<p class='warning'>This field is disabled because you have elected above to not be assigned questions.</p>" 
+          page.select('#auto_assign_options input').all('allInputs') do |value, index|
+            value.disable
+          end
+        # re-enable the auto assign fields if they have unchecked the box to not get routed anything
+        else
+          page.replace_html :auto_assign_warning, ""
+          page.select('#auto_assign_options input').all('allInputs') do |value, index|
+            value.enable
+          end
+        end
+      end
+    else
+      do_404
+      return
+    end
+  end
+  
+  def toggle_auto_assign
+    if request.post?
+      # if they checked the box
+      if params[:check_box_value] == "1"
+        if !@currentuser.aae_auto_route_role     
+          @currentuser.roles << Role.find_by_name(Role::AUTO_ROUTE)
+        end
+      # if they unchecked the box
+      else
+        if auto_route_role = @currentuser.aae_auto_route_role
+          auto_route_role.destroy
+        end
+      end
+    render :update do |page|
+      page.visual_effect :highlight, "auto_assign_options"
+    end
     
-    (auto_route_role.users.include?(@currentuser)) ? @auto_route = true : @auto_route = false
-    (escalation_role.users.include?(@currentuser)) ? @auto_escalate = true : @auto_escalate = false  
+    else
+      do_404
+      return
+    end
+  end
+  
+  def toggle_route_only_to_county
+    if request.post?
+      # if they checked the box
+      if params[:check_box_value] == "1"
+        if !@currentuser.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
+          @currentuser.user_preferences << UserPreference.new(:name => UserPreference::AAE_COUNTY_ONLY, :setting => 1)
+        end
+      # if they unchecked the box
+      else
+        if county_only_pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
+          county_only_pref.destroy
+        end
+      end
     
-    render :layout => 'aae'   
+    render :update do |page|
+      page.visual_effect :highlight, "county_only_li"
+    end
+        
+    else
+      do_404
+      return
+    end  
+  end
+  
+  def toggle_route_only_to_location
+    if request.post?
+      # if they checked the box
+      if params[:check_box_value] == "1"
+        if !@currentuser.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
+          @currentuser.user_preferences << UserPreference.new(:name => UserPreference::AAE_LOCATION_ONLY, :setting => 1)
+        end
+      # if they unchecked the box
+      else
+        if location_only_pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
+          location_only_pref.destroy
+        end
+      end
+    
+    render :update do |page|
+      page.visual_effect :highlight, "location_only_li"
+    end
+        
+    else
+      do_404
+      return
+    end  
+  end
+  
+  def toggle_escalation
+    if request.post?
+      # if they checked the box  
+      if params[:check_box_value] == "1"
+        if !@currentuser.aae_escalation_role
+          @currentuser.roles << Role.find_by_name(Role::ESCALATION)
+        end
+      # if they unchecked the box  
+      else
+        if escalation_role = @currentuser.aae_escalation_role
+          escalation_role.destroy  
+        end  
+      end
+      
+      render :update do |page|
+        page.visual_effect :highlight, "escalation_fieldset"
+      end
+      
+    else
+      do_404
+      return
+    end
+  end
+  
+  def set_signature
+    if request.post?
+      if params[:signature]
+        if !signature_pref = @currentuser.user_preferences.find_by_name(UserPreference::AAE_SIGNATURE)
+          @currentuser.user_preferences << UserPreference.new(:name => UserPreference::AAE_SIGNATURE, :setting => params[:signature].strip)
+        else
+          signature_pref.update_attribute(:setting, params[:signature].strip)
+        end
+        render :update do |page|
+          page.visual_effect :highlight, "email_signature"
+        end
+      end
+    else
+      do_404
+      return
+    end
   end
   
   private

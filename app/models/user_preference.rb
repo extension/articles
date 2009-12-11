@@ -20,4 +20,5 @@ class UserPreference < ActiveRecord::Base
   AAE_FILTER_CATEGORY = 'expert.category.filter'
   AAE_FILTER_COUNTY = 'expert.county.filter'
   AAE_FILTER_LOCATION = 'expert.location.filter'
+  AAE_SIGNATURE = 'signature'
 end

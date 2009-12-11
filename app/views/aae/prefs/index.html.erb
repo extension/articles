@@ -13,46 +13,89 @@
     </ul>
 <br class="clear"/>
 
-<% form_tag( {:action => "index"}) do %>
-
 <h2>General Preferences</h2>
 
 <div id="aae_pref_section">
-    
-    <script>
-    function toggleAssignmentOptions()
-    {
-       $$('#auto_assign_options input').each(function(s){ 
-           s.disabled ? 'enable()' : 'disable()';
-           s.disabled = !s.disabled;
-       });
-    }
-    </script>
-    
-    <fieldset>
+    <fieldset id="no_assign_fieldset">
         <p>
-            <label>
-            <%= check_box_tag "no_assign", "1", !@currentuser.aae_responder, :onclick => "toggleAssignmentOptions();" %> Don't assign me questions 
+            <span id="loading_no_assign" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
+            Saving... 
+            </span>
+            
+            <label><%= check_box_tag "no_assign", "1", !@currentuser.aae_responder %> Don't assign me questions 
                 <em>Checking this option means questions can not be assigned to you at all.</em>
             </label>
         </p>
+        
+        <%= observe_field :no_assign, :url => { :action => :toggle_no_assign },
+              :with => 'check_box_value',
+              :loading => "Element.show('loading_no_assign')",
+              :complete => "Element.hide('loading_no_assign')"
+        %>
+        
+        
     </fieldset>
     
     <fieldset id="auto_assign_options">
+        <div id="auto_assign_warning">
+        <% if !@currentuser.aae_responder %>
+        <p class="warning">This field is disabled because you have elected above to not be assigned questions.</p>
+        <% end %>
+        </div>
         <p>
-            <label><%= check_box_tag "auto_route", "1", @auto_route %> Automatically assign me incoming questions that match my expertise or location</label>
+            <span id="loading_auto_assign" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
+            Saving... 
+            </span>
+            <label><%= check_box_tag "auto_route", "1", @auto_route, :disabled => !@currentuser.aae_responder %> 
+            Automatically assign me incoming questions that match my expertise or location</label>
             <em>( <a href="#how_are_incoming" class="help">How are questions automatically assigned?</a> )</em>
         </p>                
         <ul>
-            <li><%= check_box_tag "county_only", "1", @county_only %> Don't assign me questions outside of my county(ies)</li>
-            <li><%= check_box_tag "location_only", "1", @location_only %> Don't assign me questions outside of my state(s)</li>
+            <span id="loading_county_only" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
+            Saving... 
+            </span>
+            <li id="county_only_li"><%= check_box_tag "county_only", "1", @county_only, :disabled => !@currentuser.aae_responder %> 
+            Don't assign me questions outside of my county(ies)</li>
+            <span id="loading_location_only" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
+            Saving... 
+            </span>
+            <li id="location_only_li"><%= check_box_tag "location_only", "1", @location_only, :disabled => !@currentuser.aae_responder %> Don't assign me questions outside of my state(s)</li>
         </ul>
+        
+        <%= observe_field :auto_route, :url => { :action => :toggle_auto_assign },
+              :with => 'check_box_value',
+              :loading => "Element.show('loading_auto_assign')",
+              :complete => "Element.hide('loading_auto_assign')"
+        %>
+        
+        <%= observe_field :county_only, :url => { :action => :toggle_route_only_to_county },
+              :with => 'check_box_value',
+              :loading => "Element.show('loading_county_only')",
+              :complete => "Element.hide('loading_county_only')"
+        %>
+        
+        <%= observe_field :location_only, :url => { :action => :toggle_route_only_to_location },
+              :with => 'check_box_value',
+              :loading => "Element.show('loading_location_only')",
+              :complete => "Element.hide('loading_location_only')"
+        %>
+        
     </fieldset>
     
-    <fieldset>
+    <fieldset id="escalation_fieldset">
         <p>
+            <span id="loading_escalation" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
+            Saving... 
+            </span>
             <label><%= check_box_tag "auto_escalate", "1", @auto_escalate %> Send me an email if a question in my area of expertise is still unanswered after 48 hours</label>
         </p>
+        
+        <%= observe_field :auto_escalate, :url => { :action => :toggle_escalation },
+              :with => 'check_box_value',
+              :loading => "Element.show('loading_escalation')",
+              :complete => "Element.hide('loading_escalation')"
+        %>
+        
     </fieldset>
     
     <fieldset>
@@ -60,18 +103,19 @@
     </fieldset>
 
     
-<fieldset>
+<fieldset id="email_signature">
     <p>
         <label for="signature">'Ask an Expert' Email Signature
         <em>Added to your response when answering incoming questions. You can always edit this on a per-question basis.</em>
         </label>
+    <% form_remote_tag :url => { :action => :set_signature }, :loading => "submit_signature.value='Saving...'", :complete => "submit_signature.value='Save email signature changes'" do %>
     <%= text_area_tag("signature", @signature, :cols => "20", :rows => "3") %>
+    <%= submit_tag "Save email signature changes", :id => "submit_signature" %>
+    <% end %>
     </p>
 </fieldset>
 </div>    
-    <br class="clear"/>
-    <p class="save_it"><%= submit_tag "Save changes" %></p>
-<% end %>
+
 </div>
 <br /><br />
 <div class="directions">
