@@ -32,10 +32,10 @@
         
         
     </fieldset>
-    <fieldset id="auto_assign_options">
+    <fieldset id="auto_assign_options" <% if !@currentuser.aae_responder %>class="disabled<% end %>">
         <div id="auto_assign_warning">
         <% if !@currentuser.aae_responder %>
-        <p class="warning">This field is disabled because you have elected above to not be assigned questions.</p>
+        <p class="warning">These options are disabled because "Don't assign me questions" is selected.</p>
         <% end %>
         </div>
         <p>
