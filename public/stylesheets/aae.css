@@ -699,11 +699,12 @@ a.profile {
 #expertiselist li .float-spinner {position:absolute; margin-top:0 !important;left:-120px;top:0;}
 
 
+fieldset  p {padding:.35em 0 .35em;}
 fieldset.disabled {color:#888 !important; background:#e5e5e5 !important;}
 fieldset.disabled p,
 fieldset.disabled li,
 fieldset.disabled a  {color:#888 !important;}
-fieldset.disabled p {padding: .5em .5em .5em 30px !important; }
+fieldset.disabled p.warning {padding: .5em .5em .5em 30px !important; }
 fieldset.disabled p.warning {background: #f5f5f5 url(/images/common/warning.gif) 6px center no-repeat; color:#000 !important;} 
 
     #aoe_options {

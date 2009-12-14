@@ -32,7 +32,7 @@
         
         
     </fieldset>
-    <fieldset id="auto_assign_options" <% if !@currentuser.aae_responder %>class="disabled<% end %>">
+    <fieldset id="auto_assign_options" <% if !@currentuser.aae_responder %>class="disabled"<% end %>>
         <div id="auto_assign_warning">
         <% if !@currentuser.aae_responder %>
         <p class="warning">These options are disabled because "Don't assign me questions" is selected.</p>
@@ -44,20 +44,19 @@
             Automatically assign me incoming questions that match my expertise or location</label>
             <em>( <a href="#how_are_incoming" class="help">How are questions automatically assigned?</a> )</em>
         </p>                
-        <ul>
             
-            <li id="county_only_li">
-                <%= check_box_tag "county_only", "1", @county_only, :disabled => !@currentuser.aae_responder %> 
-                <span id="loading_county_only" class="float-spinner" style="display:none">Saving...</span>
+        <p id="county_only_li">
+            <span id="loading_county_only" class="float-spinner" style="display:none">Saving...</span>
+            <label><%= check_box_tag "county_only", "1", @county_only, :disabled => !@currentuser.aae_responder %>
                 Don't assign me questions outside of my county(ies) 
-            </li>
+            </label>
+        </p>
             
-            <li id="location_only_li">
-                <%= check_box_tag "location_only", "1", @location_only, :disabled => !@currentuser.aae_responder %>
-                <span id="loading_location_only" class="float-spinner" style="display:none">Saving...</span>
-                Don't assign me questions outside of my state(s)
-            </li>
-        </ul>
+        <p id="location_only_li">
+            <span id="loading_location_only" class="float-spinner" style="display:none">Saving...</span>
+            <label><%= check_box_tag "location_only", "1", @location_only, :disabled => !@currentuser.aae_responder %>
+                Don't assign me questions outside of my state(s)</label>
+        </p>
         
         <%= observe_field :auto_route, :url => { :action => :toggle_auto_assign },
               :with => 'check_box_value',
