@@ -29,7 +29,7 @@
             <% end %>
         
         <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :legacycategory => cat.id %></span>
-        <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving...</span>
+        <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none">Saving...</span>
         
         <%= observe_field("areas_of_expertise#{cat.id}",
                           :url       => { :action => :expertise },

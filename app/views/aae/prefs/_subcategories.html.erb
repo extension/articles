@@ -2,7 +2,7 @@
     <li id="<%= sub_cat.id %>">
     <%= check_box_tag "areas_of_expertise[]", sub_cat.id, @currentuser.get_expertise.include?(sub_cat), { :id => "areas_of_expertise#{sub_cat.id}"} %> 
     <%= sub_cat.name %>
-    <div id="loading_<%= sub_cat.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </div>
+    <div id="loading_<%= sub_cat.id %>" class="float-spinner" style="display:none">Saving... </div>
     </li>
     
 

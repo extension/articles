@@ -17,13 +17,10 @@
 
 <div id="aae_pref_section">
     <fieldset id="no_assign_fieldset">
-        <p>
-            <span id="loading_no_assign" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
-            Saving... 
-            </span>
-            
+        <p> 
             <label><%= check_box_tag "no_assign", "1", !@currentuser.aae_responder %> Don't assign me questions 
-                <em>Checking this option means questions can not be assigned to you at all.</em>
+                <span id="loading_no_assign" class="float-spinner" style="display:none">Saving...</span>
+                <em>Checking this option means questions can not be assigned to you.</em>
             </label>
         </p>
         
@@ -35,7 +32,6 @@
         
         
     </fieldset>
-    
     <fieldset id="auto_assign_options">
         <div id="auto_assign_warning">
         <% if !@currentuser.aae_responder %>
@@ -43,23 +39,24 @@
         <% end %>
         </div>
         <p>
-            <span id="loading_auto_assign" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
-            Saving... 
-            </span>
+            <span id="loading_auto_assign" class="float-spinner" style="display:none">Saving...</span>
             <label><%= check_box_tag "auto_route", "1", @auto_route, :disabled => !@currentuser.aae_responder %> 
             Automatically assign me incoming questions that match my expertise or location</label>
             <em>( <a href="#how_are_incoming" class="help">How are questions automatically assigned?</a> )</em>
         </p>                
         <ul>
-            <span id="loading_county_only" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
-            Saving... 
-            </span>
-            <li id="county_only_li"><%= check_box_tag "county_only", "1", @county_only, :disabled => !@currentuser.aae_responder %> 
-            Don't assign me questions outside of my county(ies)</li>
-            <span id="loading_location_only" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
-            Saving... 
-            </span>
-            <li id="location_only_li"><%= check_box_tag "location_only", "1", @location_only, :disabled => !@currentuser.aae_responder %> Don't assign me questions outside of my state(s)</li>
+            
+            <li id="county_only_li">
+                <%= check_box_tag "county_only", "1", @county_only, :disabled => !@currentuser.aae_responder %> 
+                <span id="loading_county_only" class="float-spinner" style="display:none">Saving...</span>
+                Don't assign me questions outside of my county(ies) 
+            </li>
+            
+            <li id="location_only_li">
+                <%= check_box_tag "location_only", "1", @location_only, :disabled => !@currentuser.aae_responder %>
+                <span id="loading_location_only" class="float-spinner" style="display:none">Saving...</span>
+                Don't assign me questions outside of my state(s)
+            </li>
         </ul>
         
         <%= observe_field :auto_route, :url => { :action => :toggle_auto_assign },
@@ -84,9 +81,7 @@
     
     <fieldset id="escalation_fieldset">
         <p>
-            <span id="loading_escalation" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> 
-            Saving... 
-            </span>
+            <span id="loading_escalation" class="float-spinner" style="display:none">Saving...</span>
             <label><%= check_box_tag "auto_escalate", "1", @auto_escalate %> Send me an email if a question in my area of expertise is still unanswered after 48 hours</label>
         </p>
         

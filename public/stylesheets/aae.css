@@ -696,7 +696,7 @@ a.profile {
 #expertiselist li .aaecategory {width:50%;}
 #expertiselist li .subcats {width:25%;color:#666; font-weight:normal;}
 #expertiselist li .syndication {width:20%;font-size:.9em !important;}
-#expertiselist li .float-spinner {position:absolute; margin-top:0 !important;background:none;padding:.5em; left:-120px;top:0;background:#fdfeac;}
+#expertiselist li .float-spinner {position:absolute; margin-top:0 !important;left:-120px;top:0;}
 
 
     #aoe_options {
@@ -1263,7 +1263,7 @@ h1, h2 {
 #search_experts {margin-top:0em;}
 #assignlinks a {margin-bottom:0;padding:.25em;border-bottom:0;margin-top:.5em;font-size:.9em;}
 #assign_container {background:#fff;padding:6px;margin-top:6px;}
-.float-spinner {position:absolute; margin-left:2em;margin-top:-1em;background:#fff9ae;padding:.2em;}
+.float-spinner {position:absolute; margin-left:2em;margin-top:-1em;padding:.4em .75em .25em 32px; background: #fafe1e url(/images/common/spinner_yellow.gif) 10px 50% no-repeat; line-height:25px; color:#000;border:solid 1px #ddd;}
 
 .close {float:right;}
 .close a {color:#888;}
