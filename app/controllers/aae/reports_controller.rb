@@ -687,7 +687,7 @@ class Aae::ReportsController < ApplicationController
          @dateFrom = params[:from] ;  @dateTo=params[:to] ;
          @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
          @users=User.find_state_users(@loc, @county, @date1, @date2,
-           :all, :select => " id, first_name, last_name, login, email, institution_id, county_id", :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])
+           :all, :select => " id, first_name, last_name, login, email, county_id", :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])
 
       end
      

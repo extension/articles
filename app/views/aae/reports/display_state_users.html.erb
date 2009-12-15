@@ -32,8 +32,8 @@
 	   <tr>
 		<!--<td><%= link_to "#{@users[i].first_name} #{@users[i].last_name}",  :action => 'user', :id => @users[i].id %></td>-->
 		<td><%= @users[i].first_name%> <%= @users[i].last_name%></td>
-		 <% if @users[i].institution_id && Institution.find_by_id(@users[i].institution_id)%>
-		<td> <%= Institution.find_by_id(@users[i].institution_id).name%></td>
+		 <% if primary_institution = @users[i].primary_institution %>
+		<td> <%= primary_institution.name %></td>
 		  <% else%>
 		   <td></td>
 		  <%end%>
