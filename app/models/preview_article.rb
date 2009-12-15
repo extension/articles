@@ -95,7 +95,15 @@ class PreviewArticle
           newhref = anchor['href']
           next
         end
-        original_uri = URI.parse(anchor['href'])
+        # make sure the URL is valid format
+        begin
+          original_uri = URI.parse(anchor['href'])
+        rescue
+          anchor.set_attribute('href', '')
+          anchor.set_attribute('class', 'bad_link')
+          next
+        end
+        
         if(original_uri.scheme.nil?)
           if(original_uri.path =~ /^\/wiki\/(.*)/)  # does path start with '/wiki'? - then strip it out
             newhref =  '/preview/pages/' + $1
