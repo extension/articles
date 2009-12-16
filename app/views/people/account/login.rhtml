@@ -7,7 +7,11 @@
 	    <h2><%= login_prompt_string %></h2>
 	    <p>
 	        <label for="user_login">eXtensionID or registered email address:</label>
-	        <input class="text" type="email" name="user_login" id="user_login" value="" tabindex="1"/>
+	        <% if @mobile_device %>
+	            <input class="text" type="email" name="user_login" id="user_login" value="" tabindex="1"/>
+	        <% else %>
+	            <input class="text" type="text" name="user_login" id="user_login" value="" tabindex="1"/>
+	        <% end %>
 	    </p>
 
 	    <p>
