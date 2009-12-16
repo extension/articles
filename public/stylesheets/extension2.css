@@ -791,3 +791,4 @@ span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0 
 .checklist_diagram {float:right;}
 
 #community_checklist .section {border-bottom: 1px solid #ccc; width:500px; margin-bottom:1.5em;}
+.bad_link {color:red !important;}
