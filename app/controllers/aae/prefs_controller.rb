@@ -294,14 +294,14 @@ class Aae::PrefsController < ApplicationController
         # uncheck auto route box and disable the fields for it if they checked to not get routed anything
         if !@currentuser.aae_responder
           page.replace_html :auto_assign_warning, "<p class='warning'>These options are disabled because \"Don't assign me questions\" is selected.</p>" 
-          page << "$('auto_assign_options').addClassName('disabled')"
+          page['auto_assign_options'].className = 'disabled'
           page.select('#auto_assign_options input').all('allInputs') do |value, index|
             value.disable
           end
         # re-enable the auto assign fields if they have unchecked the box to not get routed anything
         else
           page.replace_html :auto_assign_warning, ""
-          page << "$('auto_assign_options').removeClassName('disabled')"
+          page['auto_assign_options'].className = ''
           page.select('#auto_assign_options input').all('allInputs') do |value, index|
             value.enable
           end
