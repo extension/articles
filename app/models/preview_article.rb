@@ -101,6 +101,7 @@ class PreviewArticle
         rescue
           anchor.set_attribute('href', '')
           anchor.set_attribute('class', 'bad_link')
+          anchor.set_attribute('title', 'Bad Link, Please edit or remove it.')
           next
         end
         
