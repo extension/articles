@@ -6,8 +6,14 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>eXtension Ask: <%= @page_title || controller.action_name %></title>
-    <%= stylesheet_link_tag 'common' %>
-    <%= stylesheet_link_tag 'widgets' %>
+    
+    <% if @mobile_device %>
+        <meta name = "viewport" content = "width = device-width, user-scalable = yes">
+        <%= stylesheet_link_tag 'mobile_widgets' %>
+    <% else %>
+        <%= stylesheet_link_tag 'common' %>
+        <%= stylesheet_link_tag 'widgets' %>
+    <% end %>
     <%= javascript_include_tag :defaults %>
 </head>
 
@@ -23,9 +29,9 @@
                 <h1><%= link_to("Ask eXtension", widget_home_url) %></h1>
                 <p>Experts from around the country are ready to answer your questions</p>
             </div>
-            <div id="extension"><%= image_tag("/images/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %>
-            </div>
-            
+            <% if !@mobile_device %>
+            <div id="extension"><%= image_tag("/images/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %></div>
+            <% end %>
         </div>
     </div>
     <div class="wrapper">
@@ -37,7 +43,7 @@
         </div>
         <div id="sidebar">
             <% if !@currentuser %>
-              <p><%= link_to "Sign in", :controller => 'aae/widgets', :action => :login_redirect, :return_back => request.request_uri %></p>
+              <p class="signin"><%= link_to "Sign in", :controller => 'aae/widgets', :action => :login_redirect, :return_back => request.request_uri %></p>
               <% get_widget_link_message = "<em>(requires login)</em>" %>
             <% else %>
               <% get_widget_link_message = "" %>

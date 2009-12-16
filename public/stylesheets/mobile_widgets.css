@@ -1,0 +1,91 @@
+body {
+    -webkit-text-size-adjust:none;
+    padding:0;margin:0;
+}
+
+body * { font-family: Arial;}
+
+p {word-wrap: break-word;}
+div#app_location {color:#fff; padding:8px;text-align:left;}
+div#app_location p {margin:0;line-height:1em;}
+div#app_location.localdev {background: #ccc;border:1px solid #888;color:#222;padding:4px;}
+div#app_location.demo {background: #ff00ff;border:1px solid #000;color:#222;}
+div#app_location.preview {background: #229ec0;}
+div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
+div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5em;}
+
+
+
+#skiplist, .print, .view_as_web_page {display:none;}
+
+#userinfo {float:left;background: #eee; margin: 0 0 4px; padding:0;width:100%;}
+#userinfo li {float:left; background: #eee;list-style:none; padding:4px 10px;}
+
+#pageContent {clear:both;}
+#primaryNav {clear:both;}
+
+#content {padding:10px;}
+
+input {display:block;}
+input, option, select, textarea {font-size: 1em;margin-bottom:6px;}
+fieldset {border: 0;}
+
+#footer {padding:8px;}
+
+h1 {font-size:1.2em; color:#003073; padding:0 0 .5em;margin:0;}
+h2 {font-size:1em; color:#003073;}
+h3 {font-size:1em;background:#ddd; padding:4px; clear:both;color:#003073;}
+
+
+#masthead h1 {margin: 5px 0 8px; padding:0; height: 50px;text-indent: -9000px;background: url(/images/ask/ask_logo_mobile.png) top 5% no-repeat;}
+#masthead h1 a {display: block;height: 50px;}
+#header p {color:#fff; padding:.5em .5em;background:#3d76ba;}
+
+.col h4 {font-weight:bold;font-size:1.3em; margin-bottom:.5em; border: 1px solid #ccc; background:#cdd6e2; padding:0 .25em;}
+
+
+#sidebar {border:2px solid #ddd;}
+a {text-decoration:none;}
+li {margin-bottom:.75em;}
+.signin {background: #eee; padding: .5em 1em; font-weight:bold;}
+
+/* Forms
+-----------------------------------------------------------------------------*/
+form {margin:0 -10px 1em -10px;padding:0;} /* offset form margins by #content padding */
+fieldset {border:0; padding:0; margin:0;}
+input {display:block;}
+input, option, select, textarea {font-size: 1em;margin-bottom:6px;}
+textarea {width:90%;}
+label {font-weight:bold;  font-size:.95em; color:#333;}
+.aae fieldset p.simplefield input {width:90%;}
+input.text {width:90%;}
+
+input {
+    cursor:text;
+    letter-spacing:normal;
+    line-height:normal !important;
+    padding:1px 0;
+    text-indent:0;
+    word-spacing:normal;
+}
+
+fieldset {border:1px solid #ddd; padding:8px; background:#eee; border-left:0;border-right:0;}
+fieldset p {padding:0;}
+fieldset h2 {padding:0;margin:0; color:#003073; font-size:1.2em;font-weight:normal;}
+
+
+
+a {color:#096197;}
+.forgotpassword {margin-top:1.5em;display:block;}
+
+/*p {padding-left:8px;padding-right:5px;}*/
+.less_emphasis {color:#555;}
+
+p {margin:0 0 1em;padding:0;}
+
+code {color:#000;background:#eee; font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New; font-size:1em; padding-left:.2em;padding-right:.2em;}
+
+.feedback_banner.warning, .feedback_banner.failure {background:#ffe2e3; margin:0 -10px 1em -10px; padding:.5em;color:#8f0705;border-top:1px solid red;border-bottom:1px solid red;}
+.feedback_banner p {padding:0;margin:0 0 1em;}
+
+#app_location {display:none;}
