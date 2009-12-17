@@ -81,7 +81,7 @@
     <fieldset id="escalation_fieldset">
         <p>
             <span id="loading_escalation" class="float-spinner" style="display:none">Saving...</span>
-            <label><%= check_box_tag "auto_escalate", "1", @auto_escalate %> Send me an email if a question in my area of expertise is still unanswered after 48 hours</label>
+            <label><%= check_box_tag "auto_escalate", "1", @auto_escalate %> Send me an email if a question in my area of expertise is still unanswered after 24 hours</label>
         </p>
         
         <%= observe_field :auto_escalate, :url => { :action => :toggle_escalation },
