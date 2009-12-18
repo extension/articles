@@ -83,3 +83,38 @@ code {color:#000;background:#eee; font-family:Consolas,Monaco,Lucida Console,Lib
 
 .feedback_banner.warning, .feedback_banner.failure {background:#ffe2e3; margin:0 -10px 1em -10px; padding:.5em;color:#8f0705;border-top:1px solid red;border-bottom:1px solid red;}
 .feedback_banner p {padding:0;margin:0 0 1em;}
+
+
+dl.usernetwork {float:left;border-bottom: 1px solid #ddd; padding:.25em .25em .35em 30px;clear:both;margin:0 0 .35em;}
+.usernetwork dt {float:left;margin:.35em .85em .25em -26px;}
+.usernetwork dd {float:left;margin:.35em 0; white-space:nowrap;}
+
+#socialnetworklist {margin-bottom:3em;float:left;width:100%;max-width:900px;}
+#socialnetworklist li {margin:0 0 .6em !important; line-height:1.3em;color:#000;}
+.socialnetwork a {display:inline;}
+
+.aim        {padding:0 0 0 26px; background: url(/images/people/socialnetworks/aim.png) 0 0 no-repeat;}
+.blog       {padding:0 0 0 26px; background: url(/images/people/socialnetworks/blog.png) 0 0 no-repeat;}
+.delicious  {padding:0 0 0 26px; background: url(/images/people/socialnetworks/delicious.png) 0 0 no-repeat;}
+.facebook   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/facebook.png) 0 0 no-repeat;}
+.flickr     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/flickr.png) 0 0 no-repeat;}
+.friendfeed {padding:0 0 0 26px; background: url(/images/people/socialnetworks/friendfeed.png) 0 0 no-repeat;}
+.gizmo      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/gizmo5.png) 0 0 no-repeat;}
+.google     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/google.png) 0 0 no-repeat;}
+.gtalk      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/gtalk.png) 0 0 no-repeat;}
+.other		{padding:0 0 0 26px; background: url(/images/people/socialnetworks/other.png) 0 0 no-repeat;}
+.identica   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/identica.png) 0 0 no-repeat;}
+.jabber     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/jabber.png) 0 0 no-repeat;}
+.linkedin   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/linkedin.png) 0 0 no-repeat;}
+.magnolia   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/magnolia.png) 0 0 no-repeat;}
+.msnim      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/msnim.png) 0 0 no-repeat;}
+.secondlife {padding:0 0 0 26px; background: url(/images/people/socialnetworks/secondlife.png) 0 0 no-repeat;}
+.skype      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/skype.png) 0 0 no-repeat;}
+.slideshare {padding:0 0 0 26px; background: url(/images/people/socialnetworks/slideshare.png) 0 0 no-repeat;}
+.twitter    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/twitter.png) 0 0 no-repeat;}
+.yahooim    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/yahooim.png) 0 0 no-repeat;}
+.youtube    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/youtube.png) 0 0 no-repeat;}
+.mailto      {padding:0 0 0 26px; background: url(/images/common/email.png) 0 0 no-repeat;}
+.wave      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/wave.png) 0 0 no-repeat;}
+
+a {text-decoration:none;}
