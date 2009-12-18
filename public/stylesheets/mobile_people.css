@@ -16,7 +16,7 @@ div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5
 
 #skiplist, .print, .view_as_web_page {display:none;}
 
-#userinfo {float:left;background: #eee; margin: 0 0 4px; padding:0;width:100%;}
+#userinfo {float:left;background: #eee; margin: 0 0 24px; padding:0;width:100%;}
 #userinfo li {float:left; background: #eee;list-style:none; padding:4px 10px;}
 
 #pageContent {clear:both;}
@@ -85,7 +85,7 @@ code {color:#000;background:#eee; font-family:Consolas,Monaco,Lucida Console,Lib
 .feedback_banner p {padding:0;margin:0 0 1em;}
 
 
-dl.usernetwork {float:left;border-bottom: 1px solid #ddd; padding:.25em .25em .35em 30px;clear:both;margin:0 0 .35em;}
+dl.usernetwork {float:left;border-bottom: 1px solid #ddd; padding:.25em .25em .35em 30px;clear:both;margin:0 0 .35em; width:85%;}
 .usernetwork dt {float:left;margin:.35em .85em .25em -26px;}
 .usernetwork dd {float:left;margin:.35em 0; white-space:nowrap;}
 
@@ -118,3 +118,12 @@ dl.usernetwork {float:left;border-bottom: 1px solid #ddd; padding:.25em .25em .3
 .wave      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/wave.png) 0 0 no-repeat;}
 
 a {text-decoration:none;}
+
+ul.table_as_list {padding:.25em 0 .75em;margin:0 0 .75em;margin-bottom:1em; border-bottom:1px solid #666;}
+.table_as_list li {margin:0 0 .25em; list-style:none;}
+.table_as_list .name {font-size:1.4em;}
+
+#primaryNav {padding:0;margin:0;}
+#primaryNav li {float:left; list-style:none; line-height:1.5em; width:50%;}
+#primaryNav li a {padding:0 1em; background:#d5e7f5;display:block;}
+#primaryNav li.selected a {background:#71a8e0; color:#fff; font-weight:bold;}

@@ -24,6 +24,7 @@
     <% if(@app_location_for_display != 'production' and @app_location_for_display != 'shownav' )%>
     	<div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site</p></div>
     <% end %>
+    
     <% if !@mobile_device %>
 	<div id="pageBanners">
 		<%= render(:partial => 'people/partial/pageBanners', :locals => {:adminmode => admin_mode?}) %>
@@ -33,7 +34,9 @@
 	<div id="pageContainer">
 		<div id="masthead">
 			<h1<%= session[:last_opierequest] ? " class='one-stop-signin'" : '' %>><%= link_to("eXtension People", people_welcome_url) %></h1>
+			<% if !@mobile_device %>
 			<%= render(:partial => 'people/partial/userinfo') %>
+			<% end %>
 		</div>
 		<% if !@currentuser.nil? %>
 		<ul id="primaryNav">
@@ -47,10 +50,14 @@
 			<br class="clear" />
 		</div>
 		<% if @mobile_device %>
+		<%= render(:partial => 'people/partial/userinfo') %>
     	<div id="pageBanners">
     		<%= render(:partial => 'people/partial/pageBanners', :locals => {:adminmode => admin_mode?}) %>
     	</div>
     	<% end %>
+    	
+    	
+		
 		<%= render(:partial => 'people/partial/footer') %>
 	</div>
 	<!-- end #pageContainer -->

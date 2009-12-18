@@ -1,19 +1,35 @@
-<table cellspacing="0" border="1" >
-    <tr>
-        <th>Name</th>
-        <th>eXtensionID</th>
-        <th>Email</th>
-        <th>Network</th>
-        <th>Account</th>
-    </tr>
+<% if @mobile_device %>
+
+        <% for shownetwork in @socialnetworklist %>
+            <ul class="table_as_list">
+                <li class="name"><%= link_to("#{shownetwork.user.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => shownetwork.user.login) %></li>
+                <li>eXtensionID: <strong><%= shownetwork.user.login %></strong></li>
+                <li><%= shownetwork.user.email %></li>
+    			<li class="<%= social_network_class(shownetwork.network) %>"><%= social_network_link(shownetwork) %></li>
+            </ul>
+        <% end%>
     
-    <% for shownetwork in @socialnetworklist %>
+<% else %>
+
+    <table cellspacing="0" >
         <tr>
-			<td><%= link_to("#{shownetwork.user.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => shownetwork.user.login) %></td>
-            <td><%= shownetwork.user.login %></td>
-            <td><%= shownetwork.user.email %></td>
-			<td><%= link_to(social_network_name(shownetwork), {:action => :socialnetwork, :id => shownetwork.network}, :class => social_network_class(shownetwork.network)) %></td>
-			<td><%= social_network_link(shownetwork) %></td>
+            <th>Name</th>
+            <th>eXtensionID</th>
+            <th>Email</th>
+            <th>Network</th>
+            <th>Account</th>
         </tr>
-    <% end%>
-</table>
+
+        <% for shownetwork in @socialnetworklist %>
+            <tr>
+    			<td><%= link_to("#{shownetwork.user.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => shownetwork.user.login) %></td>
+                <td><%= shownetwork.user.login %></td>
+                <td><%= shownetwork.user.email %></td>
+    			<td><%= link_to(social_network_name(shownetwork), {:action => :socialnetwork, :id => shownetwork.network}, :class => social_network_class(shownetwork.network)) %></td>
+    			<td><%= social_network_link(shownetwork) %></td>
+            </tr>
+        <% end%>
+    </table>
+    
+
+<% end %>
