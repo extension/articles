@@ -3,17 +3,19 @@
 <% @help_title = "Incoming Questions" %>
 
 <% if !@category and !@location and !@county and !@source %>
-    <h2><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
+    <h2 class="lessmb"><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
     <%= link_to 'feed', :controller => 'aae/feeds', :action => :incoming %></span></h2>
 <% else %>
     <% if @category == Category::UNASSIGNED %>
-         <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
+         <h2 class="lessmb"><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
          <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :incoming, :legacycategory => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source)) %></span></h2> 
     <% else %>
-         <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
+         <h2 class="lessmb"><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
          <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :incoming, :legacycategory => @category, :location => @location, :county => @county, :source => @source)) %></span></h2>
     <% end %>
 <% end %>
+
+<p><%= link_to "Suggested Answering Guidelines", "http://about.extension.org/wiki/Suggested_Guidelines_for_Responding_to_Questions_Submitted_through_Ask_an_Expert" %></p>
 
 <%= render(:partial => "aae/partial/submitted_questions") %>
 

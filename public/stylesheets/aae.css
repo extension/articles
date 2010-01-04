@@ -1500,7 +1500,13 @@ ul.larger {font-size:1.1em;}
 #noanswer {padding-top:1em; clear:both;}
 span.new {background:yellow;font-weight:normal;font-size:.8em;padding:.2em;-moz-border-radius: 4px;-webkit-border-radius: 4px;}
 a span.new {text-decoration:underline;}
+span.tip {background:#fff;font-weight:normal;font-size:.8em;padding:.2em;-moz-border-radius: 4px;-webkit-border-radius: 4px;}
+a span.tip {text-decoration:underline;}
+a.nodec {text-decoration:none;}
+a.nodec:hover {text-decoration:underline;}
 
 #tooltip_hook h2 {color:#000; font-size:1.5em;}
 
 .mute {color:#777 !important;} /* try to use this as class of descriptive styles */
+
+.lessmb {margin-bottom:0;}

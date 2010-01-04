@@ -1,10 +1,12 @@
 <%= render(:partial => "aae/search/answer_search") %>
 
 <div class="aae_module">
-    <h3>Answer or Ask For More Info <a href="#" id="new_trigger"><span class="new">New!</span></a></h3>
+    <h3>Answer or Ask For More Info <span class="tip"><a href="#" id="new_trigger">?</a></span></h3>
     <p class="button2">
         <%= link_to 'Reply', answer_question_url(:squid => @submitted_question.id) %>
     </p>
+    
+    <p class="clear"><%= link_to "Suggested Answering Guidelines", "http://about.extension.org/wiki/Suggested_Guidelines_for_Responding_to_Questions_Submitted_through_Ask_an_Expert", :class => "nodec" %></p>
     
     <div id="noanswer">
         <h3 class="clear">No Answer?</h3>
@@ -24,10 +26,10 @@
 
 <div id='new_tooltip' style="display:none;" class="tooltip">
 	<div id="tooltip_hook">
-	    <h2>AaE now has follow-up on questions. Here's what's new:</h2>
+	    <h2>Question Follow-up in AaE</h2>
 	    <ul>
 	        <li>The person who submitted the question can post replies to AaE responses. If you need more info about a question, just ask for it.</li>
-	        <li>Multiple responses from multiple experts can be sent to a question.</li>
+	        <li>Multiple responses from multiple experts can be sent to one question.</li>
 	    </ul>
 	</div>
 </div>
