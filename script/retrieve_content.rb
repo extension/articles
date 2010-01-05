@@ -71,11 +71,6 @@ def retrieve_content_for_datatype(objectklass,options)
   begin
     result = objectklass.retrieve_content(options)
     puts "Result: #{result.inspect}"
-    # TODO: Warning!  don't release this to production! - jayoung 2009/11/21
-    # if(objectklass == Article)
-    #   result = objectklass.retrieve_deletes(options)
-    #   puts "Deletes Result: #{result.inspect}"
-    # end
   rescue ContentRetrievalError => exception
     puts exception.message
   end
