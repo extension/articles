@@ -423,13 +423,28 @@ class NotificationMailer < ActionMailer::Base
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :assigned_at => assigned_at, :urls => urls }
    end
+   
+   def aae_reject(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     reject_message = notification.additionaldata[:reject_message]
+     
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s)
+     @subject        = @subjectlabel+'Incoming question rejected'
+     @recipients     = notification.user.email
+     urls = Hash.new
+     urls['incoming'] = incoming_url
+     urls['question'] = aae_question_url(:id => submitted_question.id)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
+     @body           = {:isdemo => @isdemo, :notification => notification, :resolved_at => resolved_at, :reject_message => reject_message, :submitted_question => submitted_question, :urls => urls }
+   end
 
    def aae_public_response(notification)
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      signature = notification.additionaldata[:signature]
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
-     @subject = "[Message from eXtension] Your question has been responded to by one of our experts."          
+     @subject = "[Message from eXtension] Your question has been responded to by one of our experts."           
      @recipients     = submitted_question.submitter_email
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)

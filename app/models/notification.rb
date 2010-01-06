@@ -59,6 +59,7 @@ class Notification < ActiveRecord::Base
   AAE_ESCALATION = 1003  # escalation notification
   AAE_PUBLIC_EDIT = 1004  # a public user edited their question
   AAE_PUBLIC_COMMENT = 1005 # a public user posted another comment
+  AAE_REJECT = 1006 # an expert has rejected a question
     
   ##########################################
   #  Ask an Expert Notifications - Public
@@ -96,7 +97,8 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[CONFIRM_EMAIL_CHANGE] = ['confirm_email_change']      
   MAILERMETHODS[CONFIRM_SIGNUP] = ['confirm_signup']    
   MAILERMETHODS[AAE_ASSIGNMENT] = ['aae_assigned']  
-  MAILERMETHODS[AAE_REASSIGNMENT] = ['aae_reassigned']    
+  MAILERMETHODS[AAE_REASSIGNMENT] = ['aae_reassigned'] 
+  MAILERMETHODS[AAE_REJECT] = ['aae_reject']   
   # TODO: MAILERMETHODS[AAE_ESCALATION] = ['todo']    
   MAILERMETHODS[AAE_PUBLIC_EDIT] = ['aae_public_edit']    
   MAILERMETHODS[AAE_PUBLIC_EXPERT_RESPONSE] = ['aae_public_response']    

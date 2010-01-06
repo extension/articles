@@ -353,6 +353,11 @@ class Aae::QuestionController < ApplicationController
         end   
 
         @submitted_question.add_resolution(SubmittedQuestion::STATUS_REJECTED, @currentuser, message)
+        
+        if @currentuser.id != @submitted_question.assignee.id
+          Notification.create(:notifytype => Notification::AAE_REJECT, :user => @submitted_question.assignee, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :reject_message => message})  	    
+        end
+        
         flash[:success] = "The question has been rejected."
         redirect_to aae_question_url(:id => @submitted_question)
         

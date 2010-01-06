@@ -175,6 +175,15 @@
        <% end %>
        <%= render(:partial => "aae/search/answer_search") %>
      <% end %>
+     
+     <h5>Moderate this Question</h5>
+      <p><%= link_to 'Reject', {:controller => 'aae/question', :action => :reject, :id => @submitted_question.id} %> (inappropriate or duplicate questions)</p>
+
+      <% if !@submitted_question.asked_question.index("http://").nil? %>
+      <p><%= link_to "Report as Spam", aae_report_spam_url(:id => @submitted_question.id), 
+                                     :confirm => "Are you sure you want to report this question as spam?", :method => :post %></p>
+      <% end %>
+
 <% end %>
 
 <% end %>
