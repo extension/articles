@@ -6,8 +6,7 @@ One of the questions assigned to you in the Ask an Expert system has been reject
 The question was rejected <%= @resolved_at.strftime("%A, %B %e, %Y, %l:%M %p") %> UTC (EST + 5:00).
 
 Here's the reason for rejection documented by the expert:
-
-<%= @reject_message %>
+"<%= @reject_message %>"
 
 The question is:
 "<%= @submitted_question.asked_question %>"
