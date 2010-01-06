@@ -144,6 +144,7 @@ legend {font-size:1.3em;font-weight:bold;}
 
 #login {width:50em;margin:0 auto;padding:.75em 0 2em;}
 #login fieldset {padding: 2em 2.5em;}
+.login_text {width:50em;margin:0 auto;padding:0 0 2em;}
 
 #signupreadme {width:50em;margin:0 auto;padding:.75em 0 2em;}
 #signupreadme fieldset {padding: 2em 2.5em;}

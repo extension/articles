@@ -23,10 +23,11 @@
 	</fieldset>
 <% end %>
 
+<div class="login_text">
 <%- if !session[:last_opierequest] -%>
     <p class="less_emphasis">This is the eXtension Account Management site. You can use it to update your eXtension profile, find Extension colleagues, or manage your eXtensionID and password.</p>
 <%- end -%>
 <p class="less_emphasis">If you don't already have an eXtensionID, please <%= link_to "signup for one!", :controller => '/people/signup', :action => :new %></p>
-
+</div>
 
 
