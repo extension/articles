@@ -314,7 +314,14 @@ class Article < ActiveRecord::Base
 			 next
 		  end		
 		  
-		  original_uri = URI.parse(anchor['href'])
+		  # make sure the URL is valid format
+		  begin
+		    original_uri = URI.parse(anchor['href'])
+		  rescue
+		    anchor.set_attribute('href', '')
+        next
+      end
+		  
 		  if(original_uri.scheme.nil?)
 			 # does path start with '/wiki'? - then strip it out
 			 if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
@@ -347,7 +354,13 @@ class Article < ActiveRecord::Base
 	 if(AppConfig.configtable['app_location'] == 'production')
 		@converted_content.css('img').each do |image|
 		  if(image['src'])
-			 original_uri = URI.parse(image['src'])
+			 begin
+			   original_uri = URI.parse(image['src'])
+		   rescue
+			   image.set_attribute('src', '')
+			   next
+		   end
+			 
 			 if(original_uri.scheme.nil?) 
 				# leave as is - most likely relative
 				newsrc = image['src']
