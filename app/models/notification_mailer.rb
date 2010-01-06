@@ -436,7 +436,7 @@ class NotificationMailer < ActionMailer::Base
      urls['incoming'] = incoming_url
      urls['question'] = aae_question_url(:id => submitted_question.id)
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
-     @body           = {:isdemo => @isdemo, :notification => notification, :resolved_at => resolved_at, :reject_message => reject_message, :submitted_question => submitted_question, :urls => urls }
+     @body           = {:isdemo => @isdemo, :notification => notification, :resolved_at => submitted_question.resolved_at, :reject_message => reject_message, :submitted_question => submitted_question, :urls => urls }
    end
 
    def aae_public_response(notification)
