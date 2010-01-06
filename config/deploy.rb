@@ -83,9 +83,6 @@ namespace :deploy do
     ln -nfs #{shared_path}/config/appconfig.yml #{release_path}/config/appconfig.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
-    ln -nfs #{shared_path}/learninglessons #{release_path}/public/learninglessons &&
-    ln -nfs #{shared_path}/decisiontree #{release_path}/public/descisiontree &&
-    ln -nfs #{shared_path}/decisiontree #{release_path}/public/descisionTree &&
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki    
     CMD
   end
