@@ -84,7 +84,7 @@ module ParamExtensions
     end
   end # FilteredParameter
 
-  class ParamsFilter 
+  class ParametersFilter 
 
     def initialize(parameters = nil)
       @filteredparameters = {}

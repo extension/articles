@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class FilterParams < ParamExtensions::ParamsFilter
+class FilterParams < ParamExtensions::ParametersFilter
   
   # -----------------------------------
   # instance methods

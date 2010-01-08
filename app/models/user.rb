@@ -112,6 +112,9 @@ class User < ActiveRecord::Base
   has_many :roles, :through => :user_roles
   has_many :assignment_widgets, :source => :widget, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id}" 
 
+  has_many :api_keys
+  has_many :api_key_events, :through => :api_keys
+  
   #has_many :listmemberships, :dependent => :destroy
   #has_many :listownerships, :dependent => :destroy
   #has_many :lists, :through => :listmemberships, :source => :list

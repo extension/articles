@@ -52,8 +52,13 @@ class DataController < ApplicationController
   end
   
   def publicprofile
-    filteredparams = FilterParams.new(params)
-    
+    filteredparams = ParamsFilter.new([:person,:apikey],params)
+    if(filteredparams.apikey.nil?)
+      returnhash = {:success => false, :errormessage => 'Invalid api key'}
+      return render :text => returnhash.to_json
+    end
+    # TODO: consider doing this automatically in application_controller as a before_filter
+    ApiKeyEvent.log_event("#{controller_path}/#{action_name}",filteredparams.apikey)
     
     if(filteredparams.person.nil?)
       returnhash = {:success => false, :errormessage => 'No show user.'}
@@ -73,6 +78,14 @@ class DataController < ApplicationController
   end
   
   def launchedcommunities
+    filteredparams = ParamsFilter.new([:apikey],params)
+    if(filteredparams.apikey.nil?)
+      returnhash = {:success => false, :errormessage => 'Invalid api key'}
+      return render :text => returnhash.to_json
+    end
+    # TODO: consider doing this automatically in application_controller as a before_filter
+    ApiKeyEvent.log_event("#{controller_path}/#{action_name}",filteredparams.apikey)
+    
     returnhash = {:success => true, :items => {}, :version => 1}
     communitylist = Community.launched.all(:order => 'name')
     returnhash[:itemcount] = communitylist.length
