@@ -87,12 +87,21 @@ class AskController < ApplicationController
     
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
+      
+      error_msg = ""
+      
+      if params[:public_user][:email].strip != params[:public_email_confirmation]
+        invalid = true
+        error_msg << "Your email address confirmation does not match.<br />Please make sure your email address and confirmation match up."
+      end
    
       if(!@submitted_question.valid? or @public_user.nil? or !@public_user.valid?)
         invalid = true
+        error_msg.strip != "" ? error_msg << "<br />Please fill in all required fields." : error_msg << "Please fill in all required fields."
       end
       
       unless (invalid.nil? and !invalid)
+        flash[:notice] = error_msg if error_msg.strip != ''
         redirect_to :action => 'index', 
                     :submitted_question => params[:submitted_question], 
                     :location_id => params[:location_id], 

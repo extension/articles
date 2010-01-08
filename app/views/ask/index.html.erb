@@ -5,32 +5,35 @@
 	
 <h3>Personal Information</h3>
 
-<p><em>Fields marked with an asterisk (*) are required</em></p>
+<p><em>Fields marked with an asterisk (<span style="color:red;">*</span>) are required</em></p>
 
 <fieldset>
     <p class="simplefield">
-        <label for="public_user[first_name]">First Name:<em class="required">*</em></label>
+        <label for="public_user[first_name]">First Name:</label>
         <%= text_field_tag "public_user[first_name]", @public_user.first_name %>
     </p>
-    <%= error_message_on "public_user", "first_name" %>
+
 	<br class="clearing" />
     <p class="simplefield">
-        <label for="public_user[last_name]">Last Name:<em class="required">*</em></label>
+        <label for="public_user[last_name]">Last Name:</label>
         <%= text_field_tag "public_user[last_name]", @public_user.last_name %>
     </p>
-    <%= error_message_on "public_user", "last_name" %>
 		<br class="clearing" />
     <p class="simplefield">
         <label for="submitted_question[zip_code]">Zip Code:</label>
         <%= text_field_tag "submitted_question[zip_code]", @submitted_question.zip_code, :type => "text", :pattern => "[0-9]*" %>
     </p>
-    <%= error_message_on "submitted_question", "zip_code"%>
 <br class="clearing" />
     <p class="simplefield">
         <label for="public_user[email]">Email:<em class="required">*</em></label>
         <%= text_field_tag "public_user[email]", @public_user.email, :type => "email",  :autocapitalize => "off" %>
     </p>
-    <%= error_message_on "public_user", "email"%>
+    <br class="clearing" />
+    
+    <p class="simplefield">
+        <label for="public_email_confirmation">Email Confirmation:<em class="required">*</em></label>
+        <%= text_field_tag "public_email_confirmation", @public_user.email, :type => "email",  :autocapitalize => "off" %>
+    </p>
 </fieldset>
 
 <h3>Category <span class="optional">(optional)</span></h3>
@@ -54,12 +57,11 @@
 	<%= render(:partial => 'shared/location_county') %>
 </fieldset>
 
-<h3>Your question</h3> 
+<h3><label for="submitted_question[asked_question]" class="field-textarea">Your question <em class="required">*</em></label></h3> 
 <p class="instructions">Before submitting your question, we search eXtension and show the results.</p>
 <fieldset>
-    <label for="submitted_question[asked_question]" class="field-textarea"> 
-    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :rows => "3", :id => "submitted_question_asked_question", :disabled => @disableform %> <%= error_message_on "submitted_question", "asked_question"%>
-    </label>
+    
+    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :rows => "3", :id => "submitted_question_asked_question", :disabled => @disableform %> 
 </fieldset>
 <p>
  <%= submit_tag "Search for an Answer", :name => "sa", :value => "Search for an Answer", :alt => "Go", :disabled => @disableform %>
