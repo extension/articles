@@ -14,7 +14,7 @@
 #  filtered_list:: an array of symbols that match an entry in FilteredParameter::RECOGNIZED_PARAMETERS to filter 
 #  in the parameters e.g. [:person,:apikey].  For values that are not in FilteredParameter::RECOGNIZED_PARAMETERS 
 #  the array value should be a single keyed hash with options for the datatype to filter and other options
-#  e.g.  [:person,:apikey,{:customparameter => :community}] or [:person,:apikey,{:customparameter => {:datatype => :community, :default => 5}}]
+#  e.g.  [:person,:apikey,{:customparameter => :community}] or [:person,:apikey,{:customparameter => {:datatype => :community}}]
 #  You can also override recognized defaults using the hash.  e.g. [{:person => :string},:apikey]
 #
 #  provided_parameters:: a hash of the key => value pairs to filter - expects ActionController#params
@@ -71,6 +71,7 @@ class ParamsFilter
           end
         end
       else
+        # TODO: honor items that might have a default parameter.
         (class << self; self; end).class_eval do
           define_method name do 
             nil
