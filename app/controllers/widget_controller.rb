@@ -22,13 +22,23 @@ class WidgetController < ApplicationController
     @host_name = request.host_with_port
     render :layout => false
   end
-
+  
   def create_from_widget
     if request.post?
-      
       begin
+        if !params[:submitted_question][:asked_question] or params[:submitted_question][:asked_question].strip == '' or !params[:submitted_question][:submitter_email] or params[:submitted_question][:submitter_email].strip == ''
+          @argument_errors = "You must fill in all fields to submit your question."
+          raise ArgumentError
+        end
+        
+        if params[:submitted_question][:submitter_email] != params[:submitter_email_confirmation]
+          @argument_errors = "Email address does not match the confirmation email address."
+          raise ArgumentError
+        end
+        
         # setup the question to be saved and fill in attributes with parameters
         create_question
+        
         if(!@submitted_question.valid? or !@public_user.valid?)
           @argument_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
           raise ArgumentError
@@ -66,7 +76,7 @@ class WidgetController < ApplicationController
     params[:submitted_question].collect{|key, val| params[:submitted_question][key] = val.strip}
     widget = Widget.find_by_fingerprint(params[:id].strip) if params[:id]
     
-    @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:submitted_question]["submitter_email"]})
+    @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:submitted_question][:submitter_email]})
     @submitted_question = SubmittedQuestion.new(params[:submitted_question])
     @submitted_question.public_user = @public_user
     @submitted_question.widget = widget if widget

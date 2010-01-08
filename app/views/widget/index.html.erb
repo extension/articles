@@ -54,6 +54,11 @@
         <%= text_field(:submitted_question, :submitter_email) %>
     </p>
     
+    <p>
+        <label for="submitter_email_confirmation">Email Confirmation</label>
+        <%= text_field_tag(:submitter_email_confirmation) %>    
+    </p>
+    
     <% if @location %>
     <p>
         <%= hidden_field_tag("location", @location.fipsid) %>
