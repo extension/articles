@@ -6,6 +6,33 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 
+# A class that will parse through the provided_parameters (meant to be ActionController#params) 
+# - and will create instance methods based on the desired filtered_list - calling FilteredParameter#filtered
+# for the actual output - see the FilteredParameter class for more information
+#
+# ==== Method arguments
+#  filtered_list:: an array of symbols that match an entry in FilteredParameter::RECOGNIZED_PARAMETERS to filter 
+#  in the parameters e.g. [:person,:apikey].  For values that are not in FilteredParameter::RECOGNIZED_PARAMETERS 
+#  the array value should be a single keyed hash with options for the datatype to filter and other options
+#  e.g.  [:person,:apikey,{:customparameter => :community}] or [:person,:apikey,{:customparameter => {:datatype => :community, :default => 5}}]
+#  You can also override recognized defaults using the hash.  e.g. [{:person => :string},:apikey]
+#
+#  provided_parameters:: a hash of the key => value pairs to filter - expects ActionController#params
+# ==== Examples
+#
+# >> params = {:person => 'jayoung',:apikey =>'test'}
+# => {:person=>"jayoung", :apikey=>"test"}
+# >>     filteredparams = ParamsFilter.new([:person,:apikey,:community],params)
+# => #<ParamsFilter:0x1065b92d8 @filtered_parameters={:person=>#<FilteredParameter:0x10659d650 ...>
+# >> filteredparams.person
+# => #<User id: 11, login: "jayoung" ...>
+# >> filteredparams.person?
+# => true
+# >> filteredparams.community?
+# => false
+# >> filteredparams.community
+# => nil
+#
 class ParamsFilter
   
   def initialize(filtered_list, provided_parameters)
