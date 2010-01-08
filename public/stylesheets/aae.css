@@ -59,8 +59,10 @@ input.submit[class] {  /* IE ignores [class] */
 #extensionNav .last {border:0;}
 #extensionNav .group span {display:none;}
 #extensionNav .group li {display:inline;}
+#extensionNav li li {font-size:1em;}
 #extensionNav a {padding: 0 .4em; color: #fff;text-decoration: none;}
-#extensionNav ul {display:inline;}
+#extensionNav ul {display:inline; font-size:inherit;}
+#extensionNav a:hover { text-decoration: underline;}
 
 /* general layout
 -----------------------------------------------------------------------------*/
