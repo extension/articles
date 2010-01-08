@@ -52,27 +52,15 @@ input.submit[class] {  /* IE ignores [class] */
 }
 
 
-/* app banner */
-#extensionNav {
-	text-align: center;
-	background: #628f64 url(/images/aae/global_nav_light_green.jpg) repeat-x;
-	padding: .15em 0;
-	margin: 0;
-	border-top: 1px solid #001e36;
-}
-#extensionNav a {
-    padding: 0 .75em;
-    color: #fff;
-    text-decoration: none;
-  }
-#extensionNav li {
-	padding: 0;
-	margin: 0;
-	list-style: none; 
-	display: inline;
-}
-
-
+/* app banner
+-----------------------------------------------------------------------------*/
+#extensionNav {text-align: center; background: #628f64 url(/images/aae/global_nav_light_green.jpg) repeat-x; padding: .15em 0; margin: 0; border-top: 1px solid #001e36;}
+#extensionNav .group {display:inline; padding:0 1em; border-right:1px solid #ccc;}
+#extensionNav .last {border:0;}
+#extensionNav .group span {display:none;}
+#extensionNav .group li {display:inline;}
+#extensionNav a {padding: 0 .4em; color: #fff;text-decoration: none;}
+#extensionNav ul {display:inline;}
 
 /* general layout
 -----------------------------------------------------------------------------*/

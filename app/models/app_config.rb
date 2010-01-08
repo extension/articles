@@ -64,12 +64,17 @@ class AppConfig
     #Default sites
     @@configtable['faq_site'] = 'http://faq.extension.org'
     @@configtable['events_site'] = 'http://events.extension.org'
-    @@configtable['people_site'] = 'https://people.extension.org'
+    @@configtable['people_site'] = 'https://www.extension.org/people/'
     @@configtable['cop_site'] = 'http://cop.extension.org/wiki'
     @@configtable['collaborate_site'] = 'http://collaborate.extension.org/wiki/'
     @@configtable['about_site'] = 'http://about.extension.org/wiki'
     @@configtable['about_blog'] = 'http://about.extension.org/'
     @@configtable['help_wiki'] = 'http://docs.extension.org/wiki/' 
+    @@configtable['public_site'] = 'http://www.extension.org'
+    @@configtable['search_site'] = 'http://search.extension.org'
+    @@configtable['aae_site'] = 'http://www.extension.org/aae/incoming'
+    @@configtable['campus_site'] = 'http://campus.extension.org/ '
+    @@configtable['pdc_site'] = 'http://pdc.extension.org/ '
 
 
     # token timeouts are in days
