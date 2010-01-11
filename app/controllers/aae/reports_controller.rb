@@ -1098,13 +1098,13 @@ class Aae::ReportsController < ApplicationController
 		end
 		
 		@userlist = User.find(:all, :select => "DISTINCT users.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name #{@sortorder.upcase}")
-  
+    assignee_hash={:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}
 		# this will get assigned, handled, and the ratio - assigned could be actual # of assignments minus 1 if the person is currently assigned something
-	  handlingcounts = User.aae_handling_event_count({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}) 
-	  responsecounts = User.aae_response_event_count({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}) 
-		handlingaverages = User.aae_handling_average({:group_by_id => true, :dateinterval => @dateinterval,:limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
-		holdaverages = User.aae_hold_average({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
-		responseaverages = User.aae_response_average({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
+	  handlingcounts = User.aae_handling_event_count(assignee_hash) 
+	  responsecounts = User.aae_response_event_count(assignee_hash) 
+		handlingaverages = User.aae_handling_average(assignee_hash)  
+		holdaverages = User.aae_hold_average(assignee_hash)  
+		responseaverages = User.aae_response_average(assignee_hash)  
 		# let's merge this together
 		@display_list = []
 		@userlist.each do |u|
