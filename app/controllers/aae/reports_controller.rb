@@ -1100,8 +1100,8 @@ class Aae::ReportsController < ApplicationController
 		@userlist = User.find(:all, :select => "DISTINCT users.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name #{@sortorder.upcase}")
   
 		# this will get assigned, handled, and the ratio - assigned could be actual # of assignments minus 1 if the person is currently assigned something
-	   handlingcounts = User.aae_handling_event_count({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}) 
-	   responsecounts = User.aae_response_event_count({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}) 
+	  handlingcounts = User.aae_handling_event_count({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}) 
+	  responsecounts = User.aae_response_event_count({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}) 
 		handlingaverages = User.aae_handling_average({:group_by_id => true, :dateinterval => @dateinterval,:limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
 		holdaverages = User.aae_hold_average({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
 		responseaverages = User.aae_response_average({:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
@@ -1116,7 +1116,7 @@ class Aae::ReportsController < ApplicationController
 			values[:handled_average] = handlingaverages[u.id].nil? ? 0 : handlingaverages[u.id]
 			values[:responded] = responsecounts[u.id].nil? ? 0 : responsecounts[u.id][:responded]
 			values[:response_ratio] = responsecounts[u.id].nil? ? 0 : responsecounts[u.id][:ratio]
-			values[:response_average] = holdaverages[u.id].nil? ? 0 : holdaverages[u.id]
+			values[:response_average] = responseaverages[u.id].nil? ? 0 : responseaverages[u.id]
 			values[:hold_average] = holdaverages[u.id].nil? ? 0 : holdaverages[u.id]
 			@display_list << values
 		end
