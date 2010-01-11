@@ -40,7 +40,7 @@ h1 em {color:#000;}
 
 /* app banner
 -----------------------------------------------------------------------------*/
-#extensionNav {text-align: center; background: #091f47; padding: .15em 0; margin: 0;}
+#extensionNav {text-align: center; background: #091f47; padding: .15em 0 .2em; margin: 0;}
 #extensionNav .group {display:inline; padding:0 1em; border-right:1px solid #666;}
 #extensionNav .last {border:0;}
 #extensionNav .group span {display:none;}
@@ -48,7 +48,7 @@ h1 em {color:#000;}
 #extensionNav li li {font-size:1em;}
 #extensionNav a {padding: 0 .4em; color: #ddd;text-decoration: none;}
 #extensionNav ul {display:inline;}
-
+#extensionNav a:hover { text-decoration: underline;}
 
 
 #pageContainer {width:75%;margin: 0 auto;min-width:840px;background:#fff;}
