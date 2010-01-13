@@ -131,6 +131,9 @@ function processImages() {
          if ( linknode.href.indexOf('Image:') > 1 ) {
             $(img).writeAttribute('title', $(linknode).readAttribute('title'));
             linknode.parentNode.replaceChild(img, linknode);
+         } else if ( linknode.href.indexOf('File:') > 1 ) {
+            $(img).writeAttribute('title', $(linknode).readAttribute('title'));
+            linknode.parentNode.replaceChild(img, linknode);
          }
       }
 	})
