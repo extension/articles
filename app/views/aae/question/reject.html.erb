@@ -13,7 +13,7 @@
 
 <%= error_messages_for :submitted_question %>
 
-<% form_tag :controller => 'aae/question', :action => :reject, :id => @submitted_question do %>
+<% form_tag :controller => 'aae/question', :action => :reject, :squid => @submitted_question do %>
     <p>
         <label for="reject_message">Reason for rejecting question</label>
         <%= text_field_tag :reject_message %>

@@ -222,6 +222,7 @@ class Aae::QuestionController < ApplicationController
   def close_out
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
     @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, :status_state => SubmittedQuestion::STATUS_RESOLVED)
+    
     SubmittedQuestionEvent.log_close(@submitted_question, @currentuser)
     redirect_to :action => :index, :id => @submitted_question.id
   end
@@ -329,43 +330,48 @@ class Aae::QuestionController < ApplicationController
   end
   
   def reject    
-    @submitted_question = SubmittedQuestion.find_by_id(params[:id])
-    @submitter_name = @submitted_question.submitter_fullname
-    if @submitted_question  
-      if @submitted_question.resolved?
-        flash[:failure] = "This question has already been resolved."
-        redirect_to aae_question_url(:id => @submitted_question)
-        return
-      end
-      
-      if request.post?
-        message = params[:reject_message]
-        if message.nil? or message.strip == ''
-          flash.now[:failure] = "Please document a reason for the rejecting this question."
-          render nil
-          return
-        end
-        
-        if @submitted_question.resolved?
-          flash.now[:failure] = "This question has already been resolved."
-          render nil
-          return
-        end   
-
-        @submitted_question.add_resolution(SubmittedQuestion::STATUS_REJECTED, @currentuser, message)
-        
-        if @currentuser.id != @submitted_question.assignee.id
-          Notification.create(:notifytype => Notification::AAE_REJECT, :user => @submitted_question.assignee, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :reject_message => message})  	    
-        end
-        
-        flash[:success] = "The question has been rejected."
-        redirect_to aae_question_url(:id => @submitted_question)
-        
-      end        
-    else
+    filteredparams = ParamsFilter.new([:squid],params)
+    
+    @submitted_question = filteredparams.squid
+    
+    if(@submitted_question.nil?)
       flash[:failure] = "Question not found."
       redirect_to incoming_url
     end
+    
+    @submitter_name = @submitted_question.submitter_fullname
+      
+    if @submitted_question.resolved?
+      flash[:failure] = "This question has already been resolved."
+      redirect_to aae_question_url(:id => @submitted_question)
+      return
+    end
+      
+    if request.post?
+      filteredparams = ParamsFilter.new([:reject_message],params)
+      message = filteredparams.reject_message
+      
+      if message.nil?
+        flash.now[:failure] = "Please document a reason for rejecting this question."
+        render nil
+        return
+      end
+        
+      if @submitted_question.resolved?
+        flash.now[:failure] = "This question has already been resolved."
+        render nil
+        return
+      end   
+
+      @submitted_question.add_resolution(SubmittedQuestion::STATUS_REJECTED, @currentuser, message)
+        
+      if @currentuser.id != @submitted_question.assignee.id
+        Notification.create(:notifytype => Notification::AAE_REJECT, :user => @submitted_question.assignee, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :reject_message => message})  	    
+      end
+        
+      flash[:success] = "The question has been rejected."
+      redirect_to aae_question_url(:id => @submitted_question)  
+    end        
   end
   
   def reactivate

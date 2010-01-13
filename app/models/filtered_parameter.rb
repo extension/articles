@@ -27,6 +27,10 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:order] = :method # caller is responsible for collapsing orderby and sortorder into order
   RECOGNIZED_PARAMETERS[:forcecacheupdate] = {:datatype => :boolean, :default => false} 
   RECOGNIZED_PARAMETERS[:apikey] = :apikey
+  
+  # AaE params
+  RECOGNIZED_PARAMETERS[:squid] = :submitted_question
+  RECOGNIZED_PARAMETERS[:reject_message] = :status_update
     
   # TODO: review this vis-a-vis dateinterval and datefield
   RECOGNIZED_PARAMETERS[:datadate] = :date
@@ -152,6 +156,8 @@ class FilteredParameter
       User.find_by_email_or_extensionid_or_id(value)
     when :category    
       Category.find_by_name_or_id(value)
+    when :submitted_question
+      SubmittedQuestion.find_by_id(value)
     when :activity_application 
       ActivityApplication.find_by_id(value)
     when :activity
@@ -165,6 +171,12 @@ class FilteredParameter
         return value
       else
         return nil # TODO: raise invalid error
+      end
+    when :status_update
+      if !value or value.strip == ''
+        return nil
+      else
+        return value
       end
     when :gdata_alt
       if(ALLOWED_GDATA_ALT_TYPES.include?(value))
