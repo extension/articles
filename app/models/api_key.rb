@@ -16,4 +16,8 @@ class ApiKey < ActiveRecord::Base
     self.keyvalue = Digest::SHA1.hexdigest(AppConfig.configtable['sessionsecret']+self.user_id.to_s+self.name+randval.to_s)
   end
   
+  
+  def self.systemkey
+    find(1)
+  end
 end

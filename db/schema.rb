@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100108164110) do
+ActiveRecord::Schema.define(:version => 20100113160043) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -266,6 +266,15 @@ ActiveRecord::Schema.define(:version => 20100108164110) do
   create_table "db_files", :force => true do |t|
     t.binary "data", :limit => 2147483647
   end
+
+  create_table "directory_item_caches", :force => true do |t|
+    t.integer  "user_id"
+    t.text     "public_attributes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "directory_item_caches", ["user_id"], :name => "index_directory_item_caches_on_user_id"
 
   create_table "events", :force => true do |t|
     t.text     "title"
@@ -836,6 +845,7 @@ ActiveRecord::Schema.define(:version => 20100108164110) do
     t.datetime "retired_at"
     t.text     "additionaldata"
     t.boolean  "aae_responder",                          :default => true
+    t.boolean  "has_public_data",                        :default => false
   end
 
   add_index "users", ["email"], :name => "email", :unique => true

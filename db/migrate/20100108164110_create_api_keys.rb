@@ -12,6 +12,10 @@ class CreateApiKeys < ActiveRecord::Migration
     add_index "api_keys", ["user_id","name"], :unique => true
     add_index "api_keys", ["keyvalue"], :unique => true
     
+    # create a "system" apikey for logging purposes
+    execute "INSERT INTO api_keys (user_id,name,keyvalue,created_by,enabled,created_at) SELECT 1,'system','system',1,1,NOW()"
+    
+    # note, IP address should probably transition to an integer in the future, leaving as string for now
     create_table "api_key_events", :force => true do |t|
       t.integer  "api_key_id"
       t.string   "requestaction"

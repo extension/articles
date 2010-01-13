@@ -35,6 +35,8 @@ class People::ProfileController < ApplicationController
         @privacysetting.update_attribute(:is_public, false)
       end
     end
+    
+    @currentuser.update_public_attributes
          
     respond_to do |format|
       format.js
@@ -50,7 +52,9 @@ class People::ProfileController < ApplicationController
         @socialnetwork.update_attribute(:is_public, false)
       end
     end
-         
+    
+    @currentuser.update_public_attributes
+    
     respond_to do |format|
       format.js
     end
@@ -62,9 +66,7 @@ class People::ProfileController < ApplicationController
     PrivacySetting::KNOWN_ITEMS.each do |item|
       @publicsettings << PrivacySetting.find_or_create_by_user_and_item(@currentuser,item)
     end
-    
-      
-    
+    @currentuser.update_public_attributes
   end
   
   def socialnetworks
@@ -141,7 +143,9 @@ class People::ProfileController < ApplicationController
       
       if @currentuser.save
         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "profile updated")
-        log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')   
+        log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')
+        # update public attributes
+        @currentuser.update_public_attributes   
         if announcechange
           @currentuser.reload
           @currentuser.checkannouncelists
@@ -217,7 +221,9 @@ class People::ProfileController < ApplicationController
     if request.post?
       @currentuser.tag_myself_with(params[:tag_list].strip)
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "interests updated")
-      log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')                    
+      log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')
+      # update attributes
+      @currentuser.update_public_attributes    
       flash[:success] = 'Interests updated.'
       redirect_to(:controller => 'profile', :action => 'me')
     else
