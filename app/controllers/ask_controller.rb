@@ -281,7 +281,13 @@ class AskController < ApplicationController
         redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
         return  
       end
-
+      
+      if !params[:question] or params[:question].strip == ""
+        flash[:warning] = "You must enter text into the question field."
+        redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
+        return
+      end
+      
       previous_question = @submitted_question.asked_question
       @submitted_question.update_attribute(:asked_question, params[:question])
       SubmittedQuestionEvent.log_event({:submitted_question => @submitted_question, :event_state => SubmittedQuestionEvent::EDIT_QUESTION, :additionaldata => @submitted_question.asked_question})
