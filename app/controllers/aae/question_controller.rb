@@ -348,10 +348,10 @@ class Aae::QuestionController < ApplicationController
     end
       
     if request.post?
-      filteredparams = ParamsFilter.new([:reject_message],params)
+      filteredparams = ParamsFilter.new([:reject_message => :string],params)
       message = filteredparams.reject_message
       
-      if message.nil?
+      if message.blank?
         flash.now[:failure] = "Please document a reason for rejecting this question."
         render nil
         return
