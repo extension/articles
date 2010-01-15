@@ -37,6 +37,11 @@ class PreviewArticle
   end
   
   def content
+    # blank content check
+    if(self.original_content.blank?)
+      return ''
+    end
+
     case self.atom_source
     when EXTENSIONORG_WIKI
       self.convert_wiki_links
@@ -44,7 +49,6 @@ class PreviewArticle
     else
       return self.original_content
     end
-
   end
   
   #
@@ -81,9 +85,14 @@ class PreviewArticle
   # to something relative to /preview/pages/
   #
   def convert_wiki_links
+    # if no content, don't bother.
+    if(self.original_content.blank?)
+      return 0
+    end
+    
     wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wiki_previewpage'])
     host_to_make_relative = wikisource_uri.host
-      
+          
     if(@converted_content.nil?)
       @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
     end
@@ -92,7 +101,6 @@ class PreviewArticle
     @converted_content.css('a').each do |anchor|
       if(anchor['href'])
         if(anchor['href'] =~ /^\#/) # in-page anchor, don't change
-          newhref = anchor['href']
           next
         end
         # make sure the URL is valid format
@@ -111,6 +119,14 @@ class PreviewArticle
           else
             newhref =  '/preview/pages/'+ original_uri.path
           end
+          # attach the fragment and the query to the end of it if there was one
+          if(!original_uri.fragment.blank?)
+            newhref += "##{original_uri.fragment}"
+          end
+          if(!original_uri.query.blank?)
+            newhref += "?#{original_uri.query}"
+          end
+          anchor.set_attribute('href',newhref)
           convert_count += 1              
         elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
           # make relative
@@ -119,13 +135,17 @@ class PreviewArticle
           else
             newhref =  '/preview/pages/'+ original_uri.path
           end
+          if(!original_uri.fragment.blank?)
+            newhref += "##{original_uri.fragment}"
+          end
+          if(!original_uri.query.blank?)
+            newhref += "?#{original_uri.query}"
+          end
+          anchor.set_attribute('href',newhref)
           convert_count += 1              
-        else
-          newhref = anchor['href']
         end
-        anchor.set_attribute('href',newhref)
-      end
-    end
+      end # anchor had an href attribute
+    end # loop through the anchor tags
     convert_count
   end
   
