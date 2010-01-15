@@ -119,12 +119,9 @@ class PreviewArticle
           else
             newhref =  '/preview/pages/'+ original_uri.path
           end
-          # attach the fragment and the query to the end of it if there was one
+          # attach the fragment to the end of it if there was one
           if(!original_uri.fragment.blank?)
             newhref += "##{original_uri.fragment}"
-          end
-          if(!original_uri.query.blank?)
-            newhref += "?#{original_uri.query}"
           end
           anchor.set_attribute('href',newhref)
           convert_count += 1              
@@ -135,11 +132,9 @@ class PreviewArticle
           else
             newhref =  '/preview/pages/'+ original_uri.path
           end
+          # attach the fragment to the end of it if there was one
           if(!original_uri.fragment.blank?)
             newhref += "##{original_uri.fragment}"
-          end
-          if(!original_uri.query.blank?)
-            newhref += "?#{original_uri.query}"
           end
           anchor.set_attribute('href',newhref)
           convert_count += 1              

@@ -287,6 +287,7 @@ class Article < ActiveRecord::Base
    end #do
   end
   
+  
   # 
   # converts relative hrefs and hrefs that refer to the feed source
   # to something relative to /pages - this conversion doesn't bother
@@ -330,6 +331,10 @@ class Article < ActiveRecord::Base
           else
             newhref =  '/pages/'+ original_uri.path
           end
+          # attach the fragment to the end of it if there was one
+          if(!original_uri.fragment.blank?)
+            newhref += "##{original_uri.fragment}"
+          end
           anchor.set_attribute('href',newhref)
           convert_links_count += 1
         elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
@@ -340,12 +345,9 @@ class Article < ActiveRecord::Base
           else
             newhref =  '/pages/'+ original_uri.path
           end
-          # attach the fragment and the query to the end of it if there was one
+          # attach the fragment to the end of it if there was one
           if(!original_uri.fragment.blank?)
             newhref += "##{original_uri.fragment}"
-          end
-          if(!original_uri.query.blank?)
-            newhref += "?#{original_uri.query}"
           end
           anchor.set_attribute('href',newhref)
           convert_links_count += 1   
@@ -369,13 +371,6 @@ class Article < ActiveRecord::Base
           if((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
             # make relative
             newsrc = original_uri.path
-            # attach the fragment and the query to the end of it if there was one
-            if(!original_uri.fragment.blank?)
-              newsrc += "##{original_uri.fragment}"
-            end
-            if(!original_uri.query.blank?)
-              newsrc += "?#{original_uri.query}"
-            end
             image.set_attribute('src',newsrc)
             convert_image_count += 1
           end
