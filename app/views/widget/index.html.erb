@@ -9,7 +9,7 @@
         <!--
        body {font-size: 62.5%;}
        body, html {margin:0; font-family: "Arial", "sans-serif"; color: #222; line-height:120%; background:transparent;}
-       p {font-size:1.2em;line-height:1.3em;margin:0 0 .3em;}
+       p {font-size:1.2em;line-height:1.3em;margin:0 0 .1em;}
        
        #myForm {margin:0; border: 1px solid #888;padding: .5em 1em 0;background: #eee;}
        h1 {margin:0;padding:0;float:right;height: 40px;width: 98px;text-indent:-3000px;background: transparent url("http://<%= @host_name %>/images/ask/ex_logo_micro.png") 0 0 no-repeat;}
@@ -20,10 +20,11 @@
        #myFormOutput p#red {color: #ff0000;}
        
        fieldset {margin: 1em 0 .5em;border:0;padding:0;color:#666;}
-       textarea, input, select {width: 95%;margin: 0 0 1em;}
+       textarea, input, select {width: 95%;margin: 0 0 7px;}
        input, textarea {padding: .15em .3em;}
-       p.submit input {width:auto;}
+       p.submit input {width:auto; margin-bottom:4px;}
        label {clear: both;display: block;margin-bottom:.3em;font-weight: bold;font-size:1.2em;}
+       label small {color:#555; font-weight:normal; font-size:.9em;}
        span {line-height: 100%;display: block;font-weight:normal;color: #888;}
        	-->
         </style>
@@ -50,8 +51,9 @@
     </p>
 
     <p>
-        <label for="submitted_question_submitter_email">Email <span>Type it carefully; this is how you'll receive your answer.</span></label>
+        <label for="submitted_question_submitter_email">Email <small>(please type it twice to confirm)</small></label>
         <%= text_field(:submitted_question, :submitter_email) %>
+        <%= text_field_tag(:submitter_email_confirmation) %>
     </p>
     
     <% if @location %>

@@ -31,10 +31,10 @@ class WidgetController < ApplicationController
           raise ArgumentError
         end
         
-        # if params[:submitted_question][:submitter_email] != params[:submitter_email_confirmation]
-        #   @argument_errors = "Email address does not match the confirmation email address."
-        #   raise ArgumentError
-        # end
+        if params[:submitted_question][:submitter_email] != params[:submitter_email_confirmation]
+          @argument_errors = "Email address does not match the confirmation email address."
+          raise ArgumentError
+        end
         
         # setup the question to be saved and fill in attributes with parameters
         create_question
