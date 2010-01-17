@@ -88,6 +88,12 @@ ActionController::Routing::Routes.draw do |map|
   map.view_widget 'aae/widgets/view/:id', :controller => 'aae/widgets', :action => 'view'
   map.widget_home 'aae/widgets', :controller => 'aae/widgets', :action => 'index'
   
+
+  ### Search Stuff ###
+
+  map.search 'search', :controller => 'search', :action => 'index'
+  map.search_about 'search/about', :controller => 'search', :action => 'about'
+
   #################################################################
   ### pubsite routes ###
   map.connect 'main/:action', :controller => 'main'

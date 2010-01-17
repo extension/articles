@@ -1,0 +1,28 @@
+<!-- Google Search Result Snippet Begins -->
+<div id="search_results"></div>
+<script type="text/javascript">
+  var googleSearchIframeName = "search_results";
+  var googleSearchFormName = "search";
+  var googleSearchFrameWidth = 700;
+  var googleSearchFrameWidth = 700;
+  var googleSearchFrameborder = 0;
+  var googleSearchDomain = "www.google.com";
+  var googleSearchPath = "/cse";
+</script>
+<script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
+<!-- Google Search Result Snippet Ends -->
+
+<!-- fix the height so it dunt look stupido -->
+<script type="text/javascript">
+  var googleSearchFrame = document.getElementsByName("googleSearchFrame");
+  if (googleSearchFrame[0]) {
+      // Firefox, Opera, ...
+      googleSearchFrame[0].style.height = "80em";
+  } else {
+      // IE - which has a misbehaving getElementsByName - assumin only one iframe
+      var googleSearchFrame = document.getElementsByTagName("iframe");
+      if (googleSearchFrame[0]) {
+          googleSearchFrame[0].style.height = "85em";
+      }
+  }
+</script>
