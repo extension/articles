@@ -9,7 +9,7 @@
       }
       var b = function() {
          if (q.value == '') {
-            q.style.background = '#FFFFFF url(public/images/google_custom_search_watermark.gif) left no-repeat';
+            q.style.background = '#FFFFFF url(/images/search/google_custom_search_watermark.gif) left no-repeat';
          }
       };
       var f = function() {

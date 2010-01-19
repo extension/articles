@@ -1,30 +1,12 @@
-
-/*
-To make the site font-size friendly for all users, set the font-size 
-once with an absolute size. Then set other font sizes relatively.
-This way all browsers (including IE) can resize the font size if necessary. 
-note: IE5 renders fonts one size smaller than it should, so we correct for it using a css hack.
-*/
-
 body {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: small;
 	color: #000;
-	line-height: 1.2em;
 	margin: 0 2em 2em;
-	background: #515056;
     background: #7a8096 url(/images/search/purple-bg.png) repeat-x;
 }
-/* correct font-size for IE5/Win */
-* html body {
-	font-size: x-small; /* for IE5/Win */
-	f\ont-size: small; /* hack for IE6,7 */
-}
-
 
 #wrapper {
     margin: 0 auto 2em;
-/*    border: solid #ccc 1px;*/
     border-top: none;
     width: 90%;
     max-width: 900px;
@@ -40,12 +22,11 @@ body {
 }
 
 #masthead {
-    margin: 0 0 0;
+    margin: 0;
     padding-top: .25em;
     width: 100%;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 150%;
-    font-weight: 400;
+    font-size: 1.8em;
     height: 114px;
     color: #fff;
     background: #ccc url(/images/search/extension_banner_v1.png) top right no-repeat;
@@ -65,7 +46,7 @@ body {
     background: transparent;
 }
 #nav li {
-display: inline;
+    display: inline;
     margin-right: .45em;
 }
 #nav a {
@@ -85,8 +66,6 @@ display: inline;
     color: #7b000a;
 }
 #content {
- /*   border: 1px solid #ccc;*/
-/*    min-width: 600px;*/
     padding: 0 2em 1em;
     width: 45em;
 }
@@ -94,7 +73,6 @@ display: inline;
 #footer p {
     color: #aaa;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 100%;
     padding: 0 1em 1em;
 }
 
@@ -120,7 +98,6 @@ ul {
 -----------------------------------------------------------------------------*/
 
 p {
-	font-size: 110%;
 	line-height: 1.5em;
 	color: #111;
 }
@@ -135,28 +112,16 @@ h1, h2, h3, h4, h5 {
 	font-weight: 400;
 }
 
-h1 { font-size: 140%; padding-bottom: 5px; margin: 0 0 10px 0; }
-h2 { font-size: 130%; }
-h3 { font-size: 110%; }
-h4 { font-size: 105%; }
-h5 { font-size: 100%; }
+#home h1 { font-size: 2em; padding-bottom: 5px; margin: 0 0 10px 0; }
+#home h2 { font-size: 3em;}
+#home h3 { font-size: 2.5em;}
+#home p { font-size: 1.5em;}
 
-
-h2 {
-    color: #7b000a;
-    font-size: 150%;
-}
+h2 {color: #7b000a;}
 h4.title {
     font-family: Helvetica, "Palatino", Georgia, Garamond, Times, serif;
-    font-size: 170%;
     font-weight: 500;
     margin: 0;
-}
-
-.meta {
-    font-size: 95%;
-    color: #888;
-    margin: 0 0 .2em 0;
 }
 
 .body {
@@ -239,7 +204,6 @@ pre {
   text-align: left;
   font-weight: bold;
   padding: 5px 5px 5px 15px;
-  font-size: 12px;
   margin: -7px;
   background-color: #c00;
   color: #fff;
@@ -252,7 +216,6 @@ pre {
 }
 
 #errorExplanation ul li {
-  font-size: 12px;
   list-style: square;
   list-style-type: none;
 }
@@ -261,73 +224,10 @@ div.uploadStatus {
   margin: 5px;
 }
 
-div.progressBar {
-  margin: 5px;
-}
 
-div.progressBar div.border {
-  background-color: #fff;
-  border: 1px solid grey;
-  width: 100%;
-}
-
-div.progressBar div.background {
-  background-color: #333;
-  height: 18px;
-  width: 0%;
-}
+.clear {clear: both;}
 
 
-
-.left_column {
-    float: left;
-    clear: left;
-/*    position: relative;*/
-    width: 48%;
-    border: 1px solid #7d8200;
-    background: transparent url(/images/search/mockup_left_arrow.png) no-repeat;
-}
-
-.right_column {
-    float: right;
-    clear: right;
-/*    margin-left: 48%; */
-/*    left: 50%;*/
-    position: relative;
-    right: 0;
-/*    top: 0;*/
-    width: 46%;
-    border: 2px solid #003e85;
-    background: transparent url(/images/search/mockup_right_arrow.png) top right no-repeat; /*#f8e8eb*/
-}
-.right_column * {
-    position: relative;
-    border: 1px solid #fff;
-    clear: none;
-}
-.clear {
-    clear: both;
-}
-#listing {
-    position: relative;
-    border: 1px solid pink;
-}
-
-#national_column {
-/*    border: 1px solid red;*/
-    float: left;
-    width: 48%;
-    height: 10em;
-    background: #f4f4f4;
-/*    background: transparent url(/images/search/mockup_left_arrow.png) no-repeat;*/
-}
-
-#local_column {
-/*    border: 1px solid blue;*/
-    float: right;
-    width: 48%;
-/*    background: transparent url(/images/search/mockup_right_arrow.png) top right no-repeat;*/
-}
 .locations li {
     float: left;
     margin-right: .5em;
@@ -345,18 +245,13 @@ div.progressBar div.background {
 }
 #search label { 
     font-family:"Lucida Sans Unicode", "Luci  Grande", sans-serif;
-/*    line-height: 2em;*/
-/*    display: none;*/
 }
 input { 
   border: 1px solid #666; 
-/*  background: #ebebeb; */
   margin: 0 .25em; 
-  padding: 2px 4px; 
+  padding: 2px 4px;
 } 
-input:focus { 
-/*  background: #fff; */
-}
+input.text {width:20em; font-size:1.1em;}
 #search_results {
     padding: 0 1.25em;
 
@@ -387,11 +282,9 @@ text-decoration: underline;
 
 #search_results li a:link {
     color: #0439ac;
-/*    background: #ffffd6;*/
 }
 #search_results li a:visited {
     color: #0439ac;
-/*    background: #ffffd6;*/
 }
 #search_results li a:hover {
     color: #000;
@@ -410,13 +303,11 @@ text-decoration: underline;
 #search_results h4 {
     margin: 0;
     padding: 0;
-    font-size: 140%;
 }
 #search_results p {
     margin: 0 0 1.4em;
     padding: 0;
     color: #333;
-    font-size: 105%;
     overflow: hidden;
     white-space: nowrap;
     position: relative;
@@ -483,26 +374,19 @@ text-decoration: underline;
 /*    border: 1px solid;*/
 }
 #home h2 {
-    font-size: 230%;
     margin:0;
     padding:0;
 }
 #home h3 {
-    font-size: 180%;
     color: #7b000a;
     margin:0;
     padding:0;
 }
 
-#home p {
-    font-size: 120%;
-}
 #home #search {
     margin: 0 auto;
     padding:0;
-/*    padding: 1.5em;*/
     text-align: center;
- /*   display: inline;*/
 }
 #home #search input {
     margin-top: 1em;
