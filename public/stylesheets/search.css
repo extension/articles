@@ -14,21 +14,12 @@ body {
     background: #fff;
 }
 
-.article {
-    margin: 0 0 2.5em;
-    width: 85%;
-    border-bottom: 1px solid #ddd;
-    padding-left: 1em;
-}
-
 #masthead {
     margin: 0;
     padding-top: .25em;
     width: 100%;
-    font-family: Arial, Helvetica, sans-serif;
     font-size: 1.8em;
     height: 114px;
-    color: #fff;
     background: #ccc url(/images/search/extension_banner_v1.png) top right no-repeat;
 }
 #masthead a {
@@ -37,23 +28,18 @@ body {
 }
 
 #nav {
-    position: relative;
-    color: #fff;
-    margin: -1.9em 0 0;
     padding: .25em 1em 1em;
     height: 1.5em;
-    background: none;
-    background: transparent;
+    text-align:center;
 }
 #nav li {
     display: inline;
     margin-right: .45em;
+    font-size:1.4em;
 }
 #nav a {
-    color: #fff;
-    background: #847e84;
     text-decoration: none;
-    padding: .3em .6em .5em;
+    padding: .3em .25em .5em;
     font-family: "Lucida Grande", sans-serif;
 }
 #nav a:hover {
@@ -61,34 +47,16 @@ body {
     background: #fff;
     text-decoration: underline;
 }
-#nav li.on a {
-    background: #fff;
-    color: #7b000a;
-}
 #content {
-    padding: 0 2em 1em;
-    width: 45em;
+    padding: 1em 3em 1em;
 }
 
 #footer p {
     color: #aaa;
+    text-align:center;
     font-family: Arial, Helvetica, sans-serif;
     padding: 0 1em 1em;
 }
-
-
-/* reset all margins, padding, and borders */
-* { margin: 0; padding: 0; }
-img { border: 0; }
-
-/* Put it back on certain elements */
-h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, fieldset, table, ul {
-	margin: 0 0 1em;
-}
-ul {
-    list-style-type: none;
-}
-
 
 
 
@@ -100,6 +68,7 @@ ul {
 p {
 	line-height: 1.5em;
 	color: #111;
+	font-size:1.5em;
 }
 
 h1, h2, h3, h4, h5 {
@@ -113,38 +82,17 @@ h1, h2, h3, h4, h5 {
 }
 
 #home h1 { font-size: 2em; padding-bottom: 5px; margin: 0 0 10px 0; }
-#home h2 { font-size: 3em;}
-#home h3 { font-size: 2.5em;}
+#home h2 { font-size: 3em; margin:0;}
+#home h3 { font-size: 2.5em; margin:0;}
 #home p { font-size: 1.5em;}
 
-h2 {color: #7b000a;}
+h1, h2, h3 {color: #7b000a;}
 h4.title {
     font-family: Helvetica, "Palatino", Georgia, Garamond, Times, serif;
     font-weight: 500;
     margin: 0;
 }
 
-.body {
-    margin: 0 0 .7em;
-}
-.summary {
-    margin: 0 0 .2em;
-}
-
-.actions,
-.categories {
-    margin: 0 0 .75em 0;
-/*    border: 1px solid #ddd;*/
-}
-.actions li {
-    color: #666;
-    padding: 0 .35em .4em 0;
-}
-.categories li {
-    display: inline;
-    margin: 0;
-    padding: 0 .35em .2em 0;
-}
 /* Links
 -----------------------------------------------------------------------------*/
 
@@ -249,9 +197,11 @@ div.uploadStatus {
 input { 
   border: 1px solid #666; 
   margin: 0 .25em; 
-  padding: 2px 4px;
+  padding: .25em .4em;
+  font-size:1.5em;
 } 
-input.text {width:20em; font-size:1.1em;}
+input.text {width:24em; }
+
 #search_results {
     padding: 0 1.25em;
 
@@ -270,7 +220,6 @@ right: 0;
 display: block;
 height: 1.5em;
 width: 200px;
-/*border: 1px solid red;*/
 }
 #search_results ul {
     margin-top: 1em;
@@ -314,47 +263,6 @@ text-decoration: underline;
     z-index: 10;
 }
 
-
-#articles {
-    float: left;
-    width: 75%;
-/*    border: 1px solid red;*/
-}
-#category_list {
-    float: right;
-    width: 23%;
-}
-
-.readmore  {
-    font-size: 100%;
-    font-family: Arial, Helvetica, sans-serif;
-    
-}
-.readmore a {
-    color: #000;
-}
-
-
-#account_actions {
-/*    border: 1px solid red;*/
-    margin: .2em .5em 0 0;
-    float: right;
-}
-#account_actions li {
-    display: inline;
-/*    border: 1px solid red;*/
-    list-style-type: none;
-    margin-right: .35em;
-}
-#account_actions a:link,
-#account_actions a:visited {
-    color: #666;
-}
-.usericon {
-    padding-left: 18px;
-    background: #fff url(../images/user.gif) no-repeat;
-}
-
 #loading {
     float: right;
 }
@@ -371,24 +279,14 @@ text-decoration: underline;
     width: 75%;
     padding-top: 2em;
     text-align: center;
-/*    border: 1px solid;*/
-}
-#home h2 {
-    margin:0;
-    padding:0;
-}
-#home h3 {
-    color: #7b000a;
-    margin:0;
-    padding:0;
 }
 
-#home #search {
+#search {
     margin: 0 auto;
     padding:0;
     text-align: center;
 }
-#home #search input {
+#search input {
     margin-top: 1em;
     margin-bottom: 1em;
 }
