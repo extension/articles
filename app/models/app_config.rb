@@ -130,8 +130,10 @@ class AppConfig
     # Akismet spam blocker key
     @@configtable['akismet_key'] = 'default'
     
-		# Google CSE ID
-		@@configtable['goog_cse_key'] = '018217748441857184963:boqsgyytwwe'
+		# Google CSE ID 
+		@@configtable['old_goog_cse_key'] = '018217748441857184963:boqsgyytwwe'
+		@@configtable['goog_cse_key'] = '010978498346658208303:rljk-euizvq'
+		
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
     @@configtable['faq_create_url'] = 'http://faq.extension.org/expert/new_faq'
