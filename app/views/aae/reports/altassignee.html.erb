@@ -1,0 +1,92 @@
+<% @page_title = "Assignee Report"%>
+
+<% genstring = "Assignee Report for Questions Assigned in Ask an Expert"%>
+
+<div id="report">
+    <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %>  <%= @page_title %></p>
+    
+<h1><%= genstring %></h1>
+<p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page: <%= @filter_string%></p>
+
+<%= render(:partial => 'seldates') %>
+
+<!--<p>Click on column header links to sort.</p>-->
+<table cellspacing="0" class="stats" summary="<%= genstring %>">
+	<% even = false %> 
+    <tr>
+	    <!--<th scope="col">Assignee Name</th> -->
+	    <th scope="col"><%= link_to "Assignee Name" , { :action => 'common_sort_columns', :field=>'State' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo }%> </th>
+	   <!--<th scope="col">Questions Assigned <br>(over time period)</br></th>-->
+        <th scope="col"><%= link_to "Assignments" , { :action => 'common_sort_columns', :field=>'assgn' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo }%> <br/> (over time period)</th>
+        
+       <!--<th scope="col"> Not Completed by Assignee</th>-->
+      <!--   <th scope="col"><%= link_to "Not Completed by Assignee",{ :action => 'common_sort_columns', :field=>'assgninc' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %></th>-->
+        
+         <th scope="col"><%= link_to "Handled",{ :action => 'common_sort_columns', :field=>'handles' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %></th>
+ 
+        <th scope="col"><%= link_to "Handling Ratio",{ :action => 'common_sort_columns', :field=>'hratio' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %></th>
+		
+       <!-- <th scope="col">Currently Open</th>-->
+        <!--   <th scope="col"><%= link_to "Currently Open", { :action => 'common_sort_columns', :field=>'num_current_q' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo }%></th>-->
+
+
+          <th scope="col"><%= link_to "Avg Handling",{ :action => 'common_sort_columns', :field=>'avgshandle' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %> <br/> (hours)</th>
+
+      	<th scope="col"><%= link_to "Responded",{ :action => 'common_sort_columns', :field=>'responds' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %></th>
+ 
+        <th scope="col"><%= link_to "Response Ratio",{ :action => 'common_sort_columns', :field=>'rratio' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %></th>
+	
+
+      <!--  <th scope="col">Average Response Time (hours)<br> where Assignee Answered</br></th> -->
+         <th scope="col"><%= link_to "Avg Response (hours)",{ :action => 'common_sort_columns', :field=>'avc' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %> <br/> where Assignee Answered</th>
+        
+		 <!--   <th scope="col">Average Time Handling (hours)<br> anytime Assigned</br></th>-->
+	        <th scope="col"><%= link_to "Avg Held (hours)",{ :action => 'common_sort_columns', :field=>'avgsheld' ,:type => @type, :report => 'altassignee', :sdir => (params[:sdir] != "d") ? "d" : "a",:from => @dateFrom, :to=>@dateTo  } %><br/>all Assignments</th>
+
+          
+     </tr>
+
+<% if @typelist%>
+  
+  <% @typelist.each do |u| %>
+ 
+  <% number_questions_assigned = @assgn[u[0]] %>
+  <% number_questions_handled = @handles[u[0]] %>
+  <% avg_resp_time = @avc[u[0]]%>
+  <% avg_held_time = @avgsheld[u[0]]%>
+  <% num_response = @responds[u[0]]%>
+  <% handling_ratio = @hratio[u[0]]%>
+  <% response_ratio = @rratio[u[0]]%>
+  <% avg_handle_time = @avgshandle[u[0]]%>
+ 
+  <% empty = ' class="empty"' %>
+
+<tr <%= ' class="shaded"' if even %>>
+    <td class="left">
+	
+	          <%= h(u[0])%>
+		 
+     </td>
+    
+     <td><%= ((@assgn[u[0]] && @assgn[u[0]] !=0) ? number_questions_assigned : 0) %></td>
+      <td><%= ((@handles[u[0]] && @handles[u[0]] != 0) ? number_questions_handled : 0)%></td>
+       <td class="completions" style="background-position: -<%=((100 - (handling_ratio*100).to_i) * 2) %>px 0"><%= ((handling_ratio && handling_ratio !=0) ? number_to_percentage(handling_ratio*100, :precision => 0) : " ") %></td>
+      <td><%= ((@avgshandle[u[0]] && @avgshandle[u[0]] != 0) ? "%.2f" % avg_handle_time : " ")%></td>
+     <td><%= ((@responds[u[0]] && @responds[u[0]] != 0) ? num_response : 0)%></td>
+	 <td class="completions" style="background-position: -<%=((100 - (response_ratio*100).to_i) * 2) %>px 0"><%= ((response_ratio && response_ratio !=0) ? number_to_percentage(response_ratio*100, :precision => 0) : " ") %></td>
+     <td><%= ((@avc[u[0]] && @avc[u[0]] != 0) ? "%.2f" % avg_resp_time : " ")%></td>
+     <td><%= ((@avgsheld[u[0]] && @avgsheld[u[0]] != 0) ? "%.2f" % avg_held_time : " ")%></td>
+   
+</tr>
+	<% if even 
+         even = false 
+     else 
+         even = true 
+     end %>
+	
+   <% end %>
+<%end %>
+
+ </table>
+
+</div>
