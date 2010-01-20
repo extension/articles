@@ -27,8 +27,22 @@ body {
     padding-left: .25em;
 }
 
-#nav {
-    padding: .25em 1em 1em;
+
+#content {
+    padding: 1em 3em 1em;
+}
+
+#footer p {color: #aaa;padding: 0 1em 1em;}
+
+#footer p{font-size:1.4em; margin-bottom:0;}
+#footer ul { position: relative; margin: 0 auto; padding:0; text-align: right; list-style: none;top:-2.2em;}
+#footer ul li { margin:0; display: inline; padding-right: .5em; padding-left: .5em;}
+#footer ul li.last {border:0;}
+#footer ul li a { text-decoration: underline; text-transform: lowercase; margin:0;padding:0;}
+#footer ul li a:hover {text-decoration: underline;}
+
+#footer #nav {
+    padding: .25em 1em 2em;
     height: 1.5em;
     text-align:center;
 }
@@ -47,18 +61,6 @@ body {
     background: #fff;
     text-decoration: underline;
 }
-#content {
-    padding: 1em 3em 1em;
-}
-
-#footer p {
-    color: #aaa;
-    text-align:center;
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 0 1em 1em;
-}
-
-
 
 
 
@@ -123,6 +125,8 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 .pagination span {
     margin-right: 1em;
 }
+
+
 
 
 
