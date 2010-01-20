@@ -21,18 +21,20 @@ body {
     font-size: 1.8em;
     height: 114px;
     background: #ccc url(/images/search/extension_banner_v1.png) top right no-repeat;
+    text-align:left;
 }
 #masthead a {
+    display:block;
+    height: 114px;
     color: #555;
     padding-left: .25em;
 }
 
 
-#content {
-    padding: 1em 3em 1em;
-}
+#content {padding: 1em 3em;}
 
-#footer p {color: #aaa;padding: 0 1em 1em;}
+#footer {padding: 1em 3em;}
+#footer p {color: #aaa; padding: 0 0 1em;}
 
 #footer p{font-size:1.4em; margin-bottom:0;}
 #footer ul { position: relative; margin: 0 auto; padding:0; text-align: right; list-style: none;top:-2.2em;}
@@ -75,20 +77,22 @@ p {
 
 h1, h2, h3, h4, h5 {
 	margin: .5em 0 .5em 0;
-	padding: 0;	
-	font-family: Georgia, Garamond, Times, serif;
+	padding: 0;
 	font-family: Arial, Helvetica, sans-serif;
 	color: #888;
 	line-height: 120%;
 	font-weight: 400;
 }
 
-#home h1 { font-size: 2em; padding-bottom: 5px; margin: 0 0 10px 0; }
-#home h2 { font-size: 3em; margin:0;}
-#home h3 { font-size: 2.5em; margin:0;}
-#home p { font-size: 1.5em;}
-
 h1, h2, h3 {color: #7b000a;}
+#promo h1 { font-size: 3em; text-align:center; margin:.25em 0 0;}
+#promo h2 { font-size: 2.5em; margin:0; text-align:center;}
+#promo p { font-size: 1.5em; text-align:center;}
+
+
+h3 { font-size: 1.9em; margin:2em 0 0; }
+
+
 h4.title {
     font-family: Helvetica, "Palatino", Georgia, Garamond, Times, serif;
     font-weight: 500;
@@ -194,6 +198,8 @@ div.uploadStatus {
     padding: .75em 1em 1em 1em;
     border-bottom: 2px solid #f7ddc2;
     background: #fff3e8 url(/images/search/orange_fade.png) top repeat-x;
+    margin-bottom:4em;
+    
 }
 #search label { 
     font-family:"Lucida Sans Unicode", "Luci  Grande", sans-serif;
