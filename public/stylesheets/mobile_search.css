@@ -25,9 +25,15 @@ fieldset {border: 0;}
 h1#masthead {margin: 5px 0 8px; padding:0; height: 50px;text-indent: -9000px;background: url(/images/search/search_logo_mobile.png) top 5% no-repeat;}
 h1#masthead a {display: block;height: 50px;}
 
-h2 {font-size:1.5em; color:#7b000a; text-align:center; margin:0 0 .25em; clear:both;}
-h3 {font-size:1em; color:#7b000a; text-align:center;clear:both; margin:0;}
+h1 {font-size:1.5em; color:#7b000a; text-align:center; margin:0 0 .25em; clear:both;}
+h2 {font-size:1em; color:#7b000a; text-align:center;clear:both; margin:0;}
 
+
+#footer p{margin-bottom:0; text-align:left;}
+#footer ul { margin: 0 auto; padding:0; list-style: none;top:-2.2em;}
+#footer ul li { margin:0; padding-right: .5em; padding-left: .5em; text-align:left;}
+#footer ul li a { text-decoration: underline; text-transform: lowercase; margin:0;padding:0;}
+#footer ul li a:hover {text-decoration: underline;}
 
 
 /* Forms
