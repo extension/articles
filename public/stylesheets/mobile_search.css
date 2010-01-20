@@ -12,6 +12,9 @@ p {word-wrap: break-word;}
 #nav {float:left;background: #eee; margin: 0 0 4px; padding:0;width:100%;color:#333;}
 #nav li {float:left; background: #eee;list-style:none; padding:2px 5px; font-weight:bold;}
 #nav li a {font-weight:normal;text-decoration:none;color:#666;font-size:1em;}
+#home p {margin:.25em 10px 1em;}
+
+#search_results iframe {width:300px !important;}
 
 input {display:block;}
 input, option, select, textarea {font-size: 1em;margin-bottom:6px;}
@@ -29,7 +32,7 @@ h3 {font-size:1em; color:#7b000a; text-align:center;clear:both; margin:0;}
 
 /* Forms
 -----------------------------------------------------------------------------*/
-form {padding:0;} /* offset form margins by #content padding */
+form {padding:0;} 
 fieldset {border:0; padding:0; margin:0;clear:both;}
 input {display:block;}
 input, option, select, textarea {font-size: 1em;margin-bottom:6px;}
