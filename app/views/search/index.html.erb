@@ -1,28 +1,40 @@
-<!-- Google Search Result Snippet Begins -->
-<div id="search_results"></div>
-<script type="text/javascript">
-  var googleSearchIframeName = "search_results";
-  var googleSearchFormName = "search";
-  var googleSearchFrameWidth = 700;
-  var googleSearchFrameWidth = 700;
-  var googleSearchFrameborder = 0;
-  var googleSearchDomain = "www.google.com";
-  var googleSearchPath = "/cse";
-</script>
-<script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
-<!-- Google Search Result Snippet Ends -->
+<%- if @noresults -%>
+  <div id="home">
+    <h2>One Search</h2>
+    <h3>Over <strong>1100</strong> Cooperative Extension Sites</h3>
+    <p>Easy search access to resources provided by your Land-Grant institutions</p>
+    <%= render(:partial => "searchbox") %>
+    <h2>About Cooperative Extension Search</h2>
 
-<!-- fix the height so it dunt look stupido -->
-<script type="text/javascript">
-  var googleSearchFrame = document.getElementsByName("googleSearchFrame");
-  if (googleSearchFrame[0]) {
-      // Firefox, Opera, ...
-      googleSearchFrame[0].style.height = "95em";
-  } else {
-      // IE - which has a misbehaving getElementsByName - assumin only one iframe
-      var googleSearchFrame = document.getElementsByTagName("iframe");
-      if (googleSearchFrame[0]) {
-          googleSearchFrame[0].style.height = "95em";
-      }
-  }
-</script>
+    <p>This service allows you to search the resources provided by your <%= link_to("Cooperative Extension Service", "http://en.wikipedia.org/wiki/Cooperative_extension_service") %> using a <%= link_to("Google Custom Search Engine", "http://www.google.com/cse/") %> that includes many of the Cooperative Extension web sites provided by your Land-Grant institutions.</p>
+    <%- cse_prefix, cse_suffix = AppConfig.configtable['goog_cse_key'].split(':') -%>
+    <p>You can <%= link_to("add this search box to your Google Homepage", "http://fusion.google.com/add?moduleurl=http%3A%2F%2Fwww.google.com%2Fcoop/api/#{cse_prefix}/cse/#{cse_suffix}/gadget") %> or <%= link_to("add it to your blog or webpage", "http://gmodules.com/ig/creator?url=http%3A%2F%2Fwww.google.com%2Fcoop/api/#{cse_prefix}/cse/#{cse_suffix}/gadget") %>.  Just follow the instructions provided by Google.</p>
+  </div>
+<%- else -%>
+  <%= render(:partial => "searchbox") %>    
+  <div id="search_results"></div>
+  <script type="text/javascript">
+    var googleSearchIframeName = "search_results";
+    var googleSearchFormName = "search";
+    var googleSearchFrameWidth = 700;
+    var googleSearchFrameWidth = 700;
+    var googleSearchFrameborder = 0;
+    var googleSearchDomain = "www.google.com";
+    var googleSearchPath = "/cse";
+  </script>
+  <script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
+  <!-- fix the height so it dunt look stupido -->
+  <script type="text/javascript">
+    var googleSearchFrame = document.getElementsByName("googleSearchFrame");
+    if (googleSearchFrame[0]) {
+        // Firefox, Opera, ...
+        googleSearchFrame[0].style.height = "95em";
+    } else {
+        // IE - which has a misbehaving getElementsByName - assumin only one iframe
+        var googleSearchFrame = document.getElementsByTagName("iframe");
+        if (googleSearchFrame[0]) {
+            googleSearchFrame[0].style.height = "95em";
+        }
+    }
+  </script>
+<%- end -%>

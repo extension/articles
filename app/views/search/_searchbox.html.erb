@@ -1,0 +1,10 @@
+<!-- Google CSE Search Box Begins -->
+<form id="search" action="<%= url_for(:action => 'index') %>">
+    <fieldset>
+   <input name="q" type="text" class="text"/>
+   <input type="submit" name="sa" value="Search" />
+   <input type="hidden" name="cx" value="<%= AppConfig.configtable['goog_cse_key'] %>" />
+   <input type="hidden" name="cof" value="FORID:11" />
+   </fieldset>
+</form>
+<!-- Google CSE Search Box Ends -->
