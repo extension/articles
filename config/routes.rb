@@ -21,6 +21,8 @@ ActionController::Routing::Routes.draw do |map|
     people.connect 'numbers/:action', :controller => :numbers
     people.connect 'invite/:invite', :controller => :signup, :action => :readme
     people.connect 'sp/:token', :controller => :account, :action => :set_password
+    people.apikeys 'profile/apikeys', :controller => :profile, :action => :apikeys
+    
     people.resources :lists, :collection => {:showpost => :get, :all => :get, :managed => :get, :nonmanaged => :get, :postactivity => :get, :postinghelp => :get, :about => :get}, :member => { :posts => :get, :subscriptionlist => :get , :ownerlist => :get, }
     people.resources :communities, :collection => { :downloadlists => :get,  :filter => :get, :newest => :get, :mine => :get, :browse => :get, :tags => :get, :findcommunity => :get},
                               :member => {:userlist => :get, :invite => :any, :change_my_connection => :post, :modify_user_connection => :post, :xhrfinduser => :post, :editlists => :any }

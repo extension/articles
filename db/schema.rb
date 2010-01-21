@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100113160043) do
+ActiveRecord::Schema.define(:version => 20100120130140) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -237,6 +237,19 @@ ActiveRecord::Schema.define(:version => 20100113160043) do
 
   add_index "content_buckets", ["name"], :name => "index_content_buckets_on_name", :unique => true
 
+  create_table "content_links", :force => true do |t|
+    t.integer  "linktype"
+    t.integer  "content_id"
+    t.string   "content_type"
+    t.string   "host"
+    t.string   "source_host"
+    t.string   "path"
+    t.string   "original_fingerprint"
+    t.text     "original_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "counties", :force => true do |t|
     t.integer "fipsid",                    :default => 0,  :null => false
     t.integer "location_id",               :default => 0,  :null => false
@@ -401,6 +414,14 @@ ActiveRecord::Schema.define(:version => 20100113160043) do
   add_index "invitations", ["email"], :name => "email"
   add_index "invitations", ["token"], :name => "tokenlookup"
   add_index "invitations", ["user_id"], :name => "index_invitations_on_user_id"
+
+  create_table "linkings", :force => true do |t|
+    t.integer  "content_link_id"
+    t.integer  "contentitem_id"
+    t.string   "contentitem_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "list_owners", :force => true do |t|
     t.string   "email",          :limit => 96
@@ -845,7 +866,6 @@ ActiveRecord::Schema.define(:version => 20100113160043) do
     t.datetime "retired_at"
     t.text     "additionaldata"
     t.boolean  "aae_responder",                          :default => true
-    t.boolean  "has_public_data",                        :default => false
   end
 
   add_index "users", ["email"], :name => "email", :unique => true

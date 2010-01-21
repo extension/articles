@@ -19,7 +19,7 @@ class Article < ActiveRecord::Base
    
   before_create :store_original_url
   after_create :store_content
-  after_create :store_new_url
+  after_create :store_new_url, :create_content_link
   before_update :check_content
   
   has_content_tags
@@ -29,7 +29,10 @@ class Article < ActiveRecord::Base
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
-   
+  
+  has_one :link, :class_name => "ContentLink", :as => :content  # this is the link for this article
+  # Note: has_many :content_links - outbound links using the has_many_polymorphs for content_links
+
   def put_in_buckets(categoryarray)
    namearray = []
    categoryarray.each do |name|
@@ -171,7 +174,7 @@ class Article < ActiveRecord::Base
     return returndata
   end
   
-  def id_and_link
+  def id_and_link(only_path = false)
    default_url_options[:host] = AppConfig.get_url_host
    default_url_options[:protocol] = AppConfig.get_url_protocol
    if(default_port = AppConfig.get_url_port)
@@ -179,11 +182,15 @@ class Article < ActiveRecord::Base
    end
    
    if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
-    article_page_url(:id => self.id)
+    article_page_url(:id => self.id, :only_path => only_path)
    else
-    wiki_page_url(:title => self.title_url)
+    wiki_page_url(:title => self.title_url, :only_path => only_path)
    end
+  end
   
+  # called by ContentLink#href_url to return an href to this article
+  def href_url
+    self.id_and_link(true)
   end
   
   def to_atom_entry
@@ -287,6 +294,106 @@ class Article < ActiveRecord::Base
    end #do
   end
   
+  # 
+  # this seems silly to me, copying from pubsite code - jayoung
+  # 
+  # require 'uri'
+  # 
+  # module URI
+  # 
+  #   def swap_path!(new_path)
+  #     self.path = new_path
+  #     self
+  #   end
+  # end
+  # 
+  # # TODO: review why we have this
+  # def absolute_url?
+  #   %w{ http https ftp ftps }.each do |prefix|
+  #     return true if self.starts_with?(prefix)
+  #   end
+  #   false
+  # end
+  # 
+  # # TODO: review why we have this
+  # def relative_url?
+  #   not self.absolute_url?
+  # end
+  # 
+  # 
+  
+  def source_host
+    # make sure the URL is valid format
+    begin
+      original_uri = URI.parse(self.original_url)
+    rescue
+      return nil
+    end
+    return original_uri.host
+  end
+  
+  def convert_links
+    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0}
+    # walk through the anchor tags and pull out the links
+    if(@converted_content.nil?)
+      @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
+    end
+    @converted_content.css('a').each do |anchor|
+      if(anchor['href'])
+        if(anchor['href'] =~ /^\#/) # in-page anchor, don't change      
+          next
+        end
+        
+        # make sure the URL is valid format
+        begin
+          original_uri = URI.parse(anchor['href'])
+        rescue
+          anchor.set_attribute('href', '')
+          next
+        end
+        
+        # find/create a ContentLink for this link
+        link = ContentLink.find_or_create_by_linked_url(original_uri.to_s,self.source_host)
+        if(link.nil?)
+          anchor.remove
+          #anchor.set_attribute('href', '')
+          returninfo[:invalid] += 1
+        else
+          if(!self.content_links.include?(link))
+            self.content_links << link
+          end
+          case link.linktype
+          when ContentLink::WANTED
+            anchor.children.each do |child_node|
+              anchor.parent << child_node
+            end
+            anchor.remove
+            #anchor.set_attribute('href', '')
+            returninfo[:wanted] += 1
+          when ContentLink::INTERNAL
+            newhref = link.href_url
+            # bring the fragment back if necessary
+            if(!original_uri.fragment.blank?)
+              newhref += "##{original_uri.fragment}"
+            end
+            anchor.set_attribute('href', newhref)
+            returninfo[:internal] += 1
+          when ContentLink::EXTERNAL
+            newhref = link.href_url
+            # bring the fragment back if necessary
+            if(!original_uri.fragment.blank?)
+              newhref += "##{original_uri.fragment}"
+            end
+            anchor.set_attribute('href', newhref)
+            returninfo[:external] += 1
+          end
+        end
+      end
+    end
+    
+    self.content = @converted_content.to_html
+    returninfo
+  end
   
   # 
   # converts relative hrefs and hrefs that refer to the feed source
@@ -300,6 +407,10 @@ class Article < ActiveRecord::Base
     if(self.original_content.blank?)
       return [0,0]
     end
+    
+    # instead of running Nokogiri over and over and over again
+    # just check to see if we already have an instance variable
+    # with the nokogiri content object in it
     if(@converted_content.nil?)
       @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
     end
@@ -395,6 +506,12 @@ class Article < ActiveRecord::Base
    else
     return true
    end
+  end
+  
+  def create_content_link
+    if(self.link.nil?)
+      ContentLink.create_from_content(self)
+    end
   end
   
   def check_content
