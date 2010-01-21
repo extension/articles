@@ -54,8 +54,12 @@ class ContentLink < ActiveRecord::Base
     content_link.linktype = INTERNAL
     
     # set host and path - mainly just for aggregation purposes
-    content_link.host = original_uri.host
-    content_link.path = CGI.unescape(original_uri.path)
+    if(!original_uri.host.blank?)
+      content_link.host = original_uri.host
+    end
+    if(!original_uri.path.blank?)
+      content_link.path = CGI.unescape(original_uri.path)
+    end
     content_link.save
     return content_link
   end
@@ -106,8 +110,12 @@ class ContentLink < ActiveRecord::Base
     end
     
     # set host and path - mainly just for aggregation purposes
-    content_link.host = original_uri.host
-    content_link.path = CGI.unescape(original_uri.path)
+    if(!original_uri.host.blank?)
+      content_link.host = original_uri.host
+    end
+    if(!original_uri.path.blank?)
+      content_link.path = CGI.unescape(original_uri.path)
+    end
     content_link.save
     return content_link        
   end
