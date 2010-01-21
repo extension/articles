@@ -78,7 +78,7 @@ ActionController::Routing::Routes.draw do |map|
   map.widget 'widget', :controller => 'widget', :action => 'index'
   # Routes for widgets that are named and tracked
   map.connect 'widget/tracking/:id/:location/:county', :controller => 'widget', :action => 'index'
-  map.connect 'widget/tracking/:id/:location', :controller => 'widget', :action => 'index'
+  #map.connect 'widget/tracking/:id/:location', :controller => 'widget', :action => 'index'
   map.connect 'widget/tracking/:id', :controller => 'widget', :action => 'index'
   
   # Routes for widgets that are not named and tracked and have just location info

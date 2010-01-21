@@ -14,6 +14,9 @@ class CreateContentLinks < ActiveRecord::Migration
       t.timestamps
     end
     
+    add_index "content_links", ["original_fingerprint"], :unique => true
+    
+    
     # join table
     create_table "linkings", :force => true do |t|
       t.integer  "content_link_id"
@@ -22,11 +25,17 @@ class CreateContentLinks < ActiveRecord::Migration
       t.timestamps
     end
     
+    add_index "linkings", ["content_link_id","contentitem_id","contentitem_type"],  :name => "recordsignature", :unique => true
+    
+    
     # create links from articles
     ContentLink.reset_column_information
     Article.all.each do |a|
       ContentLink.create_from_content(a)
-    end      
+    end
+    
+    # need to set article.original_content
+    execute "UPDATE articles SET original_content = REPLACE(content,'/pages/','/wiki/') WHERE original_content IS NULL"      
   end
 
   def self.down

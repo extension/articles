@@ -47,7 +47,7 @@ function checkFabricatedHomeSize() {
 // onload event callback
 function startmeup() {
    // order matters here
-   processImages();
+   //processImages();
    processLinks();
    if (! location.href.include('/print')) {
       processColumns();

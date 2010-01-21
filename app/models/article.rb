@@ -242,86 +242,6 @@ class Article < ActiveRecord::Base
    end
   end
   
-  # Resolve the links in this article's body and save the article
-  def resolve_links!    
-   self.resolve_links
-   self.save
-  end
-  
-  # Make sure incoming links that point to relative urls
-  # are either made absolute if the content the point
-  # to doesn't exist in pubsite or are made to point to
-  # pubsite content if it has been imported.
-  def resolve_links
-   # Pull out each link
-   self.content = self.original_content.gsub(/href="(.+?)"/) do
-    
-    # Pull match from regex cruft
-    link_uri = $1
-    full_uri = $&
-    
-    # Only if it's not already an extension.org url nor a fragment do
-    # we want to try and resolve it
-    if not (link_uri.extension_url? or link_uri.fragment_only_url?)
-      begin
-       # Calculate the absolute path to the original location of this link
-       uri = link_uri.relative_url? ?
-        URI.parse(self.original_url).swap_path!(link_uri) :
-        URI.parse(link_uri)
-       
-       # See if we've imported the original article.
-       new_link_uri = (existing_article = Article.find(:first, :select => 'url', :conditions => { :original_url => uri.to_s })) ?
-        existing_article.url : nil
-       
-       if new_link_uri
-        # found published article, replace link
-        result = "href=\"#{new_link_uri}\""
-       elsif link_uri.relative_url?
-        # link was relative and no published article found
-        result = "name=\"not-published-#{uri.to_s}\""
-       else
-        # appears to be an ext. ref, just pass it
-        result = "href=\"#{uri.to_s}\""
-       end
-      rescue
-       result = full_uri
-      end #rescue block
-    else
-      result = full_uri
-    end #if
-        
-    result
-   end #do
-  end
-  
-  # 
-  # this seems silly to me, copying from pubsite code - jayoung
-  # 
-  # require 'uri'
-  # 
-  # module URI
-  # 
-  #   def swap_path!(new_path)
-  #     self.path = new_path
-  #     self
-  #   end
-  # end
-  # 
-  # # TODO: review why we have this
-  # def absolute_url?
-  #   %w{ http https ftp ftps }.each do |prefix|
-  #     return true if self.starts_with?(prefix)
-  #   end
-  #   false
-  # end
-  # 
-  # # TODO: review why we have this
-  # def relative_url?
-  #   not self.absolute_url?
-  # end
-  # 
-  # 
-  
   def source_host
     # make sure the URL is valid format
     begin
@@ -333,7 +253,7 @@ class Article < ActiveRecord::Base
   end
   
   def convert_links
-    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0}
+    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0}
     # walk through the anchor tags and pull out the links
     if(@converted_content.nil?)
       @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
@@ -354,14 +274,18 @@ class Article < ActiveRecord::Base
         
         # find/create a ContentLink for this link
         link = ContentLink.find_or_create_by_linked_url(original_uri.to_s,self.source_host)
-        if(link.nil?)
+        if(link.blank?)
           # pull out the children from the anchor and place them
           # up next to the anchor, and then remove the anchor
           anchor.children.reverse.each do |child_node|
-           anchor.add_next_sibling(child)
+           anchor.add_next_sibling(child_node)
           end
           anchor.remove
-          returninfo[:invalid] += 1
+          if(link.nil?)
+            returninfo[:invalid] += 1
+          else
+            returninfo[:ignored] += 1
+          end
         else
           if(!self.content_links.include?(link))
             self.content_links << link
@@ -371,7 +295,7 @@ class Article < ActiveRecord::Base
             # pull out the children from the anchor and place them
             # up next to the anchor, and then remove the anchor
             anchor.children.reverse.each do |child_node|
-             anchor.add_next_sibling(child)
+             anchor.add_next_sibling(child_node)
             end
             anchor.remove
             returninfo[:wanted] += 1
@@ -391,6 +315,14 @@ class Article < ActiveRecord::Base
             end
             anchor.set_attribute('href', newhref)
             returninfo[:external] += 1
+          when ContentLink::MAILTO
+            newhref = link.href_url
+            # bring the fragment back if necessary
+            if(!original_uri.fragment.blank?)
+              newhref += "##{original_uri.fragment}"
+            end
+            anchor.set_attribute('href', newhref)
+            returninfo[:mailto] += 1
           end
         end
       end
@@ -400,77 +332,19 @@ class Article < ActiveRecord::Base
     returninfo
   end
   
-  # 
-  # converts relative hrefs and hrefs that refer to the feed source
-  # to something relative to /pages - this conversion doesn't bother
-  # to look ahead and see if the target article is published
-  # because WikiAtomizer was already responsible for handling that
   #
-  # TODO: revisit doing a lookahead for wiki articles too.
+  # this should be called for CoP-wiki sourced articles *only* - which
+  # is why the method is specifically wiki-named
   #
-  def convert_wiki_links_and_images
-    if(self.original_content.blank?)
-      return [0,0]
-    end
+  def convert_wiki_image_sources
+    wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wikiarticles'])
+    host_to_make_relative = wikisource_uri.host
     
-    # instead of running Nokogiri over and over and over again
-    # just check to see if we already have an instance variable
-    # with the nokogiri content object in it
+    # walk through the anchor tags and pull out the links
     if(@converted_content.nil?)
       @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
     end
 
-    wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wikiarticles'])
-    host_to_make_relative = wikisource_uri.host
-
-    convert_links_count = 0
-    @converted_content.css('a').each do |anchor|
-      if(anchor['href'])
-        if(anchor['href'] =~ /^\#/) # in-page anchor, don't change      
-          next
-        end   
-
-        # make sure the URL is valid format
-        begin
-          original_uri = URI.parse(anchor['href'])
-        rescue
-          anchor.set_attribute('href', '')
-          next
-        end
-
-        if(original_uri.scheme.nil?)
-          # does path start with '/wiki'? - then strip it out
-          if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
-            newhref =  '/pages/' + $1
-          elsif(original_uri.path =~ /^\/mediawiki\/(.*)/) # does path start with '/mediawiki'? hmmmm = linking directly to a file I think, leave as is.
-            newhref = original_uri.path
-          else
-            newhref =  '/pages/'+ original_uri.path
-          end
-          # attach the fragment to the end of it if there was one
-          if(!original_uri.fragment.blank?)
-            newhref += "##{original_uri.fragment}"
-          end
-          anchor.set_attribute('href',newhref)
-          convert_links_count += 1
-        elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
-          if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
-            newhref =  '/pages/' + $1
-          elsif(original_uri.path =~ /^\/mediawiki\/(.*)/) # does path start with '/mediawiki'? hmmmm = linking directly to a file I think, leave as is, relative to me - will fail at www.demo
-            newhref = original_uri.path
-          else
-            newhref =  '/pages/'+ original_uri.path
-          end
-          # attach the fragment to the end of it if there was one
-          if(!original_uri.fragment.blank?)
-            newhref += "##{original_uri.fragment}"
-          end
-          anchor.set_attribute('href',newhref)
-          convert_links_count += 1   
-        end # scheme was http/https and what we needed to make relative
-      end # did this anchor have an href attribute?
-    end # loop through all the anchor tags
-   
     convert_image_count = 0
     # if we are running in the "production" app location - then we need to rewrite image references that
     # refer to the host of the feed to reference a relative URL
@@ -495,11 +369,9 @@ class Article < ActiveRecord::Base
     end # was this the production site?
 
     self.content = @converted_content.to_html
-    return [convert_links_count,convert_image_count]
+    return convert_image_count
   end
-  
-  private
-   
+       
   def store_original_url
    self.original_url = self.url if !self.url.blank? and self.original_url.blank?
   end
@@ -521,24 +393,24 @@ class Article < ActiveRecord::Base
   
   def check_content
    if self.original_content_changed?
+    self.convert_links
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
       self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
-      self.content = nil
     elsif(self.datatype == 'WikiArticle')
-      self.convert_wiki_links_and_images # sets self.content
-    else
-      self.content = self.original_content
+      self.convert_wiki_image_sources # sets self.content
     end
+    self.convert_links # sets self.content
    end
   end
   
-  def store_content #ac
-   if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
-    self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
-   elsif(self.datatype == 'WikiArticle')
-    self.convert_wiki_links_and_images # sets self.content
-   end
-   self.save    
+  def store_content #ac    
+    if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
+      self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
+    elsif(self.datatype == 'WikiArticle')
+      self.convert_wiki_image_sources # sets self.content
+    end
+    self.convert_links # sets self.content
+    self.save    
   end
   
 end

@@ -21,6 +21,8 @@ class ContentLink < ActiveRecord::Base
   WANTED = 1
   INTERNAL = 2
   EXTERNAL = 3
+  MAILTO = 4
+  
   
   def href_url
     case self.linktype
@@ -29,6 +31,8 @@ class ContentLink < ActiveRecord::Base
     when INTERNAL
       self.content.href_url
     when EXTERNAL
+      self.original_url
+    when MAILTO
       self.original_url
     end
   end
@@ -45,13 +49,13 @@ class ContentLink < ActiveRecord::Base
       return nil
     end
     
-    content_link = self.new(:content => content, :original_url => original_uri.to_s, :original_fingerprint => Digest::SHA1.hexdigest(original_uri.to_s))
+    content_link = self.new(:content => content, :original_url => CGI.unescape(original_uri.to_s), :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))
     content_link.source_host = original_uri.host
     content_link.linktype = INTERNAL
     
     # set host and path - mainly just for aggregation purposes
     content_link.host = original_uri.host
-    content_link.path = original_uri.path
+    content_link.path = CGI.unescape(original_uri.path)
     content_link.save
     return content_link
   end
@@ -65,12 +69,17 @@ class ContentLink < ActiveRecord::Base
       return nil
     end
     
-    # TODO - handle special case of File: and Image: links
+    # is this a /wiki/Image:blah or /wiki/File:blah link? - then return nothing - it's ignored
+    if(original_uri.path =~ /^\/wiki\/File:.*/ or original_uri.path =~ /^\/wiki\/Image:(.*)/)
+      return ''
+    end
     
     # is this a relative url? (no scheme/no host)- so attach the source_host and http
     # to it, to see if that matches an original URL that we have
-    original_uri.host = source_host if(original_uri.host.blank?)
-    original_uri.scheme = 'http' if(original_uri.scheme.blank?)
+    if(!original_uri.is_a?(URI::MailTo))
+      original_uri.host = source_host if(original_uri.host.blank?)
+      original_uri.scheme = 'http' if(original_uri.scheme.blank?)
+    end
     
     # for comparison purposes - we need to drop the fragment - the caller is going to
     # need to maintain the fragment when they get an URI back from this class.
@@ -80,15 +89,17 @@ class ContentLink < ActiveRecord::Base
     
     # we'll keep the path around - but we might should drop them for CoP wiki sourced articles
 
-    if(content_link = self.find_by_original_fingerprint(Digest::SHA1.hexdigest(original_uri.to_s)))
+    if(content_link = self.find_by_original_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
       return content_link
     end
     
     # create it - if host matches source_host and we want to identify this as "wanted" - then make it wanted else - call it external
     # the reason for the make_wanted_if_source_host_match parameter is I imagine we are going to have a situation with 
     # some feed provider where they want to link back to their own content - and we shouldn't necessarily force that link to be relative
-    content_link = self.new(:original_url => original_uri.to_s, :original_fingerprint => Digest::SHA1.hexdigest(original_uri.to_s), :source_host => source_host)
-    if(original_uri.host == source_host and make_wanted_if_source_host_match)
+    content_link = self.new(:original_url => CGI.unescape(original_uri.to_s), :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)), :source_host => source_host)
+    if(original_uri.is_a?(URI::MailTo))
+      content_link.linktype = MAILTO
+    elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
       content_link.linktype = WANTED
     else
       content_link.linktype = EXTERNAL
@@ -96,7 +107,7 @@ class ContentLink < ActiveRecord::Base
     
     # set host and path - mainly just for aggregation purposes
     content_link.host = original_uri.host
-    content_link.path = original_uri.path
+    content_link.path = CGI.unescape(original_uri.path)
     content_link.save
     return content_link        
   end

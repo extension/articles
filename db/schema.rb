@@ -250,6 +250,8 @@ ActiveRecord::Schema.define(:version => 20100120130140) do
     t.datetime "updated_at"
   end
 
+  add_index "content_links", ["original_fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
+
   create_table "counties", :force => true do |t|
     t.integer "fipsid",                    :default => 0,  :null => false
     t.integer "location_id",               :default => 0,  :null => false
@@ -422,6 +424,8 @@ ActiveRecord::Schema.define(:version => 20100120130140) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "linkings", ["content_link_id", "contentitem_id", "contentitem_type"], :name => "recordsignature", :unique => true
 
   create_table "list_owners", :force => true do |t|
     t.string   "email",          :limit => 96

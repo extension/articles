@@ -68,12 +68,7 @@ class ArticlesController < ApplicationController
       @article = Article.find_by_title_url(title_to_lookup)
     else
       # using find_by to avoid exception
-      @article = Article.find_by_id(params[:id])
-      # Resolve links so they point to extension.org content where possible
-      if @article and @article.content.nil?
-        @article.resolve_links!
-      end
-      
+      @article = Article.find_by_id(params[:id])      
     end
     
     if @article
