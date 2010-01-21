@@ -355,8 +355,12 @@ class Article < ActiveRecord::Base
         # find/create a ContentLink for this link
         link = ContentLink.find_or_create_by_linked_url(original_uri.to_s,self.source_host)
         if(link.nil?)
+          # pull out the children from the anchor and place them
+          # up next to the anchor, and then remove the anchor
+          anchor.children.reverse.each do |child_node|
+           anchor.add_next_sibling(child)
+          end
           anchor.remove
-          #anchor.set_attribute('href', '')
           returninfo[:invalid] += 1
         else
           if(!self.content_links.include?(link))
@@ -364,11 +368,12 @@ class Article < ActiveRecord::Base
           end
           case link.linktype
           when ContentLink::WANTED
-            anchor.children.each do |child_node|
-              anchor.parent << child_node
+            # pull out the children from the anchor and place them
+            # up next to the anchor, and then remove the anchor
+            anchor.children.reverse.each do |child_node|
+             anchor.add_next_sibling(child)
             end
             anchor.remove
-            #anchor.set_attribute('href', '')
             returninfo[:wanted] += 1
           when ContentLink::INTERNAL
             newhref = link.href_url
