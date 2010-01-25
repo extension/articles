@@ -19,7 +19,7 @@ class Article < ActiveRecord::Base
    
   before_create :store_original_url
   after_create :store_content
-  after_create :store_new_url, :create_content_link
+  after_create :store_new_url, :create_primary_content_link
   before_update :check_content
   
   has_content_tags
@@ -30,7 +30,7 @@ class Article < ActiveRecord::Base
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
   
-  has_one :link, :class_name => "ContentLink", :as => :content  # this is the link for this article
+  has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
   # Note: has_many :content_links - outbound links using the has_many_polymorphs for content_links
 
   def put_in_buckets(categoryarray)
@@ -386,7 +386,7 @@ class Article < ActiveRecord::Base
   end
   
   def create_content_link
-    if(self.link.nil?)
+    if(self.primary_content_link.nil?)
       ContentLink.create_from_content(self)
     end
   end

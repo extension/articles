@@ -8,8 +8,8 @@
 class ContentLink < ActiveRecord::Base
   belongs_to :content, :polymorphic => true # this is for published items to associate links to that published item
   has_many :linkings
-  #has_many :linkedcontentitems, :through => :linkings, :source => :contentitem # this is the association for items that link to this item
   
+  # this is the association for items that link to this item
   has_many_polymorphs :contentitems, 
     :from => [:articles], 
     :through => :linkings, 
@@ -49,18 +49,27 @@ class ContentLink < ActiveRecord::Base
       return nil
     end
     
-    content_link = self.new(:content => content, :original_url => CGI.unescape(original_uri.to_s), :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))
-    content_link.source_host = original_uri.host
-    content_link.linktype = INTERNAL
+    if(content_link = self.find_by_original_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
+      # this was a wanted link - we need to update the link now - and kick off the process of updating everything
+      # that links to this piece of content.
+      content_link.update_attributes(:content => content, :linktype => INTERNAL)
+      content_link.contentitems.each do |linked_content_item|
+        linked_content_item.store_content # parses links and images again and saves it.
+      end
+    else    
+      content_link = self.new(:content => content, :original_url => CGI.unescape(original_uri.to_s), :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))
+      content_link.source_host = original_uri.host
+      content_link.linktype = INTERNAL
     
-    # set host and path - mainly just for aggregation purposes
-    if(!original_uri.host.blank?)
-      content_link.host = original_uri.host
+      # set host and path - mainly just for aggregation purposes
+      if(!original_uri.host.blank?)
+        content_link.host = original_uri.host
+      end
+      if(!original_uri.path.blank?)
+        content_link.path = CGI.unescape(original_uri.path)
+      end
+      content_link.save
     end
-    if(!original_uri.path.blank?)
-      content_link.path = CGI.unescape(original_uri.path)
-    end
-    content_link.save
     return content_link
   end
   
