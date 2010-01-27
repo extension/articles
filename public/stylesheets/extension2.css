@@ -408,6 +408,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 .singleimage.center div {margin-left:auto;margin-right:auto;}
 .singleimage.center img {display:block;float:none;margin-left:auto;margin-right:auto;}
 .thumbcaption {font-size:1.3em;}
+.rightcolmodule .singleimage {float:none; border:0; padding-left:40px;}
 
 /* Template:footer */
 #contentfooter {font-size:.9em; line-height:1.5em; margin-top:4em;border-top:1px solid #ccc;}
