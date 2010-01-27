@@ -385,10 +385,8 @@ class Article < ActiveRecord::Base
    end
   end
   
-  def create_content_link
-    if(self.primary_content_link.nil?)
-      ContentLink.create_from_content(self)
-    end
+  def create_primary_content_link
+    ContentLink.create_from_content(self)
   end
   
   def check_content

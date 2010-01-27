@@ -9,6 +9,8 @@ class ContentLink < ActiveRecord::Base
   belongs_to :content, :polymorphic => true # this is for published items to associate links to that published item
   has_many :linkings
   
+  validates_presence_of :original_fingerprint, :linktype
+  
   # this is the association for items that link to this item
   has_many_polymorphs :contentitems, 
     :from => [:articles], 
