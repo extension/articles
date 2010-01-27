@@ -222,8 +222,10 @@ Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
         <p id="pageurl">View this page: <script type="text/javascript">document.write(location.href.replace(/\/print(\/)?$/, ''));</script></p>
     <% end %>
 </div>
-<script type="text/javascript"
-src="http://s3.amazonaws.com/new.cetrk.com/pages/scripts/0006/2168.js">
-</script>
+<%- if(AppConfig.configtable['app_location'] == 'production') -%>
+  <script type="text/javascript"
+  src="http://s3.amazonaws.com/new.cetrk.com/pages/scripts/0006/2168.js">
+  </script>
+<%- end -%>
 </body>
 </html>
