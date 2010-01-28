@@ -253,7 +253,7 @@ class Article < ActiveRecord::Base
   end
   
   def convert_links
-    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0}
+    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0}
     # walk through the anchor tags and pull out the links
     converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
     converted_content.css('a').each do |anchor|
@@ -321,53 +321,49 @@ class Article < ActiveRecord::Base
             end
             anchor.set_attribute('href', newhref)
             returninfo[:mailto] += 1
+          when ContentLink::CATEGORY
+            newhref = link.href_url
+            # ignore the fragment
+            anchor.set_attribute('href', newhref)
+            returninfo[:category] += 1
           end
         end
       end
+    end
+    
+    if(self.datatype == 'WikiArticle')    
+      wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wikiarticles'])
+      host_to_make_relative = wikisource_uri.host
+      convert_image_count = 0
+      # if we are running in the "production" app location - then we need to rewrite image references that
+      # refer to the host of the feed to reference a relative URL
+      if(AppConfig.configtable['app_location'] == 'production')
+        converted_content.css('img').each do |image|
+          if(image['src'])
+            begin
+              original_uri = URI.parse(image['src'])
+            rescue
+              image.set_attribute('src', '')
+              next
+            end
+
+            if((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
+              # make relative
+              newsrc = original_uri.path
+              image.set_attribute('src',newsrc)
+              convert_image_count += 1
+            end
+          end # img tag had a src attribute
+        end # loop through the img tags
+      end # was this the production site?
+      returninfo.merge!({:images => convert_image_count})
     end
     
     self.content = converted_content.to_html
     returninfo
   end
   
-  #
-  # this should be called for CoP-wiki sourced articles *only* - which
-  # is why the method is specifically wiki-named
-  #
-  def convert_wiki_image_sources
-    wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wikiarticles'])
-    host_to_make_relative = wikisource_uri.host
-    
-    # walk through the anchor tags and pull out the links
-    converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
 
-    convert_image_count = 0
-    # if we are running in the "production" app location - then we need to rewrite image references that
-    # refer to the host of the feed to reference a relative URL
-    if(AppConfig.configtable['app_location'] == 'production')
-      converted_content.css('img').each do |image|
-        if(image['src'])
-          begin
-            original_uri = URI.parse(image['src'])
-          rescue
-            image.set_attribute('src', '')
-            next
-          end
-
-          if((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
-            # make relative
-            newsrc = original_uri.path
-            image.set_attribute('src',newsrc)
-            convert_image_count += 1
-          end
-        end # img tag had a src attribute
-      end # loop through the img tags
-    end # was this the production site?
-
-    self.content = converted_content.to_html
-    return convert_image_count
-  end
-       
   def store_original_url
    self.original_url = self.url if !self.url.blank? and self.original_url.blank?
   end
@@ -387,11 +383,8 @@ class Article < ActiveRecord::Base
   
   def check_content
    if self.original_content_changed?
-    self.convert_links
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
       self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
-    elsif(self.datatype == 'WikiArticle')
-      self.convert_wiki_image_sources # sets self.content
     end
     self.convert_links # sets self.content
    end
@@ -400,8 +393,6 @@ class Article < ActiveRecord::Base
   def store_content #ac    
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
       self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
-    elsif(self.datatype == 'WikiArticle')
-      self.convert_wiki_image_sources # sets self.content
     end
     self.convert_links # sets self.content
     self.save    

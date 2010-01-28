@@ -34,7 +34,6 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 processed_count = 1
 Article.all.each do |article|
   puts "Processing Article: #{article.id} ##{processed_count}"
-  images = article.convert_wiki_image_sources
   links = article.convert_links
   article.save
   puts "Images: #{images} Links: #{links.inspect}"

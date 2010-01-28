@@ -6,6 +6,8 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ContentLink < ActiveRecord::Base
+  include ActionController::UrlWriter # so that we can generate URLs out of the model
+  
   belongs_to :content, :polymorphic => true # this is for published items to associate links to that published item
   has_many :linkings
   
@@ -24,9 +26,15 @@ class ContentLink < ActiveRecord::Base
   INTERNAL = 2
   EXTERNAL = 3
   MAILTO = 4
-  
+  CATEGORY = 5
   
   def href_url
+    default_url_options[:host] = AppConfig.get_url_host
+    default_url_options[:protocol] = AppConfig.get_url_protocol
+    if(default_port = AppConfig.get_url_port)
+     default_url_options[:port] = default_port
+    end
+    
     case self.linktype
     when WANTED
       return ''
@@ -36,6 +44,13 @@ class ContentLink < ActiveRecord::Base
       self.original_url
     when MAILTO
       self.original_url
+    when CATEGORY
+      if(self.path =~ /^\/wiki\/Category\:(.+)/)
+        content_tag = $1.gsub(/_/, ' ')
+        content_tag_index_url(:content_tag => content_tag)
+      else
+        return ''
+      end
     end
   end
   
@@ -115,7 +130,11 @@ class ContentLink < ActiveRecord::Base
     if(original_uri.is_a?(URI::MailTo))
       content_link.linktype = MAILTO
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
-      content_link.linktype = WANTED
+      if(original_uri.path =~ /^\/wiki\/Category:.*/)
+        content_link.linktype = CATEGORY
+      else
+        content_link.linktype = WANTED
+      end
     else
       content_link.linktype = EXTERNAL
     end
