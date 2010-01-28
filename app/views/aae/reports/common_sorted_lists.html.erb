@@ -6,6 +6,9 @@
     <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "General Overview",  :action => 'activity' %> &gt; <%= @page_title %></p>
     
 <h1><%= genstring %></h1>
+<% if @type=="State"%>
+<p>for questions pertaining to the state, not the state of the submitter or the responder</p>
+<% end%>
 
 <%= render(:partial => 'seldates') %>
 
