@@ -36,6 +36,6 @@ Article.all.each do |article|
   puts "Processing Article: #{article.id} ##{processed_count}"
   links = article.convert_links
   article.save
-  puts "Images: #{images} Links: #{links.inspect}"
+  puts "Links: #{links.inspect}"
   processed_count += 1
 end

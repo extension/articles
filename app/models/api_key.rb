@@ -16,6 +16,13 @@ class ApiKey < ActiveRecord::Base
     self.keyvalue = Digest::SHA1.hexdigest(AppConfig.configtable['sessionsecret']+self.user_id.to_s+self.name+randval.to_s)
   end
   
+  def total_usage
+    self.api_key_events.count
+  end
+  
+  def today_usage
+    self.api_key_events.count(:all, :conditions => "DATE(created_at) = DATE(NOW())")
+  end
   
   def self.systemkey
     find(1)
