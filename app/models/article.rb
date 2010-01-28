@@ -255,10 +255,8 @@ class Article < ActiveRecord::Base
   def convert_links
     returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0}
     # walk through the anchor tags and pull out the links
-    if(@converted_content.nil?)
-      @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
-    end
-    @converted_content.css('a').each do |anchor|
+    converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
+    converted_content.css('a').each do |anchor|
       if(anchor['href'])
         if(anchor['href'] =~ /^\#/) # in-page anchor, don't change      
           next
@@ -328,7 +326,7 @@ class Article < ActiveRecord::Base
       end
     end
     
-    self.content = @converted_content.to_html
+    self.content = converted_content.to_html
     returninfo
   end
   
@@ -341,15 +339,13 @@ class Article < ActiveRecord::Base
     host_to_make_relative = wikisource_uri.host
     
     # walk through the anchor tags and pull out the links
-    if(@converted_content.nil?)
-      @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
-    end
+    converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
 
     convert_image_count = 0
     # if we are running in the "production" app location - then we need to rewrite image references that
     # refer to the host of the feed to reference a relative URL
     if(AppConfig.configtable['app_location'] == 'production')
-      @converted_content.css('img').each do |image|
+      converted_content.css('img').each do |image|
         if(image['src'])
           begin
             original_uri = URI.parse(image['src'])
@@ -368,7 +364,7 @@ class Article < ActiveRecord::Base
       end # loop through the img tags
     end # was this the production site?
 
-    self.content = @converted_content.to_html
+    self.content = converted_content.to_html
     return convert_image_count
   end
        
