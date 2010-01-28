@@ -10,5 +10,5 @@
 
 class Linking < ActiveRecord::Base
   belongs_to :content_link, :foreign_key => "content_link_id", :class_name => "ContentLink"  
-  belongs_to :contentitem, :polymorphic => true
+  belongs_to :contentitem, :polymorphic => true, :dependent => :destroy
 end

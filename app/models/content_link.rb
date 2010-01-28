@@ -56,6 +56,15 @@ class ContentLink < ActiveRecord::Base
       self.path
     end
   end
+
+  def change_to_wanted  
+    if(self.linktype == INTERNAL)
+      self.update_attribute(:linktype,WANTED)
+      self.contentitems.each do |linked_content_item|
+        linked_content_item.store_content # parses links and images again and saves it.
+      end
+    end
+  end
   
   def self.create_from_content(content)
     if(content.original_url.blank?)

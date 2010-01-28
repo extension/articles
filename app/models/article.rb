@@ -21,6 +21,7 @@ class Article < ActiveRecord::Base
   after_create :store_content
   after_create :store_new_url, :create_primary_content_link
   before_update :check_content
+  before_destroy :change_primary_content_link
   
   has_content_tags
   ordered_by :orderings => {'Newest to oldest'=> 'wiki_updated_at DESC'},
@@ -384,6 +385,13 @@ class Article < ActiveRecord::Base
   
   def create_primary_content_link
     ContentLink.create_from_content(self)
+  end
+  
+  def change_primary_content_link
+    # update items that might link to this article
+    if(!self.primary_content_link.nil?)
+      self.primary_content_link.change_to_wanted
+    end
   end
   
   def check_content
