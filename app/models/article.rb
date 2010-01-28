@@ -253,7 +253,7 @@ class Article < ActiveRecord::Base
   end
   
   def convert_links
-    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0}
+    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0, :directfile => 0}
     # walk through the anchor tags and pull out the links
     converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
     converted_content.css('a').each do |anchor|
@@ -326,6 +326,11 @@ class Article < ActiveRecord::Base
             # ignore the fragment
             anchor.set_attribute('href', newhref)
             returninfo[:category] += 1
+          when ContentLink::DIRECTFILE
+            newhref = link.href_url
+            # ignore the fragment
+            anchor.set_attribute('href', newhref)
+            returninfo[:directfile] += 1
           end
         end
       end

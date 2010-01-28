@@ -27,6 +27,7 @@ class ContentLink < ActiveRecord::Base
   EXTERNAL = 3
   MAILTO = 4
   CATEGORY = 5
+  DIRECTFILE = 6
   
   def href_url
     default_url_options[:host] = AppConfig.get_url_host
@@ -51,6 +52,8 @@ class ContentLink < ActiveRecord::Base
       else
         return ''
       end
+    when DIRECTFILE
+      self.path
     end
   end
   
@@ -132,6 +135,8 @@ class ContentLink < ActiveRecord::Base
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
       if(original_uri.path =~ /^\/wiki\/Category:.*/)
         content_link.linktype = CATEGORY
+      elsif(original_uri.path =~ /^\/mediawiki\/.*/)
+        content_link.linktype = DIRECTFILE
       else
         content_link.linktype = WANTED
       end
