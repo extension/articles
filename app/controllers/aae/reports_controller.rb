@@ -1189,9 +1189,9 @@ class Aae::ReportsController < ApplicationController
        #get counts into list displayable by name    
        @userlist.each do |u|
          name = ((u.first_name) ? u.first_name : "")  + " " + ((u.last_name) ? (u.last_name) : "")
-         @assgn[name] = assgns[u.id]
-         @handles[name] = handles[u.id]
-         @responds[name] = respanswers[u.id]
+         @assgn[name] = assgns[u.id.to_s]
+         @handles[name] = handles[u.id.to_s]
+         @responds[name] = respanswers[u.id.to_s]
          if @assgn[name] && @assgn[name] > 0
            @hratio[name] = (@handles[name]) ? @handles[name].to_f/@assgn[name].to_f : 0
            @rratio[name] = (@responds[name]) ? @responds[name].to_f/@assgn[name].to_f : 0

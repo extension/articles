@@ -1670,8 +1670,8 @@ class User < ActiveRecord::Base
             cond = " TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
         end
         cond = cond +  ((auxcond && auxcond != "" ) ? " and " + auxcond : "")  + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
-       SubmittedQuestionEvent.count(:all, 
-           :joins => "join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id " + auxjoin,
+       SubmittedQuestion.count(:all, 
+           :joins => "join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id " + auxjoin,
             :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
            :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "previous_handling_recipient_id")
 
@@ -1684,8 +1684,8 @@ class User < ActiveRecord::Base
           end
           cond = ((cond != "") ? cond +  " and " : "") +  " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO}, #{SubmittedQuestionEvent::RESOLVED}, #{SubmittedQuestionEvent::REJECTED}, #{SubmittedQuestionEvent::NO_ANSWER}) " + 
                     ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
-         SubmittedQuestionEvent.count(:all,
-             :joins =>  "join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id ",
+         SubmittedQuestion.count(:all,
+             :joins =>  "join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id ",
               :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
              :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "previous_handling_recipient_id")
 
