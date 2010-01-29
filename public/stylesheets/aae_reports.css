@@ -6,7 +6,15 @@
   see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 */
 
-#masthead {background: #fff;}
+#app_toggle {
+    left: 335px;
+}
+
+#masthead h1 {
+	width: 340px;
+    background: url(/images/aae/masthead_aae_reports.png) 0 0 no-repeat; 
+}
+
 
 #content {
     float:none !important;
@@ -20,40 +28,6 @@
     width:43em;
 }
 
-#inc_filter {
-    float:left;
-    width:210px;
-}
-#inc_filter {
-    padding: 0 1em 1em;
-    border: 2px solid #ccc;
-    background: #eee;
-}
-
-#homeFAQ {
-    float:left;
-    position: relative;
-    border: 3px solid #01466f;
-    padding: .3em 1em 1em;
-    width:53%;
-    margin-right:3%;
-    color:#3a4fa2;
-    background: transparent url(/images/aae/extensionNav_bg2.jpg) repeat-x;
-}
-
-#homeAAE {
-    float:left;
-    position: relative;
-    border: 3px solid #007135;
-    padding: .3em 1em 1em;
-    width:33%;
-    margin-right:1em;
-    margin-bottom: 2em;
-    /*background: #fff url(/images/sidebar_bg_green.jpg) repeat-x;*/
-    background: transparent url(/images/aae/global_nav_green.jpg) repeat-x;
-}
-
-
 
 #pageContent {
     clear:both;
@@ -65,52 +39,11 @@
 }
 h2{
     color:#3a4fa2;
-/*    font-size:140%;*/
 }
 h2 small{
     font-size:80%;
     text-transform:capitalize;
     font-weight:normal;
-}
-
-
-
-/* Nav bar to other eXtension apps
------------------------------------------------------------------------------*/
-#extensionNav {
-	text-align: center;
-	background: #777 url(/images/aae/global_nav_light_gray.jpg) repeat-x;
-	clear: both;
-	padding: .15em 0;
-	margin: 0;
-	border-top: 1px solid #001e36;
-}
-#extensionNav a {
-    padding: 0 .75em;
-    color: #fff;
-    text-decoration: none;
-  }
-#extensionNav li {
-	padding: 0;
-	margin: 0;
-	list-style: none; 
-	display: inline;
-}
-  #extensionNav a:hover {
-      text-decoration: underline;
-    }
-    
-ul li {
-    list-style-type: none;
-    padding:0;
-    margin:0 0 .15em .5em;
-}
-h3 {
-    padding:0;
-    margin:0;
-}
-label {
-    color:#000;
 }
 
 h2 a {
@@ -188,13 +121,9 @@ background:url(/images/common/user.gif) no-repeat #fff;
     width:65%;
 }
 
-#prefs {position: absolute;right: .8em;top: 3.8em;margin-bottom:0;}
-#prefs li {float:right; list-style:none;}
-#prefs li a {color:#666;}
-
 .box li {line-height: 110%;margin-bottom: .7em;list-style:none;}
 
-#userinfo .help { display:none; }
+
 h2 {
     color:#333;
     margin-bottom:1em;

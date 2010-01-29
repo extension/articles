@@ -5,69 +5,56 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-    <title>eXtension FAQ: <%= @page_title || controller.action_name %></title>    
-    <%= stylesheet_link_tag 'common' %>
-    <%= stylesheet_link_tag 'aae' %>
-    <%= stylesheet_link_tag 'aae_reports' %>
-    <%= stylesheet_link_tag 'print', :media => 'print' %>
+    <title>eXtension AaE Reports: <%= @page_title || controller.action_name %></title>    
     
-    <!--[if gt IE 6]>
-        <%= stylesheet_link_tag 'ie' %>
-    <![endif]-->
-    
-    
+    <% if @mobile_device %>
+        <meta name = "viewport" content = "width = device-width, user-scalable = yes">
+        <%= stylesheet_link_tag 'mobile_aae' %>
+    <% else %>
+        <%= stylesheet_link_tag 'common' %>
+        <%= stylesheet_link_tag 'aae' %>
+        <%= stylesheet_link_tag 'aae_reports' %>
+        <%= stylesheet_link_tag 'aae_print', :media => 'print' %>
+    <% end %>
+
     <%= javascript_include_tag 'prototype' %>
     <%= javascript_include_tag 'effects' %>
     <%= javascript_include_tag 'heureka' %>
     <%= javascript_include_tag 'tooltip' %>
-   
-   
     <%= calendar_date_select_includes "silver" %>
- 	
+
 </head>
     
 <body <% if controller.controller_name == 'account' %>id="account"<% end %>>
     <% if (@app_location_for_display != 'production') %>
-    <div id="app_location" class="<%= @app_location_for_display %>">
-        <p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p>
-    </div>
+        <div id="app_location" class="<%= @app_location_for_display %>">
+            <p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p>
+        </div>
     <% end %>
-    <ul id="extensionNav">
-        <li class="begin"><a href="<%= AppConfig.configtable['events_site'] %>">Events</a></li>
-        <li><a href="<%= AppConfig.configtable['faq_site'] %>" title="FAQ / Ask an Expert Tool">FAQ/AaE</a></li>
-        <li><a href="<%= AppConfig.configtable['people_site'] %>">People</a></li>
-        <li><a href="<%= AppConfig.configtable['cop_site'] %>">CoP Wiki</a></li>
-        <li><a href="<%= AppConfig.configtable['collaborate_site'] %>">Collaborate Wiki</a></li>
-        <li><a href="<%= AppConfig.configtable['about_site'] %>">About Wiki</a></li>
-        <li><a href="<%= AppConfig.configtable['about_blog'] %>">About Blog</a></li>
-    </ul>
-
+    
+    <% if !@mobile_device %>
+        <%= render(:partial => 'aae/partial/global_nav_banner') %>
+    <% end %>
     <div id="pageContainer">
         <div id="masthead">
-            <ul id="app_toggle">
-                <li id="faqaae" <%= selected_tab_if(:home) %>><%= link_to "Home", "http://faq.extension.org/" %></li>
-                <li id="faqhome" <% if controller.controller_name == 'questions' %> class="selected"<% end %>><%= link_to "FAQs", "http://faq.extension.org/questions" %></li>
-                <li id="aaehome" ><%= link_to "Ask an Expert", incoming_url %></li>
-            </ul>
             <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
-            
-            
-            <ul id="userinfo">
-                <% if @help_title %>
-                    <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help:_<%= @help_title.gsub(/\s/, '_').gsub(/\W/, '') %>">Help</a></li>
-                <% elsif @page_title %>
-                    <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help:_<%= @page_title.gsub(/\s/, '_').gsub(/\W/, '') %>">Help</a></li>
-                <% else %>
-                    <li class="help"><a href="http://about.extension.org/wiki/FAQ_Help">Help</a></li>
-                <% end%>
-            <% if !@currentuser.nil? %>
-                <li><%= link_to "Reports", {:controller => "reports"} %></li>
-                <li><%= link_to 'logout', '/people/account/logout' %></li>
-            <% end %>
+            <ul id="app_toggle">
+                <li><span>The FAQ link can now be found at the top of the page</span></li>
             </ul>
             
-            <% if !@currentuser.nil? %>
-            <p id="feedlink"><%= link_to "View all available Feeds", {:controller => "main", :action => "feeds" }, :class => "feed" %></p>
+            <% if !@mobile_device %>
+            <ul id="userinfo">
+                <%- if(!@currentuser.nil?) -%>
+                    <li><%= link_to "reports", {:controller => "reports"} %></li>
+                    <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
+                    <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
+                    <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
+                <%- end -%>
+            </ul>
+            
+            <% if @currentuser.is_admin? %>
+        		<p id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></p>
+        	<% end %>
             <% end %>
         </div>
         
@@ -76,7 +63,25 @@
             <div id="content">
                 <%= yield :layout %>
             </div>
+        
+            <% if @mobile_device %>
+                <ul id="userinfo">
+                    <%- if(!@currentuser.nil?) -%>
+                        <li><%= link_to "reports", {:controller => "reports"} %></li>
+                        <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
+                        <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
+                        <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
+                    <%- end -%>
+                </ul>
 
+                <% if @currentuser.is_admin? %>
+            		<p id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></p>
+            	<% end %>
+
+                <h3>Other eXtension Sites</h3>
+                <%= render(:partial => 'aae/partial/global_nav_banner') %>
+            <% end %>
+        
             <div id="footer">
                 <ul>
                     <li><%= link_to("Contact Us", :controller => 'aae/help', :action => 'index') %></li>
