@@ -229,20 +229,32 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   
   def self.compare_altassgn_vals
      ## console command, from experience alth is longer than assh
-     assgn = SubmittedQuestionEvent.find_by_sql(["SELECT count(DISTINCT `submitted_question_events`.id) " +
-        " AS count_all, previous_handling_recipient_id AS previous_handling_recipient_id FROM `submitted_question_events` " +
-        " LEFT OUTER JOIN `submitted_questions` submitted_questions_submitted_question_events ON `submitted_questions_submitted_question_events`.id = `submitted_question_events`.submitted_question_id " +
-       "  INNER JOIN `submitted_questions` ON `submitted_questions`.id = `submitted_question_events`.submitted_question_id " +
-       "  WHERE (initiated_by_id = previous_handling_recipient_id " +
-        "  AND TRIM(DATE(submitted_question_events.created_at)) BETWEEN '2006-06-13' AND '2010-01-20' ) " +
-        "  AND  ((submitted_questions.status_state != 4) AND (event_state = 2)) GROUP BY previous_handling_recipient_id"])
-     assh = {};  assgn.map { |sqe| assh[sqe.previous_handling_recipient_id] = sqe.count_all.to_i }
-     alt = SubmittedQuestionEvent.find_by_sql(["SELECT count(*) AS count_all, previous_handling_recipient_id AS previous_handling_recipient_id " +
-       "  FROM `submitted_question_events` join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id " +
-      "  WHERE ( initiated_by_id=previous_handling_recipient_id and  " +
-       "  TRIM(DATE(submitted_question_events.created_at)) BETWEEN '2006-06-13' and '2010-01-20' )  and submitted_questions.status_state != 4 and event_state=2 " +
-       " GROUP BY previous_handling_recipient_id"]) 
-     alth = {};  alt.map { |sqe| alth[sqe.previous_handling_recipient_id] = sqe.count_all.to_i }
+    # assgn = SubmittedQuestionEvent.find_by_sql(["SELECT count(DISTINCT `submitted_question_events`.id) " +
+    #    " AS count_all, previous_handling_recipient_id AS previous_handling_recipient_id FROM `submitted_question_events` " +
+    #    " LEFT OUTER JOIN `submitted_questions` submitted_questions_submitted_question_events ON `submitted_questions_submitted_question_events`.id = `submitted_question_events`.submitted_question_id " +
+    #   "  INNER JOIN `submitted_questions` ON `submitted_questions`.id = `submitted_question_events`.submitted_question_id " +
+    #   "  WHERE  " +
+    #    "   TRIM(DATE(submitted_question_events.created_at)) BETWEEN '2006-06-13' AND '2010-01-20'  AND event_state IN (1,2,6,7) " +
+    #    "  AND  (submitted_questions.status_state != 4)  GROUP BY previous_handling_recipient_id"])
+    assgn = SubmittedQuestionEvent.find_by_sql(["SELECT avg(`submitted_question_events`.duration_since_last_handling_event) AS avg_duration_since_last_handling_event, 
+      previous_handling_recipient_id AS previous_handling_recipient_id FROM `submitted_question_events` 
+      LEFT OUTER JOIN `submitted_questions` submitted_questions_submitted_question_events ON `submitted_questions_submitted_question_events`.id = `submitted_question_events`.submitted_question_id 
+      INNER JOIN `submitted_questions` ON `submitted_questions`.id = `submitted_question_events`.submitted_question_id
+       WHERE ( 
+      TRIM(DATE(submitted_question_events.created_at)) BETWEEN '2006-06-13' AND '2010-01-29') AND ((submitted_questions.status_state != 4) AND (event_state IN (1,2,6,7)))
+     GROUP BY previous_handling_recipient_id "])
+     assh = {};  assgn.map { |sqe| assh[sqe.previous_handling_recipient_id] = sqe.avg_duration_since_last_handling_event.to_f }
+   #  alt = SubmittedQuestionEvent.find_by_sql(["SELECT count(*) AS count_all, previous_handling_recipient_id AS previous_handling_recipient_id " +
+  #     "  FROM `submitted_question_events` join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id " +
+  #    "  WHERE (   " +
+  #     "  TRIM(DATE(submitted_question_events.created_at)) BETWEEN '2006-06-13' and '2010-01-20' )  and submitted_questions.status_state != 4 and event_state IN (1,2,6,7) " +
+  #     " GROUP BY previous_handling_recipient_id"]) 
+     alt = SubmittedQuestion.find_by_sql(["SELECT previous_handling_recipient_id, avg(duration_since_last_handling_event) as ra FROM `submitted_questions` 
+       INNER JOIN `submitted_question_events` ON submitted_question_events.submitted_question_id = submitted_questions.id 
+       WHERE ( event_state IN (1,2,6,7)  and status_state != 4 and 
+       TRIM(DATE(submitted_question_events.created_at)) between '2006-06-13' and '2010-01-29' ) GROUP BY previous_handling_recipient_id"])
+     alth = {};  #alt.map { |sqe| alth[sqe.previous_handling_recipient_id] = sqe.count_all.to_i }
+      alt.map { |sq| alth[sq.previous_handling_recipient_id.to_i] = sq.ra.to_f}
      #  make lists of what is missing between them; and what is different between them
      userlist = User.find(:all).map(&:id); diflist = []; missing = []
      userlist.each do |u|

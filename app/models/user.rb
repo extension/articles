@@ -1665,25 +1665,27 @@ class User < ActiveRecord::Base
    end
    
     def self.get_num_times_assigned(date1, date2, auxjoin, auxcond, sqfilters, sqinclude)
-       cond =  auxcond + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+        cond = ""
         if (date1 && date2)
-            cond = cond + " and submitted_questions.created_at between ? and ? "
+            cond = " TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
         end
-       SubmittedQuestion.count(:all,
-           :joins => "join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id " + auxjoin,
+        cond = cond +  ((auxcond && auxcond != "" ) ? " and " + auxcond : "")  + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+       SubmittedQuestionEvent.count(:all, 
+           :joins => "join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id " + auxjoin,
             :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
-           :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "initiated_by_id")
+           :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "previous_handling_recipient_id")
 
      end
      
      def self.get_total_handling_events(date1, date2, sqfilters, sqinclude)
-        cond = " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO}, #{SubmittedQuestionEvent::RESOLVED}, #{SubmittedQuestionEvent::REJECTED}, #{SubmittedQuestionEvent::NO_ANSWER}) " + 
-                  ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+          cond = ""
           if (date1 && date2)
-              cond = cond + " and submitted_questions.created_at between ? and ? "
+              cond = " TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
           end
-         SubmittedQuestion.count(:all,
-             :joins =>  "join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id ",
+          cond = ((cond != "") ? cond +  " and " : "") +  " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO}, #{SubmittedQuestionEvent::RESOLVED}, #{SubmittedQuestionEvent::REJECTED}, #{SubmittedQuestionEvent::NO_ANSWER}) " + 
+                    ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+         SubmittedQuestionEvent.count(:all,
+             :joins =>  "join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id ",
               :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
              :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "previous_handling_recipient_id")
 
@@ -1701,7 +1703,7 @@ class User < ActiveRecord::Base
             cond = " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO},#{SubmittedQuestionEvent::RESOLVED},#{SubmittedQuestionEvent::REJECTED},#{SubmittedQuestionEvent::NO_ANSWER}) " +
               ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
              if (date1 && date2)
-                   cond = cond + " and submitted_questions.created_at between ? and ? "
+                   cond = cond + " and TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
              end   
              avgs= SubmittedQuestion.find(:all, :select => " previous_handling_recipient_id, avg(duration_since_last_handling_event) as ra",
               :joins => joinclause, 
@@ -1721,7 +1723,7 @@ class User < ActiveRecord::Base
            # cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id > 0 and resolved_by=recipient_id " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
              cond = " event_state = #{SubmittedQuestionEvent::RESOLVED} and initiated_by_id=previous_handling_recipient_id  " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
               if (date1 && date2)
-                  cond = cond + " and submitted_questions.created_at between ? and ? "
+                  cond = cond + " and TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
               end   
               #Note: I do not agree that the average for response should be on 'resolved' only based on duration_last_handling_event, because of questions where more than one 
               # person answered, and not in order of assignment, although both may have been assigned. Therefore, I was doing as commented out below. For the purposes of
