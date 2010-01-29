@@ -227,4 +227,45 @@ class SubmittedQuestionEvent < ActiveRecord::Base
     end
   end
   
+  def self.compare_altassgn_vals
+     ## console command, from experience alth is longer than assh
+     assgn = SubmittedQuestionEvent.find_by_sql(["SELECT count(DISTINCT `submitted_question_events`.id) " +
+        " AS count_all, previous_handling_recipient_id AS previous_handling_recipient_id FROM `submitted_question_events` " +
+        " LEFT OUTER JOIN `submitted_questions` submitted_questions_submitted_question_events ON `submitted_questions_submitted_question_events`.id = `submitted_question_events`.submitted_question_id " +
+       "  INNER JOIN `submitted_questions` ON `submitted_questions`.id = `submitted_question_events`.submitted_question_id " +
+       "  WHERE (initiated_by_id = previous_handling_recipient_id " +
+        "  AND TRIM(DATE(submitted_question_events.created_at)) BETWEEN '2006-06-13' AND '2010-01-20' ) " +
+        "  AND  ((submitted_questions.status_state != 4) AND (event_state = 2)) GROUP BY previous_handling_recipient_id"])
+     assh = {};  assgn.map { |sqe| assh[sqe.previous_handling_recipient_id] = sqe.count_all.to_i }
+     alt = SubmittedQuestionEvent.find_by_sql(["SELECT count(*) AS count_all, previous_handling_recipient_id AS previous_handling_recipient_id " +
+       "  FROM `submitted_question_events` join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id " +
+      "  WHERE ( initiated_by_id=previous_handling_recipient_id and  " +
+       "  submitted_questions.created_at BETWEEN '2006-06-13' and '2010-01-20' )  and submitted_questions.status_state != 4 and event_state=2 " +
+       " GROUP BY previous_handling_recipient_id"]) 
+     alth = {};  alt.map { |sqe| alth[sqe.previous_handling_recipient_id] = sqe.count_all.to_i }
+     #  make lists of what is missing between them; and what is different between them
+     userlist = User.find(:all).map(&:id); diflist = []; missing = []
+     userlist.each do |u|
+       if alth[u]
+         if !assh[u]
+           missing << u
+         end
+         if (assh[u] && assh[u]!=alth[u])
+           diflist << [u, alth[u], assh[u]]
+         end
+       else
+         if assh[u]
+           missing << u
+         end
+       end
+     end
+     p "Size of alth= " + alth.size.to_s + " size of assh= " + assh.size.to_s
+     p "List of differences..uid, alth[u], assh[u]..and number of differences= " + diflist.size.to_s
+     p diflist
+     p "Missing list"
+     p missing
+
+    end  
+  
+  
 end
