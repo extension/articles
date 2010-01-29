@@ -240,7 +240,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
      alt = SubmittedQuestionEvent.find_by_sql(["SELECT count(*) AS count_all, previous_handling_recipient_id AS previous_handling_recipient_id " +
        "  FROM `submitted_question_events` join submitted_questions on submitted_questions.id=submitted_question_events.submitted_question_id " +
       "  WHERE ( initiated_by_id=previous_handling_recipient_id and  " +
-       "  submitted_question_events.created_at BETWEEN '2006-06-13' and '2010-01-20' )  and submitted_questions.status_state != 4 and event_state=2 " +
+       "  TRIM(DATE(submitted_question_events.created_at)) BETWEEN '2006-06-13' and '2010-01-20' )  and submitted_questions.status_state != 4 and event_state=2 " +
        " GROUP BY previous_handling_recipient_id"]) 
      alth = {};  alt.map { |sqe| alth[sqe.previous_handling_recipient_id] = sqe.count_all.to_i }
      #  make lists of what is missing between them; and what is different between them
