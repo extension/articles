@@ -357,7 +357,7 @@ h2 {color:#365591;font-size:1.8em;}
 
 #content {
     border:1px solid #9ac677;
-    border-top:2px solid #666;
+    border-top:1px solid #555;
     margin:0 0 0 1%;
     padding: 2%;
     float:left;
@@ -365,64 +365,65 @@ h2 {color:#365591;font-size:1.8em;}
 	overflow:hidden;
 }
 #content.narrow {
-    border:1px solid #9ac677;
-    border-top:2px solid #666;
     width:62%;
     clear:both;
 }
+
+
+/* App Navigation
+-----------------------------------------------------------------------------*/
+
+
 ul#aaelinks {
-    font-size: 120%;
     margin:0 0 0 2em;
+    padding-top:10px;
     clear:both;
-    background:#fff;
-    list-style-type:none;
-    font-size:105%;
-    z-index:10;
+    list-style:none;
+    width:92%;
+    margin-bottom:-1px;
+    float: left;
 }
+ul#aaelinks.narrow {width:62%;}
 ul#aaelinks li {
     float:left;
     margin:0;
-    color:#4fa10e;
-    font-weight:bold;
-    background:#fff;  
+    color:#4fa10e; 
 }
-ul#aaelinks li.prefs {
-    margin-left:2em;
-}
-
-ul#aaelinks li span {
-    position:relative;
-    padding:6px .6em 6px;
-    display:block;
-    border:2px solid #666;
-    border-bottom:1px solid #fff;
-    margin-bottom:-10px;
-    margin-top:-6px;
-    z-index:10;
-    background:#fff;
-}
-ul#aaelinks li a span {
-    padding:0;
-    border:0;
-    margin-bottom:0;
-    margin-top:0;
-    background:none;
-    font-weight:normal;
-}
-#aaelinks a {
+ul#aaelinks a strong {color:#000 !important;}
+ul#aaelinks a .zero {color:#aaa !important;}
+ul#aaelinks a {
     text-decoration:none;
     color:#444;
-    background:#ddd;
+    background:#eee;
     display:block;
+    font-size:1.1em;
     padding:3px .6em;
-    border: 1px solid #365591;
-    border-bottom:none;
+    border: 1px solid #999;
+    border-bottom:0;
 }
-#aaelinks a:hover {
-    color:#fff;
-    background:#999;
+ul#aaelinks a:hover {
+    color:#000;
+    background:#ccc;
+}
+ul#aaelinks li.selected {
+    position:relative;
+    margin-top:-4px;
+    margin-bottom: 0px !important;
 }
 
+ul#aaelinks li.selected a:hover {color:#007236;}
+ul#aaelinks li.selected a {
+    background:#fff;
+    border: 1px solid #555;
+    border-bottom:1px solid #fff;
+    color:#4fa150;
+    font-weight:bold;
+    padding-top:6px;
+}
+
+ul#aaelinks li#spam_review {float:right;}
+ul#aaelinks li#spam_review a {background:none;border:0; color:#999 !important; font-size:1em;}
+ul#aaelinks li#spam_review a:hover {background:none;border:0; color:#333 !important;}
 
 #search_parameters {
     padding:0;

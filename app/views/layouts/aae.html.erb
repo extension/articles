@@ -59,18 +59,18 @@
         </div>
         
         <div id="pageContent">
-            <ul id="aaelinks">
-                <li><%= link_to_unless_current '<span>Incoming</span>', incoming_url %></li>
-                <li><%= link_to_unless_current "<span>Assigned to me</span>", my_assigned_url %></li>
-                <li><%= link_to_unless_current "<span>Resolved by me</span>", my_resolved_url %></li>
+            <ul id="aaelinks" <%= 'class="narrow"' if @menu_partial_to_display %>>
+                <li <%= selected_tab_if(:incoming_questions) %>><%= link_to "Incoming", incoming_url %></li> <!-- <strong>(35)</strong> -->
+                <li <%= selected_tab_if(:assigned_questions) %>><%= link_to "Assigned to me", my_assigned_url %></li> <!-- <span class=\"zero\">(0)</span> -->
+                <li <%= selected_tab_if(:my_resolved_questions) %>><%= link_to "Resolved by me", my_resolved_url %></li>
                 <% if !@category %>
-                    <li><%= link_to_unless_current '<span>Resolved</span>', resolved_url(:type => 'all') %></li>
+                    <li <%= selected_tab_if(:resolved_questions) %>><%= link_to "Resolved", resolved_url(:type => 'all') %></li>
                 <% else %>
-                    <li>
-                    <%= link_to_unless_current '<span>Resolved</span>', resolved_url(:id => @category, :type => 'all') %>
+                    <li <%= selected_tab_if(:resolved_questions) %>>
+                    <%= link_to "Resolved", resolved_url(:id => @category, :type => 'all') %>
                     </li>
                 <% end %>
-                <li><%= link_to_unless_current '<span>Spam Review</span>', spam_url %></li>
+                <li <%= selected_tab_if(:spam_review) %> id="spam_review"><%= link_to "Spam Review", spam_url %></li>
             </ul>
             
             

@@ -1,3 +1,4 @@
+<% @selected_tab = :resolved_questions %>
 <ul id="nav">
     <li><%= link_to_unless_current "All", resolved_url(:type => 'all') %></li>
     <li><%= link_to_unless_current "Answered", resolved_url(:type => 'answered') %></li>
