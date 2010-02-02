@@ -72,8 +72,10 @@ ActionController::Routing::Routes.draw do |map|
      aae.home '/', :controller => :home, :action => :index     
   end
   
+  ### AaE API ###
+  map.connect 'api/aae/ask.json', :controller => 'api/aae', :action => :ask  
+    
   ### Widget iFrame ###
-  map.connect 'widget/create_from_widget', :controller => 'widget', :action => 'create_from_widget'
   map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
   map.widget 'widget', :controller => 'widget', :action => 'index'
   
@@ -84,6 +86,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widget/tracking/:id/:location/:county', :controller => 'widget', :action => 'index', :requirements => { :county => /.*/ }
   #map.connect 'widget/tracking/:id/:location', :controller => 'widget', :action => 'index'
   map.connect 'widget/tracking/:id', :controller => 'widget', :action => 'index'
+  
+  
+  map.connect 'widget/create_from_widget', :controller => 'widget', :action => 'create_from_widget'
   
   # Routes for widgets that are not named and tracked and have just location info
   

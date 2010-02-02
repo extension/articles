@@ -38,7 +38,7 @@
                         :html => { :id => 'myForm' }, 
                         :url => widget_submit_question_url(:id => @fingerprint), 
                         :loading => "ask_submit.disabled=true; ask_submit.value='Submitting...'", 
-                        :complete => "new Effect.Opacity('myFormOutput', {duration:7.0, from:1.0, to:0.0}); ask_submit.disabled=false; ask_submit.value='Ask'; submitted_question_question.value=''") do %>
+                        :complete => "new Effect.Opacity('myFormOutput', {duration:7.0, from:1.0, to:0.0}); ask_submit.disabled=false; ask_submit.value='Ask'; aae_question.value=''") do %>
 
     <h1><a href="http://www.extension.org/" target="_blank">eXtension</a></h1>
     <h2>Ask an Expert</h2>
@@ -46,14 +46,14 @@
     <div id="myFormOutput"></div>
 
     <p>
-        <label for="submitted_question_asked_question">Question</label>
-        <%= text_area :submitted_question, :asked_question, :rows => 4  %>
+        <label for="aae_question">Question</label>
+        <%= text_area_tag 'aae_question', nil, :rows => 4  %>
     </p>
 
     <p>
-        <label for="submitted_question_submitter_email">Email <small>(please type it twice to confirm)</small></label>
-        <%= text_field(:submitted_question, :submitter_email) %>
-        <%= text_field_tag(:submitter_email_confirmation) %>
+        <label for="aae_email">Email <small>(please type it twice to confirm)</small></label>
+        <%= text_field_tag 'aae_email' %>
+        <%= text_field_tag 'aae_email_confirmation' %>
     </p>
     
     <% if @location %>
