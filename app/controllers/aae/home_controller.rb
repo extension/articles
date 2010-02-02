@@ -6,10 +6,12 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Aae::HomeController < ApplicationController
-
-  layout 'aaehome'
-  
+  layout 'aae'
+  before_filter :login_required
+  before_filter :check_purgatory
+    
   def index
+    return redirect_to(incoming_url)
   end
   
 end
