@@ -12,6 +12,14 @@ class Widgets::AaeController < ApplicationController
   
   layout 'widgets'
   
+  def redirector
+    if params[:redirectparam] and self.respond_to?(params[:redirectparam])
+      return redirect_to(:action => params[:redirectparam])
+    else
+      return redirect_to(:action => :index)
+    end
+  end
+  
   def index
   end
 
