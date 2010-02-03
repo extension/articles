@@ -26,7 +26,7 @@
     <div id="masthead">
         <div class="wrapper">
             <div id="header">
-                <h1><%= link_to("Ask eXtension", widget_home_url) %></h1>
+                <h1><%= link_to("Ask eXtension", widgets_aae_url) %></h1>
                 <p>Experts from around the country are ready to answer your questions</p>
             </div>
             <% if !@mobile_device %>
@@ -53,7 +53,7 @@
     		  
             <% end %>
             <ul>
-                <li <%= selected_tab_if(:welcome) %>><%= link_to("Home", widget_home_url) %></li>
+                <li <%= selected_tab_if(:welcome) %>><%= link_to("Home", widgets_aae_url) %></li>
                 <li <%= selected_tab_if(:about) %>><%= link_to "About", :controller => 'widgets/aae', :action => :about %></li>
                 <li <%= selected_tab_if(:who) %>><%= link_to "Who answers the questions?", :controller => 'widgets/aae', :action => :who %></li>
                 <li <%= selected_tab_if(:get) %>><%= link_to "Get the Ask widget for your site #{get_widget_link_message}", :controller => 'widgets/aae', :action => :new %></li>

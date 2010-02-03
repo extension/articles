@@ -98,12 +98,14 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widget/:location', :controller => 'widget', :action => 'index'
   
   ### Widget Stuff ###
+  # redirects
   map.redirect 'aae/widgets', :controller => 'widgets/aae', :action => 'index', :permanent => true
   map.redirect 'aae/widgets/:redirectparam', :controller => 'widgets/aae', :action => 'redirector', :permanent => true
-  
-  map.view_widget 'widgets/aae/view/:id', :controller => 'widgets/aae', :action => 'view'
-  map.widget_home 'widgets/aae', :controller => 'widgets/aae', :action => 'index'
-  
+  map.namespace :widgets do |widgets|
+    widgets.aae 'aae', :controller => :aae, :action => 'index'
+    widgets.home '/', :controller => :home, :action => :index     
+    widgets.view_aae 'aae/view/:id', :controller => :aae, :action => 'view'
+  end
 
   ### Search Stuff ###
 
