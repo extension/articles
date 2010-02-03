@@ -58,6 +58,18 @@ module ApplicationHelper
     end
   end
   
+  def get_filtered_aae_incoming_count
+    return SubmittedQuestion.submitted.filtered(@currentuser.aae_filter_prefs).count
+  end
+  
+  def get_aae_assigned_to_me_count
+    return SubmittedQuestion.submitted.filtered({:assignee => @currentuser}).count
+  end
+  
+  def get_aae_resolved_by_me_count
+    return SubmittedQuestion.resolved.filtered({:resolved_by => @currentuser}).count
+  end
+  
   def options_from_categories(selected = nil)
     categories = Array.new
 

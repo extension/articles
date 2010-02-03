@@ -59,10 +59,11 @@
         </div>
         
         <div id="pageContent">
+            
             <ul id="aaelinks" <%= 'class="narrow"' if @menu_partial_to_display %>>
-                <li <%= selected_tab_if(:incoming_questions) %>><%= link_to "Incoming", incoming_url %></li> <!-- <strong>(35)</strong> -->
-                <li <%= selected_tab_if(:assigned_questions) %>><%= link_to "Assigned to me", my_assigned_url %></li> <!-- <span class=\"zero\">(0)</span> -->
-                <li <%= selected_tab_if(:my_resolved_questions) %>><%= link_to "Resolved by me", my_resolved_url %></li>
+                <li <%= selected_tab_if(:incoming_questions) %>><%= link_to "Incoming (#{get_filtered_aae_incoming_count})", incoming_url %></li> 
+                <li <%= selected_tab_if(:assigned_questions) %>><%= link_to "Assigned to me (#{get_aae_assigned_to_me_count})", my_assigned_url %></li>
+                <li <%= selected_tab_if(:my_resolved_questions) %>><%= link_to "Resolved by me (#{get_aae_resolved_by_me_count})", my_resolved_url %></li>
                 <% if !@category %>
                     <li <%= selected_tab_if(:resolved_questions) %>><%= link_to "Resolved", resolved_url(:type => 'all') %></li>
                 <% else %>

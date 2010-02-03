@@ -9,7 +9,7 @@ class Aae::IncomingController < ApplicationController
   layout 'aae'
   before_filter :login_required
   before_filter :check_purgatory
-
+  
   # Lists unresolved ask an expert questions
   def index 
     if err_msg = params_errors
@@ -26,6 +26,7 @@ class Aae::IncomingController < ApplicationController
     @questions_status = SubmittedQuestion::STATUS_SUBMITTED
     filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
     @submitted_questions = SubmittedQuestion.submitted.filtered(filteroptions).ordered(@order).listdisplayincludes.paginate(:page => params[:page])
+    @total_submitted_questions = SubmittedQuestion.submitted.count
   end
   
   

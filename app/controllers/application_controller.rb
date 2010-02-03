@@ -97,7 +97,7 @@ class ApplicationController < ActionController::Base
     @page_title_text = 'Status 404 - Page Not Found'
     render :template => "/shared/404", :status => "404"
   end
-    
+  
   private
   
   def turn_off_right_column

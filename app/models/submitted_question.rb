@@ -524,7 +524,7 @@ def self.filterconditions(options={})
   if(!options[:source].nil?)    
     case options[:source]
     when 'pubsite'
-      conditions << "#{self.table_name}.external_app_id != 'widget'"
+      conditions << "#{self.table_name}.external_app_id = 'www.extension.org'"
     when 'widget'
       conditions << "#{self.table_name}.external_app_id = 'widget'"
     else

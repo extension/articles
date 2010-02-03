@@ -20,13 +20,13 @@ class Api::AaeController < ApplicationController
         end
           
         if params[:aae_question].blank? or params[:aae_email].blank?
-          argument_errors = "You must fill in all fields to submit your question."
-          raise ArgumentError
+          param_entry_errors = "You must fill in all fields to submit your question."
+          raise ParamEntryError
         end
         
         if params[:aae_email] != params[:aae_email_confirmation]
-          argument_errors = "Email address does not match the confirmation email address."
-          raise ArgumentError
+          param_entry_errors = "Email address does not match the confirmation email address."
+          raise ParamEntryError
         end
         
         # setup the question to be saved and fill in attributes with parameters
@@ -54,6 +54,10 @@ class Api::AaeController < ApplicationController
       rescue ArgumentError => ae
         respond_to do |format|
           format.json {return render :text => "{\"error\":\"#{argument_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 400, :layout => false}
+        end
+      rescue ParamEntryError => param_error
+        respond_to do |format|
+          format.json {return render :text => "{\"error\":\"#{param_entry_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 400, :layout => false}
         end
       rescue Exception => e
         respond_to do |format|
