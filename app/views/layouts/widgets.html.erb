@@ -43,7 +43,7 @@
         </div>
         <div id="sidebar">
             <% if !@currentuser %>
-              <p class="signin"><%= link_to "Sign in", :controller => 'aae/widgets', :action => :login_redirect, :return_back => request.request_uri %></p>
+              <p class="signin"><%= link_to "Sign in", :controller => 'widgets/aae', :action => :login_redirect, :return_back => request.request_uri %></p>
               <% get_widget_link_message = "<em>(requires login)</em>" %>
             <% else %>
               <% get_widget_link_message = "" %>
@@ -54,11 +54,11 @@
             <% end %>
             <ul>
                 <li <%= selected_tab_if(:welcome) %>><%= link_to("Home", widget_home_url) %></li>
-                <li <%= selected_tab_if(:about) %>><%= link_to "About", :controller => 'aae/widgets', :action => :about %></li>
-                <li <%= selected_tab_if(:who) %>><%= link_to "Who answers the questions?", :controller => 'aae/widgets', :action => :who %></li>
-                <li <%= selected_tab_if(:get) %>><%= link_to "Get the Ask widget for your site #{get_widget_link_message}", :controller => 'aae/widgets', :action => :new %></li>
-                <li <%= selected_tab_if(:documentation) %>><%= link_to "Documentation", :controller => 'aae/widgets', :action => :documentation %></li>
-                <li <%= selected_tab_if(:all) %>><%= link_to "All Widgets", :controller => 'aae/widgets', :action => :list %></li>
+                <li <%= selected_tab_if(:about) %>><%= link_to "About", :controller => 'widgets/aae', :action => :about %></li>
+                <li <%= selected_tab_if(:who) %>><%= link_to "Who answers the questions?", :controller => 'widgets/aae', :action => :who %></li>
+                <li <%= selected_tab_if(:get) %>><%= link_to "Get the Ask widget for your site #{get_widget_link_message}", :controller => 'widgets/aae', :action => :new %></li>
+                <li <%= selected_tab_if(:documentation) %>><%= link_to "Documentation", :controller => 'widgets/aae', :action => :documentation %></li>
+                <li <%= selected_tab_if(:all) %>><%= link_to "All Widgets", :controller => 'widgets/aae', :action => :list %></li>
                 
             </ul>
         </div>

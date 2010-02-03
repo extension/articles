@@ -8,7 +8,7 @@
 
 <% @widgets.each do |widget| %>
     <tr id="<%= widget.name %>">
-        <td><%= link_to(widget.name, :controller => 'aae/widgets', :action => :view, :id => widget.id) %></td>
+        <td><%= link_to(widget.name, :controller => 'widgets/aae', :action => :view, :id => widget.id) %></td>
         
         <td><%= check_box_tag "filter_widget_#{widget.id}", widget.id, @filter_widgets.include?(widget.id) %>
             <div id="loading_filter_<%= widget.id %>" class="float-spinner" style="display:none">Saving...</div></td>

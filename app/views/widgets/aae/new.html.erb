@@ -2,7 +2,7 @@
 <%= error_messages_for 'widget' %>
 
 <h2>Create your eXtension Ask an Expert Widget</h2>
-<% form_tag({:controller => 'aae/widgets', :action => 'generate_widget_code'}) do %>
+<% form_tag({:controller => 'widgets/aae', :action => 'generate_widget_code'}) do %>
     <fieldset>
     <p>Select the location that you want your widget to cover. This will allow questions to be routed to experts who select the corresponding location in their Ask an Expert preferences.</p>
     

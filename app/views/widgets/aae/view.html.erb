@@ -1,6 +1,6 @@
 <div class="detailpage">
 
-<p><%= link_to "All widgets", :controller => 'aae/widgets', :action => 'list' %> > Widget info</p>
+<p><%= link_to "All widgets", :controller => 'widgets/aae', :action => 'list' %> > Widget info</p>
 
 <h2><%= @widget.name %></h2>
 
@@ -12,7 +12,7 @@
 
 <% if @widget_assignees.length > 0 %>
     <h4>Assignee Pool</h4>
-    <p><strong class="groupicon"><%= @widget_assignees.size %> users</strong> are signed up to answer questions from this widget. <%= link_to "View assignee pool", :controller => 'aae/widgets', :action => 'widget_assignees', :id => @widget.id %></p>
+    <p><strong class="groupicon"><%= @widget_assignees.size %> users</strong> are signed up to answer questions from this widget. <%= link_to "View assignee pool", :controller => 'widgets/aae', :action => 'widget_assignees', :id => @widget.id %></p>
 <% else %>
     <div class="askalert">
         <p><strong>There are currently no users signed up to receive questions from this widget.</strong></p>
@@ -33,7 +33,7 @@
 </div>
 
 <%= observe_field("widget_#{@widget.id}",
-                      :url       => { :controller => 'aae/widgets', :action => :toggle_activation },
+                      :url       => { :controller => 'widgets/aae', :action => :toggle_activation },
                       :with      => "'widget_id=#{@widget.id}'",
                       :loading => "Element.show('loading_widget_#{@widget.id}')",
                       :complete    => "Element.hide('loading_widget_#{@widget.id}')") %>

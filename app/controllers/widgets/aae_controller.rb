@@ -1,11 +1,11 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2009 North Carolina State University
+#  Copyright (c) 2005-2010 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class Aae::WidgetsController < ApplicationController
+class Widgets::AaeController < ApplicationController
   before_filter :login_required, :except => [:index, :about, :documentation, :who, :login_redirect]
   before_filter :check_purgatory, :except => [:index, :about, :documentation, :who, :login_redirect]
   before_filter :login_optional, :only => [:index, :about, :documentation, :who]
@@ -13,9 +13,6 @@ class Aae::WidgetsController < ApplicationController
   layout 'widgets'
   
   def index
-  end
-
-  def admin
   end
 
   def who 
@@ -74,7 +71,7 @@ class Aae::WidgetsController < ApplicationController
 
     if !@widget.valid?
       @location_options = get_location_options
-      render :template => '/aae/widgets/new'
+      render :template => '/widgets/aae/new'
       return
     end
 

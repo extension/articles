@@ -99,8 +99,8 @@ ActionController::Routing::Routes.draw do |map|
   
   ### Widget Stuff ###
   
-  map.view_widget 'aae/widgets/view/:id', :controller => 'aae/widgets', :action => 'view'
-  map.widget_home 'aae/widgets', :controller => 'aae/widgets', :action => 'index'
+  map.view_widget 'widgets/aae/view/:id', :controller => 'widgets/aae', :action => 'view'
+  map.widget_home 'widgets/aae', :controller => 'widgets/aae', :action => 'index'
   
 
   ### Search Stuff ###

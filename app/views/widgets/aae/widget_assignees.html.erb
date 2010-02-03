@@ -1,6 +1,6 @@
 <div class="detailpage">
     
-    <p><%= link_to "All widgets", :controller => 'aae/widgets', :action => :list %> > <%= link_to("Widget info", view_widget_url(:id => @widget.id)) %> > Assignee Pool</p>
+    <p><%= link_to "All widgets", :controller => 'widgets/aae', :action => :list %> > <%= link_to("Widget info", view_widget_url(:id => @widget.id)) %> > Assignee Pool</p>
     
     <h2><%= @widget.name %></h2>
     
