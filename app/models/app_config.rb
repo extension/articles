@@ -72,7 +72,7 @@ class AppConfig
     @@configtable['help_wiki'] = 'http://docs.extension.org/wiki/' 
     @@configtable['public_site'] = 'http://www.extension.org'
     @@configtable['search_site'] = 'http://search.extension.org'
-    @@configtable['aae_site'] = 'http://www.extension.org/aae/incoming'
+    @@configtable['aae_site'] = 'http://aae.extension.org'
     @@configtable['campus_site'] = 'http://campus.extension.org/ '
     @@configtable['pdc_site'] = 'http://pdc.extension.org/ '
 
