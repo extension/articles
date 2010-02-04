@@ -37,10 +37,6 @@
     <div id="pageContainer">
         <div id="masthead">
             <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
-            <ul id="app_toggle">
-                <li><span>The FAQ link can now be found at the top of the page</span></li>
-            </ul>
-            
             
             <% if !@mobile_device %>
                 <ul id="userinfo">
@@ -90,7 +86,14 @@
             <p id="total_incoming">Total Incoming Questions: <strong><%= get_total_incoming_questions %></strong> (unfiltered)</p>
             <div id="secondary">
                 <%= render(:partial => @menu_partial_to_display) if @menu_partial_to_display %>
+                
+                <div class="postit">
+                    <p>Did you know you can now get to Ask an Expert using the <%= link_to"aae.extension.org", "http://aae.extension.org/" %> url?</p>
+                    <p class="last">You no longer need to visit the FAQ app just to get to AaE.</p>
+                </div>
             </div>
+            
+            
             
         </div>
         <!-- end #pageContent -->

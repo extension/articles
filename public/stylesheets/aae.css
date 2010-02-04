@@ -310,6 +310,12 @@ h2 {color:#365591;font-size:1.8em;}
     margin:1em 1% 0 2%;
 }
 
+.postit {background: transparent url(/images/common/post-it-bottom.png) bottom center no-repeat; width:231px; border:1px solid #fff;padding-bottom:34px;}
+.postit p {background: transparent url(/images/common/post-it-top.png) 0 0 repeat-y; width:191px; padding:1.3em 20px 0;font-size:1.4em;display:block; color:#666;margin-bottom:0;}
+.postit p.last {padding-bottom:2em;}
+.postit p a {color:#444;font-weight:bold;text-decoration:none;}
+.postit p a:hover {color:#222;text-decoration:underline;}
+
 #list_filter {
     padding: .5em 1.25em 1em;
     background: #e1e5f6;
