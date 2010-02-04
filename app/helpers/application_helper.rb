@@ -67,8 +67,7 @@ module ApplicationHelper
   end 
   
   def get_aae_assigned_to_me_count
-    current_assignment = SubmittedQuestion.submitted.filtered({:assignee => @currentuser}).count
-    return current_assignment = current_assignment > 0 ? "<span class=\"notzero\">#{current_assignment}</span>" : current_assignment
+    return SubmittedQuestion.submitted.filtered({:assignee => @currentuser}).count
   end
   
   def get_aae_resolved_by_me_count
