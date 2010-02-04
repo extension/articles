@@ -63,10 +63,11 @@
             <ul id="aaelinks" <%= 'class="narrow"' if @menu_partial_to_display %>>
                 <li <%= selected_tab_if(:incoming_questions) %>><%= link_to "Incoming (#{get_filtered_aae_incoming_count})", incoming_url %></li>
                 <li <%= selected_tab_if(:assigned_questions) %>>
-                    <% if get_aae_assigned_to_me_count > 0 %>
-                        <%= link_to "Assigned to me (<span class=\"notzero\">#{get_aae_assigned_to_me_count}</span>)", my_assigned_url %>
+                   <% aae_assigned_count = get_aae_assigned_to_me_count %>
+                   <% if aae_assigned_count > 0 %>
+                        <%= link_to "Assigned to me (<span class=\"notzero\">#{aae_assigned_count}</span>)", my_assigned_url %>
                     <% else %>
-                        <%= link_to "Assigned to me (#{get_aae_assigned_to_me_count})", my_assigned_url %>
+                        <%= link_to "Assigned to me (#{aae_assigned_count})", my_assigned_url %>
                     <% end %>
                 </li>
                 <li <%= selected_tab_if(:my_resolved_questions) %>><%= link_to "Resolved by me (#{get_aae_resolved_by_me_count})", my_resolved_url %></li>
