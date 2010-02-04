@@ -17,8 +17,6 @@
 
 <p><%= link_to "Suggested Answering Guidelines", "http://about.extension.org/wiki/Suggested_Guidelines_for_Responding_to_Questions_Submitted_through_Ask_an_Expert" %></p>
 
-<p>Total Incoming Questions (regardless of question filter): <%= @total_submitted_questions %></p>
-
 <%= render(:partial => "aae/partial/submitted_questions") %>
 
 <% if @submitted_questions.length == 0 %>

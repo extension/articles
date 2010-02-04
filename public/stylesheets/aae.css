@@ -389,8 +389,7 @@ ul#aaelinks li {
     margin:0;
     color:#4fa10e; 
 }
-ul#aaelinks a strong {color:#000 !important;}
-ul#aaelinks a .zero {color:#aaa !important;}
+ul#aaelinks a .notzero {color:#000; font-weight:bold;}
 ul#aaelinks a {
     text-decoration:none;
     color:#444;
@@ -410,7 +409,7 @@ ul#aaelinks li.selected {
     margin-top:-4px;
     margin-bottom: 0px !important;
 }
-
+ul#aaelinks li.selected a .notzero {color:#4fa150;}
 ul#aaelinks li.selected a:hover {color:#007236;}
 ul#aaelinks li.selected a {
     background:#fff;
@@ -424,6 +423,9 @@ ul#aaelinks li.selected a {
 ul#aaelinks li#spam_review {float:right;}
 ul#aaelinks li#spam_review a {background:none;border:0; color:#999 !important; font-size:1em;}
 ul#aaelinks li#spam_review a:hover {background:none;border:0; color:#333 !important;}
+
+#total_incoming {float:right; width:29%; margin-bottom:0; color:#555;font-size:1.3em;}
+#total_incoming span {display:block;}
 
 #search_parameters {
     padding:0;
