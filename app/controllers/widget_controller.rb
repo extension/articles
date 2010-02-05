@@ -92,7 +92,7 @@ class WidgetController < ApplicationController
       http = Net::HTTP.new(uri.host, uri.port)
       response = http.post(uri.path, "aae_question=#{params[:aae_question]}&aae_email=#{params[:aae_email]}&aae_email_confirmation=#{params[:aae_email_confirmation]}&widget_id=#{params[:id]}&type=widget")
       
-      case response.class
+      case response
       when Net::HTTPOK
         return render :template => 'widget/create_from_widget', :layout => false
       when Net::HTTPBadRequest
@@ -103,7 +103,7 @@ class WidgetController < ApplicationController
         @status_message = response_hash['error']
         return render :template => 'widget/api_widget_status', :layout => false  
       else
-        @status_message = "We are currently experiencing technical difficulties with the system. Please try again later. CLASS:#{response.class.name}"
+        @status_message = "We are currently experiencing technical difficulties with the system. Please try again later."
         return render :template => 'widget/api_widget_status', :layout => false  
       end
         
