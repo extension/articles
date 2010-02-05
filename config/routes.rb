@@ -3,6 +3,10 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'main'
   map.home '', :controller => 'main', :action => 'index'
   
+  # notices
+  map.connect 'notice/ask', :controller => 'notice', :action => 'ask'
+
+  
   #################################################################
   ### people routes ###
   
