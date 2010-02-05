@@ -103,7 +103,7 @@ class WidgetController < ApplicationController
         @status_message = response_hash['error']
         return render :template => 'widget/api_widget_status', :layout => false  
       else
-        @status_message = "We are currently experiencing technical difficulties with the system. Please try again later."
+        @status_message = "We are currently experiencing technical difficulties with the system. Please try again later. CLASS:#{response.class.name}"
         return render :template => 'widget/api_widget_status', :layout => false  
       end
         
