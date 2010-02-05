@@ -93,12 +93,12 @@ class WidgetController < ApplicationController
       response = http.post(uri.path, "aae_question=#{params[:aae_question]}&aae_email=#{params[:aae_email]}&aae_email_confirmation=#{params[:aae_email_confirmation]}&widget_id=#{params[:id]}&type=widget")
       
       case response.class
-      when NET::HTTPOK
+      when Net::HTTPOK
         return render :template => 'widget/create_from_widget', :layout => false
-      when NET::HTTPBadRequest
+      when Net::HTTPBadRequest
         @status_message = "A configuration error has prevented your question from submitting. Please try again later."
         return render :template => 'widget/api_widget_status', :layout => false
-      when NET::HTTPForbidden
+      when Net::HTTPForbidden
         response_hash = JSON.parse response.body
         @status_message = response_hash['error']
         return render :template => 'widget/api_widget_status', :layout => false  
