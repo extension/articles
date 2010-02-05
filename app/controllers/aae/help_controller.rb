@@ -7,26 +7,10 @@
 
 class Aae::HelpController < ApplicationController
   layout 'aae'
+  before_filter :login_required
   
   def index
-    @isloggedin = checklogin
     return render :template => 'help/contactform.html.erb'
-  end
-  
-  private
-  
-  def checklogin
-    if session[:userid]
-      checkuser = User.find_by_id(session[:userid])
-      if not checkuser
-        return false
-      else
-        @currentuser = checkuser
-        return true
-      end
-    else
-      return false
-    end
   end
 
 end
