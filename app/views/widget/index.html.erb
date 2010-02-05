@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>eXtension: Ask an Expert</title>
+    <style type="text/css" media="screen">
+        <!--
+       body {font-size: 62.5%;}
+       body, html {margin:0; font-family: "Arial", "sans-serif"; color: #222; line-height:120%; background:transparent;}
+       p {font-size:1.2em;line-height:1.3em;margin:0 0 .1em;}
+       
+       #myForm {margin:0; border: 1px solid #888;padding: .5em 1em 0;background: #eee;}
+       h1 {margin:0;padding:0;float:right;height: 40px;width: 98px;text-indent:-3000px;background: transparent url("http://<%= @host_name %>/images/ask/ex_logo_micro.png") 0 0 no-repeat;}
+       h1 a {display:block;height:40px;}
+       h2 {margin:0 0 .25em;font-size: 1.7em;line-height:100%;font-weight: normal;color:#000;}
+
+       #myFormOutput p {margin: 1em 0;color:#008000;font-weight: bold;font-size:1.3em;}
+       #myFormOutput p#red {color: #ff0000;}
+       
+       fieldset {margin: 1em 0 .5em;border:0;padding:0;color:#666;}
+       textarea, input, select {width: 95%;margin: 0 0 7px;}
+       input, textarea {padding: .15em .3em;}
+       p.submit input {width:auto; margin-bottom:4px;}
+       label {clear: both;display: block;margin-bottom:.3em;font-weight: bold;font-size:1.2em;}
+       label small {color:#555; font-weight:normal; font-size:.9em;}
+       span {line-height: 100%;display: block;font-weight:normal;color: #888;}
+       	-->
+        </style>
+        
+        <script type="text/javascript" src="http://<%= @host_name %>/javascripts/prototype.js"></script>
+        <script type="text/javascript" src="http://<%= @host_name %>/javascripts/effects.js"></script>
+</head> 
+
+<body>
+    <% form_remote_tag (:update => 'myFormOutput', 
+                        :html => { :id => 'myForm' }, 
+                        :url => widget_submit_question_url(:id => @fingerprint), 
+                        :loading => "ask_submit.disabled=true; ask_submit.value='Submitting...'", 
+                        :complete => "new Effect.Opacity('myFormOutput', {duration:7.0, from:1.0, to:0.0}); ask_submit.disabled=false; ask_submit.value='Ask'; submitted_question_question.value=''") do %>
+
+    <h1><a href="http://www.extension.org/" target="_blank">eXtension</a></h1>
+    <h2>Ask an Expert</h2>
+    
+    <div id="myFormOutput"></div>
+
+    <p>
+        <label for="submitted_question_asked_question">Question</label>
+        <%= text_area :submitted_question, :asked_question, :rows => 4  %>
+    </p>
+
+    <p>
+        <label for="submitted_question_submitter_email">Email <small>(please type it twice to confirm)</small></label>
+        <%= text_field(:submitted_question, :submitter_email) %>
+        <%= text_field_tag(:submitter_email_confirmation) %>
+    </p>
+    
+    <% if @location %>
+    <p>
+        <%= hidden_field_tag("location", @location.fipsid) %>
+    </p>
+    <% end %>
+    
+    <% if @location and @county %>
+      <p>
+         <%= hidden_field_tag("county", @county.fipsid) %>
+      </p>      
+    <% end %>
+    
+
+
+    <p class="submit"><%= submit_tag "Ask", :id => "ask_submit" %></p>
+    <% end %>
+</body>
+</html>
