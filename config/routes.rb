@@ -80,6 +80,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'api/aae/ask.json', :controller => 'api/aae', :action => :ask  
     
   ### Widget iFrame ###
+  map.connect 'widget/api_widget_index', :controller => 'widget', :action => 'api_widget_index'
+  map.connect 'widget/create_from_widget_using_api', :controller => 'widget', :action => 'create_from_widget_using_api'
   map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
   map.widget 'widget', :controller => 'widget', :action => 'index'
   

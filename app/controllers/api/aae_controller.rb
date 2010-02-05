@@ -57,7 +57,7 @@ class Api::AaeController < ApplicationController
         end
       rescue ParamEntryError => param_error
         respond_to do |format|
-          format.json {return render :text => "{\"error\":\"#{param_entry_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 400, :layout => false}
+          format.json {return render :text => "{\"error\":\"#{param_entry_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 403, :layout => false}
         end
       rescue Exception => e
         respond_to do |format|
