@@ -12,29 +12,34 @@ class Api::AaeController < ApplicationController
 
   def ask
     if request.post?
-      begin
-         
-        if !params[:aae_question] or !params[:aae_email] or !params[:aae_email_confirmation]
+      begin 
+        if !params[:question] or !params[:email] or !params[:email_confirmation]
           argument_errors = "Required parameters were not passed. Please check API documentation for correct parameters."
-          raise ArgumentError
+          respond_to do |format|
+            format.json {return render :text => "{\"error\":\"#{argument_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 400, :layout => false}
+          end
         end
           
-        if params[:aae_question].blank? or params[:aae_email].blank?
+        if params[:question].blank? or params[:email].blank?
           param_entry_errors = "You must fill in all fields to submit your question."
-          raise ParamEntryError
         end
         
-        if params[:aae_email] != params[:aae_email_confirmation]
+        if params[:email] != params[:email_confirmation]
           param_entry_errors = "Email address does not match the confirmation email address."
-          raise ParamEntryError
         end
+        
+        if param_entry_errors
+          respond_to do |format|
+            format.json {return render :text => "{\"error\":\"#{param_entry_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 403, :layout => false}
+          end
+        end    
         
         # setup the question to be saved and fill in attributes with parameters
         create_question
         
         if(!@submitted_question.valid? or !@public_user.valid?)
-          argument_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
-          raise ArgumentError
+          active_record_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
+          raise ActiveRecordError
         end
         
         begin
@@ -48,18 +53,15 @@ class Api::AaeController < ApplicationController
             format.json { return render :text => "{\"completed\":\"true\", \"submitted_question_url\":\"aae/question/#{@submitted_question.id}\"}", :layout => false }
           end
         else
-          raise InternalError
+          active_record_errors = "Question not successfully saved."
+          raise ActiveRecordError
         end
       
-      rescue ArgumentError => ae
+      rescue ActiveRecordError 
         respond_to do |format|
-          format.json {return render :text => "{\"error\":\"#{argument_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 400, :layout => false}
+          format.json {return render :text => "{\"error\":\"#{active_record_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 500, :layout => false}
         end
-      rescue ParamEntryError => param_error
-        respond_to do |format|
-          format.json {return render :text => "{\"error\":\"#{param_entry_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 403, :layout => false}
-        end
-      rescue Exception => e
+      rescue Exception
         respond_to do |format|
           format.json {return render :text => "{\"error\":\"Application/Server Error\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 500, :layout => false}
         end
@@ -78,8 +80,8 @@ class Api::AaeController < ApplicationController
   def create_question
     widget = Widget.find_by_fingerprint(params[:widget_id].strip) if params[:widget_id]
     
-    @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:aae_email].strip})
-    @submitted_question = SubmittedQuestion.new(:asked_question => params[:aae_question].strip, :submitter_email => params[:aae_email].strip)
+    @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:email].strip})
+    @submitted_question = SubmittedQuestion.new(:asked_question => params[:question].strip, :submitter_email => params[:email].strip)
     @submitted_question.public_user = @public_user
     @submitted_question.widget = widget if widget
     @submitted_question.widget_name = widget.name if widget
@@ -89,29 +91,33 @@ class Api::AaeController < ApplicationController
     @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
     @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
     
-    case params[:type]
-    when 'widget'
-      @submitted_question.external_app_id = 'widget'
-    when 'pubsite'
-      @submitted_question.external_app_id = 'www.extension.org'
+    if params[:type]
+      case params[:type]
+      when 'widget'
+        @submitted_question.external_app_id = 'widget'
+      when 'pubsite'
+        @submitted_question.external_app_id = 'www.extension.org'
+      else
+        @submitted_question.external_app_id = 'unspecified'  
+      end
     else
-      @submitted_question.external_app_id = 'unspecified'  
+      @submitted_question.external_app_id = 'unspecified'
     end
       
     # check to see if question has location associated with it
-    incoming_location = params[:location].strip if params[:location] and params[:location].strip != '' and params[:location].strip != Location::ALL
+    location = params[:location].strip if params[:location] and params[:location].strip != ''
     
-    if incoming_location
-      location = Location.find_by_fipsid(incoming_location.to_i)
+    if location
+      location = Location.find_by_abbreviation_or_name(location)
       @submitted_question.location = location if location
     end
     
     # check to see if question has county and said location associated with it
-    incoming_county = params[:county].strip if params[:county] and params[:county].strip != '' and params[:county].strip != County::ALL
+    county = params[:county].strip if params[:county] and params[:county].strip != ''
+    county = location.get_associated_county(county) if location
     
-    if incoming_county and location
-      county = County.find_by_fipsid_and_location_id(incoming_county.to_i, location.id)
-      @submitted_question.county = county if county
+    if county and location
+      @submitted_question.county = county 
     end
   end
 

@@ -90,7 +90,7 @@ class WidgetController < ApplicationController
     if request.post?  
       uri = URI.parse(url_for(:controller => 'api/aae', :action => :ask, :format => :json))
       http = Net::HTTP.new(uri.host, uri.port)
-      response = http.post(uri.path, "aae_question=#{params[:aae_question]}&aae_email=#{params[:aae_email]}&aae_email_confirmation=#{params[:aae_email_confirmation]}&widget_id=#{params[:id]}&type=widget")
+      response = http.post(uri.path, "question=#{params[:question]}&email=#{params[:email]}&email_confirmation=#{params[:email_confirmation]}&widget_id=#{params[:id]}&type=widget")
       
       case response
       when Net::HTTPOK

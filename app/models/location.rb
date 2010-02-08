@@ -29,6 +29,22 @@ class Location < ActiveRecord::Base
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
     
-  # TODO: review heureka location reporting methods.  Justcode Issue #555  
+  # TODO: review heureka location reporting methods.  Justcode Issue #555 
+  
+  
+  def get_associated_county(county_string)
+    county = County.find_by_name(county_string.strip)
+    return nil if !county
+    return county if self.counties.include?(county) 
+    return nil
+  end
+  
+  def self.find_by_abbreviation_or_name(location_string)
+    if location = Location.find_by_abbreviation(location_string.strip) or location = Location.find_by_name(location_string.strip)
+      return location
+    else
+      return nil
+    end
+  end 
   
 end
