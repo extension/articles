@@ -518,7 +518,7 @@ class Aae::ReportsController < ApplicationController
     #        category = Category.find_by_name(params[:Category])
     #      end
     #      if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
-           if getparams.location  && !getparams.category.blank? && getparams.county?  
+           if getparams.location  && !getparams.category.blank? && getparams.county  
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             
