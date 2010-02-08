@@ -520,9 +520,9 @@ class Aae::ReportsController < ApplicationController
     #      if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
            if getparams.location  && !getparams.category.blank? && getparams.county  
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
-            countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
-            
-            @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(countyid)).experts_by_category(category.id) 
+            expertise_county= ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county])
+        
+            @user_list = User.experts_by_county(expertise_county).experts_by_category(category.id) 
              
             setup_routers_and_wranglers
           
