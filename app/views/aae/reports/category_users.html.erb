@@ -26,7 +26,7 @@
 	 <% while i < @csize do %>
 	     <% if @ctycnt[@cats[i].name]%>
 	        <tr>
-	       	<td><%=  link_to @cats[i].name, :action => "category_county_users", :State => @statename, :County =>  @county , :Category => @cats[i].name%></td>
+	       	<td><%=  link_to @cats[i].name, :action => "category_county_users", :location => @locid, :county =>  @countyid , :category => @cats[i].name%></td>
 		    <td><%= @ctycnt[@cats[i].name]%></td>
 		    </tr>
 		 

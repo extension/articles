@@ -65,11 +65,9 @@ class Aae::ReportsController < ApplicationController
 
     def activity_by_state
       # thoughts..
-      # what does it mean if someone selects state and univ? people who belong to both states and univs? is this NC subdivided by NC State and NC A&T, for example?
       # what does it mean if someone selects state and tags? a subdivision of states with category entries? or vice versa? How do we allow them to do the vice-versa?
-      # what does it mean if someone selects univ and tags? a subdivision of univs with category entries? or vice versa? How do we allow them to do the vice-versa?
-      # obviously these are more complicated summary reports.  Or, could start with state, univ, tags and then allow, on the
-      # display screen under where they choose the date, to select 1 of the other two, which would result in one entry on the next page for the combination
+      # obviously these are more complicated summary reports.  Or, could start with state, tags and then allow, on the
+      # display screen under where they choose the date, to select 1 of something else that may exist (ie, communities), which would result in one entry on the next page for the combination
        params[:type]="State"
        common_display
      end
@@ -481,6 +479,7 @@ class Aae::ReportsController < ApplicationController
           end
           if params[:County]
             @county = params[:County]
+            @countyid= params[:county]
           end
           if (@statename && @county && @statename != "" && @county != "")
              @cats = Category.find(:all, :conditions => "parent_id is null ", :order => 'name')
@@ -495,28 +494,40 @@ class Aae::ReportsController < ApplicationController
         end
 
         def category_county_users
-          # todo -- need validation of county id, state id, and category - ATH
+          # todo -- need validation of county id, state id, and category - ATH...
+          # fixed bug where ExpertiseCounty.find_by_id(countyid) used to be find_by_name...problem is, "All" as a name is in all locations
+          #    plus, some other county names are found in multiple states...ie, "Madison" --SMD
+          # use some new filter params methods for sake of overall consistency, and use noncapitalized versions for consistency --SMD
+          getparams = ParamsFilter.new([:county, :location, :category], params)
+          @statename = getparams.location.name
+          !(getparams.location.blank?) ? @locid = getparams.location.id : @locid=nil
+          @county = getparams.county.name
+          @catname = getparams.category
+          !(getparams.category.blank?) ? category=Category.find_by_name(@catname) : category=nil
+           
           
-          if params[:State]
-            @statename = params[:State]
-            @locid = ExpertiseLocation.find_by_name(@statename)
-          end
-          if params[:County]
-            @county = params[:County]
-          end
-          if params[:Category]
-            @catname = params[:Category]
-            category = Category.find_by_name(params[:Category])
-          end
-          if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
+    #      if params[:State]
+    #        @statename = params[:State]
+    #        @locid = ExpertiseLocation.find_by_name(@statename)
+    #      end                                         ## Note, old way commented out here takes in production mode ~337 ms
+    #      if params[:County]                         ## new way, ~339 ms on local machine
+    #        @county = params[:County]
+    #    end
+    #      if params[:Category]
+    #        @catname = params[:Category]
+    #        category = Category.find_by_name(params[:Category])
+    #      end
+    #      if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
+           if !getparams.location.name.blank?  && !getparams.category.blank? && !getparams.county.name.blank?  
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             
-            @user_list = User.experts_by_county(ExpertiseCounty.find_by_name(params[:County])).experts_by_category(category.id)  
+            @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(countyid)).experts_by_category(category.id) 
+             
             setup_routers_and_wranglers
           
             @usize = @user_list.size
-          end
+           end
         end
 
         def county_answerers
