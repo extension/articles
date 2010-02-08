@@ -475,7 +475,7 @@ class Aae::ReportsController < ApplicationController
            @filteredoptions = @filteredparams.findoptions
           if params[:State]
              @statename = params[:State]
-             @locid = ExpertiseLocation.find_by_name(@statename)
+             @locid = ExpertiseLocation.find_by_name(@statename).id
           end
           if params[:County]
             @county = params[:County]
@@ -499,9 +499,9 @@ class Aae::ReportsController < ApplicationController
           #    plus, some other county names are found in multiple states...ie, "Madison" --SMD
           # use some new filter params methods for sake of overall consistency, and use noncapitalized versions for consistency --SMD
           getparams = ParamsFilter.new([:county, :location, :category], params)
-          @statename = getparams.location.name
-          !(getparams.location.blank?) ? @locid = getparams.location.id : @locid=nil
-          @county = getparams.county.name
+          (getparams.location) ? @statename = getparams.location.name : @statename=nil
+          (getparams.location) ? @locid = getparams.location.id : @locid=nil
+          (getparams.county) ? @county = getparams.county.name : @county = nil
           @catname = getparams.category
           !(getparams.category.blank?) ? category=Category.find_by_name(@catname) : category=nil
            
@@ -518,7 +518,7 @@ class Aae::ReportsController < ApplicationController
     #        category = Category.find_by_name(params[:Category])
     #      end
     #      if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
-           if !getparams.location.name.blank?  && !getparams.category.blank? && !getparams.county.name.blank?  
+           if getparams.location  && !getparams.category.blank? && getparams.county?  
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
             
