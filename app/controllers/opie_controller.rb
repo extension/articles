@@ -81,7 +81,7 @@ class OpieController < ApplicationController
         end
         # add the sreg response if requested
         self.add_sreg(opierequest, response)
-        UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:additionaldata => opierequest,:appname => opierequest.trust_root)                  
+        UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:appname => opierequest.trust_root)                  
         log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_OPENID,:trustroot => opierequest.trust_root)                                     
       elsif opierequest.immediate
         response = opierequest.answer(false, server_url)
@@ -247,7 +247,7 @@ EOS
         response = opierequest.answer(true)          
       end
       self.add_sreg(opierequest, response)
-      UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:additionaldata => opierequest,:appname => opierequest.trust_root)                  
+      UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:appname => opierequest.trust_root)                  
       log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_OPENID,:trustroot => opierequest.trust_root)                                     
       session[:last_opierequest] = nil
       return self.render_response(response)
