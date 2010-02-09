@@ -83,7 +83,9 @@
                 <%= yield :layout %>
             </div>
             
-            <p id="total_incoming">Total Incoming Questions: <strong><%= get_total_incoming_questions %></strong> (unfiltered)</p>
+            <% if @menu_partial_to_display %>
+                <p id="total_incoming">Total Incoming Questions: <strong><%= get_total_incoming_questions %></strong> (unfiltered)</p>
+            <% end %>
             <div id="secondary">
                 <%= render(:partial => @menu_partial_to_display) if @menu_partial_to_display %>
                 
