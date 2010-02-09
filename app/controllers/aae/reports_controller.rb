@@ -945,7 +945,7 @@ class Aae::ReportsController < ApplicationController
               session[:right_set]= "y"
             end
        @type = "Category"
-        @typelist= Category.find(:all,  :order => 'name')
+        @typelist= Category.find(:all, :conditions => "parent_id is null", :order => 'name')
         response_times_summary(rslts)
      end
 
