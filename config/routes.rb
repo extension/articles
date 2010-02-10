@@ -90,7 +90,7 @@ ActionController::Routing::Routes.draw do |map|
   # insert regular expression for county to let the routing know that if a dot(.) is encountered, it's part of the param and not 
   # a route separator 
   map.connect 'widget/tracking/:id/:location/:county', :controller => 'widget', :action => 'index', :requirements => { :county => /.*/ }
-  #map.connect 'widget/tracking/:id/:location', :controller => 'widget', :action => 'index'
+  map.connect 'widget/tracking/:id/:location', :controller => 'widget', :action => 'index'
   map.connect 'widget/tracking/:id', :controller => 'widget', :action => 'index'
   
   
