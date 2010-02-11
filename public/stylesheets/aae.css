@@ -439,11 +439,11 @@ ul#aaelinks li#spam_review a:hover {background:none;border:0; color:#333 !import
 .sidebar dt {font-weight:bold;}
 .sidebar a {color:#999; text-decoration:none;}
 .sidebar a:hover {color:#000 !important;}
-.dashboard {background: #fff url(/images/aae/dashboard.png) no-repeat top left;}
-.widget {background: #fff url(/images/aae/widget.png) no-repeat top left;}
+.dashboard {background: #fff url(/images/aae/dashboard_icon.png) no-repeat top left;}
+.widget {background: #fff url(/images/aae/widget_icon.png) no-repeat top left;}
 
-.sidebar a:hover .dashboard {background: #fff url(/images/aae/dashboard_on.png) no-repeat top left;}
-.sidebar a:hover .widget {background: #fff url(/images/aae/widget_on.png) no-repeat top left;}
+.sidebar a:hover .dashboard {background: #fff url(/images/aae/dashboard_icon.png) no-repeat 0 -200px;}
+.sidebar a:hover .widget {background: #fff url(/images/aae/widget_icon.png) no-repeat 0 -200px;}
 
 #search_parameters {
     padding:0;
