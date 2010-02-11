@@ -83,16 +83,35 @@
                 <%= yield :layout %>
             </div>
             
-            <% if @menu_partial_to_display %>
-                <p id="total_incoming">Total Incoming Questions: <strong><%= get_total_incoming_questions %></strong> (unfiltered)</p>
-            <% end %>
+            
             <div id="secondary">
+                <% if @menu_partial_to_display %>
+                    <p id="total_incoming" class="sidebar">Total Incoming Questions: <strong><%= get_total_incoming_questions %></strong> (unfiltered)</p>
+                <% end %>
                 <%= render(:partial => @menu_partial_to_display) if @menu_partial_to_display %>
                 
                 <div class="postit">
                     <p>Did you know you can now get to Ask an Expert using the <%= link_to"aae.extension.org", "http://aae.extension.org/" %> url?</p>
                     <p class="last">You no longer need to visit the FAQ app just to get to AaE.</p>
                 </div>
+                
+                <% if @menu_partial_to_display %>
+                <div class="sidebar">
+                    <% link_to(:controller => "/widgets", :action => "aae") do %>
+                        <dl class="widget">
+                            <dt>AaE Widget Site</dt>
+                            <dd>All about AaE widgets. Create new ones and manage existing.</dd>
+                        </dl>
+                    <% end %>
+                    
+                    <% link_to(:controller => "dashboard") do %>
+                    <dl class="dashboard">
+                        <dt>AaE Question Wrangler Dashboard</dt>
+                        <dd>Displays the current status of all unanswered AaE questions</dd>
+                    </dl>
+                    <% end %>
+                </div>
+                <% end %>
             </div>
             
             

@@ -307,8 +307,10 @@ h2 {color:#365591;font-size:1.8em;}
     clear:right;
     float:right;
     width:29%;
-    margin:1em 1% 0 2%;
+    margin:0 1% 0 2%;
 }
+
+#secondary form {clear:both;}
 
 .postit {background: transparent url(/images/common/post-it-bottom.png) bottom center no-repeat; width:231px; border:1px solid #fff;padding-bottom:34px;}
 .postit p {background: transparent url(/images/common/post-it-top.png) 0 0 repeat-y; width:191px; padding:1.3em 20px 0;font-size:1.4em;display:block; color:#666;margin-bottom:0;}
@@ -430,8 +432,18 @@ ul#aaelinks li#spam_review {float:right;}
 ul#aaelinks li#spam_review a {background:none;border:0; color:#999 !important; font-size:1em;}
 ul#aaelinks li#spam_review a:hover {background:none;border:0; color:#333 !important;}
 
-#total_incoming {float:right; width:29%; margin-bottom:0; color:#555;font-size:1.3em;}
+#total_incoming {color:#555;font-size:1.3em;}
 #total_incoming span {display:block;}
+.sidebar {margin:0 1em .75em !important; color:#555;}
+.sidebar dl {padding-left:44px; margin:1.5em 0 2.5em;}
+.sidebar dt {font-weight:bold;}
+.sidebar a {color:#999; text-decoration:none;}
+.sidebar a:hover {color:#000 !important;}
+.dashboard {background: #fff url(/images/aae/dashboard.png) no-repeat top left;}
+.widget {background: #fff url(/images/aae/widget.png) no-repeat top left;}
+
+.sidebar a:hover .dashboard {background: #fff url(/images/aae/dashboard_on.png) no-repeat top left;}
+.sidebar a:hover .widget {background: #fff url(/images/aae/widget_on.png) no-repeat top left;}
 
 #search_parameters {
     padding:0;
