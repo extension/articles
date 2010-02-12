@@ -13,6 +13,7 @@ class Aae::DashboardController < ApplicationController
 
   
   def index
+    @skip_the_postit_display = true
     if err_msg = params_errors
       list_view_error(err_msg)
       return
