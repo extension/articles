@@ -1664,78 +1664,7 @@ class User < ActiveRecord::Base
          :joins => [:submitted_question_events], :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "submitted_question_id")
    end
    
-    def self.get_num_times_assigned(date1, date2, auxjoin, auxcond, sqfilters, sqinclude)
-        cond = ""
-        if (date1 && date2)
-            cond = " TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
-        end
-        cond = cond +  ((auxcond && auxcond != "" ) ? " and " + auxcond : "")  + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
-       SubmittedQuestion.count(:all, 
-           :joins => "join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id " + auxjoin,
-            :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
-           :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "previous_handling_recipient_id")
-
-     end
-     
-     def self.get_total_handling_events(date1, date2, sqfilters, sqinclude)
-          cond = ""
-          if (date1 && date2)
-              cond = " TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
-          end
-          cond = ((cond != "") ? cond +  " and " : "") +  " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO}, #{SubmittedQuestionEvent::RESOLVED}, #{SubmittedQuestionEvent::REJECTED}, #{SubmittedQuestionEvent::NO_ANSWER}) " + 
-                    ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
-         SubmittedQuestion.count(:all,
-             :joins =>  "join submitted_question_events on submitted_questions.id=submitted_question_events.submitted_question_id ",
-              :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
-             :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "previous_handling_recipient_id")
-
-     end
-       
-     
-       def self.get_avg_handling_time(date1, date2, sqfilters, sqinclude)
-            #if sqinclude, cannot do a select with include, so must do this workaround
-             joinclause= [:submitted_question_events] 
-            if (sqinclude && sqinclude[0]=="categories".to_sym)
-              joinclause = " join submitted_question_events on submitted_question_events.submitted_question_id=submitted_questions.id join " +
-                             "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
-                             " on categories.id=categories_submitted_questions.category_id "
-            end
-            cond = " event_state IN (#{SubmittedQuestionEvent::ASSIGNED_TO},#{SubmittedQuestionEvent::RESOLVED},#{SubmittedQuestionEvent::REJECTED},#{SubmittedQuestionEvent::NO_ANSWER}) " +
-              ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
-             if (date1 && date2)
-                   cond = cond + " and TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
-             end   
-             avgs= SubmittedQuestion.find(:all, :select => " previous_handling_recipient_id, avg(duration_since_last_handling_event) as ra",
-              :joins => joinclause, 
-             :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :group => "previous_handling_recipient_id")
-            SubmittedQuestion.makehash(avgs,"previous_handling_recipient_id", 3600)
-        end
-
-
-        def self.get_avg_resp_time_only(date1, date2, sqfilters, sqinclude)
-             #if sqinclude, cannot do a select with include, so must do this workaround
-              joinclause= [:submitted_question_events] ; 
-             if (sqinclude && sqinclude[0]=="categories".to_sym)
-               joinclause = " join submitted_question_events on submitted_question_events.submitted_question_id=submitted_questions.id join " +
-                              "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
-                              " on categories.id=categories_submitted_questions.category_id "
-             end
-           # cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id > 0 and resolved_by=recipient_id " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
-             cond = " event_state = #{SubmittedQuestionEvent::RESOLVED} and initiated_by_id=previous_handling_recipient_id  " + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
-              if (date1 && date2)
-                  cond = cond + " and TRIM(DATE(submitted_question_events.created_at)) between ? and ? "
-              end   
-              #Note: I do not agree that the average for response should be on 'resolved' only based on duration_last_handling_event, because of questions where more than one 
-              # person answered, and not in order of assignment, although both may have been assigned. Therefore, I was doing as commented out below. For the purposes of
-              # comparison, and comparing apples to apples, this is now an avg on duration_last_handling_event, not  assigned  to  resolved_at
-              #  avgs= SubmittedQuestion.find(:all, :select => " recipient_id, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra",
-              avgs= SubmittedQuestion.find(:all, :select => " initiated_by_id, avg(duration_since_last_handling_event) as ra",
-               :joins => joinclause, 
-              :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :group => "initiated_by_id")  # group => "recipient_id"
-             SubmittedQuestion.makehash(avgs,"initiated_by_id", 3600)   #(avgs, "recipient_id", 3600)
-         end
-   
-   
+ 
    #
    # AaE Reporting Functions
    #   various functions for AaE calculations - usually in pairs, with a User instance method
