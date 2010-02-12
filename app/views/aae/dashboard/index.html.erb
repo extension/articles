@@ -1,52 +1,57 @@
 <h1>Assignment Dashboard</h1>
 <p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page: <%= @filter_string%></p>
 
-
-
-<table cellspacing="0" id="dashboard">
-    <tr>
-        <th>#</th>
-        <th>Question Age</th>
-        <th id="completions">Assigned to</th>
-        <th>Length<br/>assigned</th>
-        <th id="completions">Handled <br> or Completed</br><br/>(last 6 months)</th>
-        <th>Avg handling time<br> (anytime assigned)</br> <br/>(last 6 months)</th>        
-        <th>Most recent login</th>
-    <tr>
+<%- if @submitted_questions.blank? -%>
+    <div class="noresults">
+        <h3>There are no questions that match your question filter</h3>
+        <p>(You can change your filter settings on the right)</p>
+    </div>
+<%- else -%>
+  <table cellspacing="0" id="dashboard">
+      <tr>
+          <th>#</th>
+          <th>Question Age</th>
+          <th id="completions">Assigned to</th>
+          <th>Length<br/>assigned</th>
+          <th id="completions">Handled <br> or Completed</br><br/>(last 6 months)</th>
+          <th>Avg handling time<br> (anytime assigned)</br> <br/>(last 6 months)</th>        
+          <th>Most recent login</th>
+      <tr>
         
-    <% @submitted_questions.each do |submitted_question| %>
-        <tr>
-            <td><%= link_to(submitted_question.id, aae_question_url(submitted_question)) %></td>
-            <td><%= time_ago_in_words(submitted_question.created_at) %> ago</td>
-            <td>
-                <%- if !submitted_question.assignee.nil? -%>
-                    <%= link_to("#{submitted_question.assignee.fullname}", aae_profile_url(:id => submitted_question.assignee.login), :title => "Ask an Expert profile") %><%= link_to("#{submitted_question.assignee.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => submitted_question.assignee.login}, :title => "People profile", :class => "subtle") %>
-                <%- else -%>
-                    <span>nobody</span>
-                <%- end -%>
-            </td>
-            <td><%= (!submitted_question.last_assigned_at.nil? ?  time_ago_in_words(submitted_question.last_assigned_at) : '' )%></td>
-            <%- if !submitted_question.assignee.nil? -%>
-                <%- 
-                    if @handling_counts[submitted_question.assignee.id]
-                        aae_handling_event_count = @handling_counts[submitted_question.assignee.id] 
-                    else 
-                        aae_handling_event_count = {:total => 0, :handled => 0, :ratio => 0} 
-                    end
-                    if @handling_averages[submitted_question.assignee.id]
-                        aae_handling_average = @handling_averages[submitted_question.assignee.id] 
-                    else 
-                        aae_handling_average = 0
-                    end                    
-                -%>
-                <td class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
-                <%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %> (out of <%= aae_handling_event_count[:total] %>)
-                <td><%= (aae_handling_event_count[:handled] > 0 ? "#{number_with_precision(aae_handling_average / 3600, :precision => 0)} hours" : 'n/a') %></td>
-            <% else %>
-                <td>n/a</td>
-                <td>n/a</td> 
-            <% end%>
-            <td><%= (!submitted_question.assignee.nil? and submitted_question.assignee.last_login_at) ? time_ago_in_words(submitted_question.assignee.last_login_at) + ' ago': ''%></td>
-        </tr>
-    <% end %>    
-</table>
+      <% @submitted_questions.each do |submitted_question| %>
+          <tr>
+              <td><%= link_to(submitted_question.id, aae_question_url(submitted_question)) %></td>
+              <td><%= time_ago_in_words(submitted_question.created_at) %> ago</td>
+              <td>
+                  <%- if !submitted_question.assignee.nil? -%>
+                      <%= link_to("#{submitted_question.assignee.fullname}", aae_profile_url(:id => submitted_question.assignee.login), :title => "Ask an Expert profile") %><%= link_to("#{submitted_question.assignee.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => submitted_question.assignee.login}, :title => "People profile", :class => "subtle") %>
+                  <%- else -%>
+                      <span>nobody</span>
+                  <%- end -%>
+              </td>
+              <td><%= (!submitted_question.last_assigned_at.nil? ?  time_ago_in_words(submitted_question.last_assigned_at) : '' )%></td>
+              <%- if !submitted_question.assignee.nil? -%>
+                  <%- 
+                      if @handling_counts[submitted_question.assignee.id]
+                          aae_handling_event_count = @handling_counts[submitted_question.assignee.id] 
+                      else 
+                          aae_handling_event_count = {:total => 0, :handled => 0, :ratio => 0} 
+                      end
+                      if @handling_averages[submitted_question.assignee.id]
+                          aae_handling_average = @handling_averages[submitted_question.assignee.id] 
+                      else 
+                          aae_handling_average = 0
+                      end                    
+                  -%>
+                  <td class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
+                  <%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %> (out of <%= aae_handling_event_count[:total] %>)
+                  <td><%= (aae_handling_event_count[:handled] > 0 ? "#{number_with_precision(aae_handling_average / 3600, :precision => 0)} hours" : 'n/a') %></td>
+              <% else %>
+                  <td>n/a</td>
+                  <td>n/a</td> 
+              <% end%>
+              <td><%= (!submitted_question.assignee.nil? and submitted_question.assignee.last_login_at) ? time_ago_in_words(submitted_question.assignee.last_login_at) + ' ago': ''%></td>
+          </tr>
+      <% end %>    
+  </table>
+<%- end -%>
