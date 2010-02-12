@@ -38,24 +38,6 @@
         <div id="masthead">
             <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
             
-            <% if !@mobile_device %>
-                <ul id="userinfo">
-                    <%- if(!@currentuser.nil?) -%>
-                        <li><%= link_to "reports", {:controller => "reports"} %></li>
-                        <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
-                        <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
-                        <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
-                    <%- end -%>
-                </ul>
-            
-                <% if @currentuser.is_admin? %>
-            		<p id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></p>
-            	<% end %>
-            <% end %>
-        </div>
-        
-        <div id="pageContent">
-            
             <ul id="aaelinks" <%= 'class="narrow"' if @menu_partial_to_display %>>
                 <li <%= selected_tab_if(:incoming_questions) %>><%= link_to "Incoming (#{get_filtered_aae_incoming_count})", incoming_url %></li>
                 <li <%= selected_tab_if(:assigned_questions) %>>
@@ -76,8 +58,25 @@
                 <% end %>
                 <li <%= selected_tab_if(:spam_review) %> id="spam_review"><%= link_to "Spam Review", spam_url %></li>
             </ul>
+            <% if !@mobile_device %>
+                <ul id="userinfo">
+                    <%- if(!@currentuser.nil?) -%>
+                        <li><%= link_to "reports", {:controller => "reports"} %></li>
+                        <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
+                        <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
+                        <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
+                    <%- end -%>
+                </ul>
+            
+                <% if @currentuser.is_admin? %>
+            		<p id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></p>
+            	<% end %>
+            <% end %>
             
             
+        </div>
+        
+        <div id="pageContent">
             
             <div id="content" <%= 'class="narrow"' if @menu_partial_to_display %>>
                 <%= yield :layout %>

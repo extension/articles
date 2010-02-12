@@ -80,12 +80,7 @@ input.submit[class] {  /* IE ignores [class] */
 	position: relative;
 	float: left; }
 
-#pageContent {
-	background: #fff;
-	clear:both;
-    border:1px solid #003762;
-    border-top:8px solid #003762;
-}
+
 #content {
 	float: right;
 	width: 78%;
@@ -116,7 +111,7 @@ input.submit[class] {  /* IE ignores [class] */
 /* Masthead
 -----------------------------------------------------------------------------*/
 #masthead {position: relative;
-	height: 100px;
+/*  height: 100px;*/
 	display: block;
 	float:left;
 	width:100%;
@@ -126,12 +121,12 @@ input.submit[class] {  /* IE ignores [class] */
 	margin: 0;
 	padding: 0;
 	width: 230px;
-	height: 100px;
+	height: 90px;
     float:left;
 	font-size: 150%;
 	color: #000b53 !important;
 	text-indent: -9000px;
-    background: url(/images/aae/masthead_aae.png) 0 0 no-repeat; 
+    background: url(/images/aae/masthead_aae.png) 0 -5px no-repeat; 
 	overflow: hidden;
 }
 #masthead h1 a {
@@ -347,14 +342,13 @@ h2 {color:#365591;font-size:1.8em;}
     padding:.5em 1.25em;
     border:0;
 }
+
 #pageContent {
     clear:both;
-/*    padding:2em 2em 1.5em !important;*/
     padding:2em 0 1.5em !important;
-    border-top:8px solid #007135;
+    border-top:2px solid #007135;
     border-left:0;
     border-right:0;
-    
     background: #fff;
     float:left;
     width: 100%;    
@@ -364,10 +358,8 @@ h2 {color:#365591;font-size:1.8em;}
 
 
 #content {
-    border:1px solid #9ac677;
-    border-top:1px solid #555;
     margin:0 0 0 1%;
-    padding: 2%;
+    padding: 0 2% 2%;
     float:left;
 	width:92%;
 	overflow:hidden;
@@ -380,21 +372,22 @@ h2 {color:#365591;font-size:1.8em;}
 
 /* App Navigation
 -----------------------------------------------------------------------------*/
-
+    
 
 ul#aaelinks {
-    margin:0 0 0 2em;
+    margin:0 0 -4px 2em;
     padding-top:10px;
     clear:both;
     list-style:none;
     width:92%;
-    margin-bottom:-1px;
+    padding-bottom:2px;
     float: left;
 }
 ul#aaelinks.narrow {width:62%;}
 ul#aaelinks li {
     float:left;
-    margin:0;
+    margin:0 0 2px;
+    *margin-bottom:3px; /* IE7 hack */
     color:#4fa10e; 
 }
 ul#aaelinks a .notzero {color:#000; font-weight:bold;}
@@ -414,18 +407,23 @@ ul#aaelinks a:hover {
 }
 ul#aaelinks li.selected {
     position:relative;
-    margin-top:-4px;
+    margin-top:-3px;
     margin-bottom: 0px !important;
+/*    border-bottom:1px solid #fff;*/
 }
-ul#aaelinks li.selected a .notzero {color:#4fa150;}
-ul#aaelinks li.selected a:hover {color:#007236;}
+ul#aaelinks li.selected a .notzero {
+    color:#4fa150;
+    }
+ul#aaelinks li.selected a:hover {
+    color:#007236;
+    }
 ul#aaelinks li.selected a {
     background:#fff;
-    border: 1px solid #555;
-    border-bottom:1px solid #fff;
+    border:2px solid #007135;
+    border-bottom:0;
     color:#4fa150;
     font-weight:bold;
-    padding-top:6px;
+    padding-top:7px;
 }
 
 ul#aaelinks li#spam_review {float:right;}
