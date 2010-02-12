@@ -437,7 +437,7 @@ class Aae::ReportsController < ApplicationController
              @usize = @user_list.size ; @locid = params[:location]
              @statename = ExpertiseLocation.find_by_id(params[:location]).name
              
-              # heureka's way....translated to darmok, that works
+              # heureka's way....translated to darmok, that works...
        #   if params[:State]
       #      @statename = params[:State]
       #    end
