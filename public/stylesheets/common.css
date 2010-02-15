@@ -56,6 +56,9 @@ h6 { font-size: 1.3em;}
 
 h1, h2, h3, h4, h5, h6 {margin: .5em 0 .5em 0; line-height: 140%;}
 
+sup {vertical-align:super;}
+sub {vertical-align:sub;}
+
 
 /* Server location visual indicator
 -----------------------------------------------------------------------------*/
