@@ -98,10 +98,10 @@ class Api::AaeController < ApplicationController
       when 'pubsite'
         @submitted_question.external_app_id = 'www.extension.org'
       else
-        @submitted_question.external_app_id = 'unspecified'  
+        @submitted_question.external_app_id = 'api'  
       end
     else
-      @submitted_question.external_app_id = 'unspecified'
+      @submitted_question.external_app_id = 'api'
     end
       
     # check to see if question has location associated with it

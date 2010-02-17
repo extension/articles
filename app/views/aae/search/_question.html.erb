@@ -1,7 +1,7 @@
 <div id="inc_to_FAQ">
 
 <% if params[:q] %>
-  <% if @submitted_question.assignee.id == @currentuser.id %>
+  <% if @submitted_question.assignee and (@submitted_question.assignee.id == @currentuser.id) %>
         	<p class="button2">
             <%= link_to "#{@type} ##{@aae_search_item.id} is a relevant answer. Use it to write my response.", 
             answer_question_url(
