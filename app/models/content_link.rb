@@ -126,7 +126,7 @@ class ContentLink < ActiveRecord::Base
     # for comparison purposes - we need to drop the fragment - the caller is going to
     # need to maintain the fragment when they get an URI back from this class.
     if(!original_uri.fragment.blank?)
-      original_uri.fragment = ''
+      original_uri.fragment = nil
     end
     
     # we'll keep the path around - but we might should drop them for CoP wiki sourced articles
