@@ -14,6 +14,12 @@ class Aaereport
     cond = buildcond(p, this_method, ["status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"])
     jstr = buildjoin(p, this_method)
     grp = buildgroup(p, this_method)
+    if !p[:date1]  && !p[:date2]
+      if p[:dateinterval]
+        p[:date1] = p[:dateinterval][0].to_s
+        p[:date2] = p[:dateinterval][1].to_s
+      end
+    end
     results << SubmittedQuestion.date_subs(p[:date1], p[:date2]).count(:joins => jstr, :conditions => cond, :group => grp)
   end
   
@@ -23,6 +29,12 @@ class Aaereport
     jstr = buildjoin(p, this_method)
     cond = buildcond(p, this_method, ["resolved_by >= 1"])
     grp = buildgroup(p, this_method)
+    if !p[:date1]  && !p[:date2]
+      if p[:dateinterval]
+        p[:date1] = p[:dateinterval][0].to_s
+        p[:date2] = p[:dateinterval][1].to_s
+      end
+    end
     results << SubmittedQuestion.date_subs(p[:date1], p[:date2]).count(:joins => jstr, :conditions => cond, :group => grp)
   end
   
