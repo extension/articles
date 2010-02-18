@@ -28,15 +28,15 @@
 
 <br class="clear"/>
 <h3>User Contributions</h3>
-<%= render(:partial => 'seldates')%>
+<%= render(:partial => 'date_selection')%>
 
 <dl class="report">
    
    
    <dt>Questions Assigned (Ask an Expert)</dt>
-    <dd><%= link_to "#{@uassigned} total",:action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert" , :olink => "Assigned as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uassigned %></dd>
+    <dd><%= link_to "#{@uassigned} total",:action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert" , :olink => "Assigned as an Expert", :datefrom => @dateinterval[0], :dateto => @dateinterval[1], :num => @uassigned %></dd>
     <dt>Questions Resolved (Ask an Expert)</dt>
-        <dd><%= link_to "#{@uresolved} total", :action => "display_questions", :user => @user.id, :descriptor => "Answered as an Expert" , :olink => "Answered as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uresolved %></dd>
+        <dd><%= link_to "#{@uresolved} total", :action => "display_questions", :user => @user.id, :descriptor => "Answered as an Expert" , :olink => "Answered as an Expert", :datefrom => @dateinterval[0], :dateto => @dateinterval[1], :num => @uresolved %></dd>
      
 </dl>	
 <br class="clear"/>

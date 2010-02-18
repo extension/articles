@@ -1,0 +1,64 @@
+<% @page_title = "General Statistics by State" %>
+
+<% genstring = "General Statistics by State"%>
+
+<div id="report">
+    <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "General Overview",  :action => 'activity' %> &gt; <%= @page_title %></p>
+    
+<h1><%= genstring %></h1>
+
+<p>for questions pertaining to the state, not the state of the submitter or the responder</p>
+
+
+<%= render(:partial => 'date_selection') %>
+
+<p>Click on column header links to sort.</p>
+<table cellspacing="0" class="stats" summary="<%= genstring %>">
+	<% even = false %> 
+    <tr>
+	    <th scope="col"><%= link_to "State", { :action => params[:action], :orderby=> 'state',  :sortorder => (params[:sortorder] != "a") ? "a" : "d" , :datefrom => @dateinterval[0], :dateto => @dateinterval[1] } %></th> 
+	   
+        <th scope="col"><%= link_to "Open", { :action => params[:action], :orderby=>'open' , :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1] }%></th>
+        <th scope="col"><%= link_to "Resolved",{ :action => params[:action], :orderby=>'resolved' ,  :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1]  } %></th>
+         <th scope="col"><%= link_to "Answered",{ :action => params[:action], :orderby=>'answered' ,  :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1]  } %></th>
+          <th scope="col"><%= link_to "Rejected",{ :action => params[:action], :orderby=>'rejected' , :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1]  } %></th>
+           <th scope="col"><%= link_to "Responded to with 'No Expertise'",{ :action => params[:action], :orderby=>'no_expertise' ,  :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1]  } %></th>
+     </tr>
+
+<% if @typelist%>
+  
+  <% @typelist.each do |x| %>
+ 
+  <% incoming_questions_in_assigned_state = @open[x[0]] %>
+  <% resolved_questions_in_assigned_state = @resolved[x[0]] %>
+  <% answered_questions = @answered[x[0]]%>
+  <% rejected_questions = @rejected[x[0]]%>
+  <% noanswer_questions = @no_expertise[x[0]]%>
+  <% empty = ' class="empty"' %>
+
+<tr <%= ' class="shaded"' if even %>>
+    <td class="left">
+	
+	 <!--	  <%= link_to x[0], :action => 'show_all_by_state', :State => x[0] %> -->
+	          <%= h(x[0])%>
+		 
+     </td>
+    
+     <td<%= empty if !@open[x[0]] %>><%= incoming_questions_in_assigned_state %></td>
+     <td<%= empty if !@resolved[x[0]] %>><%= resolved_questions_in_assigned_state %></td>
+     <td<%= empty if !@answered[x[0]] %>><%= answered_questions %></td>
+     <td<%= empty if !@rejected[x[0]] %>><%= rejected_questions %></td>
+     <td<%= empty if !@no_expertise[x[0]] %>><%= noanswer_questions %></td>
+</tr>
+	<% if even 
+         even = false 
+     else 
+         even = true 
+     end %>
+	
+   <% end %>
+<%end %>
+
+ </table>
+
+</div>

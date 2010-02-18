@@ -17,71 +17,73 @@ class Aae::ReportsController < ApplicationController
 
     ##Activity Reports
     def activity
-       (@date1,@date2, @dateFrom,@dateTo)= valid_date("dateFrom", "dateTo")
-       (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
+       @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+     	 @latest_date = Date.today
+     	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})           
        @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
        @rept = Aaereport.new(:name => "Activity")
-       @repaction = "activity"
        @cats = Category.find(:all, :order => 'name')
     end
 
-     def state_univ_activity
-      @typelist = [];  @new={}; @reslvd={}; @answ={}; @rej={}; @noexp={} ; openquestions={}
-        @type = params[:type]; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
-        (@date1, @date2, @dateFrom, @dateTo)=parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)   #parmcheck()
-        if (@type=="State")
+     def state_activity
+      @typelist = [];  @open={}; @resolved={}; @answered={}; @rejected={}; @no_expertise={} ; openquestions={}
+             @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+          	 @latest_date = Date.today
+          	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+
           @typelist  = Location.find(:all, :order => "entrytype, name")
-        end
-          typel= @type.downcase
-         @rept = Aaereport.new({:name => "ActivityGroup", :filters => {:g => typel, :date1 => @date1, :date2 => @date2}})
-         
-         if @type=="State"
+          @rept = Aaereport.new({:name => "ActivityGroup", :filters => {:g => 'state', :dateinterval => @dateinterval}})
           openquestions = (@rept.NewQuestion({},[]))[0] 
-         end
-          resolved = (@rept.ResolvedQuestion({},[]))[0]
-          answered = (@rept.ResolvedQuestion({ :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]
-          rejected = (@rept.ResolvedQuestion({ :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]
+ 
+          reslvd = (@rept.ResolvedQuestion({},[]))[0]
+          answed = (@rept.ResolvedQuestion({ :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]
+          rejectd = (@rept.ResolvedQuestion({ :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]
           noexp = (@rept.ResolvedQuestion({:status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]
             stuv = nil
              @typelist.each do |st|
-               if (@type=="State"); stuv= st.id; else; stuv=st.id.to_s; end;
-                @new[st.name]= openquestions[stuv]
-                @reslvd[st.name] = resolved[stuv]
-                @answ[st.name] = answered[stuv]
-                @rej[st.name] = rejected[stuv]
-                @noexp[st.name] = noexp[stuv]
+                stuv = st.id
+                @open[st.name]= openquestions[stuv]
+                @resolved[st.name] = reslvd[stuv]
+                @answered[st.name] = answed[stuv]
+                @rejected[st.name] = rejectd[stuv]
+                @no_expertise[st.name] = noexp[stuv]
               end
-          @repaction = "activity_by_#{typel}"
       end
       
       
-    def common_display
-       state_univ_activity
-       params[:sdir]="a"
-       @typelist = transform_typelist(@typelist)
-       render :template=>'aae/reports/common_sorted_lists'
-    end
-
+  
     def activity_by_state
       # thoughts..
       # what does it mean if someone selects state and tags? a subdivision of states with category entries? or vice versa? How do we allow them to do the vice-versa?
       # obviously these are more complicated summary reports.  Or, could start with state, tags and then allow, on the
       # display screen under where they choose the date, to select 1 of something else that may exist (ie, communities), which would result in one entry on the next page for the combination
-       params[:type]="State"
-       common_display
+  
+       state_activity
+  
+       	if(params[:sortorder] and params[:sortorder]=='d')
+     			@sortorder = 'desc'
+     		else
+     			@sortorder = 'asc'
+     		end
+
+     		if(params[:orderby] and ['state','open','resolved','answered','rejected','no_expertise'].include?(params[:orderby]))
+     			@orderby = params[:orderby]
+     		else 
+     			@orderby = 'state'
+     		end
+        @typelist = transform_typelist(@typelist)
+       	# now sort it, if the orderby is 'state', don't bother, it's already sorted from the mysql query
+     		if(@orderby != 'state')
+     		  column = instance_variable_get("@" + @orderby).find_all { |k,v| k!= "ZZ"}   #turn into sortable array
+     			@typelist = ((@sortorder == 'asc') ? column.sort{|a,b| ((a[1]) ? a[1] : 0) <=> ((b[1]) ? b[1] : 0) } : 
+     			                         column.sort{|a,b| ((b[1]) ? b[1] : 0) <=> ((a[1]) ? a[1] : 0)})
+     		end
      end
 
       def transform_typelist(typl)
          nar = []; typl.map { |nm| nar << [nm.name] } 
          nar
        end 
-       
-           
-       def transform_userlist(typl)
-        nar = [];  typl.map { |nm| nar << [((nm.first_name) ? nm. first_name : "")  + " " + ((nm.last_name) ? nm.last_name : "")]}
-        nar
-       end
        
        
        def show_active_cats
@@ -145,8 +147,8 @@ class Aae::ReportsController < ApplicationController
                   self.send((report+"_by_#{typ.downcase}").intern)
             else
               case typ    #remake the variable lists 
-                when 'Institution', 'State'
-                  self.send(("state_univ_"+report).intern)
+                when 'State'
+                  self.send(("state_"+report).intern)
                 else
                   self.send(("#{typ.downcase}_"+report).intern)
               end
@@ -255,19 +257,21 @@ class Aae::ReportsController < ApplicationController
           
         
         def user
-         if (params[:from] && params[:to])
-            @dateFrom = params[:from] ;  @dateTo=params[:to]
-            @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-          else
-            (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
-            (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-          end
-          @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
-          @user = User.find_by_id(params[:id]) 
+          @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+          @latest_date = Date.today
+          @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+          @date1=@dateinterval[0]; @date2 = @dateinterval[1]
+ 
+           if params[:id] =~ /^[0-9]+$/
+              @user = User.find_by_id(params[:id])
+           else
+              @user = User.find_by_login(params[:id])   # in case anyone hacks in the user login, not the number id
+           end
+         
           if @user
-            @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
-            @uassigned = @user.ever_assigned_questions(@date1,@date2, nil, nil).count
-            @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
+             @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
+             @uassigned = @user.ever_assigned_questions(@date1,@date2, nil, nil).count
+             @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
            end
        #   @myid = @currentuser
           if @user.nil? #|| @myid.nil?
@@ -281,6 +285,12 @@ class Aae::ReportsController < ApplicationController
            @olink = params[:olink];  @comments=nil; @edits=nil; 
            @dateFrom = params[:from] ;  @dateTo=params[:to]
            @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+           if params[:datefrom] || params[:dateto]   # temporary hack to accommodate two different date selection mechanisms for a while 
+               @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+               @latest_date = Date.today
+               @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+               @date1 = @dateinterval[0]; @date2=@dateinterval[1]; @dateFrom = @date1; @dateTo = @date2
+           end
            desc = params[:descriptor]; @numb = params[:num].to_i; join_string = ""; group_name = nil
            descl = desc
 
