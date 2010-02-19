@@ -57,6 +57,10 @@ class ParamsFilter
       # and create .name method that returns the filtered parameter 
       # and create a .name? method that returns 'true' that we have the param
       #
+      # also check for the "dash version of underscored names"
+      # e.g. look for 'updated-min' for names that are 'updated_min'
+      # otherwise known as 'gdata compatibility mode'
+      #
       # otherwise, create a .name method that returns nil
       # and a .name? method that returns false
       if(!provided_parameters[name].nil?)
@@ -66,6 +70,17 @@ class ParamsFilter
             @filtered_parameters[name].filtered
           end
           
+          define_method "#{name}?" do 
+            true
+          end
+        end
+      elsif(!provided_parameters[name.to_s.tr('_','-')].nil?)
+        @filtered_parameters[name] = FilteredParameter.new(name,provided_parameters[name.to_s.tr('_','-')],options)
+        (class << self; self; end).class_eval do
+          define_method name do 
+            @filtered_parameters[name].filtered
+          end
+
           define_method "#{name}?" do 
             true
           end
