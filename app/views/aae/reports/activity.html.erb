@@ -36,8 +36,8 @@
 <div id="browse">
     <h3>Browse Statistics</h3>
     <ul>
-        <li><%= link_to "General Statistics by State", { :action => 'activity_by_state', :FromDate => ((@dateinterval) ? @dateinterval[0].to_s : nil), :ToDate=> ((@dateinterval) ? @dateinterval[1].to_s : nil)}  %></li>
-       <li><% form_tag({:action => :show_active_cats, :FromDate => ((@dateinterval) ? @dateinterval[0].to_s : nil), :ToDate=> ((@dateinterval) ? @dateinterval[1].to_s : nil)}) do %>
+        <li><%= link_to "General Statistics by State", { :action => 'activity_by_state', :datefrom => ((@dateinterval) ? @dateinterval[0].to_s : nil), :dateto => ((@dateinterval) ? @dateinterval[1].to_s : nil)}  %></li>
+       <li><% form_tag({:action => :activity_by_tag, :datefrom => ((@dateinterval) ? @dateinterval[0].to_s : nil), :dateto=> ((@dateinterval) ? @dateinterval[1].to_s : nil)}) do %>
 
         <% options_array= Array.new%>
         <%@cats.each do |stobj|

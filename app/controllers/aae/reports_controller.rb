@@ -80,14 +80,13 @@ class Aae::ReportsController < ApplicationController
      		end
      end
 
-      def transform_typelist(typl)
+     def transform_typelist(typl)
          nar = []; typl.map { |nm| nar << [nm.name] } 
          nar
-       end 
+     end 
        
-       
-       def show_active_cats
-         @filteredparams = FilterParams.new(params)  #can this be useful here? for hackers of the url? filter by location as well...
+     def activity_by_tag
+          @filteredparams = FilterParams.new(params)  #can this be useful here? for hackers of the url? filter by location as well...
           @filteredoptions = @filteredparams.findoptions
            @typename = params[:category] ;  @locid = nil; @statename=nil ; @locname=nil ; @filtstr=""    #was :Category
            @statename = params[:State]    #in case someone hacks in &State=NY...use abbreviation
@@ -105,17 +104,17 @@ class Aae::ReportsController < ApplicationController
                @locname = loc.name
              end
             end
-           @filteredoptions.merge!({:location => Location.find_by_id(@locid)}) if (@locid && !params[:location])  ##should probably add :State into the FilterParams wantsparameter lists
+           @filteredoptions.merge!({:location => loc}) if (@locid && !params[:location])  ##should probably add :State into the FilterParams wantsparameter lists
             cat = Category.find_by_name(@typename); ((@locid) ? @filtstr = "Filtered by Location= #{@locname}" : "") 
-            @type = "Category" ; @typel="category"; @typet="Tag"
-            @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s; 
-           (@date1, @date2, @dateFrom, @dateTo)=parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)  #parmcheck()
+            
+             @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+          	 @latest_date = Date.today
+          	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+             
             @typelist = [cat]
             if !cat.nil?
                 #tagname = Tag.normalize_tag(cat.name)
                 @rept = Aaereport.new({:name => "ActivityCategory", :filters => @filteredoptions})
-                @repaction = "show_active_cats" 
-                render :template=>'aae/reports/common_lists'
             else
                 redirect_to :controller => 'aae/reports', :action => 'sel_active_cats' 
             end
@@ -146,12 +145,12 @@ class Aae::ReportsController < ApplicationController
             if fld == 'State'   #get the original summary back
                   self.send((report+"_by_#{typ.downcase}").intern)
             else
-              case typ    #remake the variable lists 
-                when 'State'
-                  self.send(("state_"+report).intern)
-                else
+           #   case typ    #remake the variable lists 
+          #      when 'State'
+          #        self.send(("state_"+report).intern)
+          #      else
                   self.send(("#{typ.downcase}_"+report).intern)
-              end
+          #    end
               rus = Array.new; russ = Array.new
               rus =  instance_variable_get("@" + fld).find_all { |k,v| k!= "ZZ"}  #turn remade lists into a sortable array
               if sortdir=="d"
@@ -164,8 +163,8 @@ class Aae::ReportsController < ApplicationController
               end
               @typelist = russ
               case report
-              when 'activity'
-                 render :template=>'aae/reports/common_sorted_lists'
+         #     when 'activity'
+        #         render :template=>'aae/reports/common_sorted_lists'
               when 'response_times'
                  render :template => 'aae/reports/common_resptimes_lists'
               end
@@ -195,9 +194,12 @@ class Aae::ReportsController < ApplicationController
         def display_tag_links
             @cat = Category.find_by_name(params[:category])
             @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
-             aux = nil ; @catname = params[:category]; locid = params[:locid]
-            @dateFrom = params[:from] ;  @dateTo=params[:to]
-             @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+            aux = nil ; @catname = params[:category]; locid = params[:locid]
+             @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+             @latest_date = Date.today
+             @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+             @date1 = @dateinterval[0]; @date2=@dateinterval[1]; @dateFrom = @date1; @dateTo = @date2
+           
             desc = params[:descriptor]; @numb = params[:num].to_i
              if (@edits.length > 8)
                if (@edits[0..7]=="Resolved")
@@ -205,13 +207,13 @@ class Aae::ReportsController < ApplicationController
                  @edits = "Resolved"
                end
              end
-              select_string = " sq.id squid, sq.updated_at updated_at, resolved_by, asked_question, sq.question_updated_at, sq.status_state status"
-              jstring = " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id " + ((locid) ? " join locations on sq.location_id=locations.id " : "")
+              select_string = " submitted_questions.id squid, submitted_questions.updated_at updated_at, resolved_by, asked_question, question_updated_at, submitted_questions.status_state status"
+              joins = ((locid) ? [:categories, :location] : [:categories])
               (desc=="New") ? @pgt = " Newly Submitted Questions in '#{@cat.name}'  " : @pgt = " Questions Resolved from Ask an Expert for '#{@cat.name}'"
               (params[:locname]) ? @filtstr = "Filtered by Location = #{params[:locname]} "  : ""
               
               @questions = SubmittedQuestion.find_questions(@cat, @edits, aux, locid,  @date1, @date2,
-                 :all,  :select => select_string,  :joins => jstring, :order => order_clause("sq.updated_at", "desc"),
+                 :all,  :select => select_string,  :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
                        :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                
               @min = 124
              render  :template => "aae/reports/display_questions"
@@ -291,14 +293,14 @@ class Aae::ReportsController < ApplicationController
                @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
                @date1 = @dateinterval[0]; @date2=@dateinterval[1]; @dateFrom = @date1; @dateTo = @date2
            end
-           desc = params[:descriptor]; @numb = params[:num].to_i; join_string = ""; group_name = nil
+           desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
            descl = desc
 
-             select_string = " sq.current_contributing_question question_id, sq.user_id, sq.id squid,  resolved_by, " +
-                " sq.status_state status, sq.created_at, sq.updated_at updated_at, asked_question " 
+             select_string = " submitted_questions.current_contributing_question question_id, user_id, submitted_questions.id squid,  resolved_by, " +
+                " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
            if desc=="Assigned as an Expert"
              select_string = select_string + " , recipient_id "
-             join_string = " join submitted_question_events on sq.id=submitted_question_events.submitted_question_id "
+             joins = [:submitted_question_events]
              group_name = "submitted_question_id"
              descl = "was Assigned as an Expert"
            end
@@ -310,15 +312,12 @@ class Aae::ReportsController < ApplicationController
              @questions = SubmittedQuestion.find_questions(@user, desc,nil,nil, @date1, @date2,
                                                             :all,
                                                             :select => select_string,
-                                                            :joins => " as sq #{join_string} ",
-                                                            :order => order_clause("sq.updated_at", "desc"),
+                                                            :joins => joins,
+                                                            :order => order_clause("submitted_questions.updated_at", "desc"),
                                                             :group => group_name,
                                                             :page => params[:page],
                                                             :per_page => AppConfig.configtable['items_per_page'])
     
-
-         #   set_navigation_context('list', @questions, 'reports')
-
         end
         
         ####   end of User Report for Ask an Expert Activity #####
@@ -394,9 +393,7 @@ class Aae::ReportsController < ApplicationController
          @catcnt = Category.count_users_for_rootcats
          @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
          @lsize = @locs.size 
-         #@locsum=ExpertiseLocation.count_answerers_by_state
-         @locsum = ExpertiseLocation.count(:joins => " join expertise_locations_users as elu on expertise_locations.id=elu.expertise_location_id join users on users.id=elu.user_id",
-                 :group => "elu.expertise_location_id", :order => "entrytype, name")
+         @locsum = ExpertiseLocation.count(:joins => [:users], :group => "expertise_location_id", :order => "entrytype, name")
         end
 
         def state_answerers
@@ -447,29 +444,6 @@ class Aae::ReportsController < ApplicationController
              @usize = @user_list.size ; @locid = params[:location]
              @statename = ExpertiseLocation.find_by_id(params[:location]).name
              
-              # heureka's way....translated to darmok, that works...
-       #   if params[:State]
-      #      @statename = params[:State]
-      #    end
-      #    if (@statename && @statename != "")
-      #       @cats = Category.find(:all, :conditions => "parent_id is null", :order => 'name')
-      #       @csize = @cats.size
-      #       @catcnt = Category.count_users_for_rootcats_in_state(@statename)
-      #       @cnties = ExpertiseCounty.find(:all,  :conditions => "location_id = #{ExpertiseLocation.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
-      #       @ysize = @cnties.size
-      #     #  @cntycnt = County.count_answerers_for_county(@statename)
-      #       @cntycnt = ExpertiseCounty.count(:all,:select => "ecu.user_id", :joins => " join expertise_counties_users as ecu on ecu.expertise_county_id=expertise_counties.id " + 
-      #          "join users on ecu.user_id=users.id join expertise_areas as ea on ecu.user_id=ea.user_id join categories as c on ea.category_id=c.id",
-      #          :conditions =>  ["expertise_counties.expertise_location_id=? and c.parent_id is null", ExpertiseLocation.find_by_name(@statename).id],
-      #          :group => "expertise_counties.name", :distinct => "true")
-      #          
-      #      #  userlist = ExpertiseLocation.find_by_sql(["Select distinct users.id, users.first_name, users.last_name, users.login, roles.name, roles.id as rid from expertise_locations join expertise_locations_users as lu on lu.expertise_location_id=expertise_locations.id " +
-      #               "  join users on lu.user_id=users.id left join user_roles on users.id=user_roles.user_id left join roles on user_roles.role_id=roles.id " +
-      #               " where expertise_locations.id=? order by users.last_name",ExpertiseLocation.find_by_name(@statename).id ])
-      #      @userlist = consolidate(ExpertiseLocation.get_users_in_state(@statename))
-      #        @userlist = consolidate(userlist)
-      #       @usize = @userlist.size
-      #   end
         end
 
         def category_users
@@ -588,11 +562,11 @@ class Aae::ReportsController < ApplicationController
             redirect_to :action => 'state_answerers', :Category => @catname
           end
           if (@county)
-            countyid = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county]).id
+            expertise_county = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county])
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
           # form array of users for selected county
         
-            @user_list = User.experts_by_county(ExpertiseCounty.find_by_id(countyid)).experts_by_category(category.id)
+            @user_list = User.experts_by_county(expertise_county).experts_by_category(category.id)
             setup_routers_and_wranglers
             
             @usize = @user_list.size
@@ -1065,13 +1039,14 @@ class Aae::ReportsController < ApplicationController
           @dateFrom = params[:from] ;  @dateTo=params[:to]; desc = "Resolver" ; aux = @resolver.id.to_s
           @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
           @numb = params[:num].to_i
-            select_string = " sq.id squid, sq.updated_at, resolved_by, asked_question, status_state status  "
-            jstring = " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id  "
+            select_string = " submitted_questions.id squid, submitted_questions.updated_at, resolved_by, asked_question, status_state status  "
+            joins = [:categories]
+            # " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id  "
             @pgt = " Questions Resolved by #{@resolver.first_name} #{@resolver.last_name} for '#{@cat.name}'"
             @faq = nil; @idtype='sqid'
 
             @questions = SubmittedQuestion.find_questions(@cat, desc, aux, nil, @date1, @date2,
-               :all,  :select => select_string,  :joins => jstring, :order => order_clause("sq.updated_at", "desc"),
+               :all,  :select => select_string,  :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
                      :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                          
 
        #    set_navigation_context('list', @questions, 'reports')

@@ -1,6 +1,6 @@
 class Aaereport 
   
-  
+ ##  This model is a start on the idea of a Reports Builder 
     attr_reader :idents
         
     def initialize(inhash={})
@@ -45,8 +45,7 @@ class Aaereport
            return  [:resolved_by]
          elsif @idents[:name]=="ActivityCategory"
             if  p[:location]
-              return "join categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id " +
-                     " join categories on categories.id=categories_submitted_questions.category_id join locations on submitted_questions.location_id=locations.id "
+               return [:categories, :location]
             else
               return [:categories]
             end
@@ -54,8 +53,7 @@ class Aaereport
       end
       if (caller_method=="NewQuestion" )
          if p[:catid]  && p[:location]
-            return "join categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id " +
-                   " join categories on categories.id=categories_submitted_questions.category_id join locations on submitted_questions.location_id=locations.id "
+             return [:categories, :location]
           elsif p[:catid]
             return [:categories]
           end

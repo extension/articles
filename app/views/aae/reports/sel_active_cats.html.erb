@@ -2,7 +2,7 @@
 
 <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "General Overview",  :action => 'activity' %> &gt; <%= @page_title %></p>
 
-<% form_tag({:action => :show_active_cats }, {:method => "get"}) do %>
+<% form_tag({:action => :activity_by_tag }, {:method => "get"}) do %>
 
 <h2>Select Tag</h2>
 

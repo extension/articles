@@ -253,14 +253,14 @@ end
               cdstring= cdstring +  " resolved_by > 0 and category_id=#{cat.id} and external_app_id IS NOT NULL "
             end
      when "Answered as an Expert"
-          cdstring = " sq.resolved_by = #{cat.id}"
+          cdstring = " resolved_by = #{cat.id}"
      when "Assigned as an Expert"
           cdstring = " recipient_id= #{cat.id} "
    end
    if (date1 && date2)
      case desc
      when  "New", "Resolved", "Resolver", "Answered as an Expert", "Assigned as an Expert"
-        tstring =" and sq.created_at between ? and  ?"
+        tstring =" and submitted_questions.created_at between ? and  ?"
      end
      cdstring = [cdstring + tstring, date1, date2]
    end
@@ -668,7 +668,7 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
     # merge and add the resolved and the assigned counts
     maxlen = [noqr.size, noqu.size].max { |a, b| a <=> b}; n1 = noqr.size
     if n1==maxlen; lrg = noqr; sml = noqu; else; lrg=noqu; sml = noqr; end
-    noq = {}
+    noq = {} 
     lrg.each do |id, val|
        if sml[id]
          if oper=='+'
@@ -692,7 +692,7 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
     noq
   end
  
-  
+ 
   def SubmittedQuestion.get_avg_response_time_past30(date1, date2, pub, wgt, nodays)
     extstr = get_extapp_qual(pub, wgt)
     if extstr == " IS NULL";  return 0; end
@@ -702,6 +702,11 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
     end
     avg_time_in_hours=find(:all, :select => "avg(timestampdiff(hour, created_at, resolved_at)) as ra", :conditions => where_clause) 
     avg_time_in_hours[0].ra.to_i
+  end
+  
+  def SubmittedQuestion.find_oldest_date
+    sarray=find_by_sql("Select created_at from submitted_questions group by created_at order by created_at")
+    sarray[0].created_at.to_s
   end
   
   #use a bit of reflection to
