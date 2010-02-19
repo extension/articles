@@ -20,14 +20,13 @@ class SearchQuestion < ActiveRecord::Base
   named_scope :aae_questions, {:conditions => {:entrytype => AAE}}
 
   named_scope :full_text_search, lambda{|options|
-    query_string = options[:q]
+    match_string = options[:q]
     boolean_mode = options[:boolean_mode] || false
     if(boolean_mode)
-      match_string = "#{query_string} IN BOOLEAN MODE"
+      {:select => "#{self.table_name}.*, MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => "MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)} IN BOOLEAN MODE) AND status <> 'archived'"}
     else
-      match_string = "#{query_string}"
+      {:select => "#{self.table_name}.*, MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => ["MATCH(content,fulltitle) AGAINST (?) AND status <> 'archived'", sanitize(match_string)]}
     end
-    {:select => "#{self.table_name}.*, MATCH(content,fulltitle) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => ["MATCH(content,fulltitle) AGAINST (?) AND status <> 'archived'", sanitize(match_string)]}
   }
   
   

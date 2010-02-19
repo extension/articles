@@ -51,12 +51,29 @@ class Aae::SearchController < ApplicationController
     setup_aae_search_params
     if params[:squid] and @submitted_question = SubmittedQuestion.find_by_id(params[:squid])    
       if params[:q] and params[:q].strip != ''
+        
+        # if someone put in a number (id) to search on
+        if params[:q] =~ /^[0-9]+$/
+          
+          if session[:aae_search] == ['faq']
+            @aae_search_results = SearchQuestion.faq_questions.find_all_by_foreignid(params[:q])
+          elsif session[:aae_search] == ['aae']
+            @aae_search_results = SearchQuestion.aae_questions.find_all_by_foreignid(params[:q])
+          else
+            @aae_search_results = SearchQuestion.find_all_by_foreignid(params[:q])
+          end
+          
+          return
+        end
+        
+        formatted_search_terms = format_full_text_search_terms(params[:q])
+        
         if session[:aae_search] == ['faq']
-          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).faq_questions.all(:order => 'match_score desc', :limit => 30)
+          @aae_search_results = SearchQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).faq_questions.all(:order => 'match_score desc', :limit => 30)
         elsif session[:aae_search] == ['aae']
-          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).aae_questions.all(:order => 'match_score desc', :limit => 30)
+          @aae_search_results = SearchQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).aae_questions.all(:order => 'match_score desc', :limit => 30)
         else
-          @aae_search_results = SearchQuestion.full_text_search({:q => params[:q]}).all(:order => 'match_score desc', :limit => 30)
+          @aae_search_results = SearchQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).all(:order => 'match_score desc', :limit => 30)
         end
       else
         flash[:failure] = "You must enter valid text into the search field." 
@@ -187,5 +204,73 @@ class Aae::SearchController < ApplicationController
     @submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]]) if not @submitted_question
     @users = User.find_by_cat_loc(@category, @location, @county)
   end
+  
+  ##################################################
+  
+  
+  
+  def format_full_text_search_terms(search_string, search_option = '+')
+    search_array = Array.new
+    search_string = search_string.strip.downcase
+    
+    if search_string != ''
+      quote_count = search_string.count('"')
+      # check to see if quotes exist in in the search string and 
+      # if they do, then make sure that they are paired up.
+      if (quote_count > 0) and (quote_count % 2 == 0)
+        start_quote = 0
+        end_quote = 0
+        # loop through the string finding pairs of quotes and removing quoted strings 
+        # and adding them to the search array
+        while search_string.include?('"') and (start_quote and end_quote)
+          # reset quote positions each time the loop executes
+          start_quote = 0
+          end_quote = 0
+          start_quote = search_string.index('"', start_quote)        
+          end_quote = search_string.index('"', start_quote + 1)
+          # remove section in between quotes and the quotes as well
+          quoted_str = search_string.slice!(start_quote..end_quote)
+          search_array << search_option + quoted_str if (start_quote and end_quote and ((quoted_str.length - 2) > 2))
+        end
+      end
+      
+      if search_string.include?(',')
+        search_array.concat(get_search_term_inflections(search_option, search_string.split(',')))
+      else
+        search_array.concat(get_search_term_inflections(search_option, search_string.split(' ')))
+      end
+      
+    else
+      return ''
+    end
+    
+    return search_array.join(' ')
+      
+  end
+  
+  def get_search_term_inflections(search_option, search_term_array)
+    ret_array = Array.new
+    # filter out all duplicate search terms and strip of whitespace on the ends
+    search_term_array = search_term_array.uniq.collect{|s| s.strip}
+    # filter out all MySQL stopwords
+    search_term_array = search_term_array - SearchConstants::STOP_WORDS
+    
+    search_term_array.each do |search_term|
+      # do not consider words less than 3 characters long
+      if search_term.length < 3
+        next
+      end
+      # add singular and plural forms of the search term
+      # note the 'search_option' gets added too (which for boolean searches are '+' for required ANDed searches)
+      search_term == ActiveSupport::Inflector.pluralize(search_term) ? inflection_str = ActiveSupport::Inflector.singularize(search_term) : inflection_str = ActiveSupport::Inflector.pluralize(search_term)
+      ret_array << search_option + "(#{search_term} #{inflection_str})"
+    end
+    ret_array
+  end
+  
+  
+  
+  
+  ##################################################
   
 end
