@@ -446,7 +446,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 #content_css_reset dl dd dd {font-size:inherit;}
 #content_css_reset table {background:#fff;}
 #content_css_reset table,
-#content_css_reset table caption {font-weight:bold;font-size:1em}
+#content_css_reset table caption {font-weight:bold;font-size:1.1em;line-height:1.3em;margin-bottom:1em;}
 #content_css_reset table th,
 #content_css_reset table td,
 #content_css_reset table th {color:#222;border: 1px solid #bbb;} 
@@ -794,3 +794,12 @@ span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0 
 
 #community_checklist .section {border-bottom: 1px solid #ccc; width:500px; margin-bottom:1.5em;}
 .bad_link {color:red !important;}
+
+.container_16 {
+	background: #fff url(/images/16_col.gif) repeat-y;
+	border:1px solid red;
+}
+
+
+
+.grid_12, .grid_8, .grid_4 {background:#ccc;}
