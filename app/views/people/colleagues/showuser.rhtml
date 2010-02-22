@@ -46,7 +46,7 @@
 		<% end %>
 		<div id="showuser_communities">
 			<h2>Communities</h2>
-	  		<%= render(:partial => 'showuser_communities',:locals => { :showuser => @showuser, :displayactions => ((@currentuser.communityleaderships & @showuser.communities).size > 0) ? true : false }) %>
+	  		<%= render(:partial => 'showuser_communities',:locals => { :showuser => @showuser, :displayactions => ((@currentuser.communities.find(:all, :conditions => ["connectiontype = 'leader'"]) & @showuser.communities).size > 0) ? true : false }) %>
 		</div>
 		<div>
 		    <h2>Ask an Expert and FAQ</h2>

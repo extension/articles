@@ -1,6 +1,6 @@
 
 <div id="communitynotificationhighlight">
-	<p><%= check_box_tag("community_notification","yesiwill",@currentuser.communityleaderships_withnotifications.include?(@community), {:id => "community_notification_#{@community.id}"}) %> Receive community notifications. <a class="tooltip-help" href="#" id="source_trigger">?</a></p>
+	<p><%= check_box_tag("community_notification","yesiwill",@currentuser.communities.find(:all, :conditions => ["connectiontype = 'leader' and sendnotifications = #{true}"]).include?(@community), {:id => "community_notification_#{@community.id}"}) %> Receive community notifications. <a class="tooltip-help" href="#" id="source_trigger">?</a></p>
 	<%= observe_field("community_notification_#{@community.id}", :update => "community_notification", :url => {:controller => '/people/communities', :action => :change_my_notification, :id => @community.id}, :with => "'notification=' + value") %>
 	
 	<div id='source_tooltip' style="display:none;" class="tooltip">

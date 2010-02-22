@@ -18,12 +18,11 @@ class DataController < ApplicationController
   def activitytable
     error = false
     errors = []
-    @filteredparams = FilterParams.new(params)
-        
-    datatype =  @filteredparams.datatype || 'hourly'
-    graphtype = @filteredparams.graphtype || ((datatype == 'weekday' or datatype == 'hourly') ? 'column' : 'area') 
+    filteredparams = ParamsFilter.new([:datatype,:graphtype,:tqx],params)
+    datatype =  filteredparams.datatype || 'hourly'
+    graphtype = filteredparams.graphtype || ((datatype == 'weekday' or datatype == 'hourly') ? 'column' : 'area') 
      
-    tqxparams = @filteredparams.tqx
+    tqxparams = filteredparams.tqx
     responseHandler = params[:responseHandler] || "google.visualization.Query.setResponse"
     version = 0.5
     reqId = tqxparams['reqId'] || 0
@@ -136,7 +135,11 @@ class DataController < ApplicationController
   end
   
   def aae_numbers
-    filteredparams = FilterParams.new(params)
+    filteredparams = ParamsFilter.new([:person,:apikey],params)
+    apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
+    # TODO: consider doing this automatically in application_controller as a before_filter
+    ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
+    
     # just going to get them for a single user for now
     if(filteredparams.person.nil?)
       returnhash = {:success => false, :errormessage => 'Not a valid account'}

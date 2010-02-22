@@ -1,4 +1,4 @@
-<% if @currentuser.communityjoins.include?(@community) %>
+<% if @currentuser_communities.collect{|community| (community.connectiontype = 'member' or community.connectiontype = 'leader')}.include?(@community) %>
 	    <h3>You are a <%= @currentuser.connection_display(@community) %> <span id="memberoptions"><%= link_to_function 'membership options', "Effect.toggle('connection_options','blind', { duration: .4});" %></span></h3>
 	    <%- if (@community.is_institution?) -%>
 	        <div id="primaryinstitutioncheck">
@@ -14,21 +14,21 @@
             <p class="leave"><%= change_community_connection_link('connectiontocommunity',@community,"Leave #{@community.viewlabel.capitalize}",'leave',{:class => "delete"}) %></p>
         </div> 
 
-<% elsif @currentuser.communityinvitations.include?(@community) %>
+<% elsif @currentuser_communities.collect{|community| (community.connectiontype = 'invited')}.include?(@community) %>
 
 	    <p>You have been invited to join this community by <%=link_to_user(@currentuser.get_invited_by(@community)) %></p>
     	<p class="button2"><%= change_community_connection_link('connectiontocommunity',@community,'Accept Invitation','accept') %></p>
 	    <p class="button2"><%= change_community_connection_link('connectiontocommunity',@community,'Decline Invitation','decline') %></p>
 	    <br class="clearing"/>
 
-<% elsif @currentuser.communitywantstojoins.include?(@community) %>
+<% elsif @currentuser_communities.collect{|community| (community.connectiontype = 'wantstojoin')}.include?(@community) %>
 
 	    <h3>You have indicated a desire to join this community. <span id="memberoptions"><%= link_to_function 'membership options', "Effect.toggle('connection_options','blind', { duration: .4});" %></span></h3>
 	    <div id="connection_options" style="display:none;">
 	    <p class="leave"><%= change_community_connection_link('connectiontocommunity',@community,'I no longer want to join this community','leave',{:class => "delete"}) %></p>
 	    </div>
 
-<% elsif @currentuser.communityinterests.include?(@community) %>
+<% elsif @currentuser_communities.collect{|community| (community.connectiontype = 'interest')}.include?(@community) %>
 
 	    <h3>You have indicated that you are interested in this community.<a class="tooltip-help" href="#" id="source_trigger">?</a> <span id="memberoptions"><%= link_to_function 'membership options', "Effect.toggle('connection_options','blind', { duration: .4});" %></span></h3>
 	    <div id="connection_options" style="display:none;">
@@ -37,7 +37,7 @@
 	    </div>
 		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :interest => false, :nointerest => true}}) %>
 
-<% elsif @currentuser.communitynointerests.include?(@community) %>
+<% elsif @currentuser_communities.collect{|community| (community.connectiontype = 'nointerest')}.include?(@community) %>
 
 	    <h3>You have indicated that you are not interested in this community.<a class="tooltip-help" href="#" id="source_trigger">?</a> <span id="memberoptions"><%= link_to_function 'membership options', "Effect.toggle('connection_options','blind', { duration: .4});" %></span></h3>
 	    <div id="connection_options" style="display:none;">
@@ -70,7 +70,7 @@
 
 
 
-<% if (!@currentuser.communities.include?(@community) and @currentuser.is_relevant_community?(@community))%>
+<% if (!@currentuser_communities.include?(@community) and @currentuser.is_relevant_community?(@community))%>
     <div id="nointerest">
         <h3>Why is this group recommended to me?</h3>
         <p>We think you'll like this group based on the interests in your profile. If we're wrong, please let us know: <%= change_community_connection_link('nointerest',@community,'I am not interested in this community','nointerest') %></p>

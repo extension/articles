@@ -23,10 +23,6 @@ class Widgets::AaeController < ApplicationController
   def index
   end
   
-  def ask
-    render :layout => 'notice'
-  end
-
   def who 
   end
 

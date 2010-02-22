@@ -7,6 +7,7 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base 
   extend ConditionExtensions
+  include TaggingScopes
   serialize :additionaldata
   ordered_by :default => "last_name,first_name ASC"
 
@@ -62,7 +63,7 @@ class User < ActiveRecord::Base
   has_many :list_subscriptions, :dependent => :destroy
   
   has_many :communityconnections, :dependent => :destroy
-  has_many :communities, :through => :communityconnections
+  has_many :communities, :through => :communityconnections, :select => "communityconnections.connectiontype as connectiontype, communityconnections.sendnotifications as sendnotifications, communities.*", :order => "communities.name"
   
   has_many :list_subscriptions, :dependent => :destroy
   has_many :lists, :through => :list_subscriptions
@@ -74,19 +75,10 @@ class User < ActiveRecord::Base
   has_many :listownerships, :through => :list_owners, :source => :list
   
   # TODO - this is a ridiculously insane number of has many associations - this needs to be fixed.
-  has_many :communitywantstojoins, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'wantstojoin'"
-  has_many :communitymemberships, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'member'"
-  has_many :communityleaderships, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'leader'"
-  has_many :communitynotifications, :through => :communityconnections, :source => :community, :conditions => "communityconnections.sendnotifications = 1"
-  has_many :communityleaderships_withnotifications, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'leader' and communityconnections.sendnotifications = 1"
-  has_many :communityinterests, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'interest'"
-  has_many :communitynointerests, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'nointerest'"
   has_many :communitiesofanyinterest, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype != 'nointerest'", :order => "communities.name"
-  has_many :communityjoins, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader'"
   has_many :communityopenjoins, :through => :communityconnections, :source => :community, :conditions => "(communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader') and communities.memberfilter = #{Community::OPEN}"
   has_many :communityinvitejoins, :through => :communityconnections, :source => :community, :conditions => "((communityconnections.connectiontype = 'member' and communities.memberfilter = #{Community::OPEN}) or communityconnections.connectiontype = 'leader')"
   has_many :connectjoins, :class_name => "Communityconnection", :conditions => "communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader'"
-  has_many :communityinvitations, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype = 'invited'"
   has_many :connectinvitations, :class_name => "Communityconnection", :conditions => "communityconnections.connectiontype = 'invited'"
   has_many :connectjoinspluswantstojoin, :class_name  => "Communityconnection", :conditions => "communityconnections.connectiontype = 'wantstojoin' or communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader'"
   has_many :connectwantstojoins, :class_name   => "Communityconnection", :conditions => "communityconnections.connectiontype = 'wantstojoin'"  
@@ -96,7 +88,7 @@ class User < ActiveRecord::Base
   
   # tags and taggings
   has_many :ownedtaggings, :class_name => "Tagging"
-  has_many :ownedtags, :through => :ownedtaggings
+  has_many :ownedtags, :through => :ownedtaggings, :source => :tag
   has_many :cached_tags, :as => :tagcacheable
 
 
@@ -152,7 +144,7 @@ class User < ActiveRecord::Base
   named_scope :unconfirmedemail, :conditions => ["emailconfirmed = ? AND account_status != ?",false,User::STATUS_SIGNUP]
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}
-  
+    
   named_scope :filtered, lambda {|options| filterconditions(options)}  
   
   named_scope :missingtags,  :joins => "LEFT JOIN taggings ON (users.id = taggings.taggable_id AND taggings.taggable_type = 'User')", :conditions => 'taggings.id IS NULL'
@@ -851,7 +843,7 @@ class User < ActiveRecord::Base
    when 'nointerest'
     return 'Not Interested'
    when 'leader'
-    return (community.is_institution? ? 'Institutional Team' : 'Leader')
+    return (community.is_institution? ? 'Institutional Team Leader' : 'Leader')
    else
     return connection.capitalize
    end

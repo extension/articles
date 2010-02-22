@@ -15,6 +15,8 @@ class People::CommunitiesController < ApplicationController
     if(@currentuser.tags.count > 0) 
       @relevant_communities = @currentuser.relevant_community_scores
     end
+    @currentuser_communities = @currentuser.communities
+    
     
     respond_to do |format|
       format.html # index.html.erb
@@ -106,6 +108,8 @@ class People::CommunitiesController < ApplicationController
       # do nothing
     end
     
+    @currentuser_communities = @currentuser.communities
+        
     respond_to do |format|
       format.js
     end
@@ -161,9 +165,9 @@ class People::CommunitiesController < ApplicationController
     if(@community.nil?)  
       flash[:error] = 'That community does not exist'  
       return(redirect_to(:action => 'index'))
-    end      
-        
+    end       
     @am_i_leader = @currentuser.is_community_leader?(@community)   
+    @currentuser_communities = @currentuser.communities
     
     respond_to do |format|
       format.html # show.html.erb
@@ -371,12 +375,14 @@ class People::CommunitiesController < ApplicationController
   end
   
   
-  def findcommunity
+  def findcommunity    
     if (params[:q].nil? or params[:q].empty?)
       flash[:warning] = "Empty search term"
       return redirect_to :action => 'index'
     end
     searchterm = params[:q].gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
+    
+    @currentuser_communities = @currentuser.communities
     
     # exact match?
     if(exact = Community.find(:first, :conditions => {:name => searchterm}))
@@ -401,7 +407,10 @@ class People::CommunitiesController < ApplicationController
   
   def newest 
     @communitylist = Community.paginate(:all,:order => 'created_at DESC', :page => params[:page])
+    @currentuser_communities = @currentuser.communities
     @page_title = "Newest Communities"
+    @currentuser_communities = @currentuser.communities
+    
     respond_to do |format|
       format.html { render :template => "people/communities/communitylist" }
     end
@@ -409,6 +418,7 @@ class People::CommunitiesController < ApplicationController
   
   def mine 
     @communitylist = @currentuser.communities.paginate(:all,:order => 'created_at DESC', :page => params[:page])
+    @currentuser_communities = @currentuser.communities
     @page_title = "Your Communities"
     respond_to do |format|
       format.html { render :template => "people/communities/communitylist" }
@@ -417,6 +427,7 @@ class People::CommunitiesController < ApplicationController
     
   def browse 
     @communitylist = Community.paginate(:all,:order => 'name ASC', :page => params[:page])
+    @currentuser_communities = @currentuser.communities
     @page_title = "All Communities"
     respond_to do |format|
       format.html { render :template => "people/communities/communitylist" }
@@ -426,6 +437,7 @@ class People::CommunitiesController < ApplicationController
   def tags
     taglist = params[:taglist].strip
     @communitylist = Community.tagged_with_any(Tag.castlist_to_array(taglist),{:getfrequency => true,:minweight => 2}).uniq
+    @currentuser_communities = @currentuser.communities
     @page_title = "Communities tagged with <em>#{taglist}</em>"
     respond_to do |format|
       format.html
