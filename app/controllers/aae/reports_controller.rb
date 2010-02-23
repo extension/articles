@@ -26,7 +26,7 @@ class Aae::ReportsController < ApplicationController
     end
 
      def state_activity
-      @typelist = [];  @open={}; @resolved={}; @answered={}; @rejected={}; @no_expertise={} ; openquestions={}
+         @typelist = [];  @open={}; @resolved={}; @answered={}; @rejected={}; @no_expertise={} ; openquestions={}
              @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
           	 @latest_date = Date.today
           	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
@@ -407,8 +407,11 @@ class Aae::ReportsController < ApplicationController
             end
           else
             if params[:category]
-              @catname=params[:category]
-              catid = Category.find_by_name(@catname).id
+              catobj = Category.find_by_name(params[:category])
+              if catobj
+                @catname = catobj.name
+                catid = catobj.id
+              end
             end
           end 
           if (@catname  && @catname != "")
@@ -449,20 +452,27 @@ class Aae::ReportsController < ApplicationController
         def category_users
            @filteredparams=FilterParams.new(params)
            @filteredoptions = @filteredparams.findoptions
-          if params[:State]
-             @statename = params[:State]
+           getparams = ParamsFilter.new([:county, :location], params)
+           @statename = nil; @county = nil; @countyid = nil; @locid = nil
+          
+     #     if params[:State]
+    #          @statename = params[:State]
+    #         @locid = ExpertiseLocation.find_by_name(@statename).id
+    #      end
+    #      if params[:County]
+    #        @county = params[:County]
+    #        @countyid= params[:county]
+    #      end
+    #      if (@statename && @county && @statename != "" && @county != "")
+           if getparams.location && getparams.county
+             @countyid = getparams.county.id ; @county = getparams.county.name
+             @statename = getparams.location.name
              @locid = ExpertiseLocation.find_by_name(@statename).id
-          end
-          if params[:County]
-            @county = params[:County]
-            @countyid= params[:county]
-          end
-          if (@statename && @county && @statename != "" && @county != "")
              @cats = Category.find(:all, :conditions => "parent_id is null ", :order => 'name')
              @csize = @cats.size
              @ctycnt = Category.catuserfilter_count(@filteredoptions)
              
-             @user_list = ExpertiseCounty.find_by_id(params[:county]).users.find(:all, :order => "users.last_name")
+             @user_list = ExpertiseCounty.find_by_id(@countyid).users.find(:all, :order => "users.last_name")
              setup_routers_and_wranglers
              
              @usize = @user_list.size
@@ -508,28 +518,33 @@ class Aae::ReportsController < ApplicationController
 
         def county_answerers
           # todo -- need validation of county id, state id, and category - ATH
-          
-          if params[:id]
-             @statename = ExpertiseLocation.find_by_id(params[:id]).name
-             @locid = params[:id]
-          else
-            if params[:State]
-              @statename = params[:State]
-              @locid = ExpertiseLocation.find_by_name(@statename).id
-            end
-          end
-          @catname = params[:Category]
-          if (!@catname || @catname == "")
+          getparams = ParamsFilter.new([ :location, :category], params)
+          (getparams.location) ? @statename = getparams.location.name : @statename=nil
+          (getparams.location) ? @locid = getparams.location.id : @locid=nil
+    #      if params[:id]
+    #         @statename = ExpertiseLocation.find_by_id(params[:id]).name
+    #         @locid = params[:id]
+    #      else
+    #        if params[:State]
+    #          @statename = params[:State]
+    #          @locid = ExpertiseLocation.find_by_name(@statename).id
+    #        end
+    #      end
+    #      @catname = params[:Category]
+     #     if (!@catname || @catname == "")
+          if getparams.category.blank?
               redirect_to :action => 'answerers'
           end
-          
-          category = Category.find_by_name(params[:Category])
-          
+          @catname = getparams.category
+          category = Category.find_by_name(@catname)     #was params[:Category]
+                
           if params[:dir]
             @dir = params[:dir]
           end
-          if (@statename && @statename != "")
-            @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{Location.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}
+         # if (@statename && @statename != "")
+          ActiveRecord::Base::logger.debug "@statename= " + ((@statename) ? @statename : "nil")
+          if getparams.location
+            @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{ExpertiseLocation.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}
             @cntycnt = ExpertiseCounty.count_answerers_for_county_and_category(@catname, @statename)
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             
@@ -539,30 +554,39 @@ class Aae::ReportsController < ApplicationController
             @csize = @cnties.size
             @usize = @user_list.size
           else
-            redirect_to :action => 'state_answerers', :Category => @catname
+            ActiveRecord::Base::logger.debug "apparently there was no getparams.location, returning to state_answerers"
+            redirect_to :action => 'state_answerers', :category => @catname
           end  
         end
 
         def answerers_lists
           # todo -- need validation of county id, state id, and category - ATH
           
-          @statename = params[:State]
-          @catname = params[:Category]
-          @county = params[:County]
+     #     @statename = params[:State]
+    #      @catname = params[:Category]
+    #      @county = params[:County]
+            getparams = ParamsFilter.new([:county, :location, :category], params)
+            (getparams.location) ? @statename = getparams.location.name : @statename=nil
+            (getparams.location) ? @locid = getparams.location.id : @locid=nil
+            (getparams.county) ? @county = getparams.county.name : @county = nil
+            @catname = getparams.category
+            !(getparams.category.blank?) ? category=Category.find_by_name(@catname) : category=nil
+            
           if params[:dir]
             @dir=params[:dir]
           end
-          if (!@catname || @catname=="")
+          if (!category)
             redirect_to :action => 'answerers'
           end
           
-          category = Category.find_by_name(params[:Category])
+    #      category = Category.find_by_name(params[:Category])
           
-          if (!@statename || @statename =="") 
-            redirect_to :action => 'state_answerers', :Category => @catname
+          if !getparams.location 
+            redirect_to :action => 'state_answerers', :category => @catname
           end
+          @locid = ExpertiseLocation.find_by_name(@statename).id
           if (@county)
-            expertise_county = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county])
+            expertise_county = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{@locid} and name=?", @county])
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
           # form array of users for selected county
         
@@ -571,7 +595,7 @@ class Aae::ReportsController < ApplicationController
             
             @usize = @user_list.size
           else
-            redirect_to :action => 'county_answerers', :State => @statename, :Category => @catname
+            redirect_to :action => 'county_answerers', :location => @locid, :category => @catname
           end
         end
         

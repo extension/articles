@@ -29,7 +29,7 @@
                 <% while i < @lsize do %>
     	             <% if @loccnt[@locs[i].name]%>
             	        <tr>
-            	       	<td><%= link_to @locs[i].name, :action => "county_answerers", :id => @locs[i].id, :Category => @catname, :dir => "C" %></td>
+            	       	<td><%= link_to @locs[i].name, :action => "county_answerers", :location => @locs[i].id, :category => @catname, :dir => "C" %></td>
             		    <td><%= @loccnt[@locs[i].name]%></td>
             		    </tr>
     		    <% end%>

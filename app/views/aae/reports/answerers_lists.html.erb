@@ -7,13 +7,13 @@
     <%= link_to "All Reports",  :controller => 'reports' %> &gt; 
     <%= link_to "Ask an Expert Volunteers", :action => 'answerers' %> &gt; 
     <%= link_to @catname, :action => 'state_answerers', :category => @catname%> &gt; 
-    <%= link_to @statename,  :action => 'county_answerers', :State => @statename, :Category => @catname , :dir => @dir%> &gt; All counties</p>
+    <%= link_to @statename,  :action => 'county_answerers', :location => @locid, :category => @catname , :dir => @dir%> &gt; All counties</p>
 <%else%>
 <p id="activity_report">
     <%= link_to "All Reports",  :controller => 'reports' %> &gt; 
     <%= link_to "Ask an Expert Volunteers", :action => 'answerers' %> &gt; 
-    <%= link_to @statename, :action => 'category_county', :State => @statename %> &gt; 
-    <%= link_to @catname,  :action => 'county_answerers', :State => @statename, :Category => @catname, :dir => @dir %> &gt; All counties</p>
+    <%= link_to @statename, :action => 'category_county', :location => @locid %> &gt; 
+    <%= link_to @catname,  :action => 'county_answerers', :location => @locid, :category => @catname, :dir => @dir %> &gt; All counties</p>
 <%end%>
 
 <div id="answerers">

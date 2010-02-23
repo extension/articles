@@ -1,7 +1,7 @@
 <% @page_title = "List of Answering Individuals by Selected State, County, Category" %>
 
 
-<p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "Select State or Location",  :action => 'answerers' %> &gt; <%= link_to "Select Category or County", :action => "category_county", :State => @statename, :location => @locid%> <%= @page_title %></p>
+<p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "Select State or Location",  :action => 'answerers' %> &gt; <%= link_to "Select Category or County", :action => "category_county",  :location => @locid%> <%= @page_title %></p>
 
 
  <h1> <%=  @statename%> , <%= @county%> , <%=  @capcatname  %></h1>

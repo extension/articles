@@ -26,7 +26,7 @@
 	 <% i = 0 %>
 	  <% while i < @csize do %>
 	        <tr>
-	       	<td><%= link_to @cats[i].name, :action => "county_answerers", :State => @statename, :Category => @cats[i].name, :dir => "L" %></td>
+	       	<td><%= link_to @cats[i].name, :action => "county_answerers", :location => @locid, :category => @cats[i].name, :dir => "L" %></td>
 		    <td class="count"><%= @catcnt[@cats[i].name]%></td>
 		    </tr>
 	     <% i = i + 1%>
@@ -45,7 +45,7 @@
 		 <% i = 0%>
 		 <% while i < @ysize%>
 		    <tr>	 
-		    <td><%= link_to @cnties[i][0], :action => "category_users", :location => @locid, :State => @statename, :County => @cnties[i][0], :county => @cnties[i][1] %></td>
+		    <td><%= link_to @cnties[i][0], :action => "category_users", :location => @locid,  :county => @cnties[i][1] %></td>
 			<td class="count"><%= @cntycnt[@cnties[i][0]]%></td>
 			</tr>
 		

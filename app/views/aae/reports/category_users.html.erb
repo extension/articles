@@ -1,6 +1,6 @@
 <% @page_title = "Answering Individuals List Report for State=" + @statename + " and County= " + @county %>
 
- <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "Ask an Expert Volunteers", :action => 'answerers'%> &gt; <%= link_to  @statename,  :action => 'category_county', :State => @statename, :location => @locid %> &gt; <%= @county %></p>
+ <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "Ask an Expert Volunteers", :action => 'answerers'%> &gt; <%= link_to  @statename,  :action => 'category_county',  :location => @locid %> &gt; <%= @county %></p>
 
 <div id="answerers">
 <h1><%= @statename %>, <%= @county%></h1>
