@@ -542,7 +542,7 @@ class Aae::ReportsController < ApplicationController
             @dir = params[:dir]
           end
          # if (@statename && @statename != "")
-          ActiveRecord::Base::logger.debug "@statename= " + ((@statename) ? @statename : "nil")
+       
           if getparams.location
             @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{ExpertiseLocation.find_by_name(@statename).id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}
             @cntycnt = ExpertiseCounty.count_answerers_for_county_and_category(@catname, @statename)
@@ -554,7 +554,6 @@ class Aae::ReportsController < ApplicationController
             @csize = @cnties.size
             @usize = @user_list.size
           else
-            ActiveRecord::Base::logger.debug "apparently there was no getparams.location, returning to state_answerers"
             redirect_to :action => 'state_answerers', :category => @catname
           end  
         end
