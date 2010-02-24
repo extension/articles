@@ -33,7 +33,7 @@ class Aae::PrefsController < ApplicationController
             @currentuser.categories << selected_category
             
             # add people tags
-            @currentuser.tag_with(selected_category.name, @currentuser.id,Tag::USER)
+            @currentuser.tag_with(selected_category.name, @currentuser.id,Tagging::USER)
             
             expertise_event = ExpertiseEvent.new(:category => selected_category, :event_type => ExpertiseEvent::EVENT_ADDED, :user => @currentuser)
             @currentuser.expertise_events << expertise_event

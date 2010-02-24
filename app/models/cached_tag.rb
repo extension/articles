@@ -14,7 +14,7 @@ class CachedTag < ActiveRecord::Base
   belongs_to :tagcacheable, :polymorphic => true
   serialize :cachedata
   
-  named_scope :content, {:conditions => "owner_id = #{User.systemuserid} and tag_kind = #{Tag::CONTENT}"}
+  named_scope :content, {:conditions => "owner_id = #{User.systemuserid} and tag_kind = #{Tagging::CONTENT}"}
   
   
   # -----------------------------------
@@ -35,7 +35,7 @@ class CachedTag < ActiveRecord::Base
     return find_object
   end
   
-  def self.rebuild_all(cacheabletype,ownerid = User.anyuser,tag_kind = Tag::ALL)
+  def self.rebuild_all(cacheabletype,ownerid = User.anyuser,tag_kind = Tagging::ALL)
     if(cacheabletype.is_a?(Class) and cacheabletype.instance_methods.include?('cached_tags'))
       cacheabletype.all.each do |item|
         self.create_or_update(item,ownerid,tag_kind)

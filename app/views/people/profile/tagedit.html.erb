@@ -14,7 +14,7 @@
     <fieldset>
 	    <p>
 	        <label for="tag_list">Tag your Interests and Expertise: 
-	        <%= text_area_tag(:tag_list,@currentuser.tag_displaylist_by_ownerid_and_kind(@currentuser.id,Tag::USER),{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
+	        <%= text_area_tag(:tag_list,@currentuser.tag_displaylist_by_ownerid_and_kind(@currentuser.id,Tagging::USER),{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
 	        <em>Separate your interests and expertise with commas.</em>
 	        </label>
 	    </p>

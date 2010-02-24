@@ -269,7 +269,7 @@ class User < ActiveRecord::Base
       when 'county'
        returnhash.merge!({:county => (self.county.nil? ? '' : self.county.name)})
       when 'interests'
-       returnhash.merge!({:interests => self.tag_displaylist_by_ownerid_and_kind(self.id,Tag::ALL,true)})
+       returnhash.merge!({:interests => self.tag_displaylist_by_ownerid_and_kind(self.id,Tagging::ALL,true)})
       end
     end  
    end
@@ -890,7 +890,7 @@ class User < ActiveRecord::Base
   end
   
   def tag_myself_with(taglist)
-   self.replace_tags(taglist,self.id,Tag::USER)
+   self.replace_tags(taglist,self.id,Tagging::USER)
   end
   
   def modify_user_emails(otheruseremails)

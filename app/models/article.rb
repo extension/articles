@@ -167,7 +167,7 @@ class Article < ActiveRecord::Base
     # handle categories - which will include updating categories/tags
     # even if the content didn't change
     if(!entry.categories.blank?)
-      article.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)
+      article.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)
       article.put_in_buckets(entry.categories.map(&:term))    
     end
 

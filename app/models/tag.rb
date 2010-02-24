@@ -8,15 +8,6 @@
 # The Tag model. This model is automatically generated and added to your app if you run the tagging generator included with has_many_polymorphs.
 
 class Tag < ActiveRecord::Base
-  GENERIC = 0  # table defaults
-  USER = 1
-  SHARED = 2
-  CONTENT = 3
-  CONTENT_PRIMARY = 4  # for public communities, indicates the primary content tag for the community, if more than one
-  
-  
-  # special class of 'all' for caching purposes
-  ALL = 42  # the ultimate answer, of course
  
   SPLITTER = Regexp.new(/\s*,\s*/)
   JOINER = ", " 
@@ -54,7 +45,7 @@ class Tag < ActiveRecord::Base
     self.name = self.class.normalizename(self.name)
   end
   
-  named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}"}
+  named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT}"}
   
   # TODO: review.  This is kind of a hack that might should be done differently
   def content_community(forcecacheupdate=false)
@@ -62,7 +53,7 @@ class Tag < ActiveRecord::Base
     cache_key = self.class.get_object_cache_key(self,this_method,{:name => self.name})
     # just store the id and get the community each time
     communityid = Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
-      self.communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT}")
+      self.communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT}")
     end
     return Community.find_by_id(communityid)
   end
@@ -85,9 +76,9 @@ class Tag < ActiveRecord::Base
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
       launchedonly = options[:launchedonly].nil? ? false : options[:launchedonly]
       if(launchedonly)
-        self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
+        self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
       else
-        self.find(:all, :include => :taggings, :conditions => "taggings.tag_kind = #{Tag::CONTENT} and taggable_type = 'Community'")
+        self.find(:all, :include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggable_type = 'Community'")
       end
     end  
   end

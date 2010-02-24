@@ -101,7 +101,7 @@ class Faq < ActiveRecord::Base
     end  
     faq.save
     if(!entry.categories.blank?)
-      faq.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)
+      faq.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)
     end
     returndata << faq
     return returndata

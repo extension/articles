@@ -127,7 +127,7 @@ class Event < ActiveRecord::Base
     item.save!
     
     if(!entry.categories.blank?)
-      item.replace_tags(entry.categories.map(&:term),User.systemuserid,Tag::CONTENT)      
+      item.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)      
     end
     
     returndata << item

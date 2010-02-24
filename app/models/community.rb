@@ -89,11 +89,11 @@ class Community < ActiveRecord::Base
   
   
   named_scope :tagged_with_content_tag, lambda {|tagname| 
-    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tag::CONTENT}"}
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tagging::CONTENT}"}
   }
   
   named_scope :tagged_with_shared_tag, lambda {|tagname| 
-    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tag::SHARED}"}
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tagging::SHARED}"}
   }
   
   # validations
@@ -147,7 +147,7 @@ class Community < ActiveRecord::Base
   # it's up to the controller level to deal with the warnings on this
   def content_tag_names=(taglist)
     # get content tags in use by other communities
-    my_content_tags = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+    my_content_tags = tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT)
     other_community_tags = Tag.community_content_tags - my_content_tags
     other_community_tag_names = other_community_tags.map(&:name)
     updatelist = Tag.castlist_to_array(taglist,true)
@@ -155,11 +155,11 @@ class Community < ActiveRecord::Base
     
     # primary tag - first in the list
     if(!other_community_tag_names.include?(primary) and !Tag::CONTENTBLACKLIST.include?(primary))
-      self.replace_tags(primary,User.systemuserid,Tag::CONTENT_PRIMARY)
+      self.replace_tags(primary,User.systemuserid,Tagging::CONTENT_PRIMARY)
     end
     
     # okay do the others - updating the cached_tags for search
-    self.replace_tags_with_and_cache(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},User.systemuserid,Tag::CONTENT)
+    self.replace_tags_with_and_cache(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},User.systemuserid,Tagging::CONTENT)
     
     # update the Tag model's community_content_tags
     cctags = Tag.community_content_tags({:all => true},true)
@@ -184,13 +184,13 @@ class Community < ActiveRecord::Base
   def cached_content_tags(force_cache_update=false)
     if(self.cached_content_tag_data.blank? or self.cached_content_tag_data[:primary_tag].blank? or self.cached_content_tag_data[:all_tags].blank? or force_cache_update)
       # get primary content tag first - should be only one - and if not, we'll force it anyway
-      primary_tags = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT_PRIMARY)
+      primary_tags = tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT_PRIMARY)
       if(!primary_tags.blank?)
         tagarray = []
         primary_content_tag = primary_tags[0]
         tagarray << primary_content_tag
         # get the rest...
-        other_content_tags = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+        other_content_tags = tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT)
         other_content_tags.each do |tag| 
           if(tag != primary_content_tag)
             tagarray << tag
@@ -198,7 +198,7 @@ class Community < ActiveRecord::Base
         end
         tagarray += other_content_tags if !other_content_tags.blank?
       else
-        tagarray = tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
+        tagarray = tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT)
       end
       
       cachedata = {}
@@ -272,23 +272,23 @@ class Community < ActiveRecord::Base
   end
     
   def user_tag_list(owner)
-    self.tag_list_by_ownerid_and_kind(owner.id,Tag::USER)
+    self.tag_list_by_ownerid_and_kind(owner.id,Tagging::USER)
   end
   
   def user_tag_displaylist(owner)
-    return self.tag_displaylist_by_ownerid_and_kind(owner.id,Tag::USER)
+    return self.tag_displaylist_by_ownerid_and_kind(owner.id,Tagging::USER)
   end
   
   def update_user_tags(taglist,owner)
-    self.replace_tags_with_and_cache(taglist,owner.id,Tag::USER)
+    self.replace_tags_with_and_cache(taglist,owner.id,Tagging::USER)
   end
     
   def system_sharedtags_displaylist
-    return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tag::SHARED)
+    return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED)
   end
   
   def tag_myself_with_systemuser_tags(taglist)
-    self.replace_tags_with_and_cache(taglist,User.systemuserid,Tag::SHARED,AppConfig::configtable['systemuser_sharedtag_weight'])
+    self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED,AppConfig::configtable['systemuser_sharedtag_weight'])
   end
   
   def shared_tag_list_to_s(limit=10)

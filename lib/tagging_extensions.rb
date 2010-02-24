@@ -5,7 +5,7 @@ class ActiveRecord::Base #:nodoc:
   module TaggingExtensions
     
     def default_tag_kind
-      Tag::GENERIC
+      Tagging::GENERIC
     end
         
     # Add tags to <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
@@ -81,7 +81,7 @@ class ActiveRecord::Base #:nodoc:
       
       # TODO: review this special case - communities get all tags cached for now, others get the one specified
       if(self.is_a?(Community))
-        CachedTag.create_or_update(self,User.anyuser,Tag::ALL)
+        CachedTag.create_or_update(self,User.anyuser,Tagging::ALL)
       else
         CachedTag.create_or_update(self,ownerid,kind)
       end
@@ -111,23 +111,23 @@ class ActiveRecord::Base #:nodoc:
       taggings.count(:group => :tag)
     end  
     
-    def tag_count_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)      
+    def tag_count_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tagging::ALL)      
       # TODO: this may be problematic down the line for an object with a lot of tags
       taggable?(true)
       taggings.count(:group => :tag, :conditions => tagcond(ownerid,kind))
     end
     
-    def tags_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)      
+    def tags_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tagging::ALL)      
       taggable?(true)
       # has to be uniq by mysql index
       tags.find(:all, :select => "tags.*,count(tags.id) as frequency", :conditions => tagcond(ownerid,kind), :group => "tags.id")
     end
         
-    def tag_list_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL)
+    def tag_list_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tagging::ALL)
        tags_by_ownerid_and_kind(ownerid,kind).map(&:name).join(Tag::JOINER)
     end
 
-     def tag_displaylist_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tag::ALL,returnarray=false)
+     def tag_displaylist_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tagging::ALL,returnarray=false)
        taggable?(true)
        array = taggings.find(:all, :conditions => tagcond(ownerid,kind)).map(&:tag_display)
        if(returnarray)
@@ -191,7 +191,7 @@ class ActiveRecord::Base #:nodoc:
         conditions << "taggings.owner_id = #{ownerid}"
       end
            
-      if(!kind.nil? and kind != Tag::ALL)
+      if(!kind.nil? and kind != Tagging::ALL)
         conditions << "taggings.tag_kind = '#{kind}'"
       end
       return conditions.join(' AND ')
