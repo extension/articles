@@ -38,7 +38,7 @@ class Faq < ActiveRecord::Base
   end
   
   # the current FAQ feed uses an URL for the id at some point, it probably should move to something like:
-  # http://friendfeed.com/extensiondarmokproject/ae997214/how-to-make-good-id-in-atom-dive-into-mark  
+  # http://diveintomark.org/archives/2004/05/28/howto-atom-id  
   def self.parse_id_from_atom_link(idurl)
     parsedurl = URI.parse(idurl)
     if(idlist = parsedurl.path.scan(/\d+/))
