@@ -288,10 +288,11 @@ class Aae::ReportsController < ApplicationController
            @dateFrom = params[:from] ;  @dateTo=params[:to]
            @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
            if params[:datefrom] || params[:dateto]   # temporary hack to accommodate two different date selection mechanisms for a while 
-               @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
-               @latest_date = Date.today
-               @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
-               @date1 = @dateinterval[0]; @date2=@dateinterval[1]; @dateFrom = @date1; @dateTo = @date2
+            #   @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+            #   @latest_date = Date.today
+            #   @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+            #   @date1 = @dateinterval[0]; @date2=@dateinterval[1]; @dateFrom = @date1; @dateTo = @date2
+                @date1 = params[:datefrom]; @date2 = params[:dateto]
            end
            desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
            descl = desc
@@ -608,18 +609,24 @@ class Aae::ReportsController < ApplicationController
     end
     
     
-    def show_all_by_state
-       if (params[:from] && params[:to])
-         @dateFrom = params[:from] ;  @dateTo=params[:to]
-          @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-       else
-         (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
-         (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-       end
-       @typename = params[:State]; 
+  
+     def state
+  #     if (params[:from] && params[:to])
+  #       @dateFrom = params[:from] ;  @dateTo=params[:to]
+  #        @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+  #     else
+  #       (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
+  #       (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+  #     end
+        @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+      	@latest_date = Date.today
+      	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
+      	@date1 = @dateinterval[0]; @date2 = @dateinterval[1]  
+        
+        @typename = params[:State]
        if (@typename && @typename != "") 
          @typeobj = Location.find_by_name(params[:State]) 
-         @type = "State" ; @typel="state" ;  @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
+         @type = "State" ; @typel="state" ; # @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
          locabbr=@typeobj.abbreviation; locid = @typeobj.id
      
          if !@typeobj.nil?  
@@ -630,8 +637,8 @@ class Aae::ReportsController < ApplicationController
            (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_state_persp("pertaining",@typeobj, @date1, @date2)
            (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp("member", @typeobj, @date1, @date2)
        
-           @repaction = "show_all_by_state"      
-           render :template=>'aae/reports/state'
+       #    @repaction = "show_all_by_state"      
+      #     render :template=>'aae/reports/state'
 
          else
            redirect_to :controller => 'aae/reports', :action => 'state_report'
@@ -654,17 +661,18 @@ class Aae::ReportsController < ApplicationController
              @edits = @edits[0..8]
            end
          end
-         @dateFrom = params[:from] ;  @dateTo=params[:to] ; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
-         @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-         
-         @limit_string = "Only up to 100 are shown."
+   #      @dateFrom = params[:from] ;  @dateTo=params[:to] ; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
+  #       @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+           @date1 = params[:datefrom] ; @date2 = params[:dateto]
+           @limit_string = "Only up to 100 are shown."
         
          
-             (@edits[0..7]== "Resolved") ?  jrestring = " join users on sq.resolved_by=users.id " :  jrestring=""
-             select_string = "sq.user_id, sq.id squid, resolved_by, sq.location_id, current_contributing_question question_id,  " +
-                " sq.status_state status, sq.created_at, sq.updated_at updated_at, asked_question " 
+          #   (@edits[0..7]== "Resolved") ?  jrestring = " join users on sq.resolved_by=users.id " :  jrestring=""
+             (@edits[0..7] == "Resolved") ? jstring = [:resolved_by] : jstring= nil
+             select_string = "submitted_questions.user_id, submitted_questions.id squid, resolved_by, submitted_questions.location_id, current_contributing_question question_id,  " +
+                " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
             
-              jstring= " as sq #{jrestring}"
+            #  jstring= " as sq #{jrestring}"
              if @edits == 'Submitted'
                @pgt = "Submitted Questions pertaining to #{@typename}"
              else
@@ -678,7 +686,7 @@ class Aae::ReportsController < ApplicationController
                         :all,
                         :select =>select_string,
                         :joins => jstring,
-                        :order => (@edits=="Submitted" || @edits[0..7]=="Resolved") ? order_clause("sq.updated_at", "desc") : order_clause,
+                        :order => (@edits=="Submitted" || @edits[0..7]=="Resolved") ? order_clause("submitted_questions.updated_at", "desc") : order_clause,
                         :page => params[:page],
                         :per_page => AppConfig.configtable['items_per_page'])
          
@@ -700,8 +708,9 @@ class Aae::ReportsController < ApplicationController
            @loc = Location.find_by_name(params[:State]); @county = params[:County]; @typename = @county
          end
          @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i
-         @dateFrom = params[:from] ;  @dateTo=params[:to] ;
-         @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+       #  @dateFrom = params[:from] ;  @dateTo=params[:to] ;
+      #   @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+         @date1 = params[:datefrom]; @date2 = params[:dateto]
          @users=User.find_state_users(@loc, @county, @date1, @date2,
            :all, :select => " id, first_name, last_name, login, email, county_id", :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])
 
@@ -712,10 +721,11 @@ class Aae::ReportsController < ApplicationController
 
      def county_select
        @date1=nil; @date2=nil; @dateFrom=nil; @dateTo=nil
-       if (params[:from] && params[:to])
-         @dateFrom = params[:from] ;  @dateTo=params[:to]
-         @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-       end
+     #  if (params[:from] && params[:to])
+    #     @dateFrom = params[:from] ;  @dateTo=params[:to]
+    #     @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+         @date1 = params[:datefrom]; @date2 = params[:dateto]
+      # end
        if params[:State]
            @statename = params[:State]
        end
@@ -728,13 +738,17 @@ class Aae::ReportsController < ApplicationController
 
 
      def county
-       if (params[:from] && params[:to])
-         @dateFrom = params[:from] ;  @dateTo=params[:to]
-         @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-       else
-         (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
-         (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-       end
+  #     if (params[:from] && params[:to])
+  #       @dateFrom = params[:from] ;  @dateTo=params[:to]
+  #       @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+  #     else
+  #       (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
+  #       (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
+  #     end
+        @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+       	@latest_date = Date.today
+       	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
+       	@date1 = @dateinterval[0]; @date2 = @dateinterval[1]
        @county = params[:County]; @typename = @county
        @statename=params[:State]
        if (@county && @statename && @statename!="")
@@ -742,7 +756,7 @@ class Aae::ReportsController < ApplicationController
          locabbr = loc.abbreviation
         
          @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])
-         @type="County"; @typel="county" ;   @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
+         @type="County"; @typel="county" ;   #@oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
          if !@typeobj.nil? 
        
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
@@ -751,7 +765,7 @@ class Aae::ReportsController < ApplicationController
           (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp("pertaining",@typeobj, @date1, @date2)
           (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp("member",@typeobj, @date1, @date2)   
           
-           @repaction = 'county'
+      #     @repaction = 'county'
            render :template => 'aae/reports/state'
         else
           redirect_to :controller => 'aae/reports', :action => 'county_select', :State => @statename

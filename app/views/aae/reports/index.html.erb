@@ -17,7 +17,7 @@
         </p>
     <% end %>
 	
-	<% form_tag({:controller => 'reports', :action => :show_all_by_state }, {:method => "get"}) do %>
+	<% form_tag({:controller => 'reports', :action => :state }, {:method => "get"}) do %>
 	    <% options_array= Array.new %>
 	        <% @locs.each do |stobj|
 	            options_array << stobj.name

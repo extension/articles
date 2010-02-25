@@ -2,7 +2,7 @@
 
  <p id="activity_report"><%= link_to "All Reports",  :controller => 'aae/reports' %> <%= @page_title %> </p>
 
-<% form_tag({:action => :county, :State => @statename, :to => @dateTo, :from => @dateFrom} ) do %>
+<% form_tag({:action => :county, :State => @statename, :dateto => @date2, :datefrom => @date1} ) do %>
 
 <h2>Select County/Parish in <%= @statename%></h2>
 

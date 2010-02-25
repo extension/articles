@@ -299,13 +299,13 @@ end
      end
      case desc
       when "Submitted", "ResolvedP", "ResolvedPa", "ResolvedPr", "ResolvedPn"
-        rphrase = " sq.location_id=#{loc.id}  "
+        rphrase = " submitted_questions.location_id=#{loc.id}  "
         if (county)
-          rphrase = rphrase + " and sq.county_id=#{ctyid[0].id}"
+          rphrase = rphrase + " and submitted_questions.county_id=#{ctyid[0].id}"
         end
         case desc
           when "Submitted"
-             cdstring = " and sq.status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"
+             cdstring = " and submitted_questions.status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"
           else
              cdstring = " and resolved_by > 0" 
              (cdstring, descaux) = get_delineated_string(desc, cdstring)
@@ -318,7 +318,7 @@ end
      if (date1 && date2)
         case descaux
         when "Submitted", "ResolvedP", "ResolvedM"
-           tstring = " and sq.created_at > ? and sq.created_at < ?"
+           tstring = " and submitted_questions.created_at > ? and submitted_questions.created_at < ?"
         end
         cdstring =[cdstring + tstring, date1, date2]
      end
