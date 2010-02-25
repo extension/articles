@@ -104,6 +104,7 @@ class Community < ActiveRecord::Base
   
   named_scope :approved, :conditions => {:entrytype => Community::APPROVED}
   named_scope :usercontributed, :conditions => {:entrytype => Community::USERCONTRIBUTED}
+  named_scope :institution, :conditions => {:entrytype => Community::INSTITUTION}
   
   named_scope :filtered, lambda {|options| self.userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}

@@ -36,7 +36,7 @@ class FilteredParameter
   
   # TODO: review, some of these are used sparingly in the application and may not really belong here as "standard" parameters
   RECOGNIZED_PARAMETERS[:connectiontype] = :string
-  RECOGNIZED_PARAMETERS[:communitytype] = :string
+  RECOGNIZED_PARAMETERS[:communitytype] = :string # probably should be a method to filter known types
   RECOGNIZED_PARAMETERS[:agreementstatus] = :boolean
   RECOGNIZED_PARAMETERS[:announcements] = :boolean
   RECOGNIZED_PARAMETERS[:source] = :string
