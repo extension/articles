@@ -89,9 +89,13 @@ class Tag < ActiveRecord::Base
     # make an initial downcased copy - don't want to modify name as a side effect
     returnstring = name.downcase
     # now, use the replacement versions of gsub and strip on returnstring
+    # convert underscores to spaces
     returnstring.gsub!('_',' ')
+    # get rid of anything that's not a "word", not whitespace, not : and not - 
     returnstring.gsub!(/[^\w\s:-]/,'')
+    # reduce whitespace/multiple spaces to a single space
     returnstring.gsub!(/\s+/,' ')
+    # remove leading and trailing whitespace
     returnstring.strip!
     returnstring
   end

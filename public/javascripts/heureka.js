@@ -78,22 +78,6 @@ function handleComplete(responseObj, divElement) {
     new Effect.Opacity(divElement.id, {duration:6.0, from:1.0, to:0.0})
 }
 
-function addTagsToList(formControl, tagToAdd) {
-    if (tagToAdd.indexOf(" ") >= 0) {
-      tagToAdd = '"' + tagToAdd + '"'    
-    }
-    
-    if (formControl.value.indexOf(",") >= 0) {
-      separator = ','    
-    }
-    else {
-      separator = ' '
-    }
-    
-    
-    formControl.value = formControl.value + separator + tagToAdd
-}
-
 function addToList(formControl, elementToAdd) {
     len = formControl.options.length
     formControl.options[len] = new Option(elementToAdd)
