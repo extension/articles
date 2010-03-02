@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<% if(!@published_content or params[:print]) %>
+	   <meta name="robots" content="noindex,follow" /> 
+	<% end %>
+	
+	<title><%= @title_tag %></title>
+	<% if @mobile_device %>
+        <meta name = "viewport" content = "width = device-width, user-scalable = yes">
+        <%= stylesheet_link_tag 'mobile' %>
+    <% else %>
+	
+    	<% if params[:print] %>
+    	    <%= stylesheet_link_tag 'print-for-screen' %>
+    	    <%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
+    	    <%= stylesheet_link_tag 'print', :media => 'print' %>
+    	<% else %>
+    	    <%= stylesheet_link_tag 'common' %>
+    	    <%= stylesheet_link_tag '960' %>
+        	<%= stylesheet_link_tag 'extension2' %>
+        	<%= stylesheet_link_tag 'extension2', :media => 'print' %>
+    	<% end %>
+	<% end %>
+    
+  <% if @youth %>
+     <%= stylesheet_link_tag 'youth' %>
+  <% end %>
+  
+    <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag 'charcount' %>
+    
+    
+	<% if session[:institution_community_id].nil? or
+	     (session[:institution_community_id] and session[:institution_community_id].empty?) %>
+	<script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
+	<script type="text/javascript">
+	//<![CDATA[
+	// -- docs say u need to load a module, but my testing says not. @JER
+   // google.load("maps", "2.x");
+
+   google.setOnLoadCallback(function() {
+      if (google.loader.ClientLocation) {
+        if (google.loader.ClientLocation.address.country_code == "US" &&
+          google.loader.ClientLocation.address.region) {
+            findInstitution(google.loader.ClientLocation.address.city,
+                         google.loader.ClientLocation.address.region);
+        } else {
+          findInstitution("ignored", "OUTSIDEUS");
+        }
+      } else {
+        findInstitution("ignored", "OUTSIDEUS");
+      }
+   });
+   //]]>
+   </script>
+   <% end %>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/contentslider.css" />
+	<!--[if lt IE 7]>
+	    <%= stylesheet_link_tag 'ie6.css' %>
+    <![endif]-->
+    
+    
+    <% if !@mobile_device %>
+        <% if @sitehome == true %>
+        <!-- include jquery for accordion nav -->
+            <%= javascript_include_tag 'jquery-1.3.2.min.js' %>
+            <%= javascript_include_tag 'jquery-ui-1.7.2.custom.min.js' %>
+
+            <script type="text/javascript">
+                var $j = jQuery.noConflict();
+                $j(document).ready(function(){
+                    $j('#accordion').accordion({ active: false, autoHeight: false, collapsible: true });
+                });
+            </script>
+        <% else %>
+        <!-- include prototype js for image carousel -->
+            <script type="text/javascript" src="/javascripts/swfobject.js"></script>
+   
+	        <script type="text/javascript" src="/javascripts/contentslider.js">
+              /***********************************************
+              * Featured Content Slider
+              * copyright Dynamic Drive DHTML code library (www.dynamicdrive.com)
+              * This notice MUST stay intact for legal use
+              * Visit Dynamic Drive at http://www.dynamicdrive.com/
+              * for this script and 100s more
+              ***********************************************/
+            </script>
+      <% end %>
+   <% end %>
+</head>
+<body>
+    <div id="body_wrapper"><!-- used for preview -->
+        <div id="preview_wrapper" class="<%= @app_location_for_display %>"></div>
+        <% if(@app_location_for_display != 'production' and @app_location_for_display != 'shownav' )%>
+            <% if(@app_location_for_display == 'preview' )%>
+                <div id="app_location" class="preview">
+
+                    <% if params[:print] %>
+                        <h3>This is the Print View for the Pubsite Preview Tool</h3> 
+                        <p>This view displays exactly how your page will look when printed from the Public Site.</p>
+                    <% else %>
+                        <h3>This is the Pubsite Preview Tool</h3> 
+                        <p>This view displays exactly how your page will look when published to the Public Site. The navigation areas are grayed out because those sections are not available in preview mode. However, all links within your article do work.</p>
+                    <% end %>
+                </div>
+        	<% else %>
+        	    <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://about.extension.org/wiki/Pubsite/Testing") %></p></div>
+        	<% end %>
+        <% end %>
+        
+    <div id="wrapper">
+	
+		<div id="content_wrapper">
+		
+    <div class="container_16">
+        <div class="grid_16 alpha omega override_960px">
+            
+            <ul id="skiplist">
+                <li class="skip"><a href="#main_content">Skip Navigation</a></li>
+                <li class="skip"><a href="#sidebar">Jump to Side Bar</a></li>
+            </ul>
+            
+            <% if @mobile_device %>
+                <div id="mobileheader">
+                    <%= render(:partial => 'shared/search') %>
+                    <h3 id="eXlogo"><a href="/">eXtension: more mind reach</a></h3>    
+                </div>
+             <% end %>
+             
+             
+             <div id="masthead_wrap">
+                 <div id="masthead">
+                     <% if !@mobile_device %>
+                     <p class="aboutex">These resources are brought to you by the Cooperative Extension System and your Local Institution</p>
+                     <% end %>
+
+                     <% if @personal[:institution] and ['KY', 'TX'].include?(@personal[:institution].location.abbreviation) %>
+                        <div class="branding_wrapper doublewide">
+                     <% else %>
+                        <div class="branding_wrapper">
+                     <% end %>                    
+                       <div id="logo">
+                          <%=render :partial => 'shared/logo', :locals => {:person => @personal} %>
+                       </div>
+
+                       <% if !@mobile_device %>
+                         <h3 id="eXlogo"><a href="/">eXtension: more mind reach</a></h3>
+                         <% if params[:print] %>
+                         <img id="print-logo" src="/images/pubsite/ex-hires-logo-color.png" width="145pt" height="53pt" alt="eXtension: more mind reach" />
+                         <% end %>
+                         <% end %>
+                     </div>
+
+                 </div>
+                 <div id="institution_picker" style="display:none;">
+                  <% form_remote_tag :update => 'institution_list', :url => { :controller => '/main', :action => 'show_institution_list' }, :class => "zipcode" do %>           
+             		    <fieldset>
+             		        <h3>Find an Extension Institution</h3>
+             		        <p>
+             		            <label>ZIP code or State Abbreviation
+             		                <input id="zip_or_state" type="text" name='zip_or_state' /> 
+             		            </label>
+             		               <%= submit_tag 'Go' %>
+                                 <%= link_to_function 'Cancel', "Effect.toggle('institution_picker','blind', { duration: .4});
+         Effect.BlindUp('institution_list', { duration: .4});", :class => "sample" %>
+                           </p>
+             		    </fieldset>
+             		    <div id="institution_list" style="display:none;"></div>
+             		<% end %>
+                 </div>
+
+             </div>
+             
+             <div class="navbar">
+                    <% if !@mobile_device %>
+                  <div class="globalnav">
+                      <ul>
+                        <li class="home"><a href = "/">Home</a></li>
+                        <li class="about"><a href = "/main/about">About</a></li>
+                        <li class="topics"><a href = "/main/communities">Resource Areas</a></li>
+                        <li class="news"><%= link_to 'News', site_news_url(with_content_tag?)%></li>
+                        <li class="articles"><%= link_to 'Articles', site_news_url(with_content_tag?)%></li>
+                        <li class="answers"><%= link_to 'Answers', site_faqs_url(with_content_tag?)%></li>
+                        <li class="calendar"><%= link_to 'Calendar', site_events_url(with_content_tag?)%></li>
+                        <li class="lessons"><%= link_to 'Learning Lessons', site_learning_lessons_url(with_content_tag?)%></li>
+                      </ul>
+                  </div>
+                     <% end %>
+                 <% if !@mobile_device %>
+                  <%= render(:partial => 'shared/search') %>
+                  <% end %>
+                </div>
+        </div><!-- end .grid_16 -->
+        <div class="clear"></div>
+        
+        <div class="grid_16">
+        
+        <% flash_names = [:notice, :warning, :message, :error]
+              flash_names.each do |flash_type| 
+                 if flash[flash_type] %>
+                    <div id='flash_notice' class='<%= flash[:notice]? "notice" : "warning" %>'>
+                        <p><%= flash[flash_type] %></p>
+                    </div>
+                <% end %>
+        <% end %>
+        </div><!-- .grid_16 -->
+        <div class="clear"></div>
+        
+        <%if @sitehome == true %>
+            <%= yield :layout %>
+            
+            <div class="grid_4" id="sitehome">
+                <%= render :partial => 'shared/rightcolumn_sitehome' %>
+            </div>
+        <% elsif @right_column != false %>
+            <div class="grid_16 alpha omega override_960px content_page">
+            <div class="grid_11 alpha omega override_650px" id="content_tag">
+                <div class="content_gutter">
+                <%= yield :layout %>
+                <br class="clearing" />
+                </div>
+            </div>
+            <%= render :partial => 'shared/rightcolumn' %>
+            </div>
+        <% else %>
+            <div class="grid_16 alpha omega override_960px content_page">
+            <div class="grid_16" id="content_tag">
+                <div class="content_gutter">
+                <%= yield :layout %>
+                </div>
+            </div>
+            </div>
+        <% end %>
+        
+        
+        
+        <% if @mobile_device %>
+         <div class="globalnav">
+             <ul>
+               <li class="home"><a href = "/">Home</a></li>
+               <li class="about"><a href = "/main/about">About</a></li>
+               <li class="topics"><a href = "/main/communities">Resource Areas</a></li>
+               <li class="news"><%= link_to 'News', site_news_url(with_content_tag?)%></li>
+               <li class="answers"><%= link_to 'Answers', site_faqs_url(with_content_tag?)%></li>
+               <li class="calendar"><%= link_to 'Calendar', site_events_url(with_content_tag?)%></li>
+               <li class="lessons"><%= link_to 'Self Learning', site_learning_lessons_url(with_content_tag?)%></li>
+               <li class="feeds"><a href = "/feeds">Feeds</a></li>
+             </ul>
+         </div>
+        <% end %>
+        <div class="clear"></div>
+    </div><!-- end .container_16 -->
+    	</div><!-- end #wrapper -->
+	
+	</div><!-- end content_wrapper -->
+	
+	
+    <div id="footer_wrapper">
+		<div id="footer_inner_wrapper">
+            <div id="footer">
+                <p><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is an educational partnership of 74 universities in the United States.</p>
+                <p class="copyright">&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
+                <ul>
+                    <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
+                    <li><%= link_to_unless_current "partners", :controller => "main", :action => "partners" %></li>
+                    <li><%= link_to_unless_current "privacy", :controller => "main", :action => "privacy" %></li>
+                    <li><%= link_to_unless_current "contact us", :controller => "main", :action => "contact_us" %></li>
+                    <li><%= link_to_unless_current "disclaimer", :controller => "main", :action => "disclaimer" %></li>
+                    <li class="last"><%= link_to_unless_current "terms of use", :controller => "main", :action => "termsofuse" %></li>
+                </ul>
+            </div>
+		</div>
+	</div>
+
+    </div><!-- end #body_wrapper -->
+
+
+<%= render(:partial => '/partial/googleanalytics') %>
+
+<% if params[:print] %>
+    <p id="pageurl">View this page: <script type="text/javascript">document.write(location.href.replace(/\/print(\/)?$/, ''));</script></p>
+<% end %>
+
+<%- if(AppConfig.configtable['app_location'] == 'production') -%>
+  <script type="text/javascript"
+  src="http://s3.amazonaws.com/new.cetrk.com/pages/scripts/0006/2168.js">
+  </script>
+<%- end -%>
+</body>
+</html>

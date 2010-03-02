@@ -12,6 +12,8 @@ class AskController < ApplicationController
   has_rakismet :only => [:submit_question]
   before_filter :login_optional
   
+  layout 'pubsite'
+  
   #TODO:  this controller needs to be refactored, there's too much duplication of validation logic across methods 
   
   def index

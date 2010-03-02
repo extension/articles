@@ -8,14 +8,17 @@
 class MainController < ApplicationController
   before_filter :set_content_tag_and_community_and_topic
 
+  layout 'pubsite'
+  
   def index
      set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
      set_titletag('eXtension - Objective. Research-based. Credible.')
-        
+     @right_column = false
+     @sitehome = true
      @sponsors = Sponsor.prioritized
      
      @in_the_news = Article.main_news_list({:limit => 4})
-     @community_highlights = Article.main_feature_list({:limit => 8})
+     @community_highlights = Article.main_feature_list({:limit => 5})
      @latest_activities = Article.main_recent_list({:limit => 8})
      @latest_faqs = Faq.main_recent_list({:limit => 3})
      @latest_faq = @latest_faqs[0]

@@ -8,6 +8,8 @@
 class PreviewController < ApplicationController
   before_filter :login_optional
   before_filter :set_content_tag_and_community_and_topic
+  
+  layout 'pubsite'
 
   def index
     @right_column = false

@@ -8,6 +8,8 @@
 class EventsController < ApplicationController
   before_filter :set_content_tag_and_community_and_topic
   
+  layout 'pubsite'
+  
   def index    
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
     if(!@content_tag.nil?)

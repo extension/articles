@@ -8,6 +8,8 @@
 class FaqController < ApplicationController
   before_filter :set_content_tag_and_community_and_topic
   
+  layout 'pubsite'
+  
   def index
     # validate ordering
     return do_404 unless Faq.orderings.has_value?(params[:order])

@@ -7,7 +7,9 @@
 
 class FeedsController < ApplicationController
   skip_before_filter :personalize, :except => :index
-    
+  
+  layout 'pubsite'
+  
   def index
     set_title('Feeds')
     set_titletag('eXtension - Feeds')

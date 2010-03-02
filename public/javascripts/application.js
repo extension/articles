@@ -64,7 +64,7 @@ function startmeup() {
 Event.observe(window, 'load', startmeup);
 
 function getBodyHeight() {
-    var dimensions = $('page_wrapper').getDimensions();
+    var dimensions = $('body_wrapper').getDimensions();
     $("preview_wrapper").style.height = dimensions.height + 'px';
 }
 

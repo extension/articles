@@ -8,6 +8,8 @@
 class ArticlesController < ApplicationController
   before_filter :set_content_tag_and_community_and_topic
   
+  layout 'pubsite'
+  
   def index
     # validate order
     return do_404 unless Article.orderings.has_value?(params[:order])

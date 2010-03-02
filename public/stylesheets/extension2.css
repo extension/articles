@@ -101,6 +101,8 @@ body { text-align: center }
 .leftcolumn.fullwidth {width:932px;}
 
 
+
+
 /* LINK STYLES */
 
 a:link {cursor: pointer; text-decoration: none; color: #386292}
@@ -203,7 +205,7 @@ h3.headerdescription {text-transform:none !important;}
 .aboutex {padding:.65em 0; margin:0 auto 1em;color:#e07432;font-weight:bold;text-align:left;border-bottom:1px solid #bfbfbf;}
 
 #masthead_wrap {padding:0; background:#fff; margin:0 0 32px;border-bottom: 1px solid #e6e6e6;overflow:auto;}
-#institution_picker {padding:0; background:#fff; margin:0 0 32px;border-top: 1px solid #e6e6e6;width:963px;margin:0 auto;text-align:left;clear:both;}
+#institution_picker {padding:0; background:#fff; margin:0 0 32px;border-top: 1px solid #e6e6e6;width:960px;margin:0 auto;text-align:left;clear:both;}
 #masthead {width:963px;margin:0 auto;}
 .navbar {color: #000; background: #c05412 url(/images/layout/navbarbgnd.png) no-repeat; width: 963px; margin: 0 auto;padding:0;overflow:auto;}
 
@@ -237,7 +239,7 @@ h1.logo a {display:block;overflow:hidden; height:78px;line-height:1;color:#fff;}
 .doublewide #institution_actions li {float:left;margin:0 1.45em .45em 0;}
 
 
-#eXlogo {position:absolute; background:url(/images/layout/extensionlogo.gif) no-repeat left top;text-indent:-5000px;overflow:none;padding:0;margin:0 0 10px;top:0;right:0;}
+#eXlogo {position:absolute; background:url(/images/layout/extensionlogo.gif) no-repeat left top;text-indent:-5000px;overflow:none;padding:0;margin:0 0 10px;top:0;right:10px;}
 #eXlogo a {width:216px; height: 81px;display:block;overflow:hidden;}
 
 #print-logo {display:none;}
@@ -801,3 +803,86 @@ span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0 
 
 /* 960 framework layout
 -----------------------------------------------------------------------------*/
+
+/*.container_16 { background: #fff url(/images/16_col.gif) repeat-y;}*/
+.container_16 { background: #fff;}
+.override_960px {width:960px !important;}
+.override_650px {width:650px !important;}
+
+#branding {background:#0b2e56 url(/images/pubsite/branding_banner.jpg) 0 0 no-repeat; color:#fff; padding:10px 20px; margin: 10px 0 20px;}
+#branding h1 {text-align:left; font-size:2.2em; width:440px; float:left; font-weight:normal;margin:0;padding:0;line-height:1.2em;}
+#branding p {float:right; text-align:left; font-size:1.3em; width:200px;}
+
+#sitehome .rightcolumn {width:100%; text-align:left; border-left:1px solid #d6d6d6; background:#fff;}
+#sitehome .rightcolumn h1 {background:none; background: #fff url(/images/pubsite/gray_fade_01.png) right bottom repeat-x;margin-bottom:0; padding:.75em 10px .5em;color:#000;}
+#sitehome_main h2 {background:none; background: #fff url(/images/pubsite/gray_fade_02.png) right bottom repeat-x;margin-bottom:1em;text-align:left;font-weight:normal; font-size:1.5em;line-height:1.1em; padding:.25em 0 .25em 10px ;}
+#sitehome .rightcolumn .sponsors {background:#fff;}
+#sitehome .rightcolumn h3 {background: #d8dc7f url(/images/pubsite/accordion_bg.png) 0 0 repeat-y;border-bottom:1px solid #6c6e41;border-top:1px solid #fff; margin:0;padding:.35em 10px; font-size:1.5em; cursor:pointer;}
+#accordion div {background:#fff; border:1px solid #fff; border-bottom:1px solid #ddd;}
+#accordion div p {margin:.55em 10px;background:#fff; font-size:1.4em; padding:0;}
+.clearing {clear:both;}
+
+
+.navbar {color: #000; background: #c05412 url(/images/pubsite/navbar_bg.png) repeat-x; width: 960px; margin: 0 auto;padding:0;overflow:auto;}
+.navbar {margin-bottom:10px;}
+#masthead {width:960px;margin:0 auto;}
+.searchbar .searchfield {width: 150px; font-size: 1.2em;}
+.branding_wrapper {width:940px;height:80px;position:relative;margin-bottom:1em;}
+
+#sitehome_main .contentdiv {float:left; padding:0; margin-bottom:20px; background:#fff;}
+#sitehome_main .contentdiv dt {float:right;width: 280px; text-align:left; font-size:2em;font-weight:normal;line-height:1.2em;}
+#sitehome_main .contentdiv dd {float:right;width: 280px; text-align:left;}
+#sitehome_main .contentdiv .img {border:1px solid #ccc; width:160px; overflow:hidden; float:left; height:120px;}
+
+#sitehome_main a .contentdiv dt {color:#424242;}
+#sitehome_main a .contentdiv dd {color:#797979;}
+#sitehome_main a:hover .contentdiv dt {color:#000; text-decoration:underline;}
+#sitehome_main a:hover .contentdiv dd {color:#000;}
+#sitehome_main a:hover .contentdiv .img {border:1px solid #777;}
+
+.recentcolumn {text-align:left; border-left:1px solid #d6d6d6;background:#fff; margin-bottom:3em;}
+.recentcolumn .event_listings {margin:0 0 0 20px;padding:0;color:#888;}
+.recentcolumn .event_listings li a {display:block;}
+.recentcolumn a {color:#424242;}
+.recentcolumn a:hover {color:#000; text-decoration:underline;}
+.calendar_day {padding:.4em .3em .15em; border:1px solid #a8a8a8; text-align:center; background:#fff; margin-right:.5em;margin-left:10px; background: #fff url(/images/pubsite/calendar_day.png) 0 0 repeat-x;}
+
+.calendar_day {
+box-shadow: 3px 4px 3px #ccc;
+-moz-box-shadow: 0 4px 3px #ccc;
+-webkit-box-shadow: 3px 4px 3px #ccc;
+border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+}
+.read  {font-weight:bold;}
+.read span {margin-right:.25em;}
+.aae_module {background: #fff url(/images/pubsite/gray_fade_03.png) left bottom repeat-x; height:150px;}
+.aae_module a {display:block;height:150px;width:220px;text-indent:-5000px;}
+
+#content_tag {text-align:left;background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;z-index:25;}
+
+#content_tag h1 {font-size: 2.7em;font-weight:normal; color: #df7432; margin:0 0 0;padding:0;}
+#content_tag h2 {font-size: 1.68em;font-weight:normal; color: #7f7f7f;margin:0;padding:0;}
+#content_tag .homesection h2 {float:left;color: #000;font-size:2.1em;margin-bottom:.25em;}
+.rightcolumn {text-align:left;}
+#content_tag h1.title {color:#333;font-weight:normal;font-size:2.1em;margin-bottom:.35em;}
+
+#rightcolumn {
+    background: #fff url(/images/layout/rightnavbgnd.gif) -689px 0  repeat-y;
+    border-bottom: 1px solid #ebebeb;
+    }
+.content_page {background: url(/images/pubsite/content_header_bg.png) no-repeat top left #fff; margin-top:-10px;}
+
+.content_gutter {padding-top:10px;padding-left:10px;}
+
+.homesection.half {width: 295px; margin-right: 20px; padding:0;clear:none;}
+#footer  a.feeds  {padding-left: 28px; background: url(/images/layout/feed.gif) left center no-repeat;}
+#footer  a:hover.feeds  {padding-left: 28px; background: url(/images/layout/feed.gif) left center no-repeat;}
+.aboutex {padding:.65em 0 .65em 10px;}
+.branding_wrapper {padding-left:10px;width:950px;height:80px;position:relative;margin-bottom:1em;}
+.doublewide .institution_actions_wrapper {width:925px;}
+
+#content_css_reset {margin:0;padding:0;width:630px;}
+/* this constrains the div when there images or tables that exceed the column width */
+#content_css_reset #article {width:630px;}
