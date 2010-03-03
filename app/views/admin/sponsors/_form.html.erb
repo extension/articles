@@ -9,13 +9,15 @@
 <p>
     <label>Which graphic will this ad use?</label>
     <%= select(:sponsor, :logo_id, Logo.all.collect { |l| [l.filename, l.id] if l.thumbnail != 'thumb' }.compact, {:prompt => "Select a logo", :selected => @sponsor.logo_id}) %>
-<p>
+</p>
 
 <p>
     <label>Content Tags:</label>
     <%= text_field_tag 'sponsor[content_tag_names]', @sponsor.content_tag_names %>
     <span class="instructions">Adding tags will display the sponsor on the index page for the community that uses that tag and any page that is tagged with that content tag.  Leave blank if the logo should just be displayed on the main page only.</span>
-<p>
-
 </p>
-
+<p>
+     <label>Sponsorship Level:</label>
+     <%= select(:sponsor, :sponsor_tag_name, Sponsor::SPONSORSHIP_TAG_LIST, {:prompt => "Select Level", :selected => @sponsor.sponsor_tag_name}) %>
+     <span class="instructions">Select sponsorship level.</span>
+</p>

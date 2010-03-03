@@ -9,7 +9,8 @@ class Sponsor < ActiveRecord::Base
   belongs_to :logo
   acts_as_list
   has_content_tags
-  
+  SPONSORSHIP_TAG_LIST = ["titanium", "platinum", "gold", "silver", "bronze"]
+
   named_scope :prioritized, {:include => :logo, :order => 'position ASC'}
   
   # returns a comma delimited of the tags - with the primary content tag name first in the list
@@ -30,4 +31,17 @@ class Sponsor < ActiveRecord::Base
     return self.content_tag_names           
   end
   
+	def sponsor_tag_name()
+		tagarray = self.tags_by_ownerid_and_kind(User.systemuserid,Tagging::SPONSORSHIP)
+    if(!tagarray.blank?)
+      return tagarray.collect(&:name)
+    else
+      return ''
+    end
+	end
+	
+	def sponsor_tag_name=(tag)
+		self.replace_tags(tag,User.systemuserid,Tagging::SPONSORSHIP)
+		return self.sponsor_tag_name
+	end
 end

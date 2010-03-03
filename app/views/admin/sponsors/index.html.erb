@@ -10,7 +10,8 @@
             <li id="item_<%= sponsor.id %>">
                 <span class="sponsor_actions">
                     <span>Name: <%= sponsor.name.blank? ? 'not set' : sponsor.name %></span><br/>
-                    <span>Tags: <%= sponsor.content_tag_names %></span>
+                    <span>Tags: <%= sponsor.content_tag_names %></span><br/>
+                    <span>Level: <%= sponsor.sponsor_tag_name %></span>
                     <%= link_to("edit", edit_admin_sponsor_url(sponsor)) %>
                     <%= link_to('delete',admin_sponsor_url(sponsor) , {:confirm => 'Are you sure?', :method => :delete, :class => "delete"}) %>
                 </span>

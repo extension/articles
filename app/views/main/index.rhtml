@@ -45,8 +45,8 @@
         <div class="recentcolumn">
         <h2>Recent Articles, News &amp; Answers</h2>
         <ul class="event_listings">
-        <%for news in @in_the_news%>
-            <li><%= link_to news.title, news.id_and_link %></li>
+        <%for content in @recent_content%>
+            <li><%= link_to content.title, content.id_and_link %></li>
         <%end%>
         </ul>
         </div>

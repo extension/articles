@@ -17,18 +17,14 @@ class MainController < ApplicationController
      @sitehome = true
      @sponsors = Sponsor.prioritized
      
-     @in_the_news = Article.main_news_list({:limit => 4})
      @community_highlights = Article.main_feature_list({:limit => 5})
-     @latest_activities = Article.main_recent_list({:limit => 8})
-     @latest_faqs = Faq.main_recent_list({:limit => 3})
-     @latest_faq = @latest_faqs[0]
-     @latest_article = @latest_activities[0]
-     @second_latest = @latest_activities[1]
-     
+
      @calendar_date = get_calendar_date
-     @calendar_events = Event.main_calendar_list({:within_days => 5, :calendar_date => @calendar_date})
-     learning_lessons = Article.main_lessons_list({:limit => 3})  
-     @latest_learning_lesson =  learning_lessons[0] if learning_lessons
+     @calendar_events = Event.main_calendar_list({:within_days => 5, :calendar_date => @calendar_date, :limit => 6})
+
+     recent_articles = Article.main_recent_list({:limit => 10})
+     recent_faqs = Faq.main_recent_list({:limit => 10})
+     @recent_content = recent_articles + recent_faqs
   end
 
   def content_tag
