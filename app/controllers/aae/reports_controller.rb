@@ -171,15 +171,15 @@ class Aae::ReportsController < ApplicationController
            end
        end
        
-        def order_clause(order_by = "sq.question_updated_at", sort = "desc")
+        def order_clause(order_by = "submitted_questions.question_updated_at", sort = "desc")
            if !params[:ob].nil?
              order_by = params[:ob]
              if params[:ob] == "id"
-               order_by = "sq.id"
+               order_by = "submitted_questions.id"
              elsif params[:ob] == "squpdated"
-               order_by = " sq.updated_at"
+               order_by = " submitted_questions.updated_at"
              elsif params[:ob] == "sqid"
-               order_by = "sq.id"
+               order_by = "submitted_questions.id"
              end
            end
 
