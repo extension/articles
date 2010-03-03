@@ -12,7 +12,10 @@ class Sponsor < ActiveRecord::Base
   SPONSORSHIP_TAG_LIST = ["titanium", "platinum", "gold", "silver", "bronze"]
 
   named_scope :prioritized, {:include => :logo, :order => 'position ASC'}
-  
+  named_scope :tagged_with_sponsor_tag, lambda {|tagname| 
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tagging::SPONSORSHIP}"}
+  }
+
   # returns a comma delimited of the tags - with the primary content tag name first in the list
   # used for community editing in the administrative interface for public communities
   def content_tag_names()

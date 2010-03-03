@@ -1,11 +1,23 @@
 <h1>Our Sponsors</h1>
 
-<% sponsorlist.each do |sponsor| %>
-  <div class="sponsorlogo">
-	<% if !sponsor.nil? and !sponsor.logo.nil? %>
-		<%= render_inline_logo({:logo => sponsor.logo}) %>
-	<% end %>
-  </div>
+<% if sponsorlist.class == Array %>
+   <% sponsorlist.each do |sponsor| %>
+     <div class="sponsorlogo">
+   	<% if !sponsor.nil? and !sponsor.logo.nil? %>
+   		<%= render_inline_logo({:logo => sponsor.logo}) %>
+   	<% end %>
+     </div>
+   <% end %>
+<% elsif sponsorlist.class == Hash %>
+   <% Sponsor::SPONSORSHIP_TAG_LIST.each do |stag| %>
+      <% sponsorlist[stag].each do |sponsor| %>
+        <div class="sponsorlogo <%= stag %>">
+      	<% if !sponsor.nil? and !sponsor.logo.nil? %>
+      		<%= render_inline_logo({:logo => sponsor.logo}) %>
+      	<% end %>
+        </div>
+       <% end %>
+   <% end %>
 <% end %>
 
 <p class="readmore">

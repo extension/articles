@@ -15,7 +15,10 @@ class MainController < ApplicationController
      set_titletag('eXtension - Objective. Research-based. Credible.')
      @right_column = false
      @sitehome = true
-     @sponsors = Sponsor.prioritized
+     @sponsors = Hash.new
+		Sponsor::SPONSORSHIP_TAG_LIST.each do |stag|
+			@sponsors[stag] = Sponsor.tagged_with_sponsor_tag(stag)
+		end
      
      @community_highlights = Article.main_feature_list({:limit => 5})
 
