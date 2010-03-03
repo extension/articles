@@ -27,7 +27,7 @@ class MainController < ApplicationController
 
      recent_articles = Article.main_recent_list({:limit => 10})
      recent_faqs = Faq.main_recent_list({:limit => 10})
-     @recent_content = recent_articles + recent_faqs
+     @recent_content = content_date_sort(recent_articles, recent_faqs, 10)
   end
 
   def content_tag
@@ -206,5 +206,14 @@ class MainController < ApplicationController
     return date
   end
   
+	def content_date_sort(articles, faqs, limit)
+		merged = Hash.new
+		retarray = Array.new
+		articles.each{ |article| merged[article.wiki_updated_at] = article }
+		faqs.each{ |faq| merged[faq.heureka_published_at] = faq }
+		tstamps = merged.keys.sort.reverse # sort by updated, descending
+		tstamps.each{ |key| retarray << merged[key] }
+		return retarray.slice(0,limit)
+	end
   
 end
