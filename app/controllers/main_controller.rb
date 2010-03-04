@@ -16,8 +16,8 @@ class MainController < ApplicationController
      @right_column = false
      @sitehome = true
      @sponsors = Hash.new
-		Sponsor::SPONSORSHIP_TAG_LIST.each do |stag|
-			@sponsors[stag] = Sponsor.tagged_with_sponsor_tag(stag)
+		Sponsor::SPONSORSHIP_LEVELS.each do |level|
+			@sponsors[level] = Sponsor.find_with_level(level)
 		end
      
      @community_highlights = Article.main_feature_list({:limit => 5})

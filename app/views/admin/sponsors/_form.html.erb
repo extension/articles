@@ -18,6 +18,6 @@
 </p>
 <p>
      <label>Sponsorship Level:</label>
-     <%= select(:sponsor, :sponsor_tag_name, Sponsor::SPONSORSHIP_TAG_LIST, {:prompt => "Select Level", :selected => @sponsor.sponsor_tag_name}) %>
+     <%= select(:sponsor, :level, Sponsor::SPONSORSHIP_LEVELS, {:prompt => "Select Level", :selected => @sponsor.level}) %>
      <span class="instructions">Select sponsorship level.</span>
 </p>

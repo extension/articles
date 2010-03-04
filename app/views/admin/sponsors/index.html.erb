@@ -11,7 +11,7 @@
                 <span class="sponsor_actions">
                     <span>Name: <%= sponsor.name.blank? ? 'not set' : sponsor.name %></span><br/>
                     <span>Tags: <%= sponsor.content_tag_names %></span><br/>
-                    <span>Level: <%= sponsor.sponsor_tag_name %></span>
+                    <span>Level: <%= sponsor.level.blank? ? 'not set' : sponsor.level %></span>
                     <%= link_to("edit", edit_admin_sponsor_url(sponsor)) %>
                     <%= link_to('delete',admin_sponsor_url(sponsor) , {:confirm => 'Are you sure?', :method => :delete, :class => "delete"}) %>
                 </span>

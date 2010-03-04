@@ -14,7 +14,6 @@ class Tagging < ActiveRecord::Base
   SHARED = 2
   CONTENT = 3
   CONTENT_PRIMARY = 4  # for public communities, indicates the primary content tag for the community, if more than one
-  SPONSORSHIP = 5
 
   # special class of 'all' for caching purposes
   ALL = 42  # the ultimate answer, of course

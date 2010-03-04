@@ -9,9 +9,9 @@
      </div>
    <% end %>
 <% elsif sponsorlist.class == Hash %>
-   <% Sponsor::SPONSORSHIP_TAG_LIST.each do |stag| %>
-      <% sponsorlist[stag].each do |sponsor| %>
-        <div class="sponsorlogo <%= stag %>">
+   <% Sponsor::SPONSORSHIP_LEVELS.each do |level| %>
+      <% sponsorlist[level].each do |sponsor| %>
+        <div class="sponsorlogo <%= level %>">
       	<% if !sponsor.nil? and !sponsor.logo.nil? %>
       		<%= render_inline_logo({:logo => sponsor.logo}) %>
       	<% end %>

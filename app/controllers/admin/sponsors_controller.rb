@@ -39,7 +39,6 @@ class Admin::SponsorsController < ApplicationController
     @sponsor = Sponsor.new(params[:sponsor])
     if @sponsor.save
       @sponsor.content_tag_names=(params['sponsor']['content_tag_names'])
-      @sponsor.sponsor_tag_name=(params['sponsor']['sponsor_tag_name'])
       flash[:notice] = 'Sponsor was successfully created and added to the bottom of the list. You can now arrange the display order if needed.'
       AdminEvent.log_event(@currentuser, AdminEvent::CREATE_SPONSOR,{:sponsor_id => @sponsor.id})      
       redirect_to(admin_sponsors_url)
@@ -56,7 +55,6 @@ class Admin::SponsorsController < ApplicationController
     @sponsor = Sponsor.find(params[:id])
     if @sponsor.update_attributes(params[:sponsor])
       @sponsor.content_tag_names=(params['sponsor']['content_tag_names'])
-      @sponsor.sponsor_tag_name=(params['sponsor']['sponsor_tag_name'])
       AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_SPONSOR,{:sponsor_id => @sponsor.id})      
       flash[:notice] = 'Sponsor was successfully updated.'
       redirect_to(admin_sponsors_url)
