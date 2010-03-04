@@ -25,6 +25,8 @@ class Aae::ProfileController < ApplicationController
       redirect_to incoming_url
       return
     end
+     
+     @questions=@user.open_questions
 
     location_only = @user.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
     county_only = @user.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
