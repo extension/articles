@@ -256,6 +256,8 @@ end
           cdstring = " resolved_by = #{cat.id}"
      when "Assigned as an Expert"
           cdstring = " recipient_id= #{cat.id} "
+     when "Currently Assigned as an Expert" 
+          cdstring = " recipient_id=#{cat.id} and status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and spam=false"
    end
    if (date1 && date2)
      case desc

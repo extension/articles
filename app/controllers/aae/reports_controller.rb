@@ -1088,7 +1088,7 @@ class Aae::ReportsController < ApplicationController
                :all,  :select => select_string,  :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
                      :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                          
 
-       #    set_navigation_context('list', @questions, 'reports')
+      
             @min = 124
        #    render  :template => "aae/reports/display_questions"
        end

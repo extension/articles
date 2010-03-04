@@ -31,9 +31,11 @@
 <%= render(:partial => 'date_selection')%>
 
 <dl class="report">
-   
-   
-   <dt>Questions Assigned (Ask an Expert)</dt>
+	
+   	<dt>Questions Currently Assigned (Ask an Expert)</dt>
+	    <dd><%= link_to "#{@ucurrently_assigned} ",:action => "display_questions", :user => @user.id, :descriptor => "Currently Assigned as an Expert" , :olink => "Currently Assigned as an Expert",  :num => @ucurrently_uassigned %></dd>
+
+   <dt>Questions Ever Assigned (Ask an Expert)</dt>
     <dd><%= link_to "#{@uassigned} total",:action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert" , :olink => "Assigned as an Expert", :datefrom => @dateinterval[0], :dateto => @dateinterval[1], :num => @uassigned %></dd>
     <dt>Questions Resolved (Ask an Expert)</dt>
         <dd><%= link_to "#{@uresolved} total", :action => "display_questions", :user => @user.id, :descriptor => "Answered as an Expert" , :olink => "Answered as an Expert", :datefrom => @dateinterval[0], :dateto => @dateinterval[1], :num => @uresolved %></dd>
