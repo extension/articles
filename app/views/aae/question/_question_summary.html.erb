@@ -1,7 +1,13 @@
 <div id="inc_to_FAQ">
 <div class="question">
-    <h2><%= (@aae_search_item.entrytype == SearchQuestion::AAE) ? 'AaE' : 'Faq' %> #<%= @aae_search_item.foreignid %></h2>
-    
+    <h2>
+        <% if @aae_search_item.entrytype == SearchQuestion::AAE %>
+          <%= link_to "Aae ##{@aae_search_item.foreignid}", aae_question_url(:id => @aae_search_item.foreignid) %>
+        <% else %>
+          Faq #<%= @aae_search_item.foreignid %>
+        <% end %>    
+    </h2>
+
     <% if @aae_search_item.entrytype == SearchQuestion::AAE %>
     <p>Resolved By: <%= link_to @aae_search_item.aae_question.resolved_by.fullname, aae_profile_url(:id => @aae_search_item.aae_question.resolved_by.login)  %></p>
     <% end %>
