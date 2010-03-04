@@ -1,17 +1,17 @@
 
 <tr class="rowtotal">
        <td>Total Resolved Questions (Answered, Rejected, Responded)</td>
-       <td class="count"><strong><%= link_to answ, :action => "display_state_links", :State => @statename, :County => @county, :loc => (@type=="County") ?  nil : @typeobj.id, :descriptor => resolve_persp , :olink => resolve_persp, :dateto => @date2, :datefrom => @date1, :num => answ, :type => @type%></strong></td>
+       <td class="count"><strong><%= link_to answ, :action => "display_state_questions", :State => @statename, :County => @county, :loc => (@type=="County") ?  nil : @typeobj.id, :descriptor => resolve_persp , :olink => resolve_persp, :dateto => @date2, :datefrom => @date1, :num => answ, :type => @type%></strong></td>
    </tr>
        <tr class="subtotal">
            <td class="subtotal">Answered</td>
-           <td class="count"><%= link_to answa, :action => "display_state_links", :State => @statename, :County => @county, :loc => (@type=="County") ? nil : @typeobj.id , :descriptor => resolve_persp + "a" , :olink => resolve_persp + "a", :dateto => @date2, :datefrom => @date1, :num => answa, :type => @type%></td>
+           <td class="count"><%= link_to answa, :action => "display_state_questions", :State => @statename, :County => @county, :loc => (@type=="County") ? nil : @typeobj.id , :descriptor => resolve_persp + "a" , :olink => resolve_persp + "a", :dateto => @date2, :datefrom => @date1, :num => answa, :type => @type%></td>
        </tr>
        <tr class="subtotal">
            <td class="subtotal">Rejected</td>
-           <td class="count"><%= link_to answr, :action => "display_state_links", :State => @statename, :County => @county, :loc => (@type=="County") ? nil : @typeobj.id, :descriptor => resolve_persp+"r" , :olink => resolve_persp + "r", :dateto => @date2, :datefrom => @date1, :num => answr, :type => @type%>
+           <td class="count"><%= link_to answr, :action => "display_state_questions", :State => @statename, :County => @county, :loc => (@type=="County") ? nil : @typeobj.id, :descriptor => resolve_persp+"r" , :olink => resolve_persp + "r", :dateto => @date2, :datefrom => @date1, :num => answr, :type => @type%>
        </tr>
        <tr class="subtotal">
            <td class="subtotal">Responded "We do not have this expertise"</td>
-           <td class="count"><%= link_to answn, :action => "display_state_links", :State => @statename, :County => @county, :loc => (@type=="County") ? nil : @typeobj.id, :descriptor => resolve_persp + "n" , :olink => resolve_persp + "n", :dateto => @date2, :datefrom => @date1, :num => answn, :type => @type%></td>
+           <td class="count"><%= link_to answn, :action => "display_state_questions", :State => @statename, :County => @county, :loc => (@type=="County") ? nil : @typeobj.id, :descriptor => resolve_persp + "n" , :olink => resolve_persp + "n", :dateto => @date2, :datefrom => @date1, :num => answn, :type => @type%></td>
        </tr>

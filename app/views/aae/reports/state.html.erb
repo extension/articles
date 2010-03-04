@@ -57,7 +57,7 @@
     <tr>
         <td>Open (still awaiting a response)</td>
        
-	        <td class="count"><%= link_to @asgn, :action => "display_state_links", :State => @statename, :County => @county, :loc => (@type=='State') ? @typeobj.id : nil, :descriptor =>"Submitted" , :olink => "Submitted", :dateto => @date2, :datefrom => @date1, :num => @asgn, :type => @type%></td>
+	        <td class="count"><%= link_to @asgn, :action => "display_state_questions", :State => @statename, :County => @county, :loc => (@type=='State') ? @typeobj.id : nil, :descriptor =>"Submitted" , :olink => "Submitted", :dateto => @date2, :datefrom => @date1, :num => @asgn, :type => @type%></td>
         
     </tr>
       

@@ -191,7 +191,7 @@ class Aae::ReportsController < ApplicationController
 
          end
 
-        def display_tag_links
+        def display_tag_questions
             @cat = Category.find_by_name(params[:category])
             @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
             aux = nil ; @catname = params[:category]; locid = params[:locid]
@@ -216,7 +216,7 @@ class Aae::ReportsController < ApplicationController
                  :all,  :select => select_string,  :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
                        :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                
               @min = 124
-             render  :template => "aae/reports/display_questions"
+        #     render  :template => "aae/reports/display_questions"
         end
         
         ######   User Report of Ask an Expert Activity #####
@@ -273,6 +273,7 @@ class Aae::ReportsController < ApplicationController
           if @user
              @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
              @uassigned = @user.ever_assigned_questions(@date1,@date2, nil, nil).count
+             @ucurrently_assigned = @user.assigned_questions.count(:conditions => "status_state= #{SubmittedQuestion::STATUS_SUBMITTED} and spam= false")
              @avgstdresults = @user.get_avg_resp_time(@date1, @date2)
            end
        #   @myid = @currentuser
@@ -299,11 +300,11 @@ class Aae::ReportsController < ApplicationController
 
              select_string = " submitted_questions.current_contributing_question question_id, user_id, submitted_questions.id squid,  resolved_by, " +
                 " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
-           if desc=="Assigned as an Expert"
+           if desc=="Assigned as an Expert" || desc=="Currently Assigned as an Expert"
              select_string = select_string + " , recipient_id "
              joins = [:submitted_question_events]
              group_name = "submitted_question_id"
-             descl = "was Assigned as an Expert"
+             descl = "was " + desc
            end
             
              @pgt = "Questions #{@user.first_name} #{@user.last_name} #{descl} "
@@ -648,7 +649,7 @@ class Aae::ReportsController < ApplicationController
        end
      end
      
-     def display_state_links
+     def display_state_questions
          @type = params[:type]
          if (@type == 'State')
             @loc = Location.find_by_id(params[:loc]); @county = nil; @typename = @loc.name; @statename = @loc.name
@@ -695,9 +696,9 @@ class Aae::ReportsController < ApplicationController
           if (@type=='County')
             @pgtl = @pgt + " county/parish in #{@loc.name}"
           end
-      #    set_navigation_context('list', @questions, 'reports')
+     
           @min = 124
-          render  :template => "aae/reports/display_questions"
+        #  render  :template => "aae/reports/display_questions"
       end
 
       def display_state_users
@@ -1070,16 +1071,17 @@ class Aae::ReportsController < ApplicationController
            
        end
 
-       def display_discrete_responded
-          @cat = Category.find_by_name(params[:cat]); @resolver=User.find_by_id(params[:id])
-          @olink = params[:olink]; @comments=nil; @edits="Resolved"; @idtype='id'
-          @dateFrom = params[:from] ;  @dateTo=params[:to]; desc = "Resolver" ; aux = @resolver.id.to_s
+       def display_discrete_responder_questions
+          @cat = Category.find_by_name(params[:category]); @resolver=User.find_by_id(params[:id]) if params[:id]
+          @resolver=User.find_by_id(params[:user]) if (params[:user] && !params[:id])
+          @olink = params[:olink]; @comments=nil; @edits="Resolved"; @idtype='id'; @user = @resolver ; @catname = @cat.name
+          @dateFrom = params[:from] ;  @dateTo=params[:to]; desc = "Resolver" ; aux =@resolver.id.to_s
           @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
           @numb = params[:num].to_i
             select_string = " submitted_questions.id squid, submitted_questions.updated_at, resolved_by, asked_question, status_state status  "
             joins = [:categories]
             # " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id  "
-            @pgt = " Questions Resolved by #{@resolver.first_name} #{@resolver.last_name} for '#{@cat.name}'"
+            @pgt = " Questions Resolved by #{@resolver.first_name} #{@resolver.last_name} for '#{@catname}'"
             @faq = nil; @idtype='sqid'
 
             @questions = SubmittedQuestion.find_questions(@cat, desc, aux, nil, @date1, @date2,
@@ -1088,7 +1090,7 @@ class Aae::ReportsController < ApplicationController
 
        #    set_navigation_context('list', @questions, 'reports')
             @min = 124
-           render  :template => "aae/reports/display_questions"
+       #    render  :template => "aae/reports/display_questions"
        end
    ####   End of Responders by Category Report ###
       
