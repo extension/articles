@@ -15,10 +15,10 @@ class MainController < ApplicationController
      set_titletag('eXtension - Objective. Research-based. Credible.')
      @right_column = false
      @sitehome = true
+		sponsorlist = Sponsor.all
      @sponsors = Hash.new
-		Sponsor::SPONSORSHIP_LEVELS.each do |level|
-			@sponsors[level] = Sponsor.find_with_level(level)
-		end
+		Sponsor::SPONSORSHIP_LEVELS.each{ |level| @sponsors[level] = Array.new}
+		sponsorlist.each{ |sponsor| @sponsors[sponsor.level] << sponsor if sponsor.level}
      
      @community_highlights = Article.main_feature_list({:limit => 5})
 
