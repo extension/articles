@@ -76,7 +76,7 @@
             </div>
     <%end%>
     
-    <%= render(:partial => "shared/calendar", :locals => {:month  => get_calendar_month, :calendar_events => @calendar_events, :date => SPONSORSHIP_LEVELS }) %>
+    <%= render(:partial => "shared/calendar", :locals => {:month  => get_calendar_month, :calendar_events => @calendar_events, :date => @calendar_date }) %>
     
 </div>
 <%end%>
