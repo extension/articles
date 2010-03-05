@@ -32,7 +32,7 @@
         <% @calendar_events.each do |event| %>
             <%if event.date != last_date%>
                 <%= '</ul>' if last_date%>
-                <h3><span class="calendar_day"><%= event.date.day.to_s %></span><%=event.date.strftime("%B") %></h3>
+                <h3 class="event_header"><span class="calendar_day"><%= event.date.day.to_s %></span><span><%=event.date.strftime("%B") %></span></h3>
                 <ul class="event_listings">
             <%end%>
             <li><% htmlClass = @personal[:state] && ! (event.local_to? @personal[:state]) ? 'gray' : '' %>

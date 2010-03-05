@@ -204,7 +204,7 @@ h3.headerdescription {text-transform:none !important;}
 /* PAGE HEADER */
 .aboutex {padding:.65em 0; margin:0 auto 1em;color:#e07432;font-weight:bold;text-align:left;border-bottom:1px solid #bfbfbf;}
 
-#masthead_wrap {padding:0; background:#fff; margin:0 0 32px;border-bottom: 1px solid #e6e6e6;overflow:auto;}
+#masthead_wrap {padding:0; background:#fff; margin:0 0 20px;border-bottom: 1px solid #e6e6e6;overflow:auto;}
 #institution_picker {padding:0; background:#fff; margin:0 0 32px;border-top: 1px solid #e6e6e6;width:960px;margin:0 auto;text-align:left;clear:both;}
 #masthead {width:963px;margin:0 auto;}
 .navbar {color: #000; background: #c05412 url(/images/layout/navbarbgnd.png) no-repeat; width: 963px; margin: 0 auto;padding:0;overflow:auto;}
@@ -419,7 +419,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 
 /* Classes and IDs that are manipulated by javascript at load time
 -----------------------------------------------------------------------------*/
-#second_column_content {padding: 0; margin: 10px 0  0; width: 240px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
+#second_column_content {padding: 0; margin: 10px 0  0; width: 215px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
 #second_column_content ul {padding-left:20px;}
 .primarycolumn {width:400px !important;}
 
@@ -842,12 +842,16 @@ span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0 
 
 .recentcolumn {text-align:left; border-left:1px solid #d6d6d6;background:#fff; margin-bottom:3em;}
 .recentcolumn .event_listings {margin:0 0 0 20px;padding:0;color:#888;}
-.recentcolumn .event_listings li a {display:block;}
+.recentcolumn .event_listings li a {display:block;clear:left;}
 .recentcolumn a {color:#424242;}
 .recentcolumn a:hover {color:#000; text-decoration:underline;}
-.calendar_day {padding:.4em .3em .15em; border:1px solid #a8a8a8; text-align:center; background:#fff; margin-right:.5em;margin-left:10px; background: #fff url(/images/pubsite/calendar_day.png) 0 0 repeat-x;}
 
-.calendar_day {
+.event_header {line-height:1.7em;}
+.event_header span {padding:.25em .3em 0; display:block;}
+.event_header .calendar_day {
+float:left;
+width:20px;
+padding:.2em .3em 0; border:1px solid #a8a8a8; text-align:center; background:#fff; margin-right:.5em;margin-left:10px; background: #fff url(/images/pubsite/calendar_day.png) 0 0 repeat-x;
 box-shadow: 3px 4px 3px #ccc;
 -moz-box-shadow: 0 4px 3px #ccc;
 -webkit-box-shadow: 3px 4px 3px #ccc;
@@ -857,8 +861,11 @@ border-radius: 4px;
 }
 .read  {font-weight:bold;}
 .read span {margin-right:.25em;}
-.aae_module {background: #fff url(/images/pubsite/gray_fade_03.png) left bottom repeat-x; height:150px;}
-.aae_module a {display:block;height:150px;width:220px;text-indent:-5000px;}
+.aae_module {display:block;height:110px;width:220px;background: #fff url(/images/pubsite/gray_fade_01.png) 0 bottom no-repeat;}
+.aae_module a span {display:block;height:50px;width:220px;background: #fff url(/images/pubsite/aae_button.png) 0 0 no-repeat;}
+.aae_module a:hover span {background: #fff url(/images/pubsite/aae_button.png) -220px 0 no-repeat;}
+.aae_module a:hover {color:#386292;}
+.aae_module a span {text-indent:-5000px; margin-top:20px;}
 
 #content_tag {text-align:left;background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;z-index:25;}
 
