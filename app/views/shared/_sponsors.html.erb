@@ -3,15 +3,23 @@
 <% if sponsorlist.class == Hash %>
    <% Sponsor::SPONSORSHIP_LEVELS.each do |level| %>
       <% if !sponsorlist[level].empty? %>
-         <ul id="carousel-<%= level %>" class="sponsor_carousel">
-         <% sponsorlist[level].each do |sponsor| %>
-           <li class="rotator_sponsorlogo <%= level %>">
-         	<% if !sponsor.nil? and !sponsor.logo.nil? %>
-         		<%= render_inline_logo({:logo => sponsor.logo}) %>
+         <% if level == 'titanium' %>
+            <% sponsorlist[level].each do |sponsor| %>
+               <% if !sponsor.nil? and !sponsor.logo.nil? %>
+            		<%= render_inline_logo({:logo => sponsor.logo}) %>
+            	<% end %>
          	<% end %>
-           </li>
-          <% end %>
-          </ul>
+         <% else %>
+            <ul id="carousel-<%= level %>" class="sponsor_carousel">
+            <% sponsorlist[level].each do |sponsor| %>
+              <li class="rotator_sponsorlogo <%= level %>">
+            	<% if !sponsor.nil? and !sponsor.logo.nil? %>
+            		<%= render_inline_logo({:logo => sponsor.logo}) %>
+            	<% end %>
+              </li>
+             <% end %>
+             </ul>
+         <% end %>
        <% end %>
    <% end %>
 <% else %>
