@@ -3,8 +3,23 @@
         <li class="profile mute"><%= user.fullname %> (Not available)</li>
     <% else %>
         <li>
-        <%= link_to_remote(user.fullname, {:url => aae_show_profile_url(:id => user.id)}, 
+        <span id="expert_link_<%= user.id %>">
+        <%= link_to_remote(user.fullname, {:url => aae_show_profile_url(:id => user.id, :populate_profile => true)}, 
         {:class => 'userlink', :class => 'profile'}) %>
+        </span>
+        
+        <div id="expert_profile_<%= user.id %>" style="display:none;"></div>
         </li>
     <% end %>
 <% end %>
+
+    
+        
+    
+        
+        
+        
+        
+        
+        
+        
