@@ -102,7 +102,6 @@ class Aae::SearchController < ApplicationController
     @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:location]]) if params[:location] and params[:location].strip != ''
     @county = ExpertiseCounty.find(:first, :conditions => ["fipsid = ? and state_fipsid = ?", params[:county], @location.fipsid]) if @location and params[:county] and params[:county].strip != ''
     setup_cat_loc # sets @users
-    @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id), :submitted_question_filter => {:notrejected => true}})
     render :partial => "search_expert", :layout => false
   end
   
@@ -126,13 +125,11 @@ class Aae::SearchController < ApplicationController
     
     #if comma or space delimited...
     if user_name.length > 1
-      @users = User.find(:all, :include => [:expertise_locations, :open_questions, :categories], :limit => 20, :conditions => ['((first_name like ? and last_name like ?) or (last_name like ? and first_name like ?)) and users.retired = false', user_name[0] + '%', user_name[1] + '%', user_name[0] + '%', user_name[1] + '%'], :order => 'first_name')
+      @users = User.find(:all, :limit => 20, :conditions => ['((first_name like ? and last_name like ?) or (last_name like ? and first_name like ?)) and users.retired = false', user_name[0] + '%', user_name[1] + '%', user_name[0] + '%', user_name[1] + '%'], :order => 'first_name')
     #else only a single word was typed
     else
-      @users = User.find(:all, :include => [:expertise_locations, :open_questions, :categories], :limit => 20, :conditions => ['(login like ? or first_name like ? or last_name like ?) and users.retired = false', user_name[0] + '%', user_name[0] + '%', user_name[0] + '%'], :order => 'first_name')
+      @users = User.find(:all, :limit => 20, :conditions => ['(login like ? or first_name like ? or last_name like ?) and users.retired = false', user_name[0] + '%', user_name[0] + '%', user_name[0] + '%'], :order => 'first_name')
     end
-    
-    @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id),:submitted_question_filter => {:notrejected => true}})
     
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
     
@@ -173,6 +170,28 @@ class Aae::SearchController < ApplicationController
     end
   end
   
+  def get_more_experts_by_cat_loc
+    page_number = params[:page_number].to_i
+    category = Category.find(params[:category_id]) if !params[:category_id].blank?
+    location = Location.find(params[:location_id]) if !params[:location_id].blank?
+    county = County.find(params[:county_id]) if !params[:county_id].blank?
+    
+    user_total = User.count_by_cat_loc(category, location, county)
+    
+    if (page_number * User.per_page) >= user_total
+      more_experts_to_come = false
+    else
+      more_experts_to_come = true
+    end
+    
+    users = User.find_by_cat_loc(category, location, county, page_number)
+  
+    render(:update) do |page| 
+      page.insert_html :bottom, :more_experts, :partial => 'more_experts_by_cat_loc', :locals => {:users => users}
+      page.replace_html :more_experts_link, :partial => 'more_experts_link', :locals => {:more_experts_to_come => more_experts_to_come, :category => category ? category : nil, :location => location ? location : nil, :county => county ? county : nil, :page_number => page_number + 1}
+    end
+  end
+  
   private
   
   def get_answering_users(selected_users)
@@ -202,13 +221,18 @@ class Aae::SearchController < ApplicationController
     
     # ToDo: need to change this id parameter name to something more descriptive
     @submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]]) if not @submitted_question
-    @users = User.find_by_cat_loc(@category, @location, @county)
+    
+    user_total = User.count_by_cat_loc(@category, @location, @county)
+  
+    if User.per_page >= user_total
+      @more_experts_to_come = false
+    else
+      @more_experts_to_come = true
+    end
+    
+    @users = User.find_by_cat_loc(@category, @location, @county, 1)
   end
-  
-  ##################################################
-  
-  
-  
+    
   def format_full_text_search_terms(search_string, search_option = '+')
     search_array = Array.new
     search_string = search_string.strip.downcase
@@ -267,10 +291,5 @@ class Aae::SearchController < ApplicationController
     end
     ret_array
   end
-  
-  
-  
-  
-  ##################################################
   
 end

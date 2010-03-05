@@ -1,0 +1,10 @@
+<% users.each do |user| %>
+    <% if !user.aae_responder %>
+        <li class="profile mute"><%= user.fullname %> (Not available)</li>
+    <% else %>
+        <li>
+        <%= link_to_remote(user.fullname, {:url => aae_show_profile_url(:id => user.id)}, 
+        {:class => 'userlink', :class => 'profile'}) %>
+        </li>
+    <% end %>
+<% end %>

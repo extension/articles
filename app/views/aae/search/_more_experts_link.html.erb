@@ -1,0 +1,4 @@
+<% if more_experts_to_come %>
+  <p><br /><strong><%= link_to_remote 'Show more matching experts', {:url => {:controller => 'aae/search', :action => 'get_more_experts_by_cat_loc', :page_number => page_number, :location_id => location ? location : nil, :county_id => county ? county : nil, :category_id => category ? category : nil}, :loading => "Element.show('loading_experts')", :complete => "Element.hide('loading_experts')"} %></strong> 
+<img alt="loading experts" id="loading_experts" src="/images/common/spinner.gif" style="display:none;" /></p>
+<% end %>

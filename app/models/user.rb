@@ -177,6 +177,16 @@ class User < ActiveRecord::Base
   
   named_scope :question_responders, :conditions => {:aae_responder => true}
   
+  # all experts who have a particular location marked either in their aae prefs OR in their people profile
+  # orignally used for aae expert search where we want to see all those experts from a location 
+  # whether or not they marked their aae geographic prefs
+  named_scope :experts_from_aae_or_people_location, lambda {|location_fips|
+    location = Location.find_by_fipsid(location_fips)
+    aae_location = ExpertiseLocation.find_by_fipsid(location_fips)
+    aae_location_user_ids = aae_location.users.collect{|eu| eu.id}.join(',')
+    {:conditions => "users.id IN (#{aae_location_user_ids}) OR users.location_id = #{location.id}", :group => "users.id"}
+  }
+  
   # override login write
   def login=(loginstring)
    write_attribute(:login, loginstring.mb_chars.downcase)
@@ -1513,27 +1523,29 @@ class User < ActiveRecord::Base
     pref && pref.setting == "1"
    end
 
-   def self.find_by_cat_loc(category, location, county)
-    if category
-      filtered_users = category.users.collect{|cu| cu.id}.join(',')
-      return [] if !filtered_users or filtered_users.strip == ''
-    end
+   def self.count_by_cat_loc(category, location, county)
+     user_cond = get_cat_loc_conditions(category, location, county)
+     return 0 if !user_cond
+     
+     return User.count(:all, :conditions => user_cond + " and users.retired = false")
+   end
 
-    if location
-      (filtered_users and filtered_users != '') ? loc_cond = "users.id IN (#{filtered_users})" : loc_cond = nil 
-      filtered_users = location.users.find(:all, :conditions => loc_cond).collect{|lu| lu.id}.join(',')
-      return [] if !filtered_users or filtered_users.strip == ''
-    end
-
-    if location and county
-      county_cond = "users.id IN (#{filtered_users})"
-      filtered_users = county.users.find(:all, :conditions => county_cond).collect{|cu| cu.id}.join(',') 
-      return [] if !filtered_users or filtered_users.strip == ''
-    end
-
-    (filtered_users and filtered_users != '') ? user_cond = "users.id IN (#{filtered_users})" : (return [])
-
-    return User.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond + " and users.retired = false", :order => "users.first_name asc")
+   def self.find_by_cat_loc(category, location, county, page_number = nil)
+     user_cond = get_cat_loc_conditions(category, location, county)
+     return [] if !user_cond 
+     
+     if page_number
+       page_number = page_number.to_i
+       if page_number > 1
+         sql_offset = (page_number - 1) * User.per_page
+       else
+         sql_offset = 0
+       end
+     else
+       sql_offset = nil   
+     end
+       
+     return User.find(:all, :conditions => user_cond + " and users.retired = false", :order => "users.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
    end
 
    def get_expertise
@@ -2037,6 +2049,27 @@ class User < ActiveRecord::Base
    # get experts signed up to receive questions from that location but take out anyone who 
    # elected to only receive questions in their county
    location_wranglers = User.question_wranglers.experts_by_location(expertise_location).question_responders - User.experts_by_county_only
+  end
+  
+  def self.get_cat_loc_conditions(category, location, county)
+    if category
+      filtered_users = category.users.collect{|cu| cu.id}.join(',')
+      return nil if !filtered_users or filtered_users.strip == ''
+    end
+
+    if location
+      (filtered_users and filtered_users != '') ? loc_cond = "users.id IN (#{filtered_users})" : loc_cond = nil 
+      filtered_users = self.experts_from_aae_or_people_location(location.fipsid).find(:all, :conditions => loc_cond).collect{|lu| lu.id}.join(',')
+      return nil if !filtered_users or filtered_users.strip == ''
+    end
+
+    if location and county
+      county_cond = "users.id IN (#{filtered_users})"
+      filtered_users = county.users.find(:all, :conditions => county_cond).collect{|cu| cu.id}.join(',') 
+      return nil if !filtered_users or filtered_users.strip == ''
+    end
+
+    (filtered_users and filtered_users != '') ? (return "users.id IN (#{filtered_users})") : (return nil)
   end
   
 end

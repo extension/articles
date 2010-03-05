@@ -1,10 +1,6 @@
 <div id="user_bio">
     <h3>Assign to <%= user_bio.fullname %></h3>
     
-    <% if !user_bio.is_answerer? %>
-      <!-- <h4>NOT AN ANSWERER</h4> -->
-    <% end %>
-    
     <p class="assign">
         <label for="assign_comment">Comments for assignee</label>
         <%= text_area_tag("assign_comment", nil, :cols => "10", :rows => "3") %>
@@ -18,6 +14,55 @@
     <p><strong><%= open_question_count %> <%= (open_question_count > 1 or open_question_count == 0) ? ' questions' : ' question' %></strong> currently assigned.</p>
     <p><%= user_bio.title ? user_bio.title : "No professional title specified" %></p>
     <p><%= user_bio.primary_institution_name('Not associated with an institution') %></p>
-    <p><%= user_bio.categories.collect { |cat| cat.full_name }.join(", ") %></p>
+    
+    <br />
+    
+    <% if user_bio.is_question_wrangler? %>
+        <strong>*Question Wrangler</strong>
+    <% end %>
+    
+    <% if user_bio.is_answerer? %>
+         <p class="none"><strong>*Signed up to receive auto-routed questions</strong></p>
+    <% else %>
+         <p class="none"><strong>*Not signed up to receive auto-routed questions</strong></p>
+    <% end %>
+           
+    <h5>Handling rate for assigned questions:</h5> 
+           
+    <% if aae_handling_event_count[:total] > 0 %>        
+         <p><span class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
+         <em><%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %></em></span></p>
+    <% else %>
+          <p>This person hasn't handled any questions in the last 6 months.</p>
+    <% end %>
+ 
+    <% if user_expertise_locations.length > 0 %>
+       <h5>Expertise Locations:</h5>
+       <p><%= user_expertise_locations.map{|l| l.name + user_bio.get_counties_in_location(l)}.join(', ') %></p>
+    <% end %>
+     
+    <br />
+    
+    <h5>Expertise Categories:</h5>
+    <% if user_expertise.length > 0 %>	
+        <p>
+        <ul>
+        <% user_expertise.each do |cat| %>
+        <% if !cat.parent_id %>
+        <br />
+        <li><strong><%= cat.name %></strong></li>
+        
+        <%= get_expertise_subcategories(user_expertise, cat.id) %>
+        
+        <% end %>
+        <% end %>
+        </ul>
+        </p>
+    <% else %>
+        <p>None Specified</p>
+    <% end %>
+    
+    <br />
+    <p class="close"><%= link_to_remote('close profile', {:url => aae_show_profile_url(:id => user_bio.id)}) %></p>
 </div>
 <br class="clearing" />
