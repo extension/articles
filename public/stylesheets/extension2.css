@@ -890,4 +890,4 @@ border-radius: 4px;
 .sponsor_carousel {/*border:solid red 1px;*/ padding:0 !important;margin:0 !important; height:180px; vertical-align: middle; background:#fff;/*border: red solid 1px;*/ position:relative;}
 /*.sponsorlogo {text-align:center;padding:24px 0;border-bottom:none;height:150px;}*/
 .rotator_sponsorlogo {height:180px !important;text-align:center; /*background:lime;*/}
-.partner {display:block;text-align:center;padding:0 !important;}
+.partner {display:block;text-align:center;padding:20px 0 30px !important;}
