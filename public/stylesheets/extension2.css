@@ -886,3 +886,7 @@ border-radius: 4px;
 #content_css_reset {margin:0;padding:0;width:630px;}
 /* this constrains the div when there images or tables that exceed the column width */
 #content_css_reset #article {width:630px;}
+
+.sponsor_carousel {/*border:solid red 1px;*/ padding:0 !important;margin:0 !important; height:150px;}
+/*.sponsorlogo {text-align:center;padding:24px 0;border-bottom:none;height:150px;}*/
+.rotator_sponsorlogo {/*border:1px solid lime;*/}

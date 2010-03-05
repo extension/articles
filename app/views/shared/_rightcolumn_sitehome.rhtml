@@ -12,7 +12,12 @@
     <div class="aae_module">
     <%= link_to 'Ask an Expert', ask_form_url %>
     </div>
-        
+    
+    <h1>Our Partners</h1>
+    <div class="sponsorlogo">
+        <%= image_tag "pubsite/DOD_seal_large.png" %>
+    </div>
+    
     <% if !@sponsors.blank? %>
         <div class="sponsors advertisement">
         <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
