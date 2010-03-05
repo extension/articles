@@ -1,6 +1,20 @@
 <h1>Our Sponsors</h1>
 
-<% if sponsorlist.class == Array %>
+<% if sponsorlist.class == Hash %>
+   <% Sponsor::SPONSORSHIP_LEVELS.each do |level| %>
+      <% if !sponsorlist[level].empty? %>
+         <ul id="carousel-<%= level %>" class="sponsor_carousel">
+         <% sponsorlist[level].each do |sponsor| %>
+           <li class="rotator_sponsorlogo <%= level %>">
+         	<% if !sponsor.nil? and !sponsor.logo.nil? %>
+         		<%= render_inline_logo({:logo => sponsor.logo}) %>
+         	<% end %>
+           </li>
+          <% end %>
+          </ul>
+       <% end %>
+   <% end %>
+<% else %>
    <% sponsorlist.each do |sponsor| %>
      <div class="sponsorlogo">
    	<% if !sponsor.nil? and !sponsor.logo.nil? %>
@@ -8,22 +22,6 @@
    	<% end %>
      </div>
    <% end %>
-<% elsif sponsorlist.class == Hash %>
-    
-   <% Sponsor::SPONSORSHIP_LEVELS.each do |level| %>
-   <% if !sponsorlist[level].empty? %>
-   <ul id="carousel-<%= level %>" class="sponsor_carousel">
-      <% sponsorlist[level].each do |sponsor| %>
-        <li class="rotator_sponsorlogo <%= level %>">
-      	<% if !sponsor.nil? and !sponsor.logo.nil? %>
-      		<%= render_inline_logo({:logo => sponsor.logo}) %>
-      	<% end %>
-        </li>
-       <% end %>
-       </ul>
-<% end %>
-   <% end %>
-   
 <% end %>
 
 <p class="readmore">
