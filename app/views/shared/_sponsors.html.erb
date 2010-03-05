@@ -6,7 +6,7 @@
          <% if level == 'titanium' %>
             <% sponsorlist[level].each do |sponsor| %>
                <% if !sponsor.nil? and !sponsor.logo.nil? %>
-            		<%= render_inline_logo({:logo => sponsor.logo}) %>
+            		<p class="partner"><%= render_inline_logo({:logo => sponsor.logo}) %></div>
             	<% end %>
          	<% end %>
          <% else %>
