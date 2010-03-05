@@ -630,7 +630,7 @@ a.cancel:hover {color:#000;}
 h1.title {color:#333;font-weight:normal;font-size:2.1em;margin-bottom:.35em;}
 
 .sponsorlogo {text-align:center;padding:24px 0;border-bottom:1px solid #eee;}
-.readmore {padding-top:1.2em !important;font-size:1.2em !important;}
+.readmore {padding:.5em 10px 2em!important;font-size:1.2em !important;}
 
 #sortable_list {margin:0;padding:0;}
 
@@ -887,7 +887,6 @@ border-radius: 4px;
 /* this constrains the div when there images or tables that exceed the column width */
 #content_css_reset #article {width:630px;}
 
-.sponsor_carousel {/*border:solid red 1px;*/ padding:0 !important;margin:0 !important; height:180px; vertical-align: middle; background:#fff;/*border: red solid 1px;*/ position:relative;}
-/*.sponsorlogo {text-align:center;padding:24px 0;border-bottom:none;height:150px;}*/
-.rotator_sponsorlogo {height:180px !important;text-align:center; /*background:lime;*/}
+.sponsor_carousel {padding:0 0 10px !important;margin:0 !important; height:144px !important; background:#fff;margin-bottom:20px !important; border-bottom:1px solid #ccc;}
+.rotator_sponsorlogo {height:140px !important;text-align:center; }
 .partner {display:block;text-align:center;padding:20px 0 30px !important;}
