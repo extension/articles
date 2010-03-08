@@ -368,9 +368,8 @@ class People::AdminController < ApplicationController
     end
   
   
-    @userlist = User.searchcolleagues({:adminsearch => true, :order => 'last_name,first_name', :searchterm => params[:searchterm], :page => params[:page], :paginate => true})
-      
-      
+    @userlist = User.patternsearch(params[:searchterm]).paginate({:order => 'last_name,first_name', :page => params[:page]})
+          
     if @userlist.nil? || @userlist.length == 0
       flash[:warning] = "No user was found that matches your search term"
       redirect_to :action => 'index'

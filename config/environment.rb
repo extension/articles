@@ -15,7 +15,7 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
-  config.gem 'mislav-will_paginate', :version => '~>2.3', :lib => 'will_paginate', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'will_paginate', :version => '~>2.3', :lib => 'will_paginate', :source => 'http://systems.extension.org/rubygems/'
   config.gem 'ruby-openid', :version => '~>2.1', :lib => 'openid', :source => 'http://systems.extension.org/rubygems/'
   config.gem 'has_many_polymorphs', :version => '~>2.13', :source => 'http://systems.extension.org/rubygems/'
   config.gem 'ratom', :version => '~>0.6', :lib => 'atom', :source => 'http://systems.extension.org/rubygems/'

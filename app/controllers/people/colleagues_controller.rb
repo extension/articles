@@ -228,7 +228,7 @@ class People::ColleaguesController < ApplicationController
   def finduser
     if (!params[:searchterm].nil? and !params[:searchterm].empty?)
     
-      @userlist = User.searchcolleagues({:order => 'last_name,first_name', :searchterm => params[:searchterm], :page => params[:page], :paginate => true})
+      @userlist = User.validusers.patternsearch(params[:searchterm]).paginate({:order => 'last_name,first_name', :page => params[:page]})
       
       if @userlist.nil? || @userlist.length == 0
         flash.now[:warning] = "<p>No colleague was found that matches your search term.</p> <p>Your colleague may not yet have an eXtensionID. <a href='#{url_for(:controller => '/people/colleagues', :action => :invite)}'>Invite your colleague to get an eXtensionID</a></p>"
