@@ -113,28 +113,8 @@ class Aae::SearchController < ApplicationController
       return
     end
     
-    #split on comma delimited or space delimited input
-    #examples of possibilities of input include:
-    #lastname,firstname
-    #lastname, firstname
-    #lastname firstname
-    #firstname,lastname
-    #firstname lastname
-    #loginid
-    user_name = login_str.strip.split(%r{\s*,\s*|\s+})
-    
-    #if comma or space delimited...
-    if user_name.length > 1
-      # TODO: this should really use User.searchcolleagues for consistency, but searchcolleagues probably should be changed to a named scope first
-      @users = User.validusers.find(:all, :limit => 20, :conditions => ['((first_name like ? and last_name like ?) or (last_name like ? and first_name like ?))', user_name[0] + '%', user_name[1] + '%', user_name[0] + '%', user_name[1] + '%'], :order => 'first_name')
-    #else only a single word was typed
-    else
-      # TODO: this should really use User.searchcolleagues for consistency, but searchcolleagues probably should be changed to a named scope first
-      @users = User.validusers.find(:all, :limit => 20, :conditions => ['(login like ? or first_name like ? or last_name like ?)', user_name[0] + '%', user_name[0] + '%', user_name[0] + '%'], :order => 'first_name')
-    end
-    
+    @users = User.validusers.patternsearch(params[:login]).all(:limit => 20)  
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
-    
   end
   
   def experts_by_location
