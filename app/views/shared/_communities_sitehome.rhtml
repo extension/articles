@@ -1,5 +1,3 @@
-<!-- http://net.tutsplus.com/javascript-ajax/create-a-simple-intelligent-accordion-effect-using-prototype-and-scriptaculous/ -->
-
 <div id="accordion">
     <%for topic in topics%>
         <h3><%= topic.name%></h3>
@@ -11,16 +9,3 @@
     <%end%>
 </div>
 
-
-<!-- <div id="test-accordion" class="accordion">
-    <%for topic in topics%>
-    
-    <div class="accordion-toggle"><%= topic.name%></div>
-    <div class="accordion-content">
-        <%for community in topic.communities %>
-            <p><%= link_to_public_community(community) %></p>
-        <%end%>
-    </div>
-    
-    <%end%>
-</div> -->
