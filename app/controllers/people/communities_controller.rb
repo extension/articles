@@ -15,7 +15,7 @@ class People::CommunitiesController < ApplicationController
     if(@currentuser.tags.count > 0) 
       @relevant_communities = @currentuser.relevant_community_scores
     end
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     
     
     respond_to do |format|
@@ -108,7 +108,7 @@ class People::CommunitiesController < ApplicationController
       # do nothing
     end
     
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
         
     respond_to do |format|
       format.js
@@ -167,7 +167,7 @@ class People::CommunitiesController < ApplicationController
       return(redirect_to(:action => 'index'))
     end       
     @am_i_leader = @currentuser.is_community_leader?(@community)   
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     
     respond_to do |format|
       format.html # show.html.erb
@@ -382,7 +382,7 @@ class People::CommunitiesController < ApplicationController
     end
     searchterm = params[:q].gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
     
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     
     # exact match?
     if(exact = Community.find(:first, :conditions => {:name => searchterm}))
@@ -407,9 +407,9 @@ class People::CommunitiesController < ApplicationController
   
   def newest 
     @communitylist = Community.paginate(:all,:order => 'created_at DESC', :page => params[:page])
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     @page_title = "Newest Communities"
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     
     respond_to do |format|
       format.html { render :template => "people/communities/communitylist" }
@@ -418,7 +418,7 @@ class People::CommunitiesController < ApplicationController
   
   def mine 
     @communitylist = @currentuser.communities.paginate(:all,:order => 'created_at DESC', :page => params[:page])
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     @page_title = "Your Communities"
     respond_to do |format|
       format.html { render :template => "people/communities/communitylist" }
@@ -427,7 +427,7 @@ class People::CommunitiesController < ApplicationController
     
   def browse 
     @communitylist = Community.paginate(:all,:order => 'name ASC', :page => params[:page])
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     @page_title = "All Communities"
     respond_to do |format|
       format.html { render :template => "people/communities/communitylist" }
@@ -437,7 +437,7 @@ class People::CommunitiesController < ApplicationController
   def tags
     taglist = params[:taglist].strip
     @communitylist = Community.tagged_with_any(Tag.castlist_to_array(taglist),{:getfrequency => true,:minweight => 2}).uniq
-    @currentuser_communities = @currentuser.communities
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     @page_title = "Communities tagged with <em>#{taglist}</em>"
     respond_to do |format|
       format.html

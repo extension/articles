@@ -257,6 +257,21 @@ class User < ActiveRecord::Base
    end
   end
   
+  # returns a hash of communities organized by connectiontypes
+  def communities_by_connectiontype
+    returnhash = {}
+    mycommunities = self.communities
+    returnhash['joined'] = mycommunities.reject{|community| (community.connectiontype != 'member' and community.connectiontype != 'leader')}
+    returnhash['wantstojoin'] = mycommunities.reject{|community| (community.connectiontype != 'wantstojoin')}
+    returnhash['member'] = mycommunities.reject{|community| (community.connectiontype != 'member')}
+    returnhash['leader'] = mycommunities.reject{|community| (community.connectiontype != 'leader')}
+    returnhash['interest'] = mycommunities.reject{|community| (community.connectiontype != 'interest')}
+    returnhash['nointerest'] = mycommunities.reject{|community| (community.connectiontype != 'nointerest')}
+    returnhash['invited'] = mycommunities.reject{|community| (community.connectiontype != 'invited')}
+    returnhash['all'] = mycommunities
+    returnhash
+  end
+
   
   def update_public_attributes
     self.public_attributes(true)

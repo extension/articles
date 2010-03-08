@@ -16,7 +16,7 @@
     	<p><%= link_to("Browse the list of communities",browse_people_communities_url)%></p>
        
         
-        <% if !@currentuser_communities.collect{|community| (community.connectiontype = 'invited')}.empty? %>
+        <% if !@currentuser_communities['all'].collect{|community| (community.connectiontype = 'invited')}.empty? %>
             <h3>Pending Invitations</h3>
     		<ul class="your_comms">
         	<% @currentuser.connectinvitations.each do |communityconnection|%>
