@@ -149,7 +149,7 @@ class User < ActiveRecord::Base
     # remove any leading * to avoid borking mysql
     # remove any '\' characters because it's WAAAAY too close to the return key
     # strip '+' characters because it's causing a repitition search error
-    sanitizedsearchterm = tmpterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
+    sanitizedsearchterm = searchterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
     # in the format wordone wordtwo?
     words = sanitizedsearchterm.split(%r{\s*,\s*|\s+})
     if(words.length > 1)
@@ -163,10 +163,10 @@ class User < ActiveRecord::Base
       conditions = ["id = #{sanitizedsearchterm.to_i}"]
     else
       findvalues = {
-       :findlogin => searchterm,
-       :findemail => searchterm,
-       :findfirst => searchterm,
-       :findlast => searchterm 
+       :findlogin => sanitizedsearchterm,
+       :findemail => sanitizedsearchterm,
+       :findfirst => sanitizedsearchterm,
+       :findlast => sanitizedsearchterm 
       }
       conditions = ["(email rlike :findemail OR login rlike :findlogin OR first_name rlike :findfirst OR last_name rlike :findlast)",findvalues]
     end
