@@ -36,7 +36,7 @@ class EventsController < ApplicationController
       @youth = true if event_content_tags.map(&:name).include?('youth')
       
       # get the tags on this article that are content tags on communities
-      @community_content_tags = (Tag.community_content_tags({:launchedonly => true}) & event_content_tags)
+      @community_content_tags = (Tag.community_content_tags & event_content_tags)
     
       if(!@community_content_tags.blank?)
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized

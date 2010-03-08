@@ -161,7 +161,7 @@ class PreviewController < ApplicationController
       @youth = true if @article_bucket_names.include?('youth')
 
       # get the tags on this article that are content tags on communities
-      @community_content_tags = (Tag.community_content_tags({:launchedonly => true}) & @article_content_tags)
+      @community_content_tags = (Tag.community_content_tags & @article_content_tags)
 
       if(!@community_content_tags.blank?)
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
