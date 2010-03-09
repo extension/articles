@@ -472,7 +472,7 @@ blockquote {padding:2em 2em 1em; font-size:1.1em; background:#ebf2f8;margin:1.5e
 
 #extension_articles {margin-bottom:1.5em;}
 #extension_articles h1{font-size:2.1em; margin-bottom:.5em;}
-#extension_articles h2{font-size:1.6em; margin-bottom:.5em;}
+#extension_articles h2{font-size:1.6em; margin-bottom:1.5em !important; width:40em;}
 
 #table_of_contents {padding-right: 20px; margin-bottom: 10px; margin-top: 10px; border: solid 1px #ebebeb;width:368px;}
 #table_of_contents p {margin: 0px; padding: 3px;  margin-bottom: 5px}
@@ -493,7 +493,7 @@ blockquote {padding:2em 2em 1em; font-size:1.1em; background:#ebf2f8;margin:1.5e
 .sponsor p {float:left;width:305px;clear:left;margin:0 0 1em;padding-right:10px;}
 
 /* main/contact_us */
-#article.contactus {margin-top:3em;}
+#article.contactus {margin-top:0;}
 #article.contactus h2 {margin:1em 0 .5em;}
 #article.contactus p {margin:0 0 1.5em;}
 

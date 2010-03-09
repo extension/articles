@@ -83,6 +83,7 @@ class MainController < ApplicationController
   end
   
   def contact_us
+    @right_column = false
     set_title('Contact Us', "Your comments and questions are very important to us. Your quality feedback makes a tremendous impact on improving our site.")
     set_titletag('eXtension - Contact Us')
     @article = Article.find_by_title_url("eXtension_Contact_Us")
@@ -91,6 +92,7 @@ class MainController < ApplicationController
   end 
 
   def privacy
+    @right_column = false
     set_title('Privacy Policy', "We have developed this privacy statement in order to demonstrate our commitment to safeguarding the privacy of those who use the eXtension web site.")
     set_titletag('eXtension - Privacy Policy')
     @article = Article.find_by_title_url("eXtension_Privacy_Policy")
@@ -98,6 +100,7 @@ class MainController < ApplicationController
   end
   
   def termsofuse
+    @right_column = false
     set_title('Terms of Use', "Please read terms of use before using this site.")
     set_titletag('eXtension - Terms of Use')
     @article = Article.find_by_title_url("eXtension_Terms_of_Use")
@@ -105,6 +108,7 @@ class MainController < ApplicationController
   end
   
   def disclaimer
+    @right_column = false
     set_title('Legal Disclaimer', "Please read the disclaimer before using this site.")
     set_titletag('eXtension - Legal Disclaimer')
     @article = Article.find_by_title_url("eXtension_Disclaimer")
@@ -112,6 +116,7 @@ class MainController < ApplicationController
   end
 
   def partners
+    @right_column = false
     set_title('Partners', "Without our partners, eXtension would not be possible.")
     set_titletag('eXtension - Partners')
     @article = Article.find_by_title_url("eXtension_Partners")
