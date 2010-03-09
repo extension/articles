@@ -11,7 +11,7 @@
          	<% end %>
          <% else %>
             <ul id="carousel-<%= level %>" class="sponsor_carousel">
-            <% sponsorlist[level].each do |sponsor| %>
+            <% sponsorlist[level].shuffle.each do |sponsor| %>
               <li class="rotator_sponsorlogo <%= level %>">
             	<% if !sponsor.nil? and !sponsor.logo.nil? %>
             		<%= render_inline_logo({:logo => sponsor.logo}) %>
