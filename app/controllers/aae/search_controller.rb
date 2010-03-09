@@ -102,6 +102,7 @@ class Aae::SearchController < ApplicationController
     @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:location]]) if params[:location] and params[:location].strip != ''
     @county = ExpertiseCounty.find(:first, :conditions => ["fipsid = ? and state_fipsid = ?", params[:county], @location.fipsid]) if @location and params[:county] and params[:county].strip != ''
     setup_cat_loc # sets @users
+    @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id), :submitted_question_filter => {:notrejected => true}})
     render :partial => "search_expert", :layout => false
   end
   
@@ -113,7 +114,8 @@ class Aae::SearchController < ApplicationController
       return
     end
     
-    @users = User.validusers.patternsearch(params[:login]).all(:limit => User.per_page)  
+    @users = User.validusers.patternsearch(params[:login]).all(:limit => User.per_page, :include => [:expertise_locations, :open_questions, :categories])
+    @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id),:submitted_question_filter => {:notrejected => true}})  
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
   end
   
@@ -167,9 +169,10 @@ class Aae::SearchController < ApplicationController
     end
     
     users = User.find_by_cat_loc(category, location, county, page_number)
+    handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => users.map(&:id), :submitted_question_filter => {:notrejected => true}})
   
     render(:update) do |page| 
-      page.insert_html :bottom, :more_experts, :partial => 'more_experts_by_cat_loc', :locals => {:users => users}
+      page.insert_html :bottom, :more_experts, :partial => 'more_experts_by_cat_loc', :locals => {:users => users, :handling_counts => handling_counts}
       page.replace_html :more_experts_link, :partial => 'more_experts_link', :locals => {:more_experts_to_come => more_experts_to_come, :category => category ? category : nil, :location => location ? location : nil, :county => county ? county : nil, :page_number => page_number + 1}
     end
   end
