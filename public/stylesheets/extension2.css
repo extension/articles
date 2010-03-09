@@ -817,6 +817,7 @@ span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0 
 #sitehome .rightcolumn h1 {background:none; background: #fff url(/images/pubsite/gray_fade_01.png) right bottom repeat-x;margin-bottom:0; padding:.75em 10px .5em;color:#000;}
 #sitehome_main h2 {background:none; background: #fff url(/images/pubsite/gray_fade_02.png) right bottom repeat-x;margin-bottom:1em;text-align:left;font-weight:normal; font-size:1.5em;line-height:1.1em; padding:.25em 0 .25em 10px ;}
 #sitehome .rightcolumn .sponsors {background:#fff;}
+#sitehome .rightcolumn .sponsors h1 {font-size:1.5em;}
 #sitehome .rightcolumn h3 {background: #d8dc7f url(/images/pubsite/accordion_bg.png) 0 0 repeat-y;border-bottom:1px solid #6c6e41;border-top:1px solid #fff; margin:0;padding:.35em 10px; font-size:1.5em; cursor:pointer;}
 
 #accordion div {background:#fff; border:1px solid #fff; border-bottom:1px solid #ddd;}
