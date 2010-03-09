@@ -18,7 +18,32 @@ div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5
 
 #skiplist, .print, .view_as_web_page, .clearing  {display:none;}
 
-#wrap {padding:8px;}
+#wrapper {}
+#content_area {padding:8px;}
+
+#branding {padding:8px;}
+#branding h1 {font-size:1em;}
+
+.contentdiv {border-bottom:1px solid #ccc; float:left; width:100%;}
+a:link {text-decoration:none !important; color:#386290;}
+a:visited {text-decoration:none !important; color:#386290;}
+
+ul.event_listings li {margin-bottom:.75em;}
+
+a img {border:0;}
+.contentdiv dl {margin:0;padding:0; }
+.contentdiv dt {margin:0 0 4px;padding:0; font-weight:bold; float:left; width:100%;}
+.contentdiv dd {margin:0;padding:0; color:#000;}
+
+.img img {width:100%;height:100%; }
+.img {border:1px solid #ccc; width:80px; overflow:hidden; float:right; height:60px; margin-left:16px !important;}
+
+#accordion p {padding-left:8px;}
+
+.partner {text-align:center;}
+.rotator_sponsorlogo {list-style:none; text-align:center;}
+
+.hiddenStructure {position:absolute;left:-5000px;display:hidden;}
 
 h1 {font-size:1.4em;}
 h2 {font-size:1em;}

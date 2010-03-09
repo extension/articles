@@ -75,6 +75,7 @@ class MainController < ApplicationController
   end
       
   def about
+    @right_column = false
     set_title('About', "Read about our origins and what we have to offer online.")
     set_titletag('About eXtension - Our origins and what we have to offer')
     @article = Article.find_by_title_url("eXtension_About")
@@ -118,6 +119,7 @@ class MainController < ApplicationController
   end
 
   def communities
+    @right_column = false
     set_title('Resource Areas', ' eXtension content is organized around resource areas. See which areas might make a connection with you.')
     set_titletag('eXtension - Resource Areas')
     @communities = Community.launched.ordered_by_topic

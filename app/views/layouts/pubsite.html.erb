@@ -211,7 +211,7 @@
         </div><!-- end .grid_16 -->
         <div class="clear"></div>
         
-        <div class="grid_16">
+        <div class="grid_16" id="content_area">
         
         <% flash_names = [:notice, :warning, :message, :error]
               flash_names.each do |flash_type| 
@@ -254,17 +254,17 @@
         
         <% if @mobile_device %>
          <div class="globalnav">
-             <ul>
-               <li class="home"><a href = "/">Home</a></li>
-               <li class="about"><a href = "/main/about">About</a></li>
-               <li class="topics"><a href = "/main/communities">Resource Areas</a></li>
-               <li class="news"><%= link_to 'News', site_news_url(with_content_tag?)%></li>
-               <li class="answers"><%= link_to 'Answers', site_faqs_url(with_content_tag?)%></li>
-               <li class="calendar"><%= link_to 'Calendar', site_events_url(with_content_tag?)%></li>
-               <li class="lessons"><%= link_to 'Self Learning', site_learning_lessons_url(with_content_tag?)%></li>
-               <li class="feeds"><a href = "/feeds">Feeds</a></li>
-             </ul>
-         </div>
+               <ul>
+                 <li class="home"><a href = "/">Home</a></li>
+                 <li class="about"><a href = "/main/about">About</a></li>
+                 <li class="topics"><a href = "/main/communities">Resource Areas</a></li>
+                 <li class="news"><%= link_to 'News', site_news_url(with_content_tag?)%></li>
+                 <li class="articles"><%= link_to 'Articles', site_articles_url(with_content_tag?)%></li>
+                 <li class="answers"><%= link_to 'Answers', site_faqs_url(with_content_tag?)%></li>
+                 <li class="calendar"><%= link_to 'Calendar', site_events_url(with_content_tag?)%></li>
+                 <li class="lessons"><%= link_to 'Learning Lessons', site_learning_lessons_url(with_content_tag?)%></li>
+               </ul>
+           </div>
         <% end %>
         <div class="clear"></div>
     </div><!-- end .container_16 -->
