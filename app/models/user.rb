@@ -1340,7 +1340,7 @@ class User < ActiveRecord::Base
    end
    
    def self.per_page
-    25
+    20
    end
    
   
