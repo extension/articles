@@ -113,7 +113,7 @@ class Aae::SearchController < ApplicationController
       return
     end
     
-    @users = User.validusers.patternsearch(params[:login]).all(:limit => 20)  
+    @users = User.validusers.patternsearch(params[:login]).all(:limit => User.per_page)  
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
   end
   
