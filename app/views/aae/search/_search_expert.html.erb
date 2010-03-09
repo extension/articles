@@ -18,7 +18,7 @@
   <div id="user_list">
   <div id="loading" style="display:none"><img src='/images/loading.gif' /> Loading... </div>
   <% if @users %>
-    <%= render (:partial => 'possible_assignees', :locals => {:users => @users, :more_experts_to_come => @more_experts_to_come, :category => @category, :location => @location, :county => @county}) %>
+    <%= render (:partial => 'possible_assignees', :locals => {:users => @users, :more_experts_to_come => @more_experts_to_come, :category => @category, :location => @location, :county => @county, :handling_counts => @handling_counts}) %>
   <% end %> 
   </div>
 

@@ -172,7 +172,7 @@ class Aae::SearchController < ApplicationController
     handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => users.map(&:id), :submitted_question_filter => {:notrejected => true}})
   
     render(:update) do |page| 
-      page.insert_html :bottom, :more_experts, :partial => 'more_experts_by_cat_loc', :locals => {:users => users, :handling_counts => handling_counts}
+      page.insert_html :bottom, :more_experts, :partial => 'expert_profiles', :locals => {:users => users, :handling_counts => handling_counts}
       page.replace_html :more_experts_link, :partial => 'more_experts_link', :locals => {:more_experts_to_come => more_experts_to_come, :category => category ? category : nil, :location => location ? location : nil, :county => county ? county : nil, :page_number => page_number + 1}
     end
   end
