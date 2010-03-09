@@ -13,9 +13,70 @@
         <%= link_to_remote(user.fullname, {:url => aae_show_profile_url(:id => user.id, :populate_profile => true)}, 
         {:class => 'userlink', :class => 'profile'}) %>
         </span>
-        
-        <div id="expert_profile_<%= user.id %>" style="display:none;"></div>
         </li>
+        <div id="expert_profile_<%= user.id %>" style="display:none;"></div>
+        
+        <% if user.aae_responder %>
+        <div id='user_tooltip_<%= user.id %>' style="display:none;" class="usertooltip">
+            <div id="usertooltip_hook">
+            <h3><%= user.fullname %> <small>(<%= user.login %>)</small></h3>
+
+            <% if user.title %>
+                <h4><%= user.title %></h4>
+            <% end %>
+
+            <% if !user.primary_institution.nil? %>
+                <h4><%= user.primary_institution.name %></h4>
+            <% end %>
+
+            <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>
+
+            <% if !user.aae_responder %>
+            <h5>* Does not want to be assigned questions</h5>
+            <% end %>
+
+            <% if user.is_question_wrangler? %>
+                <h5>Question Wrangler</h5>
+            <% end %>
+
+            <% if user.assigned_questions.length > 0 %>
+               <% if !@handling_counts.nil? and !@handling_counts[user.id].nil?
+                   aae_handling_event_count =  @handling_counts[user.id] 
+                  else
+                   aae_handling_event_count =  user.aae_handling_event_count 
+                  end %>
+               <h5>Handling rate for assigned questions:</h5>
+               <p><span class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
+               <em><%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %></em></span></p>
+            <% else %>
+                <p>This person hasn't handled any questions in the last 6 months.</p>
+            <% end%>
+
+            <% if user.expertise_locations.length > 0 %>
+                <h5>Expertise Locations:</h5>
+                <p><%= user.expertise_locations.map{|l| l.name + user.get_counties_in_location(l)}.join(', ') %></p>
+            <% end %>
+
+            <% if user.categories.length > 0 %>
+                <h5>Expertise Categories:</h5>
+                <p><%= user.categories.collect { |cat| cat.full_name }.join(",<br />") %></p>
+            <% end %>
+
+            <% if user.categories.length == 0 %>
+                <p class="none">No category expertise specified</p>
+            <% end %>
+            <% if user.expertise_locations.length == 0 %>
+                <p class="none">No geographic expertise specified</p>
+            <% end %>
+
+            <% if user.is_answerer? %>
+                <p class="none">Signed up to receive auto-routed questions</p>
+            <% else %>
+                <p class="none">Not signed up to receive auto-routed questions</p>
+            <% end %>
+            </div>
+        </div>
+        <% end %>
     <% end %>
 <% end %>
 
@@ -32,71 +93,6 @@
 
 </ul>
 
-
-<% users.each do |user| %>
-
-<% if user.aae_responder %>
-<div id='user_tooltip_<%= user.id %>' style="display:none;" class="usertooltip">
-    <div id="usertooltip_hook">
-    <h3><%= user.fullname %> <small>(<%= user.login %>)</small></h3>
-    
-    <% if user.title %>
-        <h4><%= user.title %></h4>
-    <% end %>
-
-    <% if !user.primary_institution.nil? %>
-        <h4><%= user.primary_institution.name %></h4>
-    <% end %>
-    
-    <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>
-    
-    <% if !user.aae_responder %>
-    <h5>* Does not want to be assigned questions</h5>
-    <% end %>
-    
-    <% if user.is_question_wrangler? %>
-        <h5>Question Wrangler</h5>
-    <% end %>
-        
-    <% if user.assigned_questions.length > 0 %>
-       <% if !@handling_counts.nil? and !@handling_counts[user.id].nil?
-           aae_handling_event_count =  @handling_counts[user.id] 
-          else
-           aae_handling_event_count =  user.aae_handling_event_count 
-          end %>
-       <h5>Handling rate for assigned questions:</h5>
-       <p><span class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
-       <em><%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %></em></span></p>
-    <% else %>
-        <p>This person hasn't handled any questions in the last 6 months.</p>
-    <% end%>
-    
-    <% if user.expertise_locations.length > 0 %>
-        <h5>Expertise Locations:</h5>
-        <p><%= user.expertise_locations.map{|l| l.name + user.get_counties_in_location(l)}.join(', ') %></p>
-    <% end %>
-    
-    <% if user.categories.length > 0 %>
-        <h5>Expertise Categories:</h5>
-        <p><%= user.categories.collect { |cat| cat.full_name }.join(",<br />") %></p>
-    <% end %>
-        
-    <% if user.categories.length == 0 %>
-        <p class="none">No category expertise specified</p>
-    <% end %>
-    <% if user.expertise_locations.length == 0 %>
-        <p class="none">No geographic expertise specified</p>
-    <% end %>
-    
-    <% if user.is_answerer? %>
-        <p class="none">Signed up to receive auto-routed questions</p>
-    <% else %>
-        <p class="none">Not signed up to receive auto-routed questions</p>
-    <% end %>
-    </div>
-</div>
-<% end %>
-<% end %>
 <% end %>
 
 <script type="text/javascript">

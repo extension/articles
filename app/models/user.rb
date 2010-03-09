@@ -1531,7 +1531,7 @@ class User < ActiveRecord::Base
        sql_offset = nil   
      end
        
-     return User.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond + " and users.retired = false", :order => "users.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
+     return User.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "users.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
    end
 
    def get_expertise

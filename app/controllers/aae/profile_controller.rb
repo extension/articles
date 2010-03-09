@@ -63,9 +63,8 @@ class Aae::ProfileController < ApplicationController
       if params[:populate_profile]
         user_expertise = user.categories.find(:all, :order => 'name')
         user_expertise_locations = user.expertise_locations
-        aae_handling_event_count =  user.aae_handling_event_count 
         
-        page.replace_html "expert_profile_#{user.id}", :partial => 'user_bio', :locals => { :user_bio => user, :user_expertise => user_expertise, :user_expertise_locations => user_expertise_locations, :aae_handling_event_count => aae_handling_event_count }
+        page.replace_html "expert_profile_#{user.id}", :partial => 'user_bio', :locals => { :user_bio => user, :user_expertise => user_expertise, :user_expertise_locations => user_expertise_locations }
         page.replace_html "expert_link_#{user.id}", :partial => 'expert_profile_link', :locals => { :user => user }
         page.visual_effect :toggle_blind, "expert_profile_#{user.id}"
       else
