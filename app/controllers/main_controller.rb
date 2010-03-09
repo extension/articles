@@ -69,6 +69,7 @@ class MainController < ApplicationController
   end
   
   def search
+    @right_column = false
     set_title("Search results")
     set_titletag("eXtension - Search results")
   end
