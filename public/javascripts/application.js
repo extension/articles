@@ -141,7 +141,7 @@ function processImages() {
 
 // add an onClick event to all learninglessons links
 function processLinks() {
-   $$('.leftcolumn a').each(function(link){
+   $$('.content_page a').each(function(link){
       if ( link.href.indexOf('learninglessons') > 1 ) {
          Event.observe(link, 'click', popUpLesson);
       } else if ( link.href.indexOf('decisiontree') > 1 ) {
