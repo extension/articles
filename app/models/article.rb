@@ -419,4 +419,11 @@ class Article < ActiveRecord::Base
     self.save    
   end
   
+  def reprocess_links
+    self.linkings.destroy_all
+    result = self.convert_links
+    self.save
+    result
+  end
+  
 end

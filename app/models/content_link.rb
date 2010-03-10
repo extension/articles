@@ -116,6 +116,8 @@ class ContentLink < ActiveRecord::Base
       return ''
     end
     
+
+    
     # is this a relative url? (no scheme/no host)- so attach the source_host and http
     # to it, to see if that matches an original URL that we have
     if(!original_uri.is_a?(URI::MailTo))
@@ -145,6 +147,8 @@ class ContentLink < ActiveRecord::Base
       if(original_uri.path =~ /^\/wiki\/Category:.*/)
         content_link.linktype = CATEGORY
       elsif(original_uri.path =~ /^\/mediawiki\/.*/)
+        content_link.linktype = DIRECTFILE
+      elsif(original_uri.path =~ /^\/learninglessons\/.*/)
         content_link.linktype = DIRECTFILE
       else
         content_link.linktype = WANTED
