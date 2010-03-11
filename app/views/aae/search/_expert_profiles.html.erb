@@ -1,37 +1,44 @@
+<script type="text/javascript">
+    $j('.tooltip_link').cluetip({sticky:true, local:true, cursor: 'pointer',width: 300,mouseOutClose: true, showTitle: false});
+</script>
 <% users.each do |user| %>
+    
+    
+    
     <% if !user.aae_responder %>
         <li class="profile mute"><%= user.fullname %> (Not available)</li>
     <% else %>
+        
         <li id="<%= "user_trigger_#{user.id}" %>">
         <span id="expert_link_<%= user.id %>">
-        <%= link_to_remote(user.fullname, {:url => aae_show_profile_url(:id => user.id, :populate_profile => true)}, 
-        {:class => 'userlink', :class => 'profile'}) %>
+             <%= link_to_remote(user.fullname, {:url => aae_show_profile_url(:id => user.id, :populate_profile => true)}, {:class => 'tooltip_link profile', :rel => "#user_tooltip_" + user.id.to_s}) %>
         </span>
         </li>
         <div id="expert_profile_<%= user.id %>" style="display:none;"></div>
 
         
-        <div id='user_tooltip_<%= user.id %>' style="display:none;" class="usertooltip">
-        <div id="usertooltip_hook">
-        <h3><%= user.fullname %> <small>(<%= user.login %>)</small></h3>
+        <div id='user_tooltip_<%= user.id %>' class="expert_tooltip" style="display:none;">
+            <h3><%= user.fullname %> <small>(<%= user.login %>)</small> <a class="closeicon" onclick="$j(document).trigger('hideCluetip');"><%= image_tag("common/x-mark.png") %></a></h3>
+            
+            <div class="expert_tooltip_wrap">
 
-        <% if user.title %>
-            <h4><%= user.title %></h4>
-        <% end %>
+            <% if user.title %>
+                <h4><%= user.title %></h4>
+            <% end %>
 
-        <% if !user.primary_institution.nil? %>
-            <h4><%= user.primary_institution.name %></h4>
-        <% end %>
+            <% if !user.primary_institution.nil? %>
+                <h4><%= user.primary_institution.name %></h4>
+            <% end %>
 
-        <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>
+            <p id="workload"><%= user.open_questions.length %> question<%= (user.open_questions.length == 1 ? '' : 's' )%> currently assigned</p>
 
-        <% if !user.aae_responder %>
-        <h5>* Does not want to be assigned questions</h5>
-        <% end %>
+            <% if !user.aae_responder %>
+                <h5>* Does not want to be assigned questions</h5>
+            <% end %>
 
-        <% if user.is_question_wrangler? %>
-            <h5>Question Wrangler</h5>
-        <% end %>
+            <% if user.is_question_wrangler? %>
+                <h5>Question Wrangler</h5>
+            <% end %>
 
         <% if user.assigned_questions.length > 0 %>
            <% if !handling_counts.nil? and !handling_counts[user.id].nil?
@@ -45,17 +52,7 @@
         <% else %>
             <p>This person hasn't handled any questions in the last 6 months.</p>
         <% end%>
-
-        <% if user.expertise_locations.length > 0 %>
-            <h5>Expertise Locations:</h5>
-            <p><%= user.expertise_locations.map{|l| l.name + user.get_counties_in_location(l)}.join(', ') %></p>
-        <% end %>
-
-        <% if user.categories.length > 0 %>
-            <h5>Expertise Categories:</h5>
-            <p><%= user.categories.collect { |cat| cat.full_name }.join(",<br />") %></p>
-        <% end %>
-
+        
         <% if user.categories.length == 0 %>
             <p class="none">No category expertise specified</p>
         <% end %>
@@ -68,6 +65,19 @@
         <% else %>
             <p class="none">Not signed up to receive auto-routed questions</p>
         <% end %>
+
+        <% if user.expertise_locations.length > 0 %>
+            <h5>Expertise Locations:</h5>
+            <p><%= user.expertise_locations.map{|l| l.name + user.get_counties_in_location(l)}.join(', ') %></p>
+        <% end %>
+
+        <% if user.categories.length > 0 %>
+            
+            <h5>Expertise Categories:</h5>
+            <ul class="expertise_list">
+                <li><%= user.categories.collect { |cat| cat.full_name }.join("</li><li>") %></li>
+            </ul>
+        <% end %>
         </div>
     </div>
     <% end %>
@@ -75,19 +85,3 @@
 <% end %>
 
 
-<script type="text/javascript">
-<% users.each do |user| %>
-  <% if user.aae_responder %>
-  var my_tooltip = new Tooltip('user_trigger_<%= user.id %>', 'user_tooltip_<%= user.id %>', <%= user.login.length + 80 %>)
-  <% end %>
-<% end %>
-</script>
-        
-    
-        
-        
-        
-        
-        
-        
-        

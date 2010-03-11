@@ -910,7 +910,7 @@ div.answer h2 {
 .tooltip {
     margin: 0;
 	padding: 0 !important;
-	width: 250px !important;
+  width: 250px !important;
 	background: transparent url(/images/common/soft_shadow.png) left bottom no-repeat;
 	position:relative;
 }
@@ -923,67 +923,28 @@ div.answer h2 {
     color:#000;
     position:relative;
 }
-.usertooltip {
-    margin: 0;
-	padding: 0 !important;
-	width: 300px !important;
-	background: transparent url(/images/common/soft_shadow.png) left bottom no-repeat;
-	position:relative;
-	
-}
-#usertooltip_hook {
-    margin: -12px -12px 12px 12px ;
-    background: #fff;
-    border: 1px solid navy;
-    padding: 0 0 1em !important;
-	position:relative;
-/*    max-height:450px;*/
-/*    overflow:auto;*/
-}
 
-#usertooltip_hook h3,
-#usertooltip_hook h4,
-#usertooltip_hook p {
-    display: block !important;
-    float:none !important;
-    clear: both;
-}
-.usertooltip #usertooltip_hook h3 {
-    color: #fff !important;
-    background: #4365f6;
-    padding: .5em .75em !important;
-}
-.usertooltip #usertooltip_hook h3 small {
-    font-weight: normal;
-}
-.usertooltip .completions em {font-style:normal;padding:0 .3em;}
-.usertooltip .completions {display:block;padding:.3em 0;border:1px solid #ccc;width:200px !important; background: url(/images/aae/green_square.png) no-repeat;}
-#user_profile .completions em {font-style:normal;padding:0 .3em;}
-#user_profile .completions {display:block;padding:.3em 0;border:1px solid #ccc;width:200px !important; background: url(/images/aae/green_square.png) no-repeat;}
-#usertooltip_hook h4 {
-    font-size: 140% !important;
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 0 10px !important;
-    margin-bottom: .25em !important;
-}
-#usertooltip_hook h5 {
-    margin: .5em 10px 0 !important;
-}
-#usertooltip_hook p {
-    color:#000;
-    line-height: 1.2em;
-    padding: 0 10px !important;
-    margin-bottom: 1em !important;
-}
-#usertooltip_hook p#workload {
-    color: #333;
-    background: #feffd1;
-    margin-bottom: 1em;
-}
-#usertooltip_hook p.none {
-    color: #777;
-    margin-bottom: .25em !important;
-}
+/*.expert_tooltip {width:300px;}*/
+.expert_tooltip {background: #fff;border: 1px solid navy;}
+.expert_tooltip_wrap {padding: 1em 1.5em;}
+.expert_tooltip h3 {color: #fff; background: #4365f6; padding: 0.25em .75em;margin:0;}
+.expert_tooltip h3 small {font-weight:normal;}
+.expert_tooltip h4 {font-size: 140%; padding:0; margin:0 0 .25em;}
+.expert_tooltip h5 { margin:0; }
+
+.expert_tooltip p {color:#000;line-height: 1.2em; padding:0; margin-bottom: 1em;}
+.expert_tooltip p.workload {color:#333; background:#feffd1;}
+.expert_tooltip p.none {color: #777;}
+
+.expert_tooltip .completions em {font-style:normal;padding:0 .3em;}
+.expert_tooltip .completions {display:block;padding:.3em 0;border:1px solid #ccc;width:200px !important; background: url(/images/aae/green_square.png) no-repeat;}
+
+.expert_tooltip .expertise_list {height:150px; overflow:auto;margin-left:0; margin-right:1em; background:#e5e5e5; padding-left:1em;}
+.closeicon {float:right; padding:.25em; cursor:pointer; background:#fff;}
+#cluetip-close {display:none;}
+
+
+
 
 #user_list {
     margin:1em 1em 0;
