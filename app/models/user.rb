@@ -2045,6 +2045,10 @@ class User < ActiveRecord::Base
 
     if location
       (filtered_users and filtered_users != '') ? loc_cond = "users.id IN (#{filtered_users})" : loc_cond = nil 
+      # not only pull experts that marked the location in AaE prefs, but also the experts who marked 
+      # the location in their People profile.
+      # this was done so that when searching for experts by location, all experts affiliated with a location will 
+      # be returned, not just the ones who remembered to mark it in their AaE prefs.
       filtered_users = self.experts_from_aae_or_people_location(location.fipsid).find(:all, :conditions => loc_cond).collect{|lu| lu.id}.join(',')
       return nil if !filtered_users or filtered_users.strip == ''
     end
