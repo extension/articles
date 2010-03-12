@@ -96,13 +96,6 @@
                 <% end %>
                 <%= render(:partial => @menu_partial_to_display) if @menu_partial_to_display %>
                 
-                <%- if !@skip_the_postit_display -%>
-                <div class="postit">
-                    <p>Did you know you can now get to Ask an Expert using the <%= link_to"aae.extension.org", "http://aae.extension.org/" %> url?</p>
-                    <p class="last">You no longer need to visit the FAQ app just to get to AaE.</p>
-                </div>
-                <%- end -%>
-                
                 <% if @menu_partial_to_display %>
                 <div class="sidebar">
                     <% link_to(:controller => "/widgets", :action => "aae") do %>
