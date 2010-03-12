@@ -1,8 +1,10 @@
 <!-- Setup the jquery tooltip for each expert returned  -->
 
+<% if !@mobile_device %>
 <script type="text/javascript">
     $j('.tooltip_link').cluetip({sticky:true, local:true, cursor: 'pointer',width: 300,mouseOutClose: true, showTitle: false});
 </script>
+<% end %>
 
 <!-- all the returned experts' tooltip data gets populated when the search is conducted so the mouseovers are fast. -->
 <!-- the amount of experts returned are limited and paginated to keep the search times down esp. when hundreds of results could show up. -->
@@ -24,6 +26,7 @@
         <div id="expert_profile_<%= user.id %>" style="display:none;"></div>
 
         <!-- the jquery powered tooltip for each expert returned -->
+        <% if !@mobile_device %>
         <div id='user_tooltip_<%= user.id %>' class="expert_tooltip" style="display:none;">
             <h3><%= user.fullname %> <small>(<%= user.login %>)</small> <a class="closeicon" onclick="$j(document).trigger('hideCluetip');"><%= image_tag("common/x-mark.png") %></a></h3>
             
@@ -80,8 +83,7 @@
             </div>
         <% end %>
 
-        <% if user.categories.length > 0 %>
-            
+        <% if user.categories.length > 0 %>    
             <h5>Expertise Categories:</h5>
             <ul class="expertise_list">
                 <li><%= user.categories.collect { |cat| cat.full_name }.join("</li><li>") %></li>
@@ -89,6 +91,7 @@
         <% end %>
         </div>
     </div>
+    <% end %>
     <% end %>
     
 <% end %>
