@@ -233,6 +233,7 @@ class Aae::ReportsController < ApplicationController
           @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
           @date1=@dateinterval[0]; @date2 = @dateinterval[1]
  
+      
            if params[:id] =~ /^[0-9]+$/
               @user = User.find_by_id(params[:id])
            else

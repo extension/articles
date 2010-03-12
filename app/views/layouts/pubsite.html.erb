@@ -280,7 +280,7 @@
                 <p class="copyright">&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
                 <ul>
                     <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
-                    <li><%= link_to_unless_current "partners", :controller => "main", :action => "partners" %></li>
+                    <li><%= link_to_unless_current "institutional partners", :controller => "main", :action => "partners" %></li>
                     <li><%= link_to_unless_current "privacy", :controller => "main", :action => "privacy" %></li>
                     <li><%= link_to_unless_current "contact us", :controller => "main", :action => "contact_us" %></li>
                     <li><%= link_to_unless_current "disclaimer", :controller => "main", :action => "disclaimer" %></li>
