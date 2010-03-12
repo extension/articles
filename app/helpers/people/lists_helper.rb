@@ -63,7 +63,7 @@ module People::ListsHelper
     end
     
     if(!@currentuser.nil?)
-      description +=  "<p>To send email to this list:  <a href='mailto:#{list.name}@lists.extension.org'>mailto:#{list.name}@lists.extension.org</a></p>"
+      description +=  "<p>To send email to this list:  <a href='mailto:#{list.name}@lists.extension.org'>#{list.name}@lists.extension.org</a></p>"
     end
     return description
   end
