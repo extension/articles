@@ -2,6 +2,7 @@
 
 <% if !@mobile_device %>
 <!-- enable jquery tooltip for the expert's new link -->
+<!-- using the onActivate event for the cluetip to determine (based on the profile being open or closed) whether or not to activate the tooltip -->
 <script type="text/javascript">
     $j('.tooltip_link').cluetip({sticky:true, local:true, cursor: 'pointer',width: 300,mouseOutClose: true, showTitle: false, onActivate:       function(e) { if ($('expert_profile_<%= user.id %>').style.display != 'none') {return false;} else {return true;}}});
 </script>

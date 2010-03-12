@@ -55,6 +55,8 @@ class Aae::ProfileController < ApplicationController
     # it pulls the profile info. from the db. all other subsequent clicks on the 
     # expert's name just shows the profile but does not need to hit the db.
     render :update do |page|
+      # whether we're populating the profile or not, rebuild the link to the expert
+      # and disable the jquery tooltip when the profile is open (even blocks mouseover event for tooltip)
       if params[:populate_profile]
         user_expertise = user.categories.find(:all, :order => 'name')
         user_expertise_locations = user.expertise_locations
@@ -65,10 +67,12 @@ class Aae::ProfileController < ApplicationController
         # to hit the db the next time it's clicked on.
         page.replace_html "expert_link_#{user.id}", :partial => 'expert_profile_link', :locals => { :user => user }
         page.visual_effect :toggle_blind, "expert_profile_#{user.id}"
+        # hide tooltip when profile is viewed or closed so it doesn't cover up the profile and assignment interface
         page << "$j(document).trigger('hideCluetip');"
       else
         page.visual_effect :toggle_blind, "expert_profile_#{user.id}"
         page.replace_html "expert_link_#{user.id}", :partial => 'expert_profile_link', :locals => { :user => user }
+        # hide tooltip when profile is viewed or closed so it doesn't cover up the profile and assignment interface
         page << "$j(document).trigger('hideCluetip');"
       end
     end
