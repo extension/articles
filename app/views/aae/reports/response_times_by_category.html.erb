@@ -1,0 +1,163 @@
+<% @page_title = "Response Times Report by #{@pagetype}"%>
+
+<p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "Response Times Report",  :action => 'response_times' %> &gt; <%= @page_title %></p>
+	
+<% genstring = "Response Time Statistics by "+ @pagetype %>
+<h1><%= genstring %></h1>
+<%= (@type=="Location") ? "<p>This report only reflects the location of the responding Expert, not the location of the question or the submitter.</p>" : ""%>   
+ 
+<div id="report">
+    <div id="report-date-selector">
+        <div>
+	        <%= render(:partial => 'flashmessages') %>
+            <h4>
+	            <%p1 = nil%><% p2=nil%>
+	            <%p3 = nil%><% p4 =nil%>
+	            <%p3 = nil%><% p4 =nil%>
+                
+                <a onclick="Effect.toggle('date-selectors','blind', { duration: .4});" ><%= (@dateinterval) ? "#{Time.parse(@date1.to_s).strftime('%b %e, %Y')} - #{Time.parse(@date2.to_s).strftime('%b %e, %Y')}" : "#{Time.parse(@prior90th.to_s).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')}  <span>(last 90 days)</span>"%> <%  (p1=is_marked('public',:via_conduita))%> <% (p2=is_marked('widget', :via_conduita)) %> <% if p1 || p2 %> <%= "<em> Submitted through: </em>"%><%= (p1) ? 'Public' : ""%> <%= (p2) ? ((p1) ? ', Widgets' : ' Widgets' ): " "%><%end%> <%= "<em>compared to</em>     #{Time.parse(@datec1.to_s).strftime('%b %e, %Y')} - #{Time.parse(@datec2.to_s).strftime('%b %e, %Y')}" if (@datec1 && @datec2) %><% if @datec1 && @datec2 %> <%  (p3=is_marked('public', :via_conduitb))%> <% (p4=is_marked('widget', :via_conduitb))%><% if p3 || p4 %> <%= " <em>Submitted through:</em>" %> <%= (p3) ? 'Public' : ""%>  <%=(p4) ? ((p3) ? ', Widgets' : ' Widgets') : " " %><%end%><%end %> <em>edit</em></a></h4>
+             
+            <div id="calendar" >
+	           
+	            <div id="date-selectors" style="display:none;" >
+	                
+	                <div class="date-selector1" >
+	                    <% form_tag ({:action => params[:action], :compd1 => @datec1, :compd2 => @datec2,  :upper => true}) do %>
+	                      <%= calendar_date_select_tag "datefrom", ((@dateinterval) ? @dateinterval[0] : @prior90th), :popup => true%><span>to</span><%= calendar_date_select_tag "dateto", ((@dateinterval) ? @dateinterval[1] : @latest_date), :popup => true%> 
+	                     
+	                    <ul class="source">
+                            <li><%= check_box_tag(:public_sourcea, true, is_marked('public', :via_conduita)) %> public site</li>
+                            <li><%= check_box_tag(:widget_sourcea, true, is_marked('widget', :via_conduita)) %> widgets </li>
+                        </ul>
+                        <p><%= submit_tag 'Go' %>
+                            <%if @date1 && @date2%> 
+                                <%= submit_tag 'Last 90 days'%>
+                            <% end %>
+                        </p>
+                        <% end%>
+                    </div>
+                
+                    <div class="date-selector2">
+                        <h4>Compare to...</h4>
+                        <% form_tag  ({ :action => params[:action], :dat1 => @date1, :dat2 => @date2,  :lower => true}) do %>
+                      
+                         <%= calendar_date_select_tag "datefrom", ((@dateintervalc) ? @dateintervalc[0] : @prior90th), :popup => true%><span>to</span><%= calendar_date_select_tag "dateto", ((@dateintervalc) ? @dateintervalc[1] : @latest_date), :popup => true%> 
+
+                        <ul class="source">
+                            <li><%= check_box_tag(:public_sourceb, true, is_marked('public', :via_conduitb)) %> public site</li>
+                            <li><%= check_box_tag(:widget_sourceb, true, is_marked('widget', :via_conduitb)) %> widgets</li>
+                        </ul>
+                        <p><%= submit_tag 'Go' %> <%= submit_tag 'remove' if (@datec1 && @datec2) %></p>
+                        <% end%>
+                    </div>
+                </div>        
+            </div>
+        </div>
+        
+        
+    </div>
+
+<div id="report">
+<table cellspacing="0" class="stats2 stats3" summary="<%= genstring %>"> 
+    <tr>
+        
+        <% if (@datec1 && @datec2) %>
+            <th class="empty"></th>
+            <th class="doublespan" colspan="4">Date Range 1</th>
+            <th class="doublespan" colspan="3">Date Range 2</th>
+        <% else %>
+        <th scope="col" class="left"><%= link_to @type, :action => params[:action], :orderby=> 'State', :type=>@type, :sortorder=> (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2]   %></th>
+            <th><%= link_to "Submitted Questions", :action => params[:action], :orderby=>'nos1' ,:type => @type,  :sortorder=> (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2]  %></th>
+            <th><%= link_to "Unanswered", :action => params[:action], :orderby=>'nostopn1' ,:type => @type, :sortorder=> (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2]  %></th>
+            <th ><%= link_to "Avg Response Time (hours)", :action => params[:action], :orderby=>'ppd1' ,:type => @type,:sortorder=> (params[:sortorder]=="a") ? "d" : "a" , :from => [@date1,@datec1], :to => [@date2,@datec2]  %></th>
+        <% end %>
+	 </tr>
+	 <% if (@datec1 && @datec2) %>
+	 <tr>
+		 <th scope="col" class="left"><%= link_to @type, :action => params[:action], :orderby=> 'State', :type=>@type, :sortorder=> (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2]  %></th>
+         <th scope="col" class="period1"><%= link_to "Submitted", :action => params[:action], :orderby=>'nos1' ,:type => @type,  :sortorder=> (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2]  %></th>
+         <th scope="col" class="period1"><%= link_to "Unanswered", :action => params[:action], :orderby=>'nostopn1' ,:type => @type,  :sortorder=> (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2]   %></th>
+         <th scope="col" class="period1"><%= link_to "Avg Response (hours)", :action => params[:action], :orderby=>'ppd1' ,:type => @type,  :sortorder=> (params[:sortorder]=="a") ? "d" : "a" , :from => [@date1,@datec1], :to => [@date2,@datec2] %></th>
+         <th scope="col" class="period1"><%= link_to "% change Avg", :action => params[:action], :orderby=> 'avgchg', :type => @type,  :sortorder => (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2] %></th>
+         <th scope="col" class="period2"><%= link_to "Submitted", :action => params[:action], :orderby=>'nos2' ,:type => @type, :sortorder=> (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2]   %></th>
+         
+         <th scope="col" class="period2"><%= link_to "Unanswered", :action => params[:action], :orderby=>'nostopn2' ,:type => @type, :sortorder=> (params[:sortorder]=="a") ? "d" : "a", :from => [@date1,@datec1], :to => [@date2,@datec2] %></th>
+         <!-- <th scope="col"><%= link_to "Avg Response Times Past 30 Days", :action => params[:action], :orderby=>'Var2' ,:type => @type,  :sortorder=> (params[:sortorder]=="a") ? "d" : "a",:from => [@date1,@datec1], :to => [@date2,@datec2]   %></th> --> 
+         
+         <th scope="col" class="period2"><%= link_to "Avg Response", :action => params[:action], :orderby=>'ppd2' ,:type => @type, :sortorder=> (params[:sortorder]=="a") ? "d" : "a" , :from => [@date1,@datec1], :to => [@date2,@datec2]  %></th>
+   <!--  if there are 2 column sets to compare, redo some more columns here -->
+    </tr>
+    <% end %>
+ 
+<% if @typelist%>
+
+    <% even = false %>
+    <% @typelist.each do |x| %>
+    
+        <%if ! ((@date1 || @date2 || @datec1 || @datec2))%>
+            <tr <%= ' class="shaded"' if even %>>
+                <td class="left"><%= x[0] %></td>
+                <td <%= ' class="zero"' if !@nof[x[0]] %>>
+                    <%= (@nof[x[0]] && @nof[x[0]] > 0) ? @nof[x[0]] : "0" %>
+                </td>
+		        <td <%= ' class="zero"' if !@var3[x[0]] %>>
+			        <%=   (@var3[x[0]] && @var3[x[0]] > 0) ? @var3[x[0]] : "0" %>
+                </td>
+                <!-- <td <%= ' class="empty"' if @var2[x[0]]==0 %>><%= (@var2[x[0]] && @var2[x[0]] > 0) ? @var2[x[0]] : "0"%></td> -->
+	            <td <%= ' class="empty"' if !@var1[x[0]] %>>
+			        <%=  (@var1[x[0]] && @var1[x[0]] > 0) ? ("%.2f"  % @var1[x[0]] ): "n/a" %>
+		        </td>
+            </tr>
+        <% end %>
+        
+        <% if (@date1 && @date2) || (@datec1 && @datec2)%>
+            <tr <%= ' class="shaded"' if even %>>
+                <td class="left"><%= x[0]%></td>
+                
+                <td class=" <%= "zero" if !@nos1[x[0]] %>">
+	                <%= (@nos1[x[0]] && @nos1[x[0]] > 0) ? @nos1[x[0]] : "0" %>
+	            </td>
+	            
+	            <td <%= 'class="zero"' if !@nostopn1[x[0]] %>>
+	                <%=  (@nostopn1[x[0]] && @nostopn1[x[0]] > 0) ? @nostopn1[x[0]] : "0" %>
+	            </td>
+	            
+	            <td class=" <%= "empty" if !@ppd1[x[0]] %>">
+	                <%=  (@ppd1[x[0]] && @ppd1[x[0]] > 0) ? ("%.2f"  % @ppd1[x[0]] ): "n/a" %>
+	            </td>
+	            <% if (@datec1 && @datec2) %>
+	               <td class=" <%= "empty" if !@ppd1[x[0]] %>">
+	                <% if ((@ppd2[x[0]] && @ppd2[x[0]] >= 0) && (@ppd1[x[0]] && @ppd1[x[0]] > 0))%>
+	                  <!--  responsechange = (@ppd2[x[0]].to_f - @ppd1[x[0]].to_f) / @ppd2[x[0]].to_f * 100 %>--> 
+	                        <span class="responsechange <%= ("positive") if @avgchg[x[0]] > 0 %> <%= ("negative") if @avgchg[x[0]] < 0 %>">
+                                (<%= number_to_percentage(@avgchg[x[0]], :precision => 1) %>)</span>
+    	            <% else %>
+    	                n/a
+    	            <% end %>
+	            </td>
+	            <% end %>
+	            
+	            
+	            <% if (@datec1 && @datec2)%>
+                    <td class="dategroup <%= ' zero' if !@nos2[x[0]] %>">
+		                <%= (@nos2[x[0]] && @nos2[x[0]] >0 ) ? @nos2[x[0]] : "0"%>
+		            </td>
+		            <td class="dategroup <%= ' zero' if !@nostopn2[x[0]] %>">
+		                <%=  (@nostopn2[x[0]] && @nostopn2[x[0]]) ? @nostopn2[x[0]] : "0"%>
+		            </td>
+		            <td class="dategroup <%= "empty" if !@ppd2[x[0]] %>" >
+		                <%=  (@ppd2[x[0]] && @ppd2[x[0]] >= 0) ? ("%.2f"  % @ppd2[x[0]] ): "n/a" %>
+		            </td>
+                <% end%>
+            <!-- <td <%= ' ,class="empty"' if @p301[x[0]]==0 %>><%= (@p301[x[0]] && @p301[x[0]] > 0) ? ("%.2f" % @p301[x[0]]) : "0"%></td> -->
+            <!-- <td <%= ' ,class="empty"' if @p302[x[0]]==0 %>><%= (@p302[x[0]] && @p302[x[0]] > 0) ? ("%.2f" % @p302[x[0]]) : "0"%></td> -->
+			 </tr>
+		 <%end%>
+
+		 <% even = !even %>
+   <% end %>
+<%end %>
+
+ </table>
+
+</div>

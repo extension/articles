@@ -66,7 +66,7 @@ class Aae::ReportsController < ApplicationController
      			@sortorder = 'asc'
      		end
 
-     		if(params[:orderby] and ['state','open','resolved','answered','rejected','no_expertise'].include?(params[:orderby]))
+     		if(params[:orderby] and ['open','resolved','answered','rejected','no_expertise'].include?(params[:orderby]))
      			@orderby = params[:orderby]
      		else 
      			@orderby = 'state'
@@ -139,37 +139,7 @@ class Aae::ReportsController < ApplicationController
            end
            tmparray + zeroarray
         end
-       
-       def common_sort_columns
-           typ = params[:type]; fld = params[:field] ; sortdir = params[:sdir]; report = params[:report]; params[:bysort]="y"
-            if fld == 'State'   #get the original summary back
-                  self.send((report+"_by_#{typ.downcase}").intern)
-            else
-           #   case typ    #remake the variable lists 
-          #      when 'State'
-          #        self.send(("state_"+report).intern)
-          #      else
-                  self.send(("#{typ.downcase}_"+report).intern)
-          #    end
-              rus = Array.new; russ = Array.new
-              rus =  instance_variable_get("@" + fld).find_all { |k,v| k!= "ZZ"}  #turn remade lists into a sortable array
-              if sortdir=="d"
-                   russ = rus.sort { |a,b| ((b[1]) ? b[1] : 0) <=> ((a[1]) ? a[1] : 0)}    #sort in desc order of totals
-              else
-                   russ = rus.sort { |a,b| ((a[1]) ? a[1] : 0) <=> ((b[1]) ? b[1] : 0)}    #sort in asc order of totals
-              end
-              if fld=='avgchg' || fld[0..2]=='ppd'
-                russ = siftna(russ)
-              end
-              @typelist = russ
-              case report
-         #     when 'activity'
-        #         render :template=>'aae/reports/common_sorted_lists'
-              when 'response_times'
-                 render :template => 'aae/reports/common_resptimes_lists'
-              end
-           end
-       end
+   
        
         def order_clause(order_by = "submitted_questions.question_updated_at", sort = "desc")
            if !params[:ob].nil?
@@ -216,7 +186,6 @@ class Aae::ReportsController < ApplicationController
                  :all,  :select => select_string,  :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
                        :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                
               @min = 124
-        #     render  :template => "aae/reports/display_questions"
         end
         
         ######   User Report of Ask an Expert Activity #####
@@ -289,10 +258,6 @@ class Aae::ReportsController < ApplicationController
            @dateFrom = params[:from] ;  @dateTo=params[:to]
            @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
            if params[:datefrom] || params[:dateto]   # temporary hack to accommodate two different date selection mechanisms for a while 
-            #   @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
-            #   @latest_date = Date.today
-            #   @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
-            #   @date1 = @dateinterval[0]; @date2=@dateinterval[1]; @dateFrom = @date1; @dateTo = @date2
                 @date1 = params[:datefrom]; @date2 = params[:dateto]
            end
            desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
@@ -612,13 +577,6 @@ class Aae::ReportsController < ApplicationController
     
   
      def state
-  #     if (params[:from] && params[:to])
-  #       @dateFrom = params[:from] ;  @dateTo=params[:to]
-  #        @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-  #     else
-  #       (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
-  #       (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-  #     end
         @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
       	@latest_date = Date.today
       	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
@@ -627,7 +585,7 @@ class Aae::ReportsController < ApplicationController
         @typename = params[:State]
        if (@typename && @typename != "") 
          @typeobj = Location.find_by_name(params[:State]) 
-         @type = "State" ; @typel="state" ; # @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
+         @type = "State" ; @typel="state" ; 
          locabbr=@typeobj.abbreviation; locid = @typeobj.id
      
          if !@typeobj.nil?  
@@ -637,9 +595,6 @@ class Aae::ReportsController < ApplicationController
            @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@typeobj.id}")
            (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_state_persp("pertaining",@typeobj, @date1, @date2)
            (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp("member", @typeobj, @date1, @date2)
-       
-       #    @repaction = "show_all_by_state"      
-      #     render :template=>'aae/reports/state'
 
          else
            redirect_to :controller => 'aae/reports', :action => 'state_report'
@@ -662,8 +617,7 @@ class Aae::ReportsController < ApplicationController
              @edits = @edits[0..8]
            end
          end
-   #      @dateFrom = params[:from] ;  @dateTo=params[:to] ; @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
-  #       @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+ 
            @date1 = params[:datefrom] ; @date2 = params[:dateto]
            @limit_string = "Only up to 100 are shown."
         
@@ -709,8 +663,6 @@ class Aae::ReportsController < ApplicationController
            @loc = Location.find_by_name(params[:State]); @county = params[:County]; @typename = @county
          end
          @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i
-       #  @dateFrom = params[:from] ;  @dateTo=params[:to] ;
-      #   @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
          @date1 = params[:datefrom]; @date2 = params[:dateto]
          @users=User.find_state_users(@loc, @county, @date1, @date2,
            :all, :select => " id, first_name, last_name, login, email, county_id", :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])
@@ -722,11 +674,7 @@ class Aae::ReportsController < ApplicationController
 
      def county_select
        @date1=nil; @date2=nil; @dateFrom=nil; @dateTo=nil
-     #  if (params[:from] && params[:to])
-    #     @dateFrom = params[:from] ;  @dateTo=params[:to]
-    #     @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-         @date1 = params[:datefrom]; @date2 = params[:dateto]
-      # end
+       @date1 = params[:datefrom]; @date2 = params[:dateto]
        if params[:State]
            @statename = params[:State]
        end
@@ -739,13 +687,6 @@ class Aae::ReportsController < ApplicationController
 
 
      def county
-  #     if (params[:from] && params[:to])
-  #       @dateFrom = params[:from] ;  @dateTo=params[:to]
-  #       @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-  #     else
-  #       (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
-  #       (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-  #     end
         @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
        	@latest_date = Date.today
        	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
@@ -757,7 +698,7 @@ class Aae::ReportsController < ApplicationController
          locabbr = loc.abbreviation
         
          @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])
-         @type="County"; @typel="county" ;   #@oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
+         @type="County"; @typel="county" ;   
          if !@typeobj.nil? 
        
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
@@ -808,33 +749,37 @@ class Aae::ReportsController < ApplicationController
 
 
      def response_dates_upper(repaction)
-           (public1, widget1)= response_checkbox_setup(:dateTo, :public_sourcea, :widget_sourcea, :via_conduita)
+           (public1, widget1)= response_checkbox_setup(:upper, :public_sourcea, :widget_sourcea, :via_conduita)
            #Retain other part of page and modify this section as appropriate
-           @date1 = params[:dat1]; @date2 = params[:dat2]; @dateFrom = params[:datF]; @dateTo=params[:datT]
-            if params[:dateTo]
+           @date1 = params[:dat1]; @date2 = params[:dat2];  
+            if params[:upper]
                @first_set="y"
                if params[:commit]=="Clear" || params[:commit]=="Show all" || params[:commit]=="Last 90 days"
                  @clear1 = "y"
                end
             end
             if !@date1 && @clear1=="n"
-              if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
-                (@date1, @date2, @dateFrom, @dateTo) = parmcheck(:FromDate, :ToDate, :from, :to, :dateFrom, :dateTo)
-              else
-                (@date1,@date2,@dateFrom,@dateTo)=valid_date("dateFrom", "dateTo")
-                (@date1,@date2,@dateFrom,@dateTo)= errchk(@date1,@date2,@dateFrom,@dateTo)
-              end
+          
+                 params[:datefrom]=params[:from][0] if params[:from] ; params[:dateto]=params[:to][0] if params[:to]
+                
+                    @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+                   	@latest_date = Date.today
+                   	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @prior90th, :latest_date => @latest_date, :default_dateto => @latest_date})
+                    @date1 = @dateinterval[0]  ; @date2 = @dateinterval[1]   
+              
               if (@date1 && @date2)
                 @unselected=nil
-                @nodays=(@date2.to_i - @date1.to_i)/(3600*24) 
+                @nodays = @date2 - @date1
                 if @nodays > 30 ; @nodays=30; end
               end
             else
               if @clear1 != "y"
-                @date1 = date_valid(@dateFrom); @date2 = date_valid(@dateTo)
+                @date1 = params[:datefrom] if params[:upper]; @date2 = params[:dateto] if params[:upper]
+                @date1 = @date1.to_date; @date2 = @date2.to_date
+                @dateinterval=[@date1, @date2]
                 if (@date1 && @date2)
                   @unselected=nil
-                  @nodays=(@date2.to_i - @date1.to_i)/(3600*24.0) 
+                  @nodays = @date2 - @date1
                   if @nodays > 30 ; @nodays=30; end
                 end
               else
@@ -856,33 +801,36 @@ class Aae::ReportsController < ApplicationController
 
      def response_dates_lower(repaction)
         #make sure we read what was last in the checkboxes and retain it
-        (public2, widget2) = response_checkbox_setup(:datecTo, :public_sourceb, :widget_sourceb, :via_conduitb)
-        if params[:datecTo]
+        (public2, widget2) = response_checkbox_setup(:lower, :public_sourceb, :widget_sourceb, :via_conduitb)
+         if params[:lower]
           @sec_set="y"
           if params[:commit]=="Clear" || params[:commit]=="Show all" || params[:commit]=="remove"
             @clear2 = "y"
           end
          end
         #retain fields from upper as we change the lower as appropriate
-         @datec1 = params[:compd1]; @datec2=params[:compd2] ; @datecTo = params[:compds]; @datecFrom = params[:compdf]
+         @datec1 = params[:compd1]; @datec2=params[:compd2] 
           if !@datec1 && @clear2=="n"
-            if (repaction=='response_times_by_category' || repaction=='response_times_by_location')
-               (@datec1, @datec2, @datecFrom, @datecTo) = parmcheck(:FromcDate, :TocDate, :fromc, :toc, :datecFrom, :datecTo)   #parmccheck
-            else
-              (@datec1,@datec2,@datecFrom,@datecTo)=valid_date("datecFrom", "datecTo")  
-              (@datec1,@datec2,@datecFrom,@datecTo)= errchk(@datec1,@datec2,@datecFrom,@datecTo)
-            end
+               if ((params[:from] && params[:from][1] != "")  or params[:lower])
+                    params[:datefrom]=params[:from][1] if (params[:from] && params[:from][1] !=""); params[:dateto]=params[:to][1] if (params[:to] && params[:to][1] != "")
+                    @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+                  	@latest_date = Date.today
+                  	@dateintervalc = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @prior90th, :latest_date => @latest_date, :default_dateto => @latest_date})
+                    @datec1 = @dateintervalc[0]  ; @datec2 = @dateintervalc[1]
+               end
             if (@datec1 && @datec2)
               @unselectedc=nil
-              @nocdays=(@datec2.to_i - @datec1.to_i)/(3600*24.0) 
+              @nocdays = @datec2 - @datec1
               if @nocdays >= 30 ; @nocdays=30; end
             end
           else
              if @clear2 != "y"
-               @datec1 = date_valid(@datecFrom); @datec2 = date_valid(@datecTo)
+                @datec1 = params[:datefrom] if params[:lower]; @datec2 = params[:dateto] if params[:lower]
+                @datec1 = @datec1.to_date; @datec2 = @datec2.to_date
+                @dateintervalc = [@datec1, @datec2]
                 if (@datec1 && @datec2)
                    @unselectedc=nil
-                   @nocdays=(@datec2.to_i - @datec1.to_i)/(3600*24.0) 
+                    @nocdays = @datec2  - @datec1
                    if @nocdays >= 30 ; @nocdays=30; end
                 end
              else
@@ -907,7 +855,8 @@ class Aae::ReportsController < ApplicationController
        @sec_set = nil; @first_set= nil; @clear1="n"; @clear2="n"
        @first_set = session[:first_set] if session[:first_set]
        @sec_set = session[:sec_set] if session[:sec_set]
-       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date.to_s
+       @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+       @prior90th=@oldest_date
        @repaction = 'response_times'
        @nodays = 30; @nocdays = 30
        @number_questions_all = SubmittedQuestion.find_externally_submitted(nil, nil, true, true )
@@ -941,7 +890,7 @@ class Aae::ReportsController < ApplicationController
        @first_set = session[:left_set] if session[:left_set]
        @sec_set = session[:right_set] if session[:right_set]
        t= Time.now - 90*24*60*60
-       @prior90th = t.to_s
+       @prior90th = t.to_date
        @repaction = 'response_times_by_category'; @pagetype=" Category"; rslts = {}
         #set up defaults   #note, old avg_30_reponses once was in here...(no_questions, avg_responses, avg_30_responses, avg_waiting)
         (rslts[:no_questions],rslts[:avg_responses], rslts[:avg_waiting]) = get_responses_by_category(nil, nil, true, true)
@@ -949,26 +898,56 @@ class Aae::ReportsController < ApplicationController
          (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
            # selected dates upper
            (rslts[:nos1_questions], rslts[:avg1_responses],rslts[:avg1_still_open])= get_responses_by_category(@date1, @date2, public1, widget1)
-             if (params[:dateTo])
+              if (params[:upper])
                session[:left_set]= "y"
              end
          (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
             # selected dates lower
+          if (@datec1 && @datec2)
             (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_category(@datec1, @datec2,  public2, widget2)
-            if (params[:datecTo])
+             if (params[:lower])
               session[:right_set]= "y"
-            end
+          end
+        end
        @type = "Category"
         @typelist= Category.find(:all, :conditions => "parent_id is null", :order => 'name')
         response_times_summary(rslts)
      end
+     
+     
+     def sort_response_times
+       	if(params[:sortorder] and params[:sortorder]=='d')
+      			@sortorder = 'desc'
+      		else
+      			@sortorder = 'asc'
+      		end
+
+      		if(params[:orderby] and [ 'nos1', 'nostopn1', 'ppd1', 'avgchg','nos2','nostopn2','ppd2'].include?(params[:orderby]))
+      			@orderby = params[:orderby]
+      		else 
+      			@orderby = 'State'
+      		end
+      	  russ = []
+         russ = transform_typelist(@typelist)
+         # now sort it...
+         
+       	if(@orderby != 'State')
+       		  column = instance_variable_get("@" + @orderby).find_all { |k,v| k!= "ZZ"}   #turn into sortable array
+        			russ= ((@sortorder == 'asc') ? column.sort{|a,b| ((a[1]) ? a[1] : 0) <=> ((b[1]) ? b[1] : 0) } : 
+        			                         column.sort{|a,b| ((b[1]) ? b[1] : 0) <=> ((a[1]) ? a[1] : 0)})
+       end
+       if @orderby=='avgchg' || @orderby[0..2]=='ppd'
+          russ = siftna(russ)
+       end
+       @typelist = russ
+    end
 
      def response_times_by_category
-        @unselected = "y"; @unselectedc="y"
+        if !params[:from]
+          @unselected = "y" ; @unselectedc="y" 
+        end
         category_response_times
-        params[:sdir]="a"
-        @typelist = transform_typelist(@typelist)
-        render :template=>'aae/reports/common_resptimes_lists'
+        sort_response_times
      end
 
      def get_responses_by_location(date1, date2, pub, wgt)
@@ -1021,7 +1000,7 @@ class Aae::ReportsController < ApplicationController
          @first_set = session[:set1] if session[:set1]
          @sec_set = session[:set2] if session[:set2]
          t= Time.now - 90*24*60*60
-         @prior90th = t.to_s; 
+         @prior90th = t.to_date; 
          @repaction = 'response_times_by_location' ; rslts={}
           #set up defaults   #note....(no_questions, avg_responses, avg_30_responses, avg_waiting)...old example
           (rslts[:no_questions],rslts[:avg_responses],rslts[:avg_waiting]) = get_responses_by_location(nil, nil,  true, true)
@@ -1029,26 +1008,27 @@ class Aae::ReportsController < ApplicationController
            (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
              # selected dates upper
              (rslts[:nos1_questions], rslts[:avg1_responses], rslts[:avg1_still_open])= get_responses_by_location(@date1, @date2,  public1, widget1)
-               if (params[:dateTo])
+              if params[:upper]
                  session[:set1]= "y"
                end
            (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
               # selected dates lower
               (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_location(@datec1, @datec2,  public2, widget2)
-              if (params[:datecTo])
+              if params[:lower]
                 session[:set2]= "y"
               end
          @type = "Location"; @pagetype="Responder Location"
           @typelist= Location.find(:all,  :order => 'entrytype, name') 
           response_times_summary(rslts)
+          
        end
 
        def response_times_by_location
-          @unselected = "y"; @unselectedc="y"
+          if !params[:from]
+            @unselected = "y" ; @unselectedc="y" 
+          end
           location_response_times
-          params[:sdir]="a"
-          @typelist = transform_typelist(@typelist)
-          render :template=>'aae/reports/common_resptimes_lists'
+          sort_response_times
        end
        
        ## end of Response Times Report   

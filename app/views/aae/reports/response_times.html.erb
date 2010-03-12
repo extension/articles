@@ -9,7 +9,7 @@
         
     <table class="general_table" cellspacing="0">
         <tr>
-            <th colspan="2"><%= "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></th>
+            <th colspan="2"><%= "#{Time.parse(@oldest_date.to_s).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></th>
         </tr>
         <tr>
             <td>Total Incoming (Unanswered) Questions</td>
@@ -30,8 +30,8 @@
     </table>
 
             <ul>
-            <li><%= link_to "Browse Statistics by responder location",  :action => 'response_times_by_location', :FromDate => @dateFrom, :ToDate => @dateTo, :FromcDate => @datecFrom, :TocDate => @datecTo %></li>
-            <li><%= link_to "Browse Statistics by category",  :action => 'response_times_by_category', :FromDate => @dateFrom, :ToDate=> @dateTo, :FromcDate => @datecFrom, :TocDate => @datecTo %></li>
+            <li><%= link_to "Browse Statistics by responder location",  :action => 'response_times_by_location', :from => [@date1, @datec1], :to => [@date2, @datec2] %></li>
+            <li><%= link_to "Browse Statistics by category",  :action => 'response_times_by_category', :from => [@date1, @datec1], :to => [@date2, @datec2] %></li>
             </ul>
 
 </div>
@@ -39,12 +39,12 @@
             <h2>Select a custom date range</h2>
             <%= render(:partial => 'flashmessages') %>
             <div id="calendar">
-                <% form_tag({:action => @repaction, :compd1 => @datec1, :compd2 => @datec2, :compds => @datecTo, :compdf => @datecFrom}) do %>
+                <% form_tag({:action => params[:action], :compd1 => @datec1, :compd2 => @datec2,  :upper => true}) do %>
 
-        	         <h4 id="selected_range" class="period1"><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
+                     <h4 id="selected_range" class="period1"><%= (@dateinterval) ? "#{Time.parse(@date1.to_s).strftime('%b %e, %Y')} - #{Time.parse(@date2.to_s).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date.to_s).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
         	         <br class="clear"/>
                   
-                    <%= calendar_date_select_tag "dateFrom",((@dateFrom) ? @dateFrom : Time.parse(@oldest_date).strftime('%Y-%m-%d')) , :popup => true%><span>to</span><%= calendar_date_select_tag "dateTo", ((@dateTo) ? @dateTo : Date.today), :popup => true%>  
+                      <%= calendar_date_select_tag "datefrom", ((@dateinterval) ? @dateinterval[0] : @oldest_date), :popup => true%><span>to</span><%= calendar_date_select_tag "dateto", ((@dateinterval) ? @dateinterval[1] : @latest_date), :popup => true%>  
                     <%= submit_tag 'Go' %>
                     <%= submit_tag 'Show all'%>
                     <ul id="search_parms">
@@ -59,12 +59,13 @@
               
 			
 	            
-                <% form_tag  ({ :action => @repaction, :dat1 => @date1, :dat2 => @date2, :datF => @dateFrom, :datT => @dateTo}) do %>
+                <% form_tag  ({ :action => params[:action], :dat1 => @date1, :dat2 => @date2, :lower => true}) do %>
 
-        			<h4 id="selected_range" class="period2"><%= (@datec1 && @datec2) ? "#{Time.parse(@datecFrom).strftime('%b %e, %Y')} - #{Time.parse(@datecTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
+        			<h4 id="selected_range" class="period2"><%= (@dateintervalc) ? "#{Time.parse(@datec1.to_s).strftime('%b %e, %Y')} - #{Time.parse(@datec2.to_s).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date.to_s).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></h4>
+                     
                     <br class="clear"/>
         	    
-                 <%= calendar_date_select_tag "datecFrom",((@datecFrom) ? @datecFrom : Time.parse(@oldest_date).strftime('%Y-%m-%d')), :popup => true %><span>to</span><%= calendar_date_select_tag "datecTo", ((@datecTo) ? @datecTo : Date.today), :popup => true%> 
+                     <%= calendar_date_select_tag "datefrom", ((@dateintervalc) ? @dateintervalc[0] : @prior90th), :popup => true%><span>to</span><%= calendar_date_select_tag "dateto", ((@dateintervalc) ? @dateintervalc[1] : @latest_date), :popup => true%> 
         	        <%= submit_tag 'Go' %>
         	        <%= submit_tag 'Show all'%>
         	        <ul id="search_parms">
@@ -84,8 +85,9 @@
             <table class="general_table datacompare" cellspacing="0">
                 <tr>
                     <th></th>
-                    <th class="period1"><%= (@date1 && @date2) ? "#{Time.parse(@dateFrom).strftime('%b %e, %Y')} - #{Time.parse(@dateTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></th>
-                    <th class="period2"><%= (@datec1 && @datec2) ? "#{Time.parse(@datecFrom).strftime('%b %e, %Y')} - #{Time.parse(@datecTo).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></th>
+                    
+                    <th class="period1"><%= (@dateinterval) ? "#{Time.parse(@date1.to_s).strftime('%b %e, %Y')} - #{Time.parse(@date2.to_s).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date.to_s).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></th>   
+                    <th class="period2"><%= (@dateintervalc) ? "#{Time.parse(@datec1.to_s).strftime('%b %e, %Y')} - #{Time.parse(@datec2.to_s).strftime('%b %e, %Y')}" : "#{Time.parse(@oldest_date.to_s).strftime('%b %e, %Y')} - #{Time.now.strftime('%b %e, %Y')} <span>(all data)</span>"%></th>
                 </tr>
                 <tr>
                     <td>Total Questions Submitted</td>
