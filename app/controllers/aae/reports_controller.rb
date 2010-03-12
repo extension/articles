@@ -795,7 +795,7 @@ class Aae::ReportsController < ApplicationController
             @avg_response_time = SubmittedQuestion.get_avg_response_time(@date1, @date2, public1, widget1)
             @avg_resp_past30 = SubmittedQuestion.get_avg_response_time_past30(@date1, @date2, public1, widget1, @nodays)
             @avg_still_open = SubmittedQuestion.find_externally_submitted(@date1, @date2, public1, widget1)
-            if (params[:dateTo])
+            if (params[:upper])
                  session[:first_set]= "y"
             end
      end
@@ -846,7 +846,7 @@ class Aae::ReportsController < ApplicationController
          @avgc_response_time = SubmittedQuestion.get_avg_response_time(@datec1, @datec2, public2, widget2)
          @avgc_resp_past30 = SubmittedQuestion.get_avg_response_time_past30(@datec1, @datec2, public2, widget2, @nocdays)
          @avgc_still_open = SubmittedQuestion.find_externally_submitted(@datec1, @datec2, public2, widget2)
-          if (params[:datecTo])
+          if (params[:lower])
                session[:sec_set]= "y"
           end
      end
@@ -1014,10 +1014,12 @@ class Aae::ReportsController < ApplicationController
                end
            (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
               # selected dates lower
+            if (@datec1 && @datec2)
               (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_location(@datec1, @datec2,  public2, widget2)
               if params[:lower]
                 session[:set2]= "y"
               end
+            end
          @type = "Location"; @pagetype="Responder Location"
           @typelist= Location.find(:all,  :order => 'entrytype, name') 
           response_times_summary(rslts)
