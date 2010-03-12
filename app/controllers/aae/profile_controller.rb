@@ -65,8 +65,11 @@ class Aae::ProfileController < ApplicationController
         # to hit the db the next time it's clicked on.
         page.replace_html "expert_link_#{user.id}", :partial => 'expert_profile_link', :locals => { :user => user }
         page.visual_effect :toggle_blind, "expert_profile_#{user.id}"
+        page << "$j(document).trigger('hideCluetip');"
       else
         page.visual_effect :toggle_blind, "expert_profile_#{user.id}"
+        page.replace_html "expert_link_#{user.id}", :partial => 'expert_profile_link', :locals => { :user => user }
+        page << "$j(document).trigger('hideCluetip');"
       end
     end
   end
