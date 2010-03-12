@@ -940,6 +940,7 @@ div.answer h2 {
 .expert_tooltip .completions {display:block;padding:.3em 0;border:1px solid #ccc;width:200px !important; background: url(/images/aae/green_square.png) no-repeat;}
 
 .expert_tooltip .expertise_list {height:150px; overflow:auto;margin-left:0; margin-right:1em; background:#e5e5e5; padding-left:1em;}
+.expert_tooltip .location_list {height:auto;max-height:80px; overflow:auto;margin-left:0; margin-right:1em; background:#e5e5e5; padding-left:1em; margin-bottom:1em;}
 .closeicon {float:right; padding:.25em; cursor:pointer; background:#fff;}
 #cluetip-close {display:none;}
 

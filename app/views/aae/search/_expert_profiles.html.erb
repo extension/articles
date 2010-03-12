@@ -68,7 +68,9 @@
 
         <% if user.expertise_locations.length > 0 %>
             <h5>Expertise Locations:</h5>
-            <p><%= user.expertise_locations.map{|l| l.name + user.get_counties_in_location(l)}.join(', ') %></p>
+            <div class="location_list">
+            <p><%= user.expertise_locations.map{|l| l.name + " " + user.get_counties_in_location(l)}.join(', ') %></p>
+            </div>
         <% end %>
 
         <% if user.categories.length > 0 %>

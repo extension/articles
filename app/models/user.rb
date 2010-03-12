@@ -1551,7 +1551,7 @@ class User < ActiveRecord::Base
 
    def get_counties_in_location(location)
     if intersect_counties = expertise_counties_in_location(location)
-      return "(#{intersect_counties.map{|c| c.name}.join(',')})"
+      return "(#{intersect_counties.map{|c| c.name}.join(', ')})"
     else
       return ""
     end
