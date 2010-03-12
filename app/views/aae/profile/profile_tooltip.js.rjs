@@ -1,2 +1,0 @@
-page.replace_html "profile_tooltip", :partial => 'profile_tooltip', :locals => { :user_bio => @user }
-page.show "profile_tooltip"

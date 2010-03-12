@@ -1,22 +1,29 @@
+<!-- Setup the jquery tooltip for each expert returned  -->
+
 <script type="text/javascript">
     $j('.tooltip_link').cluetip({sticky:true, local:true, cursor: 'pointer',width: 300,mouseOutClose: true, showTitle: false});
 </script>
-<% users.each do |user| %>
-    
-    
-    
+
+<!-- all the returned experts' tooltip data gets populated when the search is conducted so the mouseovers are fast. -->
+<!-- the amount of experts returned are limited and paginated to keep the search times down esp. when hundreds of results could show up. -->
+<% users.each do |user| %>    
     <% if !user.aae_responder %>
         <li class="profile mute"><%= user.fullname %> (Not available)</li>
     <% else %>
         
         <li id="<%= "user_trigger_#{user.id}" %>">
+        
+        <!-- this link will get replaced when profile information is expanded -->
+        <!-- populate_profile is used to determine whether the profile information that expands under the expert's name -->
+        <!-- needs to be pulled from the db again. we only pull that when the profile is first viewed -->
+        <!-- so when the profile is closed and then reopened, we don't have to pull from the db again -->
         <span id="expert_link_<%= user.id %>">
              <%= link_to_remote(user.fullname, {:url => aae_show_profile_url(:id => user.id, :populate_profile => true)}, {:class => 'tooltip_link profile', :rel => "#user_tooltip_" + user.id.to_s}) %>
         </span>
         </li>
         <div id="expert_profile_<%= user.id %>" style="display:none;"></div>
 
-        
+        <!-- the jquery powered tooltip for each expert returned -->
         <div id='user_tooltip_<%= user.id %>' class="expert_tooltip" style="display:none;">
             <h3><%= user.fullname %> <small>(<%= user.login %>)</small> <a class="closeicon" onclick="$j(document).trigger('hideCluetip');"><%= image_tag("common/x-mark.png") %></a></h3>
             

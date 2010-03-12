@@ -97,11 +97,17 @@ class Aae::SearchController < ApplicationController
     render :layout => false
   end
   
+  ## with both assigness_by_cat_loc and assignees_by_name, profile attributes like handling counts and other profile information
+  # are pulled and prepopulated for the jquery based tooltips so that the tooltips will already be populated when 
+  # the assignee mouses over their name. to speed up the initial loading of all the experts, 
+  # we have put a limit on the amount of experts returned and have enabled pagination on it. 
+  
   def assignees_by_cat_loc
     @category = Category.find(:first, :conditions => ["id = ?", params[:category]]) if params[:category] and params[:category].strip != ''
     @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:location]]) if params[:location] and params[:location].strip != ''
     @county = ExpertiseCounty.find(:first, :conditions => ["fipsid = ? and state_fipsid = ?", params[:county], @location.fipsid]) if @location and params[:county] and params[:county].strip != ''
     setup_cat_loc # sets @users
+    # gets aae question handling counts for all experts returned
     @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id), :submitted_question_filter => {:notrejected => true}})
     render :partial => "search_expert", :layout => false
   end
@@ -115,6 +121,7 @@ class Aae::SearchController < ApplicationController
     end
     
     @users = User.validusers.patternsearch(params[:login]).all(:limit => User.per_page, :include => [:expertise_locations, :open_questions, :categories])
+    # gets aae question handling counts for all experts returned
     @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id),:submitted_question_filter => {:notrejected => true}})  
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
   end
@@ -195,6 +202,7 @@ class Aae::SearchController < ApplicationController
     end
   end
   
+  # get instance variables ready for expert search by category and location
   def setup_cat_loc
     @location_options = [""].concat(ExpertiseLocation.find(:all, :order => 'entrytype, name').map{|l| [l.name, l.fipsid]})
     @categories = Category.root_categories
@@ -207,14 +215,22 @@ class Aae::SearchController < ApplicationController
     # ToDo: need to change this id parameter name to something more descriptive
     @submitted_question = SubmittedQuestion.find(:first, :conditions => ["id = ?", params[:id]]) if not @submitted_question
     
+    # What we're doing here is getting a total count of the users in said category, location, and county
+    # when the expert search is executing. The reason we want this is because we now have custom 
+    # pagination when searching for experts for efficiency so we're dumping hundreds of records out 
+    # on search for experts. The link in the expert search that triggers the custom pagination is 
+    # the show more matching experts link at the bottom of the returned search results. 
     user_total = User.count_by_cat_loc(@category, @location, @county)
   
+    # determine whether we should display the shore more matching experts link 
     if User.per_page >= user_total
       @more_experts_to_come = false
     else
       @more_experts_to_come = true
     end
     
+    # searh users by category, location, and county. since this function is used 
+    # when the expert search is being populated for the first time, we pull page 1.
     @users = User.find_by_cat_loc(@category, @location, @county, 1)
   end
     
