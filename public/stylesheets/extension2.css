@@ -901,7 +901,7 @@ border-radius: 4px;
 .partner {display:block;text-align:center;padding:20px 0 30px !important;}
 
 /* zoom is a hack to have ie7 elements layout */
-#relatedresources span {background:#8e8e8e; color:#fff; padding:.2em 10px; margin-left:-10px;zoom:1;position: relative;} 
+#relatedresources span {background:#8e8e8e; color:#fff; padding:.2em 10px; margin-left:-10px;zoom:1;position: relative; margin-right:10px;} 
 #relatedresources a {color:#fff;}
 #relatedresources a:hover {text-decoration:underline;}
 #relatedresources a:visited {color:#fff;}
