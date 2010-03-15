@@ -1,11 +1,7 @@
 <% @in_this_resource_area = true %>
 <% @resource_area_feeds = true %>
 
-<div class = "mission">
-    <%if @page_title_text && @header_description%>
-        <h2 class="missionstatement"><%=@header_description%></h2>
-    <%end%>
-</div>
+<%= render(:partial => 'shared/created_by',  :locals => { :community_tags => @community_content_tags }) if @community_content_tags%>
 
     <div class="pageextras">
         <% if not @youth %>
@@ -22,11 +18,10 @@
       
       
       <p class="caption">
-          <span class="updatedmeta">Last Updated: <%= micro_time_print(@article.wiki_updated_at, 'updated') %></span>
+          Last Updated: <%= micro_time_print(@article.wiki_updated_at, 'updated') %>
         <% if false # this attr will not exist til wiki feed updated %>
          Published: <%= micro_time_print(@article.wiki_created_at, 'published') %>
         <% end %>
-        <%= render(:partial => 'shared/created_by',  :locals => { :community_tags => @community_content_tags }) if @community_content_tags%>
       </p>
       
       <p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>

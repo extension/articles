@@ -24,6 +24,14 @@ module DataHelper
     return txt+'</select>'
   end
   
+  def link_to_public_community_home(community)
+    if(community.content_tag_names.empty?)
+      return community.public_name
+    else
+      return "<span>"  + link_to(h(community.public_name  + " Home"), site_index_url(:content_tag => community.primary_content_tag_name)) + "</span>"
+    end
+  end
+  
   def link_to_public_community(community)
     if(community.content_tag_names.empty?)
       return community.public_name
@@ -32,11 +40,11 @@ module DataHelper
     end
   end
   
-  def link_to_preview_community(community)
+  def link_to_preview_community_home(community)
     if(community.content_tag_names.empty?)
       return community.public_name
     else
-      return link_to(h(community.public_name), preview_tag_url(:content_tag => community.primary_content_tag_name))
+      return "<span>"  + link_to(h(community.public_name + "Home"), preview_tag_url(:content_tag => community.primary_content_tag_name)) + "</span>"
     end
   end
   

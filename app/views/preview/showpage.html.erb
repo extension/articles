@@ -1,6 +1,12 @@
 <% @in_this_resource_area = true %>
 <% @resource_area_feeds = true %>
 
+<%- if @community_content_tags -%>
+<p id="relatedresources">
+    <%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_preview_community(community) }.join(', ')  %>
+</p>
+<%- end -%>
+
 <div class = "mission">
     <%if @page_title_text && @header_description%>
         <h2 class="missionstatement"><%=@header_description%></h2>
@@ -22,16 +28,10 @@
       <h1 class="title"><%= @article.title %></h1>
       
       
-      <p class="caption">
-          <span class="updatedmeta">Last Updated: <%= micro_time_print(@article.updated_at, 'updated') %></span>
+      <p class="caption">Last Updated: <%= micro_time_print(@article.updated_at, 'updated') %>
         <% if false # this attr will not exist til wiki feed updated %>
          Published: <%= micro_time_print(@article.published_at, 'published') %>
         <% end %>
-        <%- if @community_content_tags -%>
-        <span id="relatedresources">Related resource areas: 
-         <%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_preview_community(community) }.join(', ')  %>
-         </span>
-        <%- end -%>
       </p>
       
       <p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
