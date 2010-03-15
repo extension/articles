@@ -3,7 +3,7 @@
 
 <%- if @community_content_tags -%>
 <p id="relatedresources">
-    <%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_preview_community(community) }.join(', ')  %>
+    <%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_preview_community_home(community) }.join(', ')  %>
 </p>
 <%- end -%>
 
