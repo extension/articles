@@ -900,7 +900,8 @@ border-radius: 4px;
 .rotator_sponsorlogo {height:140px !important;text-align:center; }
 .partner {display:block;text-align:center;padding:20px 0 30px !important;}
 
-#relatedresources span {background:#8e8e8e; color:#fff; padding:.2em 10px; margin-left:-10px;}
+/* zoom is a hack to have ie7 elements layout */
+#relatedresources span {background:#8e8e8e; color:#fff; padding:.2em 10px; margin-left:-10px;zoom:1;position: relative;} 
 #relatedresources a {color:#fff;}
 #relatedresources a:hover {text-decoration:underline;}
 #relatedresources a:visited {color:#fff;}
