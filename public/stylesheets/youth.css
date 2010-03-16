@@ -28,6 +28,9 @@ a:link {cursor: pointer; text-decoration: none; color: #336699}
 .globalnav ul li.home a{background:url(/images/layout/youth/youthhomebut.gif) 0 0 no-repeat; }
 .globalnav ul li.home a:hover{background:url(/images/layout/youth/youthhomebutover.gif) 0 0 no-repeat;}
 
+.globalnav ul li.articles a{background:url(/images/layout/youth/youtharticlesbut.gif) 0 0 no-repeat; }
+.globalnav ul li.articles a:hover{background:url(/images/layout/youth/youtharticlesbutover.gif) 0 0 no-repeat;}
+
 .globalnav ul li.about a{background:url(/images/layout/youth/youthaboutbut.gif) 0 0 no-repeat; }
 .globalnav ul li.about a:hover{background:url(/images/layout/youth/youthaboutbutover.gif) 0 0 no-repeat;}
 
