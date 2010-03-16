@@ -33,10 +33,11 @@ class Location < ActiveRecord::Base
   
   
   def get_associated_county(county_string)
-    county = County.find_by_name(county_string.strip)
-    return nil if !county
-    return county if self.counties.include?(county) 
-    return nil
+    if county = self.counties.find(:first, :conditions => ["counties.name = ?", county_string.strip])
+      return county
+    else
+      return nil
+    end
   end
   
   def self.find_by_abbreviation_or_name(location_string)

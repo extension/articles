@@ -86,6 +86,66 @@ class WidgetController < ApplicationController
     end
   end
   
+  ### BONNIE PLANTS STUFF ###
+
+  ## This is only for use for a custom widget for the Bonnie Plants website
+  ## This is intended for short-term use until we get custom widgets 
+  ## up and operational.
+  def bonnie_plants
+    @fingerprint = params[:id]
+    @host_name = request.host_with_port
+    @location_options = get_location_options
+    render :layout => false
+  end
+  
+  ## create question from Bonnie Plants custom form/widget
+  def create_from_bonnie_plants
+    if request.post?
+      if !params[:email] or !params[:email_confirmation] or !params[:question]
+        @status_message = "Please fill in all required fields."
+        return render :template => 'widget/api_widget_status', :layout => false
+      end  
+      
+      if params[:email].strip != params[:email_confirmation].strip
+        @status_message = "The email confirmation does not match the email address entered. Please make sure they match."
+        return render :template => 'widget/api_widget_status', :layout => false
+      end
+      
+      location_query = ''
+      if location_id = params[:location_id]
+        location = Location.find(location_id)
+        location_query << "&location=#{location.abbreviation}" if location
+      end
+      
+      if location and (county_id = params[:county_id])
+        county = County.find(county_id)
+        location_query << "&county=#{county.name}" if county
+      end
+      
+      uri = URI.parse(url_for(:controller => 'api/aae', :action => :ask, :format => :json))
+      http = Net::HTTP.new(uri.host, uri.port)
+      response = http.post(uri.path, "question=#{params[:question]}&email=#{params[:email]}&widget_id=#{params[:id]}&first_name=#{params[:first_name]}&last_name=#{params[:last_name]}" + (location_query != '' ? location_query : ''))
+    
+      case response
+      when Net::HTTPOK
+        return render :template => 'widget/create_from_widget', :layout => false
+      when Net::HTTPBadRequest
+        @status_message = "A configuration error has prevented your question from submitting. Please try again later."
+        return render :template => 'widget/api_widget_status', :layout => false
+      when Net::HTTPForbidden
+        response_hash = JSON.parse response.body
+        @status_message = response_hash['error']
+        return render :template => 'widget/api_widget_status', :layout => false  
+      else
+        @status_message = "We are currently experiencing technical difficulties with the system. Please try again later."
+        return render :template => 'widget/api_widget_status', :layout => false  
+      end
+    
+    end
+  end
+
+  ### END BONNIE PLANTS STUFF ###
+  
   def create_from_widget_using_api
     if request.post?  
       uri = URI.parse(url_for(:controller => 'api/aae', :action => :ask, :format => :json))

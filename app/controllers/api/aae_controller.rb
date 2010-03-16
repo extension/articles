@@ -13,7 +13,7 @@ class Api::AaeController < ApplicationController
   def ask
     if request.post?
       begin 
-        if !params[:question] or !params[:email] or !params[:email_confirmation]
+        if !params[:question] or !params[:email] 
           argument_errors = "Required parameters were not passed. Please check API documentation for correct parameters."
           respond_to do |format|
             format.json {return render :text => "{\"error\":\"#{argument_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 400, :layout => false}
@@ -22,10 +22,6 @@ class Api::AaeController < ApplicationController
           
         if params[:question].blank? or params[:email].blank?
           param_entry_errors = "You must fill in all fields to submit your question."
-        end
-        
-        if params[:email] != params[:email_confirmation]
-          param_entry_errors = "Email address does not match the confirmation email address."
         end
         
         if param_entry_errors
@@ -92,16 +88,13 @@ class Api::AaeController < ApplicationController
     @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
     
     if params[:type]
-      case params[:type]
-      when 'widget'
-        @submitted_question.external_app_id = 'widget'
-      when 'pubsite'
+      if params[:type] == 'pubsite'
         @submitted_question.external_app_id = 'www.extension.org'
       else
-        @submitted_question.external_app_id = 'api'  
+        @submitted_question.external_app_id = 'widget'
       end
     else
-      @submitted_question.external_app_id = 'api'
+      @submitted_question.external_app_id = 'widget'
     end
       
     # check to see if question has location associated with it

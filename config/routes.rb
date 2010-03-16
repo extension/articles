@@ -78,7 +78,12 @@ ActionController::Routing::Routes.draw do |map|
   
   ### AaE API ###
   map.connect 'api/aae/ask.json', :controller => 'api/aae', :action => :ask  
-    
+  
+  # routes for temporary custom Bonnie Plants widget
+  map.connect 'widget/bonnie_plants/tracking/:id', :controller => 'widget', :action => 'bonnie_plants'
+  map.connect 'widget/create_from_bonnie_plants/:id', :controller => 'widget', :action => 'create_from_bonnie_plants'
+  #
+  
   ### Widget iFrame ###
   map.connect 'widget/api_widget_index', :controller => 'widget', :action => 'api_widget_index'
   map.connect 'widget/create_from_widget_using_api', :controller => 'widget', :action => 'create_from_widget_using_api'
