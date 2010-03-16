@@ -47,7 +47,6 @@ function checkFabricatedHomeSize() {
 // onload event callback
 function startmeup() {
    // order matters here
-   //processImages();
    processLinks();
    if (! location.href.include('/print')) {
       processColumns();
@@ -120,23 +119,6 @@ function popUpDecision(e) {
    var left = (screen.width - width)/2;
    var top = (screen.height - height)/2;
    window.open(link, "decision" + id, "toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width="+width+",height="+height+",left="+left+",top="+top);
-}
-
-// remove links from all images
-function processImages() {
-   checkFabricatedHomeSize();
-	$$('#content_tag img').each(function(img){
-	  if ( img.parentNode.nodeName == 'A' ) {
-         var linknode = img.parentNode;
-         if ( linknode.href.indexOf('Image:') > 1 ) {
-            $(img).writeAttribute('title', $(linknode).readAttribute('title'));
-            linknode.parentNode.replaceChild(img, linknode);
-         } else if ( linknode.href.indexOf('File:') > 1 ) {
-            $(img).writeAttribute('title', $(linknode).readAttribute('title'));
-            linknode.parentNode.replaceChild(img, linknode);
-         }
-      }
-	})
 }
 
 // add an onClick event to all learninglessons links
