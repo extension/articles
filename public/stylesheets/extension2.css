@@ -37,25 +37,6 @@ body, html { height: 100%; margin:0; padding:0; background: #f4f4f4; font-family
 body { text-align: center }
 
 #wrap {width: 100%}
-#main_content {
-    background: url(/images/layout/rightnavbgnd.gif) left #fff repeat-y;
-    border-bottom: 1px solid #ebebeb;
-    border-right: 1px solid #ebebeb;
-    width:962px;
-    text-align: left;
-    margin: 0 auto;
-    height:auto !important; /* real browsers */
-    height:100%; /* IE6: treaded as min-height*/
-    min-height:100%; /* real browsers */
-    /* position: relative; removed. does not seem to serve any purpose. interferred with z-index in IE7 */
-}
-
-/*    I don't think this is used anywhere. to be removed
-#container {
-  position: relative;
-  min-height: 100%;
-}
-*/
 
 /* RIGHT COLUMN */
 .fullwidth {float:left;}
@@ -869,7 +850,7 @@ border-radius: 4px;
 .aae_module a:hover {color:#386292;}
 
 
-#content_tag {text-align:left;background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;z-index:25;}
+#content_tag {text-align:left;background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;z-index:25;position:relative;}
 
 #content_tag h1 {font-size: 2.7em;font-weight:normal; color: #df7432; margin:0 0 0;padding:0;}
 #content_tag h2 {font-size: 1.68em;font-weight:normal; color: #7f7f7f;margin:0;padding:0;}
@@ -881,7 +862,8 @@ border-radius: 4px;
     background: #fff url(/images/layout/rightnavbgnd.gif) -689px 0  repeat-y;
     border-bottom: 1px solid #ebebeb;
     }
-.content_page {background: url(/images/pubsite/content_header_bg.png) no-repeat top left #fff; margin-top:-10px;}
+/* position:static deals with an IE7 z-index bug regarding parent containers with relative positioning */
+.content_page {background: url(/images/pubsite/content_header_bg.png) no-repeat top left #fff; margin-top:-10px;position:static;}
 
 .content_gutter {padding-top:10px;padding-left:10px;}
 
