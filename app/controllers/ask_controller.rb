@@ -76,7 +76,7 @@ class AskController < ApplicationController
   end
   
   def question_confirmation
-    if request.post?
+    if request.get?
       if !params[:q].blank? 
         params[:submitted_question][:asked_question] = params[:q].sanitize
         flash.now[:googleanalytics] = '/ask-an-expert-search-results'
