@@ -10,6 +10,7 @@ class Admin::SponsorsController < ApplicationController
   before_filter :check_purgatory
   before_filter :turn_off_right_column
   
+  layout 'pubsite'
   
   # ajax call to update the position of the ads relative to each other
   def update_positions

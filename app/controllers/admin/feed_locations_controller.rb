@@ -9,7 +9,8 @@ class Admin::FeedLocationsController < ApplicationController
   before_filter :admin_required
   before_filter :check_purgatory
   before_filter :turn_off_right_column
-
+  
+  layout 'pubsite'
 
   def index
     @feed_locations = FeedLocation.all

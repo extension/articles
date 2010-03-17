@@ -9,7 +9,9 @@ class AdminController < ApplicationController
   before_filter :check_purgatory
   before_filter :turn_off_right_column
   before_filter :sudo_required, :only => [:reload_config]
-
+  
+  layout 'pubsite'
+  
   def setadminmode
     if(params[:mode] and params[:mode] == 'on')
       session[:adminmode] = @currentuser.id.to_s

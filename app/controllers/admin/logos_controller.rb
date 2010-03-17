@@ -9,6 +9,8 @@ class Admin::LogosController < ApplicationController
   before_filter :admin_required
   before_filter :check_purgatory
   before_filter :turn_off_right_column
+  
+  layout 'pubsite'
 
   def index
     set_titletag('Manage Logos- Pubsite Admin')
