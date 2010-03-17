@@ -1,7 +1,7 @@
 <h1 class="title">Ask an Expert</h1>
 <h2>We have experts from Universities around the country ready to answer your questions</h2>
 
-<form class="aae" id="searchbox_002594610894210374936:hggphannnzi" action="/ask/question_confirmation" style='<%= @disableform ? 'color:gray' : ''%>'>
+<% form_tag({:action => :question_confirmation}, {:id => 'searchbox_002594610894210374936:hggphannnzi', :class => 'aae'}) do  %>
 	
 <h3>Personal Information</h3>
 
@@ -61,14 +61,19 @@
 <p class="instructions">Before submitting your question, we search eXtension and show the results.</p>
 <fieldset>
     
-    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :rows => "3", :id => "submitted_question_asked_question", :disabled => @disableform %> 
+    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :rows => "3", :id => "submitted_question_asked_question" %> 
 </fieldset>
 <p>
- <%= submit_tag "Search for an Answer", :name => "sa", :value => "Search for an Answer", :alt => "Go", :disabled => @disableform %>
+ <%= submit_tag "Search for an Answer", :name => "sa", :value => "Search for an Answer", :alt => "Go" %>
 </p>
-        <input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
-        <input type="hidden" name="cof" value="FORID:11" />
-    </form>
-    <%= javascript_include_tag "google_coop" %>
-    <!-- Google CSE Search Box Ends -->
+
+<input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
+<input type="hidden" name="cof" value="FORID:11" />
+        
+<!-- end of form -->
+<% end %>
+
+
+<%= javascript_include_tag "google_coop" %>
+<!-- Google CSE Search Box Ends -->
 
