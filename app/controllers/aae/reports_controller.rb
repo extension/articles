@@ -256,11 +256,7 @@ class Aae::ReportsController < ApplicationController
         def display_questions
            @user = User.find_by_id(params[:user]);
            @olink = params[:olink];  @comments=nil; @edits=nil; 
-           @dateFrom = params[:from] ;  @dateTo=params[:to]
-           @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
-           if params[:datefrom] || params[:dateto]   # temporary hack to accommodate two different date selection mechanisms for a while 
-                @date1 = params[:datefrom]; @date2 = params[:dateto]
-           end
+           @date1 = params[:datefrom]; @date2 = params[:dateto]
            desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
            descl = desc
 
@@ -290,66 +286,66 @@ class Aae::ReportsController < ApplicationController
         
         ####   end of User Report for Ask an Expert Activity #####
          
-         ####  Date handling ###
+ #        ####  Date handling ###
          
          
    
-           def valid_date(fromdate, todate)               #valid_date() with date(c)From and date(c)To
-             dateFrom = params[fromdate] if (params[fromdate] ) 
-             date1 = date_valid(dateFrom)
-             dateTo = params[todate] if (params[todate] )
-             date2 = date_valid(dateTo)
-             [date1, date2, dateFrom, dateTo]
-           end
+ #           def valid_date(fromdate, todate)               #valid_date() with date(c)From and date(c)To
+#             dateFrom = params[fromdate] if (params[fromdate] ) 
+#             date1 = date_valid(dateFrom)
+#             dateTo = params[todate] if (params[todate] )
+#             date2 = date_valid(dateTo)
+#             [date1, date2, dateFrom, dateTo]
+#           end
 
 
-          def date_valid(yyyymmdd)
-              #yyyymmdd = yyyy-mm-dd
-              return nil if !yyyymmdd || yyyymmdd=="" 
-              begin
-                t =  Time.parse(yyyymmdd)
-              rescue Exception => e
-                 flash.now[:failure] = "Incorrect input detected: #{yyyymmdd}, do yyyy-mm-dd "
-                 ActiveRecord::Base::logger.debug "time parse error on #{yyyymmdd} "  + e.to_s
-                 return nil
-              end
-              return t
-          end 
+ #         def date_valid(yyyymmdd)
+#              #yyyymmdd = yyyy-mm-dd
+#              return nil if !yyyymmdd || yyyymmdd=="" 
+#              begin
+#                t =  Time.parse(yyyymmdd)
+#              rescue Exception => e
+#                 flash.now[:failure] = "Incorrect input detected: #{yyyymmdd}, do yyyy-mm-dd "
+#                 ActiveRecord::Base::logger.debug "time parse error on #{yyyymmdd} "  + e.to_s
+#                 return nil
+#              end
+#              return t
+#          end 
 
-          def errchk(datef,datet, dateFrom, dateTo)
-           if ((datef && datet) && (datet - datef < 0))
-              #   flash.now[:notice] = "From Date is not before To Date."
-                temp =datet; tmps = dateTo    #if flipped, flip 'em
-                datet = datef; dateTo = dateFrom
-                datef = temp; dateFrom = tmps
-           end
-          [datef, datet, dateFrom, dateTo]
-          end
+ #         def errchk(datef,datet, dateFrom, dateTo)
+#           if ((datef && datet) && (datet - datef < 0))
+#              #   flash.now[:notice] = "From Date is not before To Date."
+#                temp =datet; tmps = dateTo    #if flipped, flip 'em
+#                datet = datef; dateTo = dateFrom
+#                datef = temp; dateFrom = tmps
+#           end
+#          [datef, datet, dateFrom, dateTo]
+#          end
 
-          def parmcheck(fromdate, todate, from, to, dateF, dateT)     #parmcheck() ...check all date parms   (c) means compare_dates parms
-              if params[:bysort] !="y"
-                if params[fromdate]      #:From(c)Date
-                  dateFrom = params[fromdate]
-                else
-                    dateFrom = params[dateF] if (params[dateF] )    #:date(c)From
-                end
-                date1 = date_valid(dateFrom)
-                if params[todate]         #:To(c)Date
-                  dateTo=params[todate]
-                else
-                   dateTo = params[dateT] if (params[dateT] )      #:date(c)To
-                end
-                date2 = date_valid(dateTo)
-              else
-                dateFrom = params[from]      #:from(c)
-                dateTo=params[to]            #:to(c)
-                date1 = date_valid(dateFrom)
-                date2 = date_valid(dateTo)
-              end
+ #         def parmcheck(fromdate, todate, from, to, dateF, dateT)     #parmcheck() ...check all date parms   (c) means compare_dates parms
+#              if params[:bysort] !="y"
+#                if params[fromdate]      #:From(c)Date
+#                  dateFrom = params[fromdate]
+#                else
+#                    dateFrom = params[dateF] if (params[dateF] )    #:date(c)From
+#                end
+#                date1 = date_valid(dateFrom)
+#                if params[todate]         #:To(c)Date
+#                  dateTo=params[todate]
+#                else
+#                   dateTo = params[dateT] if (params[dateT] )      #:date(c)To
+#                end
+#                date2 = date_valid(dateTo)
+#              else
+#                dateFrom = params[from]      #:from(c)
+#                dateTo=params[to]            #:to(c)
+#                date1 = date_valid(dateFrom)
+#                date2 = date_valid(dateTo)
+#              end
 
-              (date1, date2, dateFrom, dateTo)= errchk(date1,date2,dateFrom,dateTo)
-              [date1, date2, dateFrom, dateTo]
-          end    
+ #             (date1, date2, dateFrom, dateTo)= errchk(date1,date2,dateFrom,dateTo)
+#              [date1, date2, dateFrom, dateTo]
+#          end    
 
 
          ##### end date handling ##### 
@@ -857,17 +853,19 @@ class Aae::ReportsController < ApplicationController
        @first_set = session[:first_set] if session[:first_set]
        @sec_set = session[:sec_set] if session[:sec_set]
        @oldest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
-       @prior90th=@oldest_date
+       @prior90th=@oldest_date ; 	@latest_date = Date.today
        @repaction = 'response_times'
        @nodays = 30; @nocdays = 30
        @number_questions_all = SubmittedQuestion.find_externally_submitted(nil, nil, true, true )
        @avg_response_time_all = SubmittedQuestion.get_avg_response_time(nil, nil, true, true)
        @avg_resp_past30_all = SubmittedQuestion.get_avg_response_time_past30(nil, nil, true, true, @nodays)
        @avg_open_time_all = SubmittedQuestion.get_avg_open_time(nil, nil,nil, true, true)
-       (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
-       response_avgs_upper(public1, widget1)
-       (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
-       response_avgs_lower(public2, widget2)
+       if params[:upper] || params[:lower]  || @first_set || @sec_set
+         (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
+         response_avgs_upper(public1, widget1)
+         (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
+         response_avgs_lower(public2, widget2)
+       end
      end  
     
     
@@ -1058,8 +1056,7 @@ class Aae::ReportsController < ApplicationController
           @cat = Category.find_by_name(params[:category]); @resolver=User.find_by_id(params[:id]) if params[:id]
           @resolver=User.find_by_id(params[:user]) if (params[:user] && !params[:id])
           @olink = params[:olink]; @comments=nil; @edits="Resolved"; @idtype='id'; @user = @resolver ; @catname = @cat.name
-          @dateFrom = params[:from] ;  @dateTo=params[:to]; desc = "Resolver" ; aux =@resolver.id.to_s
-          @date1 = date_valid(@dateFrom) ; @date2 = date_valid(@dateTo)
+          desc = "Resolver" ; aux =@resolver.id.to_s
           @numb = params[:num].to_i
             select_string = " submitted_questions.id squid, submitted_questions.updated_at, resolved_by, asked_question, status_state status  "
             joins = [:categories]

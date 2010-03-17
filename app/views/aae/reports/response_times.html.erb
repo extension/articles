@@ -25,7 +25,7 @@
         </tr>
         <tr >
             <td>Average Historical Response Time</td>
-            <td class="count"><%= (@avg_response_time_all > 24) ? ((@avg_response_time_all/24).to_s) : (@avg_response_time_all.to_s)  %> <%= (@avg_response_time >24) ? "Days" : "Hours"%></td>
+            <td class="count"><%= (@avg_response_time_all > 24) ? ((@avg_response_time_all/24).to_s) : (@avg_response_time_all.to_s)  %> <%= (@avg_response_time_all >24) ? "Days" : "Hours"%></td>
         </tr>
     </table>
 
