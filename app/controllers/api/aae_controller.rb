@@ -30,8 +30,46 @@ class Api::AaeController < ApplicationController
           end
         end    
         
-        # setup the question to be saved and fill in attributes with parameters
-        create_question
+        ############### setup the question to be saved and fill in attributes with parameters ###############
+        widget = Widget.find_by_fingerprint(params[:widget_id].strip) if params[:widget_id]
+
+        @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:email].strip})
+        @submitted_question = SubmittedQuestion.new(:asked_question => params[:question].strip, :submitter_email => params[:email].strip)
+        @submitted_question.public_user = @public_user
+        @submitted_question.widget = widget if widget
+        @submitted_question.widget_name = widget.name if widget
+        @submitted_question.user_ip = request.remote_ip
+        @submitted_question.user_agent = (request.env['HTTP_USER_AGENT']) ? request.env['HTTP_USER_AGENT'] : ''
+        @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
+        @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
+        @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
+
+        if params[:type]
+          if params[:type] == 'pubsite'
+            @submitted_question.external_app_id = 'www.extension.org'
+          else
+            @submitted_question.external_app_id = 'widget'
+          end
+        else
+          @submitted_question.external_app_id = 'widget'
+        end
+
+        # check to see if question has location associated with it
+        location = params[:location].strip if params[:location] and params[:location].strip != ''
+
+        if location
+          location = Location.find_by_abbreviation_or_name(location)
+          @submitted_question.location = location if location
+        end
+
+        # check to see if question has county and said location associated with it
+        county = params[:county].strip if params[:county] and params[:county].strip != ''
+        county = location.get_associated_county(county) if location
+
+        if county and location
+          @submitted_question.county = county 
+        end
+        ############### end of setting up question object ###############
         
         if(!@submitted_question.valid? or !@public_user.valid?)
           active_record_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
@@ -58,61 +96,22 @@ class Api::AaeController < ApplicationController
           format.json {return render :text => "{\"error\":\"#{active_record_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 500, :layout => false}
         end
       rescue Exception
-        respond_to do |format|
-          format.json {return render :text => "{\"error\":\"Application/Server Error\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 500, :layout => false}
-        end
+        send_json_error('Application/Server Error', url_for(:only_path => false), 500)
       end
       
     # didn't do a POST
     else  
-      respond_to do |format|
-        format.json {return render :text => "{\"error\":\"Only POST requests are accepted\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 400, :layout => false}
-      end
+      send_json_error('Only POST requests are accepted', url_for(:only_path => false), 400)
     end
   end
-
+  
   private
   
-  def create_question
-    widget = Widget.find_by_fingerprint(params[:widget_id].strip) if params[:widget_id]
-    
-    @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:email].strip})
-    @submitted_question = SubmittedQuestion.new(:asked_question => params[:question].strip, :submitter_email => params[:email].strip)
-    @submitted_question.public_user = @public_user
-    @submitted_question.widget = widget if widget
-    @submitted_question.widget_name = widget.name if widget
-    @submitted_question.user_ip = request.remote_ip
-    @submitted_question.user_agent = (request.env['HTTP_USER_AGENT']) ? request.env['HTTP_USER_AGENT'] : ''
-    @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
-    @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
-    @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
-    
-    if params[:type]
-      if params[:type] == 'pubsite'
-        @submitted_question.external_app_id = 'www.extension.org'
-      else
-        @submitted_question.external_app_id = 'widget'
-      end
-    else
-      @submitted_question.external_app_id = 'widget'
-    end
-      
-    # check to see if question has location associated with it
-    location = params[:location].strip if params[:location] and params[:location].strip != ''
-    
-    if location
-      location = Location.find_by_abbreviation_or_name(location)
-      @submitted_question.location = location if location
-    end
-    
-    # check to see if question has county and said location associated with it
-    county = params[:county].strip if params[:county] and params[:county].strip != ''
-    county = location.get_associated_county(county) if location
-    
-    if county and location
-      @submitted_question.county = county 
+  # to be used to generate json in case of errors 
+  def send_json_error(error_msg, url_path, status_code)
+    respond_to do |format|
+      format.json {return render :text => "{\"error\":\"#{error_msg}\", \"request\":\"#{url_path}\"}", :status => status_code, :layout => false}
     end
   end
-
 
 end
