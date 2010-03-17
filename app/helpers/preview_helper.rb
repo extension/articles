@@ -7,12 +7,20 @@
 
 module PreviewHelper
 
-	def link_to_preview_tags(content_tag_array)
+	def link_to_preview_tags(content_tag_array, links = false)
 		linkarray = []
-		content_tag_array.each do |tagname|
-			linkarray << link_to(tagname, preview_tag_url(:content_tag => tagname))
-		end
-		return linkarray.join(' ')
+		linkarray << '<ul class="content_tags">'
+		if links
+		  content_tag_array.each do |tagname|
+  			linkarray << '<li>' + link_to("checklist", preview_tag_url(:content_tag => tagname)) + "</li>"
+  		end
+	  else
+	    content_tag_array.each do |tagname|
+  			linkarray << "<li>" + tagname + "</li>"
+  		end
+  	end
+  	linkarray << "</ul>"
+		return linkarray
 	end
 
 end

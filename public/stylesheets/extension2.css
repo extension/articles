@@ -595,6 +595,12 @@ a.cancel:hover {color:#000;}
 #admin table td a:visited  {color: #00356e;}
 #admin table td a:hover    {color: blue; text-decoration: underline;}
 
+#admin table td .content_tags {padding:0;margin:0;}
+#admin table td .content_tags li { font-size:1em !important; margin-bottom:.5em;}
+#admin table td .content_tags a {display:block;padding:0;} 
+.checklist .content_tags li {padding-left: 22px; background: #edfbff url(/images/pubsite/paste_plain.png) 0 50% no-repeat;}
+.checklist span {padding-left: 22px;}
+/*#admin table td.notset span {padding-left: 22px;}*/
 
 #admin table {border:1px solid #888;border-collapse:collapse;}
 #admin table td,
