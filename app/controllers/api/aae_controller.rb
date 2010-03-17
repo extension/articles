@@ -15,20 +15,13 @@ class Api::AaeController < ApplicationController
       begin 
         if !params[:question] or !params[:email] 
           argument_errors = "Required parameters were not passed. Please check API documentation for correct parameters."
-          respond_to do |format|
-            format.json {return render :text => "{\"error\":\"#{argument_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 400, :layout => false}
-          end
+          send_json_error(argument_errors, 400)
         end
           
         if params[:question].blank? or params[:email].blank?
           param_entry_errors = "You must fill in all fields to submit your question."
+          send_json_error(param_entry_errors, 403)
         end
-        
-        if param_entry_errors
-          respond_to do |format|
-            format.json {return render :text => "{\"error\":\"#{param_entry_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 403, :layout => false}
-          end
-        end    
         
         ############### setup the question to be saved and fill in attributes with parameters ###############
         widget = Widget.find_by_fingerprint(params[:widget_id].strip) if params[:widget_id]
@@ -84,7 +77,7 @@ class Api::AaeController < ApplicationController
        
         if @submitted_question.save
           respond_to do |format|
-            format.json { return render :text => "{\"completed\":\"true\", \"submitted_question_url\":\"aae/question/#{@submitted_question.id}\"}", :layout => false }
+            format.json { return render :text => {:completed => true, :submitted_question_url => "aae/question/#{@submitted_question.id}"}.to_json, :layout => false }
           end
         else
           active_record_errors = "Question not successfully saved."
@@ -92,25 +85,25 @@ class Api::AaeController < ApplicationController
         end
       
       rescue ActiveRecordError 
-        respond_to do |format|
-          format.json {return render :text => "{\"error\":\"#{active_record_errors}\", \"request\":\"#{url_for(:only_path => false)}\"}", :status => 500, :layout => false}
-        end
+        send_json_error(active_record_errors, 500)
       rescue Exception
-        send_json_error('Application/Server Error', url_for(:only_path => false), 500)
+        send_json_error('Application/Server Error', 500)
       end
       
     # didn't do a POST
     else  
-      send_json_error('Only POST requests are accepted', url_for(:only_path => false), 400)
+      send_json_error('Only POST requests are accepted', 400)
     end
   end
   
   private
   
-  # to be used to generate json in case of errors 
-  def send_json_error(error_msg, url_path, status_code)
+  # to be used to generate json formatted error responses on error 
+  def send_json_error(error_msg, status_code)
+    return_hash = {:error => error_msg, :request => url_for(:only_path => false)}
+    
     respond_to do |format|
-      format.json {return render :text => "{\"error\":\"#{error_msg}\", \"request\":\"#{url_path}\"}", :status => status_code, :layout => false}
+      format.json {return render :text => return_hash.to_json, :status => status_code, :layout => false}
     end
   end
 
