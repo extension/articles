@@ -7,6 +7,7 @@
 
 require 'net/http'
 require 'uri'
+require 'json'
 
 class WidgetController < ApplicationController  
   layout 'widgets'
