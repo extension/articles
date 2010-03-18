@@ -15,12 +15,12 @@ class Api::AaeController < ApplicationController
       begin 
         if !params[:question] or !params[:email] 
           argument_errors = "Required parameters were not passed. Please check API documentation for correct parameters."
-          send_json_error(argument_errors, 400)
+          return send_json_error(argument_errors, 400)
         end
           
         if params[:question].blank? or params[:email].blank?
           param_entry_errors = "You must fill in all fields to submit your question."
-          send_json_error(param_entry_errors, 403)
+          return send_json_error(param_entry_errors, 403)
         end
         
         ############### setup the question to be saved and fill in attributes with parameters ###############
@@ -66,7 +66,7 @@ class Api::AaeController < ApplicationController
         
         if(!@submitted_question.valid? or !@public_user.valid?)
           active_record_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
-          raise ActiveRecordError
+          return send_json_error(active_record_errors, 500)
         end
         
         begin
@@ -81,18 +81,16 @@ class Api::AaeController < ApplicationController
           end
         else
           active_record_errors = "Question not successfully saved."
-          raise ActiveRecordError
+          return send_json_error(active_record_errors, 500)
         end
-      
-      rescue ActiveRecordError 
-        send_json_error(active_record_errors, 500)
+    
       rescue Exception
-        send_json_error('Application/Server Error', 500)
+        return send_json_error('Application/Server Error', 500)
       end
       
     # didn't do a POST
     else  
-      send_json_error('Only POST requests are accepted', 400)
+      return send_json_error('Only POST requests are accepted', 400)
     end
   end
   
