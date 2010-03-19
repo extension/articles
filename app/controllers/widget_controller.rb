@@ -102,15 +102,15 @@ class WidgetController < ApplicationController
   ## create question from Bonnie Plants custom form/widget
   def create_from_bonnie_plants
     if request.post?
-      #if params[:email].blank? or params[:email_confirmation].blank? or params[:question].blank?
-      #  @status_message = "Please fill in all required fields."
-      #  return render :template => 'widget/api_widget_status', :layout => false
-      #end  
+      if params[:email].blank? or params[:email_confirmation].blank? or params[:question].blank?
+        @status_message = "Please fill in all required fields."
+        return render :template => 'widget/api_widget_status', :layout => false
+      end  
       
-      #if params[:email].strip != params[:email_confirmation].strip
-      #  @status_message = "The email confirmation does not match the email address entered. Please make sure they match."
-      #  return render :template => 'widget/api_widget_status', :layout => false
-      #end
+      if params[:email].strip != params[:email_confirmation].strip
+        @status_message = "The email confirmation does not match the email address entered. Please make sure they match."
+        return render :template => 'widget/api_widget_status', :layout => false
+      end
       
       location_query = ''
       if !params[:location_id].blank?
@@ -125,7 +125,7 @@ class WidgetController < ApplicationController
       
       uri = URI.parse(url_for(:controller => 'api/aae', :action => :ask, :format => :json))
       http = Net::HTTP.new(uri.host, uri.port)
-      response = http.post(uri.path, "question=#{params[:question]}&email=#{params[:email]}&widget_id=#{params[:id]}&first_name=#{params[:first_name]}&last_name=#{params[:last_name]}" + (location_query != '' ? location_query : ''))
+      response = http.post(uri.path, "question=#{params[:question]}&email=#{params[:email]}&widget_id=#{params[:id]}&first_name=#{params[:first_name]}&last_name=#{params[:last_name]}" + location_query)
     
       case response
       when Net::HTTPOK
