@@ -25,7 +25,9 @@ module DataHelper
   end
   
   def link_to_public_community_home(community)
-    if(community.content_tag_names.empty?)
+    if(community.nil? or !community.show_in_public_list?)
+      return ''
+    elsif(community.content_tag_names.empty?)
       return community.public_name
     else
       return "<span>"  + link_to(h(community.public_name  + " Home"), site_index_url(:content_tag => community.primary_content_tag_name)) + "</span>"
