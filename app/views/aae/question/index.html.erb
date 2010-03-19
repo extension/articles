@@ -40,7 +40,7 @@
     
     <% if @submitted_question.location %>
         <p class="inc_descriptive inc_location"><strong>
-        <%= @submitted_question.county.name + "," if @submitted_question.county %>
+        <%= @submitted_question.county.name + " County," if @submitted_question.county %>
         <%= @submitted_question.location.name %></strong>
         </p>
     <% end %>

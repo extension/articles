@@ -22,7 +22,7 @@
                                       
                     <% if sq.county and sq.location %>
                       <span class="inc_location">  
-                      <%= link_to(sq.county.name + ",", 
+                      <%= link_to(sq.county.name + " County,", 
                       {:controller => controller.controller_name, 
                        :action => controller.action_name, 
                        :county => sq.county.fipsid, 
