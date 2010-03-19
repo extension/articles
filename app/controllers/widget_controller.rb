@@ -102,24 +102,24 @@ class WidgetController < ApplicationController
   ## create question from Bonnie Plants custom form/widget
   def create_from_bonnie_plants
     if request.post?
-      if !params[:email] or !params[:email_confirmation] or !params[:question]
-        @status_message = "Please fill in all required fields."
-        return render :template => 'widget/api_widget_status', :layout => false
-      end  
+      #if params[:email].blank? or params[:email_confirmation].blank? or params[:question].blank?
+      #  @status_message = "Please fill in all required fields."
+      #  return render :template => 'widget/api_widget_status', :layout => false
+      #end  
       
-      if params[:email].strip != params[:email_confirmation].strip
-        @status_message = "The email confirmation does not match the email address entered. Please make sure they match."
-        return render :template => 'widget/api_widget_status', :layout => false
-      end
+      #if params[:email].strip != params[:email_confirmation].strip
+      #  @status_message = "The email confirmation does not match the email address entered. Please make sure they match."
+      #  return render :template => 'widget/api_widget_status', :layout => false
+      #end
       
       location_query = ''
-      if location_id = params[:location_id]
-        location = Location.find(location_id)
+      if !params[:location_id].blank?
+        location = Location.find(params[:location_id].strip)
         location_query << "&location=#{location.abbreviation}" if location
       end
       
-      if location and (county_id = params[:county_id])
-        county = County.find(county_id)
+      if location and (!params[:county_id].blank?)
+        county = County.find(params[:county_id].strip)
         location_query << "&county=#{county.name}" if county
       end
       
