@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ReportsController < ApplicationController
-  layout 'reports'
+  layout 'pubsite'
   before_filter :login_optional
   
   def index    
