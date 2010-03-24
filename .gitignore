@@ -1,0 +1,16 @@
+
+# /
+/tmp
+/mkmf.log
+
+# /config/
+/config/database.yml
+/config/micodaloco.yml
+/config/appconfig.yml
+
+# /log/
+/log/*.log
+/log/*.pid
+
+# /public/
+/public/system
