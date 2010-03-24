@@ -57,6 +57,7 @@ class EventsController < ApplicationController
     set_title("#{@event.title.titleize} - eXtension Event",  @event.title.titleize)
     set_titletag("#{@event.title.titleize} - eXtension Event")
     flash.now[:googleanalytics] = request.request_uri + "?" + @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') if @community_content_tags and @community_content_tags.length > 0
+    flash.now[:googleanalyticsresourcearea] = @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.first.gsub(' ','_') if @community_content_tags and @community_content_tags.length > 0
   end
   
   private

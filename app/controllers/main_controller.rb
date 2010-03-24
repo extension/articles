@@ -41,6 +41,7 @@ class MainController < ApplicationController
       @community_highlights = Article.main_feature_list({:content_tag => @content_tag, :limit => 8})
       @youth = true if @topic and @topic.name == 'Youth'
       flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
+      flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
     elsif(!@content_tag.nil?)
       set_title("Content tagged with:", @content_tag.name.titleize)
       set_titletag("Content tagged with '#{@content_tag.name}'  - eXtension")
