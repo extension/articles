@@ -260,8 +260,8 @@ class Aae::ReportsController < ApplicationController
            desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
            descl = desc
 
-             select_string = " submitted_questions.current_contributing_question question_id, user_id, submitted_questions.id squid,  resolved_by, " +
-                " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
+           select_string = " submitted_questions.current_contributing_question question_id, user_id, submitted_questions.id squid,  resolved_by, " +
+             " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
            if desc=="Assigned as an Expert" || desc=="Currently Assigned as an Expert"
              select_string = select_string + " , recipient_id "
              joins = [:submitted_question_events]
@@ -649,7 +649,7 @@ class Aae::ReportsController < ApplicationController
           end
      
           @min = 124
-        #  render  :template => "aae/reports/display_questions"
+       
       end
 
       def display_state_users
@@ -705,7 +705,7 @@ class Aae::ReportsController < ApplicationController
           (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp("member",@typeobj, @date1, @date2)   
           
       #     @repaction = 'county'
-           render :template => 'aae/reports/state'
+      #     render :template => 'aae/reports/state'
         else
           redirect_to :controller => 'aae/reports', :action => 'county_select', :State => @statename
         end
@@ -1070,7 +1070,7 @@ class Aae::ReportsController < ApplicationController
 
       
             @min = 124
-       #    render  :template => "aae/reports/display_questions"
+      
        end
    ####   End of Responders by Category Report ###
       

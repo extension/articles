@@ -1,0 +1,83 @@
+
+<div id="report_state_home">
+    
+<p id="individual state report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= ((@type=='County') ?  ( link_to "Select County",  :action => 'county_select', :State => @statename, :dateto => @date2, :datefrom => @date1) : "" )%>  &gt;  <%= @page_title %></p>
+
+<h1><%= @typename%>  Report</h1>
+<div id="date_range">
+	<%= render(:partial => 'flashmessages') %>
+	
+     <h4 id="selected_range"><%= (@dateinterval ? "#{@dateinterval[0].strftime('%b %e, %Y')} - #{@dateinterval[1].strftime('%b %e, %Y')}" : "#{@earliest_date.strftime('%b %e, %Y')} - #{@latest_date.strftime('%b %e, %Y')} <span>(all data)</span>") %></h4>
+
+      <% if @type == 'State'%>  
+         <% form_tag({:action => params[:action], :State => @typename }) do %>
+         
+            <%= calendar_date_select_tag "datefrom", ((@dateinterval) ? @dateinterval[0].strftime('%Y-%m-%d') : @earliest_date.strftime('%Y-%m-%d')), :popup => true%><span>to</span><%= calendar_date_select_tag "dateto", ((@dateinterval) ? @dateinterval[1].strftime('%Y-%m-%d') : @latest_date.strftime('%Y-%m-%d')), :popup => true%>
+            <%= submit_tag 'Go' %>
+         <% end%>
+        
+         <% form_tag({ :action => params[:action], :State => @typename } ) do %>
+            <%= submit_tag 'Show all'%>
+         <% end%>
+      <% else%>
+         <% form_tag({:action => params[:action], :State => @statename, :County => @county }) do %>
+          
+              <%= calendar_date_select_tag "datefrom", ((@dateinterval) ? @dateinterval[0].strftime('%Y-%m-%d') : @earliest_date.strftime('%Y-%m-%d')), :popup => true%><span>to</span><%= calendar_date_select_tag "dateto", ((@dateinterval) ? @dateinterval[1].strftime('%Y-%m-%d') : @latest_date.strftime('%Y-%m-%d')), :popup => true%>
+           <%= submit_tag 'Go' %>
+        <% end%> 
+
+        <% form_tag({ :action => params[:action], :State => @statename, :County => @county } ) do %>
+            <%= submit_tag 'Show all'%>
+        <% end%>
+
+      <% end%>
+
+</div>
+
+
+
+<table id="state_activities_table" cellspacing="0">
+    <caption><%= "General Activity" %></caption>
+    <tr>
+        <td>New Registrations</td>
+       
+		        <td class="count"><%= link_to @reguser, :action => "display_state_users", :State => @statename, :County => @county, :loc => (@type=='State') ? @typeobj.id : nil, :descriptor =>"User" , :olink => "Users",  :dateto => @date2, :datefrom => @date1, :num => @reguser, :type => @type%></td>
+	   
+        
+    </tr>
+</table>
+   
+
+<table id="state_activities_table" cellspacing="0">
+    <caption><%= "Ask an Expert Activity" %></caption>
+    <tr><td class="reportheader" colspan="2">Questions Categorized with a <%= @typename%> Location</td></tr>
+    
+    
+    <tr>
+        <td>Open (still awaiting a response)</td>
+       
+	        <td class="count"><%= link_to @asgn, :action => "display_state_questions", :State => @statename, :County => @county, :loc => (@type=='State') ? @typeobj.id : nil, :descriptor =>"Submitted" , :olink => "Submitted", :dateto => @date2, :datefrom => @date1, :num => @asgn, :type => @type%></td>
+        
+    </tr>
+      
+        <!-- Total Resolved Questions (Answered, Rejected, Responded) for questions categorized for state/county-->
+         <%= render :partial => "resolved_types", :locals => { :resolve_persp => "ResolvedP", :answ => @answp, :answa => @answpa, :answr => @answpr, :answn => @answpn }%>
+  
+    <tr class="spacer"><td colspan="2">&nbsp;</td></tr>
+    <tr>
+        <td class="reportheader" colspan="2">Ask an Expert Activity by Experts in <%= @typename%></td>
+    </tr>
+
+	  <!--  Total Resolved Questions (Answered, Rejected, Responded) by Users in state/county-->
+         <%= render :partial => "resolved_types", :locals => { :resolve_persp => "ResolvedM", :answ => @answm, :answa => @answma, :answr => @answmr, :answn => @answmn }%>
+  
+</table>
+
+
+	
+
+	 
+	 
+
+	
+</div>
