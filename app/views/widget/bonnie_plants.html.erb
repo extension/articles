@@ -15,13 +15,14 @@
        h1 {margin:0;padding:0;float:right;height: 40px;width: 98px;text-indent:-3000px;background: transparent url("http://<%= @host_name %>/images/ask/ex_logo_micro.png") 0 0 no-repeat;}
        h1 a {display:block;height:40px;}
        h2 {margin:0 0 .25em;font-size: 1.7em;line-height:100%;font-weight: normal;color:#000;}
+       h3 {margin:0 0 .25em;font-size: 1.6em;line-height:100%;font-weight: normal;color:#000;}
 
        #myFormOutput p {margin: 1em 0;color:#008000;font-weight: bold;font-size:1.3em;}
        #myFormOutput p#red {color: #ff0000;}
        
        fieldset {margin: 1em 0 .5em;border:0;padding:0;color:#666;}
-       textarea, input, select {width: 95%;margin: 0 0 1em;}
-       input, textarea {padding: .15em .3em;}
+       textarea, input, select {width: 97%;margin: 0 0 1em;}
+       input, textarea {padding: .15em .3em;display:block;}
        p.submit input {width:auto;}
        label {clear: both;display: block;margin-bottom:.3em;font-weight: bold;font-size:1.2em;}
        span {line-height: 100%;display: block;font-weight:normal;color: #888;}
@@ -44,39 +45,38 @@
     
     <div id="myFormOutput"></div>
 
-    <h3>Personal Information</h3>
-
-    <p><em>Fields marked with an asterisk (*) are required</em></p>
-
     <p>
-        <label for="first_name">First Name: *</label>
+        <label for="first_name">First Name:
         <%= text_field_tag(:first_name) %>
+        </label>
     </p>
 
     <p>
-        <label for="last_name">Last Name: *</label>
+        <label for="last_name">Last Name:
         <%= text_field_tag(:last_name) %>
+        </label>
     </p>
     
     <p>
-        <label for="email">Email: *<span>Type it carefully; this is how you'll receive your answer.</span></label>
+        <label for="email">Email: <span>Type it carefully; this is how you'll receive your answer.</span>
         <%= text_field_tag(:email) %>
+        </label>
     </p>
     
     <p>
-        <label for="email_confirmation">Email Confirmation: *</label>
+        <label for="email_confirmation">Confirm Your Email:
         <%= text_field_tag(:email_confirmation) %>
+        </label>
     </p>
-    
-    
-    <h3>Your location</h3>
-    <p>Where should the question be directed?</p>
+
+    <p>Where does your question take place? (optional, but it helps us give a more precise answer)</p>
     <%= render(:partial => 'shared/location_county') %>
     
 
     <p>
-        <label for="question">Question</label>
+        <label for="question">Question
         <%= text_area_tag :question, nil, :rows => 4  %>
+        </label>
     </p>
 
     <p class="submit"><%= submit_tag "Ask", :id => "ask_submit" %></p>
