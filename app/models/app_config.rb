@@ -37,8 +37,8 @@ class AppConfig
     @@configtable['epoch_time'] = Time.parse('1970-01-01 00:00:00 UTC')    
     @@configtable['content_feed_refresh_since'] = Time.parse('2005-11-01 00:00:00 UTC')
     
-    @@configtable['content_feed_events'] = 'http://events.extension.org/events_after'
-    @@configtable['content_feed_faqs'] = 'http://faq.extension.org/faq_export'
+    @@configtable['content_feed_events'] = 'http://cop.extension.org/feeds/events?updated-min='
+    @@configtable['content_feed_faqs'] = 'http://faq.extension.org/feeds/faqs?updated-min='
     @@configtable['content_feed_wikiarticles'] = 'http://cop.extension.org/wiki/Special:Feeds/?unpublished=1&published=1&dpls=1&updated-min='
     @@configtable['content_feed_wiki_previewpage'] = 'http://cop.extension.org/wiki/Special:Feeds/' # + page name
     @@configtable['extensionorg_copwiki_host'] = 'cop.extension.org'

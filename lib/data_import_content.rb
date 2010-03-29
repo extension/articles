@@ -80,10 +80,10 @@ module DataImportContent
      case self.name
      when 'Event'
        feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_events'] : options[:feed_url])
-       usexmlschematime = false
+       usexmlschematime = true
      when 'Faq'
        feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_faqs'] : options[:feed_url])
-       usexmlschematime = false
+       usexmlschematime = true
      when 'Article'
        datatype = (options[:datatype].nil? ? 'WikiArticle' : options[:datatype])
        feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_wikiarticles'] : options[:feed_url])
