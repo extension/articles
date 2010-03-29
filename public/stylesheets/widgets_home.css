@@ -14,20 +14,53 @@ body, html {font-family: Helvetica, "Arial", "sans-serif";}
 #header h1 a:hover {color:#253d7b;}
 #header p {font-size:14pt;color:#444;}
 
-#content {float:left; background: url(/images/widgets/widgets_home_masthead_shadow.png) #f1f1f1 repeat-x; padding:40px 0 40px;}
+#content {float:left; background: url(/images/widgets/widgets_home_masthead_shadow.png) #f1f1f1 repeat-x; padding:40px 0 20px;}
 
 .section {
-    float:left; 
-    width:378px;
-    margin: 0 30px 100px;
-    padding:10px 20px;
+    float:left;
+    position:relative;
+    width:318px;
+    margin: 0 40px 40px;
+    padding:10px 40px;
     border:1px solid #ccc;
     border-right:1px solid #888;
     border-bottom:1px solid #888;
-    background: url(/images/widgets/widgets_section_bg.png) #e5f2ff repeat-x; 
-    box-shadow: 3px 4px 3px #8ecbff;
+    background: url(/images/widgets/widgets_section_bg.png) #e5f2ff repeat-x 0 0; 
+    box-shadow: 3px 3px 4px #888;
     -moz-box-shadow: 3px 3px 4px #888;
-    -webkit-box-shadow: 3px 4px 3px #8ecbff;
+    -webkit-box-shadow: 3px 3px 4px #888;
+    }
+
+a:hover .section {
+    border:1px solid #a2b1d9;
+    border-right:1px solid #253d7b;
+    border-bottom:1px solid #253d7b;
+    box-shadow: 3px 3px 4px #444;
+    -moz-box-shadow: 3px 3px 4px #444;
+    -webkit-box-shadow: 3px 3px 4px #444;
+    background: url(/images/widgets/widgets_section_bg.png) #d9ecff no-repeat -500px 0;
+    }
+
+
+a .section li {color:#666;}
+a:hover .section li {color:#000;}
+a {text-decoration:none;}
+a .section li, a .section p {margin-bottom:1em; font-size:15px; }
+
+.image {text-align:center;}
+.go_button {
+    width:85px;
+    height:85px;
+    background: url(/images/widgets/go_arrow3.png) no-repeat transparent;
+    position:absolute;
+    right:15px;
+    bottom:5px;
+    text-align:center;
+    line-height:87px;
+    color:#fff !important;
+    font-weight:bold;
+    font-size:10pt;
+    text-transform:uppercase;
     }
 
 .section h2 {color:#253d7b; font-size:18pt;font-weight:normal;}
