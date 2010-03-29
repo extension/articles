@@ -51,7 +51,7 @@ a .section li, a .section p {margin-bottom:1em; font-size:15px; }
 .go_button {
     width:85px;
     height:85px;
-    background: url(/images/widgets/go_arrow3.png) no-repeat transparent;
+    background: url(/images/widgets/go_arrow_hover.png) no-repeat transparent;
     position:absolute;
     right:15px;
     bottom:5px;
@@ -62,6 +62,10 @@ a .section li, a .section p {margin-bottom:1em; font-size:15px; }
     font-size:10pt;
     text-transform:uppercase;
     }
+
+a:hover .go_button {
+    background: url(/images/widgets/go_arrow_hover.png) no-repeat -85px 0 transparent;
+}
 
 .section h2 {color:#253d7b; font-size:18pt;font-weight:normal;}
 
