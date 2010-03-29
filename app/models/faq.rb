@@ -7,6 +7,7 @@
 
 class Faq < ActiveRecord::Base
   include ActionController::UrlWriter  # so that we can generate URLs out of the model
+  include TaggingScopes
   extend DataImportContent  # utility functions for importing content
   
   # currently, no need to cache, we don't fulltext search tags

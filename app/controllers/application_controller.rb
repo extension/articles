@@ -51,6 +51,16 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def content_date_sort(articles, faqs, limit)
+		merged = Hash.new
+		retarray = Array.new
+		articles.each{ |article| merged[article.wiki_updated_at] = article }
+		faqs.each{ |faq| merged[faq.heureka_published_at] = faq }
+		tstamps = merged.keys.sort.reverse # sort by updated, descending
+		tstamps.each{ |key| retarray << merged[key] }
+		return retarray.slice(0,limit)
+	end
+  
   def get_location_options
     locations = Location.find(:all, :order => 'entrytype, name')
     return [['', '']].concat(locations.map{|l| [l.name, l.id]})

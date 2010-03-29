@@ -10,6 +10,7 @@ require 'mofo'
 
 class Event < ActiveRecord::Base
   include ActionController::UrlWriter # so that we can generate URLs out of the model to convert it to an atom entry
+  include TaggingScopes
   extend DataImportContent  # utility functions for importing event content
 
   #-- Rails 2.1 dependent stuff

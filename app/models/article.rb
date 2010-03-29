@@ -8,6 +8,7 @@
 require 'uri'
 class Article < ActiveRecord::Base
   include ActionController::UrlWriter # so that we can generate URLs out of the model
+  include TaggingScopes
   
   extend DataImportContent   # utility functions for importing content
   # constants for tracking delete/updates/adds
