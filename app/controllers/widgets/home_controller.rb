@@ -6,11 +6,11 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Widgets::HomeController < ApplicationController
-  layout 'widgets'
+  layout 'widgetshome'
   before_filter :login_optional
 
   def index
-    return redirect_to(widgets_aae_url)
+    # return redirect_to(widgets_aae_url)
   end
   
 end
