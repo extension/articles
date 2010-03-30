@@ -37,6 +37,20 @@ class Widgets::ContentController < ApplicationController
     end
     
     render :update do |page| 
+      
+      styles = '<style type="text/css" media="screen">
+              <!--
+              #content_widget {font-family: Helvetica, "Arial", "sans-serif";color:#222;}
+              #content_widget {border:2px solid #ddd;padding:0; width:300px;}
+              #content_widget h3 {color:#f47c2a; margin:0 0 10pt; padding:10px 12px 5px; border-bottom:2px solid #ddd; background:#f3f3f3}
+              #content_widget ul {margin:0;padding:0; padding:0 12px 10px;}
+              #content_widget li {margin:0 0 14px;padding; font-size:10.5pt;list-style:none;line-height:13pt}
+              #content_widget li a {text-decoration:none;color:#333; display:block;}
+              #content_widget li a:hover {text-decoration:none;color:#f47c2a;}
+             	-->
+              </style>'
+              
+      page << "document.write('#{escape_javascript(styles)}');"
       page << "document.write('<div id=\"content_widget\"><h3>eXtension #{type} for: #{Tag.castlist_to_array(content_tags,false,false).join(',')}</h3><ul>');"
       page << "document.write('<h3>There are currently no content items at this time.</h3>')" if contents.length == 0
         
@@ -62,7 +76,8 @@ class Widgets::ContentController < ApplicationController
   end
   
   def test_widget
-    
+    # render :layout => 'pubsite'
+    render :layout => false
   end
   
   private
