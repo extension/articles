@@ -38,7 +38,7 @@ class Widgets::ContentController < ApplicationController
     
     render :update do |page| 
       page << "document.write('<div id=\"content_widget\"><h3>eXtension #{type} for: #{Tag.castlist_to_array(content_tags,false,false).join(',')}</h3><ul>');"
-      page << "document.write('<p>There are currently no content items at this time.</p>')" if contents.length == 0
+      page << "document.write('<h3>There are currently no content items at this time.</h3>')" if contents.length == 0
         
       contents.each do |content| 
         case content.class.name 
