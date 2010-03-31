@@ -43,7 +43,7 @@ module DataImportContent
       when Net::HTTPSuccess
         urlcontent = response.body
       else
-        raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{parse_url} failed: #{response.code}/#{response.message}"          
+        raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{feed_url} failed: #{response.code}/#{response.message}"          
       end    
     else # unsupported URL scheme
       raise ContentRetrievalError, "Fetch URL Content:  Unsupported scheme #{feed_url}"          
