@@ -71,7 +71,7 @@ class Widgets::ContentController < ApplicationController
   def return_error
     render :update do |page|         
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://www.extension.org/widgets\">eXtension widget builder</a> and copy the code again.</p></div');"
+      page << "document.write('<div id=\"content_widget\" class=\"error\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://www.extension.org/widgets\">eXtension widget builder</a> and copy the code again.</p></div');"
     end
   end
 
