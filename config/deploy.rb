@@ -5,7 +5,7 @@ require 'yaml'
 
 set :application, "darmok"
 set :user, 'pacecar'
-
+set :localuser, ENV['USER']
 #------------------------------
 
 set :repository, "git@github.com:extension/#{application}.git"
@@ -105,7 +105,7 @@ namespace :deploy do
   namespace :notification do
     desc "Generate an email for the deploy"
     task :email, :roles => [:app] do 
-      run "#{ruby} #{release_path}/script/deploynotification.rb -r #{repository} -a #{application} -h #{server_settings['host']} -u #{user} -p #{previous_revision} -l #{latest_revision} -b #{branch}"
+      run "#{ruby} #{release_path}/script/deploynotification.rb -r #{repository} -a #{application} -h #{server_settings['host']} -u #{localuser} -p #{previous_revision} -l #{latest_revision} -b #{branch}"
     end
   end
 end
