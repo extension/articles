@@ -9,7 +9,8 @@ require 'digest/sha1'
 class AppConfig
   
   @@configtable = Hash.new
-  cattr_reader :configtable
+  @@content_widget_styles = ''
+  cattr_reader :configtable, :content_widget_styles
   
   def AppConfig.default_config
 
@@ -188,7 +189,14 @@ class AppConfig
       end
     end    
   end
+  
+  def AppConfig.set_content_widget_css
+    css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
+    @@content_widget_styles = '<style type="text/css" media="screen"><!--' + css_data + '--></style>'
+  end
 
   # load the configuration on Class load
-  self.load_config  
+  self.load_config 
+  # set css for content widgets on Class load
+  self.set_content_widget_css 
 end

@@ -36,24 +36,8 @@ class Widgets::ContentController < ApplicationController
       return return_error
     end
     
-    render :update do |page| 
-      
-      styles = '<style type="text/css" media="screen">
-              <!--
-              #content_widget {width:250px;}
-              #content_widget {font-family:"lucida grande",lucida,tahoma,helvetica,arial,sans-serif !important; color:#222;border:2px solid #ddd;padding:0; border-radius:7px;-moz-border-radius:7px;-webkit-border-radius:7px;}
-              #content_widget h3 {color:#f47c2a; margin:0 0 10pt; padding:10px 0 5px; background:#f3f3f3;font-size:15px;float:left;width:100%}
-              #content_widget h3 img {border:1px solid #ddd; float:left; margin: 0 10px 0 12px}
-              #content_widget ul {margin:0;padding:0; padding:0 12px 10px;}
-              #content_widget li {margin:0 0 7px;padding:0 0 6px; font-size:12px !important;list-style:none;line-height:13pt;border-bottom:1px solid #eee;}
-              #content_widget a {text-decoration:none;color:#333; display:block;}
-              #content_widget a:hover {text-decoration:none;color:#f47c2a;}
-              #content_widget p {margin:0 0 0;padding: 6px 12px; font-size:12px !important;background:#f3f3f3}
-              #content_widget p a {color:#777;}
-             	-->
-              </style>'
-              
-      page << "document.write('#{escape_javascript(styles)}');"
+    render :update do |page|         
+      page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
       page << "document.write('<div id=\"content_widget\"><h3><img src=\"/images/common/extension_icon_40x40.png\" /> eXtension #{type}: #{Tag.castlist_to_array(content_tags,false,false).join(', ')}</h3><ul>');"
       page << "document.write('<h3>There are currently no content items at this time.</h3>')" if contents.length == 0
         
@@ -79,27 +63,15 @@ class Widgets::ContentController < ApplicationController
   end
   
   def test_widget
-    # render :layout => 'pubsite'
     render :layout => false
   end
   
   private
   
   def return_error
-    render :update do |page| 
-      styles = '<style type="text/css" media="screen">
-              <!--
-              #content_widget {width:250px;}
-              #content_widget {font-family:"lucida grande",lucida,tahoma,helvetica,arial,sans-serif !important; color:#222;border:2px solid #ddd;padding:0; border-radius:7px;-moz-border-radius:7px;-webkit-border-radius:7px;}
-              #content_widget a:hover {text-decoration:none;color:#f47c2a;}
-              #content_widget p {margin:0 0 0;padding: 6px 12px; font-size:12px !important;background:#f3f3f3}
-              #content_widget p a {color:#777;}
-             	-->
-              </style>'
-              
-      page << "document.write('#{escape_javascript(styles)}');"
-      
-      page << "document.write('<div id=\"content_widget\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://www.extension.org/widgets\">eXtension widget builder</a> copy the code again.</p></div');"
+    render :update do |page|         
+      page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
+      page << "document.write('<div id=\"content_widget\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://www.extension.org/widgets\">eXtension widget builder</a> and copy the code again.</p></div');"
     end
   end
 
