@@ -87,7 +87,19 @@ class Widgets::ContentController < ApplicationController
   
   def return_error
     render :update do |page| 
-      page << "document.write('<p>You must supply valid content tags and a valid content type for this widget.</p>');"
+      styles = '<style type="text/css" media="screen">
+              <!--
+              #content_widget {width:250px;}
+              #content_widget {font-family:"lucida grande",lucida,tahoma,helvetica,arial,sans-serif !important; color:#222;border:2px solid #ddd;padding:0; border-radius:7px;-moz-border-radius:7px;-webkit-border-radius:7px;}
+              #content_widget a:hover {text-decoration:none;color:#f47c2a;}
+              #content_widget p {margin:0 0 0;padding: 6px 12px; font-size:12px !important;background:#f3f3f3}
+              #content_widget p a {color:#777;}
+             	-->
+              </style>'
+              
+      page << "document.write('#{escape_javascript(styles)}');"
+      
+      page << "document.write('<div id=\"content_widget\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://www.extension.org/widgets\">eXtension widget builder</a> copy the code again.</p></div');"
     end
   end
 
