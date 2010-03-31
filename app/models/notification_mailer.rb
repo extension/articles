@@ -501,6 +501,19 @@ class NotificationMailer < ActionMailer::Base
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :submitted_questions_list => submitted_questions_list, :sincehours => sincehours, :urls => urls }
    end
-      
+  
+   # -----------------------------------
+   #  system administration
+   # -----------------------------------
+
+   def deployment(deployinfo,scmoutput)
+      # base parameters for the email
+      self.base_email('deploy')
+      @recipients     = 'dev-deploys@lists.extension.org'
+      #override
+      @bcc = nil
+      @subject        = @subjectlabel+'Dega deployment notification'
+      @body           = {:isdemo => @isdemo, :deployinfo => deployinfo, :scmoutput => scmoutput}  
+    end    
    
 end
