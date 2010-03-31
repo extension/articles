@@ -22,7 +22,6 @@ before "deploy", "deploy:web:disable"
 # After code is updated, do some house cleaning
 after "deploy:update_code", "deploy:update_maint_msg"
 after "deploy:update_code", "deploy:link_configs"
-after "deploy:update_code", "deploy:setup_app_version"
 after "deploy:update_code", "deploy:cleanup"
 
 # don't forget to turn it back on
@@ -85,14 +84,6 @@ namespace :deploy do
     ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki    
     CMD
-  end
-
-  desc "Setup the app version file (valid after an update code invocation)"
-  task :setup_app_version, :roles => :app do
-    puts "  * setting version info: #{version_tag} r#{latest_revision}"
-    version_file = "#{release_path}/app/models/app_version.rb"
-    version_file_contents = render "config/app_version.erb"
-    put version_file_contents, version_file
   end
   
     # Override default web enable/disable tasks
