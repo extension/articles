@@ -1,20 +1,17 @@
-require 'erb'
 require 'yaml'
 
 #------------------------------
 # <i>Should</i> only have to edit these three vars for standard eXtension deployments
 
 set :application, "darmok"
-set :app_host, 'www'
-set :notify, "dev-deploys@lists.extension.org" #format for notifying multiple addresses = "to@someone.com,to@someoneelse.com" (no spaces)
-
+set :user, 'pacecar'
+set :localuser, ENV['USER']
 #------------------------------
 
-set :repository_base,  "https://sourcecode.extension.org/svn/#{application}"
-set :deploy_via, :export
+set :repository, "git@github.com:extension/#{application}.git"
+set :scm, "git"
 set :use_sudo, false
 set :ruby, "/usr/bin/ruby"
-set :email_script, "/services/scripts/deploy_notify.rb"
 
 # Make sure environment is loaded as first step
 on :load, "deploy:setup_environment"
@@ -25,12 +22,11 @@ before "deploy", "deploy:web:disable"
 # After code is updated, do some house cleaning
 after "deploy:update_code", "deploy:update_maint_msg"
 after "deploy:update_code", "deploy:link_configs"
-after "deploy:update_code", "deploy:setup_app_version"
 after "deploy:update_code", "deploy:cleanup"
 
 # don't forget to turn it back on
 after "deploy", "deploy:web:enable"
-after :deploy, 'email:generate_report'
+after "deploy", 'deploy:notification:email'
 
 # Add tasks to the deploy namespace
 namespace :deploy do
@@ -51,9 +47,12 @@ namespace :deploy do
     # is determined, and the deploy dir is set
     if(server_settings)
       setup_roles
-      set :repository, build_repository_uri
       set :deploy_to, server_settings['deploy_dir']
-      set :user, get_staff_username
+      if (branch = (ENV['BRANCH']))
+        set :branch, branch
+      else
+        set :branch, server_settings['branch'] 
+      end
       ssh_options[:port] = server_settings['ssh_port'] if server_settings['ssh_port']
       puts "  * Operating on: #{server_settings['host']}:#{deploy_to} from #{repository} as user: #{user}"
     else
@@ -86,14 +85,6 @@ namespace :deploy do
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki    
     CMD
   end
-
-  desc "Setup the app version file (valid after an update code invocation)"
-  task :setup_app_version, :roles => :app do
-    puts "  * setting version info: #{version_tag} r#{latest_revision}"
-    version_file = "#{release_path}/app/models/app_version.rb"
-    version_file_contents = render "config/app_version.erb"
-    put version_file_contents, version_file
-  end
   
     # Override default web enable/disable tasks
   namespace :web do
@@ -109,14 +100,39 @@ namespace :deploy do
     end
     
   end
+
+  # generate an email to notify various users that a new version has been deployed
+  namespace :notification do
+    desc "Generate an email for the deploy"
+    task :email, :roles => [:app] do 
+      run "#{ruby} #{release_path}/script/deploynotification.rb -r #{repository} -a #{application} -h #{server_settings['host']} -u #{localuser} -p #{previous_revision} -l #{latest_revision} -b #{branch}"
+    end
+  end
 end
 
-# generate an email to notify various users that a new version has been deployed
-# ruby deploy_email_generator.rb -m dev-deploys@lists.extension.org -r repository_base -a application -t target_host -u who_done_it
-namespace :email do 
-  desc "Generate an email for the deploy"
-  task :generate_report, :roles => [:app] do 
-    run "#{ruby} #{email_script} -m #{notify} -r #{repository} -a #{application} -t #{server_settings['host']} -u #{user}"
+#--------------------------------------------------------------------------
+# useful administrative routines
+#--------------------------------------------------------------------------
+
+namespace :admin do
+  
+  desc "Open up a remote console to #{application} (be sure to set your RAILS_ENV appropriately)"
+  task :console, :roles => :app do
+    input = ''
+    invoke_command "cd #{current_path} && ./script/console #{ENV['RAILS_ENV'] || 'production'}" do |channel, stream, data|
+      next if data.chomp == input.chomp || data.chomp == ''
+      print data
+      channel.send_data(input = $stdin.gets) if data =~ /^(>|\?)>/
+    end
+  end
+
+  desc "Tail the server logs for #{application}"
+  task :tail_logs, :roles => :app do
+    run "tail -f #{shared_path}/log/production.log" do |channel, stream, data|
+      puts  # for an extra line break before the host name
+      puts "#{channel[:host]}: #{data}" 
+      break if stream == :err    
+    end
   end
 end
 
@@ -137,43 +153,8 @@ end
 # NOTE: will probably want to allow the user to specify where their
 # deploy_servers.yml file is in the future?
 def server_settings
-  @server_settings ||=
-    YAML.load(render('config/deploy_servers.yml'))[ENV['SERVER']]
+  @server_settings ||= YAML.load_file('config/deploy_servers.yml')[ENV['SERVER']]
 end
 
-# map local machine usernames to eX staff usernames
-def get_staff_username
-  user =
-     YAML.load(render('config/deploy_user_map.yml'))[ENV['USER']]
-  user ||= ENV['USER'] 
-end
 
-# Get the uri of the repository to pull from using the 
-# specified environment variables
-def build_repository_uri
-  if (tag = (ENV['TAG'] || server_settings['tag']))
-    set :version_tag, tag
-    tag == 'trunk' ? "#{repository_base}/trunk" : "#{repository_base}/tags/#{tag}"
-  elsif (branch = (ENV['BRANCH']))
-    set :version_tag, "branches-#{branch}"
-    branch == 'trunk' ? "#{repository_base}/trunk" : "#{repository_base}/branches/#{branch}"
-  else
-    set :version_tag, most_recent_svn_tag
-    "#{repository_base}/tags/#{version_tag}"
-  end
-end
 
-# Get is the most recent tagged version in the repository
-def most_recent_svn_tag
-  # -v includes the revision number in column 0, tag in column 5
-  tag_list = `svn -v ls #{repository_base}/tags/`.split("\n")
-  tag_list.collect!{|ea| ea.split().values_at(0,5)}
-  tag_list.reject!{|ea| ea[1] == './'}
-  tag_list.sort!{|x,y| x[0].to_i <=> y[0].to_i}
-  tag_list.last.at(1).chomp('/')
-end
-
-# Backwards compatible 'render' from cap < 2.0
-def render(file)
-  ERB.new(File.read(File.dirname(__FILE__) + "/../#{file}")).result(binding)
-end
