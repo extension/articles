@@ -8,7 +8,7 @@
 class Widgets::ContentController < ApplicationController
   
   def index
-   
+   render :layout => 'widgetshome'
   end
   
   def show
