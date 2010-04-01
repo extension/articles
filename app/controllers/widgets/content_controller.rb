@@ -38,7 +38,7 @@ class Widgets::ContentController < ApplicationController
     
     render :update do |page|         
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\"><h3><img src=\"/images/common/extension_icon_40x40.png\" /> eXtension #{type}: #{Tag.castlist_to_array(content_tags,false,false).join(', ')}</h3><ul>');"
+      page << "document.write('<div id=\"content_widget\"><h3><img src=\"/images/common/extension_icon_40x40.png\" /> <span>eXtension #{type}: #{Tag.castlist_to_array(content_tags,false,false).join(', ')}</span></h3><ul>');"
       page << "document.write('<h3>There are currently no content items at this time.</h3>')" if contents.length == 0
         
       contents.each do |content| 

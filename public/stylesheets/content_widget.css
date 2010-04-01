@@ -1,6 +1,7 @@
 #content_widget {width:250px;}
 #content_widget {font-family:"lucida grande",lucida,tahoma,helvetica,arial,sans-serif !important; color:#222;border:2px solid #ddd;padding:0; border-radius:7px;-moz-border-radius:7px;-webkit-border-radius:7px; background:#fff;}
 #content_widget h3 {color:#f47c2a; margin:0 0 10pt; padding:10px 0 5px; background:#f3f3f3;font-size:15px;float:left;width:100%}
+#content_widget h3 span {padding:0 10px 0 0;}
 #content_widget h3 img {border:1px solid #ddd; float:left; margin: 0 10px 0 12px}
 #content_widget ul {margin:0;padding:0 12px 10px;}
 #content_widget li {margin:0 0 7px;padding:0 0 6px; font-size:12px !important;list-style:none;line-height:15px;border-bottom:1px solid #eee;}
@@ -8,5 +9,6 @@
 #content_widget a:hover {text-decoration:none;color:#f47c2a;}
 #content_widget p {margin:0 0 0;padding: 6px 12px; font-size:12px !important;background:#f3f3f3}
 #content_widget p a {color:#777;}
+#content_widget li {text-indent:0 !important;}
 
 #content_widget.error a {display:inline;}
