@@ -44,13 +44,13 @@ class Widgets::ContentController < ApplicationController
       contents.each do |content| 
         case content.class.name 
         when "Faq" 
-          page << "document.write('<li><a href=#{url_for :controller => '/faq', :action => :detail, :id => content.id}>');"
+          page << "document.write('<li><a href=#{url_for :controller => '/faq', :action => :detail, :id => content.id, :utm_source => 'contentwidget', :utm_medium => 'widgetlink', :utm_campaign => 'contentwidget'}>');"
           page << "document.write('#{escape_javascript(content.question)}');"  
         when "Article"
-          page << "document.write('<li><a href=#{url_for :controller => '/articles', :action => :page, :id => content.id}>');"
+          page << "document.write('<li><a href=#{url_for :controller => '/articles', :action => :page, :id => content.id, :utm_source => 'contentwidget', :utm_medium => 'widgetlink', :utm_campaign => 'contentwidget'}>');"
           page << "document.write('#{escape_javascript(content.title)}');"  
         when "Event"
-          page << "document.write('<li><a href=#{url_for :controller => '/events', :action => :detail, :id => content.id}>');"
+          page << "document.write('<li><a href=#{url_for :controller => '/events', :action => :detail, :id => content.id, :utm_source => 'contentwidget', :utm_medium => 'widgetlink', :utm_campaign => 'contentwidget'}>');"
           page << "document.write('#{escape_javascript(content.title)}');" 
         else
           next
