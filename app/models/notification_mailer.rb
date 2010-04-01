@@ -512,7 +512,7 @@ class NotificationMailer < ActionMailer::Base
       @recipients     = 'dev-deploys@lists.extension.org'
       #override
       @bcc = nil
-      @subject        = @subjectlabel+'Dega deployment notification'
+      @subject        = @subjectlabel+'Darmok deployment notification'
       @body           = {:isdemo => @isdemo, :deployinfo => deployinfo, :scmoutput => scmoutput}  
     end    
    
