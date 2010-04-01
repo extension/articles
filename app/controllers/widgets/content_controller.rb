@@ -8,7 +8,7 @@
 class Widgets::ContentController < ApplicationController
   
   def index
-   
+   render :layout => 'widgetshome'
   end
   
   def show
@@ -38,19 +38,20 @@ class Widgets::ContentController < ApplicationController
     
     render :update do |page|         
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\"><h3><img src=\"/images/common/extension_icon_40x40.png\" /> eXtension #{type}: #{Tag.castlist_to_array(content_tags,false,false).join(', ')}</h3><ul>');"
+      page << "document.write('<div id=\"content_widget\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> eXtension #{type}: #{Tag.castlist_to_array(content_tags,false,false).join(', ')}</h3><ul>');"
       page << "document.write('<h3>There are currently no content items at this time.</h3>')" if contents.length == 0
         
       contents.each do |content| 
         case content.class.name 
         when "Faq" 
-          page << "document.write('<li><a href=#{url_for :controller => '/faq', :action => :detail, :id => content.id}>');"
+          page << "document.write('<li><a href=#{url_for :controller => '/faq', :action => :detail, :id => content.id, :only_path => false, :utm_source => 'contentwidget', :utm_medium => 'widgetlink', :utm_campaign => 'contentwidget'}>');"
           page << "document.write('#{escape_javascript(content.question)}');"  
         when "Article"
-          page << "document.write('<li><a href=#{url_for :controller => '/articles', :action => :page, :id => content.id}>');"
+          page << "document.write('<li><a href=#{url_for :controller => '/articles', :action => :page, :id => content.id, :only_path => false, :utm_source => 'contentwidget', :utm_medium => 'widgetlink', :utm_campaign => 'contentwidget'}>');"
           page << "document.write('#{escape_javascript(content.title)}');"  
         when "Event"
-          page << "document.write('<li><a href=#{url_for :controller => '/events', :action => :detail, :id => content.id}>');"
+          page << "document.write('<li><a href=#{url_for :controller => '/events', :action => :detail, :id => content.id, :only_path => false, :utm_source => 'contentwidget', :utm_medium => 'widgetlink', :utm_campaign => 'contentwidget'}>');"
+
           page << "document.write('#{escape_javascript(content.title)}');" 
         else
           next
@@ -58,7 +59,7 @@ class Widgets::ContentController < ApplicationController
         page << "document.write('</a></li>');"
       end
       page << "document.write('</ul>');" 
-      page << "document.write('<p><a href=\"http://www.extension.org/widgets\">Create your own eXtension widget</a></p></div>');" 
+      page << "document.write('<p><a href=\"http://#{request.host}/widgets\">Create your own eXtension widget</a></p></div>');" 
     end
   end
   
@@ -71,7 +72,7 @@ class Widgets::ContentController < ApplicationController
   def return_error
     render :update do |page|         
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\" class=\"error\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://www.extension.org/widgets\">eXtension widget builder</a> and copy the code again.</p></div');"
+      page << "document.write('<div id=\"content_widget\" class=\"error\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://#{request.host}/widgets\">eXtension widget builder</a> and copy the code again.</p></div');"
     end
   end
 

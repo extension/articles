@@ -14,7 +14,7 @@ body, html {font-family: Helvetica, "Arial", "sans-serif";}
 #header h1 a:hover {color:#253d7b;}
 #header p {font-size:14pt;color:#444;}
 
-#content {float:left; background: url(/images/widgets/widgets_home_masthead_shadow.png) #f1f1f1 repeat-x; padding:40px 0 20px;}
+#content {float:left; background: url(/images/widgets/widgets_home_masthead_shadow.png) #f1f1f1 repeat-x; padding:40px 0 20px; width:100%;}
 
 .section {
     float:left;
@@ -83,3 +83,7 @@ a:hover .go_button {
 #common_footer ul li {float:left; }
 #common_footer ul li.last {padding-right:0;}
 .copyright {float:left;}
+.clearing {clear:both;}
+
+#example_widget {float:right; padding:10px 30px; 30px;}
+#widget_builder {float:left; background:#fff; width: 400px; margin-left:40px; padding:20px;}

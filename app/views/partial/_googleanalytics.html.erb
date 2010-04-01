@@ -17,7 +17,7 @@ var pageTracker = _gat._getTracker("<%= @gaprofile %>");
 pageTracker._setDomainName("extension.org");
 <% if !flash[:googleanalytics].nil? %>
     pageTracker._trackPageview("<%= flash[:googleanalytics] %>");
-    pageTracker._setCustomVar(3, "resource area tag", "<%= flash[:googleanalyticsresourcearea] %>", 3)
+    pageTracker._setCustomVar(3, "rat", "<%= flash[:googleanalyticsresourcearea] %>", 3)
 <% else  %>
     pageTracker._trackPageview();
 <% end %>
