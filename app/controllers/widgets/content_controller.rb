@@ -50,7 +50,7 @@ class Widgets::ContentController < ApplicationController
           page << "document.write('<li><a href=#{url_for :controller => '/articles', :action => :page, :id => content.id, :only_path => false}>');"
           page << "document.write('#{escape_javascript(content.title)}');"  
         when "Event"
-          page << "document.write('<li><a href=#{url_for :controller => '/events', :action => :detail, :id => content.id, :only_path => false');"
+          page << "document.write('<li><a href=#{url_for :controller => '/events', :action => :detail, :id => content.id, :only_path => false}>');"
 
           page << "document.write('#{escape_javascript(content.title)}');" 
         else
