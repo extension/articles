@@ -8,7 +8,7 @@
 require 'hpricot'
 
 class SubmittedQuestion < ActiveRecord::Base
-
+ extend ConditionExtensions
 belongs_to :county
 belongs_to :location
 belongs_to :widget
@@ -91,6 +91,7 @@ named_scope :rejected, :conditions => "submitted_questions.status_state = #{STAT
 named_scope :not_answered, :conditions => "submitted_questions.status_state = #{STATUS_NO_ANSWER} AND submitted_questions.spam = FALSE" 
 named_scope :submitted, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE"
 named_scope :submittedspam, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = TRUE"
+named_scope :assigned,  :conditions => " submitted_questions.status_state=#{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE and user_id > 0"
 
 
 named_scope :listdisplayincludes, :include => [:categories, :assignee, :county, :location]
@@ -120,8 +121,8 @@ named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(tim
          :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " category_id" }  } 
 
 #Response times named scopes for by_responder_locations report
- named_scope :count_avgs_loc, lambda { |extstr| {:select => "users.location_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
-     :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " users.location_id" }  } 
+# named_scope :count_avgs_loc, lambda { |extstr| {:select => "users.location_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
+#     :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " users.location_id" }  } 
           
    
 #activity named scopes
@@ -627,43 +628,147 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
     avg_time_in_hours[0].ra.to_i
   end
   
-  def SubmittedQuestion.get_avg_open_time(date1, date2, dateTo, pub, wgt)
+  def SubmittedQuestion.get_avg_open_time( pub, wgt)
      extstr = get_extapp_qual(pub, wgt)
      if extstr == " IS NULL";  return 0; end
      where_clause = " status_state=#{STATUS_SUBMITTED} and external_app_id #{extstr}" 
      select_clause = " avg(timestampdiff(hour, created_at, now())) as cw "
-     if (date1 && date2)
-       where_clause = ["( status_state=#{STATUS_SUBMITTED} || ((status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and resolved_at >= ? and resolved_at <= ?)) and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2, date1, date2]
-       select_clause = " avg(timestampdiff(hour, created_at, '#{dateTo}')) as cw"
-     end
+  #   if (date1 && date2)
+  #     where_clause = ["( status_state=#{STATUS_SUBMITTED} || ((status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and resolved_at >= ? and resolved_at <= ?)) and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2, date1, date2]
+  #     select_clause = " avg(timestampdiff(hour, created_at, '#{dateTo}')) as cw"
+  #   end
      avg_open_times = find(:all, :select => select_clause, :conditions => where_clause)
      avg_open_times[0].cw.to_i
   end   
     
-  def SubmittedQuestion.get_assignees(date1, date2, sqfilters, sqinclude)
-     #if sqinclude, cannot do a select with include, so must do this workaround
-       joinclause= [:assignee] 
-      if (sqinclude && sqinclude[0]=="categories".to_sym)
-        joinclause = " join users on users.id=submitted_questions.user_id join " +
-                       "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
-                       " on categories.id=categories_submitted_questions.category_id "                  
+#  def SubmittedQuestion.get_assignees(date1, date2, sqfilters, sqinclude)
+#     #if sqinclude, cannot do a select with include, so must do this workaround
+#       joinclause= [:assignee] 
+#      if (sqinclude && sqinclude[0]=="categories".to_sym)
+#        joinclause = " join users on users.id=submitted_questions.user_id join " +
+#                       "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
+#                       " on categories.id=categories_submitted_questions.category_id "                  
+#      end
+#      cond = " submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE" + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
+#       if (date1 && date2)
+#           cond = cond + " and submitted_questions.created_at between ? and ? "
+#       end
+#       SubmittedQuestion.find(:all, :select => "submitted_questions.created_at sqcreated_at, submitted_questions.id id, last_assigned_at, users.id uid, last_login_at, user_id, last_name, first_name, login", :joins => joinclause,
+#          :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :order => "submitted_questions.created_at DESC")               
+#  end
+    
+     def self.get_loc_or_category_average(options = {})
+      # group by user id's or user objects?
+      conditions = []
+      group_clause = options[:groupclause]
+      # default date interval is 6 months
+      dateinterval = options[:dateinterval] || '3 MONTHS'
+      
+      if(!dateinterval.nil?)
+        conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
       end
-      cond = " submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE" + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
-       if (date1 && date2)
-           cond = cond + " and submitted_questions.created_at between ? and ? "
+
+      if(options[:external])
+        conditions << " external_app_id #{options[:external]}"
+      end
+
+      if(!options[:submitted_question_filter].nil?)
+        average = SubmittedQuestion.resolved.submitted_question_filtered(options[:submitted_question_filter]).average("timestampdiff(hour, submitted_questions.created_at, resolved_at)", :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '),:group => group_clause)
+      else
+        average = SubmittedQuestion.resolved.average("timestampdiff(hour, submitted_questions.created_at, resolved_at) ",  :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '),:group => group_clause)
+      end
+
+      return average
+     end
+      
+   
+      
+     def self.resolved_or_assigned_count(options = {})
+       # group by user id's or user objects?
+       group_clause = 'users.location_id'
+       # default date interval is 3 months
+       dateinterval = options[:dateinterval] || '3 MONTHS'
+#  the point of this is to try to get a count of how many questions have been dealt with by responders from each of several locations, mostly states
+       
+       conditions = []      
+       if(!dateinterval.nil? )
+         conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
        end
-       SubmittedQuestion.find(:all, :select => "submitted_questions.created_at sqcreated_at, submitted_questions.id id, last_assigned_at, users.id uid, last_login_at, user_id, last_name, first_name, login", :joins => joinclause,
-          :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :order => "submitted_questions.created_at DESC")               
-  end
+
+       if(options[:external])
+         conditions << " external_app_id #{options[:external]}"
+       end
+
+       if(!options[:submitted_question_filter].nil?)
+         resolved_list = SubmittedQuestion.resolved.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => [:resolved_by], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+       else
+         resolved_list = SubmittedQuestion.resolved.count(:all, :joins => [:resolved_by], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+       end
+
+
+       if(!options[:submitted_question_filter].nil?)
+         assigned_list = SubmittedQuestion.assigned.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => [:assignee], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+       else
+         assigned_list = SubmittedQuestion.assigned.count(:all, :joins => [:assignee], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+       end
+       noq = self.add_vals(resolved_list, assigned_list, '+')   #add together the assigned count and the resolved count for this time period
+       noq
+       
+      end
+
+      def self.get_number_open(options = {})
+          # group by user id's or user objects?
+           group_clause = options[:groupclause]
+           # default date interval is 3 months
+           dateinterval = options[:dateinterval] || '3 MONTHS'
+    #  the point of this is to try to get a count of how many questions are currently open from each of several locations, mostly states
+
+           conditions = []      
+           if(!dateinterval.nil? )
+             conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+           end
+
+           if(options[:external])
+             conditions << " external_app_id #{options[:external]}"
+           end
+
+           if(!options[:submitted_question_filter].nil?)
+             assigned_count = SubmittedQuestion.assigned.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+           else
+             assigned_count = SubmittedQuestion.assigned.count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+           end
+           assigned_count
+       end
+     
+         def self.get_number_questions(options = {})
+             # group by user id's or user objects?
+              group_clause = options[:groupclause]
+              # default date interval is 3 months
+              dateinterval = options[:dateinterval] || '3 MONTHS'
+       #  the point of this is to try to get a count of how many questions there have been from each of several locations, mostly states
+              conditions = []      
+              if(!dateinterval.nil? )
+                conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+              end
+
+              if(options[:external])
+                conditions << " external_app_id #{options[:external]}"
+              end
+
+              if(!options[:submitted_question_filter].nil?)
+                assigned_count = SubmittedQuestion.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+              else
+                assigned_count = SubmittedQuestion.count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+              end
+              assigned_count
+          end
     
-    
-    
-  def SubmittedQuestion.get_noq(date1, date2, extstr)
-    noqr =SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on resolved_by=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id") 
-    noqu = SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on submitted_questions.user_id=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id")
-    noq = self.add_vals(noqr, noqu, '+')
-    noq
-  end
+#  def SubmittedQuestion.get_noq(date1, date2, extstr)
+#    noqr =SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  [:resolved_by], :conditions => "external_app_id #{extstr}", :group => " users.location_id") 
+#    noqu = SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  [:assignee], :conditions => "external_app_id #{extstr}", :group => " users.location_id")
+#    noq = self.add_vals(noqr, noqu, '+')
+#    noq
+#  end
 
     
   def self.add_vals(noqr, noqu, oper)

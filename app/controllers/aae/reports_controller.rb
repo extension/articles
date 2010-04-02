@@ -859,7 +859,7 @@ class Aae::ReportsController < ApplicationController
        @number_questions_all = SubmittedQuestion.find_externally_submitted(nil, nil, true, true )
        @avg_response_time_all = SubmittedQuestion.get_avg_response_time(nil, nil, true, true)
        @avg_resp_past30_all = SubmittedQuestion.get_avg_response_time_past30(nil, nil, true, true, @nodays)
-       @avg_open_time_all = SubmittedQuestion.get_avg_open_time(nil, nil,nil, true, true)
+       @avg_open_time_all = SubmittedQuestion.get_avg_open_time(true, true)
        if params[:upper] || params[:lower]  || @first_set || @sec_set
          (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
          response_avgs_upper(public1, widget1)
@@ -872,14 +872,18 @@ class Aae::ReportsController < ApplicationController
     def get_responses_by_category(date1, date2, pub, wgt)
        extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) ; avgrh = {}
        if extstr == " IS NULL";  return [ {}, {}, {}]; end
-       noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " external_app_id #{extstr} ", :group => "category_id")
+       (date1 && date2) ? dateinterval = [date1, date2] : dateinterval = nil
+   #    noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " external_app_id #{extstr} ", :group => "category_id")
+      noq = SubmittedQuestion.get_number_questions({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
       # avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr), "category_id",1.0)
-      avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr)).map { |avgs| avgrh[avgs.category_id] = avgs.ra.to_f}
+  #    avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr)).map { |avgs| avgrh[avgs.category_id] = avgs.ra.to_f}
+      avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
      #  avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "category")
-       noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => 'category_id')
+    #   noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => 'category_id')
+       noopen = SubmittedQuestion.get_number_open({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
        # used to be [noq, avg4, avg30, noopen]
        [noq, avgr, noopen]
-     end
+    end
 
 
      def category_response_times
@@ -952,15 +956,17 @@ class Aae::ReportsController < ApplicationController
      def get_responses_by_location(date1, date2, pub, wgt)
        extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) ; avgrh = {}
         if extstr == " IS NULL";  return [ {}, {}, {}]; end
+        (date1 && date2) ? dateinterval = [date1, date2] : dateinterval = nil
        #  noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => " join users on (submitted_questions.resolved_by=users.id or submitted_questions.user_id=users.id) ",
       #        :conditions =>  " external_app_id #{extstr} ", :group => "users.location_id")  ##THIS STATEMENT GOES TO NEVER_NEVER LAND
-         noq = SubmittedQuestion.get_noq(date1, date2, extstr)    ##NOTE: THIS STATEMENT WILL SPLIT THE JOIN AND WORK
-         avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr), "location_id",1.0)
-       #  avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr)).map { |avgs| avgrh[avgs.location_id] = avgs.ra.to_f}
+     #   noq = SubmittedQuestion.get_noq(date1, date2, extstr)    ##NOTE: THIS STATEMENT WILL SPLIT THE JOIN AND WORK
+        noq = SubmittedQuestion.resolved_or_assigned_count({:dateinterval => dateinterval, :external => extstr})
+      #   avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr), "location_id",1.0)
+        avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "users.location_id"})
        # avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "location")
-        
-         noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => "join users on submitted_questions.user_id=users.id", 
-              :conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => "users.location_id")
+      #   noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:assignee], 
+      #        :conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => "users.location_id")
+        noopen = SubmittedQuestion.get_number_open({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "users.location_id"})
         # [noq, avgr, avg30, noopen]
         [noq, avgr, noopen]
       end
@@ -968,7 +974,7 @@ class Aae::ReportsController < ApplicationController
       def response_times_summary(results_hash)
         stuv = nil
         @typelist.each do |st|
-           stuv = st.id
+           (@type=='Location') ? stuv = st.id : stuv = st.id.to_s
            @nof[st.name]= results_hash[:no_questions][stuv] ; @nos1[st.name]=@nof[st.name]
            @var1[st.name]= results_hash[:avg_responses][stuv]; @ppd1[st.name]= @var1[st.name]
         #   @var2[st.name]= avg_30_responses[st.abbreviation] 
