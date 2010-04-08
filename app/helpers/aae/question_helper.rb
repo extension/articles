@@ -17,37 +17,37 @@ def stringify_submitted_question_event(sq_event)
   
   case sq_event.event_state
   when SubmittedQuestionEvent::ASSIGNED_TO 
-    reassign_msg = "Assigned to <strong><a href='/aae/profile?id=#{sq_event.recipient.login}'>#{sq_event.recipient.fullname}</a></strong> by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    reassign_msg = "Assigned to <strong><a href='/aae/profile?id=#{sq_event.recipient.login}'>#{sq_event.recipient.fullname}</a></strong> by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
     reassign_msg = reassign_msg + " <span>Comments: #{sq_event.response}</span>" if sq_event.response
     return reassign_msg 
   when SubmittedQuestionEvent::RESOLVED 
-    return "Resolved by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Resolved by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::NO_ANSWER
-    return "No answer available was sent from <strong>#{initiated_by_full_name}</strong><span> #{humane_date(sq_event.created_at)}</span>"
+    return "No answer available was sent from <strong>#{initiated_by_full_name}</strong><span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::MARKED_SPAM
-    return "Marked as spam by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Marked as spam by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::MARKED_NON_SPAM
-    return "Marked as non-spam by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Marked as non-spam by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::REJECTED
-    reject_msg = "Question Rejected by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    reject_msg = "Question Rejected by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
     reject_msg = reject_msg + " <span>Reject Comments: #{sq_event.response}</span>"
     return reject_msg
   when SubmittedQuestionEvent::REACTIVATE
-    return "Question Reactivated by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Question Reactivated by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::RECATEGORIZED
-    return "Question Recategorized by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Question Recategorized by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::WORKING_ON
-    return "Question worked on by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Question worked on by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::EDIT_QUESTION
-    return "Question edited by public user <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Question edited by public user <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::REOPEN
-    return "Question reopened by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Question reopened by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::CLOSED
-    return "Question closed by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Question closed by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::PUBLIC_RESPONSE
-    return "Comment posted by <strong>public user</strong> <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Comment posted by <strong>public user</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   else
-    return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.recipient) ? sq_event.recipient.fullname : '')} by #{initiated_by_full_name} <span> #{humane_date(sq_event.created_at)}</span>"
+    return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.recipient) ? sq_event.recipient.fullname : '')} by #{initiated_by_full_name} <span> #{humane_date(sq_event.created_at)} UTC</span>"
   end
 end
 
