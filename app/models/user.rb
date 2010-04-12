@@ -212,7 +212,11 @@ class User < ActiveRecord::Base
     location = Location.find_by_fipsid(location_fips)
     aae_location = ExpertiseLocation.find_by_fipsid(location_fips)
     aae_location_user_ids = aae_location.users.collect{|eu| eu.id}.join(',')
-    {:conditions => "users.id IN (#{aae_location_user_ids}) OR users.location_id = #{location.id}", :group => "users.id"}
+    if aae_location_user_ids.length > 0
+     {:conditions => "users.id IN (#{aae_location_user_ids}) OR users.location_id = #{location.id}", :group => "users.id"}
+    else
+     {:conditions => " users.location_id = #{location.id}", :group => "users.id"}
+    end
   }
   
   # override login write
