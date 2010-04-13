@@ -149,7 +149,10 @@
              <p>
              <%= submit_tag 'Convert this question into a FAQ', :class => "submit" %>
              <br />(you can edit on the next screen)
-             </p>  
+             <!--[if IE]>
+               <span id="ie_aae_faq_error">There is a known problem with Internet Explorer (IE) converting long AaE questions to FAQs. If you get an error, you'll need to copy and paste this AaE into the FAQ app. We are working on a solution to this issue. Other browsers are not affected by this issue.</span>
+               <![endif]-->
+             </p>
            <% end %>
         
         

@@ -19,7 +19,12 @@
     <%= hidden_field_tag(:squid, @submitted_question.id) %>
     <%= hidden_field_tag(:aae_question, @submitted_question.all_public_responses) %>
     <%= hidden_field_tag(:aae_answer, @submitted_question.all_expert_responses) %>
-    <p><%= submit_tag 'Convert into a FAQ' %> (Edit it on the next screen)</p>
+    <p><%= submit_tag 'Convert into a FAQ' %> (Edit it on the next screen)
+      <!--[if IE]>
+         <span id="ie_aae_faq_error">There is a known problem with Internet Explorer (IE) converting long AaE questions to FAQs. If you get an error, you'll need to copy and paste this AaE into the FAQ app. We are working on a solution to this issue. Other browsers are not affected by this issue.</span>
+         <![endif]-->  
+    </p>
+    
 <% end %>
 
 
