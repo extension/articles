@@ -286,70 +286,7 @@ class Aae::ReportsController < ApplicationController
         
         ####   end of User Report for Ask an Expert Activity #####
          
- #        ####  Date handling ###
-         
-         
-   
- #           def valid_date(fromdate, todate)               #valid_date() with date(c)From and date(c)To
-#             dateFrom = params[fromdate] if (params[fromdate] ) 
-#             date1 = date_valid(dateFrom)
-#             dateTo = params[todate] if (params[todate] )
-#             date2 = date_valid(dateTo)
-#             [date1, date2, dateFrom, dateTo]
-#           end
 
-
- #         def date_valid(yyyymmdd)
-#              #yyyymmdd = yyyy-mm-dd
-#              return nil if !yyyymmdd || yyyymmdd=="" 
-#              begin
-#                t =  Time.parse(yyyymmdd)
-#              rescue Exception => e
-#                 flash.now[:failure] = "Incorrect input detected: #{yyyymmdd}, do yyyy-mm-dd "
-#                 ActiveRecord::Base::logger.debug "time parse error on #{yyyymmdd} "  + e.to_s
-#                 return nil
-#              end
-#              return t
-#          end 
-
- #         def errchk(datef,datet, dateFrom, dateTo)
-#           if ((datef && datet) && (datet - datef < 0))
-#              #   flash.now[:notice] = "From Date is not before To Date."
-#                temp =datet; tmps = dateTo    #if flipped, flip 'em
-#                datet = datef; dateTo = dateFrom
-#                datef = temp; dateFrom = tmps
-#           end
-#          [datef, datet, dateFrom, dateTo]
-#          end
-
- #         def parmcheck(fromdate, todate, from, to, dateF, dateT)     #parmcheck() ...check all date parms   (c) means compare_dates parms
-#              if params[:bysort] !="y"
-#                if params[fromdate]      #:From(c)Date
-#                  dateFrom = params[fromdate]
-#                else
-#                    dateFrom = params[dateF] if (params[dateF] )    #:date(c)From
-#                end
-#                date1 = date_valid(dateFrom)
-#                if params[todate]         #:To(c)Date
-#                  dateTo=params[todate]
-#                else
-#                   dateTo = params[dateT] if (params[dateT] )      #:date(c)To
-#                end
-#                date2 = date_valid(dateTo)
-#              else
-#                dateFrom = params[from]      #:from(c)
-#                dateTo=params[to]            #:to(c)
-#                date1 = date_valid(dateFrom)
-#                date2 = date_valid(dateTo)
-#              end
-
- #             (date1, date2, dateFrom, dateTo)= errchk(date1,date2,dateFrom,dateTo)
-#              [date1, date2, dateFrom, dateTo]
-#          end    
-
-
-         ##### end date handling ##### 
-        
         ## Expertise Report
         def answerers
          @cats = Category.find(:all, :conditions => "parent_id is null", :order => 'name')
@@ -787,10 +724,12 @@ class Aae::ReportsController < ApplicationController
      end      
 
      def response_avgs_upper(public1, widget1)
-            @number_questions = SubmittedQuestion.find_once_externally_submitted(@date1, @date2, public1, widget1)
-            @avg_response_time = SubmittedQuestion.get_avg_response_time(@date1, @date2, public1, widget1)
-            @avg_resp_past30 = SubmittedQuestion.get_avg_response_time_past30(@date1, @date2, public1, widget1, @nodays)
-            @avg_still_open = SubmittedQuestion.find_externally_submitted(@date1, @date2, public1, widget1)
+            extstr = SubmittedQuestion.get_extapp_qual(public1,widget1)
+            @number_questions = SubmittedQuestion.find_once_externally_submitted({:dateinterval => [@date1,@date2], :external => extstr})
+            @avg_response_time = SubmittedQuestion.get_avg_response_time({:dateinterval => [@date1,@date2], :external => extstr})
+            @avg_resp_past30 = SubmittedQuestion.get_avg_response_time_past30({:dateinterval => [@date1,@date2], :external => extstr, :nodays => @nodays})
+       #     @avg_still_open = SubmittedQuestion.find_externally_submitted(@date1, @date2, public1, widget1)
+            @avg_still_open = SubmittedQuestion.find_externally_submitted({:dateinterval => [@date1,@date2], :external => extstr})
             if (params[:upper])
                  session[:first_set]= "y"
             end
@@ -806,9 +745,9 @@ class Aae::ReportsController < ApplicationController
           end
          end
         #retain fields from upper as we change the lower as appropriate
-         @datec1 = params[:compd1]; @datec2=params[:compd2] 
-          if !@datec1 && @clear2=="n"
-               if ((params[:from] && params[:from][1] != "")  or params[:lower])
+         @datec1 = params[:compd1]; @datec2=params[:compd2]
+          if ((!@datec1) && @clear2=="n")
+               if ((params[:from] && params[:from][1] != "")  or params[:lower] or @sec_set)
                     params[:datefrom]=params[:from][1] if (params[:from] && params[:from][1] !=""); params[:dateto]=params[:to][1] if (params[:to] && params[:to][1] != "")
                     @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
                   	@latest_date = Date.today
@@ -838,10 +777,12 @@ class Aae::ReportsController < ApplicationController
      end
 
      def response_avgs_lower(public2, widget2)
-         @numbc_questions = SubmittedQuestion.find_once_externally_submitted(@datec1, @datec2, public2, widget2)
-         @avgc_response_time = SubmittedQuestion.get_avg_response_time(@datec1, @datec2, public2, widget2)
-         @avgc_resp_past30 = SubmittedQuestion.get_avg_response_time_past30(@datec1, @datec2, public2, widget2, @nocdays)
-         @avgc_still_open = SubmittedQuestion.find_externally_submitted(@datec1, @datec2, public2, widget2)
+         extstr = SubmittedQuestion.get_extapp_qual(public2,widget2)
+         @numbc_questions = SubmittedQuestion.find_once_externally_submitted({:dateinterval => [@datec1,@datec2], :external => extstr})
+         @avgc_response_time = SubmittedQuestion.get_avg_response_time({:dateinterval => [@datec1,@datec2], :external => extstr})
+         @avgc_resp_past30 = SubmittedQuestion.get_avg_response_time_past30({:dateinterval => [@datec1,@datec2], :external => extstr, :nodays => @nocdays})
+    #     @avgc_still_open = SubmittedQuestion.find_externally_submitted(@datec1, @datec2, public2, widget2)
+         @avgc_still_open = SubmittedQuestion.find_externally_submitted({:dateinterval => [@datec1,@datec2], :external => extstr})
           if (params[:lower])
                session[:sec_set]= "y"
           end
@@ -856,10 +797,10 @@ class Aae::ReportsController < ApplicationController
        @prior90th=@oldest_date ; 	@latest_date = Date.today
        @repaction = 'response_times'
        @nodays = 30; @nocdays = 30
-       @number_questions_all = SubmittedQuestion.find_externally_submitted(nil, nil, true, true )
-       @avg_response_time_all = SubmittedQuestion.get_avg_response_time(nil, nil, true, true)
-       @avg_resp_past30_all = SubmittedQuestion.get_avg_response_time_past30(nil, nil, true, true, @nodays)
-       @avg_open_time_all = SubmittedQuestion.get_avg_open_time(nil, nil,nil, true, true)
+       @number_questions_all = SubmittedQuestion.find_externally_submitted({:dateinterval => [@oldest_date, @latest_date], :external => " IS NOT NULL " })
+       @avg_response_time_all = SubmittedQuestion.get_avg_response_time({:dateinterval => [@oldest_date,@latest_date], :external => " IS NOT NULL "})
+       @avg_resp_past30_all = SubmittedQuestion.get_avg_response_time_past30({:dateinterval => [@oldest_date,@latest_date], :external => " IS NOT NULL ", :nodays => @nodays})
+       @avg_open_time_all = SubmittedQuestion.get_avg_open_time({:dateinterval => [@oldest_date,@latest_date], :external => " IS NOT NULL "})
        if params[:upper] || params[:lower]  || @first_set || @sec_set
          (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
          response_avgs_upper(public1, widget1)
@@ -870,16 +811,20 @@ class Aae::ReportsController < ApplicationController
     
     
     def get_responses_by_category(date1, date2, pub, wgt)
-       extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) ; avgrh = {}
+       extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) 
        if extstr == " IS NULL";  return [ {}, {}, {}]; end
-       noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " external_app_id #{extstr} ", :group => "category_id")
+       (date1 && date2) ? dateinterval = [date1, date2] : dateinterval = nil
+   #    noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " external_app_id #{extstr} ", :group => "category_id")
+      noq = SubmittedQuestion.get_number_questions({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
       # avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr), "category_id",1.0)
-      avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr)).map { |avgs| avgrh[avgs.category_id] = avgs.ra.to_f}
+  #    avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr)).map { |avgs| avgrh[avgs.category_id] = avgs.ra.to_f}
+      avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
      #  avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "category")
-       noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => 'category_id')
+    #   noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => 'category_id')
+       noopen = SubmittedQuestion.get_number_open({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
        # used to be [noq, avg4, avg30, noopen]
        [noq, avgr, noopen]
-     end
+    end
 
 
      def category_response_times
@@ -952,15 +897,17 @@ class Aae::ReportsController < ApplicationController
      def get_responses_by_location(date1, date2, pub, wgt)
        extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) ; avgrh = {}
         if extstr == " IS NULL";  return [ {}, {}, {}]; end
+        (date1 && date2) ? dateinterval = [date1, date2] : dateinterval = nil
        #  noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => " join users on (submitted_questions.resolved_by=users.id or submitted_questions.user_id=users.id) ",
       #        :conditions =>  " external_app_id #{extstr} ", :group => "users.location_id")  ##THIS STATEMENT GOES TO NEVER_NEVER LAND
-         noq = SubmittedQuestion.get_noq(date1, date2, extstr)    ##NOTE: THIS STATEMENT WILL SPLIT THE JOIN AND WORK
-         avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr), "location_id",1.0)
-       #  avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr)).map { |avgs| avgrh[avgs.location_id] = avgs.ra.to_f}
+     #   noq = SubmittedQuestion.get_noq(date1, date2, extstr)    ##NOTE: THIS STATEMENT WILL SPLIT THE JOIN AND WORK
+        noq = SubmittedQuestion.resolved_or_assigned_count({:dateinterval => dateinterval, :external => extstr})
+      #   avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr), "location_id",1.0)
+        avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "users.location_id"})
        # avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "location")
-        
-         noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => "join users on submitted_questions.user_id=users.id", 
-              :conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => "users.location_id")
+      #   noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:assignee], 
+      #        :conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => "users.location_id")
+        noopen = SubmittedQuestion.get_number_open({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "users.location_id"})
         # [noq, avgr, avg30, noopen]
         [noq, avgr, noopen]
       end
@@ -968,7 +915,7 @@ class Aae::ReportsController < ApplicationController
       def response_times_summary(results_hash)
         stuv = nil
         @typelist.each do |st|
-           stuv = st.id
+           (@type=='Location') ? stuv = st.id : stuv = st.id.to_s
            @nof[st.name]= results_hash[:no_questions][stuv] ; @nos1[st.name]=@nof[st.name]
            @var1[st.name]= results_hash[:avg_responses][stuv]; @ppd1[st.name]= @var1[st.name]
         #   @var2[st.name]= avg_30_responses[st.abbreviation] 

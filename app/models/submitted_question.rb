@@ -8,7 +8,7 @@
 require 'hpricot'
 
 class SubmittedQuestion < ActiveRecord::Base
-
+ extend ConditionExtensions
 belongs_to :county
 belongs_to :location
 belongs_to :widget
@@ -91,6 +91,7 @@ named_scope :rejected, :conditions => "submitted_questions.status_state = #{STAT
 named_scope :not_answered, :conditions => "submitted_questions.status_state = #{STATUS_NO_ANSWER} AND submitted_questions.spam = FALSE" 
 named_scope :submitted, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE"
 named_scope :submittedspam, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = TRUE"
+named_scope :assigned,  :conditions => " submitted_questions.status_state=#{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE and user_id > 0"
 
 
 named_scope :listdisplayincludes, :include => [:categories, :assignee, :county, :location]
@@ -115,13 +116,13 @@ named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_qu
 #AAE Dashboard named scopes
 
 #Response times named scopes for by_category report
-named_scope :named_date_resp, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " submitted_questions.created_at between ? and ? ", date1, date2] : " date_sub(curdate(), interval 90 day) <= submitted_questions.created_at" } }
-named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join categories_submitted_questions on submitted_question_id=submitted_questions.id ",
-         :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " category_id" }  } 
+#named_scope :named_date_resp, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " submitted_questions.created_at between ? and ? ", date1, date2] : " date_sub(curdate(), interval 90 day) <= submitted_questions.created_at" } }
+#named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join categories_submitted_questions on submitted_question_id=submitted_questions.id ",
+#         :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " category_id" }  } 
 
 #Response times named scopes for by_responder_locations report
- named_scope :count_avgs_loc, lambda { |extstr| {:select => "users.location_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
-     :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " users.location_id" }  } 
+# named_scope :count_avgs_loc, lambda { |extstr| {:select => "users.location_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
+#     :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " users.location_id" }  } 
           
    
 #activity named scopes
@@ -592,78 +593,202 @@ def SubmittedQuestion.get_extapp_qual( pub, wgt)
    return extstr
  end
 
-def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
-   extstr = get_extapp_qual(pub, wgt)
-   if extstr == " IS NULL";  return 0; end
-   if (date1 && date2)
-     return self.count(:all,
-      :conditions => ["status_state=#{STATUS_SUBMITTED} and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2])
-   else
-     return self.count(:all,
-     :conditions => "status_state=#{STATUS_SUBMITTED} and external_app_id #{extstr}")
-   end
- end
+def SubmittedQuestion.find_externally_submitted(options = {})
  
- def SubmittedQuestion.find_once_externally_submitted(date1, date2, pub, wgt)
-    extstr = get_extapp_qual(pub, wgt)
-     if extstr == " IS NULL";  return 0; end
-     if (date1 && date2)
-       return self.count(:all,
-        :conditions => [" (status_state > 0 ) and external_app_id #{extstr} and created_at between ? and ?", date1, date2])
-     else
-       return self.count(:all,
-       :conditions => " ( status_state > 0 ) and external_app_id #{extstr}")
+    if options[:external] == " IS NULL"; return 0; end;
+    conditions = []
+    dateinterval = options[:dateinterval] 
+     
+     if(!dateinterval.nil?)
+       conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
      end
+   
+   if(options[:external])
+     conditions << " external_app_id #{options[:external]}"
+   end
+    if(!options[:submitted_question_filter].nil?)
+       qcount = SubmittedQuestion.submitted.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '))
+     else
+       qcount = SubmittedQuestion.submitted.count(:all,  :conditions => conditions.compact.join(' AND '))
+     end
+     qcount
+
  end
  
- def SubmittedQuestion.get_avg_response_time(date1, date2, pub, wgt)
-    extstr = get_extapp_qual(pub, wgt) 
-    if extstr == " IS NULL"; return 0; end
-    where_clause = " (status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER} ) and external_app_id #{extstr}"
-    if (date1 && date2)
-      where_clause = [where_clause + " and created_at >= ? and created_at <= ?", date1, date2]
-    end
-    avg_time_in_hours = find(:all, :select => " avg(timestampdiff(hour, created_at, resolved_at)) as ra",   :conditions => where_clause)
-    avg_time_in_hours[0].ra.to_i
+ def SubmittedQuestion.find_once_externally_submitted(options={})
+     if options[:external] == " IS NULL"; return 0; end;
+     conditions = []
+     dateinterval = options[:dateinterval] 
+
+      if(!dateinterval.nil?)
+        conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+      end
+      
+      if(options[:external])
+        conditions << " external_app_id #{options[:external]} "
+      end
+     if(!options[:submitted_question_filter].nil?)
+        qcount = SubmittedQuestion.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '))
+     else
+        qcount = SubmittedQuestion.count(:all,  :conditions => conditions.compact.join(' AND '))
+     end
+     qcount
+ 
+ end
+ 
+ def SubmittedQuestion.get_avg_response_time(options={})
+   if options[:external] == " IS NULL"; return 0; end;
+   conditions = []
+    dateinterval = options[:dateinterval] 
+
+     if(!dateinterval.nil?)
+       conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+     end
+  
+   if(options[:external])
+     conditions << " external_app_id #{options[:external]}"
+   end
+   
+   if(!options[:submitted_question_filter].nil?)
+     average = SubmittedQuestion.resolved.submitted_question_filtered(options[:submitted_question_filter]).average("timestampdiff(hour, submitted_questions.created_at, resolved_at)", :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '))
+   else
+     average = SubmittedQuestion.resolved.average("timestampdiff(hour, submitted_questions.created_at, resolved_at) ",  :conditions => conditions.compact.join(' AND '))
+   end
+
+   return average
+
   end
   
-  def SubmittedQuestion.get_avg_open_time(date1, date2, dateTo, pub, wgt)
-     extstr = get_extapp_qual(pub, wgt)
-     if extstr == " IS NULL";  return 0; end
-     where_clause = " status_state=#{STATUS_SUBMITTED} and external_app_id #{extstr}" 
-     select_clause = " avg(timestampdiff(hour, created_at, now())) as cw "
-     if (date1 && date2)
-       where_clause = ["( status_state=#{STATUS_SUBMITTED} || ((status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and resolved_at >= ? and resolved_at <= ?)) and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date1, date2, date1, date2]
-       select_clause = " avg(timestampdiff(hour, created_at, '#{dateTo}')) as cw"
-     end
-     avg_open_times = find(:all, :select => select_clause, :conditions => where_clause)
-     avg_open_times[0].cw.to_i
+  def SubmittedQuestion.get_avg_open_time(options={})
+   if options[:external] == " IS NULL"; return 0; end;
+    conditions = []
+     dateinterval = options[:dateinterval] 
+
+      if(!dateinterval.nil?)
+        conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+      end
+
+    if(options[:external])
+      conditions << " external_app_id #{options[:external]}"
+    end
+
+    if(!options[:submitted_question_filter].nil?)
+      average = SubmittedQuestion.submitted.submitted_question_filtered(options[:submitted_question_filter]).average("timestampdiff(hour, submitted_questions.created_at, resolved_at)", :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '))
+    else
+      average = SubmittedQuestion.submitted.average("timestampdiff(hour, submitted_questions.created_at, now()) ",  :conditions => conditions.compact.join(' AND '))
+    end
+
+    return average
+
   end   
     
-  def SubmittedQuestion.get_assignees(date1, date2, sqfilters, sqinclude)
-     #if sqinclude, cannot do a select with include, so must do this workaround
-       joinclause= [:assignee] 
-      if (sqinclude && sqinclude[0]=="categories".to_sym)
-        joinclause = " join users on users.id=submitted_questions.user_id join " +
-                       "categories_submitted_questions on categories_submitted_questions.submitted_question_id=submitted_questions.id join categories " +
-                       " on categories.id=categories_submitted_questions.category_id "                  
+    
+  def self.get_loc_or_category_average(options = {})
+      # group by user id's or user objects?
+      conditions = []
+      group_clause = options[:groupclause]
+      # default date interval is 6 months
+      dateinterval = options[:dateinterval] || '3 MONTHS'
+      
+      if(!dateinterval.nil?)
+        conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
       end
-      cond = " submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE" + ((sqfilters and sqfilters!="" ) ? " and " + sqfilters : "")
-       if (date1 && date2)
-           cond = cond + " and submitted_questions.created_at between ? and ? "
+
+      if(options[:external])
+        conditions << " external_app_id #{options[:external]}"
+      end
+
+      if(!options[:submitted_question_filter].nil?)
+        average = SubmittedQuestion.resolved.submitted_question_filtered(options[:submitted_question_filter]).average("timestampdiff(hour, submitted_questions.created_at, resolved_at)", :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '),:group => group_clause)
+      else
+        average = SubmittedQuestion.resolved.average("timestampdiff(hour, submitted_questions.created_at, resolved_at) ",  :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '),:group => group_clause)
+      end
+
+      return average
+   end
+      
+   
+      
+     def self.resolved_or_assigned_count(options = {})
+       # group by user id's or user objects?
+       group_clause = 'users.location_id'
+       # default date interval is 3 months
+       dateinterval = options[:dateinterval] || '3 MONTHS'
+#  the point of this is to try to get a count of how many questions have been dealt with by responders from each of several locations, mostly states
+       
+       conditions = []      
+       if(!dateinterval.nil? )
+         conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
        end
-       SubmittedQuestion.find(:all, :select => "submitted_questions.created_at sqcreated_at, submitted_questions.id id, last_assigned_at, users.id uid, last_login_at, user_id, last_name, first_name, login", :joins => joinclause,
-          :conditions => ((date1 && date2) ? [cond , date1, date2] : cond), :order => "submitted_questions.created_at DESC")               
-  end
-    
-    
-    
-  def SubmittedQuestion.get_noq(date1, date2, extstr)
-    noqr =SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on resolved_by=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id") 
-    noqu = SubmittedQuestion.named_date_resp(date1, date2).count(:joins =>  "join users on submitted_questions.user_id=users.id ", :conditions => "external_app_id #{extstr}", :group => " users.location_id")
-    noq = self.add_vals(noqr, noqu, '+')
-    noq
-  end
+
+       if(options[:external])
+         conditions << " external_app_id #{options[:external]}"
+       end
+
+       if(!options[:submitted_question_filter].nil?)
+         resolved_list = SubmittedQuestion.resolved.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => [:resolved_by], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+       else
+         resolved_list = SubmittedQuestion.resolved.count(:all, :joins => [:resolved_by], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+       end
+
+
+       if(!options[:submitted_question_filter].nil?)
+         assigned_list = SubmittedQuestion.assigned.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => [:assignee], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+       else
+         assigned_list = SubmittedQuestion.assigned.count(:all, :joins => [:assignee], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+       end
+       noq = self.add_vals(resolved_list, assigned_list, '+')   #add together the assigned count and the resolved count for this time period
+       noq
+       
+      end
+
+      def self.get_number_open(options = {})
+          # group by user id's or user objects?
+           group_clause = options[:groupclause]
+           # default date interval is 3 months
+           dateinterval = options[:dateinterval] || '3 MONTHS'
+    #  the point of this is to try to get a count of how many questions are currently open from each of several locations, mostly states; or categories
+
+           conditions = []      
+           if(!dateinterval.nil? )
+             conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+           end
+
+           if(options[:external])
+             conditions << " external_app_id #{options[:external]}"
+           end
+
+           if(!options[:submitted_question_filter].nil?)
+             assigned_count = SubmittedQuestion.assigned.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+           else
+             assigned_count = SubmittedQuestion.assigned.count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+           end
+           assigned_count
+       end
+     
+         def self.get_number_questions(options = {})
+             # group by user id's or user objects?
+              group_clause = options[:groupclause]
+              # default date interval is 3 months
+              dateinterval = options[:dateinterval] || '3 MONTHS'
+       #  the point of this is to try to get a count of how many questions there have been from each of several locations, mostly states; or categories
+              conditions = []      
+              if(!dateinterval.nil? )
+                conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+              end
+
+              if(options[:external])
+                conditions << " external_app_id #{options[:external]}"
+              end
+
+              if(!options[:submitted_question_filter].nil?)
+                assigned_count = SubmittedQuestion.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+              else
+                assigned_count = SubmittedQuestion.count(:all, :joins => options[:joinclause], :conditions => conditions.compact.join(' AND '), :group => group_clause)
+              end
+              assigned_count
+          end
+  
 
     
   def self.add_vals(noqr, noqu, oper)
@@ -695,15 +820,30 @@ def SubmittedQuestion.find_externally_submitted(date1, date2, pub, wgt)
   end
  
  
-  def SubmittedQuestion.get_avg_response_time_past30(date1, date2, pub, wgt, nodays)
-    extstr = get_extapp_qual(pub, wgt)
-    if extstr == " IS NULL";  return 0; end
-    where_clause = " date_sub(curdate(),interval #{nodays} day) <= resolved_at and (status_state=#{STATUS_RESOLVED} || status_state=#{STATUS_REJECTED} || status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr}"
-    if (date1 && date2)
-      where_clause = [" date_sub(?, interval #{nodays} day) <= resolved_at and (status_state=#{STATUS_RESOLVED} || status_state=#{STATUS_REJECTED} || status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} and created_at >= ? and created_at <= ?", date2, date1, date2]
-    end
-    avg_time_in_hours=find(:all, :select => "avg(timestampdiff(hour, created_at, resolved_at)) as ra", :conditions => where_clause) 
-    avg_time_in_hours[0].ra.to_i
+  def SubmittedQuestion.get_avg_response_time_past30(options={})
+    if options[:external] == " IS NULL"; return 0; end;
+     conditions = []
+     dateinterval = options[:dateinterval] 
+
+       if(!dateinterval.nil?)
+         conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+       end
+     
+     if(options[:external]) 
+       conditions << "  external_app_id #{options[:external]}"
+     end
+      cond = conditions.compact.join(' AND ').to_s
+      conditions = [((cond && cond != "") ? cond + " AND " : "") + " date_sub(?, interval #{options[:nodays]} day) <= resolved_at ", dateinterval[1]]
+
+      
+     if(!options[:submitted_question_filter].nil?)
+       average = SubmittedQuestion.resolved.submitted_question_filtered(options[:submitted_question_filter]).average("timestampdiff(hour, submitted_questions.created_at, resolved_at)", :joins => options[:joinclause], :conditions => conditions)
+     else
+       average = SubmittedQuestion.resolved.average("timestampdiff(hour, submitted_questions.created_at, resolved_at) ",  :conditions => conditions)
+     end
+
+     return average
+    
   end
   
   def SubmittedQuestion.find_oldest_date
