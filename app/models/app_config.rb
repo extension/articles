@@ -9,7 +9,8 @@ require 'digest/sha1'
 class AppConfig
   
   @@configtable = Hash.new
-  cattr_reader :configtable
+  @@content_widget_styles = ''
+  cattr_reader :configtable, :content_widget_styles
   
   def AppConfig.default_config
 
@@ -52,6 +53,7 @@ class AppConfig
     @@configtable['emailsettings']['aae_internal'] = {'address' => 'aaenotify@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['people'] = {'address' => 'peoplemail@extension.org', 'name' => 'eXtension People Notification - Do Not Reply', 'bcc' => 'people.bcc.mirror@extension.org', 'review' => 'eXtensionHelp@extension.org'}
     @@configtable['emailsettings']['default'] = {'address' => 'noreply@extension.org', 'name' => 'eXtension Notification - Do Not Reply', 'bcc' => 'default.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['deploy'] = {'address' => 'exdev@extension.org', 'name' => 'eXDevBot', 'bcc' => 'deploys.mirror@extension.org'}
         
     # in hours
     @@configtable['aae_escalation_delta'] = 24
@@ -187,7 +189,14 @@ class AppConfig
       end
     end    
   end
+  
+  def AppConfig.set_content_widget_css
+    css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
+    @@content_widget_styles = '<style type="text/css" media="screen"><!--' + css_data + '--></style>'
+  end
 
   # load the configuration on Class load
-  self.load_config  
+  self.load_config 
+  # set css for content widgets on Class load
+  self.set_content_widget_css 
 end

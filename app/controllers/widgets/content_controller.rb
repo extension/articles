@@ -36,9 +36,10 @@ class Widgets::ContentController < ApplicationController
       return return_error
     end
     
-    render :update do |page| 
-      page << "document.write('<div><p>eXtension #{type} for: #{Tag.castlist_to_array(content_tags,false,false).join(',')}</p><ul>');"
-      page << "document.write('<p>There are currently no content items at this time.</p>')" if contents.length == 0
+    render :update do |page|         
+      page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
+      page << "document.write('<div id=\"content_widget\"><h3><img src=\"/images/common/extension_icon_40x40.png\" /> eXtension #{type}: #{Tag.castlist_to_array(content_tags,false,false).join(', ')}</h3><ul>');"
+      page << "document.write('<h3>There are currently no content items at this time.</h3>')" if contents.length == 0
         
       contents.each do |content| 
         case content.class.name 
@@ -56,20 +57,21 @@ class Widgets::ContentController < ApplicationController
         end
         page << "document.write('</a></li>');"
       end
-
-      page << "document.write('</ul></div>');" 
+      page << "document.write('</ul>');" 
+      page << "document.write('<p><a href=\"http://www.extension.org/widgets\">Create your own eXtension widget</a></p></div>');" 
     end
   end
   
   def test_widget
-    
+    render :layout => false
   end
   
   private
   
   def return_error
-    render :update do |page| 
-      page << "document.write('<p>You must supply valid content tags and a valid content type for this widget.</p>');"
+    render :update do |page|         
+      page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
+      page << "document.write('<div id=\"content_widget\" class=\"error\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://www.extension.org/widgets\">eXtension widget builder</a> and copy the code again.</p></div');"
     end
   end
 

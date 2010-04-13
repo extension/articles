@@ -10,7 +10,6 @@ class StatusController < ApplicationController
   
   def version
     @deploy = Hash.new
-    @deploy['version'] = AppVersion.version
     fname = 'REVISION'
     if File.exists?(fname)
       stat = File.stat(fname)

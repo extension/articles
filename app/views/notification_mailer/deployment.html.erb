@@ -1,0 +1,13 @@
+===================================================
+App:  <%= @deployinfo['application']%> <%= @deployinfo['version']%> 
+Date:  <%= @deployinfo['time']%>
+Deployed by:  <%= @deployinfo['username']%>
+Deployed to: <%= @deployinfo['host']%>
+===================================================
+
+Commits related to this deploy:
+
+<%= @scmoutput %>
+
+--
+This email was automatically generated.
