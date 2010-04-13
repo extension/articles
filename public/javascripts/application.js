@@ -166,6 +166,14 @@ function processColumns() {
    return;
 }
 
+function addTagsToList(formControl, tagToAdd) {
+    separator = ','    
+	if(formControl.value == '')
+    	formControl.value = tagToAdd
+	else
+		formControl.value = formControl.value + separator + tagToAdd
+}
+
 function processTableOfContents() {
    var toc = $("toc");
    if ( toc ) {
