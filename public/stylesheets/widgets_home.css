@@ -85,5 +85,10 @@ a:hover .go_button {
 .copyright {float:left;}
 .clearing {clear:both;}
 
-#example_widget {float:right; padding:10px 30px; 30px;}
-#widget_builder {float:left; background:#fff; width: 400px; margin-left:40px; padding:20px;}
+#example_widget {float:left; padding:10px 30px; 30px; width:400px;}
+/*#content_widget {float:right; padding:10px 30px; 30px;}*/
+#widget_builder {float:left; background:#fff; width: 400px; margin-left:40px; padding:20px; margin-right:20px;}
+#widget_code_module {border:1px solid #ccc; float:left; padding:20px; background:#fff; border-radius: 5px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;}
+#widget_code {width:300px; padding:8px;}

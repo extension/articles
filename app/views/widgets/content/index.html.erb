@@ -29,17 +29,18 @@
         
     <%= observe_form :content_widget_builder, 
         :url => { :action => :generate_new_widget },
-        :update => 'content_widget',
+        :update => 'example_widget',
         :loading => "Element.show('loading')",
         :complete    => "Element.hide('loading')"
     %>
         
 </div>
 
-
-<div id="loading" style="display:none"><img src='/images/loading.gif' /> Loading... </div>
-<div id="content_widget">
-
+<div id="example_widget">
+  <div id="loading" style="display:none"><img src='/images/loading.gif' /> Loading... </div>
+  <script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => 'all', :quantity => 5, :type => 'faqs' %>"></script>
 </div>
+
+
 
 <br class="clearing" />

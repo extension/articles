@@ -27,7 +27,9 @@
 
 <p><a href="http://<%= request.host %>/widgets\">Create your own eXtension widget</a></p></div>
 
-<p><label>Copy the code below and paste it on your website:</label></p>
-<p><%= text_area_tag :widget_code, @widget_code, :cols => "50", :rows => "5" %></p>
 
+<div id="widget_code_module">
+  <p>Copy the code below and paste it on your website:</p>
+  <p><%= text_area_tag :widget_code, @widget_code, :rows => "5" %></p>
+</div>
 <% end %>
