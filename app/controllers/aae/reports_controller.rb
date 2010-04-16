@@ -601,7 +601,7 @@ class Aae::ReportsController < ApplicationController
      #    @users=User.find_state_users(@loc, @county, @date1, @date2,
     #       :all, :select => " id, first_name, last_name, login, email, county_id", :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])
          @users = User.find_state_users({:location => @loc, :county => @county, :dateinterval => [@date1, @date2], :numparm => "all", :args => {
-             :select => " id, first_name, last_name, login, email, county_id", :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'] }})
+             :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'] }})
       end
      
      
