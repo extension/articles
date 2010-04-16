@@ -138,7 +138,7 @@ class AppConfig
 		
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
-    @@configtable['faq_create_url'] = 'http://faq.extension.org/expert/new_faq'
+    @@configtable['faq_create_url'] = 'http://cop.extension.org/questions/new_from/aae'
 
   end
   
