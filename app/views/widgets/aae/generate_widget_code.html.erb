@@ -1,3 +1,7 @@
+<%= render(:partial => 'aae_widget_nav') %>
+
+<div id="article">
+
 <h2>Your Widget Code</h2>
 <p>Copy and paste the following code into your website code.</p>
 <p><%= link_to 'Join the AaE Widgets Community', :controller => 'people/communities', :action => :show, :id => 326 %> for important widget updates.</p>
@@ -6,4 +10,6 @@
         <textarea>
 <%= h('<iframe style="border:0" width="100%" src="' +  @widget_url + '" height="300px"></iframe>') %>
 </textarea>
+</div>
+
 </div>

@@ -10,7 +10,7 @@ class Widgets::AaeController < ApplicationController
   before_filter :check_purgatory, :except => [:index, :about, :documentation, :who, :login_redirect]
   before_filter :login_optional, :only => [:index, :about, :documentation, :who]
   
-  layout 'widgets'
+  layout 'widgetshome'
   
   def redirector
     if params[:redirectparam] and self.respond_to?(params[:redirectparam])

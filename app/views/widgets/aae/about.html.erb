@@ -1,5 +1,9 @@
 <% @selected_tab = :about %>
 
+<%= render(:partial => 'aae_widget_nav') %>
+
+<div id="article">
+
 <h2>About Ask eXtension</h2>
 
 <p>Ask.eXtension.org is the place to get the Ask eXtension widget.</p>
@@ -25,5 +29,4 @@
 
 <p>Ready to accept questions to your site? <%= link_to "Get the Ask eXtension widget for your site", :controller => 'widgets/aae', :action => :new %></p>
 
-
-
+</div>

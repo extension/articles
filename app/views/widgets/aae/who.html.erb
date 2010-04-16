@@ -1,5 +1,9 @@
 <% @selected_tab = :who %>
 
+<%= render(:partial => 'aae_widget_nav') %>
+
+<div id="article">
+
 <h2>Who answers the questions?</h2>
 
 <p>Questions are answered by dedicated Cooperative Extension agents, staff and professionals from around the country who have volunteered to work in the eXtension FAQ system.</p>
@@ -11,3 +15,5 @@
     <li>The question is automatically assigned to an Extension agent based on the question's location. If there's not a location match, the question is assigned to Extension agents who have volunteered to handle and route orphaned questions. An email is sent to the agent when a question is assigned.</li>
     <li>If able, the agent answers the question and the response is emailed to the user who submitted the question. Otherwise the question can be assigned to someone else.</li>
 </ol>
+
+</div>
