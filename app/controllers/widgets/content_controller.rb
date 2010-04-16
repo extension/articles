@@ -8,38 +8,27 @@
 class Widgets::ContentController < ApplicationController
   
   def index
-    @launched_categories = Category.launched_content_categories  
+    @launched_categories = Category.launched_content_categories 
+    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => 3, :type => 'articles_faqs'}\"></script>"  
     render :layout => 'widgetshome'
   end
   
   def generate_new_widget
-    params[:tags].blank? ? (@error = true) : (content_tags = params[:tags])  
-    params[:quantity].blank? ? quantity = 3 : quantity = params[:quantity].to_i
-    params[:type].blank? ? content_type = "faqs_articles" : content_type = params[:type]
-    
-    if !@error
-      @error = true if !@content_type_hash = get_contents(content_type, content_tags, quantity)
-      @content_tags = Tag.castlist_to_array(params[:tags],false,false).join(',')
-    end
-    
-    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => @content_tags, :quantity => quantity, :type => content_type}\"></script>"
-    
+    setup_contents
+    (!@content_tags or @content_tags == 'All') ? tags_to_filter = nil : tags_to_filter = @content_tags 
+    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => tags_to_filter, :quantity => @quantity, :type => @content_type}\"></script>"
     render :layout => false
   end
   
   def show
-    params[:tags].blank? ? (return return_error) : (content_tags = params[:tags])  
-    params[:quantity].blank? ? quantity = 3 : quantity = params[:quantity].to_i
-    params[:type].blank? ? content_type = "articles_faqs" : content_type = params[:type]
-    
-    return return_error if !content_type_hash = get_contents(content_type, content_tags, quantity)
+    setup_contents
       
     render :update do |page|         
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension #{content_type_hash[:type]}: #{Tag.castlist_to_array(content_tags,false,false).join(', ')}</span></h3><ul>');"
-      page << "document.write('<li>There are currently no content items at this time.</li>')" if content_type_hash[:contents].length == 0
+      page << "document.write('<div id=\"content_widget\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension #{@type}: #{@content_tags}</span></h3><ul>');"
+      page << "document.write('<h3>There are currently no content items at this time.</h3>')" if @contents.length == 0
         
-      content_type_hash[:contents].each do |content| 
+      @contents.each do |content| 
         case content.class.name 
         when "Faq" 
           page << "document.write('<li><a href=#{url_for :controller => '/faq', :action => :detail, :id => content.id, :only_path => false}>');"
@@ -67,35 +56,51 @@ class Widgets::ContentController < ApplicationController
   
   private
   
-  def return_error
-    render :update do |page|         
-      page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\" class=\"error\"><p><strong>There is a problem with the way this widget is configured.</strong> It is missing a valid content tag or content type.</p><p>Please visit the <a href=\"http://#{request.host}/widgets\">eXtension widget builder</a> and copy the code again.</p></div');"
-    end
-  end
-  
-  def get_contents(content_type, content_tags, quantity)
-    case content_type
+  # some duplicated code in here, may have to revisit this
+  def setup_contents
+    params[:tags].blank? ? (content_tags = nil) : (content_tags = params[:tags])  
+    
+    # if quantity is blank or zero or quantity.to_i is zero (possible non-integer), default to 3
+    params[:quantity].blank? ? @quantity = 3 : @quantity = params[:quantity].to_i
+    @quantity = 3 if @quantity == 0
+    
+    params[:type].blank? ? @content_type = "faqs_articles" : @content_type = params[:type]
+    
+    content_tags.nil? ? @content_tags = 'All' : @content_tags = Tag.castlist_to_array(content_tags,false,false).join(',')
+    
+    case @content_type
     when 'faqs'
-      type = 'faqs'
-      contents = Faq.tagged_with_all(content_tags).main_recent_list(:limit => quantity)    
+      @type = 'faqs'
+      if content_tags
+        @contents = Faq.tagged_with_all(content_tags).main_recent_list(:limit => @quantity)
+      else
+        @contents = Faq.main_recent_list(:limit => @quantity)
+      end
     when 'articles'
-      type = 'articles'
-      contents = Article.tagged_with_all(content_tags).main_recent_list(:limit => quantity)
+      @type = 'articles'
+      if content_tags
+        @contents = Article.tagged_with_all(content_tags).main_recent_list(:limit => @quantity)
+      else
+        @contents = Article.main_recent_list(:limit => @quantity)
+      end
     when 'events'
-      type = 'events'
-      contents = Event.tagged_with_all(content_tags).main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => quantity})
-    when 'faqs_articles'
-      type = 'faqs and articles'
-      faqs = Faq.tagged_with_all(content_tags).main_recent_list(:limit => quantity)
-      articles = Article.tagged_with_all(content_tags).main_recent_list(:limit => quantity)
-      contents = content_date_sort(articles, faqs, quantity)
+      @type = 'events'
+      if content_tags
+        @contents = Event.tagged_with_all(content_tags).main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity})
+      else
+        @contents = Event.main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity})
+      end
     else
-      return nil
+      @type = 'articles and faqs'
+      if content_tags
+        faqs = Faq.tagged_with_all(content_tags).main_recent_list(:limit => @quantity)
+        articles = Article.tagged_with_all(content_tags).main_recent_list(:limit => @quantity)
+      else
+        faqs = Faq.main_recent_list(:limit => @quantity)
+        articles = Article.main_recent_list(:limit => @quantity)
+      end
+      @contents = content_date_sort(articles, faqs, @quantity)
     end
-    
-    return {:contents => contents, :type => type}
-    
   end
 
 end
