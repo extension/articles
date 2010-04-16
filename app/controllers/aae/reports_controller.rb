@@ -177,13 +177,14 @@ class Aae::ReportsController < ApplicationController
                  @edits = "Resolved"
                end
              end
-              select_string = " submitted_questions.id squid, submitted_questions.updated_at updated_at, resolved_by, asked_question, question_updated_at, submitted_questions.status_state status"
+        #      select_string = " submitted_questions.id squid, submitted_questions.updated_at updated_at, resolved_by, asked_question, question_updated_at, submitted_questions.status_state status"
+              
               joins = ((locid) ? [:categories, :location] : [:categories])
               (desc=="New") ? @pgt = " Newly Submitted Questions in '#{@cat.name}'  " : @pgt = " Questions Resolved from Ask an Expert for '#{@cat.name}'"
               (params[:locname]) ? @filtstr = "Filtered by Location = #{params[:locname]} "  : ""
               
               @questions = SubmittedQuestion.find_questions(@cat, @edits, aux, locid,  @date1, @date2,
-                 :all,  :select => select_string,  :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
+                 :all, :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
                        :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                
               @min = 124
         end
@@ -260,8 +261,9 @@ class Aae::ReportsController < ApplicationController
            desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
            descl = desc
 
-           select_string = " submitted_questions.current_contributing_question question_id, user_id, submitted_questions.id squid,  resolved_by, " +
-             " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
+      #     select_string = " submitted_questions.current_contributing_question question_id, user_id, submitted_questions.id squid,  resolved_by, " +
+      #       " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
+           select_string = " submitted_questions.* "
            if desc=="Assigned as an Expert" || desc=="Currently Assigned as an Expert"
              select_string = select_string + " , recipient_id "
              joins = [:submitted_question_events]
@@ -558,8 +560,8 @@ class Aae::ReportsController < ApplicationController
          
           #   (@edits[0..7]== "Resolved") ?  jrestring = " join users on sq.resolved_by=users.id " :  jrestring=""
              (@edits[0..7] == "Resolved") ? jstring = [:resolved_by] : jstring= nil
-             select_string = "submitted_questions.user_id, submitted_questions.id squid, resolved_by, submitted_questions.location_id, current_contributing_question question_id,  " +
-                " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
+         #    select_string = "submitted_questions.user_id, submitted_questions.id squid, resolved_by, submitted_questions.location_id, current_contributing_question question_id,  " +
+        #        " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
             
             #  jstring= " as sq #{jrestring}"
              if @edits == 'Submitted'
@@ -573,7 +575,6 @@ class Aae::ReportsController < ApplicationController
                  
            @questions = SubmittedQuestion.find_state_questions(@loc, @county, params[:descriptor], @date1, @date2,
                         :all,
-                        :select =>select_string,
                         :joins => jstring,
                         :order => (@edits=="Submitted" || @edits[0..7]=="Resolved") ? order_clause("submitted_questions.updated_at", "desc") : order_clause,
                         :page => params[:page],
