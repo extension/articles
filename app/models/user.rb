@@ -1958,11 +1958,10 @@ class User < ActiveRecord::Base
      results
     end
 
- #   def self.find_state_users(loc, county, date1, date2, *args)
+
     def self.find_state_users(options={})
        dateinterval = options[:dateinterval]
 
-        # get the total number of handling events
         conditions = []      
         if(!dateinterval.nil? )
           conditions << User.build_date_condition({:dateinterval => dateinterval})
@@ -1977,17 +1976,7 @@ class User < ActiveRecord::Base
           end
         end
        
- #     cdstring= " location_id=#{loc.id}"
-#      if (county)
-#        ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
-#        cdstring = cdstring + " and county_id=#{ctyid[0].id} "
-#      end
-#      if (date1 && date2)
-#        cdstring = [cdstring + " and created_at > ? and created_at < ?", date1, date2]
-#      end
       @users=User.with_scope(:find => { :conditions => conditions.compact.join(' AND '), :limit => 100}) do
-   #      @users=User.with_scope(:find => { :conditions => cdstring, :limit => 100}) do
-   #        paginate(*args)
         paginate(options[:numparm].to_sym, options[:args])
       end
     end
