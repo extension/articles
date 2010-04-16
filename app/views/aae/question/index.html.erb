@@ -142,10 +142,11 @@
         <br/> 
 
         
-           <% form_tag(AppConfig.configtable['faq_create_url'], :method => :get) do %>
-             <%= hidden_field_tag(:squid, @submitted_question.id) %>
-             <%= hidden_field_tag(:aae_question, @submitted_question.all_public_responses) %>
-             <%= hidden_field_tag(:aae_answer, @submitted_question.all_expert_responses) %>
+        <% form_tag(AppConfig.configtable['faq_create_url'], :method => :post) do %>
+            <%= hidden_field_tag(:squid, @submitted_question.id) %>
+            <%= hidden_field_tag(:aae_question, @submitted_question.all_public_responses) %>
+            <%= hidden_field_tag(:aae_answer, @submitted_question.all_expert_responses) %>
+            <%= hidden_field_tag(:author_id, @currentuser.id) %>
              <p>
              <%= submit_tag 'Convert this question into a FAQ', :class => "submit" %>
              <br />(you can edit on the next screen)
