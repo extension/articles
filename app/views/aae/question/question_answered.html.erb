@@ -15,10 +15,11 @@
 <h2>Would you like to convert your response into an FAQ?</h2>
 
 
-<% form_tag(AppConfig.configtable['faq_create_url'], :method => :get) do %>
+<% form_tag(AppConfig.configtable['faq_create_url'], :method => :post) do %>
     <%= hidden_field_tag(:squid, @submitted_question.id) %>
     <%= hidden_field_tag(:aae_question, @submitted_question.all_public_responses) %>
     <%= hidden_field_tag(:aae_answer, @submitted_question.all_expert_responses) %>
+    <%= hidden_field_tag(:author_id, @currentuser.id) %>
     <p><%= submit_tag 'Convert into a FAQ' %> (Edit it on the next screen)
       <!--[if IE]>
          <span id="ie_aae_faq_error">There is a known problem with Internet Explorer (IE) converting long AaE questions to FAQs. If you get an error, you'll need to copy and paste this AaE into the FAQ app. We are working on a solution to this issue. Other browsers are not affected by this issue.</span>
