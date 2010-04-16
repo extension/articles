@@ -6,10 +6,13 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Widgets::ContentController < ApplicationController
+  DEFAULT_QUANTITY = 3
+  
   
   def index
     @launched_categories = Category.launched_content_categories 
-    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => 3, :type => 'articles_faqs'}\"></script>"  
+    @default_quantity = DEFAULT_QUANTITY
+    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => @default_quantity, :type => 'articles_faqs'}\"></script>"  
     render :layout => 'widgetshome'
   end
   
@@ -60,9 +63,9 @@ class Widgets::ContentController < ApplicationController
   def setup_contents
     params[:tags].blank? ? (content_tags = nil) : (content_tags = params[:tags])  
     
-    # if quantity is blank or zero or quantity.to_i is zero (possible non-integer), default to 3
-    params[:quantity].blank? ? @quantity = 3 : @quantity = params[:quantity].to_i
-    @quantity = 3 if @quantity == 0
+    # if quantity is blank or zero or quantity.to_i is zero (possible non-integer), then default
+    params[:quantity].blank? ? @quantity = DEFAULT_QUANTITY : @quantity = params[:quantity].to_i
+    @quantity = DEFAULT_QUANTITY if @quantity == 0
     
     params[:type].blank? ? @content_type = "faqs_articles" : @content_type = params[:type]
     
