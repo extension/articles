@@ -178,7 +178,7 @@ class User < ActiveRecord::Base
   named_scope :missingtags,  :joins => "LEFT JOIN taggings ON (users.id = taggings.taggable_id AND taggings.taggable_type = 'User')", :conditions => 'taggings.id IS NULL'
   named_scope :missingnetworks, :joins => "LEFT JOIN social_networks ON users.id = social_networks.user_id",  :conditions => 'social_networks.id IS NULL'
     
-  named_scope :date_users, lambda { |date1, date2| { :conditions => (date1 && date2) ?   [ " users.created_at between ? and ?", date1, date2] : "true" } }
+  named_scope :date_users, lambda { |date1, date2| { :conditions => (date1 && date2) ?   [ " TRIM(DATE(users.created_at)) between ? and ?", date1, date2] : "true" } }
   
   named_scope :escalators_by_category, lambda {|category|
    {:joins => [:roles, :categories], :conditions => ["roles.name = '#{Role::ESCALATION}' AND categories.name = '#{category.name}'"], :order => "last_name,first_name ASC" }
@@ -1958,17 +1958,37 @@ class User < ActiveRecord::Base
      results
     end
 
-    def self.find_state_users(loc, county, date1, date2, *args)
-      cdstring= " location_id=#{loc.id}"
-      if (county)
-       ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
-       cdstring = cdstring + " and county_id=#{ctyid[0].id} "
-      end
-      if (date1 && date2)
-        cdstring = [cdstring + " and created_at > ? and created_at < ?", date1, date2]
-      end
-      @users=User.with_scope(:find => { :conditions => cdstring, :limit => 100}) do
-       paginate(*args)
+ #   def self.find_state_users(loc, county, date1, date2, *args)
+    def self.find_state_users(options={})
+       dateinterval = options[:dateinterval]
+
+        # get the total number of handling events
+        conditions = []      
+        if(!dateinterval.nil? )
+          conditions << User.build_date_condition({:dateinterval => dateinterval})
+        end
+  
+        if options[:county]
+          ctyid = County.find(:first, :conditions => [ " name= ? and location_id=?", options[:county], options[:location].id])
+          conditions << " county_id=#{ctyid.id} "
+        else
+          if options[:location]
+               conditions << " location_id = #{options[:location].id} "
+          end
+        end
+       
+ #     cdstring= " location_id=#{loc.id}"
+#      if (county)
+#        ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
+#        cdstring = cdstring + " and county_id=#{ctyid[0].id} "
+#      end
+#      if (date1 && date2)
+#        cdstring = [cdstring + " and created_at > ? and created_at < ?", date1, date2]
+#      end
+      @users=User.with_scope(:find => { :conditions => conditions.compact.join(' AND '), :limit => 100}) do
+   #      @users=User.with_scope(:find => { :conditions => cdstring, :limit => 100}) do
+   #        paginate(*args)
+        paginate(options[:numparm].to_sym, options[:args])
       end
     end
     
