@@ -9,7 +9,7 @@ progopts = GetoptLong.new(
 @environment = 'production'
 @refreshall = false
 @provided_date = nil
-@faqdb = 'prod_faq'
+@faqdb = 'prod_dega'
 progopts.each do |option, arg|
   case option
     when '--environment'

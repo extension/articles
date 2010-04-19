@@ -14,7 +14,7 @@ class SearchQuestion < ActiveRecord::Base
   AAE = 2
   
   # faq foreign database
-  FAQDB = 'prod_faq'  
+  FAQDB = 'prod_dega'  
   
   named_scope :faq_questions, {:conditions => {:entrytype => FAQ}}
   named_scope :aae_questions, {:conditions => {:entrytype => AAE}}
