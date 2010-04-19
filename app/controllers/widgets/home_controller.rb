@@ -10,9 +10,6 @@ class Widgets::HomeController < ApplicationController
   before_filter :login_optional
 
   def index
-    if(@app_location_for_display == 'production')
-      return redirect_to(widgets_aae_url)
-    end
   end
   
 end
