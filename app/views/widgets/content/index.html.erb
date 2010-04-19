@@ -3,12 +3,6 @@
      
     <% form_tag({}, {:id => 'content_widget_builder'}) do %>
     
-    <%= button_to_remote 'Generate Widget', :url => { :action => :generate_new_widget },
-        :update => 'example_widget',
-        :submit => 'content_widget_builder',
-        :loading => "Element.show('loading')",
-        :complete    => "Element.hide('loading')"  %>
-    
     <p><label>Type of Content:</label></p>
     <ul>
     <li><%= radio_button_tag(:type, 'articles', false) %> Articles</li>
@@ -17,20 +11,20 @@
     <li><%= radio_button_tag(:type, 'faqs_articles', true) %> Articles and Faqs</li>
     </ul>
     
-    <p><label>Number of items:</label></p>
-    <p><%= text_field_tag :quantity, @default_quantity, :size => 3 %></p>
+    <p class="inline"><label>Number of items: <%= text_field_tag :quantity, @default_quantity, :size => 3 %></label></p>
     
-    <p><label>Width:</label></p>
-    <p><%= text_field_tag :width, @default_width, :size => 3 %></p>
+    <p class="inline"><label>Width: <%= text_field_tag :width, @default_width, :size => 3 %> pixels</label></p>
     
       <p><label>Content Tags:</label></p>
-      <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "3" %></p>
-      <h4>Launched Categories (click to add)</h4>
+      <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "2" %></p>
+      <p>Launched Categories (click to add)</p>
+      <div id="tag_wrapper">
       <ul class="select_from_tags">
       <% @launched_categories.each do |category| %>
           <li><%= link_to_function category.name, "addTagsToList($('tags'), '#{category.name}')" %></li>
       <% end %>
-      </ul>      
+      </ul>
+      </div>
 
     <% end %>
     

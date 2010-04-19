@@ -173,7 +173,8 @@ select {display:block;}
 textarea { padding: .3em; }
 textarea { width: 95%; }
 
-.inline {display:inline;}
+p.inline * {display:inline;}
+p.inline label input {width:auto;}
 .float-spinner {display:inline;}
 .active-status {padding:1em; background:#eee; margin:1em 0 3em;}
 .active-status.active {background:#d3ebcb;}
@@ -206,3 +207,5 @@ textarea { width: 95%; }
 #errorExplanation p {margin:0 0 .5em;}
 #errorExplanation ul {padding:0 2em 2em;}
 #errorExplanation li {padding:0 .5em; list-style:disc; margin:0;}
+
+#tag_wrapper {height:120px; overflow:auto; background:#eee; padding:10px;}
