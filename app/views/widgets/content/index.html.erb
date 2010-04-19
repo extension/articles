@@ -3,27 +3,26 @@
      
     <% form_tag({}, {:id => 'content_widget_builder'}) do %>
     
+    <p><label>Type of Content:</label></p>
+    <ul>
+    <li><%= radio_button_tag(:type, 'articles', false) %> Articles</li>
+    <li><%= radio_button_tag(:type, 'faqs', false) %> Faqs</li>
+    <li><%= radio_button_tag(:type, 'events', false) %> Events</li>
+    <li><%= radio_button_tag(:type, 'faqs_articles', true) %> Articles and Faqs</li>
+    </ul>
+    
+    <p><label>Number of items:</label></p>
+    <p><%= text_field_tag :quantity, @default_quantity, :size => 3 %></p>
+    
       <p><label>Content Tags:</label></p>
-      <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "5" %></p>
+      <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "3" %></p>
 
       <h4>Launched Categories (click to add)</h4>
       <ul class="select_from_tags">
       <% @launched_categories.each do |category| %>
           <li><%= link_to_remote category.name, {:url => {:action => :generate_new_widget}, :before => "addTagsToList($('tags'), '#{category.name}')", :update => 'example_widget', :submit => 'content_widget_builder', :loading => "Element.show('loading')", :complete => "Element.hide('loading')"} %></li>
       <% end %>
-      </ul>
-      
-      <p><label>Type of Content:</label></p>
-      <ul>
-      <li><%= radio_button_tag(:type, 'articles', false) %> Articles</li>
-      <li><%= radio_button_tag(:type, 'faqs', false) %> Faqs</li>
-      <li><%= radio_button_tag(:type, 'events', false) %> Events</li>
-      <li><%= radio_button_tag(:type, 'faqs_articles', true) %> Articles and Faqs</li>
-      </ul>
-      
-      <p><label>Number of items:</label></p>
-      <p><%= text_field_tag :quantity, @default_quantity, :size => 3 %></p>
-      
+      </ul>      
 
     <% end %>
         
@@ -37,7 +36,7 @@
 </div>
 
 <div id="example_widget">
-  <div id="loading" style="display:none"><img src='/images/loading.gif' /> Loading... </div>
+  <div id="loading" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
   <script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => 3, :type => 'articles_faqs' %>"></script>
   
   <div id="widget_code_module">
