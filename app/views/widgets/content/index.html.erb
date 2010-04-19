@@ -3,6 +3,12 @@
      
     <% form_tag({}, {:id => 'content_widget_builder'}) do %>
     
+    <%= button_to_remote 'Generate Widget', :url => { :action => :generate_new_widget },
+        :update => 'example_widget',
+        :submit => 'content_widget_builder',
+        :loading => "Element.show('loading')",
+        :complete    => "Element.hide('loading')"  %>
+    
     <p><label>Type of Content:</label></p>
     <ul>
     <li><%= radio_button_tag(:type, 'articles', false) %> Articles</li>
@@ -19,19 +25,18 @@
       <h4>Launched Categories (click to add)</h4>
       <ul class="select_from_tags">
       <% @launched_categories.each do |category| %>
-          <li><%= link_to_remote category.name, {:url => {:action => :generate_new_widget}, :before => "addTagsToList($('tags'), '#{category.name}')", :update => 'example_widget', :submit => 'content_widget_builder', :loading => "Element.show('loading')", :complete => "Element.hide('loading')"} %></li>
+          <li><%= link_to_function category.name, "addTagsToList($('tags'), '#{category.name}')" %></li>
       <% end %>
       </ul>      
 
     <% end %>
-        
-    <%= observe_form :content_widget_builder, 
-        :url => { :action => :generate_new_widget },
+    
+    <%= button_to_remote 'Generate Widget', :url => { :action => :generate_new_widget },
         :update => 'example_widget',
+        :submit => 'content_widget_builder',
         :loading => "Element.show('loading')",
-        :complete    => "Element.hide('loading')"
-    %>
-        
+        :complete    => "Element.hide('loading')"  %>
+                
 </div>
 
 <div id="example_widget">
@@ -44,8 +49,5 @@
   </div>
   
 </div>
-
-
-
 
 <br class="clearing" />
