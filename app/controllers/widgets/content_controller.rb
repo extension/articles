@@ -38,7 +38,7 @@ class Widgets::ContentController < ApplicationController
     # return js to write the widget to the page when the page hosting the widget loads
     render :update do |page|         
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension #{@type}: #{@content_tags}</span></h3><ul>');"
+      page << "document.write('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>');"
       page << "document.write('<h3>There are currently no content items at this time.</h3>')" if @contents.length == 0
         
       @contents.each do |content| 
