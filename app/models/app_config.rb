@@ -192,7 +192,7 @@ class AppConfig
   
   def AppConfig.set_content_widget_css
     css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
-    @@content_widget_styles = '<style type="text/css" media="screen"><!--' + css_data + '--></style>'
+    @@content_widget_styles = '<br /><style type="text/css" media="screen">' + css_data + '</style>'
   end
 
   # load the configuration on Class load
