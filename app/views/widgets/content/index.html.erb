@@ -20,6 +20,9 @@
     <p><label>Number of items:</label></p>
     <p><%= text_field_tag :quantity, @default_quantity, :size => 3 %></p>
     
+    <p><label>Width:</label></p>
+    <p><%= text_field_tag :width, @default_width, :size => 3 %></p>
+    
       <p><label>Content Tags:</label></p>
       <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "3" %></p>
       <h4>Launched Categories (click to add)</h4>
@@ -41,7 +44,7 @@
 
 <div id="example_widget">
   <div id="loading" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
-  <script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => 3, :type => 'articles_faqs' %>"></script>
+  <script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => @default_quantity, :width => @default_width, :type => 'articles_faqs' %>"></script>
   
   <div id="widget_code_module">
     <p>Copy the code below and paste it on your website:</p>
