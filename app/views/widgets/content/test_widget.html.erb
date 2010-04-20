@@ -1,1 +1,2 @@
-<script type="text/javascript" src="http://localhost:3001/widgets/content/show?tags=horses,horticulture&quantity=5&type=faqs"></script>
+<script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => 'horticulture', :quantity => 5, :type => 'faqs' %>"></script>
+

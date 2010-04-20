@@ -5,7 +5,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>eXtension Widgets</title>
+    <title>eXtension Widgets: <%= @page_title || controller.action_name %></title>
     
     <% if @mobile_device %>
         <meta name = "viewport" content = "width = device-width, user-scalable = yes">
@@ -27,7 +27,7 @@
     <div id="wrapper">
         <div id="masthead">
             <div id="header">
-                <h1><%= link_to("eXtension Widgets", widgets_aae_url) %></h1>
+                <h1><%= link_to("eXtension Widgets", widgets_home_url) %></h1>
                 <p>Add customized eXtension tools and content to your web page</p>
             </div>
             <% if !@mobile_device %>

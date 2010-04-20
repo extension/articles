@@ -10,7 +10,6 @@ class Widgets::HomeController < ApplicationController
   before_filter :login_optional
 
   def index
-    # return redirect_to(widgets_aae_url)
   end
   
 end

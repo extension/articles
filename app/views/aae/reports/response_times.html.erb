@@ -17,15 +17,15 @@
         </tr>
         <tr>
             <td>Average Age of Current Incoming (Unanswered) Questions</td>
-            <td class="count"><%= (@avg_open_time_all > 24) ? ((@avg_open_time_all/24).to_s ) : (@avg_open_time_all.to_s ) %> <%= (@avg_open_time_all > 24) ? "Days" : "Hours"%></td>
+            <td class="count"><%= (@avg_open_time_all > 24) ? (("%.2f"  % (@avg_open_time_all/24)).to_s ) : ("%.2f"  % @avg_open_time_all).to_s  %> <%= (@avg_open_time_all > 24) ? "Days" : "Hours"%></td>
         </tr>
         <tr>
             <td>Average Response Times in Past 30 Days</td>
-            <td class="count"><%= (@avg_resp_past30_all > 24) ? ((@avg_resp_past30_all/24).to_s)  : ((@avg_resp_past30_all/24.0 > 0) ? (@avg_resp_past30_all.to_s): "No Data" ) %> <%= (@avg_resp_past30_all > 24) ? "Days" : ((@avg_resp_past30_all/24.0 > 0) ? "Hours" : "")%></td>
+            <td class="count"><%= (@avg_resp_past30_all && @avg_resp_past30_all > 24) ? (("%.2f"  % (@avg_resp_past30_all/24)).to_s)  : ((@avg_resp_past30_all && @avg_resp_past30_all/24.0 > 0) ? ("%.2f"  % @avg_resp_past30_all).to_s : "No Data" ) %> <%= (@avg_resp_past30_all && @avg_resp_past30_all > 24) ? "Days" : ((@avg_resp_past30_all && @avg_resp_past30_all/24.0 > 0) ? "Hours" : "")%></td>
         </tr>
         <tr >
             <td>Average Historical Response Time</td>
-            <td class="count"><%= (@avg_response_time_all > 24) ? ((@avg_response_time_all/24).to_s) : (@avg_response_time_all.to_s)  %> <%= (@avg_response_time_all >24) ? "Days" : "Hours"%></td>
+            <td class="count"><%= (@avg_response_time_all > 24) ? (("%.2f"  % (@avg_response_time_all/24)).to_s) : ("%.2f"  % @avg_response_time_all).to_s  %> <%= (@avg_response_time_all >24) ? "Days" : "Hours"%></td>
         </tr>
     </table>
 
@@ -105,17 +105,17 @@
 	            </tr>
                 <tr>
                     <td>Average Response Time in Last <%= @nodays%> Days of Period</td>
-                   <td class="count"><%= (@avg_resp_past30 > 24) ? ((@avg_resp_past30/24).to_s)  : ((@avg_resp_past30/24.0 > 0) ? (@avg_resp_past30.to_s) : "No Data" ) %> <%= (@avg_resp_past30 > 24) ? "Days" : ((@avg_resp_past30/24.0 > 0) ?  "Hours" : "")%></td>
+                   <td class="count"><%= (@avg_resp_past30 && @avg_resp_past30 > 24) ? (("%.2f"  % (@avg_resp_past30/24)).to_s)  : ((@avg_resp_past30 && @avg_resp_past30/24.0 > 0) ? (@avg_resp_past30.to_s) : "No Data" ) %> <%= (@avg_resp_past30 && @avg_resp_past30 > 24) ? "Days" : ((@avg_resp_past30 && @avg_resp_past30/24.0 > 0) ?  "Hours" : "")%></td>
                    <% if (@datec1 && @datec2)  || @sec_set%>
-                   <td class="count"><%= (@avgc_resp_past30 > 24) ? ((@avgc_resp_past30/24).to_s)  : ((@avgc_resp_past30/24.0 > 0) ? (@avgc_resp_past30.to_s) : "No Data" ) %> <%= (@avgc_resp_past30 > 24) ? "Days" : ((@avgc_resp_past30/24.0 > 0) ?  "Hours" : "")%></td>
+                   <td class="count"><%= (@avgc_resp_past30 && @avgc_resp_past30 > 24) ? (("%.2f"  % (@avgc_resp_past30/24)).to_s)  : ((@avgc_resp_past30 && @avgc_resp_past30/24.0 > 0) ? (@avgc_resp_past30.to_s) : "No Data" ) %> <%= (@avgc_resp_past30 && @avgc_resp_past30 > 24) ? "Days" : ((@avgc_resp_past30 && @avgc_resp_past30/24.0 > 0) ?  "Hours" : "")%></td>
                        <% end %>
                 </tr>
 
                 <tr >
                     <td>Average Response Time for Answered Questions</td>
-                    <td class="count"><%= (@avg_response_time > 24) ? ((@avg_response_time/24).to_s) : (@avg_response_time.to_s)  %> <%= (@avg_response_time >24) ? "Days" : "Hours"%></td>
+                    <td class="count"><%= (@avg_response_time && @avg_response_time > 24) ? (("%.2f"  % (@avg_response_time/24)).to_s) : ((@avg_response_time) ? @avg_response_time.to_s : "No Data")  %> <%= (@avg_response_time && @avg_response_time >24) ? "Days" : ((@avg_response_time) ? "Hours" : "")%></td>
                     <% if (@datec1 && @datec2)  || @sec_set%>
-                    <td class="count"><%= (@avgc_response_time > 24) ? ((@avgc_response_time/24).to_s) : (@avgc_response_time.to_s)  %> <%= (@avgc_response_time >24) ? "Days" :  "Hours" %></td>
+                    <td class="count"><%= (@avgc_response_time && @avgc_response_time > 24) ? (("%.2f"  % (@avgc_response_time/24)).to_s) : ((@avgc_response_time) ? @avgc_response_time.to_s : "No Data")  %> <%= (@avgc_response_time && @avgc_response_time >24) ? "Days" : ((@avgc_response_time) ?  "Hours" : "") %></td>
                     <% end %>
                 </tr>
             </table>

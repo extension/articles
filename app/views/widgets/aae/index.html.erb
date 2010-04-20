@@ -1,10 +1,12 @@
-<% @page_title = "Welcome" %>
+<% @page_title = "Ask an Expert Widgets" %>
 <% @selected_tab = :welcome %>
+
+<%= render(:partial => 'aae_widget_nav') %>
 
 <%= error_messages_for 'submitted_question' %>
 
 <div id="homeAsk">
-    <div class="section">
+    <div class="section aae">
     <h2>For Extension Agents</h2>
     <p>Use Ask an Expert to receive questions from your local public through your own county website.</p>
     <ul>
@@ -14,7 +16,7 @@
     </ul>
     </div>
     
-    <div class="section">
+    <div class="section aae">
     <h2>For the Public</h2>
     <p>eXtension connects you to experts in Extension offices and Universities around the country.</p>
     <p>Visit the <%= link_to "eXtension public site", "/" %>.</p>

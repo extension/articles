@@ -1501,3 +1501,4 @@ a.nodec:hover {text-decoration:underline;}
 .mute {color:#777 !important;} /* try to use this as class of descriptive styles */
 
 .lessmb {margin-bottom:0;}
+#ie_aae_faq_error {background:#b7f9ff;display:block;padding:10px;}
