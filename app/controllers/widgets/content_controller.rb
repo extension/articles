@@ -85,7 +85,7 @@ class Widgets::ContentController < ApplicationController
     
     params[:type].blank? ? @content_type = "faqs_articles" : @content_type = params[:type]
     
-    content_tags.nil? ? @content_tags = 'All' : @content_tags = Tag.castlist_to_array(content_tags,false,false).join(',')
+    content_tags.nil? ? @content_tags = 'All' : @content_tags = Tag.castlist_to_array(content_tags,false,false).join(', ')
     
     case @content_type
     when 'faqs'
