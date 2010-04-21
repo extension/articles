@@ -52,10 +52,10 @@ class Event < ActiveRecord::Base
         findoptions.merge!({:limit => options[:limit]})
       end
       
-      if(options[:content_tag].nil?)
+      if(options[:content_tags].nil? or options[:content_tags].empty?)
         Event.ordered.all(findoptions)
       else
-        Event.tagged_with_content_tag(options[:content_tag].name).ordered.all(findoptions)
+        Event.tagged_with_all(options[:content_tags]).ordered.all(findoptions)
       end
     end
   end 

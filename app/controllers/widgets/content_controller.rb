@@ -91,21 +91,21 @@ class Widgets::ContentController < ApplicationController
     when 'faqs'
       @type = 'faqs'
       if content_tags
-        @contents = Faq.tagged_with_all(content_tags).main_recent_list(:limit => @quantity)
+        @contents = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity)
       else
         @contents = Faq.main_recent_list(:limit => @quantity)
       end
     when 'articles'
       @type = 'articles'
       if content_tags
-        @contents = Article.tagged_with_all(content_tags).main_recent_list(:limit => @quantity)
+        @contents = Article.main_recent_list(:content_tags => content_tags, :limit => @quantity)
       else
         @contents = Article.main_recent_list(:limit => @quantity)
       end
     when 'events'
       @type = 'events'
       if content_tags
-        @contents = Event.tagged_with_all(content_tags).main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity})
+        @contents = Event.main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity, :content_tags => content_tags})
       else
         @contents = Event.main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity})
       end
@@ -113,8 +113,8 @@ class Widgets::ContentController < ApplicationController
     else
       @type = 'articles and faqs'
       if content_tags
-        faqs = Faq.tagged_with_all(content_tags).main_recent_list(:limit => @quantity)
-        articles = Article.tagged_with_all(content_tags).main_recent_list(:limit => @quantity)
+        faqs = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity)
+        articles = Article.main_recent_list(:content_tags => content_tags, :limit => @quantity)
       else
         faqs = Faq.main_recent_list(:limit => @quantity)
         articles = Article.main_recent_list(:limit => @quantity)
