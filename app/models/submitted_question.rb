@@ -231,47 +231,86 @@ end
    return self.find(:first, :order => 'created_at')
  end
 
-  def self.find_questions(cat, desc, aux, locid, date1, date2, *args)
-   tstring = ""; cdstring = ""
-   case desc
-      when "New"
-        cdstring = "status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and category_id=#{cat.id} "
-        if locid
-          cdstring = cdstring + " and locations.id = #{locid} "
-         end
-      when "Resolved"
-          if aux
-              cdstring = "status_state=#{aux} and "
-          end
-          cdstring= cdstring +  "resolved_by > 0 and category_id=#{cat.id}"
-          if locid
-            cdstring = cdstring + " and locations.id = #{locid}"
-           end
-      when "Resolver"
-            if aux
-              cdstring = " resolved_by = #{aux.to_i} and category_id=#{cat.id} and external_app_id IS NOT NULL "
-            else
-              cdstring= cdstring +  " resolved_by > 0 and category_id=#{cat.id} and external_app_id IS NOT NULL "
-            end
-     when "Answered as an Expert"
-          cdstring = " resolved_by = #{cat.id}"
-     when "Assigned as an Expert"
-          cdstring = " recipient_id= #{cat.id} "
-     when "Currently Assigned as an Expert" 
-          cdstring = " recipient_id=#{cat.id} and status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and spam=false"
-   end
-   if (date1 && date2)
-     case desc
-     when  "New", "Resolved", "Resolver", "Answered as an Expert", "Assigned as an Expert"
-        tstring =" and submitted_questions.created_at between ? and  ?"
-     end
-     cdstring = [cdstring + tstring, date1, date2]
-   end
+  def self.find_questions(options={})
+       dateinterval = options[:dateinterval]
 
-   with_scope(:find => {:conditions => cdstring, :limit => ((desc == "Assigned as an Expert") ? nil : 100)}) do
-       paginate(*args)
-    end
+       conditions = []      
+       if(!dateinterval.nil? and options[:desc]!= "Currently Assigned as an Expert")
+           conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+       end
+       
+       case options[:desc]
+       when "New"
+          conditions << "status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and category_id=#{options[:cat].id} and spam=false"
+          if options[:location]
+             conditions << " locations.id = #{options[:location].id}"
+          end
+       when "Resolved"
+          if options[:aux]
+             conditions << "status_state=#{options[:aux]} "
+          end
+          conditions << " resolved_by > 0 and category_id = #{options[:cat].id} "
+          if options[:location]
+             conditions << " locations.id = #{options[:location].id}"
+          end
+        when "Resolver"
+           if options[:aux]
+              conditions << " resolved_by= #{options[:aux].to_i} and category_id=#{options[:cat].id} and external_app_id IS NOT NULL"
+           else
+              conditions << " resolved_by > 0 and category_id=#{options[:cat].id} and external_app_id IS NOT NULL"
+           end
+        when "Answered as an Expert"
+           conditions << " resolved_by = #{options[:cat].id} "
+        when "Assigned as an Expert"
+            conditions << " recipient_id = #{options[:cat].id }"
+        when "Currently Assigned as an Expert"
+            conditions << " recipient_id=#{options[:cat].id} and status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and spam=false"  
+        end  
+        with_scope(:find => { :conditions => conditions.compact.join(' AND '), :limit => ((options[:desc] == "Assigned as an Expert") ? nil : 100)}) do
+            paginate(options[:numparm].to_sym, options[:args])
+        end
   end
+  #def self.find_questions(cat, desc, aux, locid, date1, date2, *args)
+#   tstring = ""; cdstring = ""
+#   case desc
+#      when "New"
+#        cdstring = "status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and category_id=#{cat.id} "
+#        if locid
+#          cdstring = cdstring + " and locations.id = #{locid} "
+#         end
+#      when "Resolved"
+#          if aux
+#              cdstring = "status_state=#{aux} and "
+#          end
+#          cdstring= cdstring +  "resolved_by > 0 and category_id=#{cat.id}"
+#          if locid
+#            cdstring = cdstring + " and locations.id = #{locid}"
+#           end
+#      when "Resolver"
+#            if aux
+#              cdstring = " resolved_by = #{aux.to_i} and category_id=#{cat.id} and external_app_id IS NOT NULL "
+#            else
+#              cdstring= cdstring +  " resolved_by > 0 and category_id=#{cat.id} and external_app_id IS NOT NULL "
+#            end
+#     when "Answered as an Expert"
+#          cdstring = " resolved_by = #{cat.id}"
+#     when "Assigned as an Expert"
+#          cdstring = " recipient_id= #{cat.id} "
+#     when "Currently Assigned as an Expert" 
+#          cdstring = " recipient_id=#{cat.id} and status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and spam=false"
+#   end
+#   if (date1 && date2)
+#     case desc
+#     when  "New", "Resolved", "Resolver", "Answered as an Expert", "Assigned as an Expert"
+#        tstring =" and submitted_questions.created_at between ? and  ?"
+#     end
+#     cdstring = [cdstring + tstring, date1, date2]
+#   end
+
+#   with_scope(:find => {:conditions => cdstring, :limit => ((desc == "Assigned as an Expert") ? nil : 100)}) do
+#       paginate(*args)
+#    end
+#  end
   
   def self.get_delineated_string(desc, cdstr)
       aux = desc
@@ -330,6 +369,7 @@ end
      end
      
   end
+ 
   
 
 #find the date that this submitted question was assigned to the current assignee

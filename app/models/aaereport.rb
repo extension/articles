@@ -11,7 +11,7 @@ class Aaereport
   #Activity Submitted Questions
   def NewQuestion(p, results)
     p.merge!(@idents[:filters]) if @idents[:filters]
-    cond = buildcond(p, this_method, ["status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"])
+    cond = buildcond(p, this_method, ["status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and spam=FALSE "])
     jstr = buildjoin(p, this_method)
     grp = buildgroup(p, this_method)
     if !p[:date1]  && !p[:date2]

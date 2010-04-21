@@ -164,7 +164,7 @@ class Aae::ReportsController < ApplicationController
         def display_tag_questions
             @cat = Category.find_by_name(params[:category])
             @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
-            aux = nil ; @catname = params[:category]; locid = params[:locid]
+            aux = nil ; @catname = params[:category]; locid = params[:locid] ; @loc = Location.find_by_id(locid)
              @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
              @latest_date = Date.today
              @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
@@ -177,15 +177,16 @@ class Aae::ReportsController < ApplicationController
                  @edits = "Resolved"
                end
              end
-        #      select_string = " submitted_questions.id squid, submitted_questions.updated_at updated_at, resolved_by, asked_question, question_updated_at, submitted_questions.status_state status"
-              
+       
               joins = ((locid) ? [:categories, :location] : [:categories])
               (desc=="New") ? @pgt = " Newly Submitted Questions in '#{@cat.name}'  " : @pgt = " Questions Resolved from Ask an Expert for '#{@cat.name}'"
               (params[:locname]) ? @filtstr = "Filtered by Location = #{params[:locname]} "  : ""
               
-              @questions = SubmittedQuestion.find_questions(@cat, @edits, aux, locid,  @date1, @date2,
-                 :all, :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
-                       :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                
+              #@questions = SubmittedQuestion.find_questions(@cat, @edits, aux, locid,  @date1, @date2,
+               #  :all,
+               @questions = SubmittedQuestion.find_questions({:cat => @cat, :desc => @edits, :aux => aux, :location => @loc, :numparm => "all",
+                  :args => { :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
+                       :page => params[:page], :per_page => AppConfig.configtable['items_per_page']}})                                                
               @min = 124
         end
         
@@ -261,8 +262,6 @@ class Aae::ReportsController < ApplicationController
            desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
            descl = desc
 
-      #     select_string = " submitted_questions.current_contributing_question question_id, user_id, submitted_questions.id squid,  resolved_by, " +
-      #       " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
            select_string = " submitted_questions.* "
            if desc=="Assigned as an Expert" || desc=="Currently Assigned as an Expert"
              select_string = select_string + " , recipient_id "
@@ -275,14 +274,15 @@ class Aae::ReportsController < ApplicationController
              @faq = nil; @idtype='sqid'
         
         
-             @questions = SubmittedQuestion.find_questions(@user, desc,nil,nil, @date1, @date2,
-                                                            :all,
-                                                            :select => select_string,
+             #@questions = SubmittedQuestion.find_questions(@user, desc,nil,nil, @date1, @date2,
+             #                                               :all,
+              @questions = SubmittedQuestion.find_questions({:numparm => "all", :cat => @user, :desc => desc, :dateinterval => [@date1,@date2],
+                                                   :args => {:select => select_string,
                                                             :joins => joins,
                                                             :order => order_clause("submitted_questions.updated_at", "desc"),
                                                             :group => group_name,
                                                             :page => params[:page],
-                                                            :per_page => AppConfig.configtable['items_per_page'])
+                                                            :per_page => AppConfig.configtable['items_per_page']}})
     
         end
         
@@ -556,38 +556,28 @@ class Aae::ReportsController < ApplicationController
  
            @date1 = params[:datefrom] ; @date2 = params[:dateto]
            @limit_string = "Only up to 100 are shown."
+   
+           (@edits[0..7] == "Resolved") ? jstring = [:resolved_by] : jstring= nil
         
-         
-          #   (@edits[0..7]== "Resolved") ?  jrestring = " join users on sq.resolved_by=users.id " :  jrestring=""
-             (@edits[0..7] == "Resolved") ? jstring = [:resolved_by] : jstring= nil
-         #    select_string = "submitted_questions.user_id, submitted_questions.id squid, resolved_by, submitted_questions.location_id, current_contributing_question question_id,  " +
-        #        " submitted_questions.status_state status, submitted_questions.created_at, submitted_questions.updated_at updated_at, asked_question " 
-            
-            #  jstring= " as sq #{jrestring}"
-             if @edits == 'Submitted'
+            if @edits == 'Submitted'
                @pgt = "Submitted Questions pertaining to #{@typename}"
              else
                (@edits[8].chr=="P") ? @pgt = "Resolved Questions pertaining to #{@typename}" : @pgt="Questions Resolved by a member in #{@typename}" 
              end
              @faq = nil; @idtype = 'sqid'  
-        
-
-                 
-           @questions = SubmittedQuestion.find_state_questions(@loc, @county, params[:descriptor], @date1, @date2,
+     
+             @questions = SubmittedQuestion.find_state_questions(@loc, @county, params[:descriptor], @date1, @date2,
                         :all,
                         :joins => jstring,
                         :order => (@edits=="Submitted" || @edits[0..7]=="Resolved") ? order_clause("submitted_questions.updated_at", "desc") : order_clause,
                         :page => params[:page],
                         :per_page => AppConfig.configtable['items_per_page'])
-         
-         
+              
           @pgtl = @pgt
           if (@type=='County')
             @pgtl = @pgt + " county/parish in #{@loc.name}"
           end
-     
           @min = 124
-       
       end
 
       def display_state_users
@@ -599,8 +589,7 @@ class Aae::ReportsController < ApplicationController
          end
          @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i
          @date1 = params[:datefrom]; @date2 = params[:dateto]
-     #    @users=User.find_state_users(@loc, @county, @date1, @date2,
-    #       :all, :select => " id, first_name, last_name, login, email, county_id", :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])
+    
          @users = User.find_state_users({:location => @loc, :county => @county, :dateinterval => [@date1, @date2], :numparm => "all", :args => {
              :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'] }})
       end
@@ -1007,15 +996,17 @@ class Aae::ReportsController < ApplicationController
           @olink = params[:olink]; @comments=nil; @edits="Resolved"; @idtype='id'; @user = @resolver ; @catname = @cat.name
           desc = "Resolver" ; aux =@resolver.id.to_s
           @numb = params[:num].to_i
-            select_string = " submitted_questions.id squid, submitted_questions.updated_at, resolved_by, asked_question, status_state status  "
+       #     select_string = " submitted_questions.id squid, submitted_questions.updated_at, resolved_by, asked_question, status_state status  "
             joins = [:categories]
             # " as sq join categories_submitted_questions as csq on csq.submitted_question_id=sq.id  "
             @pgt = " Questions Resolved by #{@resolver.first_name} #{@resolver.last_name} for '#{@catname}'"
             @faq = nil; @idtype='sqid'
 
-            @questions = SubmittedQuestion.find_questions(@cat, desc, aux, nil, @date1, @date2,
-               :all,  :select => select_string,  :joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
-                     :page => params[:page], :per_page => AppConfig.configtable['items_per_page'])                                                          
+            #@questions = SubmittedQuestion.find_questions(@cat, desc, aux, nil, @date1, @date2,
+             #  :all, 
+             @questions = SubmittedQuestion.find_questions({:cat => @cat, :desc => desc, :aux => aux, :numparm => "all", 
+               :args => {:joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
+                     :page => params[:page], :per_page => AppConfig.configtable['items_per_page']}})                                                          
 
       
             @min = 124
