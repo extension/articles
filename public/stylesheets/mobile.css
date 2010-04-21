@@ -15,11 +15,13 @@ div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
 div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5em;}
 
 
+#outsideus {padding:10px;}
+#outsideus h2, #outsideus h2+p {display:none;} 
 
 #skiplist, .print, .view_as_web_page, .clearing  {display:none;}
 
 #wrapper {}
-#content_area {padding:8px;}
+/*#content_area {padding:8px;}*/
 
 #branding {padding:8px;}
 #branding h1 {font-size:1em;}
@@ -113,3 +115,17 @@ input {
 #flash_notice.notice {background:yellow;}
 
 #app_location {display:none;}
+
+#public_aae {padding:10px;}
+#public_aae h1 {font-size:1em;background:#ddd; padding:4px; clear:both;}
+#public_aae .question {font-weight:normal;}
+#public_aae .inc_descriptive, .meta {font-size:.9em; color:#888;}
+#public_aae .commentblock img {display:none;}
+ 
+#public_aae #privacy_options {background:#fcf0e3;padding:10px 10px;-moz-border-radius: 8px;-webkit-border-radius: 8px;color:#666;}
+
+#public_aae #privacy_options h4 {background: url(/images/common/lock.png) 0 0 no-repeat; padding-left:22px; margin:0 0 5px;}
+#public_aae #privacy_options p {margin:0;}
+.aae_protected_signin {background: #fcf0e3 url(/images/common/lock.png) 10px 10px no-repeat;  padding:6px 6px; padding-left:30px;-moz-border-radius: 8px;-webkit-border-radius: 8px;color:#666;}
+
+.globalnav {border-top:1px solid #ccc;}
