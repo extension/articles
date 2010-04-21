@@ -14,8 +14,8 @@
     <p class="inline"><label>Number of items: <%= text_field_tag :quantity, @default_quantity, :size => 3 %></label></p>
     
     <p class="inline"><label>Width: <%= text_field_tag :width, @default_width, :size => 3 %> pixels</label></p>
-    
-      <p><label>Content Tags:</label></p>
+   
+      <p><label>Content Tags:</label>Comma Separated (ie. horses,horticulture,...)</p>
       <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "2" %></p>
       <p>Launched Categories (click to add)</p>
       <div id="tag_wrapper">
