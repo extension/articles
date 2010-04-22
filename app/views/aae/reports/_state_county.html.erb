@@ -61,7 +61,7 @@
     </tr>
       
         <!-- Total Resolved Questions (Answered, Rejected, Responded) for questions categorized for state/county-->
-         <%= render :partial => "resolved_types", :locals => { :resolve_persp => "ResolvedP", :answ => @answp, :answa => @answpa, :answr => @answpr, :answn => @answpn }%>
+         <%= render :partial => "resolved_types", :locals => { :resolve_persp => "ResolvedP", :answ => @answp, :answa => @answpa, :answr => @answpr, :answn => @answpn, :datefrom => @date1, :dateto => @date2 }%>
   
     <tr class="spacer"><td colspan="2">&nbsp;</td></tr>
     <tr>
@@ -69,7 +69,7 @@
     </tr>
 
 	  <!--  Total Resolved Questions (Answered, Rejected, Responded) by Users in state/county-->
-         <%= render :partial => "resolved_types", :locals => { :resolve_persp => "ResolvedM", :answ => @answm, :answa => @answma, :answr => @answmr, :answn => @answmn }%>
+         <%= render :partial => "resolved_types", :locals => { :resolve_persp => "ResolvedM", :answ => @answm, :answa => @answma, :answr => @answmr, :answn => @answmn, :datefrom => @date1, :dateto => @date2 }%>
   
 </table>
 

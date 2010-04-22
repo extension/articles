@@ -317,58 +317,100 @@ end
       if desc.length > 9
         case desc[9].chr
         when "a"
-          cdstr = cdstr + " and status_state=#{SubmittedQuestion::STATUS_RESOLVED} "
+          cdstr = cdstr + " status_state=#{SubmittedQuestion::STATUS_RESOLVED} "
         when "r"
-           cdstr = cdstr + " and status_state=#{SubmittedQuestion::STATUS_REJECTED} "
+           cdstr = cdstr + " status_state=#{SubmittedQuestion::STATUS_REJECTED} "
         when "n"
-           cdstr = cdstr + " and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER} "
+           cdstr = cdstr + " status_state=#{SubmittedQuestion::STATUS_NO_ANSWER} "
         end
         aux = desc[0..8]
       end
       [cdstr, aux]
    end
-  
-   def self.find_state_questions(loc, county, desc, date1, date2,  *args)
-     rphrase = ""; tstring = ""; descaux = desc
-     if (county)
-       ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
-     end
-     if (desc != "Submitted")
-       cdstring =  " users.location_id='#{loc.id}'"
-       if (county )
-        cdstring = cdstring + "and users.county_id=#{ctyid[0].id}"
-       end
-     end
-     case desc
-      when "Submitted", "ResolvedP", "ResolvedPa", "ResolvedPr", "ResolvedPn"
-        rphrase = " submitted_questions.location_id=#{loc.id}  "
-        if (county)
-          rphrase = rphrase + " and submitted_questions.county_id=#{ctyid[0].id}"
-        end
-        case desc
-          when "Submitted"
-             cdstring = " and submitted_questions.status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"
-          else
-             cdstring = " and resolved_by > 0" 
-             (cdstring, descaux) = get_delineated_string(desc, cdstring)
+   
+   def self.find_state_questions(options={})
+         dateinterval = options[:dateinterval]
+         descaux = options[:desc] ; county= nil; cdstring=""
+         conditions = []    
+            
+          if(!dateinterval.nil?)
+              conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
           end
-      when "ResolvedM", "ResolvedMa", "ResolvedMr", "ResolvedMn"
-         rphrase = " resolved_by > 0 and "
-         (cdstring, descaux) = get_delineated_string(desc, cdstring)
-      end     
-     cdstring= rphrase + cdstring
-     if (date1 && date2)
-        case descaux
-        when "Submitted", "ResolvedP", "ResolvedM"
-           tstring = " and submitted_questions.created_at > ? and submitted_questions.created_at < ?"
-        end
-        cdstring =[cdstring + tstring, date1, date2]
-     end
-     with_scope(:find => { :conditions => cdstring , :limit => 100}) do
-        paginate(*args)
-     end
+ 
+         if (options[:countyname])
+           county = County.find(:first, :conditions => [" name=? and location_id=?", options[:countyname], options[:location].id])
+         end
+         (cdstring, descaux) = get_delineated_string(options[:desc], cdstring)
+         
+         case descaux    
+          when "Submitted", "ResolvedP"
+             if !county
+                conditions <<  " submitted_questions.location_id=#{options[:location].id}  "
+             else
+                conditions << "submitted_questions.county_id=#{county.id}"
+             end
+             case options[:desc]
+             when "Submitted"
+                conditions << " submitted_questions.status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and spam=FALSE"
+             else
+                conditions << " resolved_by > 0" 
+                if cdstring.length > 0 ; conditions << cdstring; end
+             end         
+          when "ResolvedM"
+               if !options[:countyname]
+                   conditions <<  " users.location_id=#{options[:location].id}"  
+               else
+                   conditions << " users.county_id=#{county.id}"
+               end
+               conditions << " resolved_by > 0" 
+               if cdstring.length > 0 ; conditions << cdstring; end
+          end
+           
+          with_scope(:find => { :conditions => conditions.compact.join(' AND '), :limit =>  100}) do
+              paginate(options[:numparm].to_sym, options[:args])
+          end
+    end
+#   def self.find_state_questions(loc, county, desc, date1, date2,  *args)
+#     rphrase = ""; tstring = ""; descaux = desc
+#     if (county)
+#       ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
+#     end
+#     if (desc != "Submitted")
+#       cdstring =  " users.location_id='#{loc.id}'"
+#       if (county )
+#        cdstring = cdstring + "and users.county_id=#{ctyid[0].id}"
+#       end
+#     end
+#     case desc
+#      when "Submitted", "ResolvedP", "ResolvedPa", "ResolvedPr", "ResolvedPn"
+#        rphrase = " submitted_questions.location_id=#{loc.id}  "
+#        if (county)
+#          rphrase = rphrase + " and submitted_questions.county_id=#{ctyid[0].id}"
+#        end
+#        case desc
+#          when "Submitted"
+#             cdstring = " and submitted_questions.status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"
+#          else
+#             cdstring = " and resolved_by > 0" 
+#             (cdstring, descaux) = get_delineated_string(desc, cdstring)
+#          end
+#      when "ResolvedM", "ResolvedMa", "ResolvedMr", "ResolvedMn"
+#         rphrase = " resolved_by > 0 and "
+#         (cdstring, descaux) = get_delineated_string(desc, cdstring)
+#      end     
+#     cdstring= rphrase + cdstring
+#     if (date1 && date2)
+#        case descaux
+#        when "Submitted", "ResolvedP", "ResolvedM"
+#           tstring = " and submitted_questions.created_at > ? and submitted_questions.created_at < ?"
+#        end
+#        cdstring =[cdstring + tstring, date1, date2]
+#     end
+#     with_scope(:find => { :conditions => cdstring , :limit => 100}) do
+#        paginate(*args)
+#     end
      
-  end
+#  end
  
   
 
