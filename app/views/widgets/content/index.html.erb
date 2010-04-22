@@ -17,6 +17,12 @@
    
       <p><label>Content Tags:</label>Comma Separated (ie. horses,horticulture,...)</p>
       <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "2" %></p>
+      
+      <ul>
+         <li><%= radio_button_tag(:tag_operator, 'or', true) %> Content tagged with any tags</li>
+         <li><%= radio_button_tag(:tag_operator, 'and', false) %> Content tagged with all tags</li>
+      </ul>
+      
       <p>Launched Categories (click to add)</p>
       <div id="tag_wrapper">
       <ul class="select_from_tags">
@@ -25,7 +31,7 @@
       <% end %>
       </ul>
       </div>
-
+      
     <% end %>
     
     <%= button_to_remote 'Generate Widget', :url => { :action => :generate_new_widget },

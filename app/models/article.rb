@@ -82,7 +82,11 @@ class Article < ActiveRecord::Base
     if(options[:content_tags].nil? or options[:content_tags].empty?)
       Article.ordered.limit(options[:limit]).all 
     else
-      Article.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
+      if options[:tag_operator] and options[:tag_operator] == 'and'
+        Article.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
+      else
+        Article.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
+      end
     end
    end
   end

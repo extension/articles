@@ -55,7 +55,11 @@ class Event < ActiveRecord::Base
       if(options[:content_tags].nil? or options[:content_tags].empty?)
         Event.ordered.all(findoptions)
       else
-        Event.tagged_with_all(options[:content_tags]).ordered.all(findoptions)
+        if options[:tag_operator] and options[:tag_operator] == 'and'
+          Event.tagged_with_all(options[:content_tags]).ordered.all(findoptions)
+        else
+          Event.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
+        end
       end
     end
   end 
