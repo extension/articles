@@ -528,7 +528,7 @@ class Aae::ReportsController < ApplicationController
       
            @reguser = User.date_users(@date1, @date2).count(:conditions => "location_id=#{locid}")
         
-           @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@typeobj.id}")
+           @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@typeobj.id} and spam=FALSE")
            (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_state_persp("pertaining",@typeobj, @date1, @date2)
            (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp("member", @typeobj, @date1, @date2)
 
@@ -566,12 +566,13 @@ class Aae::ReportsController < ApplicationController
              end
              @faq = nil; @idtype = 'sqid'  
      
-             @questions = SubmittedQuestion.find_state_questions(@loc, @county, params[:descriptor], @date1, @date2,
-                        :all,
-                        :joins => jstring,
+       #      @questions = SubmittedQuestion.find_state_questions(@loc, @county, params[:descriptor], @date1, @date2,
+       #                 :all,
+              @questions = SubmittedQuestion.find_state_questions({:location => @loc, :countyname => @county, :desc => params[:descriptor], :dateinterval => [@date1,@date2], :numparm => "all",
+                :args => {:joins => jstring,
                         :order => (@edits=="Submitted" || @edits[0..7]=="Resolved") ? order_clause("submitted_questions.updated_at", "desc") : order_clause,
                         :page => params[:page],
-                        :per_page => AppConfig.configtable['items_per_page'])
+                        :per_page => AppConfig.configtable['items_per_page']}})
               
           @pgtl = @pgt
           if (@type=='County')
@@ -628,7 +629,7 @@ class Aae::ReportsController < ApplicationController
        
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
          
-          @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id}")
+          @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id} and spam=FALSE")
           (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp("pertaining",@typeobj, @date1, @date2)
           (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp("member",@typeobj, @date1, @date2)   
           

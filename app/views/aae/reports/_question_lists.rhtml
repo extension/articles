@@ -7,15 +7,15 @@
 <table id="questionlist" class="hover">
     <tr>
 	    <% if @questions.length > 0%>
-        <th scope="col"><%= link_to "ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :category => @catname, :State => @statename, :County => @county, :loc => @loc,:ob => @idtype, :so => (params[:so] != "a") ? "a" : "d" } %></th>
+        <th scope="col"><%= link_to "ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :category => @catname, :State => @statename, :County => @county, :loc => @loc,:ob => @idtype, :datefrom => @date1, :dateto => @date2, :so => (params[:so] != "a") ? "a" : "d" } %></th>
         <% else%>
         <th scope="col">ID</th>
         <% end%>
         <th scope="col">Question</th>
       
           <% if @questions.length > 0%>
-	         <th scope="col"><%= link_to "Contributing Question", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink,:type => @type, :loc => @loc, :category => @catname, :State => @statename, :County => @county, :ob => 'id', :so => (params[:so] != "a")? "a": "d"} %></th>
-	        <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :loc => @loc, :category => @catname, :State => @statename, :County => @county, :ob => 'squpdated', :so => (params[:so] != "a") ? "a" : "d" } %></th>
+	         <th scope="col"><%= link_to "Contributing Question", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @olink, :olink => @olink,:type => @type, :loc => @loc, :category => @catname, :State => @statename, :County => @county, :datefrom => @date1, :dateto => @date2, :ob => 'id', :so => (params[:so] != "a")? "a": "d"} %></th>
+	        <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @olink, :olink => @olink, :type => @type, :loc => @loc, :category => @catname, :State => @statename, :County => @county, :datefrom => @date1, :dateto => @date2, :ob => 'squpdated', :so => (params[:so] != "a") ? "a" : "d" } %></th>
 	       <% else%>
 	          <th scope="col">Converted FAQ ID</th>
 	          <th scope="col">Last Updated</th>
