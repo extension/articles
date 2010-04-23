@@ -113,17 +113,7 @@ named_scope :escalated, lambda{|sincehours| {
 # TODO: see if this should be converged with the :ordered named scope used through the pubsite controllers
 named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_questions.resolved_at desc') }}
 
-#AAE Dashboard named scopes
 
-#Response times named scopes for by_category report
-#named_scope :named_date_resp, lambda { |date1, date2| { :conditions => (date1 && date2) ?  [ " submitted_questions.created_at between ? and ? ", date1, date2] : " date_sub(curdate(), interval 90 day) <= submitted_questions.created_at" } }
-#named_scope :count_avgs_cat, lambda { |extstr| {:select => "category_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join categories_submitted_questions on submitted_question_id=submitted_questions.id ",
-#         :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " category_id" }  } 
-
-#Response times named scopes for by_responder_locations report
-# named_scope :count_avgs_loc, lambda { |extstr| {:select => "users.location_id, avg(timestampdiff(hour, submitted_questions.created_at, resolved_at)) as ra", :joins => " join users on submitted_questions.resolved_by=users.id ",
-#     :conditions => [ " ( status_state=#{STATUS_RESOLVED} or status_state=#{STATUS_REJECTED} or status_state=#{STATUS_NO_ANSWER}) and external_app_id #{extstr} "], :group => " users.location_id" }  } 
-          
    
 #activity named scopes
 named_scope :date_subs, lambda { |date1, date2| { :conditions => (date1 && date2) ? [ "submitted_questions.created_at between ? and ?", date1, date2] : ""}}
@@ -270,47 +260,7 @@ end
             paginate(options[:numparm].to_sym, options[:args])
         end
   end
-  #def self.find_questions(cat, desc, aux, locid, date1, date2, *args)
-#   tstring = ""; cdstring = ""
-#   case desc
-#      when "New"
-#        cdstring = "status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and category_id=#{cat.id} "
-#        if locid
-#          cdstring = cdstring + " and locations.id = #{locid} "
-#         end
-#      when "Resolved"
-#          if aux
-#              cdstring = "status_state=#{aux} and "
-#          end
-#          cdstring= cdstring +  "resolved_by > 0 and category_id=#{cat.id}"
-#          if locid
-#            cdstring = cdstring + " and locations.id = #{locid}"
-#           end
-#      when "Resolver"
-#            if aux
-#              cdstring = " resolved_by = #{aux.to_i} and category_id=#{cat.id} and external_app_id IS NOT NULL "
-#            else
-#              cdstring= cdstring +  " resolved_by > 0 and category_id=#{cat.id} and external_app_id IS NOT NULL "
-#            end
-#     when "Answered as an Expert"
-#          cdstring = " resolved_by = #{cat.id}"
-#     when "Assigned as an Expert"
-#          cdstring = " recipient_id= #{cat.id} "
-#     when "Currently Assigned as an Expert" 
-#          cdstring = " recipient_id=#{cat.id} and status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and spam=false"
-#   end
-#   if (date1 && date2)
-#     case desc
-#     when  "New", "Resolved", "Resolver", "Answered as an Expert", "Assigned as an Expert"
-#        tstring =" and submitted_questions.created_at between ? and  ?"
-#     end
-#     cdstring = [cdstring + tstring, date1, date2]
-#   end
-
-#   with_scope(:find => {:conditions => cdstring, :limit => ((desc == "Assigned as an Expert") ? nil : 100)}) do
-#       paginate(*args)
-#    end
-#  end
+  
   
   def self.get_delineated_string(desc, cdstr)
       aux = desc
@@ -370,49 +320,7 @@ end
               paginate(options[:numparm].to_sym, options[:args])
           end
     end
-#   def self.find_state_questions(loc, county, desc, date1, date2,  *args)
-#     rphrase = ""; tstring = ""; descaux = desc
-#     if (county)
-#       ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
-#     end
-#     if (desc != "Submitted")
-#       cdstring =  " users.location_id='#{loc.id}'"
-#       if (county )
-#        cdstring = cdstring + "and users.county_id=#{ctyid[0].id}"
-#       end
-#     end
-#     case desc
-#      when "Submitted", "ResolvedP", "ResolvedPa", "ResolvedPr", "ResolvedPn"
-#        rphrase = " submitted_questions.location_id=#{loc.id}  "
-#        if (county)
-#          rphrase = rphrase + " and submitted_questions.county_id=#{ctyid[0].id}"
-#        end
-#        case desc
-#          when "Submitted"
-#             cdstring = " and submitted_questions.status_state=#{SubmittedQuestion::STATUS_SUBMITTED}"
-#          else
-#             cdstring = " and resolved_by > 0" 
-#             (cdstring, descaux) = get_delineated_string(desc, cdstring)
-#          end
-#      when "ResolvedM", "ResolvedMa", "ResolvedMr", "ResolvedMn"
-#         rphrase = " resolved_by > 0 and "
-#         (cdstring, descaux) = get_delineated_string(desc, cdstring)
-#      end     
-#     cdstring= rphrase + cdstring
-#     if (date1 && date2)
-#        case descaux
-#        when "Submitted", "ResolvedP", "ResolvedM"
-#           tstring = " and submitted_questions.created_at > ? and submitted_questions.created_at < ?"
-#        end
-#        cdstring =[cdstring + tstring, date1, date2]
-#     end
-#     with_scope(:find => { :conditions => cdstring , :limit => 100}) do
-#        paginate(*args)
-#     end
-     
-#  end
- 
-  
+
 
 #find the date that this submitted question was assigned to the current assignee
 def assigned_date
