@@ -584,7 +584,7 @@ class Aae::ReportsController < ApplicationController
          @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i
          @date1 = params[:datefrom]; @date2 = params[:dateto]
     
-         @users = User.find_state_users({:location => @loc, :county => @county, :dateinterval => [@date1, @date2], :numparm => "all", :args => {
+         @users = User.find_state_users({:location => @loc, :countyname => @county, :dateinterval => [@date1, @date2], :numparm => "all", :args => {
              :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'] }})
       end
      
