@@ -1941,23 +1941,30 @@ class User < ActiveRecord::Base
     return returnvalues
    end
  
-    
-    def get_avg_resp_time(date1, date2)
-     statuses = [ "", " and status_state=#{SubmittedQuestion::STATUS_RESOLVED}", "and status_state=#{SubmittedQuestion::STATUS_REJECTED}","and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER}"]
-     results=[];  condstring = " and submitted_questions.created_at between ? and ? "
+  def get_avg_resp_time(options={})
+     statuses = [ "", " #{SubmittedQuestion::STATUS_RESOLVED}", "#{SubmittedQuestion::STATUS_REJECTED}","#{SubmittedQuestion::STATUS_NO_ANSWER}"]
+     results = []
+     conditions = []; addedstat = nil
+     dateinterval = options[:dateinterval]
+      if(!dateinterval.nil?)
+        conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+      end
+     conditions << " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id} and resolved_by=#{self.id} "
      statuses.each do |stat|
-        cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}  and resolved_by=#{self.id} "
-        if (date1 && date2)
-          cond = cond + condstring 
+        if (addedstat)    # do not keep accumulating conditions meant to replace each other
+           conditions.delete_at(conditions.size - 1)
         end
+        if stat.length > 0
+           conditions << " status_state=#{stat}"
+           addedstat = 1
+        end       #average below is from assigned to resolved
         avgstd = SubmittedQuestionEvent.find(:all, :select => " count(*) as count_all, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as stdev ",
-        :joins => [:submitted_question], :conditions => ((date1 && date2) ? [cond + stat, date1, date2] : cond + stat))
+        :joins => [:submitted_question], :conditions => conditions.compact.join(' AND '))
         
         results << [(avgstd[0].ra.to_f)/(60*60), (avgstd[0].stdev.to_f)/(60*60), avgstd[0].count_all]
-     end
-     results
     end
-
+    results   
+  end  
 
     def self.find_state_users(options={})
        dateinterval = options[:dateinterval]
