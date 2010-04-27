@@ -59,7 +59,7 @@ class Widgets::ContentController < ApplicationController
         page << "document.write('</a></li>');"
       end
       page << "document.write('</ul>');" 
-      page << "document.write('<p><a href=\"http://#{request.host_with_port}/widgets\">Create your own eXtension widget</a></p></div>');" 
+      page << "document.write('<p><a href=\"http://#{request.host_with_port}/widgets/content\">Create your own eXtension widget</a></p></div>');" 
     end
   end
   

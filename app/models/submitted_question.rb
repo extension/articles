@@ -907,23 +907,34 @@ def pick_user_from_list(users)
     return nil
   end
   
-  users.sort! { |a, b| a.assigned_questions.count(:conditions => "status_state = #{STATUS_SUBMITTED}") <=> b.assigned_questions.count(:conditions => "status_state = #{STATUS_SUBMITTED}")}
+  # look at question assignments to see who has the least for load balancing
+  users.sort! { |a, b| a.open_questions.length <=> b.open_questions.length }
 
-  questions_floor = users[0].assigned_questions.count(:conditions => "status_state = #{STATUS_SUBMITTED}")
-
-  possible_users = users.select { |u| u.assigned_questions.count(:conditions => "status_state = #{STATUS_SUBMITTED}") == questions_floor }
+  questions_floor = users[0].open_questions.length
+  
+  # who all matches the least amt. of questions assigned
+  possible_users = users.select { |u| u.open_questions.length == questions_floor }
   
   return nil if !possible_users or possible_users.length == 0
-
   return possible_users[0] if possible_users.length == 1
-
+  
+  # if all possible question assignees with least amt. of questions assigned have zero questions assigned to them...
+  # so if all experts that made the cut have zero questions assigned, pick a random person in that group to assign to
+  if questions_floor == 0
+    return possible_users.rand 
+  end
+  
   assignment_dates = Hash.new
   
+  # for all those eligible experts with greater than zero questions assigned (but are in the group with the lowest number of questions assigned),
+  # select the expert who's last assigned question was the earliest so that the ones with the more recent assigned questions do not get 
+  # the next one
   possible_users.each do |u|
-    question = u.assigned_questions.find(:first, :conditions => ["event_state = ?", SubmittedQuestionEvent::ASSIGNED_TO], :include => :submitted_question_events, :order => "submitted_question_events.created_at desc")
+    question = u.open_questions.find(:first, :conditions => ["event_state = ?", SubmittedQuestionEvent::ASSIGNED_TO], :include => :submitted_question_events, :order => "submitted_question_events.created_at desc")
 
     if question
       assignment_dates[u.id] = question.submitted_question_events[0].created_at
+    # shouldn't happen b/c the case of no questions assigned is covered above
     else
       assignment_dates[u.id] = Time.at(0)
     end

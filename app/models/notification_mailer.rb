@@ -449,7 +449,7 @@ class NotificationMailer < ActionMailer::Base
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
      urls['askanexpert'] = ask_form_url
-     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :signature => signature, :urls => urls }
+     @body           = {:isdemo => @isdemo, :notification => notification,  :signature => signature, :urls => urls }
    end
    
    def aae_public_submission(notification)

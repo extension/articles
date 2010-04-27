@@ -29,4 +29,15 @@ class Widget < ActiveRecord::Base
     return '<iframe style="border:0" width="100%" src="' +  self.widget_url + '" height="300px"></iframe>'
   end
   
+  def self.get_all_with_assignee_count(options = {})
+    self.find(:all, 
+              :select => 'widgets.*, COUNT(user_roles.id) AS assignee_count',
+              :joins => "LEFT JOIN user_roles on user_roles.widget_id = widgets.id AND role_id = #{Role.widget_auto_route.id}",
+              :include => options[:include] ||= nil,
+              :conditions => options[:conditions] ||= nil,
+              :group => 'widgets.id',
+              :order => options[:order] ||= 'widgets.name'
+              )
+  end
+  
 end
