@@ -33,6 +33,7 @@ class Widget < ActiveRecord::Base
     self.find(:all, 
               :select => 'widgets.*, COUNT(user_roles.id) AS assignee_count',
               :joins => "LEFT JOIN user_roles on user_roles.widget_id = widgets.id AND role_id = #{Role.widget_auto_route.id}",
+              :include => options[:include] ||= nil,
               :conditions => options[:conditions] ||= nil,
               :group => 'widgets.id',
               :order => options[:order] ||= 'widgets.name'

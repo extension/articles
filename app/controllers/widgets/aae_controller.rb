@@ -39,11 +39,11 @@ class Widgets::AaeController < ApplicationController
   
   def list
     if params[:id] and params[:id] == 'inactive'
-      @widgets = Widget.inactive.all(:include => :user)
+      @widgets = Widget.get_all_with_assignee_count(:include => :user, :conditions => 'widgets.active = false')
       @selected_tab = :inactive
     else
       @selected_tab = :all
-      @widgets = Widget.active.all(:include => :user)
+      @widgets = Widget.get_all_with_assignee_count(:include => :user, :conditions => 'widgets.active = true')
     end
   end
   
@@ -92,9 +92,9 @@ class Widgets::AaeController < ApplicationController
 
   def get_widgets
     if params[:id] and params[:id] == 'inactive'
-      @widgets = Widget.byname(params[:widget_name]).inactive
+      @widgets = Widget.get_all_with_assignee_count(:include => :user, :conditions => "widgets.name LIKE '#{params[:widget_name]}%' AND widgets.active = false")
     else
-      @widgets = Widget.byname(params[:widget_name]).active
+      @widgets = Widget.get_all_with_assignee_count(:include => :user, :conditions => "widgets.name LIKE '#{params[:widget_name]}%' AND widgets.active = true")
     end
     render :partial => "widget_list", :layout => false
   end
