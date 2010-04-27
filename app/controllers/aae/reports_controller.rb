@@ -242,12 +242,12 @@ class Aae::ReportsController < ApplicationController
          
           if @user
              @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
-             @uassigned = @user.ever_assigned_questions(@date1,@date2, nil, nil).count
+             @uassigned = @user.ever_assigned_questions(:dateinterval => @dateinterval).count
              @ucurrently_assigned = @user.assigned_questions.count(:conditions => "status_state= #{SubmittedQuestion::STATUS_SUBMITTED} and spam= false")
              @avgstdresults = @user.get_avg_resp_time(:dateinterval => @dateinterval)
            end
        #   @myid = @currentuser
-          if @user.nil? #|| @myid.nil?
+          if @user.nil? #|| @myid.nil? 
             redirect_to :controller => 'reports', :action => 'user_report'
           end
           @repaction = "user"
