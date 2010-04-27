@@ -38,7 +38,7 @@ class Widgets::ContentController < ApplicationController
     # return js to write the widget to the page when the page hosting the widget loads
     render :update do |page|         
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension #{@type} #{@tag_operator_display}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>');"
+      page << "document.write('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>');"
       page << "document.write('<h3>There are currently no content items at this time.</h3>')" if @contents.length == 0
         
       @contents.each do |content| 
@@ -88,17 +88,11 @@ class Widgets::ContentController < ApplicationController
     if content_tags.nil?
       @content_tags = 'All'
       @tag_operator = nil
-      @tag_operator_display = ''
     else
       tags_to_query = Tag.castlist_to_array(content_tags,false,false) 
       @content_tags = tags_to_query.join(', ')
       # operator to instruct whether to pull content tagged with ALL the tags or ANY of the tags
       params[:tag_operator].blank? ? @tag_operator = "or" : @tag_operator = params[:tag_operator] 
-      if tags_to_query.length == 1
-         @tag_operator_display = ''
-      else
-         @tag_operator == 'and' ? @tag_operator_display = 'tagged with all' : @tag_operator_display = 'tagged with any'
-      end
     end
     
     case @content_type
