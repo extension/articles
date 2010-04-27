@@ -205,6 +205,7 @@ class User < ActiveRecord::Base
   
   named_scope :question_responders, :conditions => {:aae_responder => true}
   
+  
   # all experts who have a particular location marked either in their aae prefs OR in their people profile
   # orignally used for aae expert search where we want to see all those experts from a location 
   # whether or not they marked their aae geographic prefs
@@ -1649,14 +1650,26 @@ class User < ActiveRecord::Base
       " where ea.category_id=? order by users.last_name", catid ])
     end
    
-   def ever_assigned_questions(date1, date2, sqfilters, sqinclude)
-     cond = " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}" + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
-     if (date1 && date2)
-        cond = cond + " and submitted_questions.created_at between ? and ? "
-      end
-    SubmittedQuestion.find(:all, :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
-         :joins => [:submitted_question_events], :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "submitted_question_id")
+   def ever_assigned_questions(options={})
+       dateinterval = options[:dateinterval] 
+
+       #get the total number of questions this person was ever assigned
+       conditions =[]      
+       if(!dateinterval.nil? )
+         conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+       end
+       conditions << " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}"
+       return SubmittedQuestion.find(:all, :joins => [:submitted_question_events], :conditions => conditions.compact.join(' AND '), :group => "submitted_question_id")
    end
+   
+ #  def ever_assigned_questions(date1, date2, sqfilters, sqinclude)
+ #    cond = " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}" + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+ #    if (date1 && date2)
+ #       cond = cond + " and submitted_questions.created_at between ? and ? "
+ #     end
+ #   SubmittedQuestion.find(:all, :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
+ #        :joins => [:submitted_question_events], :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "submitted_question_id")
+ #  end
    
  
    #
