@@ -2,17 +2,9 @@
 
 There is a response to the question you asked via eXtension's 'Ask an Expert' tool!
 
-View your question and response:
 <%= @urls['question'] %>
 
 Please don't reply to this no-reply email. Instead, click the link above to send a reply. Thanks!
-
-
-Your question:
-<%= @submitted_question.asked_question %>
-
-Response:
-<%= @submitted_question.current_response %>
 
 <% if !@signature.blank? %>
 <%= @signature %>
