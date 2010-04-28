@@ -1,3 +1,7 @@
+<%= render(:partial => 'aae_widget_nav') %>
+
+<div id="article">
+
 <div class="detailpage">
     
     <p><%= link_to "All widgets", :controller => 'widgets/aae', :action => :list %> > <%= link_to("Widget info", widgets_view_aae_url(:id => @widget.id)) %> > Assignee Pool</p>
@@ -25,4 +29,6 @@
         <p>If you like, you can <%= link_to ("sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget and begin answering.</p>
     </div>
 <% end %>
+</div>
+
 </div>

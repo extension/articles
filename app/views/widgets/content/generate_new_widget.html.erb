@@ -1,0 +1,32 @@
+<%= AppConfig.content_widget_styles %>
+
+<div id="loading" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
+
+<div id="content_widget" style="width:<%= @width %>px"><h3><img src="http://<%= request.host_with_port %>/images/common/extension_icon_40x40.png" /> <span>eXtension <%= @type %>: <%= @content_tags %></span>
+  <br class="clearing" /></h3>
+<ul>
+<% if @contents.length == 0 %>
+<li>There are currently no content items at this time.</li> 
+<% end %>
+
+<% @contents.each do |content| %>
+<% if content.class.name == "Faq" %>
+<li><a href=<%= url_for :controller => '/faq', :action => :detail, :id => content.id, :only_path => false %>> <%= content.question %>
+<% elsif content.class.name == "Article" %>
+<li><a href=<%= url_for :controller => '/articles', :action => :page, :id => content.id, :only_path => false %>> <%= content.title %>
+<% elsif content.class.name == "Event" %>
+<li><a href=<%= url_for :controller => '/events', :action => :detail, :id => content.id, :only_path => false %>> <%= content.title %>
+<% else %>
+<% next %>
+<% end %>
+</a></li>
+<% end %>
+</ul>
+
+<p><a href="http://<%= request.host_with_port %>/widgets/content">Create your own eXtension widget</a></p></div>
+
+
+<div id="widget_code_module">
+  <p>Copy the code below and paste it on your website:</p>
+  <p><%= text_area_tag :widget_code, @widget_code, :rows => "5" %></p>
+</div>

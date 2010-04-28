@@ -114,6 +114,7 @@ ActionController::Routing::Routes.draw do |map|
   map.redirect 'aae/widgets/:redirectparam', :controller => 'widgets/aae', :action => 'redirector', :permanent => true
   map.namespace :widgets do |widgets|
     widgets.aae 'aae', :controller => :aae, :action => 'index'
+    widgets.content 'content', :controller => :content, :action => 'index'
     widgets.home '/', :controller => :home, :action => :index     
     widgets.view_aae 'aae/view/:id', :controller => :aae, :action => 'view'
   end

@@ -449,7 +449,7 @@ class NotificationMailer < ActionMailer::Base
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
      urls['askanexpert'] = ask_form_url
-     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :signature => signature, :urls => urls }
+     @body           = {:isdemo => @isdemo, :notification => notification,  :signature => signature, :urls => urls }
    end
    
    def aae_public_submission(notification)
@@ -486,7 +486,7 @@ class NotificationMailer < ActionMailer::Base
      @subject        = @subjectlabel+'Ask an Expert Escalation Report'
      
        
-     submitted_questions_list = SubmittedQuestion.escalated(sincehours).filtered({:category => category, :source => 'pubsite'}).ordered('submitted_questions.last_opened_at asc')
+     submitted_questions_list = SubmittedQuestion.escalated(sincehours).filtered({:category => category}).ordered('submitted_questions.last_opened_at asc')
      escalation_users_for_category = User.validusers.escalators_by_category(category)
      if(escalation_emails = User.validusers.escalators_by_category(category))
        @recipients = escalation_users_for_category.map(&:email).join(',')

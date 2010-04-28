@@ -30,10 +30,14 @@ class Faq < ActiveRecord::Base
     # OPTIMIZE: keep an eye on this caching
     cache_key = self.get_cache_key(this_method,options)
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-      if(options[:content_tag].nil?)
+      if(options[:content_tags].nil? or options[:content_tags].empty?)
         Faq.ordered.limit(options[:limit]).all 
       else
-        Faq.tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
+        if options[:tag_operator] and options[:tag_operator] == 'and'
+          Faq.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
+        else
+          Faq.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
+        end
       end
     end
   end

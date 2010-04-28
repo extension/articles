@@ -1,13 +1,15 @@
 <% @page_title = "Ask an Expert Widget List"%>
 
+<%= render(:partial => 'aae_widget_nav') %>
+
+<div id="article">
+
 <h2>Ask an Expert Widgets</h2>
 
 <ul id="nav">
     <li <%= selected_tab_if(:all) %>><%= link_to "Active", :controller => 'widgets/aae', :action => :list %></li>
-    <li <%= selected_tab_if(:inactive) %>><%= link_to "In-Active", :controller => 'widgets/aae', :action => :list, :id => 'inactive' %></li>
+    <li <%= selected_tab_if(:inactive) %>><%= link_to "Inactive", :controller => 'widgets/aae', :action => :list, :id => 'inactive' %></li>
 </ul>
-
-<br class="clear"/>
 
 <p>
     <label>Search by Name
@@ -25,4 +27,6 @@
 
 <div id="widget_list">
 <%= render(:partial => 'widget_list') %>
+</div>
+
 </div>

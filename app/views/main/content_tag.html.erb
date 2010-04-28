@@ -30,7 +30,7 @@
 
 <%if @news.length > 0 || @faqs.length > 0 || @calendar_events.length > 0 %>
 <div style = "margin-top: 30px; padding-bottom: 20px">
-    <%if @news.length > 0 and (@in_this_section or @recent_articles) %>
+    <%if (@in_this_section or @recent_articles) %>
         <%if @faqs.length > 0%>
             <div class="homesection half left">
         <% else %>
@@ -58,11 +58,7 @@
     <%end%>
 
     <%if @faqs.length > 0%>
-        <%if @news.length > 0%>
-            <div class="homesection half left">
-        <% else %>
-            <div>
-        <% end %>
+         <div class="homesection half left">
                 <h2>Answers from our Experts</h2>
                 <div class="whatsnewbox">
                     <%for faq in @faqs%>

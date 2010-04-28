@@ -1,12 +1,14 @@
 <% @selected_tab = :about %>
 
-<h2>About Ask eXtension</h2>
+<%= render(:partial => 'aae_widget_nav') %>
 
-<p>Ask.eXtension.org is the place to get the Ask eXtension widget.</p>
+<div id="article">
+
+<h2>About the Ask an Expert Widget</h2>
 
 <p><img alt="the Ask Extension widget" src="/images/ask/ask-widget-small.png" /></p> 
 
-<p>The widget enables county Extension offices to manage and answer questions asked by their local constituents. The widget works in conjunction with the eXtension FAQ/Ask an Expert site.</p>
+<p>The widget enables county Extension offices to manage and answer questions asked by their local constituents. The widget works in conjunction with the eXtension Ask an Expert site.</p>
 
 <h3>How it works</h3>
 
@@ -21,9 +23,8 @@
 </div>
 
 
-<p>County Extension offices place the Ask eXtension widget on their local site. When a public user submits a question, it's routed to experts and Extension agents working in the eXtension FAQ/Ask and Expert application and they respond to the public user from there.</p>
+<p>County Extension offices place the Ask eXtension widget on their local site. When a public user submits a question, it's routed to experts and Extension agents in the Ask and Expert application who respond to the public user from there.</p>
 
-<p>Ready to accept questions to your site? <%= link_to "Get the Ask eXtension widget for your site", :controller => 'widgets/aae', :action => :new %></p>
+<p>Ready to accept questions to your site? <%= link_to "Get the Ask eXtension widget for your site", :controller => 'widgets/aae', :action => :new %>. <% if !@currentuser %>(sign-in required)<% end %></p>
 
-
-
+</div>

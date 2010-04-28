@@ -178,7 +178,7 @@ class User < ActiveRecord::Base
   named_scope :missingtags,  :joins => "LEFT JOIN taggings ON (users.id = taggings.taggable_id AND taggings.taggable_type = 'User')", :conditions => 'taggings.id IS NULL'
   named_scope :missingnetworks, :joins => "LEFT JOIN social_networks ON users.id = social_networks.user_id",  :conditions => 'social_networks.id IS NULL'
     
-  named_scope :date_users, lambda { |date1, date2| { :conditions => (date1 && date2) ?   [ " users.created_at between ? and ?", date1, date2] : "true" } }
+  named_scope :date_users, lambda { |date1, date2| { :conditions => (date1 && date2) ?   [ " TRIM(DATE(users.created_at)) between ? and ?", date1, date2] : "true" } }
   
   named_scope :escalators_by_category, lambda {|category|
    {:joins => [:roles, :categories], :conditions => ["roles.name = '#{Role::ESCALATION}' AND categories.name = '#{category.name}'"], :order => "last_name,first_name ASC" }
@@ -204,6 +204,7 @@ class User < ActiveRecord::Base
   }
   
   named_scope :question_responders, :conditions => {:aae_responder => true}
+  
   
   # all experts who have a particular location marked either in their aae prefs OR in their people profile
   # orignally used for aae expert search where we want to see all those experts from a location 
@@ -1649,14 +1650,26 @@ class User < ActiveRecord::Base
       " where ea.category_id=? order by users.last_name", catid ])
     end
    
-   def ever_assigned_questions(date1, date2, sqfilters, sqinclude)
-     cond = " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}" + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
-     if (date1 && date2)
-        cond = cond + " and submitted_questions.created_at between ? and ? "
-      end
-    SubmittedQuestion.find(:all, :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
-         :joins => [:submitted_question_events], :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "submitted_question_id")
+   def ever_assigned_questions(options={})
+       dateinterval = options[:dateinterval] 
+
+       #get the total number of questions this person was ever assigned
+       conditions =[]      
+       if(!dateinterval.nil? )
+         conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+       end
+       conditions << " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}"
+       return SubmittedQuestion.find(:all, :joins => [:submitted_question_events], :conditions => conditions.compact.join(' AND '), :group => "submitted_question_id")
    end
+   
+ #  def ever_assigned_questions(date1, date2, sqfilters, sqinclude)
+ #    cond = " event_state= #{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}" + ((sqfilters && sqfilters!= "") ? " and " + sqfilters : "")
+ #    if (date1 && date2)
+ #       cond = cond + " and submitted_questions.created_at between ? and ? "
+ #     end
+ #   SubmittedQuestion.find(:all, :include => ((sqinclude && sqinclude.size > 0) ? sqinclude : nil),
+ #        :joins => [:submitted_question_events], :conditions => ((date1 && date2) ? [cond, date1, date2] : cond), :group => "submitted_question_id")
+ #  end
    
  
    #
@@ -1941,34 +1954,50 @@ class User < ActiveRecord::Base
     return returnvalues
    end
  
-    
-    def get_avg_resp_time(date1, date2)
-     statuses = [ "", " and status_state=#{SubmittedQuestion::STATUS_RESOLVED}", "and status_state=#{SubmittedQuestion::STATUS_REJECTED}","and status_state=#{SubmittedQuestion::STATUS_NO_ANSWER}"]
-     results=[];  condstring = " and submitted_questions.created_at between ? and ? "
+  def get_avg_resp_time(options={})
+     statuses = [ "", " #{SubmittedQuestion::STATUS_RESOLVED}", "#{SubmittedQuestion::STATUS_REJECTED}","#{SubmittedQuestion::STATUS_NO_ANSWER}"]
+     results = []
+     conditions = []; addedstat = nil
+     dateinterval = options[:dateinterval]
+      if(!dateinterval.nil?)
+        conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+      end
+     conditions << " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id} and resolved_by=#{self.id} "
      statuses.each do |stat|
-        cond = " event_state=#{SubmittedQuestionEvent::ASSIGNED_TO} and recipient_id=#{self.id}  and resolved_by=#{self.id} "
-        if (date1 && date2)
-          cond = cond + condstring 
+        if (addedstat)    # do not keep accumulating conditions meant to replace each other
+           conditions.delete_at(conditions.size - 1)
         end
+        if stat.length > 0
+           conditions << " status_state=#{stat}"
+           addedstat = 1
+        end       #average below is from assigned to resolved
         avgstd = SubmittedQuestionEvent.find(:all, :select => " count(*) as count_all, avg(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as ra, stddev(timestampdiff(second, submitted_question_events.created_at, resolved_at)) as stdev ",
-        :joins => [:submitted_question], :conditions => ((date1 && date2) ? [cond + stat, date1, date2] : cond + stat))
+        :joins => [:submitted_question], :conditions => conditions.compact.join(' AND '))
         
         results << [(avgstd[0].ra.to_f)/(60*60), (avgstd[0].stdev.to_f)/(60*60), avgstd[0].count_all]
-     end
-     results
     end
+    results   
+  end  
 
-    def self.find_state_users(loc, county, date1, date2, *args)
-      cdstring= " location_id=#{loc.id}"
-      if (county)
-       ctyid = County.find_by_sql(["Select id from counties where name=? and location_id=?", county, loc.id])
-       cdstring = cdstring + " and county_id=#{ctyid[0].id} "
-      end
-      if (date1 && date2)
-        cdstring = [cdstring + " and created_at > ? and created_at < ?", date1, date2]
-      end
-      @users=User.with_scope(:find => { :conditions => cdstring, :limit => 100}) do
-       paginate(*args)
+    def self.find_state_users(options={})
+       dateinterval = options[:dateinterval]
+
+        conditions = []      
+        if(!dateinterval.nil? )
+          conditions << User.build_date_condition({:dateinterval => dateinterval})
+        end
+  
+        if options[:countyname]
+          ctyid = County.find(:first, :conditions => [ " name= ? and location_id=?", options[:countyname], options[:location].id])
+          conditions << " county_id=#{ctyid.id} "
+        else
+          if options[:location]
+               conditions << " location_id = #{options[:location].id} "
+          end
+        end
+       
+      @users=User.with_scope(:find => { :conditions => conditions.compact.join(' AND '), :limit => 100}) do
+        paginate(options[:numparm].to_sym, options[:args])
       end
     end
     
