@@ -38,7 +38,7 @@ class Widgets::ContentController < ApplicationController
     # return js to write the widget to the page when the page hosting the widget loads
     render :update do |page|         
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension #{@type} #{@tag_operator_display}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>');"
+      page << "document.write('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>');"
       page << "document.write('<h3>There are currently no content items at this time.</h3>')" if @contents.length == 0
         
       @contents.each do |content| 
@@ -88,36 +88,30 @@ class Widgets::ContentController < ApplicationController
     if content_tags.nil?
       @content_tags = 'All'
       @tag_operator = nil
-      @tag_operator_display = ''
     else
       tags_to_query = Tag.castlist_to_array(content_tags,false,false) 
       @content_tags = tags_to_query.join(', ')
       # operator to instruct whether to pull content tagged with ALL the tags or ANY of the tags
       params[:tag_operator].blank? ? @tag_operator = "or" : @tag_operator = params[:tag_operator] 
-      if tags_to_query.length == 1
-         @tag_operator_display = ''
-      else
-         @tag_operator == 'and' ? @tag_operator_display = 'tagged with all' : @tag_operator_display = 'tagged with any'
-      end
     end
     
     case @content_type
     when 'faqs'
-      @type = 'faqs'
+      @type = 'FAQs'
       if content_tags
         @contents = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
       else
         @contents = Faq.main_recent_list(:limit => @quantity)
       end
     when 'articles'
-      @type = 'articles'
+      @type = 'Articles'
       if content_tags
         @contents = Article.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
       else
         @contents = Article.main_recent_list(:limit => @quantity)
       end
     when 'events'
-      @type = 'events'
+      @type = 'Events'
       if content_tags
         @contents = Event.main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity, :content_tags => content_tags, :tag_operator => @tag_operator})
       else
@@ -125,7 +119,7 @@ class Widgets::ContentController < ApplicationController
       end
     # if the type is articles and faqs or if it's anything else, default to articles and faqs
     else
-      @type = 'articles and faqs'
+      @type = 'Articles and FAQs'
       if content_tags
         faqs = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
         articles = Article.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
