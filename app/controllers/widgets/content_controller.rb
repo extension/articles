@@ -97,21 +97,21 @@ class Widgets::ContentController < ApplicationController
     
     case @content_type
     when 'faqs'
-      @type = 'faqs'
+      @type = 'FAQs'
       if content_tags
         @contents = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
       else
         @contents = Faq.main_recent_list(:limit => @quantity)
       end
     when 'articles'
-      @type = 'articles'
+      @type = 'Articles'
       if content_tags
         @contents = Article.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
       else
         @contents = Article.main_recent_list(:limit => @quantity)
       end
     when 'events'
-      @type = 'events'
+      @type = 'Events'
       if content_tags
         @contents = Event.main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity, :content_tags => content_tags, :tag_operator => @tag_operator})
       else
@@ -119,7 +119,7 @@ class Widgets::ContentController < ApplicationController
       end
     # if the type is articles and faqs or if it's anything else, default to articles and faqs
     else
-      @type = 'articles and faqs'
+      @type = 'Articles and FAQs'
       if content_tags
         faqs = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
         articles = Article.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
