@@ -12,6 +12,9 @@ class FilteredParameter
 
   # per gdata specification
   ALLOWED_GDATA_ALT_TYPES = ['atom','rss','json','json-in-script','atom-in-script','rss-in-script']
+  
+  # content types
+  ALLOWED_CONTENT_TYPES = ['articles','faqs','events','news']
 
   # recognized names and types
   RECOGNIZED_PARAMETERS = {}
@@ -24,10 +27,12 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:dateinterval] = :string 
   RECOGNIZED_PARAMETERS[:datefield] = :string 
   RECOGNIZED_PARAMETERS[:tz] = :string
+  RECOGNIZED_PARAMETERS[:limit] = :integer
   RECOGNIZED_PARAMETERS[:order] = :method # caller is responsible for collapsing orderby and sortorder into order
   RECOGNIZED_PARAMETERS[:forcecacheupdate] = {:datatype => :boolean, :default => false} 
   RECOGNIZED_PARAMETERS[:apikey] = :apikey
   RECOGNIZED_PARAMETERS[:tags] = :taglist
+  RECOGNIZED_PARAMETERS[:content_types] = :method
   
   
   # AaE params
@@ -241,6 +246,24 @@ class FilteredParameter
       return returnhash
     end
   end
+  
+   def filter_content_types(value)
+      returnarray = []
+      if(value.blank?)
+         return nil
+      else
+         list = value.split(', ').collect{|item| item.strip}
+         list.each do |content_type|
+            if(ALLOWED_CONTENT_TYPES.include?(content_type))
+               returnarray << content_type
+            end
+         end
+         if returnarray.blank?
+            return nil
+         end
+      end
+   end
+         
   
   # if datatype is a taglist
   # return whether it included a | anywhere
