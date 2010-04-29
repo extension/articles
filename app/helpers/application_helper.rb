@@ -151,6 +151,10 @@ module ApplicationHelper
     return removed[0, last_index]+truncate_string
   end
   
+  def format_aae_response(content)
+    return word_wrap(simple_format(auto_link(content, :all, :target => "_blank"))) 
+  end
+  
   def get_title(html_content)
     return "" unless html_content
     sushi = Nokogiri::HTML::DocumentFragment.parse(html_content)
