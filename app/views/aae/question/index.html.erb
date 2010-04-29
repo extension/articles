@@ -60,7 +60,9 @@
     <% if is_public_responder(response) %>
         
         <div class="commentblock public">
-            <p class="comment"><%= format_aae_response(response.response) %></p>
+          <div class="comment_wrapper">
+            <%= format_aae_response(response.response) %>
+          </div>
             <p>Comment posted by public user</p>
             <p><%= humane_date(response.created_at) %> UTC</p>
         </div>
