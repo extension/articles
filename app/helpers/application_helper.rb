@@ -151,6 +151,14 @@ module ApplicationHelper
     return removed[0, last_index]+truncate_string
   end
   
+  def prepare_signature(response)
+    if response.signature.blank?
+      return ''
+    else
+      return '<br />' + format_aae_response(response.signature)
+    end   
+  end
+  
   def format_aae_response(content)
     return word_wrap(simple_format(auto_link(content, :all, :target => "_blank"))) 
   end

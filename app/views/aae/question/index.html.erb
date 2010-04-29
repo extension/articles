@@ -68,7 +68,7 @@
     <% else %>
     
         <div class="commentblock expert">
-            <p class="comment"><%= format_aae_response(response.response) %></p>
+            <p class="comment"><%= format_aae_response(response.response) %><%= prepare_signature(response) %></p>
             <p>Response by  
     	    <% if response.user_id == User.systemuserid %>
     	    System
