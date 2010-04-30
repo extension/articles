@@ -14,7 +14,7 @@ class FilteredParameter
   ALLOWED_GDATA_ALT_TYPES = ['atom','rss','json','json-in-script','atom-in-script','rss-in-script']
   
   # content types
-  ALLOWED_CONTENT_TYPES = ['articles','faqs','events','news']
+  ALLOWED_CONTENT_TYPES = ['articles','faqs','events']
 
   # recognized names and types
   RECOGNIZED_PARAMETERS = {}
@@ -125,7 +125,7 @@ class FilteredParameter
     return nil if value.nil?
     case datatype
     when :method
-      if(method_defined?("filter_#{name}"))
+      if(self.class.method_defined?("filter_#{name}"))
         self.send("filter_#{name}",value)
       else
         nil # TODO: raise error?
@@ -262,6 +262,7 @@ class FilteredParameter
             return nil
          end
       end
+      return returnarray.compact.uniq
    end
          
   
