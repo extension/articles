@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100304133109) do
+ActiveRecord::Schema.define(:version => 20100429150632) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -611,6 +611,7 @@ ActiveRecord::Schema.define(:version => 20100304133109) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "contributing_question_id"
+    t.text     "signature"
   end
 
   add_index "responses", ["submitted_question_id"], :name => "index_responses_on_submitted_question_id"

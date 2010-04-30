@@ -12,6 +12,9 @@ class FilteredParameter
 
   # per gdata specification
   ALLOWED_GDATA_ALT_TYPES = ['atom','rss','json','json-in-script','atom-in-script','rss-in-script']
+  
+  # content types
+  ALLOWED_CONTENT_TYPES = ['articles','faqs','events']
 
   # recognized names and types
   RECOGNIZED_PARAMETERS = {}
@@ -24,9 +27,13 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:dateinterval] = :string 
   RECOGNIZED_PARAMETERS[:datefield] = :string 
   RECOGNIZED_PARAMETERS[:tz] = :string
+  RECOGNIZED_PARAMETERS[:limit] = :integer
   RECOGNIZED_PARAMETERS[:order] = :method # caller is responsible for collapsing orderby and sortorder into order
   RECOGNIZED_PARAMETERS[:forcecacheupdate] = {:datatype => :boolean, :default => false} 
   RECOGNIZED_PARAMETERS[:apikey] = :apikey
+  RECOGNIZED_PARAMETERS[:tags] = :taglist
+  RECOGNIZED_PARAMETERS[:content_types] = :method
+  
   
   # AaE params
   RECOGNIZED_PARAMETERS[:squid] = :submitted_question
@@ -55,7 +62,13 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:datatype] = :string 
   RECOGNIZED_PARAMETERS[:graphtype] = :string 
   RECOGNIZED_PARAMETERS[:tqx] = :method 
-  # gdata params 
+  # gdata params - symbols can't have dashes, hence the underscores here
+  # it's recommended that anything parsing the inbound request params
+  # add a compatibility layer to handle params that have dashes to comply
+  # with the gdata parameter names.  
+  #
+  # e.g.  params['updated-min'] would set updated_min 
+  #
   RECOGNIZED_PARAMETERS[:author] = :user  # todo: change to method to recognize aliases
   RECOGNIZED_PARAMETERS[:published_min] = :datetime  # note, does not validate for RFC 3339 format per spec.
   RECOGNIZED_PARAMETERS[:published_max] = :datetime  # note, does not validate for RFC 3339 format per spec.
@@ -67,7 +80,7 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:prettyprint] = :boolean # not sure that we'll actually ever do anything with this
   RECOGNIZED_PARAMETERS[:strict] = :boolean # not sure that we'll actually ever do anything with this
   RECOGNIZED_PARAMETERS[:q] = :string # TODO: parse for terms and phrases, and negative values - if we stay with spec
-  RECOGNIZED_PARAMETERS[:category] = :string # TODO: parse for ANDs and ORs (ANDs = ',' ORs = | ) - if we stay with spec
+  RECOGNIZED_PARAMETERS[:category] = :taglist # TODO: parse for ANDs and ORs (ANDs = ',' ORs = | ) - if we stay with spec
   # end: TODO: review
   
   attr_reader :name, :default, :providedvalue, :datatype, :required, :options
@@ -105,14 +118,14 @@ class FilteredParameter
     return nil if(providedvalue.nil? and default.nil?)
     (providedvalue.nil? ? default : providedvalue)
   end
-
+    
   # Casts value (which is a String coming from the parameters) to an appropriate instance.
   def filtered
     value = self.unfiltered
     return nil if value.nil?
     case datatype
     when :method
-      if(method_defined?("filter_#{name}"))
+      if(self.class.method_defined?("filter_#{name}"))
         self.send("filter_#{name}",value)
       else
         nil # TODO: raise error?
@@ -179,6 +192,8 @@ class FilteredParameter
       end
     when :apikey
       ApiKey.find_by_keyvalue(value)
+    when :taglist
+       return Tag.castlist_to_array(value.gsub('|',','),true,false)
     else
       nil # TODO: raise invalid datatype error
     end
@@ -230,6 +245,41 @@ class FilteredParameter
       end
       return returnhash
     end
+  end
+  
+   def filter_content_types(value)
+      returnarray = []
+      if(value.blank?)
+         return nil
+      else
+         list = value.split(', ').collect{|item| item.strip}
+         list.each do |content_type|
+            if(ALLOWED_CONTENT_TYPES.include?(content_type))
+               returnarray << content_type
+            end
+         end
+         if returnarray.blank?
+            return nil
+         end
+      end
+      return returnarray.compact.uniq
+   end
+         
+  
+  # if datatype is a taglist
+  # return whether it included a | anywhere
+  # which we'll treat as "or" 
+  # otherwise, treat it as an and?
+  def taglist_operator
+     if(@datatype == :taglist)
+        if(self.unfiltered.include?('|'))
+           return 'or'
+        else
+           return 'and'
+        end
+     else
+        return nil
+     end
   end
   
 

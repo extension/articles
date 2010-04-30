@@ -84,6 +84,10 @@ class WidgetController < ApplicationController
         render :template => 'widget/status', :status => 500, :layout => false
         return
       end
+    else
+       @status = '403 (Forbidden)'
+       render :template => 'widget/status', :status => 403, :layout => false
+       return
     end
   end
   

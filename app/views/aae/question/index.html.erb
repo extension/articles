@@ -21,7 +21,7 @@
     
     <h3>Ask an Expert #<%= @submitted_question.id %></h3>
     
-    <h2 class="inc_question"><span><%= @submitted_question.asked_question %></span></h2>
+    <h2 class="inc_question"><span><%= format_text_for_display(@submitted_question.asked_question) %></span></h2>
     <br class="clear" />
     
     <p class="inc_descriptive"><strong><%= @submitter_name %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
@@ -60,7 +60,9 @@
     <% if is_public_responder(response) %>
         
         <div class="commentblock public">
-            <p class="comment"><%= wrap_text(response.response) %></p>
+          <div class="comment_wrapper">
+            <%= format_text_for_display(response.response) %>
+          </div>
             <p>Comment posted by public user</p>
             <p><%= humane_date(response.created_at) %> UTC</p>
         </div>
@@ -68,7 +70,11 @@
     <% else %>
     
         <div class="commentblock expert">
-            <p class="comment"><%= wrap_text(response.response) %></p>
+          
+          <div class="comment_wrapper">
+              <%= format_text_for_display(response.response) %><%= prepare_aae_signature(response) %>
+          </div>
+
             <p>Response by  
     	    <% if response.user_id == User.systemuserid %>
     	    System

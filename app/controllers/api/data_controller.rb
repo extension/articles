@@ -48,4 +48,109 @@ class Api::DataController < ApplicationController
     return render :text => returnhash.to_json
   end
   
+   def content_titles
+      filteredparams = ParamsFilter.new([:apikey,:content_types,:limit,:tags],params)
+      apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
+      # TODO: consider doing this automatically in application_controller as a before_filter
+      ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
+      returnhash = {:success => true, :content_titles => [], :version => 1}
+      
+      # empty content types? return error
+      if(filteredparams.content_types.nil?)
+         returnhash = {:success => false, :errormessage => 'Unrecognized content types.'}
+         return render :text => returnhash.to_json
+      end
+      
+      if(filteredparams.limit.nil?)
+         # empty limit? set to default
+         limit = AppConfig.configtable['default_content_limit']
+      elsif(filteredparams.limit > AppConfig.configtable['max_content_limit'])
+          # limit over? return an error, let's be pedantic
+          returnhash = {:success => false, :errormessage => "Requested limit of #{filteredparams.limit} is greater than the max allowed: #{AppConfig.configtable['max_content_limit']}"}
+          return render :text => returnhash.to_json
+      else
+         limit = filteredparams.limit
+      end
+      
+      # empty tags? - presume "all"
+      if(filteredparams.tags.nil?)
+         alltags = true
+         content_tags = ['all']
+      else
+         content_tags = filteredparams.tags
+         alltags = (content_tags.include?('all'))
+      end
+
+      tag_operator = filteredparams._content_types.taglist_operator
+      items = []      
+      filteredparams.content_types.each do |content_type|
+         case content_type
+         when 'faqs'
+            if(alltags)
+               items += Faq.main_recent_list(:limit => limit)
+            else
+               items += Faq.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
+            end
+         when 'articles'
+            if(alltags)
+               items += Article.main_recent_list(:limit => limit)
+            else
+               items += Article.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
+            end
+         when 'events'
+            if(alltags)
+               items += Event.main_calendar_list({:within_days => 5, :calendar_date => Date.today, :limit => limit})
+            else
+               items += Event.main_calendar_list({:within_days => 5, :calendar_date => Date.today, :limit => limit, :content_tags => content_tags, :tag_operator => tag_operator})
+            end 
+         end
+      end
+      
+      if(content_tags.size > 1)
+         # need to combine items - not using content_date_sort, because I don't want to modify
+         # that at this time
+         merged = {}
+         tmparray = []
+         items.each do |content|
+            case content.class.name 
+            when 'Article'
+               merged[content.wiki_updated_at] = content
+            when 'Faq'
+               merged[content.heureka_published_at] = content
+            when 'Event'
+               merged[content.xcal_updated_at] = content
+            end
+         end
+         tstamps = merged.keys.sort.reverse # sort by updated, descending
+    		tstamps.each{ |key| tmparray << merged[key] }
+    		@returnitems = tmparray.slice(0,limit)
+      else
+       	@returnitems = items
+      end
+            
+      @returnitems.each do |item|
+         entry = {}
+         entry['id'] = item.id_and_link
+         case item.class.name 
+         when 'Article'
+            entry['published'] = item.wiki_created_at.xmlschema
+            entry['updated'] = item.wiki_updated_at.xmlschema
+            entry['content_type'] = 'article'
+         when 'Faq'
+            entry['published'] = item.heureka_published_at.xmlschema
+            entry['updated'] = item.heureka_published_at.xmlschema
+            entry['content_type'] = 'faq'            
+         when 'Event'
+            entry['published'] = item.xcal_updated_at.xmlschema
+            entry['updated'] = item.xcal_updated_at.xmlschema
+            entry['content_type'] = 'event'
+         end
+         # TODO? categories
+         entry['title'] = item.title
+         entry['href'] = item.id_and_link
+         returnhash[:content_titles] << entry
+      end
+      return render :text => returnhash.to_json
+   end
+      
 end
