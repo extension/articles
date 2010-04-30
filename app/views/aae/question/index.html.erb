@@ -21,7 +21,7 @@
     
     <h3>Ask an Expert #<%= @submitted_question.id %></h3>
     
-    <h2 class="inc_question"><span><%= format_aae_response(@submitted_question.asked_question) %></span></h2>
+    <h2 class="inc_question"><span><%= format_text_for_display(@submitted_question.asked_question) %></span></h2>
     <br class="clear" />
     
     <p class="inc_descriptive"><strong><%= @submitter_name %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
@@ -61,7 +61,7 @@
         
         <div class="commentblock public">
           <div class="comment_wrapper">
-            <%= format_aae_response(response.response) %>
+            <%= format_text_for_display(response.response) %>
           </div>
             <p>Comment posted by public user</p>
             <p><%= humane_date(response.created_at) %> UTC</p>
@@ -72,7 +72,7 @@
         <div class="commentblock expert">
           
           <div class="comment_wrapper">
-              <%= format_aae_response(response.response) %><%= prepare_signature(response) %>
+              <%= format_text_for_display(response.response) %><%= prepare_aae_signature(response) %>
           </div>
 
             <p>Response by  

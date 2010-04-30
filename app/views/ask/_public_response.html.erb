@@ -5,8 +5,8 @@
     <div class="commentblock <%= is_public_responder(response) ? "public": "expert" %>" >
         <p class="comment">
             <img src="/images/common/extension_icon.jpg" />
-            <%= format_aae_response(response.response) %>
-            <%= prepare_signature(response) %>
+            <%= format_text_for_display(response.response) %>
+            <%= prepare_aae_signature(response) %>
         </p>
         <p class="meta">Posted <%= time_ago_in_words(response.created_at) %> ago</p>
     </div>
