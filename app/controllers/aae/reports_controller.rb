@@ -93,7 +93,7 @@ class Aae::ReportsController < ApplicationController
            if (loc=Location.find_by_id(params[:location]))  #in case someone hacks in &location=n...
                 @locname = "#{loc.id} (" + loc.name + ")"
                 @locid = loc.id
-                if (@statename && loc.abbreviation != @statename  && loc.name != @statename)   ##someone typed in both and they don't match
+                if (@statename && (loc.abbreviation != @statename  || loc.name != @statename))   ##someone typed in both and they don't match
                     params[:State] = nil    ##currently not allowing mutliple locations filtering
                     @statename = nil
                 end                           
@@ -513,9 +513,9 @@ class Aae::ReportsController < ApplicationController
       	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
       	@date1 = @dateinterval[0]; @date2 = @dateinterval[1]  
         
-        @typename = params[:State]
+        @typename = params[:statename]
        if (@typename && @typename != "") 
-         @typeobj = Location.find_by_name(params[:State]) 
+         @typeobj = Location.find_by_name(params[:statename]) 
          @type = "State" ; @typel="state" ; 
          locabbr=@typeobj.abbreviation; locid = @typeobj.id
      
@@ -540,7 +540,7 @@ class Aae::ReportsController < ApplicationController
          if (@type == 'State')
             @loc = Location.find_by_id(params[:loc]); @county = nil; @typename = @loc.name; @statename = @loc.name
          else
-            @loc = Location.find_by_name(params[:State]) ; @county = params[:County]; @typename = @county ; @statename = params[:State]
+            @loc = Location.find_by_name(params[:statename]) ; @county = params[:countyname]; @typename = @county ; @statename = params[:statename]
          end
          @olink = params[:olink]; @comments=nil;  @edits=params[:descriptor]; @numb = params[:num].to_i
          if (@edits.length > 9)
@@ -579,7 +579,7 @@ class Aae::ReportsController < ApplicationController
          if (@type == 'State')
            @loc = Location.find_by_id(params[:loc]); @county = nil; @typename = @loc.name
          else
-           @loc = Location.find_by_name(params[:State]); @county = params[:County]; @typename = @county
+           @loc = Location.find_by_name(params[:statename]); @county = params[:countyname]; @typename = @county
          end
          @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i
          @date1 = params[:datefrom]; @date2 = params[:dateto]
@@ -594,8 +594,8 @@ class Aae::ReportsController < ApplicationController
      def county_select
        @date1=nil; @date2=nil; @dateFrom=nil; @dateTo=nil
        @date1 = params[:datefrom]; @date2 = params[:dateto]
-       if params[:State]
-           @statename = params[:State]
+       if params[:statename]
+           @statename = params[:statename]
        end
        if (@statename && @statename != "")
          @counties= County.find(:all,  :conditions => "location_id = #{Location.find_by_name(@statename).id} and name<>'All'", :order => 'countycode, name')
@@ -610,8 +610,8 @@ class Aae::ReportsController < ApplicationController
        	@latest_date = Date.today
        	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
        	@date1 = @dateinterval[0]; @date2 = @dateinterval[1]
-       @county = params[:County]; @typename = @county
-       @statename=params[:State]
+       @county = params[:countyname]; @typename = @county
+       @statename=params[:statename]
        if (@county && @statename && @statename!="")
          loc=Location.find_by_name(@statename) 
          locabbr = loc.abbreviation
@@ -629,7 +629,7 @@ class Aae::ReportsController < ApplicationController
       #     @repaction = 'county'
       #     render :template => 'aae/reports/state'
         else
-          redirect_to :controller => 'aae/reports', :action => 'county_select', :State => @statename
+          redirect_to :controller => 'aae/reports', :action => 'county_select', :statename => @statename
         end
       else
          redirect_to :controller => 'aae/reports', :action => 'index'
