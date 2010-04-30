@@ -524,8 +524,8 @@ class Aae::ReportsController < ApplicationController
            @reguser = User.date_users(@date1, @date2).count(:conditions => "location_id=#{locid}")
         
            @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@typeobj.id} and spam=FALSE")
-           (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_state_persp("pertaining",@typeobj, @date1, @date2)
-           (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp("member", @typeobj, @date1, @date2)
+           (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_state_persp({:bywhat => "pertaining",:location => @typeobj, :dateinterval => @dateinterval})
+           (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp({:bywhat => "member", :location => @typeobj, :dateinterval => @dateinterval})
 
          else
            redirect_to :controller => 'aae/reports', :action => 'state_report'
@@ -623,8 +623,8 @@ class Aae::ReportsController < ApplicationController
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
          
           @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id} and spam=FALSE")
-          (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp("pertaining",@typeobj, @date1, @date2)
-          (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp("member",@typeobj, @date1, @date2)   
+          (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "pertaining", :county => @typeobj, :dateinterval => @dateinterval})
+          (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "member", :county => @typeobj, :dateinterval => @dateinterval})   
           
       #     @repaction = 'county'
       #     render :template => 'aae/reports/state'

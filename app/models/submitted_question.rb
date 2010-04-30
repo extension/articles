@@ -852,46 +852,86 @@ def SubmittedQuestion.find_externally_submitted(options = {})
      end
      h
    end
-     
-      def SubmittedQuestion.get_answered_question_by_state_persp(bywhat, stateobj, date1, date2)
-           statuses = ["", " and status_state=#{STATUS_RESOLVED}", " and status_state=#{STATUS_REJECTED}", " and status_state=#{STATUS_NO_ANSWER}"]
-            results = Array.new; i = 0; cond_string = " and submitted_questions.created_at between ? and ?" ;  n = statuses.size
-            if (bywhat == "member")
-              bywhatstr = " users.location_id='#{stateobj.id}' "
-            else
-              bywhatstr = " location_id=#{stateobj.id} "
-            end
-            while i < n do
-              cond = " resolved_by >=1 and " + bywhatstr + statuses[i]
-              if (date1 && date2)
-                cond = cond +  cond_string   
-              end 
-              results[i] = SubmittedQuestion.count(:all,  :joins => ((bywhat=="member") ? [:resolved_by] : nil),
-                :conditions => ((date1 && date2) ? [cond, date1, date2] : cond))
-              i = i + 1
-            end  
-            return [results[0], results[1], results[2], results[3]]
-       end
-    
-    
-     def SubmittedQuestion.get_answered_question_by_county_persp(bywhat, countyobj, date1, date2)
-          statuses = ["", " and status_state=#{STATUS_RESOLVED}", " and status_state=#{STATUS_REJECTED}", " and status_state=#{STATUS_NO_ANSWER}"]
-           results = Array.new; i = 0; cond_string = " and submitted_questions.created_at between ? and ?" ; n = statuses.size
-           if (bywhat == "member")
-             bywhatstr = " users.location_id=#{countyobj.location_id} and users.county_id=#{countyobj.id} "
-           else
-             bywhatstr = " county_id=#{countyobj.id} "
-           end
-           while i < n do
-             cond = " resolved_by >=1 and " + bywhatstr + statuses[i]
-             if (date1 && date2)
-               cond = cond +  cond_string   
-             end 
-             results[i] = SubmittedQuestion.count(:all, :joins => ((bywhat=="member") ? [:resolved_by] : nil),:conditions => ((date1 && date2) ? [cond, date1, date2] : cond))
-             i = i + 1
-           end  
-           return [results[0], results[1], results[2], results[3]]
+   
+   def SubmittedQuestion.get_answered_question_by_state_persp(options={})
+      statuses=["", "#{STATUS_RESOLVED}", " #{STATUS_REJECTED}", " #{STATUS_NO_ANSWER}"]
+      results=[] ; conditions = []; addedstat = nil
+      dateinterval = options[:dateinterval]
+      if(!dateinterval.nil?)
+           conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
       end
+      conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " users.location_id=#{options[:location].id} " : " location_id=#{options[:location].id}")
+      statuses.each do |stat|
+         if (addedstat)    # do not keep accumulating conditions meant to replace each other
+              conditions.delete_at(conditions.size - 1)
+         end
+         if stat.length > 0
+              conditions << " status_state=#{stat}"
+              addedstat = 1
+         end
+         results << SubmittedQuestion.count(:all, :joins => ((options[:bywhat]== "member") ? [:resolved_by] : nil ), :conditions => conditions.compact.join(' AND '))      
+      end
+       return results
+   end
+     
+#      def SubmittedQuestion.get_answered_question_by_state_persp(bywhat, stateobj, date1, date2)
+#          statuses = ["", " and status_state=#{STATUS_RESOLVED}", " and status_state=#{STATUS_REJECTED}", " and status_state=#{STATUS_NO_ANSWER}"]
+#            results = Array.new; i = 0; cond_string = " and submitted_questions.created_at between ? and ?" ;  n = statuses.size
+#            if (bywhat == "member")
+#              bywhatstr = " users.location_id='#{stateobj.id}' "
+#            else
+#              bywhatstr = " location_id=#{stateobj.id} "
+#            end
+#            while i < n do
+#              cond = " resolved_by >=1 and " + bywhatstr + statuses[i]
+#              if (date1 && date2)
+#                cond = cond +  cond_string   
+#              end 
+#              results[i] = SubmittedQuestion.count(:all,  :joins => ((bywhat=="member") ? [:resolved_by] : nil),
+#                :conditions => ((date1 && date2) ? [cond, date1, date2] : cond))
+#              i = i + 1
+#            end  
+#            return [results[0], results[1], results[2], results[3]]
+#       end
+    def SubmittedQuestion.get_answered_question_by_county_persp(options={})
+       statuses=["", "#{STATUS_RESOLVED}", " #{STATUS_REJECTED}", " #{STATUS_NO_ANSWER}"]
+       results=[] ; conditions = []; addedstat = nil
+       dateinterval = options[:dateinterval]
+       if(!dateinterval.nil?)
+            conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+       end
+       conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " users.county_id=#{options[:county].id} " : " county_id=#{options[:county].id}")
+       statuses.each do |stat|
+          if (addedstat)    # do not keep accumulating conditions meant to replace each other
+               conditions.delete_at(conditions.size - 1)
+          end
+          if stat.length > 0
+               conditions << " status_state=#{stat}"
+               addedstat = 1
+          end
+          results << SubmittedQuestion.count(:all, :joins => ((options[:bywhat]== "member") ? [:resolved_by] : nil ), :conditions => conditions.compact.join(' AND '))      
+       end
+        return results
+    end
+    
+  #   def SubmittedQuestion.get_answered_question_by_county_persp(bywhat, countyobj, date1, date2)
+#          statuses = ["", " and status_state=#{STATUS_RESOLVED}", " and status_state=#{STATUS_REJECTED}", " and status_state=#{STATUS_NO_ANSWER}"]
+#           results = Array.new; i = 0; cond_string = " and submitted_questions.created_at between ? and ?" ; n = statuses.size
+#           if (bywhat == "member")
+#             bywhatstr = " users.location_id=#{countyobj.location_id} and users.county_id=#{countyobj.id} "
+#           else
+#             bywhatstr = " county_id=#{countyobj.id} "
+#           end
+#           while i < n do
+#             cond = " resolved_by >=1 and " + bywhatstr + statuses[i]
+#             if (date1 && date2)
+#               cond = cond +  cond_string   
+#             end 
+#             results[i] = SubmittedQuestion.count(:all, :joins => ((bywhat=="member") ? [:resolved_by] : nil),:conditions => ((date1 && date2) ? [cond, date1, date2] : cond))
+#             i = i + 1
+#           end  
+#           return [results[0], results[1], results[2], results[3]]
+#      end
 
 
 private
