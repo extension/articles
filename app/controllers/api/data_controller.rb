@@ -81,7 +81,7 @@ class Api::DataController < ApplicationController
          alltags = (content_tags.include?('all'))
       end
 
-      tag_operator = filteredparams._content_types.taglist_operator
+      tag_operator = filteredparams._tags.taglist_operator      
       items = []      
       filteredparams.content_types.each do |content_type|
          case content_type
