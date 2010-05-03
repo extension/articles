@@ -98,15 +98,17 @@ class Api::DataController < ApplicationController
                items += Article.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
             end
          when 'events'
+            # AppConfig.configtable['events_within_days'] should probably be a parameter
+            # but we'll save that for another day
             if(alltags)
-               items += Event.main_calendar_list({:within_days => 5, :calendar_date => Date.today, :limit => limit})
+               items += Event.main_calendar_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit})
             else
-               items += Event.main_calendar_list({:within_days => 5, :calendar_date => Date.today, :limit => limit, :content_tags => content_tags, :tag_operator => tag_operator})
+               items += Event.main_calendar_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit, :content_tags => content_tags, :tag_operator => tag_operator})
             end 
          end
       end
       
-      if(content_tags.size > 1)
+      if(filteredparams.content_types.size > 1)
          # need to combine items - not using content_date_sort, because I don't want to modify
          # that at this time
          merged = {}
