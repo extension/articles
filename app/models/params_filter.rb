@@ -56,6 +56,7 @@ class ParamsFilter
       # if there, add as FilteredParameter to my filtered_parameters list
       # and create .name method that returns the filtered parameter 
       # and create a .name? method that returns 'true' that we have the param
+      # and create a ._name method that returns the FilteredParameter object
       #
       # also check for the "dash version of underscored names"
       # e.g. look for 'updated-min' for names that are 'updated_min'
@@ -66,10 +67,14 @@ class ParamsFilter
       if(!provided_parameters[name].nil?)
         @filtered_parameters[name] = FilteredParameter.new(name,provided_parameters[name],options)
         (class << self; self; end).class_eval do
-          define_method name do 
-            @filtered_parameters[name].filtered
-          end
-          
+           define_method name do 
+             @filtered_parameters[name].filtered
+           end
+           
+           define_method "_#{name}" do 
+             @filtered_parameters[name]
+           end
+       
           define_method "#{name}?" do 
             true
           end
@@ -80,7 +85,11 @@ class ParamsFilter
           define_method name do 
             @filtered_parameters[name].filtered
           end
-
+          
+          define_method "_#{name}" do 
+            @filtered_parameters[name]
+          end
+          
           define_method "#{name}?" do 
             true
           end

@@ -127,6 +127,18 @@ module ApplicationHelper
     return summary
   end
   
+  def prepare_aae_signature(response)
+    if response.signature.blank?
+      return ''
+    else
+      return '<br />' + format_text_for_display(response.signature)
+    end   
+  end
+
+  def format_text_for_display(content)
+    return word_wrap(simple_format(auto_link(content, :all, :target => "_blank"))) 
+  end
+  
   private
   
   def word_truncate(string, word_count=60, threshold=80)
