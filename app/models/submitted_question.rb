@@ -225,7 +225,7 @@ end
        dateinterval = options[:dateinterval]
 
        conditions = []      
-       if(!dateinterval.nil? and options[:desc]!= "Currently Assigned as an Expert")
+       if(!dateinterval.nil? and !dateinterval[0].nil? and !dateinterval[1].nil? and options[:desc]!= "Currently Assigned as an Expert")
            conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
        end
        
