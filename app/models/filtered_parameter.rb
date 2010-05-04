@@ -252,7 +252,7 @@ class FilteredParameter
       if(value.blank?)
          return nil
       else
-         list = value.split(', ').collect{|item| item.strip}
+         list = value.split(Regexp.new(/\s*,\s*/)).collect{|item| item.strip}
          list.each do |content_type|
             if(ALLOWED_CONTENT_TYPES.include?(content_type))
                returnarray << content_type
