@@ -13,7 +13,7 @@ class NotificationMailer < ActionMailer::Base
     default_url_options[:port] = default_port
   end
       
-  def base_email(emailsettings_label = 'default')
+  def base_email(emailsettings_label = 'default', from_name = nil)
     @sent_on  = Time.now
     if(AppConfig.configtable['app_location'] == 'production')
       @isdemo = false
@@ -28,7 +28,10 @@ class NotificationMailer < ActionMailer::Base
       emailsettings_label = 'default'
     end
     
-    @from           = %("#{AppConfig.configtable['emailsettings'][emailsettings_label]['name']}" <#{AppConfig.configtable['emailsettings'][emailsettings_label]['address']}>)
+    # setup the name for the :from address, widgets can now have custom :from names for AaE correspondance 
+    from_name = AppConfig.configtable['emailsettings'][emailsettings_label]['name'] if from_name.nil? 
+    
+    @from           = %("#{from_name}" <#{AppConfig.configtable['emailsettings'][emailsettings_label]['address']}>)
     if(!AppConfig.configtable['emailsettings'][emailsettings_label]['bcc'].blank?)
       @bcc            = AppConfig.configtable['emailsettings'][emailsettings_label]['bcc']
     end
@@ -443,7 +446,7 @@ class NotificationMailer < ActionMailer::Base
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      signature = notification.additionaldata[:signature]
      # base parameters for the email
-     self.base_email(notification.notifytype_to_s)
+     self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
      @subject = "[Message from eXtension] Your question has been responded to by one of our experts."           
      @recipients     = submitted_question.submitter_email
      urls = Hash.new
@@ -455,7 +458,7 @@ class NotificationMailer < ActionMailer::Base
    def aae_public_submission(notification)
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      # base parameters for the email
-     self.base_email(notification.notifytype_to_s)
+     self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
      @subject = "[Message from eXtension] Thank you for your question submission."          
      @recipients     = submitted_question.public_user.email
      urls = Hash.new
