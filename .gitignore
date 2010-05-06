@@ -14,3 +14,7 @@
 
 # /public/
 /public/system
+
+# /db/
+/db/schema.rb
+
