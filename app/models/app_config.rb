@@ -49,10 +49,10 @@ class AppConfig
     @@configtable['emailsettings']['errors'] = 'eXtensionAppErrors@extension.org'
     
     # address, from string, and bcc for various functional areas
-    @@configtable['emailsettings']['aae_public'] = {'address' => 'ask-an-expert@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Response', 'bcc' => 'aaepublic.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['aae_public'] = {'address' => 'ask-an-expert@extension.org', 'name' => 'eXtension Ask an Expert Response', 'bcc' => 'aaepublic.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['aae_internal'] = {'address' => 'aaenotify@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['people'] = {'address' => 'peoplemail@extension.org', 'name' => 'eXtension People Notification - Do Not Reply', 'bcc' => 'people.bcc.mirror@extension.org', 'review' => 'eXtensionHelp@extension.org'}
-    @@configtable['emailsettings']['default'] = {'address' => 'noreply@extension.org', 'name' => 'eXtension Notification - Do Not Reply', 'bcc' => 'default.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['default'] = {'address' => 'noreply@extension.org', 'name' => 'eXtension Notification', 'bcc' => 'default.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['deploy'] = {'address' => 'exdev@extension.org', 'name' => 'eXDevBot', 'bcc' => 'deploys.mirror@extension.org'}
         
     # in hours
