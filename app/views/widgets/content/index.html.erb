@@ -15,7 +15,8 @@
     
     <p class="inline"><label>Width: <%= text_field_tag :width, @default_width, :size => 3 %> pixels</label></p>
    
-      <p><label>Content Tags:</label>Comma Separated (ie. horses,horticulture,...)</p>
+      <p><label>Content Tags:</label>
+        Comma separated (i.e. horses,horticulture). If blank, all content will be included.</p>
       <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "2" %></p>
       
       <ul id="tag_operator">
