@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class Admin::LogosController < ApplicationController
+class Admin::CseController < ApplicationController
   before_filter :admin_required
   before_filter :check_purgatory
   before_filter :turn_off_right_column
@@ -13,7 +13,7 @@ class Admin::LogosController < ApplicationController
   layout 'pubsite'
 
   def index
-    set_titletag('Manage Logos- Pubsite Admin')
+    set_titletag('Manage CSE Links - Pubsite Admin')
     @logos = Logo.sponsorlogos.find(:all, :conditions => { :parent_id => nil }, :order => 'created_at DESC')
   end
 

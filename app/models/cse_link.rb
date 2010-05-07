@@ -5,6 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class CSELink < ActiveRecord::Base
+class CseLink < ActiveRecord::Base
   
 end
