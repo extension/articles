@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100429150632) do
+ActiveRecord::Schema.define(:version => 20100506181354) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -385,6 +385,16 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
     t.datetime "updated_at"
     t.string   "name"
     t.boolean  "retrieve_with_time", :default => false
+  end
+
+  create_table "file_attachments", :force => true do |t|
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size"
+    t.datetime "attachment_updated_at"
+    t.integer  "submitted_question_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "help_feeds", :force => true do |t|
@@ -894,6 +904,7 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
     t.datetime "updated_at"
     t.boolean  "active",      :default => true, :null => false
     t.integer  "user_id",                       :null => false
+    t.string   "email_from"
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true
