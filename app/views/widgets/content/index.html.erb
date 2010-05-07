@@ -18,7 +18,7 @@
       <p><label>Content Tags:</label>Comma Separated (ie. horses,horticulture,...)</p>
       <p><%= text_area_tag :tags, nil, :cols => "50", :rows => "2" %></p>
       
-      <ul>
+      <ul id="tag_operator">
          <li><%= radio_button_tag(:tag_operator, 'or', true) %> Content tagged with any tags</li>
          <li><%= radio_button_tag(:tag_operator, 'and', false) %> Content tagged with all tags</li>
       </ul>
@@ -54,3 +54,15 @@
 </div>
 
 <br class="clearing" />
+
+<script type='text/javascript'>
+  
+  Event.observe('tag', 'keypress', function(event) {
+    if ($('tags').include(",")) {
+      hide($('tag_operator'));
+    } else {
+      show($('tag_operator'));
+    }
+  });
+  
+</script>
