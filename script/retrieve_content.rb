@@ -86,6 +86,7 @@ end
 
 case @datatype
 when 'articles'
+  options[:feed_url] = AppConfig.configtable['content_feed_wikiarticles_no_dpls']
   retrieve_content_for_datatype(Article,options)
 when 'faqs'
   retrieve_content_for_datatype(Faq,options)    
