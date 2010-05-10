@@ -77,11 +77,11 @@ class Api::DataController < ApplicationController
          alltags = true
          content_tags = ['all']
       else
+         tag_operator = filteredparams._tags.taglist_operator      
          content_tags = filteredparams.tags
          alltags = (content_tags.include?('all'))
       end
-
-      tag_operator = filteredparams._tags.taglist_operator      
+      
       items = []      
       filteredparams.content_types.each do |content_type|
          case content_type

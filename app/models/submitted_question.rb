@@ -142,6 +142,16 @@ def add_resolution(sq_status, resolver, response, signature = nil, contributing_
   
 end
 
+# widgets can have custom :from names for AaE email correspondance
+# get the :from name if it exists for the source widget (if it has one)
+def get_custom_email_from
+  if (widget = self.widget) and (!widget.email_from.blank?)
+    return widget.email_from
+  else
+    return nil
+  end
+end
+
 def set_last_opened
   self.last_opened_at = Time.now
 end
