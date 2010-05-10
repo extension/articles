@@ -11,7 +11,7 @@ set :localuser, ENV['USER']
 set :repository, "git@github.com:extension/#{application}.git"
 set :scm, "git"
 set :use_sudo, false
-set :ruby, "/usr/bin/ruby"
+set :ruby, "/usr/local/bin/ruby"
 
 # Make sure environment is loaded as first step
 on :load, "deploy:setup_environment"
