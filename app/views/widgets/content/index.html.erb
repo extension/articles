@@ -6,9 +6,9 @@
     <p><label>Type of Content:</label></p>
     <ul>
     <li><%= radio_button_tag(:type, 'articles', false) %> Articles</li>
-    <li><%= radio_button_tag(:type, 'faqs', false) %> Faqs</li>
+    <li><%= radio_button_tag(:type, 'faqs', false) %> FAQs</li>
     <li><%= radio_button_tag(:type, 'events', false) %> Events</li>
-    <li><%= radio_button_tag(:type, 'faqs_articles', true) %> Articles and Faqs</li>
+    <li><%= radio_button_tag(:type, 'faqs_articles', true) %> Articles and FAQs</li>
     </ul>
     
     <p class="inline"><label>Number of items: <%= text_field_tag :quantity, @default_quantity, :size => 3 %></label></p>
