@@ -59,21 +59,22 @@
 <br class="clearing" />
 
 <script type='text/javascript'>
+  
   if ($('tags').value.include(',')) {
     $('tag_operator').setStyle({
-      display: 'block',
+      display: 'block'
     });
   }
   
-  Event.observe('tags', 'keyup', function(event) {
+  Event.observe('tags', 'keyup', function() {
     showOperatorOptions();
   });
   
   function showOperatorOptions() {
   	if ($('tags').value.include(',')) {
       $('tag_operator').setStyle({
-        display: 'block',
-      });
+        display: 'block'
+      })
     } else {
       $('tag_operator').hide();
     }
