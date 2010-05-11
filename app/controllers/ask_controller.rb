@@ -217,7 +217,7 @@ class AskController < ApplicationController
       return
     end
     
-    if (params[:email_address] and params[:email_address].strip != '') and (public_user = PublicUser.find_by_email(params[:email_address])) and (request.post?)
+    if (params[:email_address] and params[:email_address].strip != '') and (public_user = PublicUser.find_by_email(params[:email_address].strip)) and (request.post?)
       # make sure that this question belongs to this user
       if(@submitted_question.public_user == public_user)
         session[:public_user_id] = public_user.id
