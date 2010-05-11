@@ -179,12 +179,11 @@ class Aae::QuestionController < ApplicationController
     signature_pref = @currentuser.user_preferences.find_by_name('signature')
     signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.fullname}"
     
-  
     if request.post?
       answer = params[:current_response]
-
-      if !answer or '' == answer.strip
-        @signature = params[:signature]
+      (params[:signature] and params[:signature].strip != '') ? @signature = params[:signature] : @signature = ''
+      
+      if !answer or '' == answer.strip 
         flash[:failure] = "You must not leave the answer blank."
         return
       end
@@ -192,13 +191,7 @@ class Aae::QuestionController < ApplicationController
       @question ? contributing_question = @question.id : contributing_question = nil
       (@status and @status.to_i == SubmittedQuestion::STATUS_NO_ANSWER) ? sq_status = SubmittedQuestion::STATUS_NO_ANSWER : sq_status = SubmittedQuestion::STATUS_RESOLVED
       
-      @submitted_question.add_resolution(sq_status, @currentuser, answer, contributing_question)
-          
-      if params[:signature] and params[:signature].strip != ''
-        @signature = params[:signature]
-      else
-        @signature = ''
-      end
+      @submitted_question.add_resolution(sq_status, @currentuser, answer, @signature, contributing_question)   
       
       Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :user => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
         

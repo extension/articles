@@ -129,6 +129,13 @@ class AppConfig
     @@configtable['default_dateinterval'] = 'withinlastmonth'
     @@configtable['default_timezone'] = 'utc'
     
+    # arbitrary maximums
+    @@configtable['default_content_limit'] = 3
+    @@configtable['max_content_limit'] = 25
+    @@configtable['events_within_days'] = 5
+    
+    
+    
     # Akismet spam blocker key
     @@configtable['akismet_key'] = 'default'
     
