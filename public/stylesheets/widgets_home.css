@@ -209,3 +209,5 @@ p.inline label input {width:auto;}
 #errorExplanation li {padding:0 .5em; list-style:disc; margin:0;}
 
 #tag_wrapper {height:120px; overflow:auto; background:#eee; padding:10px;}
+.gray {color:#666;}
+#tag_operator {background:#fff0b2; display:none; padding:10px;}
