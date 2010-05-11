@@ -8,7 +8,19 @@
 class FileAttachment < ActiveRecord::Base
   
   belongs_to :submitted_question
-  has_attached_file :attachment, :styles => { :medium => "300x300>", :thumb => "100x100>" }
+  has_attached_file :attachment, :styles => { :medium => "300x300>", :thumb => "100x100>" },
+              :url => "/system/:class/:attachment/:id_partition/:basename_:style.:extension"
+              
   
+  before_update :randomize_attachment_file_name
+  
+  
+  def randomize_attachment_file_name
+    return if self.attachment_file_name.nil?
+    extension = File.extname(attachment_file_name).downcase
+    if(self.attachment_file_name_changed?)
+      self.attachment.instance_write(:file_name, "#{ActiveSupport::SecureRandom.hex(16)}#{extension}")
+    end
+  end
   
 end
