@@ -388,7 +388,7 @@ class Aae::ReportsController < ApplicationController
           (getparams.location) ? @statename = getparams.location.name : @statename=nil
           (getparams.location) ? @locid = getparams.location.id : @locid=nil
           (getparams.county) ? @county = getparams.county.name : @county = nil
-          @catname = getparams.category
+          @catname = getparams.category[0]
           !(getparams.category.blank?) ? category=Category.find_by_name(@catname) : category=nil
            
           
@@ -407,8 +407,7 @@ class Aae::ReportsController < ApplicationController
            if getparams.location  && !getparams.category.blank? && getparams.county  
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
             
-            #expertise_county= ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county])
-            expertise_county=ExpertiseCounty.find_by_name_and_location_id(@county,ExpertiseLocation.find_by_name(@statename).id)
+            expertise_county= ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county])
         
             @user_list = User.experts_by_county(expertise_county).experts_by_category(category.id) 
              
@@ -437,7 +436,7 @@ class Aae::ReportsController < ApplicationController
           if getparams.category.blank?
               redirect_to :action => 'answerers'
           end
-          @catname = getparams.category
+          @catname = getparams.category[0]
           category = Category.find_by_name(@catname)     #was params[:Category]
                 
           if params[:dir]
@@ -470,7 +469,7 @@ class Aae::ReportsController < ApplicationController
             (getparams.location) ? @statename = getparams.location.name : @statename=nil
             (getparams.location) ? @locid = getparams.location.id : @locid=nil
             (getparams.county) ? @county = getparams.county.name : @county = nil
-            @catname = getparams.category
+            @catname = getparams.category[0]
             !(getparams.category.blank?) ? category=Category.find_by_name(@catname) : category=nil
             
           if params[:dir]
@@ -487,8 +486,8 @@ class Aae::ReportsController < ApplicationController
           end
           @locid = ExpertiseLocation.find_by_name(@statename).id
           if (@county)
-           # expertise_county = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{@locid} and name=?", @county])
-            expertise_county=ExpertiseCounty.find_by_name_and_location_id(@county, locid)
+            expertise_county = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{@locid} and name=?", @county])
+           
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
           # form array of users for selected county
         
@@ -631,12 +630,12 @@ class Aae::ReportsController < ApplicationController
        
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
          
-          @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id} and spam=FALSE")
-          (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "pertaining", :county => @typeobj, :dateinterval => @dateinterval})
-          (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "member", :county => @typeobj, :dateinterval => @dateinterval})   
-          
-      #     @repaction = 'county'
-      #     render :template => 'aae/reports/state'
+        @asgn  = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id} and spam=FALSE")
+         (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "pertaining", :county => @typeobj, :dateinterval => @dateinterval})
+       #  (@resolved_pertaining, @answered_pertaining, @rejected_pertaining, @no_answered_pertaining)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "pertaining", :county => @typeobj, :dateinterval => @dateinterval})
+         (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "member", :county => @typeobj, :dateinterval => @dateinterval})   
+        #  (@resolved_by_member, @answered_by_member, @rejected_by_member, @no_answered_by_member)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "member", :county => @typeobj, :dateinterval => @dateinterval})   
+         
         else
           redirect_to :controller => 'aae/reports', :action => 'county_select', :statename => @statename
         end
