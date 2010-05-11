@@ -163,14 +163,15 @@ class Aae::ReportsController < ApplicationController
 
         def display_tag_questions
             @cat = Category.find_by_name(params[:category])
-            @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
+          #  @olink = params[:olink];
+             @comments=nil; @edits=params[:descriptor]; @idtype='sqid'
             aux = nil ; @catname = params[:category]; locid = params[:locid] ; @loc = Location.find_by_id(locid)
              @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
              @latest_date = Date.today
              @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
              @date1 = @dateinterval[0]; @date2=@dateinterval[1]; @dateFrom = @date1; @dateTo = @date2
            
-            desc = params[:descriptor]; @numb = params[:num].to_i
+            @desc = params[:descriptor]; @numb = params[:num].to_i
              if (@edits.length > 8)
                if (@edits[0..7]=="Resolved")
                  aux = @edits[8].chr
@@ -179,7 +180,7 @@ class Aae::ReportsController < ApplicationController
              end
        
               joins = ((locid) ? [:categories, :location] : [:categories])
-              (desc=="New") ? @pgt = " Newly Submitted Questions in '#{@cat.name}'  " : @pgt = " Questions Resolved from Ask an Expert for '#{@cat.name}'"
+              (@desc=="New") ? @pgt = " Newly Submitted Questions in '#{@cat.name}'  " : @pgt = " Questions Resolved from Ask an Expert for '#{@cat.name}'"
               (params[:locname]) ? @filtstr = "Filtered by Location = #{params[:locname]} "  : ""
               
                @questions = SubmittedQuestion.find_questions({:cat => @cat, :desc => @edits, :aux => aux, :location => @loc, :numparm => "all",
@@ -255,23 +256,24 @@ class Aae::ReportsController < ApplicationController
         
         def display_questions
            @user = User.find_by_id(params[:user]);
-           @olink = params[:olink];  @comments=nil; @edits=nil; 
+          # @olink = params[:olink];  
+           @comments=nil; @edits=nil; 
            @date1 = params[:datefrom]; @date2 = params[:dateto]
-           desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
-           descl = desc
+           @desc = params[:descriptor]; @numb = params[:num].to_i; joins = nil; group_name = nil
+           descl = @desc
 
            select_string = " submitted_questions.* "
-           if desc=="Assigned as an Expert" || desc=="Currently Assigned as an Expert"
+           if @desc=="Assigned as an Expert" || @desc=="Currently Assigned as an Expert"
              select_string = select_string + " , recipient_id "
              joins = [:submitted_question_events]
              group_name = "submitted_question_id"
-             descl = "was " + desc
+             descl = "was " + @desc
            end
             
              @pgt = "Questions #{@user.first_name} #{@user.last_name} #{descl} "
              @faq = nil; @idtype='sqid'
         
-              @questions = SubmittedQuestion.find_questions({:numparm => "all", :cat => @user, :desc => desc, :dateinterval => [@date1,@date2],
+              @questions = SubmittedQuestion.find_questions({:numparm => "all", :cat => @user, :desc => @desc, :dateinterval => [@date1,@date2],
                                                    :args => {:select => select_string,
                                                             :joins => joins,
                                                             :order => order_clause("submitted_questions.updated_at", "desc"),
@@ -386,7 +388,7 @@ class Aae::ReportsController < ApplicationController
           (getparams.location) ? @statename = getparams.location.name : @statename=nil
           (getparams.location) ? @locid = getparams.location.id : @locid=nil
           (getparams.county) ? @county = getparams.county.name : @county = nil
-          @catname = getparams.category
+          @catname = getparams.category[0]
           !(getparams.category.blank?) ? category=Category.find_by_name(@catname) : category=nil
            
           
@@ -404,6 +406,7 @@ class Aae::ReportsController < ApplicationController
     #      if (@statename && @county && @catname && @statename !="" && @county != "" && @catname != "")
            if getparams.location  && !getparams.category.blank? && getparams.county  
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
+            
             expertise_county= ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{ExpertiseLocation.find_by_name(@statename).id} and name=?", @county])
         
             @user_list = User.experts_by_county(expertise_county).experts_by_category(category.id) 
@@ -433,7 +436,7 @@ class Aae::ReportsController < ApplicationController
           if getparams.category.blank?
               redirect_to :action => 'answerers'
           end
-          @catname = getparams.category
+          @catname = getparams.category[0]
           category = Category.find_by_name(@catname)     #was params[:Category]
                 
           if params[:dir]
@@ -466,7 +469,7 @@ class Aae::ReportsController < ApplicationController
             (getparams.location) ? @statename = getparams.location.name : @statename=nil
             (getparams.location) ? @locid = getparams.location.id : @locid=nil
             (getparams.county) ? @county = getparams.county.name : @county = nil
-            @catname = getparams.category
+            @catname = getparams.category[0]
             !(getparams.category.blank?) ? category=Category.find_by_name(@catname) : category=nil
             
           if params[:dir]
@@ -484,6 +487,7 @@ class Aae::ReportsController < ApplicationController
           @locid = ExpertiseLocation.find_by_name(@statename).id
           if (@county)
             expertise_county = ExpertiseCounty.find(:first, :conditions => ["expertise_location_id=#{@locid} and name=?", @county])
+           
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
           # form array of users for selected county
         
@@ -522,7 +526,8 @@ class Aae::ReportsController < ApplicationController
          if !@typeobj.nil?  
       
            @reguser = User.date_users(@date1, @date2).count(:conditions => "location_id=#{locid}")
-        
+           #asgn here is really more like 'open'
+        ##  need comments to explain what all these variables are, also maybe make the variables more like @resolved_pertaining, @resolved_pertaining_answered...
            @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@typeobj.id} and spam=FALSE")
            (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_state_persp({:bywhat => "pertaining",:location => @typeobj, :dateinterval => @dateinterval})
            (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_state_persp({:bywhat => "member", :location => @typeobj, :dateinterval => @dateinterval})
@@ -542,7 +547,8 @@ class Aae::ReportsController < ApplicationController
          else
             @loc = Location.find_by_name(params[:statename]) ; @county = params[:countyname]; @typename = @county ; @statename = params[:statename]
          end
-         @olink = params[:olink]; @comments=nil;  @edits=params[:descriptor]; @numb = params[:num].to_i
+         @desc = params[:descriptor];  #was olink = params[:olink]
+          @comments=nil;  @edits=params[:descriptor]; @numb = params[:num].to_i
          if (@edits.length > 9)
            if (@edits[0..7]=="Resolved")
              @edits = @edits[0..8]
@@ -551,14 +557,14 @@ class Aae::ReportsController < ApplicationController
  
            @date1 = params[:datefrom] ; @date2 = params[:dateto]
            @limit_string = "Only up to 100 are shown."
-   
-           (@edits[0..7] == "Resolved") ? jstring = [:resolved_by] : jstring= nil
-        
-            if @edits == 'Submitted'
-               @pgt = "Submitted Questions pertaining to #{@typename}"
-             else
+           jstring = nil
+            case @edits
+            when "Submitted"
+                @pgt = "Submitted Questions pertaining to #{@typename}"
+            else
+               jstring = [:resolved_by] 
                (@edits[8].chr=="P") ? @pgt = "Resolved Questions pertaining to #{@typename}" : @pgt="Questions Resolved by a member in #{@typename}" 
-             end
+            end
              @faq = nil; @idtype = 'sqid'  
      
               @questions = SubmittedQuestion.find_state_questions({:location => @loc, :countyname => @county, :desc => params[:descriptor], :dateinterval => [@date1,@date2], :numparm => "all",
@@ -581,7 +587,8 @@ class Aae::ReportsController < ApplicationController
          else
            @loc = Location.find_by_name(params[:statename]); @county = params[:countyname]; @typename = @county
          end
-         @olink = params[:olink]; @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i
+         @desc = params[:descriptor]; #was @olink=params[:olink]
+          @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i   # do we need olink here?
          @date1 = params[:datefrom]; @date2 = params[:dateto]
     
          @users = User.find_state_users({:location => @loc, :countyname => @county, :dateinterval => [@date1, @date2], :numparm => "all", :args => {
@@ -610,24 +617,25 @@ class Aae::ReportsController < ApplicationController
        	@latest_date = Date.today
        	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
        	@date1 = @dateinterval[0]; @date2 = @dateinterval[1]
-       @county = params[:countyname]; @typename = @county
+       @county = params[:countyname]; @typename = @county   #change all these state and county names to ids where feasible
        @statename=params[:statename]
        if (@county && @statename && @statename!="")
          loc=Location.find_by_name(@statename) 
          locabbr = loc.abbreviation
         
-         @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])
+       #  @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])  #try find_by_name_and_location_id(name, loc) here
+         @typeobj = County.find_by_name_and_location_id(@county,loc.id)
          @type="County"; @typel="county" ;   
          if !@typeobj.nil? 
        
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
          
-          @asgn = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id} and spam=FALSE")
-          (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "pertaining", :county => @typeobj, :dateinterval => @dateinterval})
-          (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "member", :county => @typeobj, :dateinterval => @dateinterval})   
-          
-      #     @repaction = 'county'
-      #     render :template => 'aae/reports/state'
+        @asgn  = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id} and spam=FALSE")
+         (@answp, @answpa, @answpr, @answpn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "pertaining", :county => @typeobj, :dateinterval => @dateinterval})
+       #  (@resolved_pertaining, @answered_pertaining, @rejected_pertaining, @no_answered_pertaining)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "pertaining", :county => @typeobj, :dateinterval => @dateinterval})
+         (@answm, @answma, @answmr, @answmn)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "member", :county => @typeobj, :dateinterval => @dateinterval})   
+        #  (@resolved_by_member, @answered_by_member, @rejected_by_member, @no_answered_by_member)= SubmittedQuestion.get_answered_question_by_county_persp({:bywhat => "member", :county => @typeobj, :dateinterval => @dateinterval})   
+         
         else
           redirect_to :controller => 'aae/reports', :action => 'county_select', :statename => @statename
         end
@@ -730,9 +738,12 @@ class Aae::ReportsController < ApplicationController
           end
          end
         #retain fields from upper as we change the lower as appropriate
+        # If someone is using the compare dates (the lower set), the upper set will already have params in comparedate_from and comparedate_to
          @datec1 = params[:compd1]; @datec2=params[:compd2]
+         # if there was no comparedate_from and the user did not choose to 'remove'
           if ((!@datec1) && @clear2=="n")
                if ((params[:from] && params[:from][1] != "")  or params[:lower] or @sec_set)
+                  # we need to establish if from and to were passed in ; if they were they override from and to dates from reading the lower calender
                     params[:datefrom]=params[:from][1] if (params[:from] && params[:from][1] !=""); params[:dateto]=params[:to][1] if (params[:to] && params[:to][1] != "")
                     @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
                   	@latest_date = Date.today
@@ -986,9 +997,9 @@ class Aae::ReportsController < ApplicationController
 
        def display_discrete_responder_questions
           @cat = Category.find_by_name(params[:category]); @resolver=User.find_by_id(params[:id]) if params[:id]
-          @resolver=User.find_by_id(params[:user]) if (params[:user] && !params[:id])
-          @olink = params[:olink]; @comments=nil; @edits="Resolved"; @idtype='id'; @user = @resolver ; @catname = @cat.name
-          desc = "Resolver" ; aux =@resolver.id.to_s
+          @resolver=User.find_by_id(params[:user]) if (params[:user] && !params[:id])   #@olink=parmas[:olink]
+          @comments=nil; @edits="Resolved"; @idtype='id'; @user = @resolver ; @catname = @cat.name
+          @desc = "Resolver" ; aux =@resolver.id.to_s
           @numb = params[:num].to_i
       
             joins = [:categories]
@@ -996,7 +1007,7 @@ class Aae::ReportsController < ApplicationController
             @pgt = " Questions Resolved by #{@resolver.first_name} #{@resolver.last_name} for '#{@catname}'"
             @faq = nil; @idtype='sqid'
 
-             @questions = SubmittedQuestion.find_questions({:cat => @cat, :desc => desc, :aux => aux, :numparm => "all", 
+             @questions = SubmittedQuestion.find_questions({:cat => @cat, :desc => @desc, :aux => aux, :numparm => "all", 
                :args => {:joins => joins, :order => order_clause("submitted_questions.updated_at", "desc"),
                      :page => params[:page], :per_page => AppConfig.configtable['items_per_page']}})                                                          
 

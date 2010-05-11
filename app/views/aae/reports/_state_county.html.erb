@@ -41,7 +41,7 @@
     <tr>
         <td>New Registrations</td>
        
-		        <td class="count"><%= link_to @reguser, :action => "display_state_users", :statename => @statename, :countyname => @county, :loc => (@type=='State') ? @typeobj.id : nil, :descriptor =>"User" , :olink => "Users",  :dateto => @date2, :datefrom => @date1, :num => @reguser, :type => @type%></td>
+		        <td class="count"><%= link_to @reguser, :action => "display_state_users", :statename => @statename, :countyname => @county, :loc => (@type=='State') ? @typeobj.id : nil, :descriptor =>"User" ,   :dateto => @date2, :datefrom => @date1, :num => @reguser, :type => @type%></td>
 	   
         
     </tr>
@@ -56,7 +56,7 @@
     <tr>
         <td>Open (still awaiting a response)</td>
        
-	        <td class="count"><%= link_to @asgn, :action => "display_state_questions", :statename => @statename, :countyname => @county, :loc => (@type=='State') ? @typeobj.id : nil, :descriptor =>"Submitted" , :olink => "Submitted", :dateto => @date2, :datefrom => @date1, :num => @asgn, :type => @type%></td>
+	        <td class="count"><%= link_to @asgn, :action => "display_state_questions", :statename => @statename, :countyname => @county, :loc => (@type=='State') ? @typeobj.id : nil, :descriptor =>"Submitted" , :dateto => @date2, :datefrom => @date1, :num => @asgn, :type => @type%></td>
         
     </tr>
       

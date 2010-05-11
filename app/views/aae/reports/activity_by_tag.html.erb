@@ -63,7 +63,7 @@
        <td <%= ' class="empty"' if @asgn==0 %>>
 	     <!-- number of open incoming faqs in assigned state -->
 	        <% if @asgn%>
-	    	<%= link_to @asgn, :action => "display_tag_questions", :category => @typename, :locname => @locname, :locid => @locid, :descriptor =>"New" , :olink => "New", :dateto =>p[:date2], :datefrom => p[:date1], :num => @asgn%>
+	    	<%= link_to @asgn, :action => "display_tag_questions", :category => @typename, :locname => @locname, :locid => @locid, :descriptor =>"New" , :dateto =>p[:date2], :datefrom => p[:date1], :num => @asgn%>
 	         
 	      <!--   <%= @asgn%>-->
 	        <% end%>
@@ -72,7 +72,7 @@
 	   <td <%= ' class="empty"' if @reslvd==0 %>>
 		 <!-- number of incoming faqs that have been Resolved one way or another -->
 		    <% if @reslvd%>
-	    	<%= link_to @reslvd, :action => "display_tag_questions", :category => @typename, :locname => @locname, :locid => @locid, :descriptor =>"Resolved" , :olink => "Resolved", :dateto => p[:date2], :datefrom => p[:date1], :num => @reslvd%>
+	    	<%= link_to @reslvd, :action => "display_tag_questions", :category => @typename, :locname => @locname, :locid => @locid, :descriptor =>"Resolved" ,  :dateto => p[:date2], :datefrom => p[:date1], :num => @reslvd%>
 			     
 	        <!--  <%= @reslvd%> -->
            <% end%>
@@ -81,7 +81,7 @@
 	     <td <%= ' class="empty"' if @answ==0 %>>
 			 <!-- number of incoming faqs in answered state -->
 			    <% if @answ%>
-				<%= link_to @answ, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{sta}" , :olink => "Resolved#{sta}", :dateto => p[:date2], :datefrom => p[:date1], :num => @answ%>
+				<%= link_to @answ, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{sta}" ,  :dateto => p[:date2], :datefrom => p[:date1], :num => @answ%>
 				    
 		       <!--  <%= @answ%> -->
 		        <% end %>
@@ -90,7 +90,7 @@
 		  <td <%= ' class="empty"' if @rej==0 %>>
 			 <!-- number of incoming faqs in in rejected state -->
 			    <% if @rej%>
-				<%= link_to @rej, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{str}" , :olink => "Resolved#{str}", :dateto => p[:date2], :datefrom => p[:date1], :num => @rej%>
+				<%= link_to @rej, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{str}" , :dateto => p[:date2], :datefrom => p[:date1], :num => @rej%>
 				    
 		      <!--   <%= @rej%> -->
 		        <% end%>
@@ -99,7 +99,7 @@
 		<td <%= ' class="empty"' if @noexp==0 %>>
 			 <!-- number of incoming faqs in no_answer state -->
 			    <% if @noexp%>
-				<%= link_to @noexp, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{stn}" , :olink => "Resolved#{stn}", :dateto => p[:date2], :datefrom => p[:date1], :num => @noexp%>
+				<%= link_to @noexp, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{stn}" ,:dateto => p[:date2], :datefrom => p[:date1], :num => @noexp%>
 			
 		     <!--   <%= @noexp%> -->
 		        <%end%>
