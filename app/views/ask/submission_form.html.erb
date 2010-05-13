@@ -1,5 +1,7 @@
 <h1 class="title">Ask an Expert</h1>
 
+<a id="example1" href="/images/pubsite/1_b.jpg"><img alt="example1" src="/images/pubsite/1_s.jpg" /></a>
+
 <h2 id="aae_submit_step">Please fill in the additional information and submit your question<span></span></h2>
 
 <% form_tag({:action => :question_confirmation}, {:id => 'searchbox_002594610894210374936:hggphannnzi', :class => 'aae', :method => :get}) do  %>
@@ -89,5 +91,9 @@
   $j(document).ready(function() {
     $j('a.title').cluetip({splitTitle: '|'});
     $j('a.tooltip_trigger.local').cluetip({local:true, cursor: 'pointer',width: 300, showTitle:false});
+    
+    $j("a#example1").fancybox({
+			'titleShow'		: false
+		});
   })
 </script>
