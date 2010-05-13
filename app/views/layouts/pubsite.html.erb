@@ -31,8 +31,13 @@
   <% end %>
   
     <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag 'jquery-1.4.2.min' %>
+    <%= javascript_include_tag 'jquery.cluetip.min' %>
     <%= javascript_include_tag 'charcount' %>
     
+    <script type="text/javascript">
+        var $j = jQuery.noConflict();
+    </script>
     
 	<% if session[:institution_community_id].nil? or
 	     (session[:institution_community_id] and session[:institution_community_id].empty?) %>
@@ -67,7 +72,6 @@
     <% if !@mobile_device %>
         <% if @sitehome == true %>
         <!-- include jquery for accordion nav -->
-            <%= javascript_include_tag 'jquery-1.3.2.min.js' %>
             <%= javascript_include_tag 'jquery-ui-1.7.2.custom.min.js' %>
             <%= javascript_include_tag 'jquery.jcarousel.pack.js' %>
             <%= stylesheet_link_tag 'jquery.jcarousel.css' %>

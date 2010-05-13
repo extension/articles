@@ -77,50 +77,52 @@ class AskController < ApplicationController
   
   def question_confirmation
     if request.get?
-      if !params[:q].blank? 
-        params[:submitted_question][:asked_question] = params[:q].sanitize
-        flash.now[:googleanalytics] = '/ask-an-expert-search-results'
-        set_title("Ask an Expert - eXtension", "Confirmation")
-        set_titletag("Search Results for Ask an Expert - eXtension")
-      
-        # again, this needs to be refactored, but sanity check this against the spammers
-        if(params[:submitted_question].nil? or params[:public_user].nil?)
-          invalid = true
-        end
-    
-        @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-        @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
-      
-        error_msg = ""
-      
-        if params[:public_user][:email].blank? or params[:public_email_confirmation].blank?
-          invalid = true
-          error_msg << "Please enter an email address and email address confirmation."
-        else
-          if params[:public_user][:email].strip != params[:public_email_confirmation].strip
-            invalid = true
-            error_msg << "Your email address confirmation does not match.<br />Please make sure your email address and confirmation match up."
-          end
-        end
-        
-        if(!@submitted_question.valid? or @public_user.nil? or !@public_user.valid?)
-          invalid = true
-          error_msg.strip != "" ? error_msg << "<br />Please fill in all required fields." : error_msg << "Please fill in all required fields."
-        end
-      
-        unless (invalid.nil? and !invalid)
-          flash[:notice] = error_msg if error_msg.strip != ''
-          redirect_to :action => 'index', 
-                      :submitted_question => params[:submitted_question], 
-                      :location_id => params[:location_id], 
-                      :county_id => params[:county_id], 
-                      :aae_category => params[:aae_category], 
-                      :subcategory => params[:subcategory]
-        end
-      else
-        flash[:notice] = "Please fill in the required fields before submitting."
-        redirect_to :action => :index
-      end
+      @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+
+      # if !params[:q].blank? 
+      #   params[:submitted_question][:asked_question] = params[:q].sanitize
+      #   flash.now[:googleanalytics] = '/ask-an-expert-search-results'
+      #   set_title("Ask an Expert - eXtension", "Confirmation")
+      #   set_titletag("Search Results for Ask an Expert - eXtension")
+      # 
+      #   # again, this needs to be refactored, but sanity check this against the spammers
+      #   if(params[:submitted_question].nil? or params[:public_user].nil?)
+      #     invalid = true
+      #   end
+      #     
+      #   @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+      #   @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
+      # 
+      #   error_msg = ""
+      # 
+      #   if params[:public_user][:email].blank? or params[:public_email_confirmation].blank?
+      #     invalid = true
+      #     error_msg << "Please enter an email address and email address confirmation."
+      #   else
+      #     if params[:public_user][:email].strip != params[:public_email_confirmation].strip
+      #       invalid = true
+      #       error_msg << "Your email address confirmation does not match.<br />Please make sure your email address and confirmation match up."
+      #     end
+      #   end
+      #   
+      #   if(!@submitted_question.valid? or @public_user.nil? or !@public_user.valid?)
+      #     invalid = true
+      #     error_msg.strip != "" ? error_msg << "<br />Please fill in all required fields." : error_msg << "Please fill in all required fields."
+      #   end
+      # 
+      #   unless (invalid.nil? and !invalid)
+      #     flash[:notice] = error_msg if error_msg.strip != ''
+      #     redirect_to :action => 'index', 
+      #                 :submitted_question => params[:submitted_question], 
+      #                 :location_id => params[:location_id], 
+      #                 :county_id => params[:county_id], 
+      #                 :aae_category => params[:aae_category], 
+      #                 :subcategory => params[:subcategory]
+      #   end
+      # else
+      #   flash[:notice] = "Please fill in the required fields before submitting."
+      #   redirect_to :action => :index
+      # end
       
     else
       redirect_to :action => :index
