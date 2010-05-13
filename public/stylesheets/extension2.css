@@ -351,7 +351,7 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 #aae_plug a {text-decoration:underline;}
 .askanexpert {font-size:1.4em;margin-top:2em;}
 .callout {font-size: 1.6em;}
-.aae_options {background:#e8f2fd;padding:.5em 1.5em;float:left;width:90%;margin-bottom:1.5em;}
+.aae_options {padding:.5em 1.5em;float:left;width:90%;margin-bottom:1.5em;}
 
 
 .instructions {color: #829500; padding-bottom: 10px}
@@ -483,7 +483,7 @@ blockquote {padding:2em 2em 1em; font-size:1.1em; background:#ebf2f8;margin:1.5e
 
 
 .formError {/*display: inline; */color: red;}
-
+textarea {padding:6px; font-size:13px;}
 
 .printme {display: none;}
 
@@ -894,6 +894,8 @@ border-radius: 4px;
 #aae_steps li span {padding:20px;display:block; }
 #aae_steps li em {background: url("/images/pubsite/aae_steps.png") 0 0 no-repeat; height:124px; position:absolute; top:0; left:0; width:927px;}
 
+#aae_submit_step {width:100%; float:left; height:124px; margin-top:20px; position:relative;}
+#aae_submit_step span {background: url("/images/pubsite/pubsite_aae_submit.png") 0 0 no-repeat; height:68px; position:absolute; top:0; left:0; width:935px;}
 
 .aae_help {font-size:14px; padding-left:10px;}
 
@@ -944,21 +946,21 @@ form.aae {clear:both;}
 	top: 1px;
 }
 
-.orange {
-	color: #fef4e9;
+.blue {
+	color: #fef4e9 !important;
 	border: solid 1px #4b75e6;
 	background: #2d7dbf;
 	background: -webkit-gradient(linear, left top, left bottom, from(#4ca0e7), to(#2d7dbf));
 	background: -moz-linear-gradient(top,  #4ca0e7,  #2d7dbf);
 	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#4ca0e7', endColorstr='#2d7dbf');
 }
-.orange:hover {
-	background: #274ea6;
-	background: -webkit-gradient(linear, left top, left bottom, from(#4ca0e7), to(#274ea6));
-	background: -moz-linear-gradient(top,  #4ca0e7,  #274ea6);
-	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#4ca0e7', endColorstr='#274ea6');
+.blue:hover {
+	background: #274ea6 !important;
+	background: -webkit-gradient(linear, left top, left bottom, from(#4ca0e7), to(#274ea6)) !important;
+	background: -moz-linear-gradient(top,  #4ca0e7,  #274ea6) !important;
+	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#4ca0e7', endColorstr='#274ea6') !important;
 }
-.orange:active {
+.blue:active {
 	color: #fff;
 	background: -webkit-gradient(linear, left top, left bottom, from(#274ea6), to(#4ca0e7));
 	background: -moz-linear-gradient(top,  #274ea6,  #4ca0e7);

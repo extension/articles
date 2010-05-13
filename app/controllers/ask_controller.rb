@@ -75,6 +75,31 @@ class AskController < ApplicationController
     @categories = [""].concat(Category.launched_content_categories.map{|c| [c.name, c.id]})
   end
   
+  def submission_form
+    @right_column = false
+    session[:return_to] = params[:redirect_to]
+    flash.now[:googleanalytics] = '/ask-an-expert-submission-form'
+    
+    set_title("Ask an Expert - eXtension", "New Question")
+    set_titletag("Ask an Expert - eXtension")
+
+
+      if(!session[:public_user_id].nil?)
+        @public_user = PublicUser.find_by_id(session[:public_user_id]) || PublicUser.new
+      elsif(!@currentuser.nil?)
+        # let's get cute and fill in the name/email
+        @public_user = PublicUser.new(:email => @currentuser.email, :first_name => @currentuser.first_name, :last_name => @currentuser.last_name)
+      else
+        @public_user = PublicUser.new
+      end
+      @submitted_question = SubmittedQuestion.new
+    
+    @location_options = get_location_options
+    @county_options = get_county_options
+    
+    @categories = [""].concat(Category.launched_content_categories.map{|c| [c.name, c.id]})
+  end
+  
   def question_confirmation
     if request.get?
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
