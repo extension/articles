@@ -32,6 +32,11 @@
         <% end %>
     </p>
     
+    <p id="aae_images">
+      <a class="fancybox" href="/images/pubsite/1_b.jpg" title="Just a placeholder image"><img alt="example1" src="/images/pubsite/1_s.jpg" /></a>
+      <a class="fancybox" href="/images/pubsite/1_b.jpg" title="Just a placeholder image"><img alt="example1" src="/images/pubsite/1_s.jpg" /></a>
+    </p>
+    
     <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
         <div id="recat_<%= @submitted_question.id %>" style="display:none;" class="recat">
         <%= render(:partial => "aae/partial/category_form") %>
