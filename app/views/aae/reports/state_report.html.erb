@@ -12,13 +12,13 @@
 
 	<% options_array= Array.new%>
 	<% Location.find(:all).each do |stobj|
-	      options_array << stobj.name
+	      options_array << [stobj.name, stobj.id]
 	 %>      
 	<% end %>
 	<%options_array.insert(0, "")%>
 	  <label>State or Territory</label>
 
-	       <select name="statename">
+	       <select name="location">
 
 
 		 <%= options_for_select(options_array) %>

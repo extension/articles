@@ -6,9 +6,9 @@
   <% if @loc%>
     <p id="state_report">
        <%= link_to "All Reports",  :controller => 'reports' %>  &gt; 
-       <%= link_to "Location Report",  :controller => 'reports', :action => "state", :dateto => @date2, :statename => @loc.name, :datefrom => @date1 %> &gt; <% if @type == 'County'%>
-                     <%= link_to 'Select County', :action => 'county_select', :statename => @loc.name, :dateto => @date2, :datefrom => @date1%> &gt;
-                     <%= link_to "County/Parish Report" , :action => 'county', :dateto => @date2, :datefrom => @date1, :statename => @loc.name, :countyname => @county %> &gt;
+       <%= link_to "Location Report",  :controller => 'reports', :action => "state", :dateto => @date2, :location => @locid, :datefrom => @date1 %> &gt; <% if @type == 'County'%>
+                     <%= link_to 'Select County', :action => 'county_select', :location => @locid, :dateto => @date2, :datefrom => @date1%> &gt;
+                     <%= link_to "County/Parish Report" , :action => 'county', :dateto => @date2, :datefrom => @date1, :location => @locid, :countyid => @county_id %> &gt;
                    <% end%>
        <%= @page_title %></p>
    <% end%>

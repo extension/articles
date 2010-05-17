@@ -16,7 +16,7 @@
 	            <div id="date-selectors" style="display:none;" >
 	                
 	                <div class="date-selector1" >
-	                    <% form_tag ({:action => params[:action], :compd1 => @datec1, :compd2 => @datec2,  :upper => true}) do %>
+	                    <% form_tag ({:action => params[:action], :compare_dat1 => @datec1, :compare_dat2 => @datec2,  :upper => true}) do %>
 	                      <%= calendar_date_select_tag "datefrom", ((@dateinterval) ? @dateinterval[0] : @prior90th), :popup => true%><span>to</span><%= calendar_date_select_tag "dateto", ((@dateinterval) ? @dateinterval[1] : @latest_date), :popup => true%> 
 	                     
 	                    <ul class="source">

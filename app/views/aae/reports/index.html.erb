@@ -20,7 +20,7 @@
 	<% form_tag({:controller => 'reports', :action => :state }, {:method => "get"}) do %>
 	    <% options_array= Array.new %>
 	        <% @locs.each do |stobj|
-	            options_array << stobj.name
+	            options_array << [stobj.name, stobj.id]
 	        %>
 	    <% end %>
 	
@@ -28,7 +28,7 @@
 	
 	    <p>
     	    <label>Individual state reports
-    	        <select name="statename">
+    	        <select name="location">
                 <%= options_for_select(options_array) %>
                 </select>
             </label>
@@ -41,14 +41,14 @@
 	<% form_tag({:controller => 'reports', :action => :county_select }, {:method => "get"}) do %>
 	    <% options_array= Array.new%>
 	        <% @locs.each do |stobj|
-                options_array << stobj.name
+                options_array << [stobj.name, stobj.id]
             %>
 	    <% end %>
 	    <%options_array.insert(0, "")%>
 	    
 	    <p>
 	        <label>Individual county reports
-                <select name="statename">
+                <select name="location">
                 <%= options_for_select(options_array) %>
                 </select>
             </label>

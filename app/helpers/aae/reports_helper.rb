@@ -41,5 +41,28 @@ module Aae::ReportsHelper
     return ret_string
   end
  
+  def avg_display(avg)
+    if (avg && (avg > 24))   #24 hours in day, assumes hourly input
+      return ("%.2f" % (avg/24.0)).to_s
+    else
+      if avg && (avg/24.0 > 0)
+        return ("%.2f" % avg).to_s
+      else
+        return "No Data"
+      end
+    end
+  end
   
+  def avg_display_units(avg)
+    if (avg && (avg > 24))   #24 hours in day, assumes hourly input
+      return "Days"
+    else
+      if avg && (avg/24.0 > 0)
+       return "Hours"
+      else
+        return ""
+      end
+    end
+  end
+        
 end
