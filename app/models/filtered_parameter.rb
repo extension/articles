@@ -157,7 +157,7 @@ class FilteredParameter
         nil # TODO: raise invalid error
       end
     when :community   
-      Community.find_by_id(value)
+      Community.find_by_id_or_name_or_shortname(value)
     when :location    
       Location.find_by_id(value)
     when :county      
