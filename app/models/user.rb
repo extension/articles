@@ -1978,8 +1978,8 @@ class User < ActiveRecord::Base
           conditions << User.build_date_condition({:dateinterval => dateinterval})
         end
   
-        if options[:countyid]
-          conditions << " county_id=#{options[:countyid]} "
+        if options[:county]
+          conditions << " county_id=#{options[:county]} "
         else
           if options[:location]
                conditions << " location_id = #{options[:location].id} "

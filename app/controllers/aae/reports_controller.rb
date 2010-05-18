@@ -573,7 +573,7 @@ class Aae::ReportsController < ApplicationController
             end
              @faq = nil; @idtype = 'id'  
      
-              @questions = SubmittedQuestion.find_state_questions({:location => @loc, :countyid => @county_id, :desc => params[:descriptor], :dateinterval => [@date1,@date2], :numparm => "all",
+              @questions = SubmittedQuestion.find_state_questions({:location => @loc, :county => @county_id, :desc => params[:descriptor], :dateinterval => [@date1,@date2], :numparm => "all",
                 :args => {:joins => jstring,
                         :order => (@edits=="Submitted" || @edits[0..7]=="Resolved") ? order_clause("submitted_questions.updated_at", "desc") : order_clause,
                         :page => params[:page],
@@ -601,7 +601,7 @@ class Aae::ReportsController < ApplicationController
           @comments=nil; @edits=params[:descriptor]; @numb = params[:num].to_i   #look at find_state-users, use :county not :countyname?
          @date1 = params[:datefrom]; @date2 = params[:dateto]
     
-         @users = User.find_state_users({:location => @loc, :countyid => @county_id, :dateinterval => [@date1, @date2], :numparm => "all", :args => {
+         @users = User.find_state_users({:location => @loc, :county => @county_id, :dateinterval => [@date1, @date2], :numparm => "all", :args => {
              :order => "last_name", :page => params[:page], :per_page => AppConfig.configtable['items_per_page'] }})
       end
      
@@ -628,7 +628,7 @@ class Aae::ReportsController < ApplicationController
        	@latest_date = Date.today
        	@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
        	@date1 = @dateinterval[0]; @date2 = @dateinterval[1]
-       @typeobj = County.find_by_id(params[:countyid]) ; ((@typeobj) ? @typename = @typeobj.name : @typename= nil)   #change all these state and county names to ids where feasible
+       @typeobj = County.find_by_id(params[:county]) ; ((@typeobj) ? @typename = @typeobj.name : @typename= nil)   #change all these state and county names to ids where feasible
        @county = @typename
        if @typeobj
           @county_id= @typeobj.id
@@ -636,9 +636,7 @@ class Aae::ReportsController < ApplicationController
           if @loc
             @statename = @loc.name; @locid = @loc.id
           end
-      
-        
-        
+  
        #  @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])  #try find_by_name_and_location_id(name, loc) here
       #   @typeobj = County.find_by_name_and_location_id(@county,loc.id)
          @type="County"; @typel="county" ;   
