@@ -659,7 +659,7 @@ class Community < ActiveRecord::Base
   # used for parameter searching
   def self.find_by_id_or_name_or_shortname(value)
    if(value.to_i != 0)
-     community = find_by_id(searchterm)
+     community = find_by_id(value)
    end
    
    if(community.nil?)
