@@ -7,6 +7,52 @@
 
 class Api::DataController < ApplicationController
 
+  def aae_numbers
+    filteredparams = ParamsFilter.new([:person,:apikey],params)
+    apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
+    # TODO: consider doing this automatically in application_controller as a before_filter
+    ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
+    
+    # just going to get them for a single user for now
+    if(filteredparams.person.nil?)
+      returnhash = {:success => false, :errormessage => 'Not a valid account'}
+      return render :text => returnhash.to_json
+    end
+    
+    returnhash = {}
+    returnhash[:total_incoming] = SubmittedQuestion.submitted.count
+    returnhash[:answered] = SubmittedQuestion.resolved.filtered({:resolved_by => filteredparams.person}).count
+    returnhash[:assigned] = SubmittedQuestion.submitted.filtered({:assignee => filteredparams.person}).count
+    filteroptions = filteredparams.person.aae_filter_prefs
+    # skip the joins because we are including them already with listdisplayincludes
+    returnhash[:filtered_incoming] = SubmittedQuestion.submitted.filtered(filteroptions).count
+    return render :text => returnhash.to_json
+  end
+  
+
+  def publicprofile
+    filteredparams = ParamsFilter.new([:person,:apikey],params)
+    apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
+    # TODO: consider doing this automatically in application_controller as a before_filter
+    ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
+    
+    if(filteredparams.person.nil?)
+      returnhash = {:success => false, :errormessage => 'No such user.'}
+      return render :text => returnhash.to_json
+    else
+      @showuser = filteredparams.person
+    end
+    
+    publicattributes = @showuser.public_attributes
+    if(publicattributes.nil?)
+      returnhash = {:success => false, :errormessage => 'No public attributes'}
+      return render :text => returnhash.to_json
+    else
+      returnhash = publicattributes.merge({:success => true})
+      return render :text => returnhash.to_json
+    end
+  end
+
   def communities
     filteredparams = ParamsFilter.new([:apikey,:communitytype],params)
     apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
@@ -47,6 +93,52 @@ class Api::DataController < ApplicationController
     end
     return render :text => returnhash.to_json
   end
+  
+  def communitymembers
+    filteredparams = ParamsFilter.new([:community,:apikey],params)
+    apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
+    # TODO: consider doing this automatically in application_controller as a before_filter
+    ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
+    
+  
+    if(filteredparams.community.nil?)
+      returnhash = {:success => false, :errormessage => 'No such community.'}
+      return render :text => returnhash.to_json
+    end
+    community = filteredparams.community
+    joined = community.joined
+    
+    returnhash = {:success => true, :total_joined => joined.size, :has_public_data => 0, :person_list => {}}  
+    joined.each do |u|
+      public_attributes_for_user = u.public_attributes
+      if(public_attributes_for_user)
+        returnhash[:has_public_data] += 1
+        returnhash[:person_list][u.login] = public_attributes_for_user
+      end
+    end
+
+    # add in the community information
+    community_info = {}
+    community_info[:name] = community.name
+    community_info[:entrytype] = community.entrytype_to_s 
+    if(!community.shortname.blank?)
+      community_info[:shortname] = community.shortname
+    end
+    if(!community.description.blank?)
+      community_info[:description] = community.description
+    end
+    if(community.is_launched?)
+      community_info[:launched] = true
+      community_info[:public_name] = community.public_name
+      community_info[:primary_content_tag_name] = community.primary_content_tag_name
+      community_info[:content_tag_names] = community.content_tag_names
+    end
+    
+    returnhash[:community_info] = community_info
+
+    return render :text => returnhash.to_json
+  end
+  
   
    def content_titles
       filteredparams = ParamsFilter.new([:apikey,:content_types,:limit,:tags],params)
