@@ -656,6 +656,21 @@ class Community < ActiveRecord::Base
     return community
   end
   
+  # used for parameter searching
+  def self.find_by_id_or_name_or_shortname(value)
+   if(value.to_i != 0)
+     community = find_by_id(searchterm)
+   end
+   
+   if(community.nil?)
+     community = find_by_name(value)
+     if(community.nil?)
+       community = find_by_shortname(value)
+     end
+   end
+   community
+  end
+  
   def self.drop_nonjoined_taggings
     allcommunities = find(:all)
     allcommunities.each do |community|
