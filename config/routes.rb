@@ -159,6 +159,10 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect 'admin/:action/:id', :controller => 'admin'
   map.connect 'admin/:action', :controller => 'admin'
+  
+  ### connect up "data" to the api/data controller
+  map.connect 'data/:action', :controller => 'api/data'
+
 
   ### pubsite named routes  
   map.logo  'logo/:file.:format', :controller => 'logo', :action => :display
