@@ -24,6 +24,7 @@ class OpieController < ApplicationController
   include ApplicationHelper  
   before_filter(:login_required, :only => [:decision])
   before_filter(:check_purgatory, :only => [:decision])
+  before_filter :turn_off_right_column
   
   def delegate
     @openiduser = User.find_by_login(params[:extensionid])
@@ -152,7 +153,7 @@ class OpieController < ApplicationController
       @publicattributes = @openiduser.public_attributes
     end
     @right_column = false
-    render(:layout => 'publicdelegate')
+    render(:layout => 'pubsite')
   end
 
   def idp_xrds
