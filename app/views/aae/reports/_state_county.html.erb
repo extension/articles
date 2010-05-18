@@ -20,13 +20,13 @@
             <%= submit_tag 'Show all'%>
          <% end%>
       <% else%>
-         <% form_tag({:action => params[:action], :location => @locid, :countyid => @county_id }) do %>
+         <% form_tag({:action => params[:action], :location => @locid, :county => @county_id }) do %>
           
               <%= calendar_date_select_tag "datefrom", ((@dateinterval) ? @dateinterval[0].strftime('%Y-%m-%d') : @earliest_date.strftime('%Y-%m-%d')), :popup => true%><span>to</span><%= calendar_date_select_tag "dateto", ((@dateinterval) ? @dateinterval[1].strftime('%Y-%m-%d') : @latest_date.strftime('%Y-%m-%d')), :popup => true%>
            <%= submit_tag 'Go' %>
         <% end%> 
 
-        <% form_tag({ :action => params[:action], :location => @locid, :countyid => @county_id } ) do %>
+        <% form_tag({ :action => params[:action], :location => @locid, :county => @county_id } ) do %>
             <%= submit_tag 'Show all'%>
         <% end%>
 

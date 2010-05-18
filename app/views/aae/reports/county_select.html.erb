@@ -7,13 +7,13 @@
 <h2>Select County/Parish in <%= @statename%></h2>
 
 <% options_array= Array.new%>
-<% @counties.each do |county| %>
-    <% options_array <<  [county.name, county.id] %>
+<% @counties.each do |conty| %>
+    <% options_array <<  [conty.name, conty.id] %>
 <% end%>    
 
   <label>County/Parish</label>
  
-       <select name="countyid">
+       <select name="county">
   	 <%= options_for_select(options_array) %>
       </select><br /><br />
 
