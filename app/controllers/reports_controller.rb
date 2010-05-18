@@ -37,7 +37,7 @@ class ReportsController < ApplicationController
     end
     
     urloptions = params
-    urloptions.merge!({:action => :activitytable,:controller => :data, :datatype => datatype, :graphtype => @graphtype}) 
+    urloptions.merge!({:action => :activitytable,:controller => 'api/gviz', :datatype => datatype, :graphtype => @graphtype}) 
     
     @page_title = "#{datatype.capitalize} Activity"
     
