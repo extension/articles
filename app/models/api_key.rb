@@ -7,6 +7,7 @@
 
 class ApiKey < ActiveRecord::Base
   belongs_to :user
+  belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
   has_many :api_key_events
   
   before_create :generate_keyvalue
