@@ -240,6 +240,57 @@ class People::ProfileController < ApplicationController
   def lists
     
   end
+  
+  def apikeys
+    # should be apikeys - but I don't want to change the model
+    @apikeys = @currentuser.api_keys
+  end
+  
+  def apikey
+    @apikey = ApiKey.find_by_id(params[:id])
+    if(@apikey.nil?)
+      flash[:error] = "No such key."
+      redirect_to(:controller => 'profile', :action => 'apikeys')
+    end
+    
+    if(@apikey.user != @currentuser and !admin_mode?)
+      flash[:error] = "Specified API Key does not belong to you."
+      redirect_to(:controller => 'profile', :action => 'apikeys')
+    end
+    @apikey_events = @apikey.api_key_events.paginate(:page => params[:page])
+  end
+  
+  def new_apikey
+    if(request.post?)
+      if(@apikey = ApiKey.find(:first, :conditions => ["user_id = #{@currentuser.id} and name = ?",params[:name]]))
+        flash[:error] = "You already have an API Key with that name"
+      elsif(@apikey = ApiKey.create(:name => params[:name], :enabled => params[:enabled], :user => @currentuser, :creator => @currentuser))
+        flash[:success] = "API Key created"
+      else
+        flash[:error] = "Unable to create API Key"
+      end
+    end
+    redirect_to(:controller => 'profile', :action => 'apikeys')
+  end
+  
+  def edit_apikey
+    @apikey = ApiKey.find_by_id(params[:id])
+    if(@apikey.nil?)
+      flash[:error] = "No such key."
+      redirect_to(:controller => 'profile', :action => 'apikeys')
+    end
+    
+    if(request.post?)
+      if(@apikey = ApiKey.find(:first, :conditions => ["user_id = #{@currentuser.id} and name = ?",params[:name]]))
+        flash[:error] = "You already have an API Key with that name"
+      elsif(@apikey.update_attributes(:name => params[:name], :enabled => params[:enabled]))
+        flash[:success] = "API Key updated"
+      else
+        flash[:error] = "Unable to update API Key"
+      end
+    end
+    redirect_to(:controller => 'profile', :action => 'apikey', :id => @apikey.id)
+  end
     
   def relevantcommunities
     @relevantcommunities = @currentuser.relevant_community_scores({:filtermine => false})
