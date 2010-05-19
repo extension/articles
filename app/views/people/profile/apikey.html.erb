@@ -19,6 +19,10 @@
 <% end %>
 <h2>API Key Details</h2>
 <table cellspacing="0" class="general_table" summary="API Key Details">
+   <tr>
+		<td>Key String:</td>
+		<td><%= link_to_user(@apikey.keyvalue) %></td>
+	</tr>
  	<tr>
 		<td>Belongs to:</td>
 		<td><%= link_to_user(@apikey.user) %></td>
