@@ -142,7 +142,7 @@ class Aae::ReportsController < ApplicationController
    
        
         def order_clause(order_by = "submitted_questions.question_updated_at", sort = "desc")
-           if !params[:order_by_field].nil?   #get this streamlined and renamed to something that sounds more meaningful
+           if !params[:order_by_field].nil?   
              order_by = params[:order_by_field]
              if params[:order_by_field] == "id"
                order_by = "submitted_questions.id"
@@ -330,12 +330,10 @@ class Aae::ReportsController < ApplicationController
             #An example using People's general techniques as much as possible
            @filteredparams=FilterParams.new(params)
            @filteredoptions = @filteredparams.findoptions
-        #    @filterstring = @filteredparams.filter_string   ...why do I need this?
              @cats = Category.find(:all, :conditions => "parent_id is null", :order => "name")
              @csize = @cats.size 
              @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{params[:location]}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
              @ysize = @cnties.size
-           #  @locations = ExpertiseCounty.filtered(@findoptions).displaylist
              @catcnt = Category.catuserfilter_count(@filteredoptions)
              @cntycnt = ExpertiseCounty.expert_county_userfilter_count(@filteredoptions)
              
@@ -498,9 +496,9 @@ class Aae::ReportsController < ApplicationController
     
     ####   State Report for Ask an Expert  #####
     
-    def state_report
+ #   def state_report
 
-    end
+ #    end
     
     
   
@@ -636,9 +634,6 @@ class Aae::ReportsController < ApplicationController
           if @loc
             @statename = @loc.name; @locid = @loc.id
           end
-  
-       #  @typeobj = County.find(:first, :conditions => ["location_id= ? and name= ?", loc.id, @county])  #try find_by_name_and_location_id(name, loc) here
-      #   @typeobj = County.find_by_name_and_location_id(@county,loc.id)
          @type="County"; @typel="county" ;   
         
        
@@ -799,7 +794,6 @@ class Aae::ReportsController < ApplicationController
          @numbc_questions = SubmittedQuestion.find_once_externally_submitted({:dateinterval => [@datec1,@datec2], :external => extstr})
          @avgc_response_time = SubmittedQuestion.get_avg_response_time({:dateinterval => [@datec1,@datec2], :external => extstr})
          @avgc_resp_past30 = SubmittedQuestion.get_avg_response_time_past30({:dateinterval => [@datec1,@datec2], :external => extstr, :nodays => @nocdays})
-    #     @avgc_still_open = SubmittedQuestion.find_externally_submitted(@datec1, @datec2, public2, widget2)
          @avgc_still_open = SubmittedQuestion.find_externally_submitted({:dateinterval => [@datec1,@datec2], :external => extstr})
           if (params[:lower])
                session[:sec_set]= "y"
@@ -832,15 +826,9 @@ class Aae::ReportsController < ApplicationController
        extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) 
        if extstr == " IS NULL";  return [ {}, {}, {}]; end
        (date1 && date2) ? dateinterval = [date1, date2] : dateinterval = nil
-   #    noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " external_app_id #{extstr} ", :group => "category_id")
-      noq = SubmittedQuestion.get_number_questions({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
-      # avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr), "category_id",1.0)
-  #    avgr = (SubmittedQuestion.named_date_resp(date1, date2).count_avgs_cat(extstr)).map { |avgs| avgrh[avgs.category_id] = avgs.ra.to_f}
-      avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
-     #  avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "category")
-    #   noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:categories], :conditions => " status_state = #{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => 'category_id')
+       noq = SubmittedQuestion.get_number_questions({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
+       avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
        noopen = SubmittedQuestion.get_number_open({:dateinterval => dateinterval, :external => extstr, :joinclause => [:categories], :groupclause => "category_id"})
-       # used to be [noq, avg4, avg30, noopen]
        [noq, avgr, noopen]
     end
 
@@ -854,7 +842,7 @@ class Aae::ReportsController < ApplicationController
        t= Time.now - 90*24*60*60
        @prior90th = t.to_date
        @repaction = 'response_times_by_category'; @pagetype=" Category"; rslts = {}
-        #set up defaults   #note, old avg_30_reponses once was in here...(no_questions, avg_responses, avg_30_responses, avg_waiting)
+        #set up defaults   
         (rslts[:no_questions],rslts[:avg_responses], rslts[:avg_waiting]) = get_responses_by_category(nil, nil, true, true)
            # deal with date data
          (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
@@ -919,17 +907,9 @@ class Aae::ReportsController < ApplicationController
        extstr = SubmittedQuestion.get_extapp_qual(pub, wgt) ; avgrh = {}
         if extstr == " IS NULL";  return [ {}, {}, {}]; end
         (date1 && date2) ? dateinterval = [date1, date2] : dateinterval = nil
-       #  noq = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => " join users on (submitted_questions.resolved_by=users.id or submitted_questions.user_id=users.id) ",
-      #        :conditions =>  " external_app_id #{extstr} ", :group => "users.location_id")  ##THIS STATEMENT GOES TO NEVER_NEVER LAND
-     #   noq = SubmittedQuestion.get_noq(date1, date2, extstr)    ##NOTE: THIS STATEMENT WILL SPLIT THE JOIN AND WORK
         noq = SubmittedQuestion.resolved_or_assigned_count({:dateinterval => dateinterval, :external => extstr})
-      #   avgr = SubmittedQuestion.makehash(SubmittedQuestion.named_date_resp(date1, date2).count_avgs_loc(extstr), "location_id",1.0)
         avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "users.location_id"})
-       # avg30 = SubmittedQuestion.count_avg_past30_responses_by(date1, date2, pub, wgt, "location")
-      #   noopen = SubmittedQuestion.named_date_resp(date1, date2).count(:joins => [:assignee], 
-      #        :conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and external_app_id #{extstr} ", :group => "users.location_id")
         noopen = SubmittedQuestion.get_number_open({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "users.location_id"})
-        # [noq, avgr, avg30, noopen]
         [noq, avgr, noopen]
       end
 
@@ -939,7 +919,6 @@ class Aae::ReportsController < ApplicationController
            (@type=='Location') ? stuv = st.id : stuv = st.id.to_s
            @nof[st.name]= results_hash[:no_questions][stuv] ; @nos1[st.name]=@nof[st.name]
            @var1[st.name]= results_hash[:avg_responses][stuv]; @ppd1[st.name]= @var1[st.name]
-        #   @var2[st.name]= avg_30_responses[st.abbreviation] 
            @var3[st.name]= results_hash[:avg_waiting][stuv]; @nostopn1[st.name]= @var3[st.name]
            if (@date1 && @date2)
               @nos1[st.name]= results_hash[:nos1_questions][stuv]
@@ -969,7 +948,6 @@ class Aae::ReportsController < ApplicationController
          t= Time.now - 90*24*60*60
          @prior90th = t.to_date; 
          @repaction = 'response_times_by_location' ; rslts={}
-          #set up defaults   #note....(no_questions, avg_responses, avg_30_responses, avg_waiting)...old example
           (rslts[:no_questions],rslts[:avg_responses],rslts[:avg_waiting]) = get_responses_by_location(nil, nil,  true, true)
              # deal with date data
            (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
