@@ -9,9 +9,9 @@
 <% form_tag({:action => :question_confirmation}, {:id => 'searchbox_002594610894210374936:hggphannnzi', :class => 'aae', :method => :get}) do  %>
 	
 	<fieldset>
-	  <h3><label for="submitted_question_asked_question">Your Question</label> <a class="tooltip_trigger local aae_help" href="#aae_question_tooltip" rel="#aae_question_tooltip">What kinds of questions can eXtension answer?</a></h3>
+	  <h3><label for="q">Your Question</label> <a class="tooltip_trigger local aae_help" href="#aae_question_tooltip" rel="#aae_question_tooltip">What kinds of questions can eXtension answer?</a></h3>
 	  <p>
-	    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :rows => "3", :id => "submitted_question_asked_question" %> 
+	    <%= text_area_tag "q", nil, {:rows => "3", :id => "submitted_question_asked_question"} %> 
 	  </p>
 	  
 	  <p class="image_upload">Optional: You can include an image with your question after the search</p>

@@ -1,83 +1,95 @@
 <h1 class="title">Ask an Expert</h1>
 
-<p>Just a demo image:
-<a id="example1" href="/images/pubsite/1_b.jpg"><img alt="example1" src="/images/pubsite/1_s.jpg" /></a>
-</p>
-
 <h2 id="aae_submit_step">Please fill in the additional information and submit your question<span></span></h2>
 
-<% form_tag({:action => :question_confirmation}, {:id => 'searchbox_002594610894210374936:hggphannnzi', :class => 'aae', :method => :get}) do  %>
-
+<% form_for :submitted_question, @submitted_question, :url => { :action => :submit_question }, :html => { :id => 'searchbox_002594610894210374936:hggphannnzi', :class => 'aae', :multipart => true } do |f| %>
   <fieldset>
-    <h3><label for="submitted_question_asked_question">Your Question</label> <a class="tooltip_trigger local aae_help" href="#aae_question_tooltip" rel="#aae_question_tooltip">What kinds of questions can eXtension answer?</a></h3>
+    <h3>
+    <%= f.label :asked_question, 'Your Question' %>
+    <a class="tooltip_trigger local aae_help" href="#aae_question_tooltip" rel="#aae_question_tooltip">
+    What kinds of questions can eXtension answer?
+    </a>
+    </h3>
+    
     <p>
-      <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :rows => "3", :id => "submitted_question_asked_question" %> 
+      <%= f.text_area :asked_question, {:rows => "3"} %>
     </p>
   </fieldset>
   
-  <h3>Images <span class="optional">(optional)</span></h3>
-  <fieldset>
-  <p class="image_upload">Include an image: <input type="file" name=""></p>
-  </fieldset>
+  <% fields_for :file_attachment, @file_attachment do |file_attachment| %>
+  
+    <h3>Images <span class="optional">(optional)</span></h3>
+    <fieldset>
+    <p class="image_upload">Include an image: <%= file_attachment.file_field :attachment %></p>
+    </fieldset>
+  
+  <% end %>
 
   <h3>Category <span class="optional">(optional)</span></h3>
+  
   <p class="instructions">Tip: Questions can be answered more quickly when assigned to the correct community</p>
+  
   <fieldset class="stack_labels">
   	<p>
   	<%= select_tag("aae_category", options_for_select(@categories, @submitted_question.top_level_category ? @submitted_question.top_level_category.id : '')) %>
   	</p>
-  	<%= observe_field("aae_category", :update => :subcat_div, :url => { :action => :get_aae_form_subcats }, :with => "'category_id=' + value") %>
+  	<%= observe_field("aae_category", :update => :subcat_div, :url => { :action => :get_aae_from_subcats }, :with => "'category_id=' + value") %>
 
-      <p id="subcat_div">
-         <% if @top_level_category %>
-           <%= render(:partial => 'aae_subcats')%>
-         <% end %>
-      </p>
+    <p id="subcat_div">
+      <% if @top_level_category %>
+        <%= render(:partial => 'aae_subcats')%>
+      <% end %>
+    </p>
   </fieldset>
 
   <h3>Your location</h3>
+  
   <p class="instructions">Where should the question be directed?</p>
   <fieldset class="stack_labels">
   	<%= render(:partial => 'shared/location_county') %>
   </fieldset>
- 
+  
+  <h3>Personal Information</h3>
 
+  <p><em>Fields marked with an asterisk (<span style="color:red;">*</span>) are required</em></p>
+  
+  <% fields_for :public_user, @public_user do |public_user| %>
+  <fieldset>
+      <p class="simplefield">
+          <%= public_user.label :first_name, 'First Name:' %>
+          <%= public_user.text_field :first_name %>
+      </p>
 
-	
-<h3>Personal Information</h3>
+  	  <br class="clearing" />
+      
+      <p class="simplefield">
+          <%= public_user.label :last_name, 'Last Name:' %>
+          <%= public_user.text_field :last_name %>
+      </p>
+      
+      <br class="clearing" />
+      
+      <p class="simplefield">
+          <%= public_user.label :email, 'Email:<em class="required">*</em>' %>
+          <%= public_user.text_field :email, { :type => "email", :autocapitalize => "off" } %>
+      </p>
+      
+      <br class="clearing" />
+          
+      <p class="simplefield">
+          <label for="public_email_confirmation">Email Confirmation:<em class="required">*</em></label>
+          <%= text_field_tag "public_email_confirmation", @public_user.email, :type => "email",  :autocapitalize => "off" %>
+      </p>
+  </fieldset>
+  
+  <% end %>
 
-<p><em>Fields marked with an asterisk (<span style="color:red;">*</span>) are required</em></p>
-
-<fieldset>
-    <p class="simplefield">
-        <label for="public_user[first_name]">First Name:</label>
-        <%= text_field_tag "public_user[first_name]", @public_user.first_name %>
-    </p>
-
-	<br class="clearing" />
-    <p class="simplefield">
-        <label for="public_user[last_name]">Last Name:</label>
-        <%= text_field_tag "public_user[last_name]", @public_user.last_name %>
-    </p>
-    <br class="clearing" />
-    <p class="simplefield">
-        <label for="public_user[email]">Email:<em class="required">*</em></label>
-        <%= text_field_tag "public_user[email]", @public_user.email, :type => "email",  :autocapitalize => "off" %>
-    </p>
-    <br class="clearing" />
-    
-    <p class="simplefield">
-        <label for="public_email_confirmation">Email Confirmation:<em class="required">*</em></label>
-        <%= text_field_tag "public_email_confirmation", @public_user.email, :type => "email",  :autocapitalize => "off" %>
-    </p>
-</fieldset>
-
-<p><%= submit_tag "Submit my Question", :name => "sa", :value => "Submit my Question", :alt => "Go", :class => "bigbutton blue" %></p>
-
-<input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
-<input type="hidden" name="cof" value="FORID:11" />
-        
-<!-- end of form -->
+  <p><%= submit_tag "Submit my Question", :name => "sa", :value => "Submit my Question", :alt => "Go", :class => "bigbutton blue" %></p>
+   
+  <input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
+  <input type="hidden" name="cof" value="FORID:11" />
+  
+  <!-- end of form -->    
 <% end %>
 
 

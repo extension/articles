@@ -1,13 +1,22 @@
 <h1>Search Results</h1>
 
 <div class="aae_options">
+  <% form_tag({ :action => :question_confirmation }, { :id => 'searchbox_002594610894210374936:hggphannnzi', :method => :get }) do %>
   <p>
-    <%= text_area_tag "q", @submitted_question.asked_question, :rows => "3", :id => "submitted_question_asked_question" %> 
+    <%= text_area_tag "q", params[:q], :rows => "3", :id => "submitted_question_asked_question" %> 
   </p>
     
   <p>
-    <%= link_to 'Search again', { :action => 'submit_question', :public_user => params[:public_user], :submitted_question => params[:submitted_question], :location_id => params[:location_id], :county_id => params[:county_id], :aae_category => params[:aae_category], :subcategory => params[:subcategory] }, :class => "bigbutton blue", :method => :post %>
-    <%= link_to 'Send to "Ask an Expert"', {:action => 'index', :public_user => params[:public_user], :submitted_question => params[:submitted_question], :location_id => params[:location_id], :county_id => params[:county_id], :aae_category => params[:aae_category], :subcategory => params[:subcategory] }, :class => "bigbutton blue" %>
+    <%= submit_tag 'Search again', { :class => "bigbutton blue", :method => :post } %>
+    <%= link_to 'Send to "Ask an Expert"', { :action => :submission_form, :q => params[:q] }, { :method => :post, :class => "bigbutton blue" } %>
+    
+    <input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
+    <input type="hidden" name="cof" value="FORID:11" />
+  <% end %>
+  
+  <%= javascript_include_tag "google_coop" %>
+  <!-- Google CSE Search Box Ends -->
+  
   </p>
 </div>
 

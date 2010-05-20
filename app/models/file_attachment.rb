@@ -9,8 +9,9 @@ class FileAttachment < ActiveRecord::Base
   
   belongs_to :submitted_question
   has_attached_file :attachment, :styles => { :medium => "300x300>", :thumb => "100x100>" },
-              :url => "/system/:class/:attachment/:id_partition/:basename_:style.:extension"
-              
+  :url => "/system/:class/:attachment/:id_partition/:basename_:style.:extension"
+  
+  attr_accessible :attachment          
   
   before_update :randomize_attachment_file_name
   

@@ -12,7 +12,6 @@ class PublicUser < ActiveRecord::Base
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/
   attr_protected :password 
   
-  
   # override email write
   def email=(emailstring)
     write_attribute(:email, emailstring.mb_chars.downcase)
