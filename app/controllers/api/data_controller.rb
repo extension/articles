@@ -89,7 +89,7 @@ class Api::DataController < ApplicationController
       returnhash[:communities][community.id][:public_name] = community.public_name if(!community.public_name.blank?)
       returnhash[:communities][community.id][:primary_content_tag_name] = community.primary_content_tag_name if(!community.primary_content_tag_name.blank?)
       returnhash[:communities][community.id][:content_tag_names] = community.content_tag_names if(!community.content_tag_names.blank?)
-      returnhash[:communities][community.id][:launched] = true if(!community.is_launched?)
+      returnhash[:communities][community.id][:launched] = true if(community.is_launched?)
     end
     return render :text => returnhash.to_json
   end
