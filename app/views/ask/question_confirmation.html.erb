@@ -1,22 +1,13 @@
 <h1>Search Results</h1>
 
 <div class="aae_options">
-  <% form_tag({ :action => :question_confirmation }, { :id => 'searchbox_002594610894210374936:hggphannnzi', :method => :get }) do %>
   <p>
-    <%= text_area_tag "q", params[:q], :rows => "3", :id => "submitted_question_asked_question" %> 
+    "<%= @question %>"
   </p>
     
   <p>
-    <%= submit_tag 'Search again', { :class => "bigbutton blue", :method => :post } %>
-    <%= link_to 'Send to "Ask an Expert"', { :action => :submission_form, :q => params[:q] }, { :method => :post, :class => "bigbutton blue" } %>
-    
-    <input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
-    <input type="hidden" name="cof" value="FORID:11" />
-  <% end %>
-  
-  <%= javascript_include_tag "google_coop" %>
-  <!-- Google CSE Search Box Ends -->
-  
+    <%= link_to 'Edit my Question', {:action => :index, :q => @question}, { :class => "bigbutton blue" } %>
+    <%= link_to 'Send to "Ask an Expert"', { :action => :submission_form, :q => @question }, { :class => "bigbutton blue" } %>
   </p>
 </div>
 

@@ -2,7 +2,7 @@
 
 <h2 id="aae_submit_step">Please fill in the additional information and submit your question<span></span></h2>
 
-<% form_for :submitted_question, @submitted_question, :url => { :action => :submit_question }, :html => { :id => 'searchbox_002594610894210374936:hggphannnzi', :class => 'aae', :multipart => true } do |f| %>
+<% form_for :submitted_question, @submitted_question, :url => { :action => :submission_form }, :html => { :id => 'searchbox_002594610894210374936:hggphannnzi', :class => 'aae', :multipart => true } do |f| %>
   <fieldset>
     <h3>
     <%= f.label :asked_question, 'Your Question' %>
@@ -36,7 +36,7 @@
   	<%= observe_field("aae_category", :update => :subcat_div, :url => { :action => :get_aae_from_subcats }, :with => "'category_id=' + value") %>
 
     <p id="subcat_div">
-      <% if @top_level_category %>
+      <% if @sub_category_options %>
         <%= render(:partial => 'aae_subcats')%>
       <% end %>
     </p>
