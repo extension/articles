@@ -61,15 +61,6 @@ class AskController < ApplicationController
       end
     # Question asker submits the question (ie. POST request)
     else
-      # need to use filter params here
-      if(params[:submitted_question][:asked_question].blank? or params[:public_user].blank?)
-        return_error = "Please fill in all required fields."
-      elsif params[:public_user][:email].blank? or params[:public_email_confirmation].blank?
-        return_error = "Please enter an email address and email address confirmation."
-      elsif params[:public_user][:email].strip != params[:public_email_confirmation].strip
-        return_error = "Your email address confirmation does not match.<br />Please make sure your email address and confirmation match up."
-      end
-
       @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
 
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
@@ -83,37 +74,45 @@ class AskController < ApplicationController
       @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
       @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
       @submitted_question.external_app_id = 'www.extension.org'
-      @submitted_question.public_user = @public_user
 
-      # error check for submitted question and public user records 
+      # error check for submitted question, file_attachment and public user records 
       
-      if !@public_user
-        # create a new instance variable for public_user since it wasn't saved so the form can be repopulated
-        @public_user = PublicUser.new(params[:public_user]) 
-        # we know it wasn't saved, but let's see why
-        if !@public_user.valid? and return_error.blank?
-          return_error = "Errors occured when saving:<br />" + @public_user.errors.full_messages.join('<br />')
-        end
-      end
-       
-      if !@submitted_question.valid? and return_error.blank?
-        return_error = "Errors occured when saving:<br />" + @submitted_question.errors.full_messages.join('<br />')
-      end
-      
-      # end of error check for submitted question and public user records
-      
-      if !return_error.blank?
-        if top_level_category = @submitted_question.top_level_category
-          @sub_category_options = [""].concat(top_level_category.children.map{|sq| [sq.name, sq.id]})
-          if sub_category = @submitted_question.sub_category
-            @sub_category = sub_category.id
-          end
-        end
-        flash.now[:notice] = return_error
-        render nil
+      if params[:public_user][:email].strip != params[:public_email_confirmation].strip
+        render_aae_submission_error('Your email address confirmation does not match.<br />Please make sure your email address and confirmation match up.')
         return
       end
-
+      
+      if !@public_user
+        # create a new instance variable for public_user so the form can be repopulated and we can see what's gone wrong in validating
+        @public_user = PublicUser.new(params[:public_user])
+        # we know it wasn't saved, but let's see why
+        if !@public_user.valid?
+           render_aae_submission_error("Errors occured when saving:<br />" + @public_user.errors.full_messages.join('<br />'))
+           return
+        end
+      else
+        @submitted_question.public_user = @public_user
+      end
+       
+      if !@submitted_question.valid?
+        render_aae_submission_error("Errors occured when saving:<br />" + @submitted_question.errors.full_messages.join('<br />'))
+        return
+      end
+      
+      # end of error check for submitted_question, file_attachment and public user records
+      
+      # handle image upload
+      if !params[:file_attachment].blank?
+        @file_attachment = FileAttachment.create(params[:file_attachment]) 
+        if !@file_attachment.valid?
+          render_aae_submission_error("Errors occured when uploading your image:<br />" + @file_attachment.errors.full_messages.join('<br />'))        
+          return
+        else
+          @submitted_question.file_attachments << @file_attachment
+        end
+      end
+      # end of handling image upload
+      
       # for easier akismet checking, set the submitter_email attribute from the associated public_user
       @submitted_question.submitter_email = @public_user.email
 
@@ -124,11 +123,6 @@ class AskController < ApplicationController
         logger.error "Error checking submitted question from pubsite aae form for spam via Akismet at #{Time.now.to_s}. Akismet webservice might be experiencing problems.\nError: #{ex.message}"
       end
       
-      if !params[:file_attachment].blank?
-        @file_attachment = FileAttachment.create(params[:file_attachment]) 
-        @submitted_question.file_attachments << @file_attachment
-      end
-
       @submitted_question.save
 
       session[:public_user_id] = @public_user.id
@@ -311,6 +305,22 @@ class AskController < ApplicationController
     end
     
     render :partial => 'aae_subcats', :layout => false
+  end
+  
+  private
+  
+  def render_aae_submission_error(return_error)
+    if !return_error.blank?
+      if top_level_category = @submitted_question.top_level_category
+        @sub_category_options = [""].concat(top_level_category.children.map{|sq| [sq.name, sq.id]})
+        if sub_category = @submitted_question.sub_category
+          @sub_category = sub_category.id
+        end
+      end
+      flash.now[:notice] = return_error
+      render nil
+      return
+    end
   end
     
 end

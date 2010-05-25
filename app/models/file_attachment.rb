@@ -11,6 +11,10 @@ class FileAttachment < ActiveRecord::Base
   has_attached_file :attachment, :styles => { :medium => "300x300>", :thumb => "100x100>" },
   :url => "/system/:class/:attachment/:id_partition/:basename_:style.:extension"
   
+  validates_attachment_presence :attachment
+  validates_attachment_content_type :attachment, :content_type => ['image/jpeg','image/png','image/gif','image/pjpeg','image/x-png']
+  validates_attachment_size :attachment, :less_than => 2.megabytes
+  
   attr_accessible :attachment          
   
   before_update :randomize_attachment_file_name
