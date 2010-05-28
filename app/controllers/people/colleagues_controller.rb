@@ -36,8 +36,8 @@ class People::ColleaguesController < ApplicationController
       if @showuser
         if request.post?
           if params[:explanation].nil? or params[:explanation].empty?
-            flash.now[:failure] = 'An explanation for vouching for this eXtensionID is required'      
-            render :template => 'people/colleagues/showuser'
+            flash[:failure] = 'An explanation for vouching for this eXtensionID is required'      
+            return redirect_to(:action => 'showuser', :id => @showuser.id)           
           else
             if(@showuser.vouch(@currentuser))
               UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "vouched for #{@showuser.login}",:additionaldata => params[:explanation])
@@ -45,22 +45,23 @@ class People::ColleaguesController < ApplicationController
               log_user_activity(:user => @user,:activitycode => Activity::VOUCHED_FOR, :appname => 'local',:colleague => @showuser, :additionaldata => {:explanation => params[:explanation]})              
               log_user_activity(:user => @showuser,:activitycode => Activity::VOUCHED_BY, :appname => 'local',:additionaldata => {:explanation => params[:explanation]})              
               Notification.create(:notifytype => Notification::WELCOME, :user => @showuser, :send_on_create => true)
-              flash.now[:success] = "Vouched for #{@showuser.fullname}"      
+              flash[:success] = "Vouched for #{@showuser.fullname}"
+              return redirect_to(:action => 'showuser', :id => @showuser.id)     
             else
-              flash.now[:failure] = 'Failed to vouch for user, reported status may not be correct'      
+              flash[:failure] = 'Failed to vouch for user, reported status may not be correct'
+              return redirect_to(:action => 'showuser', :id => @showuser.id)           
             end
-            render :template => 'people/colleagues/showuser'
           end
         else
           # show form
         end
       else
-        flash.now[:warning] = 'User not found.'      
-        render :template => 'people/colleagues/showuser'
+        flash[:warning] = 'User not found.'      
+        return redirect_to(:action => 'index')           
       end
     else
-      flash.now[:warning] = 'Missing user.'      
-      render :template => 'people/colleagues/showuser'
+      flash[:warning] = 'Missing user.'      
+      return redirect_to(:action => 'index')           
     end        
   end
   
