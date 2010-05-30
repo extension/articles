@@ -6,7 +6,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>Cooperative Extension Search: <%= @page_title %></title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     
     <% if @mobile_device %>
         <meta name = "viewport" content = "width = device-width, user-scalable = yes">
@@ -15,7 +15,8 @@
         <%= stylesheet_link_tag 'common' %>
         <%= stylesheet_link_tag 'search' %>
     <% end %>
-    <%= javascript_include_tag 'google_cse' %>
+    <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
+    <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
 </head>
 <body>
    <div id="wrapper">

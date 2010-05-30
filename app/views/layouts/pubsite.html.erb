@@ -32,11 +32,10 @@
   
     <%= javascript_include_tag :defaults %>
     <%= javascript_include_tag 'charcount' %>
-    
+    <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
     
 	<% if session[:institution_community_id].nil? or
 	     (session[:institution_community_id] and session[:institution_community_id].empty?) %>
-	<script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
 	<script type="text/javascript">
 	//<![CDATA[
 	// -- docs say u need to load a module, but my testing says not. @JER
