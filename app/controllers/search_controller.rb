@@ -10,7 +10,6 @@ class SearchController < ApplicationController
   layout 'search'
   
   def index
-  	@noquery = true unless params[:q]
-		@page_title = "Home"
+    @page_title = "Home"
   end
 end
