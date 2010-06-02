@@ -13,16 +13,22 @@
 <p>Date Created: <strong><%= @widget.created_at %></strong></p>
 
 
-
+<h4>Assignee Pool</h4>
 <% if @widget_assignees.length > 0 %>
-    <h4>Assignee Pool</h4>
-    <p><strong class="groupicon"><%= @widget_assignees.size %> users</strong> are signed up to answer questions from this widget. <%= link_to "View assignee pool", :controller => 'widgets/aae', :action => 'widget_assignees', :id => @widget.id %></p>
+  <p><strong class="groupicon"><%= @widget_assignees.size %> users</strong> are signed up to answer questions from this widget. <%= link_to ("Sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget.</p>
+  <ul id="assignee_pool">
+  <% @widget_assignees.each do |user| %>
+    <li><%= link_to (user.fullname, aae_profile_url(:id => user.login), {:class => "profile"}) %></li>
+  <% end %>
+  </ul>
 <% else %>
     <div class="askalert">
-        <p><strong>There are currently no users signed up to receive questions from this widget.</strong></p>
-        <p>If you like, you can <%= link_to ("sign up to receive questions", :controller => 'aae/prefs', :action => 'widget_preferences') %> from this widget and begin answering.</p>
+        <p><strong class="groupicon">There are no users signed up to receive questions from this widget.</strong> <%= link_to ("Sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget.</p>
     </div>
 <% end %>
+
+
+
 
 
 <h4>Widget Status</h4>
