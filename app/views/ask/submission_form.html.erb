@@ -16,14 +16,17 @@
     </p>
   </fieldset>
   
-  <% fields_for :file_attachment, @file_attachment do |file_attachment| %>
+  <h3>Images <span class="optional">(optional)</span></h3>
+  <p>Include up to <%= FileAttachment::MAX_AAE_UPLOADS %> images:</p>
+  <i><b>Must be either .jpg OR .png OR .gif with max size of 2MB each</b></i>
   
-    <h3>Images <span class="optional">(optional)</span></h3>
-    <fieldset>
-    <p class="image_upload">Include an image: <%= file_attachment.file_field :attachment %></p>
-    </fieldset>
-  
+  <fieldset>
+  <% (1..FileAttachment::MAX_AAE_UPLOADS).each do |image_counter| %>
+    <% fields_for "file_attachment#{image_counter}" do |file_attachment| %> 
+    <p class="image_upload"><%= file_attachment.file_field :attachment %></p>
+    <% end %>
   <% end %>
+  </fieldset>
 
   <h3>Category <span class="optional">(optional)</span></h3>
   

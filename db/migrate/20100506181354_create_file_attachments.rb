@@ -6,6 +6,7 @@ class CreateFileAttachments < ActiveRecord::Migration
       t.integer :attachment_file_size
       t.datetime :attachment_updated_at
       t.integer :submitted_question_id
+      t.integer :response_id
       t.timestamps
     end
   end

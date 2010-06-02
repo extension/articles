@@ -101,17 +101,29 @@ class AskController < ApplicationController
       
       # end of error check for submitted_question, file_attachment and public user records
       
+      
       # handle image upload
-      if !params[:file_attachment].blank?
-        @file_attachment = FileAttachment.create(params[:file_attachment]) 
-        if !@file_attachment.valid?
-          render_aae_submission_error("Errors occured when uploading your image:<br />" + @file_attachment.errors.full_messages.join('<br />'))        
-          return
-        else
-          @submitted_question.file_attachments << @file_attachment
+      
+      # load up array of passed in photo parameters based on how many are allowed
+      photo_array = Array.new
+      (1..FileAttachment::MAX_AAE_UPLOADS).each do |image_counter| 
+        if !params["file_attachment#{image_counter}"].blank?
+          photo_array << params["file_attachment#{image_counter}"]
         end
       end
+      # create each file upload and check for errors
+      photo_array.each do |photo_params|
+        photo_to_upload = FileAttachment.create(photo_params) 
+        if !photo_to_upload.valid?
+          render_aae_submission_error("Errors occured when uploading one of your images:<br />" + photo_to_upload.errors.full_messages.join('<br />'))        
+          return
+        else
+          @submitted_question.file_attachments << photo_to_upload
+        end   
+      end
+      
       # end of handling image upload
+      
       
       # for easier akismet checking, set the submitter_email attribute from the associated public_user
       @submitted_question.submitter_email = @public_user.email

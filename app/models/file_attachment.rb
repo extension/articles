@@ -7,7 +7,8 @@
 
 class FileAttachment < ActiveRecord::Base
   
-  belongs_to :submitted_question
+  belongs_to :responses
+  belongs_to :submitted_questions
   has_attached_file :attachment, :styles => { :medium => "300x300>", :thumb => "100x100>" },
   :url => "/system/:class/:attachment/:id_partition/:basename_:style.:extension"
   
@@ -19,6 +20,7 @@ class FileAttachment < ActiveRecord::Base
   
   before_update :randomize_attachment_file_name
   
+  MAX_AAE_UPLOADS = 3
   
   def randomize_attachment_file_name
     return if self.attachment_file_name.nil?
