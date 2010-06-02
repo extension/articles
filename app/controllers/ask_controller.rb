@@ -152,6 +152,7 @@ class AskController < ApplicationController
   end
   
   def question_confirmation
+    flash.now[:googleanalytics] = '/ask-an-expert-search-results'
     if request.get?
       if params[:q].blank? 
         flash[:notice] = "Please fill in the question field before submitting."
