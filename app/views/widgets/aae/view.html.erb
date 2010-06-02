@@ -48,6 +48,14 @@
                       :loading => "Element.show('loading_widget_#{@widget.id}')",
                       :complete    => "Element.hide('loading_widget_#{@widget.id}')") %>
 
+<h4>Photo Upload Option</h4>
+<div class="active-status">
+<p>
+    <%= check_box_tag "photo_upload", :class => "inline" %>
+    <%= label_tag "photo_upload", 'Allow people to submit photo(s) with their question', :class => "inline" %>
+    <span id="loading_widget_<%= @widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
+</p>
+</div>
 
 <h4>Widget iFrame Code</h4>
 <div id="widgetcode"><textarea><%= h(@widget_iframe_code) %></textarea></div>
