@@ -105,12 +105,7 @@ class AskController < ApplicationController
       # handle image upload
       
       # load up array of passed in photo parameters based on how many are allowed
-      photo_array = Array.new
-      (1..FileAttachment::MAX_AAE_UPLOADS).each do |image_counter| 
-        if !params["file_attachment#{image_counter}"].blank?
-          photo_array << params["file_attachment#{image_counter}"]
-        end
-      end
+      photo_array = get_photo_array
       # create each file upload and check for errors
       photo_array.each do |photo_params|
         photo_to_upload = FileAttachment.create(photo_params) 
@@ -149,6 +144,34 @@ class AskController < ApplicationController
       end
     end
     # end of question submission POST request
+  end
+  
+  def add_images
+    if request.post?
+      
+      if params[:squid].blank? or !@submitted_question = SubmittedQuestion.find(params[:squid])
+        do_404
+        return
+      end
+      
+      # load up array of passed in photo parameters based on how many are allowed
+      photo_array = get_photo_array
+      # create each file upload and check for errors
+      photo_array.each do |photo_params|
+        photo_to_upload = FileAttachment.create(photo_params) 
+        if !photo_to_upload.valid?
+          flash[:notice] = "Errors occured when uploading one of your images:<br />" + photo_to_upload.errors.full_messages.join('<br />')        
+          break
+        else
+          @submitted_question.file_attachments << photo_to_upload
+        end   
+      end
+      flash[:notice] = "Photos saved successfully!" if flash[:notice].blank?
+      redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
+    else
+      do_404
+      return
+    end
   end
   
   def delete_image
@@ -354,6 +377,16 @@ class AskController < ApplicationController
       render nil
       return
     end
+  end
+  
+  def get_photo_array
+    photo_array = Array.new
+    (1..FileAttachment::MAX_AAE_UPLOADS).each do |image_counter| 
+      if !params["file_attachment#{image_counter}"].blank?
+        photo_array << params["file_attachment#{image_counter}"]
+      end
+    end
+    return photo_array
   end
     
 end

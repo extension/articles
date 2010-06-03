@@ -18,14 +18,19 @@
   </p>
   <div id="add_uploads" style="display:none;">
   <h3>Additional Images</h3>
-  <p>You can include up to <%= FileAttachment::MAX_AAE_UPLOADS %> total images:</p>
+  <% images_possible = FileAttachment::MAX_AAE_UPLOADS - number_of_attachments %>
+  <p>You can include up to <%= images_possible %> additional image<%= images_possible > 1 ? 's' : '' %>:</p>
   <i><b>Must be either .jpg OR .png OR .gif with max size of 2MB each</b></i>
     
   <fieldset>
-  <% (1..FileAttachment::MAX_AAE_UPLOADS - number_of_attachments).each do |image_counter| %>
+  <% form_for :file_attachment, :url => { :action => :add_images }, :html => {:class => 'aae', :multipart => true } do |f| %>
+  <%= hidden_field_tag :squid, @submitted_question.id %>
+  <% (1..(images_possible)).each do |image_counter| %>
     <% fields_for "file_attachment#{image_counter}" do |file_attachment| %> 
     <p class="image_upload"><%= file_attachment.file_field :attachment %></p>
     <% end %>
+  <% end %>
+  <p><%= submit_tag "Submit", :alt => "Go", :class => "bigbutton blue" %></p>
   <% end %>
   </fieldset>
   
