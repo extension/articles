@@ -24,6 +24,7 @@ Rails::Initializer.run do |config|
   config.gem 'geokit', :version => '~>1.5', :source => 'http://systems.extension.org/rubygems/'
   config.gem "nokogiri", :version => '~>1.4', :source => 'http://systems.extension.org/rubygems/'
   config.gem "calendar_date_select"
+  config.gem 'gdata', :version => '~>1.1', :lib => 'gdata', :source => 'http://systems.extension.org/rubygems/'
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 
