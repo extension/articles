@@ -70,6 +70,17 @@
         <div class="commentblock public">
           <div class="comment_wrapper">
             <%= format_text_for_display(response.response) %>
+            
+            <p id="aae_images">
+              <% response.file_attachments.each do |resp_img| %>
+                
+                <a class="fancybox" href="<%= resp_img.attachment.url %>" title="AaE Image">
+                <%= image_tag resp_img.attachment.url(:thumb) %>
+                </a><br />
+                
+              <% end %>
+            </p>
+            
           </div>
             <p>Comment posted by public user</p>
             <p><%= humane_date(response.created_at) %> UTC</p>

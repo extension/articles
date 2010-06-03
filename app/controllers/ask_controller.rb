@@ -174,19 +174,37 @@ class AskController < ApplicationController
     end
   end
   
-  def delete_image
+  def delete_response_image
     if request.post?
-      if !params[:id].blank? and !params[:squid].blank? 
-        file_attachment = FileAttachment.find(params[:id])
-        if file_attachment
-          FileAttachment.destroy(file_attachment.id) 
-          @submitted_question = SubmittedQuestion.find(params[:squid])
-        else
-          return
-        end
+        # make sure everything was passed in correctly and that the valid question submitter is making this request
+        return if (params[:id].blank? or params[:response_id].blank?)
+        return if !response = Response.find(params[:response_id]) 
+        return if !((response.submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == response.submitted_question.submitter_email))
+        return if !file_attachment = FileAttachment.find(params[:id])
+        
+        FileAttachment.destroy(file_attachment.id) 
+        
         render :update do |page|
-          page.replace_html "aae_image_div", :partial => 'aae_images'
+          page.replace_html "response_image_div#{response.id}", :partial => 'response_images', :locals => { :response => response, :submitted_question => response.submitted_question }
         end
+    else
+      do_404
+      return
+    end
+  end
+  
+  def delete_sq_image
+    if request.post?
+      # make sure everything was passed in correctly and that the valid question submitter is making this request
+      return if (params[:id].blank? or params[:squid].blank?)
+      return if !@submitted_question = SubmittedQuestion.find(params[:squid])
+      return if !((@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email))
+      return if !file_attachment = FileAttachment.find(params[:id]) 
+       
+      FileAttachment.destroy(file_attachment.id) 
+          
+      render :update do |page|
+        page.replace_html "aae_image_div", :partial => 'aae_images'
       end
     else
       do_404
@@ -246,20 +264,39 @@ class AskController < ApplicationController
       
       if @submitted_question and public_user
         
-        if !params[:public_user_response] or params[:public_user_response].strip == ''
-          @err_msg = "The response form field is a required field to submit your response."  
-          render :partial => 'public_response'
+        if params[:public_user_response].blank?
+          render_aae_response_error("The response form field is a required field to submit your response.") 
           return
         end
         
         # don't accept duplicates
         if Response.find(:first, :conditions => {:submitted_question_id => @submitted_question.id, :response => params[:public_user_response], :public_user_id => public_user.id})
-          render :partial => 'public_response'
+          render_aae_response_error("We have already received your response. Thank you!") 
           return
         end
-         
+        
         response = Response.new(:public_responder => public_user, :submitted_question => @submitted_question, :response => params[:public_user_response], :sent => true)
+        
+        # handle image upload
+
+        # load up array of passed in photo parameters based on how many are allowed
+        photo_array = get_photo_array
+        # create each file upload and check for errors
+        photo_array.each do |photo_params|
+          photo_to_upload = FileAttachment.create(photo_params) 
+          if !photo_to_upload.valid?
+            render_aae_response_error("Errors occured when uploading one of your images:<br />" + photo_to_upload.errors.full_messages.join('<br />'))        
+            return
+          else
+            response.file_attachments << photo_to_upload
+          end   
+        end
+
+        # end of handling image upload
+        
+        # save it baby
         response.save
+        
         if @submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED
           @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED)
           SubmittedQuestionEvent.log_public_response(@submitted_question, public_user.id)
@@ -270,14 +307,16 @@ class AskController < ApplicationController
           SubmittedQuestionEvent.log_public_response(@submitted_question, public_user.id)
         end
       else
-        @err_msg = "There was an error submitting your response. Please try again later."  
+        render_aae_response_error("There was an error submitting your response. Please try again.")
+        return
       end
     else
       do_404
       return
     end
     
-    render :partial => 'public_response'
+    flash[:notice] = "Response has been successfully submitted!"
+    redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint   
   end
   
   def cancel_question_edit
@@ -364,6 +403,14 @@ class AskController < ApplicationController
   end
   
   private
+  
+  def render_aae_response_error(return_error)
+    if !return_error.blank?
+      flash[:notice] = return_error
+      redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
+      return
+    end
+  end
   
   def render_aae_submission_error(return_error)
     if !return_error.blank?
