@@ -33,6 +33,8 @@ def update_from_darmok_users(connection,drupaldatabase,mydatabase)
   
   puts "### Starting replacement of drupal user data from darmok data..."
   
+  puts "starting user table replacement..."
+  
   sql = "REPLACE INTO #{drupaldatabase}.users (uid,name,pass,mail,created,status)"
   sql +=  " SELECT #{mydatabase}.users.id, #{mydatabase}.users.login,'#{passwordstring}', #{mydatabase}.users.email,UNIX_TIMESTAMP(#{mydatabase}.users.created_at),(NOT(#{mydatabase}.users.retired) AND (#{mydatabase}.users.vouched))"
   sql +=  " FROM #{mydatabase}.users"
@@ -42,11 +44,29 @@ def update_from_darmok_users(connection,drupaldatabase,mydatabase)
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during replacement of drupal user data from darmok data: #{err}"
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal users table: #{err}"
     return false
   end
 
-  puts "Finished."
+  puts "finished user table replacement."
+  
+  
+  puts "starting authmap table replacement..."
+  
+  sql = "REPLACE INTO #{drupaldatabase}.authmap (aid,uid,authname,module) SELECT uid,uid,CONCAT('https://people.extension.org/',name), 'openid' FROM #{drupaldatabase}.users;"
+  
+  # execute the sql
+  
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the authmap table: #{err}"
+    return false
+  end
+
+  puts "finished authmap replacement."
+  
+  
   return true
 end
 
