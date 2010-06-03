@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 require 'gdata'
-require 'lib/gdata-cse'
+require 'lib/gdata_cse'
 
 class Admin::CseController < ApplicationController
   before_filter :admin_required
