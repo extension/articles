@@ -151,6 +151,26 @@ class AskController < ApplicationController
     # end of question submission POST request
   end
   
+  def delete_image
+    if request.post?
+      if !params[:id].blank? and !params[:squid].blank? 
+        file_attachment = FileAttachment.find(params[:id])
+        if file_attachment
+          FileAttachment.destroy(file_attachment.id) 
+          @submitted_question = SubmittedQuestion.find(params[:squid])
+        else
+          return
+        end
+        render :update do |page|
+          page.replace_html "aae_image_div", :partial => 'aae_images'
+        end
+      end
+    else
+      do_404
+      return
+    end
+  end
+  
   def question_confirmation
     flash.now[:googleanalytics] = '/ask-an-expert-search-results'
     if request.get?
