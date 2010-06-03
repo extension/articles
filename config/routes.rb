@@ -155,6 +155,7 @@ ActionController::Routing::Routes.draw do |map|
     admin.resources :sponsors, :collection => {:update_positions => :post}
     admin.resources :feed_locations
     admin.resources :logos
+    admin.resources :cse
   end
   
   map.connect 'admin/:action/:id', :controller => 'admin'
