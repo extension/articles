@@ -119,14 +119,4 @@ class Widgets::AaeController < ApplicationController
     end
   end
   
-  def widget_assignees
-    @widget = Widget.find(params[:id])
-    if !@widget
-      flash[:notice] = "The widget you specified does not exist."
-      redirect_to :controller => 'aae/prefs', :action => :widget_preferences
-      return
-    end
-    @widget_assignees = @widget.assignees
-  end
-  
 end
