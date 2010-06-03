@@ -115,8 +115,8 @@ class Community < ActiveRecord::Base
   
   named_scope :ordered_by_topic, {:include => :topic, :order => 'topics.name ASC, communities.public_name ASC'}
    
-  before_create :clean_description_and_shortname, :show_in_public_if_approved
-  before_update :clean_description_and_shortname, :show_in_public_if_approved
+  before_create :clean_description_and_shortname, :flag_attributes_for_approved
+  before_update :clean_description_and_shortname, :flag_attributes_for_approved
 
 
   def is_institution?
@@ -240,9 +240,10 @@ class Community < ActiveRecord::Base
     
   end
   
-  def show_in_public_if_approved
+  def flag_attributes_for_approved
     if(self.entrytype == APPROVED)
       self.show_in_public_list = true
+      self.connect_to_drupal = true
     end
   end
   

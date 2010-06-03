@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100429150632) do
+ActiveRecord::Schema.define(:version => 20100603131903) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -200,6 +200,8 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
     t.string   "referer_domain"
     t.string   "institution_code",        :limit => 10
     t.integer  "logo_id",                               :default => 0
+    t.boolean  "connect_to_drupal",                     :default => false
+    t.integer  "drupal_node_id"
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
@@ -778,8 +780,8 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
 
   create_table "update_times", :force => true do |t|
     t.integer  "datasource_id"
-    t.string   "datasource_type"
-    t.string   "datatype"
+    t.string   "datasource_type",     :limit => 25
+    t.string   "datatype",            :limit => 25
     t.datetime "last_datasourced_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -894,6 +896,7 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
     t.datetime "updated_at"
     t.boolean  "active",      :default => true, :null => false
     t.integer  "user_id",                       :null => false
+    t.string   "email_from"
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true
