@@ -10,7 +10,7 @@ class FileAttachment < ActiveRecord::Base
   belongs_to :responses
   belongs_to :submitted_questions
   has_attached_file :attachment, :styles => { :medium => "300x300>", :thumb => "100x100>" },
-  :url => "/system/:class/:attachment/:id_partition/:basename_:style.:extension"
+  :url => "/system/files/:class/:attachment/:id_partition/:basename_:style.:extension"
   
   validates_attachment_presence :attachment
   validates_attachment_content_type :attachment, :content_type => ['image/jpeg','image/png','image/gif','image/pjpeg','image/x-png']
