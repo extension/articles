@@ -134,7 +134,7 @@ class AskController < ApplicationController
 
       session[:public_user_id] = @public_user.id
 
-      flash[:notice] = 'Your question has been submitted and the answer will be sent to your email. Our experts try to answer within 48 hours.'
+      flash[:notice] = 'Your question has been submitted. Our experts try to answer within 48 hours and we will notify you with an email message when they do.'
       flash[:googleanalytics] = '/ask-an-expert-question-submitted'
 
       if session[:return_to]
