@@ -73,6 +73,14 @@
                     <%= time_ago_in_words(sq.created_at) %> ago
                 </p>
                 
+                <p id="aae_images">
+                  <% sq.file_attachments.each do |sq_img| %>
+                    <a class="fancybox" href="<%= sq_img.attachment.url %>" title="AaE Image">
+                    <%= image_tag sq_img.attachment.url(:thumb) %>
+                    </a>
+                  <% end %>
+                </p>
+                
                 <% if @questions_status && @questions_status == SubmittedQuestion::STATUS_SUBMITTED %>
                      <p class="inc_assigned">
                          Assigned to <%= (sq.assignee) ? link_to(sq.assignee.login, aae_profile_url(:id => sq.assignee.login)) : "<span>nobody</span>" %>
