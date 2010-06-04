@@ -1,9 +1,10 @@
-<p id="aae_images">
+<div id="aae_images">
   <% response.file_attachments.each do |resp_img| %>
+  <div class="image_wrapper">
     <p>    
-    <a class="fancybox" href="<%= resp_img.attachment.url %>" title="AaE Image">
-    <%= image_tag resp_img.attachment.url(:thumb) %>
-    </a><br />
+      <a class="fancybox" href="<%= resp_img.attachment.url %>" title="AaE Image">
+      <%= image_tag resp_img.attachment.url(:thumb) %>
+      </a>
     <% if (submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == submitted_question.submitter_email) %>
     <%= button_to_remote 'Delete Image', :url => { :action => :delete_response_image, :id => resp_img.id, :response_id => response.id  },
         :loading => "Element.show('loading_response_images')",
@@ -11,6 +12,8 @@
     <div id="loading_response_images" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
     <% end %>
     </p>
-    <br /><br />
+    </div>
   <% end %>
-</p>
+  
+  <br class="clearing" />
+</div>
