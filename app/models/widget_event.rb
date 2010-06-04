@@ -8,6 +8,8 @@
 class WidgetEvent < ActiveRecord::Base
   ACTIVATED = "activated"
   DEACTIVATED = "deactivated"
+  UPLOAD_CAPABLE = "enabled uploads"
+  NON_UPLOAD_CAPABLE = "disabled uploads"
   
   belongs_to :user
   belongs_to :widget

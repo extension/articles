@@ -50,12 +50,19 @@
 
 <h4>Photo Upload Option</h4>
 <div class="active-status">
-<p>
-    <%= check_box_tag "photo_upload", :class => "inline" %>
+<p id="widget_upload">
+    <%= check_box_tag "photo_upload", @widget.id, @widget.upload_capable?, :class => "inline" %>
     <%= label_tag "photo_upload", 'Allow people to submit photo(s) with their question', :class => "inline" %>
-    <span id="loading_widget_<%= @widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
+    <span id="loading_widget_upload" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
 </p>
 </div>
+
+<%= observe_field("photo_upload",
+                      :url       => { :controller => 'widgets/aae', :action => :toggle_upload_capable },
+                      :with      => "'widget_id=#{@widget.id}'",
+                      :loading => "Element.show('loading_widget_upload')",
+                      :complete    => "Element.hide('loading_widget_upload')") %>
+
 
 <h4>Widget iFrame Code</h4>
 <div id="widgetcode"><textarea><%= h(@widget_iframe_code) %></textarea></div>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100506181354) do
+ActiveRecord::Schema.define(:version => 20100604205859) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -898,14 +898,15 @@ ActiveRecord::Schema.define(:version => 20100506181354) do
   end
 
   create_table "widgets", :force => true do |t|
-    t.string   "name",                          :null => false
-    t.string   "fingerprint",                   :null => false
-    t.string   "widget_url",                    :null => false
+    t.string   "name",                              :null => false
+    t.string   "fingerprint",                       :null => false
+    t.string   "widget_url",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",      :default => true, :null => false
-    t.integer  "user_id",                       :null => false
+    t.boolean  "active",         :default => true,  :null => false
+    t.integer  "user_id",                           :null => false
     t.string   "email_from"
+    t.boolean  "upload_capable", :default => false
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true

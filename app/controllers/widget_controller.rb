@@ -22,6 +22,9 @@ class WidgetController < ApplicationController
       end 
     end
     
+    @submitted_question = SubmittedQuestion.new
+    @public_user = PublicUser.new
+    
     @fingerprint = params[:id]
     @host_name = request.host_with_port
     render :layout => false
@@ -44,23 +47,42 @@ class WidgetController < ApplicationController
   def create_from_widget
     if request.post?
       begin
-        if !params[:submitted_question][:asked_question] or params[:submitted_question][:asked_question].strip == '' or !params[:submitted_question][:submitter_email] or params[:submitted_question][:submitter_email].strip == ''
-          @argument_errors = "You must fill in all fields to submit your question."
+        # setup the question to be saved and fill in attributes with parameters
+        create_question
+        
+        if !@public_user
+          # create a new instance variable for public_user so the form can be repopulated and we can see what's gone wrong in validating
+          @public_user = PublicUser.new(params[:public_user])
+          # we know it wasn't saved, but let's see why
+          if !@public_user.valid?
+            @argument_errors = ("Errors occured when saving:<br />" + @public_user.errors.full_messages.join('<br />'))
+            raise ArgumentError
+          end
+        end
+        
+        # validate submitted_question
+        if !@submitted_question.valid?
+          @argument_errors = ("Errors occured when saving:<br />" + @submitted_question.errors.full_messages.join('<br />'))
           raise ArgumentError
         end
         
+        # make sure email and confirmation email match up
         if params[:submitted_question][:submitter_email] != params[:submitter_email_confirmation]
           @argument_errors = "Email address does not match the confirmation email address."
           raise ArgumentError
         end
-        
-        # setup the question to be saved and fill in attributes with parameters
-        create_question
-        
-        if(!@submitted_question.valid? or !@public_user.valid?)
-          @argument_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
-          raise ArgumentError
+    
+        # handle image upload
+        if !params[:file_attachment].blank?
+          photo_to_upload = FileAttachment.create(params[:file_attachment]) 
+          if !photo_to_upload.valid?
+            @argument_errors = "Errors occured when uploading your image:<br />" + photo_to_upload.errors.full_messages.join('<br />')        
+            raise ArgumentError
+          else
+            @submitted_question.file_attachments << photo_to_upload
+          end   
         end
+        # end of handling image upload
         
         begin
           @submitted_question.spam = @submitted_question.spam? 
@@ -70,24 +92,30 @@ class WidgetController < ApplicationController
         
         if @submitted_question.save
           session[:public_user_id] = @public_user.id
-          render :layout => false
+          flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
+          redirect_to widget_url(:id => params[:id], :location => @location ? @location.abbreviation : nil, :county => @county ? @county.name : nil), :layout => false
+          return
         else
           raise InternalError
         end
       
       rescue ArgumentError => ae
-        @status = '400 (argument error)'
-        render :template => 'widget/status', :status => 400, :layout => false
+        flash[:notice] = @argument_errors
+        @fingerprint = params[:id]
+        @host_name = request.host_with_port
+        render :template => 'widget/index', :layout => false
         return
       rescue Exception => e
-        @status = '500 (internal error)'
-        render :template => 'widget/status', :status => 500, :layout => false
+        flash[:notice] = 'An internal error has occured. Please check back later.'
+        @fingerprint = params[:id]
+        @host_name = request.host_with_port
+        render :template => 'widget/index', :layout => false
         return
       end
     else
-       @status = '403 (Forbidden)'
-       render :template => 'widget/status', :status => 403, :layout => false
-       return
+      flash[:notice] = 'Bad request. Only POST requests are accepted.'
+      redirect_to widget_url, :layout => false
+      return
     end
   end
   
@@ -182,8 +210,8 @@ class WidgetController < ApplicationController
     params[:submitted_question].collect{|key, val| params[:submitted_question][key] = val.strip}
     widget = Widget.find_by_fingerprint(params[:id].strip) if params[:id]
     
-    @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:submitted_question][:submitter_email]})
     @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+    @public_user = PublicUser.find_and_update_or_create_by_email({:email => @submitted_question.submitter_email})
     @submitted_question.public_user = @public_user
     @submitted_question.widget = widget if widget
     @submitted_question.widget_name = widget.name if widget
@@ -199,16 +227,16 @@ class WidgetController < ApplicationController
     incoming_location = params[:location].strip if params[:location] and params[:location].strip != '' and params[:location].strip != Location::ALL
     
     if incoming_location
-      location = Location.find_by_fipsid(incoming_location.to_i)
-      @submitted_question.location = location if location
+      @location = Location.find_by_fipsid(incoming_location.to_i)
+      @submitted_question.location = @location if @location
     end
     
     # check to see if question has county and said location associated with it
     incoming_county = params[:county].strip if params[:county] and params[:county].strip != '' and params[:county].strip != County::ALL
     
-    if incoming_county and location
-      county = County.find_by_fipsid_and_location_id(incoming_county.to_i, location.id)
-      @submitted_question.county = county if county
+    if incoming_county and @location
+      @county = County.find_by_fipsid_and_location_id(incoming_county.to_i, @location.id)
+      @submitted_question.county = @county if @county
     end
   end
    
