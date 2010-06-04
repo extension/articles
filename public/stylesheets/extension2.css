@@ -920,7 +920,7 @@ form.aae {clear:both;}
 .aae .formError {font-size:1.2em;margin:0 0 0 .5em;float:left;line-height:2em;}
 .aae fieldset.stack_labels p label {width:20em;display:block;}
 
-.image_upload {background: url("/images/pubsite/photo_upload_icon.png") 0 50% no-repeat; line-height:25px; padding-left:28px; margin: 20px 0 40px;}
+.image_upload {background: url("/images/pubsite/photo_upload_icon.png") 0 50% no-repeat; height:2em; padding-left:28px; margin: 10px 10px 10px;}
 
 .bigbutton {
 	display: inline-block;

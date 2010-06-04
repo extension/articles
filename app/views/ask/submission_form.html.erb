@@ -17,8 +17,7 @@
   </fieldset>
   
   <h3>Images <span class="optional">(optional)</span></h3>
-  <p>Include up to <%= FileAttachment::MAX_AAE_UPLOADS %> images:</p>
-  <i><b>Must be either .jpg OR .png OR .gif with max size of 2MB each</b></i>
+  <p><em>Include up to <%= FileAttachment::MAX_AAE_UPLOADS %> images. You can upload .jpg .png or .gif. Max size of 2MB each.</em></p>
   
   <fieldset>
   <% (1..FileAttachment::MAX_AAE_UPLOADS).each do |image_counter| %>
