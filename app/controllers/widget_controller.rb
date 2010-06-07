@@ -100,7 +100,7 @@ class WidgetController < ApplicationController
         end
       
       rescue ArgumentError => ae
-        flash[:notice] = @argument_errors
+        flash[:warning] = @argument_errors
         @fingerprint = params[:id]
         @host_name = request.host_with_port
         render :template => 'widget/index', :layout => false
