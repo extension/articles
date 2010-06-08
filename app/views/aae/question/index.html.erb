@@ -34,9 +34,7 @@
     
     <p id="aae_images">
       <% @submitted_question.file_attachments.each do |sq_img| %>
-        <a class="fancybox" href="<%= sq_img.attachment.url %>" title="AaE Image">
-        <%= image_tag sq_img.attachment.url(:thumb) %>
-        </a>
+        <a class="fancybox" href="<%= sq_img.attachment.url %>" title="AaE Image"><%= image_tag sq_img.attachment.url(:thumb) %></a>
       <% end %>
     </p>
     
@@ -74,9 +72,7 @@
             <p id="aae_images">
               <% response.file_attachments.each do |resp_img| %>
                 
-                <a class="fancybox" href="<%= resp_img.attachment.url %>" title="AaE Image">
-                <%= image_tag resp_img.attachment.url(:thumb) %>
-                </a>
+                <a class="fancybox" href="<%= resp_img.attachment.url %>" title="AaE Image"><%= image_tag resp_img.attachment.url(:thumb) %></a>
                 
               <% end %>
             </p>
