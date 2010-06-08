@@ -20,6 +20,7 @@ belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
 belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
 belongs_to :public_user
 has_many :responses
+has_many :file_attachments
 
 
 # currently, no need to cache, we don't fulltext search tags

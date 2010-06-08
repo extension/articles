@@ -13,16 +13,22 @@
 <p>Date Created: <strong><%= @widget.created_at %></strong></p>
 
 
-
+<h4>Assignee Pool</h4>
 <% if @widget_assignees.length > 0 %>
-    <h4>Assignee Pool</h4>
-    <p><strong class="groupicon"><%= @widget_assignees.size %> users</strong> are signed up to answer questions from this widget. <%= link_to "View assignee pool", :controller => 'widgets/aae', :action => 'widget_assignees', :id => @widget.id %></p>
+  <p><strong class="groupicon"><%= @widget_assignees.size %> users</strong> are signed up to answer questions from this widget. <%= link_to ("Sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget.</p>
+  <ul id="assignee_pool">
+  <% @widget_assignees.each do |user| %>
+    <li><%= link_to (user.fullname, aae_profile_url(:id => user.login), {:class => "profile"}) %></li>
+  <% end %>
+  </ul>
 <% else %>
     <div class="askalert">
-        <p><strong>There are currently no users signed up to receive questions from this widget.</strong></p>
-        <p>If you like, you can <%= link_to ("sign up to receive questions", :controller => 'aae/prefs', :action => 'widget_preferences') %> from this widget and begin answering.</p>
+        <p><strong class="groupicon">There are no users signed up to receive questions from this widget.</strong> <%= link_to ("Sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget.</p>
     </div>
 <% end %>
+
+
+
 
 
 <h4>Widget Status</h4>
@@ -41,6 +47,21 @@
                       :with      => "'widget_id=#{@widget.id}'",
                       :loading => "Element.show('loading_widget_#{@widget.id}')",
                       :complete    => "Element.hide('loading_widget_#{@widget.id}')") %>
+
+<h4>Photo Upload Option</h4>
+<div class="active-status">
+<p id="widget_upload">
+    <%= check_box_tag "photo_upload", @widget.id, @widget.upload_capable?, :class => "inline" %>
+    <%= label_tag "photo_upload", 'Allow people to submit photo(s) with their question', :class => "inline" %>
+    <span id="loading_widget_upload" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
+</p>
+</div>
+
+<%= observe_field("photo_upload",
+                      :url       => { :controller => 'widgets/aae', :action => :toggle_upload_capable },
+                      :with      => "'widget_id=#{@widget.id}'",
+                      :loading => "Element.show('loading_widget_upload')",
+                      :complete    => "Element.hide('loading_widget_upload')") %>
 
 
 <h4>Widget iFrame Code</h4>

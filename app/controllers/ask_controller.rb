@@ -9,7 +9,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class AskController < ApplicationController  
-  has_rakismet :only => [:submit_question]
+  has_rakismet :only => [:submission_form]
   before_filter :login_optional
   
   layout 'pubsite'
@@ -18,110 +18,209 @@ class AskController < ApplicationController
   
   def index
     @right_column = false
-    session[:return_to] = params[:redirect_to]
-    flash.now[:googleanalytics] = '/ask-an-expert-form'
-    
     set_title("Ask an Expert - eXtension", "New Question")
-    set_titletag("Ask an Expert - eXtension")
-
+    
     # if we are editing
-    if params[:submitted_question]
+    if params[:q]
       flash.now[:googleanalytics] = '/ask-an-expert-edit-question'
       set_titletag("Edit your Question - eXtension")
-      begin
-        if(params[:public_user])
-          @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
+      @question = params[:q].sanitize
+    else
+      flash.now[:googleanalytics] = '/ask-an-expert-form'
+      set_titletag("Ask an Expert - eXtension")
+    end    
+  end
+  
+  def submission_form
+    @categories = [""].concat(Category.launched_content_categories.map{|c| [c.name, c.id]})
+    @location_options = get_location_options
+    @county_options = get_county_options
+    
+    if request.get?  
+      if !params[:q].blank?  
+        @submitted_question = SubmittedQuestion.new(:asked_question => params[:q].sanitize)
+        @right_column = false
+        session[:return_to] = params[:redirect_to]
+        flash.now[:googleanalytics] = '/ask-an-expert-submission-form'
+    
+        set_title("Ask an Expert - eXtension", "New Question")
+        set_titletag("Ask an Expert - eXtension")
+
+        if(!session[:public_user_id].nil?)
+          @public_user = PublicUser.find_by_id(session[:public_user_id]) || PublicUser.new
         elsif(!@currentuser.nil?)
           # let's get cute and fill in the name/email
           @public_user = PublicUser.new(:email => @currentuser.email, :first_name => @currentuser.first_name, :last_name => @currentuser.last_name)
         else
           @public_user = PublicUser.new
+        end  
+      # question was blank
+      else
+        flash[:notice] = "Please fill in the question field before submitting."
+        redirect_to :action => :index
+      end
+    # Question asker submits the question (ie. POST request)
+    else
+      @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
+
+      @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+      @submitted_question.location_id = params[:location_id]
+      @submitted_question.county_id = params[:county_id]
+      @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
+      @submitted_question.status = 'submitted'
+      @submitted_question.user_ip = request.remote_ip
+      @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
+      @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
+      @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
+      @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
+      @submitted_question.external_app_id = 'www.extension.org'
+
+      # error check for submitted question, file_attachment and public user records 
+      
+      if params[:public_user][:email].strip != params[:public_email_confirmation].strip
+        render_aae_submission_error('Your email address confirmation does not match.<br />Please make sure your email address and confirmation match up.')
+        return
+      end
+      
+      if !@public_user
+        # create a new instance variable for public_user so the form can be repopulated and we can see what's gone wrong in validating
+        @public_user = PublicUser.new(params[:public_user])
+        # we know it wasn't saved, but let's see why
+        if !@public_user.valid?
+           render_aae_submission_error("Errors occured when saving:<br />" + @public_user.errors.full_messages.join('<br />'))
+           return
         end
-        
-        @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-        @submitted_question.location_id = params[:location_id]
-        @submitted_question.county_id = params[:county_id]
-        @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
-        @top_level_category = @submitted_question.top_level_category if @submitted_question.top_level_category
-        @sub_category = @submitted_question.sub_category.id if @submitted_question.sub_category
-        
-        if @top_level_category 
-          @sub_category_options = [""].concat(@top_level_category.children.map{|sq| [sq.name, sq.id]})
+      else
+        @submitted_question.public_user = @public_user
+      end
+       
+      if !@submitted_question.valid?
+        render_aae_submission_error("Errors occured when saving:<br />" + @submitted_question.errors.full_messages.join('<br />'))
+        return
+      end
+      
+      # end of error check for submitted_question, file_attachment and public user records
+      
+      
+      # handle image upload
+      
+      # load up array of passed in photo parameters based on how many are allowed
+      photo_array = get_photo_array
+      # create each file upload and check for errors
+      photo_array.each do |photo_params|
+        photo_to_upload = FileAttachment.create(photo_params) 
+        if !photo_to_upload.valid?
+          render_aae_submission_error("Errors occured when uploading one of your images:<br />" + photo_to_upload.errors.full_messages.join('<br />'))        
+          return
         else
-          @sub_category_options = [""]
+          @submitted_question.file_attachments << photo_to_upload
+        end   
+      end
+      
+      # end of handling image upload
+      
+      
+      # for easier akismet checking, set the submitter_email attribute from the associated public_user
+      @submitted_question.submitter_email = @public_user.email
+
+      # check for spam
+      begin
+        @submitted_question.spam = @submitted_question.spam?
+      rescue Exception => ex
+        logger.error "Error checking submitted question from pubsite aae form for spam via Akismet at #{Time.now.to_s}. Akismet webservice might be experiencing problems.\nError: #{ex.message}"
+      end
+      
+      @submitted_question.save
+
+      session[:public_user_id] = @public_user.id
+
+      flash[:notice] = 'Your question has been submitted. Our experts try to answer within 48 hours and we will notify you with an email message when they do.'
+      flash[:googleanalytics] = '/ask-an-expert-question-submitted'
+
+      if session[:return_to]
+        redirect_to(session[:return_to]) 
+      else
+        redirect_to home_url
+      end
+    end
+    # end of question submission POST request
+  end
+  
+  def add_images
+    if request.post?
+      
+      if params[:squid].blank? or !@submitted_question = SubmittedQuestion.find(params[:squid])
+        do_404
+        return
+      end
+      
+      # load up array of passed in photo parameters based on how many are allowed
+      photo_array = get_photo_array
+      # create each file upload and check for errors
+      photo_array.each do |photo_params|
+        photo_to_upload = FileAttachment.create(photo_params) 
+        if !photo_to_upload.valid?
+          flash[:notice] = "Errors occured when uploading one of your images:<br />" + photo_to_upload.errors.full_messages.join('<br />')        
+          break
+        else
+          @submitted_question.file_attachments << photo_to_upload
+        end   
+      end
+      flash[:notice] = "Photos saved successfully!" if flash[:notice].blank?
+      redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
+    else
+      do_404
+      return
+    end
+  end
+  
+  def delete_response_image
+    if request.post?
+        # make sure everything was passed in correctly and that the valid question submitter is making this request
+        return if (params[:id].blank? or params[:response_id].blank?)
+        return if !response = Response.find(params[:response_id]) 
+        return if !((response.submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == response.submitted_question.submitter_email))
+        return if !file_attachment = FileAttachment.find(params[:id])
+        
+        FileAttachment.destroy(file_attachment.id) 
+        
+        render :update do |page|
+          page.replace_html "response_image_div#{response.id}", :partial => 'response_images', :locals => { :response => response, :submitted_question => response.submitted_question }
         end
-        # run validator to display any input errors
-        @submitted_question.valid?
-        @public_user.valid?
-      rescue
-        @public_user = PublicUser.new
-        @submitted_question = SubmittedQuestion.new
+    else
+      do_404
+      return
+    end
+  end
+  
+  def delete_sq_image
+    if request.post?
+      # make sure everything was passed in correctly and that the valid question submitter is making this request
+      return if (params[:id].blank? or params[:squid].blank?)
+      return if !@submitted_question = SubmittedQuestion.find(params[:squid])
+      return if !((@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email))
+      return if !file_attachment = FileAttachment.find(params[:id]) 
+       
+      FileAttachment.destroy(file_attachment.id) 
+          
+      render :update do |page|
+        page.replace_html "aae_image_div", :partial => 'aae_images'
       end
     else
-      if(!session[:public_user_id].nil?)
-        @public_user = PublicUser.find_by_id(session[:public_user_id]) || PublicUser.new
-      elsif(!@currentuser.nil?)
-        # let's get cute and fill in the name/email
-        @public_user = PublicUser.new(:email => @currentuser.email, :first_name => @currentuser.first_name, :last_name => @currentuser.last_name)
-      else
-        @public_user = PublicUser.new
-      end
-      @submitted_question = SubmittedQuestion.new
+      do_404
+      return
     end
-    
-    @location_options = get_location_options
-    @county_options = get_county_options
-    
-    @categories = [""].concat(Category.launched_content_categories.map{|c| [c.name, c.id]})
   end
   
   def question_confirmation
+    flash.now[:googleanalytics] = '/ask-an-expert-search-results'
     if request.get?
-      if !params[:q].blank? 
-        params[:submitted_question][:asked_question] = params[:q].sanitize
-        flash.now[:googleanalytics] = '/ask-an-expert-search-results'
-        set_title("Ask an Expert - eXtension", "Confirmation")
-        set_titletag("Search Results for Ask an Expert - eXtension")
-      
-        # again, this needs to be refactored, but sanity check this against the spammers
-        if(params[:submitted_question].nil? or params[:public_user].nil?)
-          invalid = true
-        end
-    
-        @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-        @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
-      
-        error_msg = ""
-      
-        if params[:public_user][:email].blank? or params[:public_email_confirmation].blank?
-          invalid = true
-          error_msg << "Please enter an email address and email address confirmation."
-        else
-          if params[:public_user][:email].strip != params[:public_email_confirmation].strip
-            invalid = true
-            error_msg << "Your email address confirmation does not match.<br />Please make sure your email address and confirmation match up."
-          end
-        end
-        
-        if(!@submitted_question.valid? or @public_user.nil? or !@public_user.valid?)
-          invalid = true
-          error_msg.strip != "" ? error_msg << "<br />Please fill in all required fields." : error_msg << "Please fill in all required fields."
-        end
-      
-        unless (invalid.nil? and !invalid)
-          flash[:notice] = error_msg if error_msg.strip != ''
-          redirect_to :action => 'index', 
-                      :submitted_question => params[:submitted_question], 
-                      :location_id => params[:location_id], 
-                      :county_id => params[:county_id], 
-                      :aae_category => params[:aae_category], 
-                      :subcategory => params[:subcategory]
-        end
-      else
-        flash[:notice] = "Please fill in the required fields before submitting."
+      if params[:q].blank? 
+        flash[:notice] = "Please fill in the question field before submitting."
         redirect_to :action => :index
+      else
+        @question = params[:q].sanitize
       end
-      
     else
       redirect_to :action => :index
     end  
@@ -165,20 +264,39 @@ class AskController < ApplicationController
       
       if @submitted_question and public_user
         
-        if !params[:public_user_response] or params[:public_user_response].strip == ''
-          @err_msg = "The response form field is a required field to submit your response."  
-          render :partial => 'public_response'
+        if params[:public_user_response].blank?
+          render_aae_response_error("The response form field is a required field to submit your response.") 
           return
         end
         
         # don't accept duplicates
         if Response.find(:first, :conditions => {:submitted_question_id => @submitted_question.id, :response => params[:public_user_response], :public_user_id => public_user.id})
-          render :partial => 'public_response'
+          render_aae_response_error("We have already received your response. Thank you!") 
           return
         end
-         
+        
         response = Response.new(:public_responder => public_user, :submitted_question => @submitted_question, :response => params[:public_user_response], :sent => true)
+        
+        # handle image upload
+
+        # load up array of passed in photo parameters based on how many are allowed
+        photo_array = get_photo_array
+        # create each file upload and check for errors
+        photo_array.each do |photo_params|
+          photo_to_upload = FileAttachment.create(photo_params) 
+          if !photo_to_upload.valid?
+            render_aae_response_error("Errors occured when uploading one of your images:<br />" + photo_to_upload.errors.full_messages.join('<br />'))        
+            return
+          else
+            response.file_attachments << photo_to_upload
+          end   
+        end
+
+        # end of handling image upload
+        
+        # save it baby
         response.save
+        
         if @submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED
           @submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED)
           SubmittedQuestionEvent.log_public_response(@submitted_question, public_user.id)
@@ -189,14 +307,16 @@ class AskController < ApplicationController
           SubmittedQuestionEvent.log_public_response(@submitted_question, public_user.id)
         end
       else
-        @err_msg = "There was an error submitting your response. Please try again later."  
+        render_aae_response_error("There was an error submitting your response. Please try again.")
+        return
       end
     else
       do_404
       return
     end
     
-    render :partial => 'public_response'
+    flash[:notice] = "Response has been successfully submitted!"
+    redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint   
   end
   
   def cancel_question_edit
@@ -228,60 +348,6 @@ class AskController < ApplicationController
     
     flash.now[:warning] = "The email address you entered does not match the email used to submit the question. Please check the email address and try again."
     render :template => 'ask/question_signin'
-  end
-  
-  def submit_question
-    if request.post?
-      @public_user = PublicUser.find_and_update_or_create_by_email(params[:public_user])
-      @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-      @submitted_question.location_id = params[:location_id]
-      @submitted_question.county_id = params[:county_id]
-      @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
-      @submitted_question.status = 'submitted'
-      @submitted_question.user_ip = request.remote_ip
-      @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
-      @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
-      @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
-      @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
-      @submitted_question.external_app_id = 'www.extension.org'
-      @submitted_question.public_user = @public_user
-      # for easier akismet checking, set the submitter_email attribute from the associated public_user
-      if(!@public_user.nil?)
-        @submitted_question.submitter_email = @public_user.email
-      else
-        # TODO: this really should display a validation error
-        flash[:notice] = 'There was an error saving your question. Please try again.'
-        redirect_to :action => 'index'
-        return
-      end
-        
-    
-      # let's check for spam
-      begin
-        @submitted_question.spam = @submitted_question.spam?
-      rescue Exception => ex
-        logger.error "Error checking submitted question from pubsite aae form for spam via Akismet at #{Time.now.to_s}. Akismet webservice might be experiencing problems.\nError: #{ex.message}"
-      end
-    
-      if !@submitted_question.valid? || !@public_user.valid? || !@submitted_question.save
-        flash[:notice] = 'There was an error saving your question. Please try again.'
-        redirect_to :action => 'index'
-        return
-      end
-      
-      session[:public_user_id] = @public_user.id
-    
-      flash[:notice] = 'Your question has been submitted and the answer will be sent to your email. Our experts try to answer within 48 hours.'
-      flash[:googleanalytics] = '/ask-an-expert-question-submitted'
-      if session[:return_to]
-        redirect_to(session[:return_to]) 
-      else
-        redirect_to '/'
-      end
-    else
-      flash[:warning] = "Please enter your question via the ask an expert form"
-      redirect_to ask_form_url
-    end
   end
   
   def edit_question
@@ -325,7 +391,7 @@ class AskController < ApplicationController
     end
   end
   
-  def get_aae_form_subcats
+  def get_aae_from_subcats
     parent_cat = Category.find_by_id(params[:category_id].strip) if params[:category_id] and params[:category_id].strip != '' 
     if parent_cat 
       @sub_category_options = [""].concat(parent_cat.children.map{|sq| [sq.name, sq.id]})
@@ -334,6 +400,40 @@ class AskController < ApplicationController
     end
     
     render :partial => 'aae_subcats', :layout => false
+  end
+  
+  private
+  
+  def render_aae_response_error(return_error)
+    if !return_error.blank?
+      flash[:notice] = return_error
+      redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint
+      return
+    end
+  end
+  
+  def render_aae_submission_error(return_error)
+    if !return_error.blank?
+      if top_level_category = @submitted_question.top_level_category
+        @sub_category_options = [""].concat(top_level_category.children.map{|sq| [sq.name, sq.id]})
+        if sub_category = @submitted_question.sub_category
+          @sub_category = sub_category.id
+        end
+      end
+      flash.now[:notice] = return_error
+      render nil
+      return
+    end
+  end
+  
+  def get_photo_array
+    photo_array = Array.new
+    (1..FileAttachment::MAX_AAE_UPLOADS).each do |image_counter| 
+      if !params["file_attachment#{image_counter}"].blank?
+        photo_array << params["file_attachment#{image_counter}"]
+      end
+    end
+    return photo_array
   end
     
 end

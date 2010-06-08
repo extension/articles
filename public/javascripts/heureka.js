@@ -143,3 +143,9 @@ var Timezone = {
   }
 }
 
+
+$j(document).ready(function() {
+ $j(".fancybox").fancybox({
+		'titleShow'		: false
+	});
+})
