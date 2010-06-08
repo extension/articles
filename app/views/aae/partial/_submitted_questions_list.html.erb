@@ -75,9 +75,7 @@
                 
                 <p id="aae_images">
                   <% sq.file_attachments.each do |sq_img| %>
-                    <a class="fancybox" href="<%= sq_img.attachment.url %>" title="AaE Image">
-                    <%= image_tag sq_img.attachment.url(:thumb) %>
-                    </a>
+                    <a class="fancybox" href="<%= sq_img.attachment.url %>" title="AaE Image"><%= image_tag sq_img.attachment.url(:thumb) %></a>
                   <% end %>
                 </p>
                 
