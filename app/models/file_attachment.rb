@@ -18,16 +18,14 @@ class FileAttachment < ActiveRecord::Base
   
   attr_accessible :attachment          
   
-  before_update :randomize_attachment_file_name
+  before_create :randomize_attachment_file_name
   
   MAX_AAE_UPLOADS = 3
   
   def randomize_attachment_file_name
     return if self.attachment_file_name.nil?
     extension = File.extname(attachment_file_name).downcase
-    if(self.attachment_file_name_changed?)
-      self.attachment.instance_write(:file_name, "#{ActiveSupport::SecureRandom.hex(16)}#{extension}")
-    end
+    self.attachment.instance_write(:file_name, "#{ActiveSupport::SecureRandom.hex(16)}#{extension}")
   end
   
 end
