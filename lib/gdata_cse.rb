@@ -33,7 +33,7 @@ module GData
         # generate XML for add
         xml << "<Batch>"
         xml << "<Add>"
-        xml << "<Annotations"
+        xml << "<Annotations>"
         domains.each do |dom|
           xml << "<Annotation about=\"#{dom}\">"
           xml << "<Label name=\"#{@cse_name}\"/>"
@@ -52,23 +52,7 @@ module GData
         # generate XML for remove
         xml << "<Batch>"
         xml << "<Add>"
-        xml << "<Annotations"
-        <Batch>
-          <Add>
-            <Annotations>
-              <Annotation about="http://www.solarenergy.org/*">
-                <Label name="_cse_solar_example"/>
-              </Annotation>
-              <Annotation about="http://www.solarfacts.net/*">
-                <Label name="_cse_solar_example"/>
-              </Annotation>
-              <Annotation about="http://en.wikipedia.org/wiki/*">
-                <Label name="_cse_exclude_solar_example"/>
-              </Annotation>
-
-           </Annotations>
-          </Add>
-        </Batch>
+        xml << "<Annotations>"
         xml << "</Annotations>"
         xml << "</Add>"
         xml << "</Batch>"

@@ -122,7 +122,7 @@ ActionController::Routing::Routes.draw do |map|
   ### Search Stuff ###
 
   map.search 'search', :controller => 'search', :action => 'index'
-  map.search_about 'search/about', :controller => 'search', :action => 'about'
+  map.search_manage 'search/manage', :controller => 'search', :action => 'manage'
 
   #################################################################
   ### pubsite routes ###
@@ -155,7 +155,6 @@ ActionController::Routing::Routes.draw do |map|
     admin.resources :sponsors, :collection => {:update_positions => :post}
     admin.resources :feed_locations
     admin.resources :logos
-    admin.resources :cse
   end
   
   map.connect 'admin/:action/:id', :controller => 'admin'
