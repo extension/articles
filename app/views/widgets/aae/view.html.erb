@@ -54,6 +54,7 @@
     <%= check_box_tag "photo_upload", @widget.id, @widget.upload_capable?, :class => "inline" %>
     <%= label_tag "photo_upload", 'Allow people to submit photo(s) with their question', :class => "inline" %>
     <span id="loading_widget_upload" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
+    <p>Note: When you enable image upload, the height of the widget will increase. Please check your widget page to make sure the widget still fits in the iframe.</p>
 </p>
 </div>
 
