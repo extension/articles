@@ -46,8 +46,11 @@ module GData
       
       def getAnnotations(options={})
         allAnnotations = 'http://www.google.com/cse/api/default/annotations/'
+        if options.include?(:start)
+          allAnnotations << "?start=#{options[:start]}"
+        end
         response = self.get(allAnnotations)
-        return self.updateLocal(response)
+        return self.updateLocal(response, options)
       end
       
       def setAnnotations(xml, options={})
@@ -89,29 +92,49 @@ module GData
         return self.setAnnotations(xml,options)
       end
       
-      def updateLocal(response)
+      def updateLocal(response, options={})
         returndata = nil
         if response.status_code == 200
           begin
             xmldoc = response.to_xml
-            
-            xmldoc.elements.each('Annotations/Annotation') do |element|
-              p "bulk add #{annote}"
+          rescue
+            returndata = nil
+          end
+          
+          if xmldoc
+            xmldoc.elements.each('/Annotations/Annotation/') do |element|
               @domains[element.attributes['href']] = element.attributes['about']
             end
             
-            xmldoc.elements.each('Add/Annotations/Annotation') do |element|
-              p "adding #{annote}"
+            begin
+              # <Annotations total='1101' start='0' num='20'> ... </>
+            
+              num = xmldoc.elements['/Annotations'].attributes['num'].to_i
+              start = xmldoc.elements['/Annotations'].attributes['start'].to_i
+            rescue
+              num = nil
+              start = nil
+            end
+            
+            # if we have a num value, then we are getting the whole list
+            # if num is 20, then there could be more to get
+            # we set the next start value at the current + 20 more
+            if num and num == 20
+              start += 20
+              options[:start] = start
+              self.getAnnotations(options)
+            end
+            
+            xmldoc.elements.each('/Batch/Add/Annotations/Annotation/') do |element|
+              p "adding #{element}"
               @domains[element.attributes['href']] = element.attributes['about']
             end
             
-            xmldoc.elements.each('Remove/Annotations/Annotation') do |element|
-              p "removing #{annote}"
+            xmldoc.elements.each('/Batch/Remove/Annotations/Annotation/') do |element|
+              p "removing #{element}"
               @domains.delete(element.attributes['href'])
             end
             returndata = @domains
-          rescue
-            returndata = nil
           end
         end
         return returndata
