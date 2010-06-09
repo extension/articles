@@ -32,6 +32,12 @@
         <% end %>
     </p>
     
+    <p id="aae_images">
+      <% @submitted_question.file_attachments.each do |sq_img| %>
+        <a class="fancybox" href="<%= sq_img.attachment.url %>" title="AaE Image"><%= image_tag sq_img.attachment.url(:thumb) %></a>
+      <% end %>
+    </p>
+    
     <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
         <div id="recat_<%= @submitted_question.id %>" style="display:none;" class="recat">
         <%= render(:partial => "aae/partial/category_form") %>
@@ -62,6 +68,15 @@
         <div class="commentblock public">
           <div class="comment_wrapper">
             <%= format_text_for_display(response.response) %>
+            
+            <p id="aae_images">
+              <% response.file_attachments.each do |resp_img| %>
+                
+                <a class="fancybox" href="<%= resp_img.attachment.url %>" title="AaE Image"><%= image_tag resp_img.attachment.url(:thumb) %></a>
+                
+              <% end %>
+            </p>
+            
           </div>
             <p>Comment posted by public user</p>
             <p><%= humane_date(response.created_at) %> UTC</p>
@@ -155,7 +170,7 @@
             <%= hidden_field_tag(:author_id, @currentuser.id) %>
              <p>
              <%= submit_tag 'Convert this question into a FAQ', :class => "submit" %>
-             <br />(you can edit on the next screen)
+             <br />(you can edit on the next screen, note: images will not transfer to faq.extension.org at this time)
              </p>
            <% end %>
         

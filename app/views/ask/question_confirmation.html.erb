@@ -1,12 +1,14 @@
-<h1>Search Results for Ask an Expert</h1>
-
-<h3>If these results (listed below your question) aren't helpful, please click the "Submit my question" button to send to one of our experts.</h3>
+<h1>Search Results</h1>
 
 <div class="aae_options">
-    <p><strong>Your Question:</strong><br /><%= @submitted_question.asked_question %></p>
+  <p>
+    "<%= @question %>"
+  </p>
     
-    <p class="button2"><%= link_to 'Submit my Question', { :action => 'submit_question', :public_user => params[:public_user], :submitted_question => params[:submitted_question], :location_id => params[:location_id], :county_id => params[:county_id], :aae_category => params[:aae_category], :subcategory => params[:subcategory] }, :method => :post %></p> 
-    <p class="button2"><%= link_to 'Edit my Question', { :action => 'index', :public_user => params[:public_user], :submitted_question => params[:submitted_question], :location_id => params[:location_id], :county_id => params[:county_id], :aae_category => params[:aae_category], :subcategory => params[:subcategory] } %></p>
+  <p>
+    <%= link_to 'Edit my Question', {:action => :index, :q => @question}, { :class => "bigbutton blue" } %>
+    <%= link_to 'Send to "Ask an Expert"', { :action => :submission_form, :q => @question }, { :class => "bigbutton blue" } %>
+  </p>
 </div>
 
 <!-- Google Search Result Snippet Begins -->

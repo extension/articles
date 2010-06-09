@@ -1,79 +1,40 @@
 <h1 class="title">Ask an Expert</h1>
-<h2>We have experts from Universities around the country ready to answer your questions</h2>
+
+<ol id="aae_steps">
+  <li><span>Ask a Question</span><em></em></li>
+  <li><span>Search for an instant answer</span></li>
+  <li><span>If there's no answer, we send it to our experts</span></li>
+</ol>
 
 <% form_tag({:action => :question_confirmation}, {:id => 'searchbox_002594610894210374936:hggphannnzi', :class => 'aae', :method => :get}) do  %>
 	
-<h3>Personal Information</h3>
-
-<p><em>Fields marked with an asterisk (<span style="color:red;">*</span>) are required</em></p>
-
-<fieldset>
-    <p class="simplefield">
-        <label for="public_user[first_name]">First Name:</label>
-        <%= text_field_tag "public_user[first_name]", @public_user.first_name %>
-    </p>
-
-	<br class="clearing" />
-    <p class="simplefield">
-        <label for="public_user[last_name]">Last Name:</label>
-        <%= text_field_tag "public_user[last_name]", @public_user.last_name %>
-    </p>
-		<br class="clearing" />
-    <p class="simplefield">
-        <label for="submitted_question[zip_code]">Zip Code:</label>
-        <%= text_field_tag "submitted_question[zip_code]", @submitted_question.zip_code, :type => "text", :pattern => "[0-9]*" %>
-    </p>
-<br class="clearing" />
-    <p class="simplefield">
-        <label for="public_user[email]">Email:<em class="required">*</em></label>
-        <%= text_field_tag "public_user[email]", @public_user.email, :type => "email",  :autocapitalize => "off" %>
-    </p>
-    <br class="clearing" />
-    
-    <p class="simplefield">
-        <label for="public_email_confirmation">Email Confirmation:<em class="required">*</em></label>
-        <%= text_field_tag "public_email_confirmation", @public_user.email, :type => "email",  :autocapitalize => "off" %>
-    </p>
-</fieldset>
-
-<h3>Category <span class="optional">(optional)</span></h3>
-<p class="instructions">Tip: Questions can be answered more quickly when assigned to the correct community</p>
-<fieldset class="stack_labels">
-	<p>
-	<%= select_tag("aae_category", options_for_select(@categories, @submitted_question.top_level_category ? @submitted_question.top_level_category.id : '')) %>
-	</p>
-	<%= observe_field("aae_category", :update => :subcat_div, :url => { :action => :get_aae_form_subcats }, :with => "'category_id=' + value") %>
-
-    <p id="subcat_div">
-       <% if @top_level_category %>
-         <%= render(:partial => 'aae_subcats')%>
-       <% end %>
-    </p>
-</fieldset>
-
-<h3>Your location</h3>
-<p class="instructions">Where should the question be directed?</p>
-<fieldset class="stack_labels">
-	<%= render(:partial => 'shared/location_county') %>
-</fieldset>
-
-<h3><label for="submitted_question[asked_question]" class="field-textarea">Your question <em class="required">*</em></label></h3> 
-<p class="instructions">Before submitting your question, we search eXtension and show the results.</p>
-<fieldset>
-    
-    <%= text_area_tag "q", (@submitted_question.asked_question) ? @submitted_question.asked_question : '', :rows => "3", :id => "submitted_question_asked_question" %> 
-</fieldset>
-<p>
- <%= submit_tag "Search for an Answer", :name => "sa", :value => "Search for an Answer", :alt => "Go" %>
-</p>
-
-<input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
-<input type="hidden" name="cof" value="FORID:11" />
-        
-<!-- end of form -->
+	<fieldset>
+	  <h3><label for="q">Your Question</label> <a class="tooltip_trigger local aae_help" href="#aae_question_tooltip" rel="#aae_question_tooltip">What kinds of questions can eXtension answer?</a></h3>
+	  <p>
+	    <%= text_area_tag "q", @question, {:rows => "3", :id => "submitted_question_asked_question"} %> 
+	  </p>
+	  
+	  <p class="image_upload">Optional: You can include an image with your question after the search</p>
+	  <p><%= submit_tag "Search for an Answer", :name => "sa", :value => "Search for an Answer", :alt => "Go", :class => "bigbutton blue" %></p>
+	</fieldset>
+  
+  <input type="hidden" name="cx" value="002594610894210374936:hggphannnzi" />
+  <input type="hidden" name="cof" value="FORID:11" />
+      
 <% end %>
 
 
 <%= javascript_include_tag "google_coop" %>
 <!-- Google CSE Search Box Ends -->
 
+<div id="aae_question_tooltip" class="tooltip" >
+    <h3>What kinds of questions can eXtension answer?</h3>
+    <p>We have expertise in a broad variety of areas. You can see a list of our content areas by clicking the "Resource Areas" link at the top of this page.</p>
+</div>
+
+<script type="text/javascript">
+  $j(document).ready(function() {
+    $j('a.title').cluetip({splitTitle: '|'});
+    $j('a.tooltip_trigger.local').cluetip({local:true, cursor: 'pointer',width: 300, showTitle:false});
+  })
+</script>

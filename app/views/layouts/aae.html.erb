@@ -14,20 +14,23 @@
         <%= stylesheet_link_tag 'common' %>
         <%= stylesheet_link_tag 'aae' %>
         <%= stylesheet_link_tag 'aae_print', :media => 'print' %>
+        <%= stylesheet_link_tag 'fancybox/jquery.fancybox-1.3.1' %>
     <% end %>
-
+    
     <%= javascript_include_tag 'prototype' %>
     <%= javascript_include_tag 'effects' %>
+    <%= javascript_include_tag 'jquery-1.4.2.min' %>
+    <script type="text/javascript">
+        var $j = jQuery.noConflict();
+    </script>
     <%= javascript_include_tag 'heureka' %>
     <%= javascript_include_tag 'tooltip' %>
-    <%= javascript_include_tag 'jquery-1.3.2.min.js' %>
+    <%= javascript_include_tag 'fancybox/jquery.fancybox-1.3.1' %>
     <%= javascript_include_tag 'jquery.hoverIntent.js' %>
     <%= javascript_include_tag "jquery.cluetip.min.js" %>
     <%= calendar_date_select_includes "silver" %>
     
-    <script type="text/javascript">
-        var $j = jQuery.noConflict();
-    </script>
+    
  	
 </head>
     

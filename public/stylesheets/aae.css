@@ -656,7 +656,8 @@ a.profile {
 .inc_descriptive strong {
     color: #222;
 }
-
+#aae_images {padding:10px 0 0;}
+#aae_images a {margin:0 10px 0 0;}
 
 #nav {
     float: left;

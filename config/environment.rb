@@ -23,6 +23,7 @@ Rails::Initializer.run do |config|
   config.gem 'tzinfo', :version => '~>0.3', :source => 'http://systems.extension.org/rubygems/'
   config.gem 'geokit', :version => '~>1.5', :source => 'http://systems.extension.org/rubygems/'
   config.gem "nokogiri", :version => '~>1.4', :source => 'http://systems.extension.org/rubygems/'
+  config.gem "paperclip", :version => '~>2.3', :source => 'http://systems.extension.org/rubygems/'
   config.gem "calendar_date_select"
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521

@@ -173,6 +173,7 @@ select {display:block;}
 textarea { padding: .3em; }
 textarea { width: 95%; }
 
+.inline {display:inline;}
 p.inline * {display:inline;}
 p.inline label input {width:auto;}
 .float-spinner {display:inline;}
@@ -211,3 +212,6 @@ p.inline label input {width:auto;}
 #tag_wrapper {height:120px; overflow:auto; background:#eee; padding:10px;}
 .gray {color:#666;}
 #tag_operator {background:#fff0b2; display:none; padding:10px;}
+
+#assignee_pool {padding-left:30px; margin-bottom:30px;}
+
