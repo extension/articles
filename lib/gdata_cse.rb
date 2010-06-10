@@ -19,6 +19,7 @@ module GData
         @cse_id = nil
         
         options[:clientlogin_service] ||= 'cprose'
+        options[:source] ||= 'darmok' # our AppName
         options[:authsub_scope] ||= 'http://www.google.com/cse/api/default/cse/'
         super(options)
       end
