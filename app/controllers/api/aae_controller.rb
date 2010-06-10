@@ -53,7 +53,7 @@ class Api::AaeController < ApplicationController
         end
 
         # check to see if question has location associated with it
-        location = params[:location].strip if params[:location] and params[:location].strip != ''
+        location = params[:location].strip if !params[:location].blank?
 
         if location
           location = Location.find_by_abbreviation_or_name(location)
@@ -61,7 +61,7 @@ class Api::AaeController < ApplicationController
         end
 
         # check to see if question has county and said location associated with it
-        county = params[:county].strip if params[:county] and params[:county].strip != ''
+        county = params[:county].strip if !params[:county].blank?
         county = location.get_associated_county(county) if location
 
         if county and location
@@ -71,8 +71,20 @@ class Api::AaeController < ApplicationController
         
         if(!@submitted_question.valid? or !@public_user.valid?)
           active_record_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
-          return send_json_error(active_record_errors, 500)
+          return send_json_error(active_record_errors, 403)
         end
+        
+        # handle image upload
+        if !params[:image].blank?
+          photo_to_upload = FileAttachment.create({:attachment => params[:image]}) 
+          if !photo_to_upload.valid?
+            argument_errors = "Errors occured when uploading your image:<br />" + photo_to_upload.errors.full_messages.join('<br />')        
+            return send_json_error(argument_errors, 403)
+          else
+            @submitted_question.file_attachments << photo_to_upload
+          end   
+        end
+        # end of handling image upload
         
         begin
           @submitted_question.spam = @submitted_question.spam? 

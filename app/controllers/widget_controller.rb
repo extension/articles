@@ -125,6 +125,12 @@ class WidgetController < ApplicationController
   ## This is intended for short-term use until we get custom widgets 
   ## up and operational.
   def bonnie_plants
+    if params[:id].blank?
+        
+    end
+    
+    @submitted_question = SubmittedQuestion.new
+    @public_user = PublicUser.new
     @fingerprint = params[:id]
     @host_name = request.host_with_port
     @location_options = get_location_options
@@ -134,46 +140,56 @@ class WidgetController < ApplicationController
   ## create question from Bonnie Plants custom form/widget
   def create_from_bonnie_plants
     if request.post?
-      if params[:email].blank? or params[:email_confirmation].blank? or params[:question].blank?
-        @status_message = "Please fill in all required fields."
-        return render :template => 'widget/api_widget_status', :layout => false
-      end  
-      
-      if params[:email].strip != params[:email_confirmation].strip
-        @status_message = "The email confirmation does not match the email address entered. Please make sure they match."
-        return render :template => 'widget/api_widget_status', :layout => false
-      end
-      
+      @email = params[:email]
+      @email_confirmation = params[:email_confirmation]
+      @question = params[:question]
+      @first_name = params[:first_name]
+      @last_name = params[:last_name]
+        
       location_query = ''
       if !params[:location_id].blank?
-        location = Location.find(params[:location_id].strip)
-        location_query << "&location=#{location.abbreviation}" if location
+        @location = Location.find(params[:location_id].strip)
+        location_query << "&location=#{@location.abbreviation}" if @location
       end
       
-      if location and (!params[:county_id].blank?)
-        county = County.find(params[:county_id].strip)
-        location_query << "&county=#{county.name}" if county
+      if @location and (!params[:county_id].blank?)
+        @county = County.find(params[:county_id].strip)
+        location_query << "&county=#{@county.name}" if @county
+      end
+        
+      if @email.blank? or @email_confirmation.blank? or @question.blank?
+        render_bonnie_plants_widget_error("Please fill in all required fields.")
+        return
+      end  
+      
+      if @email.strip != @email_confirmation.strip
+        render_bonnie_plants_widget_error("The email confirmation does not match the email address entered. Please make sure they match.")
+        return
       end
       
       uri = URI.parse(url_for(:controller => 'api/aae', :action => :ask, :format => :json))
       http = Net::HTTP.new(uri.host, uri.port)
-      response = http.post(uri.path, "question=#{params[:question]}&email=#{params[:email]}&widget_id=#{params[:id]}&first_name=#{params[:first_name]}&last_name=#{params[:last_name]}" + location_query)
+      response = http.post(uri.path, "question=#{@question}&email=#{@email}&widget_id=#{params[:id]}&first_name=#{@first_name}&last_name=#{@last_name}" + location_query)
     
       case response
       when Net::HTTPOK
-        return render :template => 'widget/create_from_widget', :layout => false
+        flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
+        redirect_to :action => :bonnie_plants, :id => params[:id]
+        return
       when Net::HTTPBadRequest
-        @status_message = "A configuration error has prevented your question from submitting. Please try again later."
-        return render :template => 'widget/api_widget_status', :layout => false
+        render_bonnie_plants_widget_error("A configuration error has prevented your question from submitting. Please try again later.")
+        return
       when Net::HTTPForbidden
         response_hash = JSON.parse response.body
-        @status_message = response_hash['error']
-        return render :template => 'widget/api_widget_status', :layout => false  
+        render_bonnie_plants_widget_error(response_hash['error'])
+        return
       else
-        @status_message = "We are currently experiencing technical difficulties with the system. Please try again later."
-        return render :template => 'widget/api_widget_status', :layout => false  
-      end
-    
+        render_bonnie_plants_widget_error('An internal error has occured. Please check back later.')
+        return
+      end 
+    else
+      redirect_to :action => :bonnie_plants, :id => params[:id]
+      return
     end
   end
 
@@ -239,5 +255,20 @@ class WidgetController < ApplicationController
       @submitted_question.county = @county if @county
     end
   end
-   
+  
+  ### BONNIE PLANTS STUFF ###
+  def render_bonnie_plants_widget_error(status_message)
+    flash.now[:warning] = status_message
+    @fingerprint = params[:id]
+    @host_name = request.host_with_port
+    
+    @submitted_question = SubmittedQuestion.new
+    @submitted_question.location = @location if @location
+    @submitted_question.county = @county if @county
+    @location_options = get_location_options
+    @county_options = get_county_options
+    
+    return render :template => 'widget/bonnie_plants', :layout => false
+  end
+  ### END BONNIE PLANTS STUFF ### 
 end
