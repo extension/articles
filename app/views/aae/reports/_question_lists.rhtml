@@ -7,15 +7,15 @@
 <table id="questionlist" class="hover">
     <tr>
 	    <% if @questions.length > 0%>
-        <th scope="col"><%= link_to "ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @desc, :type => @type, :category => @catname, :statename => @statename, :countyname => @county, :loc => @loc,:ob => @idtype, :datefrom => @date1, :dateto => @date2, :so => (params[:so] != "a") ? "a" : "d" } %></th>
+        <th scope="col"><%= link_to "ID", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @desc, :type => @type, :category => @catname, :location => @locid, :county => @county_id, :order_by_field => @idtype, :datefrom => @date1, :dateto => @date2, :sortorder => (params[:sortorder] != "a") ? "a" : "d" } %></th>
         <% else%>
         <th scope="col">ID</th>
         <% end%>
         <th scope="col">Question</th>
       
           <% if @questions.length > 0%>
-	         <th scope="col"><%= link_to "Contributing Question", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @desc,:type => @type, :loc => @loc, :category => @catname, :statename => @statename, :countyname => @county, :datefrom => @date1, :dateto => @date2, :ob => 'id', :so => (params[:so] != "a")? "a": "d"} %></th>
-	        <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @desc,  :type => @type, :loc => @loc, :category => @catname, :statename => @statename, :countyname => @county, :datefrom => @date1, :dateto => @date2, :ob => 'squpdated', :so => (params[:so] != "a") ? "a" : "d" } %></th>
+	         <th scope="col"><%= link_to "Contributing Question", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @desc,:type => @type,  :category => @catname, :location => @locid, :county => @county_id, :datefrom => @date1, :dateto => @date2, :order_by_field => 'current_contributing_question', :sortorder => (params[:sortorder] != "a")? "a": "d"} %></th>
+	        <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @desc,  :type => @type,  :category => @catname, :location => @locid, :county => @county_id, :datefrom => @date1, :dateto => @date2, :order_by_field => 'squpdated', :sortorder => (params[:sortorder] != "a") ? "a" : "d" } %></th>
 	       <% else%>
 	          <th scope="col">Converted FAQ ID</th>
 	          <th scope="col">Last Updated</th>

@@ -1979,9 +1979,8 @@ class User < ActiveRecord::Base
           conditions << User.build_date_condition({:dateinterval => dateinterval})
         end
   
-        if options[:countyname]
-          ctyid = County.find(:first, :conditions => [ " name= ? and location_id=?", options[:countyname], options[:location].id])
-          conditions << " county_id=#{ctyid.id} "
+        if options[:county]
+          conditions << " county_id=#{options[:county]} "
         else
           if options[:location]
                conditions << " location_id = #{options[:location].id} "

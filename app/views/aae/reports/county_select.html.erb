@@ -2,18 +2,18 @@
 
  <p id="activity_report"><%= link_to "All Reports",  :controller => 'aae/reports' %> <%= @page_title %> </p>
 
-<% form_tag({:action => :county, :statename => @statename, :dateto => @date2, :datefrom => @date1} ) do %>
+<% form_tag({:action => :county, :location => @locid, :dateto => @date2, :datefrom => @date1} ) do %>
 
 <h2>Select County/Parish in <%= @statename%></h2>
 
 <% options_array= Array.new%>
-<% @counties.each do |county| %>
-    <% options_array <<  county.name %>
+<% @counties.each do |conty| %>
+    <% options_array <<  [conty.name, conty.id] %>
 <% end%>    
 
   <label>County/Parish</label>
  
-       <select name="countyname">
+       <select name="county">
   	 <%= options_for_select(options_array) %>
       </select><br /><br />
 

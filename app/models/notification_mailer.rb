@@ -473,7 +473,7 @@ class NotificationMailer < ActionMailer::Base
      respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
-     @subject = "[Message from eXtension] A question you have been assigned has been commented on by the asker."          
+     @subject = "[Message from eXtension] A question you have been assigned has a new comment"          
      @recipients     = notification.user.email
      urls = Hash.new
      urls['question'] = aae_question_url(:id => submitted_question.id)

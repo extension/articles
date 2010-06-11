@@ -298,8 +298,8 @@ end
               conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
           end
  
-         if (options[:countyname])
-           county = County.find(:first, :conditions => [" name=? and location_id=?", options[:countyname], options[:location].id])
+         if (options[:county])
+           county = County.find_by_id(options[:county])
          end
          (cdstring, descaux) = get_delineated_string(options[:desc], cdstring)
          
@@ -318,7 +318,7 @@ end
                 if cdstring.length > 0 ; conditions << cdstring; end
              end         
           when "ResolvedM"
-               if !options[:countyname]
+               if !options[:county]
                    conditions <<  " users.location_id=#{options[:location].id}"  
                else
                    conditions << " users.county_id=#{county.id}"
