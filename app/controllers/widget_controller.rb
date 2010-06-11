@@ -5,8 +5,9 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-require 'net/http'
-require 'uri'
+#require 'net/http'
+#require 'uri'
+require 'rest_client'
 require 'json/pure'
 
 class WidgetController < ApplicationController  
@@ -125,8 +126,9 @@ class WidgetController < ApplicationController
   ## This is intended for short-term use until we get custom widgets 
   ## up and operational.
   def bonnie_plants
-    if params[:id].blank?
-        
+    if params[:id].blank? or !Widget.find_by_fingerprint_and_name(params[:id].strip, 'Bonnie Plants')
+      @status_message = "There are configuration problems with this widget (invalid widget ID). Please try again later."
+      return render :template => 'widget/api_widget_status', :layout => false 
     end
     
     @submitted_question = SubmittedQuestion.new
@@ -146,15 +148,15 @@ class WidgetController < ApplicationController
       @first_name = params[:first_name]
       @last_name = params[:last_name]
         
-      location_query = ''
+      #location_query = ''
       if !params[:location_id].blank?
         @location = Location.find(params[:location_id].strip)
-        location_query << "&location=#{@location.abbreviation}" if @location
+        #location_query << "&location=#{@location.abbreviation}" if @location
       end
       
       if @location and (!params[:county_id].blank?)
         @county = County.find(params[:county_id].strip)
-        location_query << "&county=#{@county.name}" if @county
+        #location_query << "&county=#{@county.name}" if @county
       end
         
       if @email.blank? or @email_confirmation.blank? or @question.blank?
@@ -167,19 +169,32 @@ class WidgetController < ApplicationController
         return
       end
       
-      uri = URI.parse(url_for(:controller => 'api/aae', :action => :ask, :format => :json))
-      http = Net::HTTP.new(uri.host, uri.port)
-      response = http.post(uri.path, "question=#{@question}&email=#{@email}&widget_id=#{params[:id]}&first_name=#{@first_name}&last_name=#{@last_name}" + location_query)
+      #uri = URI.parse(url_for(:controller => 'api/aae', :action => :ask, :format => :json))
+      #http = Net::HTTP.new(uri.host, uri.port)
+      #response = http.post(uri.path, "question=#{@question}&email=#{@email}&widget_id=#{params[:id]}&first_name=#{@first_name}&last_name=#{@last_name}&image=#{params[:image]}" + location_query)
+      params_hash = {:question => @question,
+                    :email => @email,
+                    :widget_id => params[:id],
+                    :first_name => @first_name,
+                    :last_name => @last_name,
+                    :image => params[:image],
+                    :location => @location ? @location.abbreviation : nil,
+                    :county => @county ? @county.name : nil,
+                    :accept => :json,
+                    :multipart => true}
+      
+      
+      response = RestClient.post url_for(:controller => 'api/aae', :action => :ask, :format => :json), params_hash
     
-      case response
-      when Net::HTTPOK
+      case response.code
+      when 200
         flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
         redirect_to :action => :bonnie_plants, :id => params[:id]
         return
-      when Net::HTTPBadRequest
+      when 400
         render_bonnie_plants_widget_error("A configuration error has prevented your question from submitting. Please try again later.")
         return
-      when Net::HTTPForbidden
+      when 403
         response_hash = JSON.parse response.body
         render_bonnie_plants_widget_error(response_hash['error'])
         return
@@ -188,8 +203,8 @@ class WidgetController < ApplicationController
         return
       end 
     else
-      redirect_to :action => :bonnie_plants, :id => params[:id]
-      return
+      @status_message = "Only POST requests from a AaE form are accepted."
+      return render :template => 'widget/api_widget_status', :layout => false
     end
   end
 
