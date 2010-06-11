@@ -175,27 +175,26 @@ class WidgetController < ApplicationController
                     :accept => :json,
                     :multipart => true}
       
-      begin
-        response = RestClient.post url_for(:controller => 'api/aae', :action => :ask, :format => :json), params_hash
-      rescue
-      end  
-      
-      case response.code
-      when 200
-        flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
-        redirect_to :action => :bonnie_plants, :id => params[:id]
-        return
-      when 400
-        render_bonnie_plants_widget_error("A configuration error has prevented your question from submitting. Please try again later.")
-        return
-      when 403
-        response_hash = JSON.parse response.body
-        render_bonnie_plants_widget_error(response_hash['error'])
-        return
-      else
-        render_bonnie_plants_widget_error('An internal error has occured. Please check back later.')
-        return
-      end 
+      RestClient.post(url_for(:controller => 'api/aae', :action => :ask, :format => :json), params_hash) {|response|
+        case response.code
+        when 200
+          flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
+          redirect_to :action => :bonnie_plants, :id => params[:id]
+          return
+        when 400
+          render_bonnie_plants_widget_error("A configuration error has prevented your question from submitting. Please try again later.")
+          return
+        when 403
+          response_hash = JSON.parse response.body
+          render_bonnie_plants_widget_error(response_hash['error'])
+          return
+        else
+          render_bonnie_plants_widget_error('An internal error has occured. Please check back later.')
+          return
+        end    
+      }
+    
+    # if GET request occured for this controller method  
     else
       @status_message = "Only POST requests from a AaE form are accepted."
       return render :template => 'widget/api_widget_status', :layout => false
