@@ -5,8 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-#require 'net/http'
-#require 'uri'
 require 'rest_client'
 require 'json/pure'
 
@@ -148,15 +146,12 @@ class WidgetController < ApplicationController
       @first_name = params[:first_name]
       @last_name = params[:last_name]
         
-      #location_query = ''
       if !params[:location_id].blank?
         @location = Location.find(params[:location_id].strip)
-        #location_query << "&location=#{@location.abbreviation}" if @location
       end
       
       if @location and (!params[:county_id].blank?)
         @county = County.find(params[:county_id].strip)
-        #location_query << "&county=#{@county.name}" if @county
       end
         
       if @email.blank? or @email_confirmation.blank? or @question.blank?
@@ -169,9 +164,6 @@ class WidgetController < ApplicationController
         return
       end
       
-      #uri = URI.parse(url_for(:controller => 'api/aae', :action => :ask, :format => :json))
-      #http = Net::HTTP.new(uri.host, uri.port)
-      #response = http.post(uri.path, "question=#{@question}&email=#{@email}&widget_id=#{params[:id]}&first_name=#{@first_name}&last_name=#{@last_name}&image=#{params[:image]}" + location_query)
       params_hash = {:question => @question,
                     :email => @email,
                     :widget_id => params[:id],
@@ -183,9 +175,11 @@ class WidgetController < ApplicationController
                     :accept => :json,
                     :multipart => true}
       
+      begin
+        response = RestClient.post url_for(:controller => 'api/aae', :action => :ask, :format => :json), params_hash
+      rescue
+      end  
       
-      response = RestClient.post url_for(:controller => 'api/aae', :action => :ask, :format => :json), params_hash
-    
       case response.code
       when 200
         flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
