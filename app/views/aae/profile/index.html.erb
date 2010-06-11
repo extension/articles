@@ -72,7 +72,7 @@
     <% end%>
     
     <h2>Handling rate for assigned questions for the last 6 months:</h2>
-    <% if @user.assigned_questions.length > 0 %>
+    <% if @users_assigned_questions_last_6_months > 0 %>
        <% aae_handling_event_count =  @user.aae_handling_event_count %>
        
        <p><span class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
