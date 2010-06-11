@@ -25,8 +25,13 @@ class Api::AaeController < ApplicationController
         
         ############### setup the question to be saved and fill in attributes with parameters ###############
         widget = Widget.find_by_fingerprint(params[:widget_id].strip) if params[:widget_id]
-
-        @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:email].strip})
+        
+        name_hash = {}
+        
+        name_hash[:first_name] = params[:first_name].strip if !params[:first_name].blank?
+        name_hash[:last_name] = params[:last_name].strip if !params[:last_name].blank?
+        
+        @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:email].strip}.merge(name_hash))
         @submitted_question = SubmittedQuestion.new(:asked_question => params[:question].strip, :submitter_email => params[:email].strip)
         @submitted_question.public_user = @public_user
         @submitted_question.widget = widget if widget

@@ -205,3 +205,8 @@ toggle_table_of_contents = function() {
 	return;
 }
 
+$j(document).ready(function() {
+ $j(".fancybox").fancybox({
+		'titleShow'		: false
+	});
+})

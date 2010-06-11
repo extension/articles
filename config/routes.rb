@@ -26,6 +26,10 @@ ActionController::Routing::Routes.draw do |map|
     people.connect 'invite/:invite', :controller => :signup, :action => :readme
     people.connect 'sp/:token', :controller => :account, :action => :set_password
     people.apikeys 'profile/apikeys', :controller => :profile, :action => :apikeys
+    people.apikey 'profile/apikey/:id', :controller => :profile, :action => :apikey
+    people.new_apikey 'profile/new_apikey', :controller => :profile, :action => :new_apikey
+    people.edit_apikey 'profile/edit_apikey/:id', :controller => :profile, :action => :edit_apikey
+    
     
     people.resources :lists, :collection => {:showpost => :get, :all => :get, :managed => :get, :nonmanaged => :get, :postactivity => :get, :postinghelp => :get, :about => :get}, :member => { :posts => :get, :subscriptionlist => :get , :ownerlist => :get, }
     people.resources :communities, :collection => { :downloadlists => :get,  :filter => :get, :newest => :get, :mine => :get, :browse => :get, :tags => :get, :findcommunity => :get},
@@ -159,6 +163,10 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect 'admin/:action/:id', :controller => 'admin'
   map.connect 'admin/:action', :controller => 'admin'
+  
+  ### connect up "data" to the api/data controller
+  map.connect 'data/:action', :controller => 'api/data'
+
 
   ### pubsite named routes  
   map.logo  'logo/:file.:format', :controller => 'logo', :action => :display

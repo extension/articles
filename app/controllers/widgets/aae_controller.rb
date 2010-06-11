@@ -119,14 +119,23 @@ class Widgets::AaeController < ApplicationController
     end
   end
   
-  def widget_assignees
-    @widget = Widget.find(params[:id])
-    if !@widget
-      flash[:notice] = "The widget you specified does not exist."
-      redirect_to :controller => 'aae/prefs', :action => :widget_preferences
-      return
+  def toggle_upload_capable
+    if request.post?
+      if params[:widget_id]
+        @widget = Widget.find(params[:widget_id])
+        @widget.update_attributes(:upload_capable => !@widget.upload_capable?)
+        event = @widget.upload_capable? ? WidgetEvent::UPLOAD_CAPABLE : WidgetEvent::NON_UPLOAD_CAPABLE
+
+        WidgetEvent.log_event(@widget.id, @currentuser.id, event)
+
+        render :update do |page|
+          page.visual_effect :highlight, 'widget_upload'
+          page.replace_html :history, :partial => 'widget_history'
+        end        
+      end
+    else
+      do_404
     end
-    @widget_assignees = @widget.assignees
   end
   
 end

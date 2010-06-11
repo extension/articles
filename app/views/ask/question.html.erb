@@ -9,18 +9,6 @@
         <%= render (:partial => "ask/question") %>
         </div>
      
-        <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
-    
-            <% if !((response = @submitted_question.current_response) and (response.strip != '')) %>
-            <p class="inc_descriptive editpitch">
-            <%= link_to_remote 'Edit my question', 
-                          :update => "question_area",
-                          :url => { :action => "make_question_editable", :squid => @submitted_question.id }  %>.
-                          Need to clarify or correct any information? Your question is editable until one of our experts responds. Thanks!
-            </p>
-            <% end %>
-    
-        <% end %>
         <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago.</p>
     
 
@@ -50,7 +38,11 @@
                           </p>
                             <%= format_text_for_display(response.response) %>
                             <%= prepare_aae_signature(response) %>
-                        
+                            
+                            <div id="response_image_div<%= response.id %>">
+                            <%= render(:partial => 'response_images', :locals => { :response => response, :submitted_question => @submitted_question }) %>
+                            </div>
+                            
                         <p class="meta">Posted <%= time_ago_in_words(response.created_at) %> ago</p>
                         </div>
                     </div>
@@ -60,10 +52,31 @@
     <p id="loading_response" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </p>
     
         <% if @submitted_question_responses.length > 0 and ((@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email)) %>
-            <h3><%= link_to_function 'Add a comment', "Effect.toggle('additional_comment','blind', { duration: .4});" %> or <%= link_to 'Ask a new question', ask_form_url %></h3>
+            <h3><%= link_to_function 'Add a comment', "Effect.toggle('additional_comment','blind', { duration: .4 });" %> or <%= link_to 'Ask a new question', ask_form_url %></h3>
             <div id="additional_comment" style="display:none;">
-                <% form_remote_tag :update => 'responses', :url => {:controller => :ask, :action => :post_public_response, :squid => @submitted_question.id, :public_user_id => @submitted_question.public_user_id}, :loading => "Element.show('loading_response')", :complete => "['loading_response', 'additional_comment'].each(Element.hide);$('public_user_response').value = ''"  do %>
+            <% form_for :response, :url => {:controller => :ask, :action => :post_public_response, :squid => @submitted_question.id, :public_user_id => @submitted_question.public_user_id}, :html => {:multipart => true} do %>
                 <%= text_area_tag("public_user_response", nil, :cols => "20", :rows => "3") %>
+                
+                
+                
+                <p class="inc_descriptive editpitch">
+                <%= link_to_function "Add Images to Response", "Effect.toggle('add_uploads','blind', { duration: .4}); if(this.innerHTML == 'Add Images') {this.innerHTML = 'Cancel';} else {this.innerHTML = 'Add Images'}" %>
+                </p>
+                <div id="add_uploads" style="display:none;">
+                <h3>Images</h3>
+                <p>You can include up to <%= FileAttachment::MAX_AAE_UPLOADS %> images:</p>
+                <p><em>You can upload .jpg .png or .gif. Max size of 2MB each.</em></p>
+
+                <fieldset>
+                <% (1..FileAttachment::MAX_AAE_UPLOADS).each do |image_counter| %>
+                  <% fields_for "file_attachment#{image_counter}" do |file_attachment| %> 
+                  <p class="image_upload"><%= file_attachment.file_field :attachment %></p>
+                  <% end %>
+                <% end %>
+                </fieldset>
+                </div>
+                
+                <br /><br />
                 <%= submit_tag "Post response" %>
                 <% end %>
             </div>

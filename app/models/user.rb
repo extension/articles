@@ -10,7 +10,8 @@ class User < ActiveRecord::Base
   include TaggingScopes
   serialize :additionaldata
   ordered_by :default => "last_name,first_name ASC"
-
+  
+  
   STATUS_CONTRIBUTOR = 0
   STATUS_REVIEW = 1
   STATUS_CONFIRMEMAIL = 2

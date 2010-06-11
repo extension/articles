@@ -4,6 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <% if !@openidmeta.nil? %><%= @openidmeta %><% end %>
+    
 	<% if(!@published_content or params[:print]) %>
 	   <meta name="robots" content="noindex,follow" /> 
 	<% end %>
@@ -22,7 +24,10 @@
     	    <%= stylesheet_link_tag 'common' %>
     	    <%= stylesheet_link_tag '960' %>
         	<%= stylesheet_link_tag 'extension2' %>
+        	<%= stylesheet_link_tag 'fancybox/jquery.fancybox-1.3.1' %>
         	<%= stylesheet_link_tag 'extension2', :media => 'print' %>
+        	
+        	
     	<% end %>
 	<% end %>
     
@@ -30,9 +35,18 @@
      <%= stylesheet_link_tag 'youth' %>
   <% end %>
   
-    <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag 'prototype' %>
+    <%= javascript_include_tag 'effects' %>
+    <%= javascript_include_tag 'dragdrop' %>
+    <%= javascript_include_tag 'controls' %>
+    <%= javascript_include_tag 'jquery-1.4.2.min' %>
+    <script type="text/javascript">
+        var $j = jQuery.noConflict();
+    </script>
+    <%= javascript_include_tag 'application' %>
+    <%= javascript_include_tag 'jquery.cluetip.min' %>
+    <%= javascript_include_tag 'fancybox/jquery.fancybox-1.3.1' %>
     <%= javascript_include_tag 'charcount' %>
-    
     
 	<% if session[:institution_community_id].nil? or
 	     (session[:institution_community_id] and session[:institution_community_id].empty?) %>
@@ -67,13 +81,11 @@
     <% if !@mobile_device %>
         <% if @sitehome == true %>
         <!-- include jquery for accordion nav -->
-            <%= javascript_include_tag 'jquery-1.3.2.min.js' %>
             <%= javascript_include_tag 'jquery-ui-1.7.2.custom.min.js' %>
             <%= javascript_include_tag 'jquery.jcarousel.pack.js' %>
             <%= stylesheet_link_tag 'jquery.jcarousel.css' %>
 
             <script type="text/javascript">
-                var $j = jQuery.noConflict();
                 $j(document).ready(function(){
                     $j('#accordion').accordion({ active: false, autoHeight: false, collapsible: true });
                 });
@@ -106,7 +118,7 @@
       <% end %>
    <% end %>
 </head>
-<body>
+<body> <!-- pubsite layout -->
     <div id="body_wrapper"><!-- used for preview -->
         <div id="preview_wrapper" class="<%= @app_location_for_display %>"></div>
         <% if(@app_location_for_display != 'production' and @app_location_for_display != 'shownav' )%>

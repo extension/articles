@@ -9,7 +9,9 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100429150632) do
+
+ActiveRecord::Schema.define(:version => 20100604205859) do
+
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -200,6 +202,8 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
     t.string   "referer_domain"
     t.string   "institution_code",        :limit => 10
     t.integer  "logo_id",                               :default => 0
+    t.boolean  "connect_to_drupal",                     :default => false
+    t.integer  "drupal_node_id"
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
@@ -385,6 +389,17 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
     t.datetime "updated_at"
     t.string   "name"
     t.boolean  "retrieve_with_time", :default => false
+  end
+
+  create_table "file_attachments", :force => true do |t|
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size"
+    t.datetime "attachment_updated_at"
+    t.integer  "submitted_question_id"
+    t.integer  "response_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "help_feeds", :force => true do |t|
@@ -778,8 +793,8 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
 
   create_table "update_times", :force => true do |t|
     t.integer  "datasource_id"
-    t.string   "datasource_type"
-    t.string   "datatype"
+    t.string   "datasource_type",     :limit => 25
+    t.string   "datatype",            :limit => 25
     t.datetime "last_datasourced_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -887,13 +902,15 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
   end
 
   create_table "widgets", :force => true do |t|
-    t.string   "name",                          :null => false
-    t.string   "fingerprint",                   :null => false
-    t.string   "widget_url",                    :null => false
+    t.string   "name",                              :null => false
+    t.string   "fingerprint",                       :null => false
+    t.string   "widget_url",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",      :default => true, :null => false
-    t.integer  "user_id",                       :null => false
+    t.boolean  "active",         :default => true,  :null => false
+    t.integer  "user_id",                           :null => false
+    t.string   "email_from"
+    t.boolean  "upload_capable", :default => false
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true

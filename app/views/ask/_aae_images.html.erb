@@ -1,0 +1,47 @@
+<div id="aae_images">
+
+  <% @submitted_question.file_attachments.each do |sq_img| %>
+    <div class="image_wrapper">
+      <p>
+        <a class="fancybox" href="<%= sq_img.attachment.url %>" title="AaE Image">
+          <%= image_tag sq_img.attachment.url(:thumb) %>
+        </a>
+        <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
+          <%= button_to_remote 'Delete Image', :url => { :action => :delete_sq_image, :id => sq_img.id, :squid => @submitted_question.id  },
+              :loading => "Element.show('loading')",
+              :complete    => "Element.hide('loading')"  %>
+          <div id="loading" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+  
+  <br class="clearing" />
+  <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) and ((number_of_attachments = @submitted_question.file_attachments.length) < FileAttachment::MAX_AAE_UPLOADS) %>
+  <% if !((response = @submitted_question.current_response) and (response.strip != '')) %>
+  <p class="inc_descriptive editpitch">
+  <%= link_to_function "Add Images", "Effect.toggle('add_uploads','blind', { duration: .4}); if(this.innerHTML == 'Add Images') {this.innerHTML = 'Cancel';} else {this.innerHTML = 'Add Images'}" %>
+  </p>
+  
+  <div id="add_uploads" style="display:none;">
+    <h3>Add additional images</h3>
+    <% images_possible = FileAttachment::MAX_AAE_UPLOADS - number_of_attachments %>
+    <p><em>You can upload .jpg .png or .gif. Max size of 2MB each.</em></p>
+    
+    
+  <fieldset>
+  <% form_for :file_attachment, :url => { :action => :add_images }, :html => {:class => 'aae', :multipart => true } do |f| %>
+  <%= hidden_field_tag :squid, @submitted_question.id %>
+  <% (1..(images_possible)).each do |image_counter| %>
+    <% fields_for "file_attachment#{image_counter}" do |file_attachment| %> 
+    <p class="image_upload"><%= file_attachment.file_field :attachment %></p>
+    <% end %>
+  <% end %>
+  <p><%= submit_tag "Submit", :alt => "Go", :class => "bigbutton blue" %></p>
+  <% end %>
+  </fieldset>
+  
+  </div>
+  <% end %>
+  <% end %>
+</div>

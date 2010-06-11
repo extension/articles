@@ -21,7 +21,7 @@
     <% @widgets.each do |widget| %>
         <tr id="<%= widget.name %>">
             <td><%= link_to(widget.name, widgets_view_aae_url(:id => widget.id)) %></td>
-            <td><%= link_to(widget.assignee_count, :controller => 'widgets/aae', :action => :widget_assignees, :id => widget.id) %></td>
+            <td><%= link_to(widget.assignee_count, widgets_view_aae_url(:id => widget.id)) %></td>
             <td><%= link_to_user(widget.user) %></td>
             <td><%= widget.created_at %></td>
         </tr>
