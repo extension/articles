@@ -17,6 +17,7 @@ class Aae::ProfileController < ApplicationController
       return
     end
 
+  
     @myid = @currentuser.id
     @user = User.find(:first, :conditions => ["login = ?", params[:id]])
 
@@ -25,7 +26,9 @@ class Aae::ProfileController < ApplicationController
       redirect_to incoming_url
       return
     end
-     
+    
+     @dateinterval = [Date.today - 180, Date.today]
+     @users_assigned_questions_last_6_months= @user.ever_assigned_questions(:dateinterval => @dateinterval).count
      @questions=@user.open_questions
 
     location_only = @user.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
