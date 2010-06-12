@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100429150632) do
+ActiveRecord::Schema.define(:version => 20100610153833) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -79,6 +79,21 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
     t.integer  "event",                    :default => 0, :null => false
     t.string   "ip",         :limit => 20
     t.text     "data"
+    t.datetime "created_at"
+  end
+
+  create_table "annotation_events", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "annotation_id"
+    t.string   "action"
+    t.string   "ipaddr"
+    t.datetime "created_at"
+  end
+
+  create_table "annotations", :force => true do |t|
+    t.string   "href"
+    t.string   "url"
+    t.datetime "added_at"
     t.datetime "created_at"
   end
 
@@ -894,6 +909,7 @@ ActiveRecord::Schema.define(:version => 20100429150632) do
     t.datetime "updated_at"
     t.boolean  "active",      :default => true, :null => false
     t.integer  "user_id",                       :null => false
+    t.string   "email_from"
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true

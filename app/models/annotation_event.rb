@@ -7,8 +7,31 @@
 
 class AnnotationEvent < ActiveRecord::Base
   belongs_to :user
-  belongs_to :annotation, :foreign_key => :url
+  belongs_to :annotation, :primary_key => :url
   
-  EVENT_ADDED = 'added'
-  EVENT_DELETED = 'deleted'
+  before_save :set_ip_address, :set_user
+  
+  URL_ADDED = 'added'
+  URL_DELETED = 'deleted'
+  
+  def set_ip_address
+    if (defined? request) and request.remote_ip
+      self.ipaddr = request.remote_ip
+    else
+      self.ipaddr = "127.0.0.1"
+    end
+  end
+  
+  def set_user
+    if (defined? @currentuser) and ! @currentuser.nil?
+      self.user = @currentuser
+    else
+      self.user = User.systemuser
+    end
+  end
+  
+  def self.log_event(annotation, action)
+    event = AnnotationEvent.new(:annotation => annotation, :action => action)
+    event.save
+  end
 end
