@@ -5,9 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-require 'gdata'
-require 'lib/gdata_cse'
-
 class SearchController < ApplicationController
   before_filter :login_required, :except => :index
   before_filter :check_purgatory, :except => :index
@@ -20,10 +17,9 @@ class SearchController < ApplicationController
   
   def manage
     set_titletag('Manage CSE Links')
-    client = GData::Client::Cse.new
-    client.clientlogin(AppConfig.configtable['cse_uid'],
-                       AppConfig.configtable['cse_secret'])
-    @domains = client.getAnnotations
+    @annotations = Annotation.paginate(:all, :order => 'url',
+                                        :page => params[:page],
+                                        :per_page => 25)
   end
   
   def add

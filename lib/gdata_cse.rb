@@ -5,6 +5,8 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+require 'gdata'
+
 module GData
   module Client
     
@@ -15,7 +17,7 @@ module GData
       attr_accessor :cse_id
       
       def initialize(options = {})
-        @domains = Hash.new
+        @domains = Array.new
         @cse_id = nil
         
         options[:clientlogin_service] ||= 'cprose'
@@ -56,7 +58,7 @@ module GData
       
       def setAnnotations(xml, options={})
         response = self.post("http://www.google.com/cse/api/default/annotations/", xml)
-        return self.updateLocal(response)
+        return self.parseResponse(response)
       end
       
       def addAnnotations(domains, options={})
@@ -104,12 +106,13 @@ module GData
           
           if xmldoc
             xmldoc.elements.each('/Annotations/Annotation/') do |element|
-              @domains[element.attributes['href']] = element.attributes['about']
+              @domains << {:href => element.attributes['href'],
+                           :url => element.attributes['about'],
+                           :added_at => element.attributes['timestamp']}
             end
             
             begin
               # <Annotations total='1101' start='0' num='20'> ... </>
-            
               num = xmldoc.elements['/Annotations'].attributes['num'].to_i
               start = xmldoc.elements['/Annotations'].attributes['start'].to_i
             rescue
@@ -126,18 +129,36 @@ module GData
               self.getAnnotations(options)
             end
             
+            returndata = @domains
+          end
+        end
+        return returndata
+      end
+      
+      def parseResponse(response, options={})
+        returndata = Array.new
+
+        if response.status_code == 200
+          begin
+            xmldoc = response.to_xml
+          rescue
+            returndata = nil
+          end
+          
+          if xmldoc
             xmldoc.elements.each('/Batch/Add/Annotations/Annotation/') do |element|
               p "adding #{element}"
-              @domains[element.attributes['href']] = element.attributes['about']
+              returndata << {:href => element.attributes['href'],
+                           :url => element.attributes['about'],
+                           :added_at => element.attributes['timestamp']}
             end
             
             xmldoc.elements.each('/Batch/Remove/Annotations/Annotation/') do |element|
               p "removing #{element}"
-              @domains.delete(element.attributes['href'])
+              returndata << element.attributes['href']
             end
-            returndata = @domains
-          end
-        end
+          end #xmldoc
+        end #valid response
         return returndata
       end
       

@@ -1,1 +1,8 @@
-<%= @domains.to_s %>
+<table>
+<% @annotations.each do |a| %>
+  <tr>
+    <td> <%= a.url %> </td><td> <%= a.added_at %> </td> <td> <%= a.href %>
+  </tr>
+<% end %>
+</table>
+<%= will_paginate @annotations %>
