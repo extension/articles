@@ -27,7 +27,7 @@ class Aae::ProfileController < ApplicationController
       return
     end
     
-     @dateinterval = [Date.today - 180, Date.today]
+     @dateinterval = [Date.today.months_ago(6), Date.today]
      @users_assigned_questions_last_6_months= @user.ever_assigned_questions(:dateinterval => @dateinterval).count
      @questions=@user.open_questions
 
