@@ -38,52 +38,71 @@
 </head> 
 
 <body>
-    <% form_remote_tag (:update => 'myFormOutput', 
-                        :html => { :id => 'myForm' }, 
-                        :url => { :action => :create_from_bonnie_plants, :id => @fingerprint }, 
-                        :loading => "ask_submit.disabled=true; ask_submit.value='Submitting...'", 
-                        :complete => "new Effect.Opacity('myFormOutput', {duration:7.0, from:1.0, to:0.0}); ask_submit.disabled=false; ask_submit.value='Ask'; question.value=''") do %>
+  
+    <% form_tag({ :action => :create_from_bonnie_plants, :id => @fingerprint }, { :id => 'myForm', :multipart => true }) do %>
 
     <h1><a href="http://www.extension.org/" target="_blank">eXtension</a></h1>
     <h2>Ask an Expert</h2>
+    
+    <div class="grid_16" id="content_area">
+    <% flash_names = [:notice, :warning, :message, :error]
+          flash_names.each do |flash_type| 
+             if flash[flash_type] %>
+                <div id='flash_notice' class='<%= flash[:notice]? "notice" : "warning" %>'>
+                    <p><%= flash[flash_type] %></p>
+                </div>
+            <% end %>
+    <% end %>
+    </div><!-- .grid_16 -->
     
     <div id="myFormOutput"></div>
 
     <p>
         <label for="first_name">First Name:
-        <%= text_field_tag(:first_name) %>
+        <%= text_field_tag(:first_name, @first_name) %>
         </label>
     </p>
 
     <p>
         <label for="last_name">Last Name:
-        <%= text_field_tag(:last_name) %>
+        <%= text_field_tag(:last_name, @last_name) %>
         </label>
     </p>
     
     <p>
         <label for="email">Email: <span>Type it carefully; this is how you'll receive your answer.</span>
-        <%= text_field_tag(:email) %>
+        <%= text_field_tag(:email, @email) %>
         </label>
     </p>
     
     <p>
         <label for="email_confirmation">Confirm Your Email:
-        <%= text_field_tag(:email_confirmation) %>
+        <%= text_field_tag(:email_confirmation, @email_confirmation) %>
         </label>
     </p>
 
     <p>Where does your question take place? (optional, but it helps us give a more precise answer)</p>
     <%= render(:partial => 'shared/location_county') %>
     
+    <% if image_upload_capable(@fingerprint) %>
+        
+      <p>
+      <label>Image (optional)</label>
+      <p><em>You can upload .jpg .png or .gif. Max size of 2MB each.</em></p>
+      <p class="image_upload"><%= file_field_tag :image %></p>
+      </p>
+      
+    <% end %>
+
+      <br />
 
     <p>
         <label for="question">Question
-        <%= text_area_tag :question, nil, :rows => 4  %>
+        <%= text_area_tag :question, @question, :rows => 4  %>
         </label>
     </p>
 
-    <p class="submit"><%= submit_tag "Ask", :id => "ask_submit" %></p>
+    <p class="submit"><%= submit_tag "Ask", :id => "ask_submit", :disable_with => "Submitting..." %></p>
     <% end %>
 </body>
 </html>
