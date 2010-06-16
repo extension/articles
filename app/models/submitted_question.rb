@@ -204,12 +204,13 @@ def sub_category
   end
 end
 
-def has_response?
-  sqe = self.submitted_question_events.find(:first, :conditions => {:event_state => SubmittedQuestionEvent::RESOLVED})
+def last_response
+  sqe = self.submitted_question_events.find(:first, :conditions => "event_state = #{SubmittedQuestionEvent::RESOLVED} OR event_state = #{SubmittedQuestionEvent::NO_ANSWER}", :order => "created_at DESC")
+  
   if sqe
-    return true
+    return sqe
   else
-    return false
+    return nil
   end
 end
 

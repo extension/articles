@@ -16,7 +16,7 @@
             <%= (assign_date = @submitted_question.assigned_date) ? time_ago_in_words(assign_date) + ' ago' : ""%> 
         </p>
         
-        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED and @submitted_question.has_response? %>
+        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED and !@submitted_question.last_response.nil? %>
             <div id="closebutton">
             <%= button_to 'Close Question', :controller => 'aae/question', :action => :close_out, :squid => @submitted_question.id %> <p><a class="tooltip-help" href="#" id="source_trigger">?</a></p>
             </div>
