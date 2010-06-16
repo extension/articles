@@ -214,8 +214,20 @@ class Aae::QuestionController < ApplicationController
   
   def close_out
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
-    @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, :status_state => SubmittedQuestion::STATUS_RESOLVED)
     
+    # get the last response type, if a non-answer response was previously sent, respect the status of it in the submitted question, else 
+    # set it to resolved
+    if last_response = @submitted_question.last_response
+      if last_response.event_state == SubmittedQuestionEvent::NO_ANSWER
+        @submitted_question.update_attributes(:status => SubmittedQuestion::NO_ANSWER_TEXT, :status_state => SubmittedQuestion::STATUS_NO_ANSWER)
+      else
+        @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, :status_state => SubmittedQuestion::STATUS_RESOLVED)
+      end
+    else
+      flash[:notice] = "This question cannot be closed as it was never responded to. Please either answer it, respond with no answer, or reject it."
+      redirect_to :action => :index, :id => @submitted_question.id
+      return
+    end  
     SubmittedQuestionEvent.log_close(@submitted_question, @currentuser)
     redirect_to :action => :index, :id => @submitted_question.id
   end
