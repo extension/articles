@@ -204,6 +204,7 @@ def sub_category
   end
 end
 
+# get the event of the last response given for a question
 def last_response
   sqe = self.submitted_question_events.find(:first, :conditions => "event_state = #{SubmittedQuestionEvent::RESOLVED} OR event_state = #{SubmittedQuestionEvent::NO_ANSWER}", :order => "created_at DESC")
   
