@@ -62,9 +62,9 @@ class Api::AaeController < ApplicationController
 
         # check to see if question has county and said location associated with it
         county = params[:county].strip if !params[:county].blank?
-        county = location.get_associated_county(county) if location
+        county = location.get_associated_county(county) if location and county
 
-        if county and location
+        if location and county
           @submitted_question.county = county 
         end
         ############### end of setting up question object ###############
