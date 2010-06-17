@@ -151,7 +151,7 @@ class WidgetController < ApplicationController
       end
       
       if @location and (!params[:county_id].blank?)
-        @county = County.find(params[:county_id].strip)
+        @county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, @location.id)
       end
         
       if @email.blank? or @email_confirmation.blank? or @question.blank?
