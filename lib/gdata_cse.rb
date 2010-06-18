@@ -61,7 +61,7 @@ module GData
         return self.parseResponse(response)
       end
       
-      def addAnnotations(domains, options={})
+      def addAnnotation(domains, options={})
         xml = ""
         # generate XML for add
         xml << "<Batch>"
@@ -79,7 +79,7 @@ module GData
         return self.setAnnotations(xml,options)
       end
       
-      def removeAnnotations(refs, options={})
+      def removeAnnotation(refs, options={})
         xml = ""
         # generate XML for remove
         xml << "<Batch>"
