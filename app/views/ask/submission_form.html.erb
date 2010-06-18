@@ -80,7 +80,7 @@
           
       <p class="simplefield">
           <label for="public_email_confirmation">Email Confirmation:<em class="required">*</em></label>
-          <%= text_field_tag "public_email_confirmation", @public_user.email, :type => "email",  :autocapitalize => "off" %>
+          <%= text_field_tag "public_email_confirmation", @public_email_confirmation.nil? ? @public_user.email : @public_email_confirmation, :type => "email",  :autocapitalize => "off" %>
       </p>
   </fieldset>
   
