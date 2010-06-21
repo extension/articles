@@ -41,11 +41,11 @@ class Aae::ProfileController < ApplicationController
     if @user.is_answerer? 
       @auto_route_msg = ""   
     else
-      @auto_route_msg = "*Has not indicated in prefs to receive auto-routed questions. "
+      @auto_route_msg = "Not receiving auto-routed questions "
       if @user.id == @currentuser.id 
         @auto_route_msg += "<a href='/aae/prefs/index'>edit</a>"
       end
-      @auto_route_msg = "<p>".concat(@auto_route_msg).concat("</p>")   
+      @auto_route_msg = "<li>".concat(@auto_route_msg).concat("</li>")   
     end
   end
   

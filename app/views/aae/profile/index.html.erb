@@ -110,15 +110,21 @@
     <% end %>
 
     <h2>Roles</h2>
-    <%= @auto_route_msg %>
-    <ul>
-        <% @user.user_roles.each do |ur| %>
-            <li><%= ur %></li>
-        <% end %>
+    
+    <ul id="profile_roles">
+      <%= @auto_route_msg %>
+       <% if @user.is_question_wrangler? %>
+         <li>Belongs to the <strong>Question Wrangler Community</strong></li>
+       <% end %>
+       <% @user.user_roles.each do |ur| %>
+         <li><%= ur %></li>
+       <% end %>
     </ul>
     
-    <% if @user.is_question_wrangler? %>
-    <p>*Belongs to the Question Wrangler Community</p>
+    <% if @myid == @user.id %>
+      <p class="cog"><%= link_to "Update your widget preferences", :controller => 'aae/prefs', :action => 'widget_preferences'  %></p>
     <% end %>
+    
+    
 
 </div>
