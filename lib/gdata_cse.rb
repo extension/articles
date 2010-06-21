@@ -13,11 +13,11 @@ module GData
     # Client class to wrap working with the Documents List Data API.
     class Cse < Base
       
-      attr_accessor :domains
+      attr_accessor :urls
       attr_accessor :cse_id
       
       def initialize(options = {})
-        @domains = Array.new
+        @urls = Array.new
         @cse_id = nil
         
         options[:clientlogin_service] ||= 'cprose'
@@ -61,14 +61,14 @@ module GData
         return self.parseResponse(response)
       end
       
-      def addAnnotation(domains, options={})
+      def addAnnotation(urls, options={})
         xml = ""
         # generate XML for add
         xml << "<Batch>"
         xml << "<Add>"
         xml << "<Annotations>"
-        domains.each do |dom|
-          xml << "<Annotation about=\"#{dom}\">"
+        urls.each do |url|
+          xml << "<Annotation about=\"#{url}\">"
           xml << "<Label name=\"#{@cse_id}\"/>"
           xml << "</Annotation>"
         end
@@ -106,7 +106,7 @@ module GData
           
           if xmldoc
             xmldoc.elements.each('/Annotations/Annotation/') do |element|
-              @domains << {:href => element.attributes['href'],
+              @urls << {:href => element.attributes['href'],
                            :url => element.attributes['about'],
                            :added_at => element.attributes['timestamp']}
             end
@@ -129,7 +129,7 @@ module GData
               self.getAnnotations(options)
             end
             
-            returndata = @domains
+            returndata = @urls
           end
         end
         return returndata

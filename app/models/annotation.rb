@@ -43,9 +43,9 @@ class Annotation < ActiveRecord::Base
     {:conditions => conditions.compact.join(" AND ")}
   }
   
-  def add(domain)
+  def add(url)
     rc = false
-    result = @@client.addAnnotation(domain)
+    result = @@client.addAnnotation(url)
     if result
       data = result.pop
       data.each do |key, value|
@@ -107,13 +107,13 @@ class Annotation < ActiveRecord::Base
     
     def initial_setup
       self.login
-      domains = @@client.getAnnotations
+      urls = @@client.getAnnotations
       
       added = errs = 0
       
-      domains.each do |annote|
+      urls.each do |url|
         begin
-          a = Annotation.new(annote)
+          a = Annotation.new(url)
           a.save!
           added += 1
         rescue
