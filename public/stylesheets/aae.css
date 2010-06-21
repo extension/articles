@@ -1471,6 +1471,7 @@ a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
 .admin_option.offline a:hover {text-decoration:underline}
 
 #completions {width:200px;}
+span.completions {display:block; padding:.2em;}
 .completions {width:200px; background: url(/images/aae/green_square.png) no-repeat;}
 #dashboard td a {display:inline; margin-right:.75em;}
 .subtle {color:#888 !important;}
