@@ -1,7 +1,17 @@
+<% form_tag(:action=> "manage") do %>
+    <fieldset class="search">
+        <p>
+            <label for="searchterm">search by URL:</label>
+                <%= text_field_tag("searchterm","",:size => 25)%>
+            <%= submit_tag 'Search' %>
+        </p>
+    </fieldset>
+<% end %>
+
 <table>
 <% @annotations.each do |a| %>
   <tr>
-    <td> <%= a.url %> </td><td> <%= a.added_at %> </td> <td> <%= a.href %>
+    <td> <%= a.url %> </td><td> <%= a.added_at %> </td> <!-- <%= a.href %> --> 
   </tr>
 <% end %>
 </table>

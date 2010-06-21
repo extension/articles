@@ -22,6 +22,27 @@ class Annotation < ActiveRecord::Base
   # url - URL string WITHOUT leading http://
   # added_at - date added by Google to CSE
   
+  named_scope :patternsearch, lambda {|searchterm|
+    # remove any leading * to avoid borking mysql
+    # remove any '\' characters because it's WAAAAY too close to the return key
+    # strip '+' characters because it's causing a repitition search error
+    sanitizedsearchterm = searchterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
+    # in the format wordone wordtwo etc?
+    words = sanitizedsearchterm.split(%r{\s+})
+    conditions = Array.new
+    if(words.length > 1)
+      words.each do |word|
+        conditions << "url rlike '#{word}'"
+      end
+    elsif(sanitizedsearchterm.to_i != 0)
+      # special case of an id search - needed in admin/colleague searches
+      conditions << "id = #{sanitizedsearchterm.to_i}"
+    else
+      conditions << "url rlike '#{sanitizedsearchterm}'"
+    end
+    {:conditions => conditions.compact.join(" AND ")}
+  }
+  
   def add(domain)
     rc = false
     result = @@client.addAnnotation(domain)

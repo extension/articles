@@ -17,9 +17,15 @@ class SearchController < ApplicationController
   
   def manage
     set_titletag('Manage CSE Links')
-    @annotations = Annotation.paginate(:all, :order => 'url',
-                                        :page => params[:page],
-                                        :per_page => 25)
+    if (!params[:searchterm].nil? and !params[:searchterm].empty?)
+      @annotations = Annotation.patternsearch(params[:searchterm]).paginate(:all, :order => :url, :page => params[:page])
+      if @annotations.nil? || @annotations.length == 0
+        flash.now[:warning] = "<p>No URLs were found that matches your search term.</p>"
+        @annotations = []
+      end
+    else
+      @annotations = Annotation.paginate(:all, :order => 'url', :page => params[:page])
+    end
   end
   
   def add
