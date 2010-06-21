@@ -1201,10 +1201,9 @@ ul#profile_roles li {list-style:disc;}
 }
 
 .vcard .item .vcardLabel {
-	width: 6em !important;
+	width: 12em !important;
   float:left;
     display: block;
-/*  padding-right:10px;*/
 	padding-top:0px;
 	font-weight:bold;
 	margin-right:15px;

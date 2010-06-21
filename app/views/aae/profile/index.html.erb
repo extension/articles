@@ -7,6 +7,8 @@
     <h2><%= @user.fullname %> <small>(Ask an Expert User Profile)</small></h2>
     <% if @user.retired? %><p class="alert"><strong>* This user is retired from the system.</strong></p><% end %>
     
+    <p><%= link_to "View full profile in People", :controller => 'people/colleagues', :action => 'showuser', :id => @user.login %></p>
+    
     <div class="vcard">
     	<p class="item">
     		<span class="vcardLabel">Name:</span>
