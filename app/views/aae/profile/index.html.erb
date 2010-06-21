@@ -7,6 +7,8 @@
     <h2><%= @user.fullname %> <small>(Ask an Expert User Profile)</small></h2>
     <% if @user.retired? %><p class="alert"><strong>* This user is retired from the system.</strong></p><% end %>
     
+    <p><%= link_to "View full profile in People", :controller => 'people/colleagues', :action => 'showuser', :id => @user.login %></p>
+    
     <div class="vcard">
     	<p class="item">
     		<span class="vcardLabel">Name:</span>
@@ -83,7 +85,13 @@
     
     <p>The handling rate tries to answer the question "How likely is a person going to do something with a question that is assigned to her/him?" It is calculated by counting the number of times a person was assigned a question and either resolved or reassigned it, and dividing that by the total number of questions assigned to that person. Resolved includes answered, responded with 'no answer' or marked as spam. Rejected questions are excluded from this calculation because rejections usually involve duplicates or bounced emails and the assignee may not be aware of these circumstances.</p>
     
-    <p>You can see a <%= link_to "list of all question you have been assigned",:controller => "reports", :action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert" , :olink => "Assigned as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uassigned %> in the AaE User reports</p>
+    <p>You can see a 
+    <% if @myid == @user.id %>
+    <%= link_to "list of all questions you have been assigned",:controller => "reports", :action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uassigned %>
+    <% else %>
+    <%= link_to "list of all questions this person has been assigned",:controller => "reports", :action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uassigned %>
+    <% end %>
+     in the AaE User reports</p>
 
 
     <h2>Area of Expertise <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'aae/prefs', :action => 'expertise' %></small><% end %></h2>
@@ -110,15 +118,21 @@
     <% end %>
 
     <h2>Roles</h2>
-    <%= @auto_route_msg %>
-    <ul>
-        <% @user.user_roles.each do |ur| %>
-            <li><%= ur %></li>
-        <% end %>
+    
+    <ul id="profile_roles">
+      <%= @auto_route_msg %>
+       <% if @user.is_question_wrangler? %>
+         <li>Belongs to the <strong>Question Wrangler Community</strong></li>
+       <% end %>
+       <% @user.user_roles.each do |ur| %>
+         <li><%= ur %></li>
+       <% end %>
     </ul>
     
-    <% if @user.is_question_wrangler? %>
-    <p>*Belongs to the Question Wrangler Community</p>
+    <% if @myid == @user.id %>
+      <p class="cog"><%= link_to "Update your widget preferences", :controller => 'aae/prefs', :action => 'widget_preferences'  %></p>
     <% end %>
+    
+    
 
 </div>
