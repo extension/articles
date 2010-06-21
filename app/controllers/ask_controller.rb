@@ -78,6 +78,9 @@ class AskController < ApplicationController
       # error check for submitted question, file_attachment and public user records 
       
       if params[:public_user][:email].strip != params[:public_email_confirmation].strip
+        # create a new instance variable for public_user so the form can be repopulated if it doesn't already exist
+        @public_user = PublicUser.new(params[:public_user]) if !@public_user
+        @public_email_confirmation = params[:public_email_confirmation]
         render_aae_submission_error('Your email address confirmation does not match.<br />Please make sure your email address and confirmation match up.')
         return
       end
