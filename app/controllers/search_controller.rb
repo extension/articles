@@ -21,7 +21,6 @@ class SearchController < ApplicationController
       @annotations = Annotation.patternsearch(params[:searchterm]).paginate(:all, :order => :url, :page => params[:page])
       if @annotations.nil? || @annotations.length == 0
         flash.now[:warning] = "<p>No URLs were found that matches your search term.</p>"
-        @annotations = []
       end
     else
       @annotations = Annotation.paginate(:all, :order => 'url', :page => params[:page])
@@ -29,10 +28,32 @@ class SearchController < ApplicationController
   end
   
   def add
-    flash[:failure] = "Unable to perform requested action.  Please try again."
+    if (!params[:url].nil? and !params[:url].empty?)
+      annote = Annotation.new
+      rc = annote.add(params[:url])
+      if rc
+        flash[:success] = "#{annote.url} has been added to search"
+      else
+        flash[:failure] = "Unable to add #{params[:url]}.  Please try again later."
+      end
+    else
+      flash[:notice] = "No valid url provided."
+    end
+    redirect_to(:action => :manage)
   end
   
   def remove
-    flash[:failure] = "Unable to perform requested action.  Please try again."
+    if (!params[:id].nil? and !params[:id].empty?)
+      goner = Annotation.find(params[:id])
+      rc = goner.remove
+      if rc
+        flash[:success] = "#{goner.url} has been removed from search"
+      else
+        flash[:failure] = "Unable to remove #{goner.url}.  Please try again later."
+      end
+    else
+      flash[:notice] = "No valid id provided."
+    end
+    redirect_to(:action => :manage)
   end
 end

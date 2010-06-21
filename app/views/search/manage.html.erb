@@ -1,3 +1,14 @@
+<% form_tag(:action=> "add") do %>
+    <fieldset class="add">
+        <p>
+            <label for="url">URL to add:</label>
+                <%= text_field_tag("url","",:size => 25)%>
+            <%= submit_tag 'Add' %>
+        </p>
+    </fieldset>
+<% end %>
+
+<hr />
 <% form_tag(:action=> "manage") do %>
     <fieldset class="search">
         <p>
@@ -11,7 +22,8 @@
 <table>
 <% @annotations.each do |a| %>
   <tr>
-    <td> <%= a.url %> </td><td> <%= a.added_at %> </td> <!-- <%= a.href %> --> 
+    <td> <%= a.url %> </td><td> <%= a.added_at %> </td>
+    <td> <%= link_to("remove", url_for(:controller => :search, :action => :remove, :id => a.id)) %> <!-- <%= a.href %> --> </td>
   </tr>
 <% end %>
 </table>
