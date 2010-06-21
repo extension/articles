@@ -85,7 +85,13 @@
     
     <p>The handling rate tries to answer the question "How likely is a person going to do something with a question that is assigned to her/him?" It is calculated by counting the number of times a person was assigned a question and either resolved or reassigned it, and dividing that by the total number of questions assigned to that person. Resolved includes answered, responded with 'no answer' or marked as spam. Rejected questions are excluded from this calculation because rejections usually involve duplicates or bounced emails and the assignee may not be aware of these circumstances.</p>
     
-    <p>You can see a <%= link_to "list of all question you have been assigned",:controller => "reports", :action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert" ,  :to => @dateTo, :from => @dateFrom, :num => @uassigned %> in the AaE User reports</p>
+    <p>You can see a 
+    <% if @myid == @user.id %>
+    <%= link_to "list of all questions you have been assigned",:controller => "reports", :action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uassigned %>
+    <% else %>
+    <%= link_to "list of all questions this person has been assigned",:controller => "reports", :action => "display_questions", :user => @user.id, :descriptor => "Assigned as an Expert", :to => @dateTo, :from => @dateFrom, :num => @uassigned %>
+    <% end %>
+     in the AaE User reports</p>
 
 
     <h2>Area of Expertise <% if @myid == @user.id %><small><%= link_to "edit", :controller => 'aae/prefs', :action => 'expertise' %></small><% end %></h2>
