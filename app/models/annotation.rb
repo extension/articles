@@ -50,8 +50,8 @@ class Annotation < ActiveRecord::Base
       data = result.pop
       data.each do |key, value|
         self.send("#{key}=", value)
-        self.save
       end
+      self.save
       rc = true
     end
     return rc
