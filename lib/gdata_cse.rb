@@ -147,14 +147,12 @@ module GData
           
           if xmldoc
             xmldoc.elements.each('/Batch/Add/Annotations/Annotation/') do |element|
-              p "adding #{element}"
               returndata << {:href => element.attributes['href'],
                            :url => element.attributes['about'],
                            :added_at => element.attributes['timestamp']}
             end
             
             xmldoc.elements.each('/Batch/Remove/Annotations/Annotation/') do |element|
-              p "removing #{element}"
               returndata << element.attributes['href']
             end
           end #xmldoc
