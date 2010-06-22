@@ -6,14 +6,15 @@
 
 <h2>Who answers the questions?</h2>
 
-<p>Questions are answered by Cooperative Extension agents, staff and professionals from around the country who have volunteered to work in the eXtension Ask an Expert system.</p>
+<p>Questions are answered by Cooperative Extension agents, staff and professionals from around the country who have volunteered to work in the eXtension Ask an Expert system. In particular, questions from a widget are routed to those agents in the AaE system signed up to receive questions from a widget.</p>
 
 <h3>Here's what happens to a question</h3>
 <ol>
     <li>A question is submitted from an Ask eXtension widget</li>
     <li>The question shows up in the <%= link_to "Incoming Question list", incoming_url %> <em>(eXtensionID required)</em></li>
-    <li>The question is automatically assigned to an Extension agent based on the question's location. If there's not a location match, the question is assigned to Question Wranglers who have volunteered to handle and route orphaned questions. An email is sent to the agent when a question is assigned.</li>
-    <li>If able, the agent answers the question and the response is emailed to the user who submitted the question. Otherwise the question can be assigned to someone else.</li>
+    <li>The question is automatically assigned to an Extension agent based on load for those signed up to receive questions from the widget. The agent signed up for the widget with the lightest load of unresolved questions assigned to them gets the next question. If there's no one signed up for the widget, the question is assigned to Question Wranglers who have volunteered to handle and route orphaned questions. An email is sent to the agent when a question is assigned.</li>
+    <li>If able, the agent answers the question and the response is emailed to the person who submitted the question. Otherwise, the question can be assigned to someone else.</li>
+    <li>*It is recommended that more than one person sign up to receive questions coming from a widget, and if no one is signed up, it should be removed from any sites and deactivated in the system.</li>
 </ol>
 
 </div>
