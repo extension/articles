@@ -1174,6 +1174,10 @@ h1, h2 {
     border-bottom: 1px solid #ddd;
     padding-bottom:.2em;
 }
+
+ul#profile_roles {padding:0 25px 2em;}
+ul#profile_roles li {list-style:disc;}
+.cog {background: transparent url(/images/common/cog.png) left 50% no-repeat;padding-left:22px;}
 /* Profiles/Vcards
 -----------------------------------------------------------------------------*/
 
@@ -1197,10 +1201,9 @@ h1, h2 {
 }
 
 .vcard .item .vcardLabel {
-	width: 6em !important;
+	width: 12em !important;
   float:left;
     display: block;
-/*  padding-right:10px;*/
 	padding-top:0px;
 	font-weight:bold;
 	margin-right:15px;
@@ -1468,6 +1471,7 @@ a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
 .admin_option.offline a:hover {text-decoration:underline}
 
 #completions {width:200px;}
+span.completions {display:block; padding:.2em;}
 .completions {width:200px; background: url(/images/aae/green_square.png) no-repeat;}
 #dashboard td a {display:inline; margin-right:.75em;}
 .subtle {color:#888 !important;}

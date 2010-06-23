@@ -93,7 +93,13 @@
     </fieldset>
     
     <fieldset>
-    <p><%= link_to("Become a Question Wrangler", :controller => '/people', :action => 'communities', :id => 38) %>. Question Wranglers monitor uncategorized incoming questions and route them to the right person. They also follow-up with experts to make sure questions are answered in timely manner. <%= link_to("Learn more about this group and sign up", :controller => '/people', :action => 'communities', :id => 38) %>.</p>
+    <p>
+    <% if @currentuser.is_question_wrangler? %>
+      You are currently a <%= link_to("Question Wrangler", :controller => '/people', :action => 'communities', :id => 38) %>. Question Wranglers monitor uncategorized incoming questions and route them to the right person. They also follow-up with experts to make sure questions are answered in timely manner. <%= link_to("Go to the Question Wrangler Community", :controller => '/people', :action => 'communities', :id => 38) %>
+    <% else %>
+      <%= link_to("Become a Question Wrangler", :controller => '/people', :action => 'communities', :id => 38) %>. Question Wranglers monitor uncategorized incoming questions and route them to the right person. They also follow-up with experts to make sure questions are answered in timely manner. <%= link_to("Learn more about this group and sign up", :controller => '/people', :action => 'communities', :id => 38) %>.
+    <% end %>  
+    </p>
     </fieldset>
 
     

@@ -17,5 +17,5 @@
   <li <%= selected_tab_if(:who) %>><%= link_to "Who answers the questions?", :controller => 'widgets/aae', :action => :who %></li>
   <li <%= selected_tab_if(:get) %>><%= link_to "Get the Ask widget for your site <em>(requires login)</em>", :controller => 'widgets/aae', :action => :new %></li>
   <li <%= selected_tab_if(:documentation) %>><%= link_to "Documentation", :controller => 'widgets/aae', :action => :documentation %></li>
-  <li <%= selected_tab_if(:all) %>><%= link_to "All Widgets", :controller => 'widgets/aae', :action => :list %></li>
+  <li <%= selected_tab_if(:all) %>><%= link_to "All Widgets <em>(requires login)</em>", :controller => 'widgets/aae', :action => :list %></li>
 </ul>
