@@ -24,12 +24,12 @@ body {
     text-align:left;
 }
 #masthead a {
-    display:block;
-    height: 114px;
     color: #555;
     padding-left: .25em;
 }
 
+.gsc-results {font-size:1.2em;}
+.gsc-tabsArea {display:none;}
 
 #content {padding: 1em 3em;}
 
@@ -124,72 +124,12 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 .pagination {
     margin: 0 0 1em;
     background: #eee;    
+    font-size:1.4em;
+    padding:10px;
 }
 .pagination a,
 .pagination span {
     margin-right: 1em;
-}
-
-
-
-
-
-/* Scaffolding
------------------------------------------------------------------------------*/
-pre {
-  background: #eee;
-}
-
-
-.fieldWithErrors {
-  padding: 2px;
-  background-color: red;
-  display: inline !important;
-}
-
-#errorExplanation {
-  width: 400px;
-  border: 2px solid red;
-  padding: 7px;
-  padding-bottom: 12px;
-  margin-bottom: 20px;
-  background-color: #f0f0f0;
-}
-
-#errorExplanation h2 {
-  text-align: left;
-  font-weight: bold;
-  padding: 5px 5px 5px 15px;
-  margin: -7px;
-  background-color: #c00;
-  color: #fff;
-}
-
-#errorExplanation p {
-  color: #333;
-  margin-bottom: 0;
-  padding: 5px;
-}
-
-#errorExplanation ul li {
-  list-style: square;
-  list-style-type: none;
-}
-
-div.uploadStatus {
-  margin: 5px;
-}
-
-
-.clear {clear: both;}
-
-
-.locations li {
-    float: left;
-    margin-right: .5em;
-}
-.locations {
-    padding-bottom: .5em;
 }
 
 
@@ -204,13 +144,12 @@ div.uploadStatus {
 #search label { 
     font-family:"Lucida Sans Unicode", "Luci  Grande", sans-serif;
 }
-input { 
-  border: 1px solid #666; 
-  margin: 0 .25em; 
-  padding: .25em .4em;
-  font-size:1.5em;
-} 
-input.text {width:24em; }
+.gsc-input {font-size:1.2em;padding:.25em;}
+.gsc-search-button {font-size:1.2em;padding:.25em;}
+input.text {width:24em;}
+.gsc-control-cse {width:auto !important;}
+
+table td {border:0;}
 
 #search_results {
     padding: 0 1.25em;
@@ -300,3 +239,12 @@ text-decoration: underline;
     margin-top: 1em;
     margin-bottom: 1em;
 }
+
+.add {background:#eee; padding: 10px 20px; margin-bottom:30px;}
+.add h2 {margin:0 0 10px; font-size:18px;}
+.add p {margin:0;}
+.add label {font-weight:bold;}
+
+code {color:purple; background:#fff; padding:.25em;}
+#url_list {font-size:1.2em;}
+#url_list td {border-bottom:1px solid #ddd;}

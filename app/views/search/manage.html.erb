@@ -1,29 +1,37 @@
+<h1>Cooperative Extension Search URL Manager</h1>
+
+
 <% form_tag(:action=> "add") do %>
-    <fieldset class="add">
-        <p>
-            <label for="url">URL to add:</label>
-                <%= text_field_tag("url","",:size => 25)%>
-            <%= submit_tag 'Add' %>
-        </p>
+   <fieldset class="add">
+      <h2>Add a new URL to Cooperative Extension Search</h2>
+      <p>
+         <label for="url">URL
+            <%= text_field_tag("url","",:size => 25)%>
+         </label>
+         <%= submit_tag 'Add' %>
+       </p>
+       <p>Include a trailing asterisk or Google will only search the single page typed into the field. Example: <code>extension.org/*</code> You can also use an asterisk to include subdomains. Example, <code>*.extension.org/*</code></p>
     </fieldset>
 <% end %>
 
-<hr />
+<h2>Current URLs</h2>
 <% form_tag(:action=> "manage") do %>
-    <fieldset class="search">
-        <p>
-            <label for="searchterm">search by URL:</label>
-                <%= text_field_tag("searchterm","",:size => 25)%>
-            <%= submit_tag 'Search' %>
-        </p>
-    </fieldset>
+   <fieldset class="search">
+      <p>
+         <label for="searchterm">Search by URL
+            <%= text_field_tag("searchterm","",:size => 25)%>
+         </label>
+         <%= submit_tag 'Search' %>
+      </p>
+   </fieldset>
 <% end %>
 
-<table>
+<table cellspacing="0" id="url_list">
 <% @annotations.each do |a| %>
   <tr>
-    <td> <%= a.url %> </td><td> <%= a.added_at %> </td>
-    <td> <%= link_to("remove", url_for(:controller => :search, :action => :remove, :id => a.id)) %> <!-- <%= a.href %> --> </td>
+    <td><%= a.url %></td>
+    <td><%= a.added_at.strftime("%l:%M %p, %b %d, %Y ") %></td>
+    <td><%= link_to("remove", url_for(:controller => :search, :action => :remove, :id => a.id)) %> <!-- <%= a.href %> --></td>
   </tr>
 <% end %>
 </table>
