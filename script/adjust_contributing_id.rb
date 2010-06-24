@@ -46,10 +46,18 @@ def update_from_submitted_question_events(connection)
         puts "updating submitted_questions #{sq.id} with id of searched_question= #{searched_question.id}, old contributing_question= #{sq.current_contributing_question}"
        
        sq.update_attribute(:current_contributing_question, searched_question.id)
-        #now find the responses and also change them
-        sq.responses.each do |response|
-          puts "updating response id=#{response.id} contributing_question_id from #{response.contributing_question_id} to #{searched_question.id}"
-          response.update_attribute(:contributing_question_id, searched_question.id)
+          # find responses and correct contributing question_id
+          response= sq.responses.find(:first, :conditions => "contributing_question_id IS NOT NULL", :order => "created_at DESC") 
+          if response  
+            puts "updating response id=#{response.id} contributing_question_id from #{response.contributing_question_id} to #{searched_question.id}"
+            response.update_attribute(:contributing_question_id, searched_question.id)
+          end
+          
+        # now find the submitted_question_event referencing this contributing_question_id and change it
+        sqevent = sq.submitted_question_events.find(:first, :conditions => "contributing_question IS NOT NULL", :order => "created_at DESC")
+        if sqevent
+          puts "updating submitted_question_events id=#{sqevent.id} contributing_question_id from #{sqevent.contributing_question} to #{searched_question.id}"
+          sqevent.update_attribute(:contributing_question, searched_question.id)
         end
       end
         
