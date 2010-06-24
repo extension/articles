@@ -16,6 +16,11 @@
     <p>Name your widget (in order to track and find questions entered through it)</p>
     <%= text_field(:widget, :name) %>
     
+    <br /><br />
+    <p>
+    Enable photo upload for your widget &nbsp<%= check_box_tag('photo_upload', "yes", false) %>
+    </p>
+    
     <p><%= submit_tag "Get the Widget Code!", :disable_with => "Submitting..." %></p>
     </fieldset>
 <% end %>
