@@ -31,10 +31,9 @@ def update_from_submitted_question_events(connection)
   
   ActiveRecord::Base::logger.info "##################### Starting fixing legacy submitted questions that used a contributing_question_id directly instead of a foreignid referenced through the id of search_questions...."
   
-  #General Purpose for this script: for each submitted question resolved before 8/12/2010, the first
+  #General Purpose for this script: for each submitted question resolved before 8/12/2009, the
    # place to look for the search_questions id is to find the foreign id equal to the old current_contributing_question field.
-   #Then put the resulting search_questions id in the current_contributing_question field of the submitted_question and appropriate response contributing_question_ids. In rare instances, it
-   # may be that we have to search on the fulltitle field of search_questions to find the proper search_question if the foreign id cannot be found.
+   #Then put the resulting search_questions id in the current_contributing_question field of the submitted_question and appropriate response contributing_question_ids. 
  
    sqlist = SubmittedQuestion.find(:all, :conditions => "resolved_at < '2009-08-12' and current_contributing_question IS NOT NULL",:order => " submitted_questions.id")
   
@@ -47,26 +46,18 @@ def update_from_submitted_question_events(connection)
         puts "updating submitted_questions #{sq.id} with id of searched_question= #{searched_question.id}, old contributing_question= #{sq.current_contributing_question}"
        
        sq.update_attribute(:current_contributing_question, searched_question.id)
-        #now find the responses and also change them
-        sq.responses.each do |response|
-          puts "updating response id=#{response.id} contributing_question_id from #{response.contributing_question_id} to #{searched_question.id}"
-          response.update_attribute(:contributing_question_id, searched_question.id)
-        end
-        
-      else
-        ## in this case, the number in the current_contributing_question field is not found as a foreignid anywhere
-        puts "the current_contributing_number #{sq.current_contributing_question} is not found as a foreign id in the search questions table"
-        puts "attempting to match text on asked_question"
-        searched_text = SearchQuestion.find_by_fulltitle_and_entrytype(sq.asked_question, SearchQuestion::FAQ)
-        if searched_text
-          puts "think we found #{sq.current_contributing_question}"
-          sq.update_attribute(:current_contributing_question, searched_text.id)
-            #now find the responses and also change them
-            sq.responses.each do |response|
-              puts "updating response id=#{response.id} contributing_question_id from #{response.contributing_question_id} to #{searched_question.id}"
-              response.update_attribute(:contributing_question_id, searched_question.id)
-            end
+          # find responses and correct contributing question_id
+          response= sq.responses.find(:first, :conditions => "contributing_question_id IS NOT NULL", :order => "created_at DESC") 
+          if response  
+            puts "updating response id=#{response.id} contributing_question_id from #{response.contributing_question_id} to #{searched_question.id}"
+            response.update_attribute(:contributing_question_id, searched_question.id)
+          end
           
+        # now find the submitted_question_event referencing this contributing_question_id and change it
+        sqevent = sq.submitted_question_events.find(:first, :conditions => "contributing_question IS NOT NULL", :order => "created_at DESC")
+        if sqevent
+          puts "updating submitted_question_events id=#{sqevent.id} contributing_question_id from #{sqevent.contributing_question} to #{searched_question.id}"
+          sqevent.update_attribute(:contributing_question, searched_question.id)
         end
       end
         
