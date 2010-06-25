@@ -25,6 +25,10 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
       xml.id      url_for(:controller => 'aae/question', :action => 'index', :id => question.id, :only_path => false)
       xml.updated date_format(question.updated_at)
       
+      question.file_attachments.each do |sq_img|
+        xml.icon sq_img.attachment.url(:thumb)
+      end 
+      
       xml.content "type" => "html" do
       	xml.text! question.asked_question
       end
