@@ -37,6 +37,11 @@ def update_from_submitted_question_events(connection)
  
    sqlist = SubmittedQuestion.find(:all, :conditions => "resolved_at < '2009-08-12' and current_contributing_question IS NOT NULL",:order => " submitted_questions.id")
   
+  #NOTE: in order to not have rails automatically update the :updated_at field for this, we are going to turn Rails automatic updating off.
+  #  also note: SubmittedQuestionEvent has no :updated_at.
+   SubmittedQuestion.record_timestamps=false
+   Response.record_timestamps=false
+   
   
    sqlist.each do |sq|
   
@@ -45,12 +50,17 @@ def update_from_submitted_question_events(connection)
       if searched_question
         puts "updating submitted_questions #{sq.id} with id of searched_question= #{searched_question.id}, old contributing_question= #{sq.current_contributing_question}"
        
+       puts "for sq  :current_contributing_question of sq, current :updated_at= '#{sq.updated_at}'"
        sq.update_attribute(:current_contributing_question, searched_question.id)
+       puts "after updating :current_contributing_question, current :updated_at= '#{sq.updated_at}'"
+       
           # find responses and correct contributing question_id
           response= sq.responses.find(:first, :conditions => "contributing_question_id IS NOT NULL", :order => "created_at DESC") 
           if response  
             puts "updating response id=#{response.id} contributing_question_id from #{response.contributing_question_id} to #{searched_question.id}"
+            puts "before updating response :contributing_question_id, current :updated_at='#{response.updated_at}'"
             response.update_attribute(:contributing_question_id, searched_question.id)
+            puts "after updating response :contributing_question_id, current :updated_at= '#{response.updated_at}'"
           end
           
         # now find the submitted_question_event referencing this contributing_question_id and change it
@@ -64,6 +74,9 @@ def update_from_submitted_question_events(connection)
      
    end
  
+  # Turn automatic recording of timestamps back on
+  SubmittedQuestion.record_timestamps=true
+  Response.record_timestamps=true
   
   
   ActiveRecord::Base::logger.info "####Finished fixing legacy submitted questions that used a contributing_question_id directly instead of a foreignid referenced through the id of search_questions.######"
