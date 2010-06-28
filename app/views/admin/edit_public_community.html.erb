@@ -29,8 +29,13 @@
         <p>
         
         <p>
-            <%= check_box_tag 'community[is_launched]', true, @community.is_launched %> Show to the Public
+            <%= check_box_tag 'community[is_launched]', true, @community.is_launched %> Show to the Public?
             <span class="instructions">Allows the public to see this community. The change is immediate.</span>
+        </p>
+        
+        <p>
+            <%= check_box_tag 'community[hide_from_aae]', false, @community.hide_from_aae %> Hide from the Ask an Expert Menu?
+            <span class="instructions">Hides the resource area tag for this community from the Ask an Expert Menu. The change is immediate.</span>
         </p>
         
         <p>

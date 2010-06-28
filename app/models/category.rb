@@ -26,9 +26,14 @@ class Category < ActiveRecord::Base
     Category.find(:all, :conditions => 'parent_id is null', :order => 'name')
   end
   
-  def self.launched_content_categories
+  def self.launched_content_categories(options = {})
     # get the content tags for launched communities and map to a string we can limit a category find to.
-    launched_community_content_tags = Tag.community_content_tags({:launchedonly => true}).map{|t| "'#{t.name}'"}
+    retrieveoptions = {:launchedonly => true}
+    onlyaae = options[:onlyaae].nil? ? false : options[:onlyaae]
+    if(onlyaae)
+      retrieveoptions.merge!({:onlyaae => true})
+    end
+    launched_community_content_tags = Tag.community_content_tags(retrieveoptions).map{|t| "'#{t.name}'"}
     self.find(:all, :conditions => "parent_id IS NULL and LOWER(name) IN (#{launched_community_content_tags.join(',')})", :order => 'name')
   end
   
