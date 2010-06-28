@@ -8,20 +8,24 @@
 
 <h2>Create your Ask an Expert Widget</h2>
 <% form_tag({:controller => 'widgets/aae', :action => 'generate_widget_code'}) do %>
-    <fieldset>
-    <p>Select the location that you want your widget to cover. This will allow questions to be routed to experts who select the corresponding location in their Ask an Expert preferences.</p>
+   <fieldset>
+      <p>Select the location that you want your widget to cover. This will allow questions to be routed to experts who select the corresponding location in their Ask an Expert preferences.</p>
     
-    <%= render(:partial => 'shared/location_county') %>
+      <%= render(:partial => 'shared/location_county') %>
     
-    <p>Name your widget (in order to track and find questions entered through it)</p>
-    <%= text_field(:widget, :name) %>
+      <p>
+         <label>Name your widget <span>(in order to track and find questions entered through it)</span>
+         <%= text_field(:widget, :name) %>
+         </label>
+      </p>
     
-    <br /><br />
-    <p>
-    Enable photo upload for your widget &nbsp<%= check_box_tag('photo_upload', "yes", false) %>
-    </p>
+      <p>
+         <label>
+         <%= check_box_tag('photo_upload', "yes", false, :class => "checkbox") %> Enable photo upload for your widget
+         </label>
+      </p>
     
-    <p><%= submit_tag "Get the Widget Code!", :disable_with => "Submitting..." %></p>
+      <p><%= submit_tag "Get the Widget Code!", :disable_with => "Submitting..." %></p>
     </fieldset>
 <% end %>
 
