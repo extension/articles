@@ -140,6 +140,7 @@ class AdminController < ApplicationController
     @community.public_description = params['community']['public_description']
     @community.public_name = params['community']['public_name']
     @community.is_launched = ( params['community']['is_launched'] ? true : false)
+    @community.hide_from_aae = ( params['community']['hide_from_aae'] ? true : false)
     
     
     # sanity check tag names
@@ -163,6 +164,15 @@ class AdminController < ApplicationController
       flash[:notice] = 'Community Updated'
       @community.content_tag_names=(params['community']['content_tag_names'])
       AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
+      # cache updates - this is kind of a hack
+      if(@community.is_launched_changed?)
+        Tag.community_content_tags({:launchedonly => true},true)
+      end
+        
+      if(@community.hide_from_aae_changed?)
+        Tag.community_content_tags({:launchedonly => true, :onlyaae => true},true)
+      end
+      
       redirect_to :action => :manage_communities
     else
       flash[:notice] = 'Error updating community'
