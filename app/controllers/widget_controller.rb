@@ -14,6 +14,16 @@ class WidgetController < ApplicationController
 
   # ask widget pulled from remote iframe
   def index
+    @fingerprint = params[:id].strip
+    if !@fingerprint.blank?
+      widget_to_show = Widget.find_by_fingerprint(@fingerprint)
+      if widget_to_show and !widget_to_show.active?
+        @status_message = "This widget has been disabled."
+        render :template => '/widget/status', :layout => false
+        return
+      end
+    end
+    
     if params[:location]
       @location = Location.find_by_abbreviation(params[:location].strip)
       if params[:county] and @location
@@ -23,8 +33,7 @@ class WidgetController < ApplicationController
     
     @submitted_question = SubmittedQuestion.new
     @public_user = PublicUser.new
-    
-    @fingerprint = params[:id]
+  
     @host_name = request.host_with_port
     render :layout => false
   end

@@ -153,7 +153,7 @@ ol li {margin: 0 0 .75em;padding:0;}
 -----------------------------------------------------------------------------*/
 
 form p {
-    margin:0 0 .5em;
+    margin:0 0 1.5em;
 }
 label {
     display:block;
@@ -162,6 +162,10 @@ label {
 label input {
     display:block;
     width:20em;
+}
+label span {
+    display:block;
+    font-weight:normal;
 }
 label em {
     color:#666; 
@@ -173,6 +177,7 @@ select {display:block;}
 textarea { padding: .3em; }
 textarea { width: 95%; }
 
+.checkbox {display:inline; width:auto;}
 .inline {display:inline;}
 p.inline * {display:inline;}
 p.inline label input {width:auto;}

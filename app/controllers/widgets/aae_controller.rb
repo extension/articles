@@ -76,6 +76,10 @@ class Widgets::AaeController < ApplicationController
     (county and location) ? county_str = county.name : county_str = nil
 
     @widget = Widget.new(params[:widget])
+    
+    if !params[:photo_upload].blank? and params[:photo_upload].strip == 'yes'
+      @widget.upload_capable = true  
+    end
 
     if !@widget.valid?
       @location_options = get_location_options
