@@ -32,7 +32,7 @@ class AskController < ApplicationController
   end
   
   def submission_form
-    @categories = [""].concat(Category.launched_content_categories.map{|c| [c.name, c.id]})
+    @categories = [""].concat(Category.launched_content_categories({:launchedonly => true, :onlyaae => true}).map{|c| [c.name, c.id]})
     @location_options = get_location_options
     @county_options = get_county_options
     
