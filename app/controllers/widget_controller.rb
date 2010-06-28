@@ -18,7 +18,7 @@ class WidgetController < ApplicationController
     if !@fingerprint.blank?
       widget_to_show = Widget.find_by_fingerprint(@fingerprint)
       if widget_to_show and !widget_to_show.active?
-        @status_message = "This widget has been disabled. Sorry for any inconvenience."
+        @status_message = "This widget has been disabled."
         render :template => '/widget/status', :layout => false
         return
       end
