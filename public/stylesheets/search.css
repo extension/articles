@@ -248,3 +248,9 @@ text-decoration: underline;
 code {color:purple; background:#fff; padding:.25em;}
 #url_list {font-size:1.2em;}
 #url_list td {border-bottom:1px solid #ddd;}
+
+.feedback_banner.success {
+   background: #d0ffb8;
+	}
+.feedback_banner.success p {padding:10px 10px 10px 45px; background: #e4ffe4 url(/images/common/success.gif) 20px 50% no-repeat; color:#024d03; border-top: 1px solid #40CE1B;border-bottom: 1px solid #40CE1B}
+.feedback_banner.failure p {padding:10px 10px 10px 45px; background: #ffebf3 url(/images/common/failure.gif) 20px 50% no-repeat; color:red; border-top: 1px solid red;border-bottom: 1px solid red}
