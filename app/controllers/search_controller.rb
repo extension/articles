@@ -5,6 +5,9 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+include ActionView::Helpers::UrlHelper
+include ActionController::UrlWriter
+
 class SearchController < ApplicationController
   before_filter :login_optional, :only => :index
   before_filter :login_required, :except => :index
@@ -48,12 +51,23 @@ class SearchController < ApplicationController
   
   def remove
     if (!params[:id].nil? and !params[:id].empty?)
-      goner = Annotation.find(params[:id])
-      result = goner.remove
-      if result[:success]
-        flash[:success] = "#{goner.url} has been removed from search"
+      goner = Annotation.find_by_id(params[:id])
+      
+      if goner
+        result = goner.remove
       else
-        flash[:failure] = "Unable to remove #{goner.url} - #{result[:msg]}"
+        result = {:success => false, :msg => "URL ID not found"}
+      end
+      
+      if result[:success]
+        flash[:success] = "#{goner.url} has been removed from search -- "
+        flash[:success] << link_to("UNDO", url_for(:action => :add, :url => goner.url, :searchterm => params[:searchterm]))
+      else
+        if goner
+          flash[:failure] = "Unable to remove #{goner.url} - #{result[:msg]}"
+        else
+          flash[:failure] = "Unable to remove URL - #{result[:msg]}"
+        end
       end
     else
       flash[:warning] = "No valid id provided."
