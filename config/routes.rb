@@ -126,7 +126,6 @@ ActionController::Routing::Routes.draw do |map|
   ### Search Stuff ###
 
   map.search 'search', :controller => 'search', :action => 'index'
-  map.search_about 'search/about', :controller => 'search', :action => 'about'
 
   #################################################################
   ### pubsite routes ###
