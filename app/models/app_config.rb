@@ -135,7 +135,8 @@ class AppConfig
     @@configtable['max_content_limit'] = 25
     @@configtable['events_within_days'] = 5
     
-    
+    @@configtable['cse_id'] = 'NotSet'
+    @@configtable['cse_secret'] = 'NotSet'
     
     # Akismet spam blocker key
     @@configtable['akismet_key'] = 'default'
