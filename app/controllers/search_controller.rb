@@ -21,7 +21,7 @@ class SearchController < ApplicationController
     if (!params[:searchterm].nil? and !params[:searchterm].empty?)
       @annotations = Annotation.patternsearch(params[:searchterm]).paginate(:all, :order => :url, :page => params[:page])
       if @annotations.nil? || @annotations.length == 0
-        flash.now[:warning] = "<p>No URLs were found that matches your search term.</p>"
+        flash.now[:warning] = "No URLs were found that matches your search term."
       end
     else
       @annotations = Annotation.paginate(:all, :order => 'url', :page => params[:page])
@@ -40,7 +40,7 @@ class SearchController < ApplicationController
       end
       
     else
-      flash[:notice] = "No valid url provided."
+      flash[:warning] = "No valid url provided."
     end
     
     redirect_to(:action => :manage)
@@ -56,7 +56,7 @@ class SearchController < ApplicationController
         flash[:failure] = "Unable to remove #{goner.url} - #{result[:msg]}"
       end
     else
-      flash[:notice] = "No valid id provided."
+      flash[:warning] = "No valid id provided."
     end
     
     redirect_to(:action => :manage)
