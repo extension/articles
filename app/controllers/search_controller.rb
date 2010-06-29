@@ -6,9 +6,9 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class SearchController < ApplicationController
+  before_filter :login_optional, :only => :index
   before_filter :login_required, :except => :index
   before_filter :check_purgatory, :except => :index
-  
   layout 'search'
   
   def index
@@ -29,9 +29,6 @@ class SearchController < ApplicationController
   end
   
   def add
-    msg = ""
-    rc =false
-    
     if (!params[:url].nil? and !params[:url].empty?)
       annote = Annotation.new
       result = annote.add(params[:url])
@@ -52,15 +49,16 @@ class SearchController < ApplicationController
   def remove
     if (!params[:id].nil? and !params[:id].empty?)
       goner = Annotation.find(params[:id])
-      rc = goner.remove
-      if rc
+      result = goner.remove
+      if result[:success]
         flash[:success] = "#{goner.url} has been removed from search"
       else
-        flash[:failure] = "Unable to remove #{goner.url}.  Please try again later."
+        flash[:failure] = "Unable to remove #{goner.url} - #{result[:msg]}"
       end
     else
       flash[:notice] = "No valid id provided."
     end
+    
     redirect_to(:action => :manage)
   end
 end

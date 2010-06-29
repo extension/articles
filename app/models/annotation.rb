@@ -46,7 +46,6 @@ class Annotation < ActiveRecord::Base
   def add(url)
     returnhash = Hash.new
     returnhash[:success] = false
-    returnhash[:msg] = ""
     msg = ""
     result = false
     
@@ -82,12 +81,36 @@ class Annotation < ActiveRecord::Base
   end
   
   def remove
-    rc = false
-    if Annotation.remove(self.href)
-      self.destroy
-      rc = true
+    returnhash = Hash.new
+    returnhash[:success] = false
+    msg = ""
+    result = false
+    
+    begin
+      result = Annotation.remove(self.href)
+    rescue GData::Client::BadRequestError
+      msg << "Invalid href ID; may have already been removed."
+    rescue GData::Client::ServerError
+      msg << "Server error; please try again later."
+    rescue GData::Client::UnknownError
+      msg << "Server error; invalid response from Google."
+    rescue Exception => detail
+      if detail.respond_to?(:response)
+        msg << detail.response.body
+      else
+        msg << "Unknown error - #{detail.inspect}."
+      end
     end
-    return rc
+    
+    if result
+      self.destroy
+      returnhash[:success] = true
+      msg << "successfully added"
+    end
+    
+    returnhash[:msg] = msg
+    
+    return returnhash
   end
   
   def after_initialize

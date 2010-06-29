@@ -16,6 +16,10 @@
   }, true);  
 </script>
 
+<% if @currentuser %>
+   <p>Extension personnel may <%= link_to("contribute", url_for(:action => :manage)) %> to this Search Engine.</p>
+<% end %>
+
 <h3>About Cooperative Extension Search</h3>
 
 <p>This service allows you to search the resources provided by your <%= link_to("Cooperative Extension Service", "http://en.wikipedia.org/wiki/Cooperative_extension_service") %> using a <%= link_to("Google Custom Search Engine", "http://www.google.com/cse/") %> that includes many of the Cooperative Extension web sites provided by your Land-Grant institutions.</p>

@@ -23,15 +23,18 @@ module GData
         options[:clientlogin_service] ||= 'cprose'
         options[:source] ||= 'darmok' # our AppName
         options[:authsub_scope] ||= 'http://www.google.com/cse/api/default/cse/'
+        
         super(options)
       end
       
       def clientlogin(username, password, captcha_token = nil, 
         captcha_answer = nil, service = nil, account_type = nil)
         returndata = super(username, password)
+        
         if ! self.setup
           returndata = nil
         end
+        
         return returndata
       end
       
@@ -40,10 +43,12 @@ module GData
         cseList = 'http://www.google.com/cse/api/default/cse/'
         cseXML = self.get(cseList).to_xml
         idList = cseXML.elements.each('//@id') # get matching attr list
+        
         if idList and idList.length > 0
           @cse_id = "_cse_" + idList[0].value
           returndata = true
         end
+        
         return returndata
       end
       
@@ -139,11 +144,7 @@ module GData
         returndata = Array.new
 
         if response.status_code == 200
-          begin
-            xmldoc = response.to_xml
-          rescue
-            returndata = nil
-          end
+          xmldoc = response.to_xml
           
           if xmldoc
             xmldoc.elements.each('/Batch/Add/Annotations/Annotation/') do |element|
@@ -157,6 +158,7 @@ module GData
             end
           end #xmldoc
         end #valid response
+        
         return returndata
       end
       
