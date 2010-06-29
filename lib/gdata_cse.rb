@@ -10,7 +10,8 @@ require 'gdata'
 module GData
   module Client
     
-    # Client class to wrap working with the Documents List Data API.
+    # Client class to wrap working with the Google Custom Search Engine API.
+    # http://code.google.com/intl/en/apis/customsearch/docs/api.html
     class Cse < Base
       
       attr_accessor :urls
@@ -142,8 +143,10 @@ module GData
       
       def parseResponse(response, options={})
         returndata = Array.new
-
-        if response.status_code == 200
+        
+        # 200 for adds, 204 for removes
+        if [200, 204].include?(response.status_code)
+           
           xmldoc = response.to_xml
           
           if xmldoc
