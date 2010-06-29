@@ -43,7 +43,7 @@ class SearchController < ApplicationController
       flash[:warning] = "No valid url provided."
     end
     
-    redirect_to(:action => :manage)
+    redirect_to(:action => :manage, :searchterm => params[:searchterm])
   end
   
   def remove
@@ -59,6 +59,6 @@ class SearchController < ApplicationController
       flash[:warning] = "No valid id provided."
     end
     
-    redirect_to(:action => :manage)
+    redirect_to(:action => :manage, :searchterm => params[:searchterm])
   end
 end
