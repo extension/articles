@@ -19,7 +19,7 @@
    <fieldset class="search">
       <p>
          <label for="searchterm">Search by URL
-            <%= text_field_tag("searchterm","",:size => 25)%>
+            <%= text_field_tag("searchterm",params[:searchterm],:size => 25)%>
          </label>
          <%= submit_tag 'Search' %>
       </p>
