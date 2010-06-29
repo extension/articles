@@ -44,17 +44,41 @@ class Annotation < ActiveRecord::Base
   }
   
   def add(url)
-    rc = false
-    result = @@client.addAnnotation(url)
+    returnhash = Hash.new
+    returnhash[:success] = false
+    returnhash[:msg] = ""
+    msg = ""
+    result = false
+    
+    begin
+      result = @@client.addAnnotation(url)
+    rescue GData::Client::BadRequestError
+      msg << "Malformed URL; please try again."
+    rescue GData::Client::ServerError
+      msg << "Server error; please try again later."
+    rescue GData::Client::UnknownError
+      msg << "Server error; invalid response from Google."
+    rescue Exception => detail
+      if detail.respond_to?(:response)
+        msg << detail.response.body
+      else
+        msg << "Unknown error - #{detail.inspect}."
+      end
+    end
+    
     if result
       data = result.pop
       data.each do |key, value|
         self.send("#{key}=", value)
       end
       self.save
-      rc = true
+      returnhash[:success] = true
+      msg << "successfully added"
     end
-    return rc
+    
+    returnhash[:msg] = msg
+    
+    return returnhash
   end
   
   def remove

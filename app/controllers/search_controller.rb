@@ -16,6 +16,7 @@ class SearchController < ApplicationController
   end
   
   def manage
+    @page_title = "Manage Links"
     set_titletag('Manage CSE Links')
     if (!params[:searchterm].nil? and !params[:searchterm].empty?)
       @annotations = Annotation.patternsearch(params[:searchterm]).paginate(:all, :order => :url, :page => params[:page])
@@ -28,17 +29,23 @@ class SearchController < ApplicationController
   end
   
   def add
+    msg = ""
+    rc =false
+    
     if (!params[:url].nil? and !params[:url].empty?)
       annote = Annotation.new
-      rc = annote.add(params[:url])
-      if rc
-        flash[:success] = "#{annote.url} has been added to search"
+      result = annote.add(params[:url])
+      
+      if result[:success]
+        flash[:success] = "#{annote.url} has been added to search."
       else
-        flash[:failure] = "Unable to add #{params[:url]}.  Please try again later."
+        flash[:failure] = "Unable to add #{params[:url]} - #{result[:msg]}"
       end
+      
     else
       flash[:notice] = "No valid url provided."
     end
+    
     redirect_to(:action => :manage)
   end
   

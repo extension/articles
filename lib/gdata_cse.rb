@@ -98,11 +98,7 @@ module GData
       def updateLocal(response, options={})
         returndata = nil
         if response.status_code == 200
-          begin
-            xmldoc = response.to_xml
-          rescue
-            returndata = nil
-          end
+          xmldoc = response.to_xml
           
           if xmldoc
             xmldoc.elements.each('/Annotations/Annotation/') do |element|
@@ -131,7 +127,11 @@ module GData
             
             returndata = @urls
           end
+        else
+          # either got a 201 or 302, neither are defined for CSE
+          raise UnknownError.new(response)
         end
+        
         return returndata
       end
       
