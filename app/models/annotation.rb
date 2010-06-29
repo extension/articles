@@ -9,8 +9,12 @@ require 'lib/gdata_cse'
 
 class Annotation < ActiveRecord::Base
   validates_length_of :url, :within => 1..1024
-  validates_uniqueness_of :href
+  # we do the validation here in leiu of the db since google *does* allow
+  # duplicates; this allows us to import all of googles entries, but let
+  # folks know they are trying to add a dupe
+  validates_uniqueness_of :url
   
+  # key off url since annotations can be removed
   has_many :annotation_events, :primary_key => :url
   
   after_save :log_add
@@ -49,30 +53,55 @@ class Annotation < ActiveRecord::Base
     msg = ""
     result = false
     
-    begin
-      result = @@client.addAnnotation(url)
-    rescue GData::Client::BadRequestError
-      msg << "Malformed URL; please try again."
-    rescue GData::Client::ServerError
-      msg << "Server error; please try again later."
-    rescue GData::Client::UnknownError
-      msg << "Server error; invalid response from Google."
-    rescue Exception => detail
-      if detail.respond_to?(:response)
-        msg << detail.response.body
-      else
-        msg << "Unknown error - #{detail.inspect}."
+    # remove leading protocol stuff so we can try to match
+    # it locally before sending it to google
+    url.gsub!(/^http(s)?(\:)+\/(\/)+/,'')
+    
+    dupe = Annotation.find_by_url(url)
+    
+    if dupe
+      msg << "URL already included in search"
+    else
+      begin
+        result = @@client.addAnnotation(url)
+      rescue GData::Client::BadRequestError
+        msg << "Malformed URL; please try again."
+      rescue GData::Client::ServerError
+        msg << "Server error; please try again later."
+      rescue GData::Client::UnknownError
+        msg << "Server error; invalid response from Google."
+      rescue Exception => detail
+        if detail.respond_to?(:response)
+          msg << detail.response.body
+        else
+          msg << "Unknown error - #{detail.inspect}."
+        end
       end
     end
     
     if result
       data = result.pop
+      # set our object properties to match googles response
       data.each do |key, value|
         self.send("#{key}=", value)
       end
-      self.save
-      returnhash[:success] = true
-      msg << "successfully added"
+      
+      if ! self.save
+        # added a duplicate, need to remove
+        
+        # we replace the url the user provided with the form provided by
+        # google in their response, if the save failed, it is because we
+        # tried to add a dupe to our local db
+        
+        # to keep us in sync with google, we then issue a remove back to
+        # google
+        self.remove
+        msg << "URL already included in search"
+      else
+        returnhash[:success] = true
+        msg << "successfully added"
+      end
+
     end
     
     returnhash[:msg] = msg
@@ -103,9 +132,12 @@ class Annotation < ActiveRecord::Base
     end
     
     if result
-      self.destroy
+      # we only destroy ourselves if we have an id (were saved in the db)
+      # if we caught a dupe after the response came back from google,
+      # then we would not have an id
+      self.destroy if self.id
       returnhash[:success] = true
-      msg << "successfully added"
+      msg << "successfully removed"
     end
     
     returnhash[:msg] = msg
@@ -118,6 +150,7 @@ class Annotation < ActiveRecord::Base
   end
   
   def added_at=(microseconds)
+    # response from Google is microseconds as a string
     write_attribute(:added_at, Time.at(Integer(microseconds)/1000000))
   end
   
@@ -161,8 +194,16 @@ class Annotation < ActiveRecord::Base
       urls.each do |url|
         begin
           a = Annotation.new(url)
-          a.save!
-          added += 1
+          
+          # do not use model validations, this allows us to add dupes that
+          # may be present at google
+          rc = a.save(false)
+          
+          if rc
+            added += 1
+          else
+            errs += 1
+          end
         rescue
           errs += 1
         end
