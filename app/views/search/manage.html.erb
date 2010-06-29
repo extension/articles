@@ -8,6 +8,7 @@
          <label for="url">URL
             <%= text_field_tag("url","",:size => 25)%>
          </label>
+         <%= hidden_field_tag 'searchterm', params[:searchterm] %>
          <%= submit_tag 'Add' %>
        </p>
        <p class="explanation">Include a trailing asterisk or Google will only search the single page typed into the field. (eg: <code>extension.org/*</code>) You can also use an asterisk to include subdomains. (eg: <code>*.extension.org/*</code>)</p>
@@ -21,6 +22,7 @@
          <label for="searchterm">Search by URL
             <%= text_field_tag("searchterm",params[:searchterm],:size => 25)%>
          </label>
+         
          <%= submit_tag 'Search' %>
       </p>
    </fieldset>
@@ -31,7 +33,7 @@
   <tr>
     <td><%= a.url %></td>
     <td><%= a.added_at.strftime("%l:%M %p, %b %d, %Y ") %></td>
-    <td><%= link_to("remove", url_for(:controller => :search, :action => :remove, :id => a.id)) %> <!-- <%= a.href %> --></td>
+    <td><%= link_to("remove", url_for(:controller => :search, :action => :remove, :id => a.id, :searchterm => params[:searchterm])) %> <!-- <%= a.href %> --></td>
   </tr>
 <% end %>
 </table>

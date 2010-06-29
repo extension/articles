@@ -212,5 +212,30 @@ class Annotation < ActiveRecord::Base
       return {:added => added, :errs => errs}
     end
     
+    def remove_dupes
+      self.login
+      total = 0
+      
+      annotes = Annotation.all
+      urls = Hash.new
+      hrefs = Hash.new
+      
+      annotes.each do |an|
+        urls[an.url] += 1 if urls.has_key?(an.url)
+        urls[an.url] = 1 if ! urls.has_key?(an.url)
+        hrefs[an.url] = an.href
+      end
+      
+      urls.each do |url, cnt|
+        if cnt > 1
+          goner = hrefs[url]
+          p "removing duplidate entry: #{url}"
+          Annotation.remove(goner)
+          total += 1
+        end
+      end
+      return total
+    end
+    
   end
 end
