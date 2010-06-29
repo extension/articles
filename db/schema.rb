@@ -97,6 +97,8 @@ ActiveRecord::Schema.define(:version => 20100610153833) do
     t.datetime "created_at"
   end
 
+  add_index "annotations", ["url"], :name => "index_annotations_on_url"
+
   create_table "api_key_events", :force => true do |t|
     t.integer  "api_key_id"
     t.string   "requestaction"
@@ -136,7 +138,7 @@ ActiveRecord::Schema.define(:version => 20100610153833) do
 
   add_index "articles", ["datatype"], :name => "index_wiki_articles_on_type"
   add_index "articles", ["original_url"], :name => "index_wiki_articles_on_original_url", :unique => true
-  add_index "articles", ["title"], :name => "index_wiki_articles_on_title"
+  add_index "articles", ["title"], :name => "index_wiki_articles_on_title", :length => {"title"=>"255"}
   add_index "articles", ["url"], :name => "index_wiki_articles_on_url", :unique => true
   add_index "articles", ["wiki_created_at", "wiki_updated_at"], :name => "index_articles_on_wiki_created_at_and_wiki_updated_at"
 
@@ -467,7 +469,7 @@ ActiveRecord::Schema.define(:version => 20100610153833) do
     t.datetime "created_at"
   end
 
-  add_index "list_posts", ["posted_at", "listname", "senderemail", "messageid"], :name => "unique_email", :unique => true
+  add_index "list_posts", ["posted_at", "listname", "senderemail", "messageid"], :name => "unique_email", :unique => true, :length => {"listname"=>nil, "messageid"=>"128", "senderemail"=>nil, "posted_at"=>nil}
 
   create_table "list_subscriptions", :force => true do |t|
     t.string   "email",          :limit => 96
