@@ -47,9 +47,19 @@
        
             <td>
                <% if question.current_contributing_question%>
-             <!--   <%= link_to  question.current_contributing_question, :controller => 'aae/question', :action => 'index', :id =>  question.current_contributing_question  %>-->
-                <%= question.current_contributing_question%>
-                <% end%>                    
+                <%question.responses.each do |response| %>
+           
+                  <% if contributing_question = response.contributing_question %>
+	    	        
+	    	        <% if contributing_question.entrytype == SearchQuestion::FAQ %>
+	    	          <%= link_to "FAQ # #{contributing_question.foreignid}", "http://faq.extension.org/questions/show/#{contributing_question.foreignid}" %>
+	    	        <% else %>
+	    	          <%= link_to "AaE Question # #{contributing_question.foreignid}", aae_question_url(:id => contributing_question.foreignid) %>
+	    	        <% end %>
+	    	        
+	    	      <% end %>
+	             <% end %>
+               <% end%>                    
            
             </td>
             <td class="q_age">
