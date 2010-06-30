@@ -9,8 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-
-ActiveRecord::Schema.define(:version => 20100610153833) do
+ActiveRecord::Schema.define(:version => 20100628141435) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -220,6 +219,7 @@ ActiveRecord::Schema.define(:version => 20100610153833) do
     t.integer  "logo_id",                               :default => 0
     t.boolean  "connect_to_drupal",                     :default => false
     t.integer  "drupal_node_id"
+    t.boolean  "hide_from_aae",                         :default => false
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
@@ -809,8 +809,8 @@ ActiveRecord::Schema.define(:version => 20100610153833) do
 
   create_table "update_times", :force => true do |t|
     t.integer  "datasource_id"
-    t.string   "datasource_type",     :limit => 25
-    t.string   "datatype",            :limit => 25
+    t.string   "datasource_type"
+    t.string   "datatype"
     t.datetime "last_datasourced_at"
     t.datetime "created_at"
     t.datetime "updated_at"
