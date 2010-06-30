@@ -5,8 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-require 'lib/gdata_cse'
-
 class Annotation < ActiveRecord::Base
   validates_length_of :url, :within => 1..1024
   # we do the validation here in leiu of the db since google *does* allow
