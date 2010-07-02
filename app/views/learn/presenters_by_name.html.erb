@@ -1,0 +1,7 @@
+<% @users.each do |user| %>
+
+  <%= user.fullname %> <%= link_to_function "Add to presenters", "addTagsToList($('presenters_to_save'), '#{user.email}')"  %><br />
+  
+<% end %>
+
+<br /><br />

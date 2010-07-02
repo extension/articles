@@ -1,0 +1,48 @@
+<% @page_title = "Create New Learning Session" %>
+<h1><%= @page_title %></h1>
+
+<%= error_messages_for :learn_session %>
+<%= render(:partial => "partial/flashmessages") %>
+
+<% form_for :learn_session, :url => { :action => :create_session } do |f| %>
+  <p><%= f.label :title, 'Title' %></p>
+  <p>
+    <%= f.text_area :title, {:rows => "3"} %>
+  </p>
+  
+  <br /><br />
+  
+  <p><%= f.label :description, 'Description' %></p>
+  <p>
+    <%= f.text_area :description, {:rows => "8"} %>
+  </p>
+  
+  <br /><br />
+  
+  <p><%= f.label :date, 'Date/Time' %></p>
+  From:<%= calendar_date_select_tag :session_start, @learn_session ? @learn_session.session_start : "", {:time => true} %> 
+  To: 
+  <%= calendar_date_select_tag :session_end, @learn_session ? @learn_session.session_end : "", {:time => true} %>
+  
+  <br /><br /><br /><br />
+  
+  <p><%= f.label :where, 'Session Location' %></p>
+  <p>
+    <%= f.text_field :where %>
+  </p>
+  
+  <p>Presenters</p>
+  
+  <p><label>Type a name...</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
+  
+  <%= observe_field(:presenter_name, :update => :presenter_list, :frequency => 0.6, :url => { :action => 'presenters_by_name' }, :with => "'name=' + value", :loading => "Element.show('loading')", :complete => "Element.hide('loading')") %>
+  <div id="loading" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
+  
+  <div id="presenter_list"></div>
+  
+  <p><label>Current Presenters (comma separated):</label></p>
+  <%= text_area_tag :presenters_to_save, nil, {:rows => 8} %>
+  
+  <p><%= submit_tag 'Create' %></p>
+  
+<% end %>
