@@ -34,7 +34,7 @@
 <% @annotations.each do |a| %>
   <tr>
     <td><%= a.url %></td>
-    <td><%= a.added_at.strftime("%l:%M %p, %b %d, %Y ") %></td>
+    <td><%= a.added_at.strftime("%l:%M %p, %b %d, %Y ") %> <span class="age">(<%= time_ago_in_words(a.added_at) %> ago)</span></td>
     <td><%= link_to("remove", url_for(:controller => :search, :action => :remove, :id => a.id, :searchterm => params[:searchterm])) %> <!-- <%= a.href %> --></td>
   </tr>
 <% end %>

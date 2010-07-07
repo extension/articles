@@ -28,7 +28,7 @@ class SearchController < ApplicationController
         flash.now[:warning] = "No URLs were found that matches your search term."
       end
     else
-      @annotations = Annotation.paginate(:all, :order => 'url', :page => params[:page])
+      @annotations = Annotation.paginate(:all, :order => 'added_at DESC', :page => params[:page])
     end
   end
   
