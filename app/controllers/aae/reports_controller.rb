@@ -1036,7 +1036,7 @@ class Aae::ReportsController < ApplicationController
 		set_filters    #pick up filters set in aae
 		filter_string_helper
 		@filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
-   
+    ActiveRecord::Base::logger.debug "@filteroptions= " + @filteroptions.to_s
 		#get list of assignee users  (expertise users)
 		# Roles (id,name)
 		# 1,Administrator

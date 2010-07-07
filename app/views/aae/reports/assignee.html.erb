@@ -36,6 +36,7 @@
      </tr>
 
     <% @display_list.each do |entry| %>
+        <% if entry[:total] > 0 or  (!@category && !@location && !@source && !@county ) %>
         <tr <%= ' class="shaded"' if even %>>
             <td class="left"><%= entry[:user].fullname %></td>
             <td><%= entry[:total] %></td>
@@ -60,7 +61,8 @@
                 <td>&nbsp;</td>
             <%- end -%>
         </tr>
-    	<% even = (!even) %> 
+    	<% even = (!even) %>
+       <%end%> 
     <%- end -%> 
 
  </table>
