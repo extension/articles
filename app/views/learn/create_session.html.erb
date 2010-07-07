@@ -32,6 +32,8 @@
   </p>
   
   <p>Presenters</p>
+  <div id="presenters_to_save"></div>
+  <%= hidden_field_tag "presenter_list_to_save" %>
   
   <p><label>Type a name...</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
   
@@ -39,9 +41,6 @@
   <div id="loading" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
   
   <div id="presenter_list"></div>
-  
-  <p><label>Current Presenters (comma separated):</label></p>
-  <%= text_area_tag :presenters_to_save, nil, {:rows => 8} %>
   
   <p><%= submit_tag 'Create' %></p>
   

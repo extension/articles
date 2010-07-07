@@ -51,16 +51,19 @@ class LearnController < ApplicationController
     render :layout => false
   end
   
-  #def add_to_presenters
-  #  if request.post?
-  #    if !params[:user_id].blank? and user = User.find_by_id(params[:user_id])
-  #      
-  #    else
-  #      return
-  #    end
-  #  else
-  #    return
-  #  end
-  #end
+  def add_to_presenters
+    if request.post?
+      if !params[:user_id].blank? and user = User.find_by_id(params[:user_id])
+        render :update do |page|
+          page.insert_html :bottom, :presenters_to_save, :partial => 'presenter', :locals => {:user => user}
+          page.call 'addTagsToList', page[:presenter_list_to_save], user.id 
+        end
+      else
+        return
+      end
+    else
+      return
+    end
+  end
 
 end
