@@ -7,6 +7,7 @@
 
 include ActionView::Helpers::UrlHelper
 include ActionController::UrlWriter
+include ActionView::Helpers::TagHelper
 
 class SearchController < ApplicationController
   before_filter :login_optional, :only => :index
@@ -60,8 +61,8 @@ class SearchController < ApplicationController
       end
       
       if result[:success]
-        flash[:success] = "#{goner.url} has been removed from search -- "
-        flash[:success] << link_to("UNDO", url_for(:action => :add, :url => goner.url, :searchterm => params[:searchterm]))
+        flash[:success] = "#{goner.url} has been removed from search. "
+        flash[:success] << link_to("UNDO", url_for(:action => :add, :url => goner.url, :searchterm => params[:searchterm]), :class => "bigbutton blue")
       else
         if goner
           flash[:failure] = "Unable to remove #{goner.url} - #{result[:msg]}"
