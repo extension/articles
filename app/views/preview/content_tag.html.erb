@@ -23,7 +23,11 @@
       <div class="section">
       <h2>Public Description</h2>
       <%- if @community.public_description.blank? -%>
-         <p class="missing"><strong>A public community description for your community has not yet been created.</strong>  Contact your content staff representative to create your public community description.</p>
+         <p class="missing"><strong>A public community description for your community has not yet been created.</strong>  Contact your content staff representative to create your public community description.
+            <%- if @currentuser.is_admin? -%>
+               <%= link_to('edit link (only visible to admins)', :controller => 'admin', :action => 'edit_public_community', :id => @community.id)%>
+            <%- end -%>
+            </p>
       <%- else -%>
         <p class="launchready"><%= html_escape(@community.public_description) %></p>
       <%- end -%>
