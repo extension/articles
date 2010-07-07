@@ -1,7 +1,7 @@
 <table>
     <tr>
         <th scope="col">Name</th>
-        <th scope="col">Number of Assignees</th>
+        <th scope="col">Active Assignees</th>
         <th scope="col">Add to my filter list</th>
         <th scope="col">Auto-assign me these questions</th>
         <th scope="col">Date Created</th>
@@ -11,7 +11,7 @@
     <tr id="<%= widget.name %>">
         <td><%= link_to(widget.name, :controller => 'widgets/aae', :action => :view, :id => widget.id) %></td>
        
-        <td><%= link_to(widget.assignee_count, :controller => 'widgets/aae', :action => :widget_assignees, :id => widget.id) %></td>
+        <td><%= link_to(widget.assignee_count, widgets_view_aae_url(:id => widget.id)) %></td>
         
         <td><%= check_box_tag "filter_widget_#{widget.id}", widget.id, @filter_widgets.include?(widget.id) %>
             <div id="loading_filter_<%= widget.id %>" class="float-spinner" style="display:none">Saving...</div></td>
