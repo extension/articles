@@ -31,20 +31,15 @@ class Widget < ActiveRecord::Base
   end
   
   def self.get_all_with_assignee_count(options = {})
-    conditions = ''
+    join_conditions = ''
   
     non_responders = User.find(:all, :conditions => {:aae_responder => false})
-    conditions << "(user_roles.user_id NOT IN (#{non_responders.collect{|u| u.id}.join(',')}) OR user_roles.user_id IS NULL)" if non_responders.length > 0
-    
-    if options[:conditions] and !options[:conditions].blank?
-      conditions << " AND " if !conditions.blank?
-      conditions << options[:conditions]
-    end
+    join_conditions << " AND (user_roles.user_id NOT IN (#{non_responders.collect{|u| u.id}.join(',')}))" if non_responders.length > 0
     
     self.find(:all, 
               :select => 'widgets.*, COUNT(user_roles.id) AS assignee_count',
-              :joins => "LEFT JOIN user_roles on user_roles.widget_id = widgets.id AND role_id = #{Role.widget_auto_route.id}",
-              :conditions => conditions,
+              :joins => "LEFT JOIN user_roles on user_roles.widget_id = widgets.id AND (role_id = #{Role.widget_auto_route.id})" + join_conditions,
+              :conditions => options[:conditions] ||= nil,
               :include => :user, 
               :group => 'widgets.id',
               :order => options[:order] ||= 'widgets.name'
