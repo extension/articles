@@ -7,7 +7,7 @@
 
 class LearnController < ApplicationController
   
-  layout 'aae'
+  layout 'learn'
   
   before_filter :login_required
   before_filter :check_purgatory
