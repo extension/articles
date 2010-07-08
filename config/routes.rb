@@ -127,9 +127,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.search 'search', :controller => 'search', :action => 'index'
   
-  ### Search Stuff ###
-
-  map.search 'learn', :controller => 'learn', :action => 'index'
+  ### Learn Stuff ###
+  map.learn 'learn', :controller => 'learn', :action => 'index'
 
   #################################################################
   ### pubsite routes ###

@@ -3,7 +3,7 @@ body {background:#fff;}
 
 body, html {font-family: Helvetica, "Arial", "sans-serif";}
 
-#wrapper {background:#f1f1f1; width: 920px; margin:0 auto; padding:20px;}
+#wrapper {background:#f1f1f1; width: 960px; margin:0 auto;}
 #masthead {float:left; padding:10px;width:900px; position:relative;}
 
 
@@ -40,6 +40,8 @@ body, html {font-family: Helvetica, "Arial", "sans-serif";}
 
 /* layout
 -----------------------------------------------------------------------------*/
+#home section {width:300px;margin:0 10px; background:#ededed; float:left;}
+
 #common_footer {clear:both; padding:20px 10px 60px; border-top:1px solid #ddd; background:#f1f1f1;}
 #common_footer p {color:#555;}
 #common_footer a {color:#444; display:block; padding:.1em .5em;}

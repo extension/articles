@@ -33,11 +33,12 @@
     <% end %>
     <div id="wrapper">
         <div id="masthead">
-            <h1><%= link_to("eXtension Learn", incoming_url) %></h1>
+            <h1><%= link_to("eXtension Learn", learn_url) %></h1>
             
             <% if !@mobile_device %>
                 <ul id="userinfo">
                     <%- if(!@currentuser.nil?) -%>
+                        <li><%= link_to "Create a new PD event", :controller => 'learn/create_session' %></li>
                         <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
                     <%- end -%>
                 </ul>
