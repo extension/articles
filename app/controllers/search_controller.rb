@@ -32,10 +32,15 @@ class SearchController < ApplicationController
     end
   end
   
+  def manage_activity
+    @page_title = "CSE Link Management Activity"
+    @events = AnnotationEvent.paginate(:all, :joins => :user, :order => 'created_at DESC', :page => params[:page])
+  end
+  
   def add
     if (!params[:url].nil? and !params[:url].empty?)
       annote = Annotation.new
-      result = annote.add(params[:url])
+      result = annote.add(params[:url], @currentuser)
       
       if result[:success]
         flash[:success] = "#{annote.url} has been added to search."
@@ -55,7 +60,7 @@ class SearchController < ApplicationController
       goner = Annotation.find_by_id(params[:id])
       
       if goner
-        result = goner.remove
+        result = goner.remove(@currentuser)
       else
         result = {:success => false, :msg => "URL ID not found"}
       end
