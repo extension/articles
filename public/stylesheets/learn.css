@@ -3,8 +3,9 @@ body {background:#fff;}
 
 body, html {font-family: Helvetica, "Arial", "sans-serif";}
 
-#wrapper {background:#f1f1f1; width: 920px; margin:0 auto; padding:20px;}
-#masthead {float:left; padding:10px;width:900px; position:relative;}
+#wrapper {/*background:#f1f1f1;*/ width: 960px; margin:0 auto;}
+header {float:left; padding:10px;width:900px; position:relative;}
+#content {clear:both;}
 
 
 
@@ -40,12 +41,14 @@ body, html {font-family: Helvetica, "Arial", "sans-serif";}
 
 /* layout
 -----------------------------------------------------------------------------*/
-#common_footer {clear:both; padding:20px 10px 60px; border-top:1px solid #ddd; background:#f1f1f1;}
-#common_footer p {color:#555;}
-#common_footer a {color:#444; display:block; padding:.1em .5em;}
-#common_footer a:hover {color:#253d7b; text-decoration:none; background:#fff;}
-#common_footer ul {float:right; padding:.1em 1em;}
-#common_footer ul li {float:left; }
-#common_footer ul li.last {padding-right:0;}
+#home section {width:300px;margin:0 10px; background:#ededed; float:left;}
+
+#footer {clear:both; padding:20px 10px 60px; border-top:1px solid #ddd;}
+#footer p {color:#555;}
+#footer a {color:#444; display:block; padding:.1em .5em;}
+#footer a:hover {color:#253d7b; text-decoration:none; background:#fff;}
+#footer ul {float:right; padding:.1em 1em;}
+#footer ul li {float:left; }
+#footer ul li.last {padding-right:0;}
 .copyright {float:left;}
 .clearing {clear:both;}
