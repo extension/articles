@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>eXtension Learn: <%= @page_title || controller.action_name %></title>
+   <meta charset="utf-8" />
+   <title>eXtension Learn: <%= @page_title || controller.action_name %></title>
    
-   <%= javascript_include_tag 'html5' %>
+   <!--[if lt IE 9]>
+      <%= javascript_include_tag 'html5' %>
+   <![endif]-->
+   
     <% if @mobile_device %>
         <meta name = "viewport" content = "width = device-width, user-scalable = yes">
         <%= stylesheet_link_tag 'mobile_learn' %>
@@ -29,7 +32,7 @@
     <% end %>
     
     <% if !@mobile_device %>
-        <%= render(:partial => 'aae/partial/global_nav_banner') %>
+        <%= render(:partial => 'learn/global_nav_banner') %>
     <% end %>
     <div id="wrapper">
         <div id="masthead">
@@ -75,7 +78,7 @@
         	<% end %>
         
             <h3>Other eXtension Sites</h3>
-            <%= render(:partial => 'aae/partial/global_nav_banner') %>
+            <%= render(:partial => 'learn/global_nav_banner') %>
         <% end %>
         
         
