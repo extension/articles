@@ -9,6 +9,7 @@ class Widget < ActiveRecord::Base
 
   has_many :user_roles
   has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND users.retired = false AND users.aae_responder = true"
+  has_many :non_active_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND users.retired = false AND users.aae_responder = false"
   has_many :submitted_questions
   has_many :widget_events
   belongs_to :user
@@ -30,11 +31,16 @@ class Widget < ActiveRecord::Base
   end
   
   def self.get_all_with_assignee_count(options = {})
+    join_conditions = ''
+  
+    non_responders = User.find(:all, :conditions => {:aae_responder => false})
+    join_conditions << " AND (user_roles.user_id NOT IN (#{non_responders.collect{|u| u.id}.join(',')}))" if non_responders.length > 0
+    
     self.find(:all, 
               :select => 'widgets.*, COUNT(user_roles.id) AS assignee_count',
-              :joins => "LEFT JOIN user_roles on user_roles.widget_id = widgets.id AND role_id = #{Role.widget_auto_route.id}",
-              :include => options[:include] ||= nil,
+              :joins => "LEFT JOIN user_roles on user_roles.widget_id = widgets.id AND (role_id = #{Role.widget_auto_route.id})" + join_conditions,
               :conditions => options[:conditions] ||= nil,
+              :include => :user, 
               :group => 'widgets.id',
               :order => options[:order] ||= 'widgets.name'
               )
