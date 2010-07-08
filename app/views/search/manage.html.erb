@@ -24,6 +24,7 @@
          <%= submit_tag 'Add a new URL' %>
        </p>
        <p class="explanation">Include a trailing asterisk or Google will only search the single page typed into the field. (eg: <code>extension.org/*</code>) You can also use an asterisk to include subdomains. (eg: <code>*.extension.org/*</code>)</p>
+       <p><%= link_to("View URL management activity", :action => :manage_activity) %></p>
     </fieldset>
 <% end %>
 
@@ -34,7 +35,7 @@
 <% @annotations.each do |a| %>
   <tr>
     <td><%= a.url %></td>
-    <td><%= a.added_at.strftime("%l:%M %p, %b %d, %Y ") %></td>
+    <td><%= a.added_at.strftime("%l:%M %p, %b %d, %Y ") %> <span class="age">(<%= time_ago_in_words(a.added_at) %> ago)</span></td>
     <td><%= link_to("remove", url_for(:controller => :search, :action => :remove, :id => a.id, :searchterm => params[:searchterm])) %> <!-- <%= a.href %> --></td>
   </tr>
 <% end %>

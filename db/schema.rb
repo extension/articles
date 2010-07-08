@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100628141435) do
+ActiveRecord::Schema.define(:version => 20100708040708) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -86,8 +86,10 @@ ActiveRecord::Schema.define(:version => 20100628141435) do
     t.integer  "user_id"
     t.string   "annotation_id"
     t.string   "action"
-    t.string   "ipaddr"
+    t.string   "ip"
     t.datetime "created_at"
+    t.string   "login"
+    t.text     "additionaldata"
   end
 
   create_table "annotations", :force => true do |t|

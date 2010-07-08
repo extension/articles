@@ -311,3 +311,8 @@ label {font-weight:bold;}
 
 h1 a:link {color: #7b000a;} 
 h1 a:visited {color: #7b000a;}
+.age {font-size:13px;color:#777; margin-left:10px;}
+
+.action {text-align:center;}
+.deleted .action span {background:#ffd6d6; color:#cb0000; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; padding:2px 6px;}
+.added {}
