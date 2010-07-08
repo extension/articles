@@ -15,7 +15,7 @@
 
 <h4>Assignee Pool</h4>
 <% if @widget_assignees.length > 0 %>
-  <p><strong class="groupicon"><%= @widget_assignees.size %> users</strong> are signed up to answer questions from this widget. <%= link_to ("Sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget.</p>
+  <p><strong class="groupicon"><%= @widget_assignees.size %> active user<%= @widget_assignees.size > 1 ? 's' : '' %></strong> <%= @widget_assignees.size > 1 ? 'are' : 'is' %> signed up to answer questions from this widget. <%= link_to ("Sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget.</p>
   <ul id="assignee_pool">
   <% @widget_assignees.each do |user| %>
     <li><%= link_to (user.fullname, aae_profile_url(:id => user.login), {:class => "profile"}) %></li>
@@ -23,13 +23,17 @@
   </ul>
 <% else %>
     <div class="askalert">
-        <p><strong class="groupicon">There are no users signed up to receive questions from this widget.</strong> <%= link_to ("Sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget.</p>
+        <p><strong class="groupicon">There are no active users signed up to receive questions from this widget.</strong> <%= link_to ("Sign up to receive questions", :controller => 'aae/prefs', :action => :widget_preferences) %> from this widget.</p>
     </div>
 <% end %>
 
-
-
-
+<% if @non_active_assignees.length > 0 %>
+<p><strong>Note:</strong> There are people who have signed up to receive questions for this widget, but have opted out of receiving AaE questions:<br />
+<% @non_active_assignees.each do |assignee| %>
+<li><%= link_to (assignee.fullname, aae_profile_url(:id => assignee.login), {:class => "profile"}) %></li>
+<% end %>
+</p>
+<% end %>
 
 <h4>Widget Status</h4>
 <div class="active-status">
