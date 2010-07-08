@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <title>eXtension Learn: <%= @page_title || controller.action_name %></title>
-    
+   
+   <%= javascript_include_tag 'html5' %>
     <% if @mobile_device %>
         <meta name = "viewport" content = "width = device-width, user-scalable = yes">
         <%= stylesheet_link_tag 'mobile_learn' %>
