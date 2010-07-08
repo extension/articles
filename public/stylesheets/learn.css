@@ -1,10 +1,11 @@
 body {background:#fff;}
-
-
 body, html {font-family: Helvetica, "Arial", "sans-serif";}
 
-#wrapper {/*background:#f1f1f1;*/ width: 960px; margin:0 auto;}
-header {float:left; padding:10px;width:900px; position:relative;}
+/* firefox 3.5 not treating these elements as block elements */
+section, article {display:block;}
+
+#wrapper {/*background:#f1f1f1;*/ width: 960px; margin:0 auto; outline:1px solid #ddd;}
+header#masthead {float:left; padding:10px;width:940px; position:relative; outline:1px solid #aaa;}
 #content {clear:both;}
 
 
@@ -42,6 +43,8 @@ header {float:left; padding:10px;width:900px; position:relative;}
 /* layout
 -----------------------------------------------------------------------------*/
 #home section {width:300px;margin:0 10px; background:#ededed; float:left;}
+
+#upcoming_events article {background:#fff; padding:10px; margin:10px;}
 
 #footer {clear:both; padding:20px 10px 60px; border-top:1px solid #ddd;}
 #footer p {color:#555;}

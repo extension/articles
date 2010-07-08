@@ -35,7 +35,7 @@
         <%= render(:partial => 'learn/global_nav_banner') %>
     <% end %>
     <div id="wrapper">
-        <header>
+        <header id="masthead">
             <h1><%= link_to("eXtension Learn", learn_url) %></h1>
             
             <% if !@mobile_device %>
@@ -87,7 +87,6 @@
         </div>
 
     </div>
-    <!-- end #pageContainer -->
     <%= render(:partial => 'learn/googleanalytics') %>
  
 </body>
