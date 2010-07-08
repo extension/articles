@@ -34,7 +34,7 @@ class Widget < ActiveRecord::Base
     conditions = ''
   
     non_responders = User.find(:all, :conditions => {:aae_responder => false})
-    conditions << "user_roles.user_id NOT IN (#{non_responders.collect{|u| u.id}.join(',')}) OR user_roles.user_id IS NULL" if non_responders.length > 0
+    conditions << "(user_roles.user_id NOT IN (#{non_responders.collect{|u| u.id}.join(',')}) OR user_roles.user_id IS NULL)" if non_responders.length > 0
     
     if options[:conditions] and !options[:conditions].blank?
       conditions << " AND " if !conditions.blank?
@@ -45,6 +45,7 @@ class Widget < ActiveRecord::Base
               :select => 'widgets.*, COUNT(user_roles.id) AS assignee_count',
               :joins => "LEFT JOIN user_roles on user_roles.widget_id = widgets.id AND role_id = #{Role.widget_auto_route.id}",
               :conditions => conditions,
+              :include => :user, 
               :group => 'widgets.id',
               :order => options[:order] ||= 'widgets.name'
               )
