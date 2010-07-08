@@ -2,9 +2,9 @@
 
 <table cellspacing="0" id="url_list">
 <% @events.each do |e| %>
-  <tr>
+  <tr class="<%= e.action %>">
     <td><%= link_to(e.user.fullname, :controller => '/people/colleagues', :action => 'showuser', :id => e.login) %></td>
-    <td><%= e.action %></td>
+    <td class="action"><span><%= e.action %></span></td>
     <td><%= e.url %></td>
     <td><%= e.created_at.strftime("%l:%M %p %Y-%m-%d") %> <span class="age">(<%= time_ago_in_words(e.created_at) %> ago)</span></td>
   </tr>
