@@ -1,7 +1,7 @@
 <% @users.each do |user| %>
-
-  <%= user.fullname %> <%= link_to_function "Add to presenters", "addTagsToList($('presenters_to_save'), '#{user.email}')"  %><br />
-  
+  <%= user.fullname %> 
+  <%= link_to_remote("Add to presenters", {:url => {:controller => :learn, :action => :add_to_presenters, :user_id => user.id}, :with => "'presenter_ids=' + $('presenter_list_to_save').value", :loading => "Element.show('loading_presenters_#{user.id}')", :complete => "Element.hide('loading_presenters_#{user.id}')"}) %>
+  <span id="loading_presenters_<%= user.id %>" style="display:none"><img src='/images/loading.gif' /></span><br />
 <% end %>
 
 <br /><br />

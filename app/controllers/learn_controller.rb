@@ -25,17 +25,37 @@ class LearnController < ApplicationController
       @learn_session.creator = @currentuser
       @learn_session.last_modifier = @currentuser
       
+      # process presenters
+      if !params[:presenter_list_to_save].blank?
+        presenter_list = params[:presenter_list_to_save]
+        presenter_array = presenter_list.split(',')
+        presenter_array.uniq.each do |presenter_id|
+          if !(user = User.find_by_id(presenter_id))
+            @learn_session.errors.add("One of the presenters was not found in the eXtension ID user system.<br />Please include only those with eXtension IDs.")
+            render :template => '/learn/create_session'
+            return
+          else
+            @learn_connection = LearnConnection.new(:email => user.email, :user => user, :connectiontype => LearnConnection::PRESENTER)
+            @learn_session.learn_connections << @learn_connection
+          end
+        end
+      end
+      # end of processing presenters
+      
+      # let's see if we can save it all...
       if !@learn_session.valid?
         render :template => '/learn/create_session'
         return
       else
+        creator_connection = LearnConnection.new(:email => @currentuser.email, :user => @currentuser, :connectiontype => LearnConnection::CREATOR)
+        @learn_session.learn_connections << creator_connection
         @learn_session.save
-        flash.now[:success] = "Learning lesson saved successfully!<br />Thank you for your submission!"
-        render :template => '/learn/create_session'
+        flash[:success] = "Learning lesson saved successfully!<br />Thank you for your submission!"
+        redirect_to :action => :index
       end
     # GET request for initial form display
     else
-      learn_session = LearnSession.new    
+      @learn_session = LearnSession.new    
     end
   end
 
@@ -51,16 +71,38 @@ class LearnController < ApplicationController
     render :layout => false
   end
   
-  #def add_to_presenters
-  #  if request.post?
-  #    if !params[:user_id].blank? and user = User.find_by_id(params[:user_id])
-  #      
-  #    else
-  #      return
-  #    end
-  #  else
-  #    return
-  #  end
-  #end
+  def add_to_presenters
+    if request.post?
+      if !params[:user_id].blank? and user = User.find_by_id(params[:user_id])
+        params[:presenter_ids].blank? ? users = [user] : users = User.find(params[:presenter_ids].split(',').each{|pid| pid.to_i}).to_a << user
+        
+        render :update do |page|
+          page.replace_html :presenters_to_save, :partial => 'presenters', :locals => {:users => users}
+          page << "addTagsToList($('presenter_list_to_save'), #{user.id})" 
+        end
+      else
+        return
+      end
+    else
+      return
+    end
+  end
+  
+  def remove_presenter
+    if request.post?
+      if !params[:user_id].blank? and user = User.find_by_id(params[:user_id])
+        params[:presenter_ids].blank? ? users = [user] : users = User.find(params[:presenter_ids].split(',').each{|pid| pid.to_i}).to_a - user
+        
+        render :update do |page|
+          page.replace_html :presenters_to_save, :partial => 'presenters', :locals => {:users => users}
+          #page << "addTagsToList($('presenter_list_to_save'), #{user.id})" 
+        end
+      else
+        return
+      end
+    else
+      return
+    end
+  end
 
 end
