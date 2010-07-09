@@ -1,6 +1,6 @@
 <div id="promo">
   <h1>One Search</h1>
-  <h2>Over <strong>1100</strong> Cooperative Extension Sites</h2>
+  <h2><strong><%= Annotation.count %></strong> Cooperative Extension Sites</h2>
   <p>Easy search access to resources provided by your Land-Grant institutions</p>
 </div>
 <div id="cse"></div>
@@ -17,7 +17,7 @@
 </script>
 
 <% if @currentuser %>
-   <p>Extension personnel may <%= link_to("contribute", url_for(:action => :manage)) %> to this Search Engine.</p>
+   <p id="manage_link"><span>Extension personnel with eXtension IDs may <%= link_to("contribute", url_for(:action => :manage)) %> to this Search Engine.</span></p>
 <% end %>
 
 <h3>About Cooperative Extension Search</h3>

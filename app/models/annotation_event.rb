@@ -8,30 +8,28 @@
 class AnnotationEvent < ActiveRecord::Base
   belongs_to :user
   belongs_to :annotation, :primary_key => :url
-  
-  before_save :set_ip_address, :set_user
+  serialize :additionaldata
   
   URL_ADDED = 'added'
   URL_DELETED = 'deleted'
   
-  def set_ip_address
-    if (defined? request) and request.remote_ip
-      self.ipaddr = request.remote_ip
-    else
-      self.ipaddr = "127.0.0.1"
-    end
+  def url
+    return self.annotation_id
   end
   
-  def set_user
-    if (defined? @currentuser) and ! @currentuser.nil?
-      self.user = @currentuser
+  def self.log_event(opts)
+    # user and login convenience column
+    if(opts[:user].nil?)
+      opts[:login] = ((opts[:additionaldata].nil? or opts[:additionaldata][:login].nil?) ? 'unknown' : opts[:additionaldata][:login])
     else
-      self.user = User.systemuser
+      opts[:login] = opts[:user].login
     end
-  end
-  
-  def self.log_event(annotation, action)
-    event = AnnotationEvent.new(:annotation => annotation, :action => action)
-    event.save
+
+    # ip address
+    if(opts[:ip].nil?)
+      opts[:ip] = AppConfig.configtable['request_ip_address']
+    end
+    
+    AnnotationEvent.create(opts)
   end
 end

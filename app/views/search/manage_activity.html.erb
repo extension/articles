@@ -1,0 +1,14 @@
+<h1><%= link_to("Search URL Manager", :action => :manage) %> > <%= link_to("Activity", :action => :manage_activity) %></h1>
+
+<table cellspacing="0" id="url_list">
+<% @events.each do |e| %>
+  <tr class="<%= e.action %>">
+    <td><%= link_to_user(e.user) %></td>
+    <td class="action"><span><%= e.action %></span></td>
+    <td><%= e.url %></td>
+    <td><%= e.created_at.strftime("%l:%M %p %Y-%m-%d") %> <span class="age">(<%= time_ago_in_words(e.created_at) %> ago)</span></td>
+  </tr>
+<% end %>
+</table>
+
+<%= will_paginate @events %>
