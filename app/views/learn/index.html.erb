@@ -1,12 +1,12 @@
 <% @page_title = "eXtension Learn" %>
 <div id="home">
-   <p>Check this schedule for the listing of upcoming topics for professional development. These sessions are open to anyone in Extension, and you're all welcomed to participate! If you have suggestions for topics that are not currently listed, please add them to the Learn Community Wave or let Beth Raney know!</p>
+   <p>These professional development sessions are open to anyone in Extension, and you're all welcomed to participate! If you have suggestions for topics that are not currently listed, please add them to the Learn Community Wave or let Beth Raney know!</p>
    
 <section id="upcoming_events">
    <h2>Upcoming Events</h2>
-   <p>view calendar</p>
+   <p id="calendar_link">view calendar</p>
    
-   <article>
+   <article class="upcoming_event radius10">
       <header>
          <h1><%= link_to("eXtension's Data APIs", "") %></h1>
       </header>
@@ -14,9 +14,11 @@
       
       <p class="author"><%= link_to("Jason Young", "") %></p>
       
+      <div class="event_details">
       <p class="session_type">30 Minute Session</p>
       <p><time datetime="2010-07-17" pubdate>Thursday, June 17th</time></p>
       <p><time>2pm ET</time></p>
+      </div>
       
       <ul class="tags">
          <li><%= link_to("developers", "") %></li>
@@ -54,11 +56,12 @@
       <li><%= link_to("web-apps", "") %></li>
    </ul>
    
-   <aside id="learn_help">
+   <aside id="learn_help" class="radius10">
+      <p id="create_link"><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}, :class => "bigbutton blue") %></p>
       <ul>
          <li class="feed">Subscribe to a feed of PD recordings</li>
-         <li>How to participate in eXtension professional development</li>
-         <li>Get email announcements: <br /> 1) Visit the <%= link_to("Learn Community in the People app", "https://people.extension.org/communities/learn") %> <br />2) Click "Join Community"</li>
+         <li class="groupicon">How to participate in eXtension professional development</li>
+         <li class="email">Get email announcements: <br /> 1) Visit the <%= link_to("Learn Community", "https://people.extension.org/communities/learn") %> <br />2) Click "Join Community"</li>
       </ul>
    </aside>
 </section>

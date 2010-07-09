@@ -36,9 +36,10 @@
     <% end %>
     <div id="wrapper">
         <header id="masthead">
-            <h1><%= link_to("eXtension Learn", learn_url) %></h1>
+           <div id="logo"><%= image_tag("/images/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %></div>
+           <h1><%= link_to("eXtension Learn", learn_url) %></h1>
             
-            <% if !@mobile_device %>
+           <% if !@mobile_device %>
             <nav>
                 <ul id="userinfo">
                     <%- if(!@currentuser.nil?) -%>
@@ -50,10 +51,16 @@
                 </ul>
             </nav>
             <% end %>
+            
+            <div id="search">
+               <form>
+                  <input name="q" type="search" placeholder="Search for sessions" class="searchbox">
+                  <%= submit_tag 'Search' %>
+               </form>
+            </div>
         </header>
         
         <div id="content">
-           <p><%= link_to "Create a new PD event", :controller => 'learn/create_session' %></p>
             
             <div id="content" >
                 <%= yield :layout %>
