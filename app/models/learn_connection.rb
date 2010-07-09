@@ -8,4 +8,9 @@
 class LearnConnection < ActiveRecord::Base
   belongs_to :learn_session
   belongs_to :user  
+  
+  CREATOR = 1
+  PRESENTER = 2
+  INTERESTED = 3
+  ATTENDED = 4
 end
