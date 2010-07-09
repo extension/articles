@@ -1,24 +1,64 @@
 <% @page_title = "eXtension Learn" %>
 <div id="home">
-<section>
+   <p>Check this schedule for the listing of upcoming topics for professional development. These sessions are open to anyone in Extension, and you're all welcomed to participate! If you have suggestions for topics that are not currently listed, please add them to the Learn Community Wave or let Beth Raney know!</p>
+   
+<section id="upcoming_events">
    <h2>Upcoming Events</h2>
+   <p>view calendar</p>
+   
+   <article>
+      <header>
+         <h1><%= link_to("eXtension's Data APIs", "") %></h1>
+      </header>
+      <p class="description">One of the goals for the eXtension Engineering Team is to make as much of our data and information...</p>
+      
+      <p class="author"><%= link_to("Jason Young", "") %></p>
+      
+      <p class="session_type">30 Minute Session</p>
+      <p><time datetime="2010-07-17" pubdate>Thursday, June 17th</time></p>
+      <p><time>2pm ET</time></p>
+      
+      <ul class="tags">
+         <li><%= link_to("developers", "") %></li>
+         <li><%= link_to("api", "") %></li>
+         <li><%= link_to("web-apps", "") %></li>
+      </ul>
+   </article>
    
 </section>
 
 
-<section>
+<section id="recent_sessions">
    <h3>Recent Sessions</h3>
+   
+   <dl class="no_recording_availble">
+      <dt><%= link_to("What's all the Buzz about?", "") %></dt>
+      <dd>2 weeks ago</dd>
+   </dl>
+   
+   <dl class="recording_availble">
+      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
+      <dd>3 weeks ago</dd>
+   </dl>
+   
+   <p><%= link_to("View more", "") %></p>
 </section>
 
 
 <section>
    <h3>Browse by recent tags</h3>
    
-   <aside>
+   <ul class="tags">
+      <li><%= link_to("developers", "") %></li>
+      <li><%= link_to("api", "") %></li>
+      <li><%= link_to("web-apps", "") %></li>
+   </ul>
+   
+   <aside id="learn_help">
       <ul>
-         <li>Subscribe to a feed of PD recordings</li>
+         <li class="feed">Subscribe to a feed of PD recordings</li>
          <li>How to participate in eXtension professional development</li>
-         <li>Get email announcements</li>
+         <li>Get email announcements: <br /> 1) Visit the <%= link_to("Learn Community in the People app", "https://people.extension.org/communities/learn") %> <br />2) Click "Join Community"</li>
       </ul>
    </aside>
 </section>

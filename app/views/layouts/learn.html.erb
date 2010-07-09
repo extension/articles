@@ -35,7 +35,7 @@
         <%= render(:partial => 'learn/global_nav_banner') %>
     <% end %>
     <div id="wrapper">
-        <header>
+        <header id="masthead">
             <h1><%= link_to("eXtension Learn", learn_url) %></h1>
             
             <% if !@mobile_device %>
@@ -80,14 +80,15 @@
         <div id="footer">    
            <p><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is an educational partnership of 74 universities in the United States.</p>
            <p class="copyright">&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
+           <nav>
            <ul>
               <li><%= link_to_unless_current "Contact us", :controller => "/main", :action => "contact_us" %></li>
               <li class="last"><%= link_to_unless_current "Terms of use", :controller => "/main", :action => "termsofuse" %></li>
            </ul>
+           </nav>
         </div>
 
     </div>
-    <!-- end #pageContainer -->
     <%= render(:partial => 'learn/googleanalytics') %>
  
 </body>
