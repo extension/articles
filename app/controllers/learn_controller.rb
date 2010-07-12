@@ -119,21 +119,4 @@ class LearnController < ApplicationController
     end
   end
   
-  def remove_presenter
-    if request.post?
-      if !params[:user_id].blank? and user = User.find_by_id(params[:user_id])
-        params[:presenter_ids].blank? ? users = [user] : users = User.find(params[:presenter_ids].split(',').each{|pid| pid.to_i}).to_a.delete_if{|element| element == user}
-        
-        render :update do |page|
-          page.replace_html :presenters_to_save, :partial => 'presenters', :locals => {:users => users}
-          page << "$('presenter_list_to_save').value = #{users.collect{|u| u.id}.join(',')}" 
-        end
-      else
-        return
-      end
-    else
-      return
-    end
-  end
-
 end
