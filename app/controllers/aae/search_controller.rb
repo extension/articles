@@ -125,42 +125,7 @@ class Aae::SearchController < ApplicationController
     @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id),:submitted_question_filter => {:notrejected => true}})  
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
   end
-  
-  def experts_by_location
-    if params[:id]
-      @location = ExpertiseLocation.find(:first, :conditions => ["fipsid = ?", params[:id].to_i])
-      if !@location
-        flash[:failure] = "Invalid Location Entered"
-        redirect_to incoming_url
-      else
-        @users = @location.users.find(:all, :order => "users.first_name")
-        @combined_users = get_answering_users(@users) if @users.length > 0
-      end
-    else
-      flash[:failure] = "Invalid Location Entered"
-      redirect_to incoming_url
-    end
-  end
-  
-  def experts_by_category
-    #if all users with an expertise in a category were selected
-    if (!params[:legacycategory].nil? and @category = Category.find_by_name_or_id(params[:legacycategory]))
-      if @category == Category::UNASSIGNED
-        @category_name = "AaE Uncategorized Question Wrangler"
-        @users = User.question_wranglers 
-        @combined_users = get_answering_users(@users) if @users.length > 0
-      else  
-        @category_name = @category.name
-        @users = @category.users
-        @combined_users = get_answering_users(@users) if @users.length > 0
-      end
-    else
-      flash[:failure] = "Invalid Category"
-      request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
-      return
-    end
-  end
-  
+    
   def get_more_experts_by_cat_loc
     page_number = params[:page_number].to_i
     category = Category.find(params[:category_id]) if !params[:category_id].blank?
