@@ -1,54 +1,62 @@
 <% @page_title = "Create New Learning Session" %>
-<h1><%= @page_title %></h1>
+
 
 <%= error_messages_for :learn_session %>
 <%= render(:partial => "partial/flashmessages") %>
 
+<div id="create_form" class="radius10">
+
 <% form_for :learn_session, :url => { :action => :create_session } do |f| %>
-  <p><%= f.label :title, 'Title' %></p>
-  <p>
-    <%= f.text_area :title, {:rows => "3"} %>
-  </p>
+   
+   <h1><%= @page_title %></h1>
+   <fieldset id="description">
+      <p>
+         <%= f.label :title, 'Title' %>
+         <%= f.text_field :title %>
+      <p>
   
-  <br /><br />
+      <p>
+         <%= f.label :description, 'Description' %>
+         <%= f.text_area :description, {:rows => "8"} %>
+      </p>
+   </fieldset>
+   
+   <fieldset id="datetime">
+      <p><%= f.label :date, 'Date/Time' %></p>
+      From:<%= calendar_date_select_tag :session_start, @learn_session ? @learn_session.session_start : "", {:time => true} %> 
+      To: 
+      <%= calendar_date_select_tag :session_end, @learn_session ? @learn_session.session_end : "", {:time => true} %>
+      <p>
+   </fieldset>
+   
+   <fieldset>
+   <p>
+      <%= f.label :where, 'Session Location' %>
+      <%= f.text_field :where %>
+   </p>
+   </fieldset>
   
-  <p><%= f.label :description, 'Description' %></p>
-  <p>
-    <%= f.text_area :description, {:rows => "8"} %>
-  </p>
+   <fieldset id="presenters">
+      <h3>Presenters</h3>
   
-  <br /><br />
+      <%= hidden_field_tag "presenter_list_to_save", (learn_connections = get_learn_connections).nil? ? nil : learn_connections.map{|lc| lc.user_id}.join(',') %>
   
-  <p><%= f.label :date, 'Date/Time' %></p>
-  From:<%= calendar_date_select_tag :session_start, @learn_session ? @learn_session.session_start : "", {:time => true} %> 
-  To: 
-  <%= calendar_date_select_tag :session_end, @learn_session ? @learn_session.session_end : "", {:time => true} %>
+      <div id="presenters_to_save">
+      <% if learn_connections %>
+         <%= render(:partial => "/learn/presenters", :locals => {:users => get_users_from_connections(learn_connections)}) %>
+      <% end %>
+      </div>
   
-  <br /><br /><br /><br />
+      <p><label>Type a name...</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
   
-  <p><%= f.label :where, 'Session Location' %></p>
-  <p>
-    <%= f.text_field :where %>
-  </p>
+      <%= observe_field(:presenter_name, :update => :presenter_list, :frequency => 0.6, :url => { :action => 'presenters_by_name' }, :with => "'name=' + value", :loading => "Element.show('loading')", :complete => "Element.hide('loading')") %>
+      <div id="loading" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
   
-  <p>Presenters</p>
+      <div id="presenter_list">
+      </div>
+   </fieldset>
   
-  <%= hidden_field_tag "presenter_list_to_save", (learn_connections = get_learn_connections).nil? ? nil : learn_connections.map{|lc| lc.user_id}.join(',') %>
-  
-  <div id="presenters_to_save">
-    <% if learn_connections %>
-      <%= render(:partial => "/learn/presenters", :locals => {:users => get_users_from_connections(learn_connections)}) %>
-    <% end %>
-  </div>
-  
-  <p><label>Type a name...</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
-  
-  <%= observe_field(:presenter_name, :update => :presenter_list, :frequency => 0.6, :url => { :action => 'presenters_by_name' }, :with => "'name=' + value", :loading => "Element.show('loading')", :complete => "Element.hide('loading')") %>
-  <div id="loading" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
-  
-  <div id="presenter_list">
-  </div>
-  
-  <p><%= submit_tag 'Create' %></p>
+   <p><%= submit_tag 'Create Session', :class => "bigbutton blue" %></p>
   
 <% end %>
+</div>

@@ -1,9 +1,8 @@
-<p>
+<ul>
 <% users.each do |user| %>
-
-<%= user.fullname %> <%= link_to_remote("[remove]", {:url => {:controller => :learn, :action => :add_remove_presenters, :user_id => user.id, :remove => "1"}, :with => "'presenter_ids=' + $('presenter_list_to_save').value", :loading => "Element.show('loading_removal_#{user.id}')", :complete => "Element.hide('loading_removal_#{user.id}')"}) %>
-
-<span id="loading_removal_<%= user.id %>" style="display:none"><img src='/images/loading.gif' /></span><br />
-
+  <li><%= user.fullname %> 
+  <%= link_to_remote("[remove]", {:url => {:controller => :learn, :action => :add_remove_presenters, :user_id => user.id, :remove => "1"}, :with => "'presenter_ids=' + $('presenter_list_to_save').value", :loading => "Element.show('loading_removal_#{user.id}')", :complete => "Element.hide('loading_removal_#{user.id}')"}) %>
+  <span id="loading_removal_<%= user.id %>" style="display:none"><img src='/images/loading.gif' /></span>
+  </li>
 <% end %>
-</p>
+</ul>

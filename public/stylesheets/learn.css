@@ -101,6 +101,19 @@ a:hover     {color: #0043da;}
 
 /* Forms
 -----------------------------------------------------------------------------*/
+
+textarea {font-size:1.4em;}
+label {display:block; font-weight:bold;}
+
+fieldset {margin-bottom:15px;}
+#create_form {background:#ededed; padding:20px; width: 620px;}
+form h1 {font-size:2em;}
+/*#presenters {outline: 1px solid #888;}*/
+#description {}
+#description input, #description textarea {width:600px;}
+textarea {padding:.5em;}
+#learn_session_title {font-size:2em;}
+
 .bigbutton {
 	display: inline-block;
 	outline: none;
