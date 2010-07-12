@@ -70,7 +70,7 @@ ActionController::Routing::Routes.draw do |map|
   map.aae_report_ham  'aae/question/report_ham', :controller => 'aae/question', :action => 'report_ham'
   
   map.namespace :aae do |aae|
-     aae.connect 'search/experts_by_category/:legacycategory', :controller => :search, :action => :experts_by_category
+     aae.connect 'expertise/experts_by_category/:legacycategory', :controller => :expertise, :action => :experts_by_category
      aae.connect 'search/:action/:id', :controller => :search
      aae.connect 'question/escalation_report/:legacycategory', :controller => :question, :action => :escalation_report
      aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }     

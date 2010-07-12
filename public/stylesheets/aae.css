@@ -737,9 +737,10 @@ a.profile {
 #expertiselist li {margin-bottom:.5em;float:left;width:100%;padding:0 0 .5em!important;position:relative;}
 #expertiselist li ul li {margin:.5em 0 .1em;float:left;width:100%;padding:0 !important;position:relative; font-size:1em;}
 #expertiselist li span {display:block; float:left;}
-#expertiselist li .aaecategory {width:50%;}
-#expertiselist li .subcats {width:25%;color:#666; font-weight:normal;}
-#expertiselist li .syndication {width:20%;font-size:.9em !important;}
+#expertiselist li .aaecategory {width:45%;}
+#expertiselist li .experts {width:15%;color:#666; font-weight:normal;}
+#expertiselist li .subcats {width:20%;color:#666; font-weight:normal;}
+#expertiselist li .syndication {width:15%;font-size:.9em !important;}
 #expertiselist li .float-spinner {position:absolute; margin-top:0 !important;left:-120px;top:0;}
 
 

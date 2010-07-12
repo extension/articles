@@ -18,28 +18,38 @@
     
     <div id="areas_of_expertise">
     <ul id="expertiselist">
-    <% @categories.each do |cat| %>
-        <li id="<%= cat.id %>"> 
-            <span class="aaecategory"><%= check_box_tag "areas_of_expertise[]", cat.id, @current_user_categories.include?(cat), { :id => "areas_of_expertise#{cat.id}"} %> <%= link_to cat.name, {:controller => 'aae/search', :action => 'experts_by_category', :id => cat.id } %></span>
+    <% @categories.each do |category| %>
+      <%- subcategorycount = category.children.count -%>
+    
+      <%- expertcount = category.users.count %>
+    
+        <li id="<%= category.id %>"> 
+            <span class="aaecategory"><%= check_box_tag "areas_of_expertise[]", category.id, @current_user_categories.include?(category), { :id => "areas_of_expertise#{category.id}"} %> <%= category.name %></span>
+
+           <%- if expertcount > 0 -%>
+              <span class="experts"><%= link_to("#{category.users.count} experts", {:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => category.name }) %></span>
+            <%- else -%>
+              <span class="experts"><strong>no experts!</strong></span>
+            <%- end -%>
             
-            <% if cat.children.length > 0 %>
-                <span class="subcats"><%= cat.children.length %> subcategories</span>
+            <% if subcategorycount > 0 %>
+                <span class="subcats"><%= subcategorycount %> subcategories</span>
             <% else %>
                 <span class="subcats">&nbsp;</span>
             <% end %>
         
-        <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :legacycategory => cat.id %></span>
-        <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none">Saving...</span>
+        <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :legacycategory => category.id %></span>
+        <span id="loading_<%= category.id %>" class="float-spinner" style="display:none">Saving...</span>
         
-        <%= observe_field("areas_of_expertise#{cat.id}",
+        <%= observe_field("areas_of_expertise#{category.id}",
                           :url       => { :action => :expertise },
-                          :with      => "'category=#{cat.id}'",
-                          :loading => "Element.show('loading_#{cat.id}')",
-                          :complete    => "Element.hide('loading_#{cat.id}')") %>
+                          :with      => "'category=#{category.id}'",
+                          :loading => "Element.show('loading_#{category.id}')",
+                          :complete    => "Element.hide('loading_#{category.id}')") %>
         
-        <ul class="aoe_subcat" id="subcategory_div<%= cat.id %>" >
-          <% if @current_user_categories.include?(cat) and cat.children.length > 0 %>
-             <%= render(:partial => "subcategories", :locals => {:top_level_category => cat}) %>
+        <ul class="aoe_subcat" id="subcategory_div<%= category.id %>" >
+          <% if @current_user_categories.include?(category) and subcategorycount > 0 %>
+             <%= render(:partial => "subcategories", :locals => {:top_level_category => category}) %>
           <% end %>
         </ul>
         
