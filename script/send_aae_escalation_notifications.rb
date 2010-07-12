@@ -45,7 +45,7 @@ end
 
 
 # loop through all the root categories that we might have escalations for
-Category.root_categories.each do |category|
+Category.root_categories.all(:order => 'name').each do |category|
    # question count
    if(SubmittedQuestion.escalated(@hours).filtered({:category => category}).count > 0)
      begin

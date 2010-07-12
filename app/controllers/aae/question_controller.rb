@@ -19,7 +19,7 @@ class Aae::QuestionController < ApplicationController
       return
     end
     
-    @categories = Category.root_categories
+    @categories = Category.root_categories.all(:order => 'name')
     @category_options = @categories.map{|c| [c.name,c.id]}
     
     @submitter_name = @submitted_question.submitter_fullname
@@ -49,7 +49,7 @@ class Aae::QuestionController < ApplicationController
       end
     
       @submitted_question = SubmittedQuestion.find_by_id(params[:id])
-      @categories = Category.root_categories
+      @categories = Category.root_categories.all(:order => 'name')
         
       if !@submitted_question
         flash[:failure] = "Invalid question."
@@ -120,7 +120,7 @@ class Aae::QuestionController < ApplicationController
     if request.post?
       @submitted_question = SubmittedQuestion.find_by_id(params[:id])
   
-      @category_options = Category.root_categories.map{|c| [c.name,c.id]}
+      @category_options = Category.root_categories.all(:order => 'name').map{|c| [c.name,c.id]}
       if parent_category = @submitted_question.categories.find(:first, :conditions => "parent_id IS NULL")
         @category_id = parent_category.id
         @sub_category_options = [""].concat(parent_category.children.map{|sq| [sq.name, sq.id]})

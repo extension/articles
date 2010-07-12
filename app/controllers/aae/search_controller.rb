@@ -205,7 +205,7 @@ class Aae::SearchController < ApplicationController
   # get instance variables ready for expert search by category and location
   def setup_cat_loc
     @location_options = [""].concat(ExpertiseLocation.find(:all, :order => 'entrytype, name').map{|l| [l.name, l.fipsid]})
-    @categories = Category.root_categories
+    @categories = Category.root_categories.all(:order => 'name')
     @category_options = @categories.map{|c| [c.name,c.id]}
     
     @county_fips = @county.fipsid if @county  

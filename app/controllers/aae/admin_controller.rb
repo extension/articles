@@ -139,7 +139,7 @@ class Aae::AdminController < ApplicationController
   end
   
   def categories 
-    @categories = Category.root_categories
+    @categories = Category.root_categories.all(:order => 'name')
   end
    
 end
