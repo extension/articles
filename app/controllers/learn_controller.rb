@@ -71,14 +71,45 @@ class LearnController < ApplicationController
     render :layout => false
   end
   
-  def add_to_presenters
+  def add_remove_presenters
     if request.post?
-      if !params[:user_id].blank? and user = User.find_by_id(params[:user_id])
-        params[:presenter_ids].blank? ? users = [user] : users = User.find(params[:presenter_ids].split(',').each{|pid| pid.to_i}).to_a << user
-        
+      if !params[:user_id].blank? and user = User.find_by_id(params[:user_id].to_i)
+        # no current presenters for a session
+        if params[:presenter_ids].blank?
+          # if we're adding a presenter
+          if !params[:add].blank? and params[:add] == "1"
+            # populates current presenters with removal links on the session form
+            users = [user]
+            # user_ids are what's passed into the presenters hidden field to cause the presenters to be saved when the session is saved
+            user_ids = user.id.to_s
+          # shouldn't happen
+          else
+            return
+          end
+        else
+          # add presenter
+          if !params[:add].blank? and params[:add] == "1"
+            # see above explanation for users
+            users = User.find(params[:presenter_ids].split(',')).to_a << user
+          # remove presenter
+          elsif !params[:remove].blank? and params[:remove] == "1"
+            # see above explanation for users
+            users = User.find(params[:presenter_ids].split(',')).to_a - [user]
+          # shouldn't happen
+          else
+            return
+          end
+          # see above explanation for user_ids
+          if users.length > 0
+            user_ids = users.collect{|u| u.id.to_s}.join(',')
+          else
+            user_ids = ''
+          end
+        end
+            
         render :update do |page|
+          page << "$('presenter_list_to_save').value = '#{user_ids}'" 
           page.replace_html :presenters_to_save, :partial => 'presenters', :locals => {:users => users}
-          page << "addTagsToList($('presenter_list_to_save'), #{user.id})" 
         end
       else
         return
@@ -91,11 +122,11 @@ class LearnController < ApplicationController
   def remove_presenter
     if request.post?
       if !params[:user_id].blank? and user = User.find_by_id(params[:user_id])
-        params[:presenter_ids].blank? ? users = [user] : users = User.find(params[:presenter_ids].split(',').each{|pid| pid.to_i}).to_a - user
+        params[:presenter_ids].blank? ? users = [user] : users = User.find(params[:presenter_ids].split(',').each{|pid| pid.to_i}).to_a.delete_if{|element| element == user}
         
         render :update do |page|
           page.replace_html :presenters_to_save, :partial => 'presenters', :locals => {:users => users}
-          #page << "addTagsToList($('presenter_list_to_save'), #{user.id})" 
+          page << "$('presenter_list_to_save').value = #{users.collect{|u| u.id}.join(',')}" 
         end
       else
         return
