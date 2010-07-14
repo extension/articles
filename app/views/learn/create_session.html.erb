@@ -22,16 +22,22 @@
    </fieldset>
    
    <fieldset id="datetime">
-      <p><%= f.label :date, 'Date/Time' %></p>
-      From:<%= calendar_date_select_tag :session_start, @learn_session ? @learn_session.session_start : "", {:time => true} %> 
-      To: 
-      <%= calendar_date_select_tag :session_end, @learn_session ? @learn_session.session_end : "", {:time => true} %>
-      <p>
+     <p>
+     <%= f.label :session_start, 'Date and Time' %>
+     <%= calendar_date_select_tag :session_start, @learn_session.session_start ? @learn_session.session_start : Time.parse("2:00").strftime('%Y-%m-%d %H:%M PM'), :time => true %>
+     </p>
+   </fieldset>
+     
+   <fieldset id="session_length">
+     <p>
+     <%= f.label :session_length, 'Duration (in minutes)' %>
+     <%=  f.text_field :session_length %>
+     </p>
    </fieldset>
    
    <fieldset>
    <p>
-      <%= f.label :where, 'Session Location' %>
+      <%= f.label :where, 'Location (ie. http://connect.iastate.edu/learn)' %>
       <%= f.text_field :where %>
    </p>
    </fieldset>

@@ -16,7 +16,7 @@ class LearnController < ApplicationController
     
   end
   
-  def pd_session
+  def event
     if params[:id].blank? or !@learn_session = LearnSession.find_by_id(params[:id])
       flash[:failure] = "Invalid id entered for learn session."
       redirect_to :action => :index
@@ -59,7 +59,7 @@ class LearnController < ApplicationController
         @learn_session.learn_connections << creator_connection
         @learn_session.save
         flash[:success] = "Learning lesson saved successfully!<br />Thank you for your submission!"
-        redirect_to :action => :index
+        redirect_to :action => :event, :id => @learn_session.id
       end
     # GET request for initial form display
     else
