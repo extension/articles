@@ -1,0 +1,22 @@
+<% @page_title = "eXtension Professional Development" %>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+
+<h1><%= @page_title %></h1>
+
+<h3><u><%= @learn_session.title %></u></h3>
+
+<p><%= @learn_session.description %></p>
+
+<p>Presented by<br />
+<% count = 0 %>
+<% @learn_session.presenters.each do |presenter| %>
+  <% if count > 0 %>
+  , 
+  <% end %>
+  <%= link_to_user(presenter) %> 
+  <% count = count + 1 %>
+<% end %>  
+</p>
+

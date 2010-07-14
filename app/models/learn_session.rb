@@ -9,7 +9,7 @@ class LearnSession < ActiveRecord::Base
   
   has_many :learn_connections
   has_many :users, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, users.*"
-  has_many :presenters, :through => :learn_connections, :conditions => {:connectiontype => LearnConnection::PRESENTER}, :source => :user
+  has_many :presenters, :through => :learn_connections, :conditions => "learn_connections.connectiontype = '#{LearnConnection::PRESENTER}'", :source => :user
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
   belongs_to :last_modifier, :class_name => "User", :foreign_key => "last_modified_by"
   

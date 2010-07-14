@@ -16,6 +16,14 @@ class LearnController < ApplicationController
     
   end
   
+  def pd_session
+    if params[:id].blank? or !@learn_session = LearnSession.find_by_id(params[:id])
+      flash[:failure] = "Invalid id entered for learn session."
+      redirect_to :action => :index
+      return
+    end
+  end
+  
   def create_session
     if request.post?
       @learn_session = LearnSession.new(params[:learn_session])
