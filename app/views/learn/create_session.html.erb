@@ -47,6 +47,13 @@
       <%= f.text_field :where %>
    </p>
    </fieldset>
+   
+   <fieldset>
+     <p>
+       <%= f.label :tags, 'Tags (comma separated -- eg. aae, question wranglers, widgets)' %>
+       <%= text_field_tag :tags, (params[:tags].blank?) ? nil : params[:tags] %>
+     </p>
+   </fieldset>
   
    <fieldset id="presenters">
       <h3>Presenters</h3>

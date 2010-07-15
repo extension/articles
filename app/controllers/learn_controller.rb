@@ -58,6 +58,12 @@ class LearnController < ApplicationController
         creator_connection = LearnConnection.new(:email => @currentuser.email, :user => @currentuser, :connectiontype => LearnConnection::CREATOR)
         @learn_session.learn_connections << creator_connection
         @learn_session.save
+        
+        # process tags
+        if !params[:tags].blank?
+          @learn_session.tag_with(params[:tags], @currentuser.id, Tagging::SHARED)
+        end
+        
         flash[:success] = "Learning lesson saved successfully!<br />Thank you for your submission!"
         redirect_to :action => :event, :id => @learn_session.id
       end
