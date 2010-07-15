@@ -20,3 +20,8 @@
 <% end %>  
 </p>
 
+<h3>When</h3>
+<p>
+<%= humane_date(@learn_session.session_start) + " #{@learn_session.time_zone}" %><br />
+<%= "#{@learn_session.session_length} minute session" %>
+</p>

@@ -13,7 +13,7 @@
       <p>
          <%= f.label :title, 'Title' %>
          <%= f.text_field :title %>
-      <p>
+      </p>
   
       <p>
          <%= f.label :description, 'Description' %>
@@ -26,6 +26,12 @@
      <%= f.label :session_start, 'Date and Time' %>
      <%= calendar_date_select_tag :session_start, @learn_session.session_start ? @learn_session.session_start : Time.parse("2:00").strftime('%Y-%m-%d %H:%M PM'), :time => true %>
      </p>
+     
+     <p>
+     <%= f.label :time_zone, 'Time Zone' %>
+     <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)" %>
+     </p>
+     
    </fieldset>
      
    <fieldset id="session_length">

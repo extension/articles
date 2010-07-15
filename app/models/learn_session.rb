@@ -15,7 +15,7 @@ class LearnSession < ActiveRecord::Base
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
   belongs_to :last_modifier, :class_name => "User", :foreign_key => "last_modified_by"
   
-  validates_presence_of :title, :description, :session_start, :session_length
+  validates_presence_of :title, :description, :session_start, :session_length, :time_zone
   validates_format_of :recording, :with => /(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix, :message => "must be a valid URL." 
   
   # calculate end of session time by adding session_length times 60 (session_length is in minutes) to session_start

@@ -5,6 +5,7 @@ class AddLearns < ActiveRecord::Migration
       t.text     "description", :null => false
       t.datetime "session_start", :null => false
       t.datetime "session_end", :null => false
+      t.string   "time_zone", :null => false
       t.integer  "session_length", :null => false
       t.text     "where"  # url could be longer than 255 chars
       t.text     "recording" # url could be longer than 255 chars
