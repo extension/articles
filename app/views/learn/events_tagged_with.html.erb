@@ -1,0 +1,20 @@
+<% @page_title = "Learning Events Tagged with '#{@tag_param}'" %>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+
+<h1><%= @page_title %></h1>
+
+<% if @learn_sessions.length == 0 %>
+<p>
+  There are no learn sessions tagged with '<%= @tag_param %>' at this time.
+</p>
+<% else %>
+  <ul>
+  <% @learn_sessions.each do |learn_session| %>
+    <li>
+    <%= link_to learn_session.description, learn_session_url(:id => learn_session.id) %>
+    </li>
+  <% end %>
+  </ul>
+<% end %>

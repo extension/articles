@@ -129,6 +129,7 @@ ActionController::Routing::Routes.draw do |map|
   
   ### Learn Stuff ###
   map.learn 'learn', :controller => 'learn', :action => 'index'
+  map.learn_session 'learn/event/:id', :controller => :learn, :action => :event
 
   #################################################################
   ### pubsite routes ###

@@ -29,8 +29,8 @@
 <h3>Tags</h3>
 <p>
 <% if @learn_session.tags.length != 0 %>  
-<%= @learn_session.tags.collect{|t| t.name}.join(',') %>
+<%= @learn_session.tags.collect{|t| link_to t.name, :action => :events_tagged_with, :id => t.name}.join(' , ') %>
 <% else %>
-There are currently no tags at this time
+There are no tags at this time
 <% end %>
 </p>

@@ -72,6 +72,21 @@ class LearnController < ApplicationController
       @learn_session = LearnSession.new    
     end
   end
+  
+  def events_tagged_with
+    if !params[:id].blank? 
+      @tag_param = params[:id]
+      event_tag = Tag.find_by_name(@tag_param)
+      if event_tag
+        @learn_sessions = event_tag.learn_sessions
+      else
+        @learn_sessions = []
+      end
+    else
+      flash[:failure] = "Invalid tag name"
+      redirect_to :action => :index
+    end
+  end
 
   def presenters_by_name
     #if a login/name was typed into the field to search for users
