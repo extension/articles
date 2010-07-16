@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100708040708) do
+ActiveRecord::Schema.define(:version => 20100716141139) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -450,6 +450,31 @@ ActiveRecord::Schema.define(:version => 20100708040708) do
   add_index "invitations", ["token"], :name => "tokenlookup"
   add_index "invitations", ["user_id"], :name => "index_invitations_on_user_id"
 
+  create_table "learn_connections", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "public_user_id"
+    t.string   "email",            :null => false
+    t.integer  "learn_session_id", :null => false
+    t.string   "connectiontype",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "learn_sessions", :force => true do |t|
+    t.text     "title",            :null => false
+    t.text     "description",      :null => false
+    t.datetime "session_start",    :null => false
+    t.datetime "session_end",      :null => false
+    t.string   "time_zone",        :null => false
+    t.integer  "session_length",   :null => false
+    t.text     "where"
+    t.text     "recording"
+    t.integer  "created_by",       :null => false
+    t.integer  "last_modified_by", :null => false
+    t.datetime "updated_at"
+    t.datetime "created_at"
+  end
+
   create_table "linkings", :force => true do |t|
     t.integer  "content_link_id"
     t.integer  "contentitem_id"
@@ -811,8 +836,8 @@ ActiveRecord::Schema.define(:version => 20100708040708) do
 
   create_table "update_times", :force => true do |t|
     t.integer  "datasource_id"
-    t.string   "datasource_type"
-    t.string   "datatype"
+    t.string   "datasource_type",     :limit => 25
+    t.string   "datatype",            :limit => 25
     t.datetime "last_datasourced_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -922,7 +947,7 @@ ActiveRecord::Schema.define(:version => 20100708040708) do
   create_table "widgets", :force => true do |t|
     t.string   "name",                              :null => false
     t.string   "fingerprint",                       :null => false
-    t.string   "widget_url",                        :null => false
+    t.string   "widgeturl",                         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active",         :default => true,  :null => false
