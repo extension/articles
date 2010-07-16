@@ -1,11 +1,9 @@
-<% @page_title = "eXtension Professional Development" %>
+<% @page_title = @learn_session.title %>
 
 <%= render(:partial => "partial/flashmessages") %>
 
 
-<h1><%= @page_title %></h1>
-
-<h3><%= @learn_session.title %></h3>
+<h1><%= @learn_session.title %></h1>
 
 <p><%= @learn_session.description %></p>
 
