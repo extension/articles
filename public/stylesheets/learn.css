@@ -148,15 +148,17 @@ textarea {padding:5px;}
 #create_form fieldset p {margin-bottom:15px;}
 fieldset {margin-bottom:0;}
 
-#presenters_to_save li {font-size:1.3em;margin:0 10px 5px 0; background:#fff; padding: 2px 10px; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px; display:inline; white-space:nowrap;line-height:30px;}
-#presenters_to_save li a {color:#888;}
+#presenters_to_save {float:left; margin-top:16px;}
+#presenters_to_save li {font-size:1.4em !important;margin:0 10px 0 0; background:#fff; padding: 4px 7px 4px 10px; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px; display:inline; white-space:nowrap;line-height:30px; height:30px;}
+#presenters_to_save li a {color:#888; line-height:30px; margin-left:5px; text-decoration:none; font-size:1.4em; height:30px;}
 #presenters_to_save li a:hover {color:red;}
+#presenter_name {width:100px;}
 
-/*#presenter_list {background:#fff; }*/
-#people_picker {margin:0 !important; clear:both;}
-#presenter_list ul {padding:0; width:250px;}
+#presenter_list {clear:left; position:relative;}
+#people_picker {margin:0 10px 0 0 !important; clear:both; float:left;}
+#presenter_list ul {padding:0; width:250px; position:absolute;}
 #presenter_list ul li {height:30px; border:1px solid #999;}
-#presenter_list ul li a {display:block; height:30;line-height:30px;text-decoration:none; padding:0 10px; background:#fff;}
+#presenter_list ul li a {display:block; height:30;line-height:30px;text-decoration:none; padding:0 6px; background:#fff;}
 #presenter_list ul li a:hover {background:#005bae;color:#fff;}
 #presenter_list ul li a span {float:right;} 
 
