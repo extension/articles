@@ -58,9 +58,10 @@ header#masthead {float:left; padding:10px;width:940px; position:relative;}
 -----------------------------------------------------------------------------*/
 #logo {float:left;}
 #home section {width:300px;margin:0 10px; float:left;}
+#create_session section {width:300px;margin:0 10px; float:left;}
 
 #upcoming_events article {background:#ededed; /*padding:10px; margin:10px;*/ clear:both;}
-#upcoming_events h2 {float:left;}
+#upcoming_events h3 {float:left;}
 
 
 /* sticky footer
@@ -98,7 +99,8 @@ body:before {
 
 
 #recent_sessions dt, #recent_sessions dd {padding-left:22px;} 
-.no_recording_availble dt {background: transparent url(/images/common/television_grayed_out.png) left 50% no-repeat;}
+#recent_sessions dd {color:#999;}
+.no_recording_availble dt {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat;}
 .recording_availble dt {background: transparent url(/images/common/television.png) left 50% no-repeat;}
 
 #learn_help {background:#ededed; padding:10px;}
@@ -118,7 +120,7 @@ a:visited   {color: #005bae;}
 a:hover     {color: #0043da;}
 
 .radius10 {-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
-.upcoming_event {padding:10px;}
+.upcoming_event {padding:10px; margin-bottom:20px;}
 .upcoming_event h1 {font-size:2.2em; margin:0 0 0;}
 .upcoming_event h1 a {text-decoration:none;}
 .upcoming_event h1 a:hover {color:#000;}
@@ -126,20 +128,37 @@ a:hover     {color: #0043da;}
 .event_details p {margin:0;}
 .upcoming_event .tags li {display:inline; padding-right:5px;}
 
+#create_form h1 {margin:0 0 15px; color:#003e6d;}
+
 /* Forms
 -----------------------------------------------------------------------------*/
 
 textarea {font-size:1.4em;}
-label {display:block; font-weight:bold;}
+label {display:block; font-weight:bold;color:#003e6d;}
 
-fieldset {margin-bottom:15px;}
-#create_form {background:#ededed; padding:20px; width: 620px;}
+
+#create_form {background:#e5f0f9; padding:20px; width: 560px; float:left; margin:0 40px 0 0;}
 form h1 {font-size:2em;}
-/*#presenters {outline: 1px solid #888;}*/
-#description {}
-#description input, #description textarea {width:600px;}
-textarea {padding:.5em;}
-#learn_session_title {font-size:2em;}
+#description {margin-top:15px;}
+#description input {width:550px;}
+#description textarea {width:550px;}
+#learn_session_title {font-size:1.7em; padding:3px;}
+textarea {padding:5px;}
+#create_form p {margin:0;}
+#create_form fieldset p {margin-bottom:15px;}
+fieldset {margin-bottom:0;}
+
+#presenters_to_save li {font-size:1.3em;margin:0 10px 5px 0; background:#fff; padding: 2px 10px; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px; display:inline; white-space:nowrap;line-height:30px;}
+#presenters_to_save li a {color:#888;}
+#presenters_to_save li a:hover {color:red;}
+
+/*#presenter_list {background:#fff; }*/
+#people_picker {margin:0 !important; clear:both;}
+#presenter_list ul {padding:0; width:250px;}
+#presenter_list ul li {height:30px; border:1px solid #999;}
+#presenter_list ul li a {display:block; height:30;line-height:30px;text-decoration:none; padding:0 10px; background:#fff;}
+#presenter_list ul li a:hover {background:#005bae;color:#fff;}
+#presenter_list ul li a span {float:right;} 
 
 .bigbutton {
 	display: inline-block;
@@ -193,4 +212,12 @@ textarea {padding:.5em;}
 .feedback_banner.warning p {background: #ddd url(/images/common/failure.gif) 20px 50% no-repeat; color:red; border: 1px solid red;}
 .feedback_banner a {text-decoration: none;}
 
+/* Common styles
+-----------------------------------------------------------------------------*/
 .xs {width:2.5em;}
+
+.shadow {
+   box-shadow: 3px 4px 3px #bbb;
+   -moz-box-shadow: 3px 4px 3px #bbb;
+   -webkit-box-shadow: 3px 4px 3px #bbb;
+}

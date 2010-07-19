@@ -1,14 +1,36 @@
 <% @page_title = "Create New Learning Session" %>
 
+<div id="create_session">
 
 <%= error_messages_for :learn_session %>
 <%= render(:partial => "partial/flashmessages") %>
 
-<div id="create_form" class="radius10">
+<div id="create_form" class="radius10 shadow">
 
 <% form_for :learn_session, :url => { :action => :create_session } do |f| %>
    
    <h1><%= @page_title %></h1>
+   
+   <fieldset id="presenters">
+      <h3>Presenters</h3>
+  
+      <%= hidden_field_tag "presenter_list_to_save", (learn_connections = get_learn_connections).nil? ? nil : learn_connections.map{|lc| lc.user_id}.join(',') %>
+  
+      <div id="presenters_to_save">
+      <% if learn_connections %>
+         <%= render(:partial => "/learn/presenters", :locals => {:users => get_users_from_connections(learn_connections)}) %>
+      <% end %>
+      </div>
+  
+      <p id="people_picker"><label>Add a presenter...</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
+  
+      <%= observe_field(:presenter_name, :update => :presenter_list, :frequency => 0.6, :url => { :action => 'presenters_by_name' }, :with => "'name=' + value", :loading => "Element.show('loading')", :complete => "Element.hide('loading')") %>
+      <div id="loading" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
+  
+      <div id="presenter_list" class="radius10">
+      </div>
+   </fieldset>
+   
    <fieldset id="description">
       <p>
          <%= f.label :title, 'Title' %>
@@ -17,7 +39,7 @@
   
       <p>
          <%= f.label :description, 'Description' %>
-         <%= f.text_area :description, {:rows => "8"} %>
+         <%= f.text_area :description, {:rows => "7"} %>
       </p>
    </fieldset>
    
@@ -55,27 +77,25 @@
      </p>
    </fieldset>
   
-   <fieldset id="presenters">
-      <h3>Presenters</h3>
-  
-      <%= hidden_field_tag "presenter_list_to_save", (learn_connections = get_learn_connections).nil? ? nil : learn_connections.map{|lc| lc.user_id}.join(',') %>
-  
-      <div id="presenters_to_save">
-      <% if learn_connections %>
-         <%= render(:partial => "/learn/presenters", :locals => {:users => get_users_from_connections(learn_connections)}) %>
-      <% end %>
-      </div>
-  
-      <p><label>Type a name...</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
-  
-      <%= observe_field(:presenter_name, :update => :presenter_list, :frequency => 0.6, :url => { :action => 'presenters_by_name' }, :with => "'name=' + value", :loading => "Element.show('loading')", :complete => "Element.hide('loading')") %>
-      <div id="loading" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
-  
-      <div id="presenter_list">
-      </div>
-   </fieldset>
-  
    <p><%= submit_tag 'Create Session', :class => "bigbutton blue" %></p>
   
 <% end %>
+</div>
+
+<section>   
+   <aside id="learn_help" class="radius10">
+      <h3>Currently Scheduled</h3>
+      
+      <p><%= image_tag("/images/interface/calendar_image.png", :size => "263x207") %></p>
+      <ul>
+         <li>7/5/10: Session name</li>
+         <li>7/6/10: Session name</li>
+         <li>7/15/10: Session name</li>
+         <li>7/12/10: Session name</li>
+         <li>7/21/10: Session name</li>
+      </ul>
+   </aside>
+   
+</section>
+
 </div>
