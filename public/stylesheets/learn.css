@@ -149,8 +149,8 @@ textarea {padding:5px;}
 fieldset {margin-bottom:0;}
 
 #presenters_to_save {float:left; margin-top:16px;}
-#presenters_to_save li {font-size:1.4em !important;margin:0 10px 0 0; background:#fff; padding: 4px 7px 4px 10px; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px; display:inline; white-space:nowrap;line-height:30px; height:30px;}
-#presenters_to_save li a {color:#888; line-height:30px; margin-left:5px; text-decoration:none; font-size:1.4em; height:30px;}
+#presenters_to_save li {font-size:1.4em !important;margin:0 10px 0 0; padding: 4px 7px 4px 22px; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px; display:inline; white-space:nowrap;line-height:30px; height:30px; background: #fff url(/images/common/user.gif) 4px center no-repeat;}
+#presenters_to_save li a {color:#888; line-height:30px; margin-left:5px; text-decoration:none; font-size:1.2em; height:30px;}
 #presenters_to_save li a:hover {color:red;}
 #presenter_name {width:100px;}
 
