@@ -73,6 +73,54 @@ class LearnController < ApplicationController
     end
   end
   
+  def edit_session
+    if params[:id].blank? or !@learn_session = LearnSession.find_by_id(params[:id])
+      flash[:failure] = "Invalid id entered for learn session."
+      redirect_to :action => :index
+      return
+    end
+    
+    if request.post?
+      @learn_session.session_start = params[:session_start]
+      @learn_session.session_end = params[:session_end]
+      @learn_session.last_modifier = @currentuser
+      
+      # process presenters
+      # clear out presenters for this learn session first
+      @learn_session.learn_connections.find(:all, :conditions => {:connectiontype => LearnConnection::PRESENTER}).each{|lc| lc.delete}
+      
+      if !params[:presenter_list_to_save].blank?
+        presenter_list = params[:presenter_list_to_save]
+        presenter_array = presenter_list.split(',')
+        presenter_array.uniq.each do |presenter_id|
+          if !(user = User.find_by_id(presenter_id))
+            @learn_session.errors.add("One of the presenters was not found in the eXtension ID user system.<br />Please include only those with eXtension IDs.")
+            render :template => '/learn/edit_session'
+            return
+          else
+            @learn_connection = LearnConnection.new(:email => user.email, :user => user, :connectiontype => LearnConnection::PRESENTER)
+            @learn_session.learn_connections << @learn_connection
+          end
+        end
+      end
+      # end of processing presenters
+      if @learn_session.update_attributes(params[:learn_session])
+        # process tags
+        if !params[:tags].blank?
+          @learn_session.replace_tags(params[:tags], @currentuser.id, Tagging::SHARED)
+        else
+          @learn_session.replace_tags('', @currentuser.id, Tagging::SHARED)
+        end
+        flash[:success] = "Learn session updated successfully!"
+        redirect_to :action => :event, :id => @learn_session.id
+        return
+      else
+        render :template => '/learn/edit_session'
+        return
+      end
+    end
+  end
+  
   def events_tagged_with
     if !params[:id].blank? 
       @tag_param = params[:id]

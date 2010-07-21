@@ -1,4 +1,4 @@
-<% @page_title = "Create New Learning Session" %>
+<% @page_title = "Editing Learn Session Titled '#{@learn_session.title}'" %>
 
 <div id="create_session">
 
@@ -7,7 +7,7 @@
 
 <div id="create_form" class="radius10 shadow">
 
-<% form_for :learn_session, :url => { :action => :create_session } do |learn_form| %>
+<% form_for :learn_session, :url => { :action => :edit_session, :id => @learn_session.id } do |learn_form| %>
    
    <h1><%= @page_title %></h1>
    
