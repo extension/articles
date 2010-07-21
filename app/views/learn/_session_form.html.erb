@@ -1,15 +1,12 @@
 <fieldset id="presenters">
-    <h3>Presenters</h3>
-
     <%= hidden_field_tag "presenter_list_to_save", (learn_connections = get_learn_connections).nil? ? nil : learn_connections.map{|lc| lc.user_id}.join(',') %>
 
+    <p id="people_picker"><label>Presenters</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
     <div id="presenters_to_save">
     <% if learn_connections %>
        <%= render(:partial => "/learn/presenters", :locals => {:users => get_users_from_connections(learn_connections)}) %>
     <% end %>
     </div>
-
-    <p id="people_picker"><label>Add a presenter...</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
 
     <%= observe_field(:presenter_name, :update => :presenter_list, :frequency => 0.6, :url => { :action => 'presenters_by_name' }, :with => "'name=' + value", :loading => "Element.show('loading')", :complete => "Element.hide('loading')") %>
     <div id="loading" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>

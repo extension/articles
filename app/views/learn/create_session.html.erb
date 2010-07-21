@@ -8,11 +8,8 @@
 <div id="create_form" class="radius10 shadow">
 
 <% form_for :learn_session, :url => { :action => :create_session } do |learn_form| %>
-   
    <h1><%= @page_title %></h1>
-   
    <%= render(:partial => "/learn/session_form", :locals => {:learn_form => learn_form}) %>
-  
 <% end %>
 </div>
 
