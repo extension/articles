@@ -54,7 +54,7 @@
    <dl class="recording_availble">
    <% end %>
    <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
-   <dd><%= time_ago_in_words(recent_session.session_start) %></dd>
+   <dd><%= time_ago_in_words(recent_session.session_start) %> ago</dd>
    <% end %>
    </dl>
     

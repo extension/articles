@@ -3,7 +3,7 @@
 <%= render(:partial => "partial/flashmessages") %>
 
 
-<h1><%= @learn_session.title %></h1>
+<h1><%= @learn_session.title %> <%= link_to '[edit]', :action => :edit_session, :id => @learn_session.id %></h1>
 
 <p><%= @learn_session.description %></p>
 
