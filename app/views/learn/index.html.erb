@@ -6,68 +6,40 @@
    <h3>Upcoming Events</h3>
    <p id="calendar_link">view calendar</p>
    
+   <% @upcoming_sessions.each do |upcoming_session| %>
    <article class="upcoming_event radius10">
-      <header>
-         <h1><%= link_to("eXtension's Data APIs", "") %></h1>
-      </header>
-      <p class="description">One of the goals for the eXtension Engineering Team is to make as much of our data and information...</p>
-      
-      <p class="author"><%= link_to("Jason Young", "") %></p>
-      
-      <div class="event_details">
-      <p class="session_type">30 Minute Session</p>
-      <p><time datetime="2010-07-17" pubdate>Thursday, June 17th</time></p>
-      <p><time>2pm ET</time></p>
-      </div>
-      
-      <ul class="tags">
-         <li><%= link_to("developers", "") %></li>
-         <li><%= link_to("api", "") %></li>
-         <li><%= link_to("web-apps", "") %></li>
-      </ul>
-   </article>
-   
-   <article class="upcoming_event radius10">
-      <header>
-         <h1><%= link_to("eXtension's Data APIs", "") %></h1>
-      </header>
-      <p class="description">One of the goals for the eXtension Engineering Team is to make as much of our data and information...</p>
-      
-      <p class="author"><%= link_to("Jason Young", "") %></p>
-      
-      <div class="event_details">
-      <p class="session_type">30 Minute Session</p>
-      <p><time datetime="2010-07-17" pubdate>Thursday, June 17th</time></p>
-      <p><time>2pm ET</time></p>
-      </div>
-      
-      <ul class="tags">
-         <li><%= link_to("developers", "") %></li>
-         <li><%= link_to("api", "") %></li>
-         <li><%= link_to("web-apps", "") %></li>
-      </ul>
-   </article>
-   
-   <article class="upcoming_event radius10">
-      <header>
-         <h1><%= link_to("eXtension's Data APIs", "") %></h1>
-      </header>
-      <p class="description">One of the goals for the eXtension Engineering Team is to make as much of our data and information...</p>
-      
-      <p class="author"><%= link_to("Jason Young", "") %></p>
-      
-      <div class="event_details">
-      <p class="session_type">30 Minute Session</p>
-      <p><time datetime="2010-07-17" pubdate>Thursday, June 17th</time></p>
-      <p><time>2pm ET</time></p>
-      </div>
-      
-      <ul class="tags">
-         <li><%= link_to("developers", "") %></li>
-         <li><%= link_to("api", "") %></li>
-         <li><%= link_to("web-apps", "") %></li>
-      </ul>
-   </article>
+   <header>
+     <h1><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
+     <% session_description = upcoming_session.description %>
+     <p class="description"><%= (session_description.length > 50) ? session_description.mb_chars[0..49]+'...' : session_description %></p>
+     <p class="author">
+       <% count = 0 %>
+       <% upcoming_session.presenters.each do |presenter| %>
+         <% if count > 0 %>
+         , 
+         <% end %>
+         <%= link_to_user(presenter) %> 
+         <% count = count + 1 %>
+       <% end %>
+     </p>
+     
+     <div class="event_details">
+     <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
+     <p><time><%= humane_date(upcoming_session.session_start) + " #{upcoming_session.time_zone}" %></time></p>
+     </div>
+     
+     <ul class="tags">
+       <% if upcoming_session.tags.length != 0 %>  
+       <% upcoming_session.tags.each do |t| %>
+       <li><%= link_to t.name, :action => :events_tagged_with, :id => t.name %></li>
+       <% end %>   
+       <% else %>
+       There are no tags at this time
+       <% end %>
+    </ul>
+    </article>
+     
+   <% end %>
    
 </section>
 
@@ -75,56 +47,17 @@
 <section id="recent_sessions">
    <h3>Recent Sessions</h3>
    
+   <% @recent_sessions.each do |recent_session| %>
+   <% if recent_session.where.blank? %>
    <dl class="no_recording_availble">
-      <dt><%= link_to("What's all the Buzz about?", "") %></dt>
-      <dd>2 weeks ago</dd>
-   </dl>
-   
+   <% else %>
    <dl class="recording_availble">
-      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
-      <dd>3 weeks ago</dd>
+   <% end %>
+   <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
+   <dd><%= time_ago_in_words(recent_session.session_start) %></dd>
+   <% end %>
    </dl>
-   
-   <dl class="recording_availble">
-      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
-      <dd>3 weeks ago</dd>
-   </dl>
-   
-   <dl class="no_recording_availble">
-      <dt><%= link_to("What's all the Buzz about?", "") %></dt>
-      <dd>2 weeks ago</dd>
-   </dl>
-   
-   <dl class="recording_availble">
-      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
-      <dd>3 weeks ago</dd>
-   </dl>
-   
-   <dl class="recording_availble">
-      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
-      <dd>3 weeks ago</dd>
-   </dl>
-   
-   <dl class="recording_availble">
-      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
-      <dd>3 weeks ago</dd>
-   </dl>
-   
-   <dl class="recording_availble">
-      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
-      <dd>3 weeks ago</dd>
-   </dl>
-   
-   <dl class="recording_availble">
-      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
-      <dd>3 weeks ago</dd>
-   </dl>
-   
-   <dl class="recording_availble">
-      <dt><%= link_to("Discussion of the Ask an Expert System and Widget", "") %></dt>
-      <dd>3 weeks ago</dd>
-   </dl>
-   
+    
    <p><%= link_to("View more", "") %></p>
 </section>
 
@@ -142,18 +75,9 @@
    <h3>Browse by recent tags</h3>
    
    <ul class="tags">
-      <li><%= link_to("developers", "") %></li>
-      <li><%= link_to("api", "") %></li>
-      <li><%= link_to("web-apps", "") %></li>
-      <li><%= link_to("horses", "") %></li>
-      <li><%= link_to("goats", "") %></li>
-      <li><%= link_to("web-apps", "") %></li>
-      <li><%= link_to("developers", "") %></li>
-      <li><%= link_to("api", "") %></li>
-      <li><%= link_to("web-apps", "") %></li>
-      <li><%= link_to("developers", "") %></li>
-      <li><%= link_to("api", "") %></li>
-      <li><%= link_to("web-apps", "") %></li>
+      <% @recent_tags.each do |tag| %>
+      <li><%= link_to tag.name, :action => :events_tagged_with, :id => tag.name %></li>
+      <% end %>
    </ul>
 </section>
 </div>

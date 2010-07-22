@@ -13,7 +13,9 @@ class LearnController < ApplicationController
   before_filter :check_purgatory
   
   def index
-    
+    @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
+    @recent_sessions = LearnSession.find(:all, :conditions => "session_start < '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 10, :order => "session_start DESC")
+    @recent_tags = Tag.find(:all, :joins => [:taggings], :conditions => {"taggings.tag_kind" => Tagging::SHARED, "taggings.taggable_type" => "LearnSession"}, :limit => 12, :order => "taggings.created_at DESC")
   end
   
   def event
