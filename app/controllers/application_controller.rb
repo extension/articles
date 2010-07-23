@@ -426,6 +426,10 @@ class ApplicationController < ActionController::Base
     @widget_filter_url = url_for(:controller => 'aae/prefs', :action => 'widget_preferences', :only_path => false)
   end
   
+  def get_humane_date(time)
+    time.strftime("%B %e, %Y, %l:%M %p")
+  end
+  
   def go_back
     request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
   end
