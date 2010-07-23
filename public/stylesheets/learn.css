@@ -9,9 +9,9 @@ section, article, aside {display:block;}
 -moz-box-shadow: 0 4px 10px rgba(0,0,0,.2);
 box-shadow: 0 4px 10px rgba(0,0,0,.2);*/
 }
-header#masthead {float:left; padding:10px;width:940px; position:relative;}
-#content {clear:both;}
-#masthead a {text-decoration:none; color:;}
+header#masthead {float:left; padding:10px;width:940px; position:relative; background: #ffa221 url(/images/learn/learn_header.png) top center no-repeat; margin-bottom:30px;}
+#content {clear:both; }
+#masthead h1 a {text-decoration:none; color:#fff;}
 
 
 
@@ -43,13 +43,16 @@ header#masthead {float:left; padding:10px;width:940px; position:relative;}
 	display: inline;
 	margin: 0;
 	padding: 0 0 0 .5em;
+	color:#444 !important;
 }
-#userinfo li a {text-decoration:none;}
-#userinfo li a:hover {text-decoration:underline;}
+#userinfo li a {text-decoration:none; color:#444 !important;}
+#userinfo li a:hover {text-decoration:underline; color:#444 !important;}
 
-#admintoggle strong {color:#777;}
-#admintoggle strong.on {background:#e2babb;padding:.1em .3em;color:#000;}
-#admintoggle strong.off {background:#ddd;padding:.1em .3em;color:#000;}
+#admintoggle strong {color:#444;padding:.1em .3em; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
+#admintoggle strong.on {background:#ffed9f;color:#000;}
+#admintoggle strong.off {background:#ffed9f;color:#000;}
+#admintoggle a {padding:.1em .3em; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
+#admintoggle a:hover {background:#fff;}
 
 #search {float:right;}
 .searchbox {width:160px;}
@@ -75,7 +78,7 @@ html, body {height: 100%;}
 
 #footer {position: relative;
 	margin-top: -150px; /* negative value of footer height */
-	height: 130px;
+	height: 110px;
 	clear:both;} 
 
 /*Opera Fix*/
@@ -87,7 +90,7 @@ body:before {
 	margin-top:-32767px;/
 }
 
-#footer {background:#efefef; padding:10px; width:940px; margin-left:auto;margin-right:auto;}
+#footer {background:#efefef url(/images/learn/learn_footer.png) top center no-repeat; padding:30px 10px 10px; width:940px; margin-left:auto;margin-right:auto;}
 #footer p {color:#555;}
 #footer a {color:#444; display:block; padding:.1em .5em;}
 #footer a:hover {color:#253d7b; text-decoration:none; background:#fff;}
@@ -129,6 +132,7 @@ a:hover     {color: #0043da;}
 .upcoming_event .tags li {display:inline; padding-right:5px;}
 
 #create_form h1 {margin:0 0 15px; color:#003e6d;}
+.summary_statement {margin:20px 0; font-size:1.6em; color:#444 !important;}
 
 /* Forms
 -----------------------------------------------------------------------------*/

@@ -1,6 +1,6 @@
 <% @page_title = "eXtension Learn" %>
 <div id="home">
-   <p>These professional development sessions are open to anyone in Extension, and you're all welcomed to participate! If you have suggestions for topics that are not currently listed, please add them to the Learn Community Wave or let Beth Raney know!</p>
+   <p class="summary_statement">These professional development sessions are open to anyone in Extension, and you're all welcomed to participate! If you have suggestions for topics that are not currently listed, please add them to the Learn Community Wave or let Beth Raney know!</p>
    
 <section id="upcoming_events">
    <h3>Upcoming Events</h3>
@@ -48,21 +48,22 @@
    <h3>Recent Sessions</h3>
    
    <% @recent_sessions.each do |recent_session| %>
-   <% if recent_session.recording.blank? %>
-   <dl class="no_recording_availble">
-   <% else %>
-   <dl class="recording_availble">
+      <% if recent_session.recording.blank? %>
+         <dl class="no_recording_availble">
+      <% else %>
+         <dl class="recording_availble">
+      <% end %>
+      <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
+      <dd><%= time_ago_in_words(recent_session.session_start) %> ago</dd>
+      </dl>
    <% end %>
-   <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
-   <dd><%= time_ago_in_words(recent_session.session_start) %> ago</dd>
-   <% end %>
-   </dl>
+   
     
    <p><%= link_to("View more", "") %></p>
 </section>
 
 
-<section>   
+<section>  
    <aside id="learn_help" class="radius10">
       <p id="create_link"><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}, :class => "bigbutton blue") %></p>
       <ul>
