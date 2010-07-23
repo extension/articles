@@ -29,7 +29,7 @@ end
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
 def update_from_darmok_users(connection,drupaldatabase,mydatabase)
-  passwordstring = "fc7a5ff65aa93ab684f661f9a386e6b9"
+  passwordstring = AppConfig.configtable['passwordstring']
   
   puts "### Starting replacement of drupal user data from darmok data..."
   
