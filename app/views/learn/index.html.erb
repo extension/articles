@@ -48,7 +48,7 @@
    <h3>Recent Sessions</h3>
    
    <% @recent_sessions.each do |recent_session| %>
-   <% if recent_session.where.blank? %>
+   <% if recent_session.recording.blank? %>
    <dl class="no_recording_availble">
    <% else %>
    <dl class="recording_availble">
