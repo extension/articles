@@ -7,38 +7,38 @@
    <p id="calendar_link">view calendar</p>
    
    <% @upcoming_sessions.each do |upcoming_session| %>
-   <article class="upcoming_event radius10">
-   <header>
-     <h1><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
-     <% session_description = upcoming_session.description %>
-     <p class="description"><%= (session_description.length > 50) ? session_description.mb_chars[0..49]+'...' : session_description %></p>
-     <p class="author">
-       <% count = 0 %>
-       <% upcoming_session.presenters.each do |presenter| %>
-         <% if count > 0 %>
-         , 
+      <article class="upcoming_event radius10">
+         <header>
+            <h1><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
+         </header>
+         <% session_description = upcoming_session.description %>
+         <p class="description"><%= (session_description.length > 50) ? session_description.mb_chars[0..150]+'...' : session_description %></p>
+         <p class="author">
+            <% count = 0 %>
+            <% upcoming_session.presenters.each do |presenter| %>
+               <% if count > 0 %>
+               , 
+               <% end %>
+               <%= link_to_user(presenter) %> 
+               <% count = count + 1 %>
+            <% end %>
+         </p>
+     
+         <div class="event_details">
+            <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
+            <p><time><%= humane_date(upcoming_session.session_start) + " #{upcoming_session.time_zone}" %></time></p>
+         </div>
+         
+         <% if upcoming_session.tags.length != 0 %>
+            <ul class="tags">
+               <% upcoming_session.tags.each do |t| %>
+                  <li><%= link_to t.name, :action => :events_tagged_with, :id => t.name %></li>
+               <% end %>
+            </ul>
+         <% else %>
+            <p>There are no tags for this session.</p>
          <% end %>
-         <%= link_to_user(presenter) %> 
-         <% count = count + 1 %>
-       <% end %>
-     </p>
-     
-     <div class="event_details">
-     <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
-     <p><time><%= humane_date(upcoming_session.session_start) + " #{upcoming_session.time_zone}" %></time></p>
-     </div>
-     
-     <ul class="tags">
-       <% if upcoming_session.tags.length != 0 %>  
-       <% upcoming_session.tags.each do |t| %>
-       <li><%= link_to t.name, :action => :events_tagged_with, :id => t.name %></li>
-       <% end %>   
-       <% else %>
-       There are no tags at this time
-       <% end %>
-    </ul>
-    </article>
-     
+      </article>
    <% end %>
    
 </section>
@@ -64,7 +64,7 @@
 
 
 <section>  
-   <aside id="learn_help" class="radius10">
+   <aside id="secondary" class="radius10">
       <p id="create_link"><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}, :class => "bigbutton blue") %></p>
       <ul>
          <li class="feed">Subscribe to a feed of PD recordings</li>

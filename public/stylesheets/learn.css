@@ -11,7 +11,7 @@ box-shadow: 0 4px 10px rgba(0,0,0,.2);*/
 }
 header#masthead {float:left; padding:10px;width:940px; position:relative; background: #ffa221 url(/images/learn/learn_header.png) top center no-repeat; margin-bottom:30px;}
 #content {clear:both; }
-#masthead h1 a {text-decoration:none; color:#fff;}
+#masthead h1 a {text-decoration:none; color:#fff; text-shadow: 2px 2px 2px #000;}
 
 
 
@@ -59,12 +59,19 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 /* layout
 -----------------------------------------------------------------------------*/
-#logo {float:left;}
+#logo {float:left; }
 #home section {width:300px;margin:0 10px; float:left;}
-#create_session section {width:300px;margin:0 10px; float:left;}
+#col_one section {width:300px;margin:0 10px; float:left;}
 
 #upcoming_events article {background:#ededed; /*padding:10px; margin:10px;*/ clear:both;}
 #upcoming_events h3 {float:left;}
+
+#col_one {padding:20px; width: 560px; float:left; margin:0 40px 0 0;}
+
+#two_col_col_one {padding:0 20px 20px; width: 560px; float:left; margin:0 40px 0 0;}
+#two_col_col_two {width:300px;margin:0 10px; float:left;}
+
+#event .description {font-size:1.5em;} 
 
 
 /* sticky footer
@@ -106,8 +113,9 @@ body:before {
 .no_recording_availble dt {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat;}
 .recording_availble dt {background: transparent url(/images/common/television.png) left 50% no-repeat;}
 
-#learn_help {background:#ededed; padding:10px;}
-#learn_help ul li {margin:0 0 10px;}
+#event_time {background:#ededed; padding:10px;}
+aside {background:#ededed; padding:10px;}
+#secondary ul li {margin:0 0 10px;}
 .feed {background: transparent url(/images/people/feed-icon-16x16.gif) left 50% no-repeat; padding-left:22px;}
 .email {background: transparent url(/images/common/email.png) left 2px no-repeat; padding-left:22px;}
 .groupicon {background: transparent url(/images/common/group.png) left 2px no-repeat; padding-left:22px;}
@@ -124,32 +132,32 @@ a:hover     {color: #0043da;}
 
 .radius10 {-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
 .upcoming_event {padding:10px; margin-bottom:20px;}
-.upcoming_event h1 {font-size:2.2em; margin:0 0 0;}
+.upcoming_event h1 {font-size:2.2em; margin:0 0 0; line-height:1.2em;}
 .upcoming_event h1 a {text-decoration:none;}
 .upcoming_event h1 a:hover {color:#000;}
 .event_details {margin:0 0 10px;}
 .event_details p {margin:0;}
 .upcoming_event .tags li {display:inline; padding-right:5px;}
 
-#create_form h1 {margin:0 0 15px; color:#003e6d;}
-.summary_statement {margin:20px 0; font-size:1.6em; color:#444 !important;}
+#primary h1 {margin:0 0 15px; color:#003e6d;}
+.summary_statement {margin:0 0 20px; font-size:1.6em; color:#444 !important;}
 
 /* Forms
 -----------------------------------------------------------------------------*/
-
+.edit {font-size:13px;}
 textarea {font-size:1.4em;}
 label {display:block; font-weight:bold;color:#003e6d;}
 
 
-#create_form {background:#e5f0f9; padding:20px; width: 560px; float:left; margin:0 40px 0 0;}
+#primary {background:#e5f0f9; padding:20px; width: 560px; float:left; margin:0 40px 0 0;}
 form h1 {font-size:2em;}
 #description {margin-top:15px;}
 #description input {width:550px;}
 #description textarea {width:550px;}
 #learn_session_title {font-size:1.7em; padding:3px;}
 textarea {padding:5px;}
-#create_form p {margin:0;}
-#create_form fieldset p {margin-bottom:15px;}
+#primary p {margin:0;}
+#primary fieldset p {margin-bottom:15px;}
 fieldset {margin-bottom:0;}
 
 #presenters_to_save {float:left; margin-top:16px;}
@@ -211,7 +219,7 @@ fieldset {margin-bottom:0;}
 	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#274ea6', endColorstr='#4ca0e7');
 }
 
-.feedback_banner {margin:30px auto 0; width:840px;}
+.feedback_banner {margin:0 auto 0; width:960px;}
 .feedback_banner p {padding:10px 10px 10px 45px; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;}
 .feedback_banner.success p {background: #e4ffe4 url(/images/common/success.gif) 20px 50% no-repeat; color:#024d03; border: 1px solid #40CE1B;}
 .feedback_banner.failure p {background: #ffebf3 url(/images/common/failure.gif) 20px 50% no-repeat; color:red; border: 1px solid red;}
@@ -221,6 +229,7 @@ fieldset {margin-bottom:0;}
 /* Common styles
 -----------------------------------------------------------------------------*/
 .xs {width:2.5em;}
+.xxl {width:30em;}
 
 .shadow {
    box-shadow: 3px 4px 3px #bbb;

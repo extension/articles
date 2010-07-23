@@ -1,15 +1,16 @@
-<% @page_title = "Editing Learn Session Titled '#{@learn_session.title}'" %>
+<% @page_title = "Editing \"#{@learn_session.title}\"" %>
+<% @form_title = "Edit this session" %>
 
 <div id="create_session">
 
 <%= error_messages_for :learn_session %>
 <%= render(:partial => "partial/flashmessages") %>
 
-<div id="create_form" class="radius10 shadow">
+<div id="primary" class="radius10 shadow">
 
 <% form_for :learn_session, :url => { :action => :edit_session, :id => @learn_session.id } do |learn_form| %>
    
-   <h1><%= @page_title %></h1>
+   <h1><%= @form_title %></h1>
    
    <%= render(:partial => "/learn/session_form", :locals => {:learn_form => learn_form}) %>
   
@@ -18,18 +19,7 @@
 
 <section>   
    <aside id="learn_help" class="radius10">
-      <h3>Currently Scheduled</h3>
-      
-      <p><%= image_tag("/images/interface/calendar_image.png", :size => "263x207") %></p>
-      <ul>
-         <li>7/5/10: Session name</li>
-         <li>7/6/10: Session name</li>
-         <li>7/15/10: Session name</li>
-         <li>7/12/10: Session name</li>
-         <li>7/21/10: Session name</li>
-      </ul>
    </aside>
-   
 </section>
 
 </div>
