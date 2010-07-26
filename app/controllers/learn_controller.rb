@@ -24,6 +24,8 @@ class LearnController < ApplicationController
       redirect_to :action => :index
       return
     end
+    
+    @event_has_concluded = event_concluded?(@learn_session)
   end
   
   def create_session
@@ -81,6 +83,8 @@ class LearnController < ApplicationController
       redirect_to :action => :index
       return
     end
+    
+    @event_has_concluded = event_concluded?(@learn_session)
     
     if request.post?
       @learn_session.session_start = params[:session_start]
@@ -153,9 +157,7 @@ class LearnController < ApplicationController
   def update_time_zone
     if request.post? and !params[:new_time_zone].blank? and !params[:id].blank? and learn_session = LearnSession.find_by_id(params[:id])
       # we need to do a timezone conversion here, take the time from the learn session and convert to the desired time zone
-      # kind of a hack to do the strftime here, but the start time is coming out of the db as UTC and .parse is ignoring the 
-      # timezone of the learn session from the db, strftime chops off the timezone coming out of the db 
-      time_obj = ActiveSupport::TimeZone["#{params[:new_time_zone]}"].parse("#{learn_session.session_start.strftime('%B %e, %Y, %l:%M %p')} #{learn_session.time_zone}")
+      time_obj = convert_timezone(params[:new_time_zone], learn_session.time_zone, learn_session.session_start)
       time_zone_to_display = time_obj.time_zone.name
       # time_to_display = get_humane_date(time_obj)
       time_to_display = time_obj.strftime("%l:%M %p")
@@ -214,6 +216,18 @@ class LearnController < ApplicationController
     else
       return
     end
+  end
+  
+  private
+  
+  def event_concluded?(learn_session)
+    # convert the current time to the timezone of the learn session for comparison
+    current_time_obj = convert_timezone(learn_session.time_zone, Time.now.zone, Time.now)
+    # get session end time in it's timezone (db timezones are all in UTC, gotta make the conversion for the session as well)
+    # yeah, i know this is a hack, but want to get it working right now, might go back later and add utc converted 
+    # columns to the learn session table for sanity
+    session_end_time_obj = convert_timezone(learn_session.time_zone, learn_session.time_zone, learn_session.session_end)
+    return (current_time_obj > session_end_time_obj)
   end
   
 end

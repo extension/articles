@@ -52,6 +52,14 @@
     <%= learn_form.label :where, 'Location (ie. http://connect.iastate.edu/learn)' %>
     <%= learn_form.text_field :where, :class => "xxl" %>
  </p>
+ 
+ <% if defined?(@event_has_concluded) and @event_has_concluded %>
+   <p>
+      <%= learn_form.label :recording, 'Recording' %>
+      <%= learn_form.text_field :recording %>
+   </p>
+ <% end %>
+ 
  </fieldset>
  
  <fieldset>
