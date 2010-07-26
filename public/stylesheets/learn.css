@@ -63,7 +63,7 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #home section {width:300px;margin:0 10px; float:left;}
 #col_one section {width:300px;margin:0 10px; float:left;}
 
-#upcoming_events article {background:#ededed; /*padding:10px; margin:10px;*/ clear:both;}
+#upcoming_events article {background:#fff1d6; /*padding:10px; margin:10px;*/ clear:both;}
 #upcoming_events h3 {float:left;}
 
 #col_one {padding:20px; width: 560px; float:left; margin:0 40px 0 0;}
@@ -148,8 +148,15 @@ a:hover     {color: #0043da;}
 .radius10 {-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
 .upcoming_event {padding:10px; margin-bottom:20px;}
 .upcoming_event h1 {font-size:2.2em; margin:0 0 0; line-height:1.2em;}
-.upcoming_event h1 a {text-decoration:none;}
+.upcoming_event h1 a {text-decoration:none;color:#06217f;}
+.upcoming_event h1 a:visited {color:#06217f;}
 .upcoming_event h1 a:hover {color:#000;}
+
+.upcoming_event .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.5em; padding-top:10px;letter-spacing: -1px;float:right;}
+.upcoming_event .date {font-size:1.6em;}
+.upcoming_event time {font-size:17px;}
+.upcoming_event time span {font-size:13px;}
+
 .event_details {margin:0 0 10px;}
 .event_details p {margin:0;}
 .upcoming_event .tags li {display:inline; padding-right:5px;}

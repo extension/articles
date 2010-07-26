@@ -9,7 +9,7 @@
    <% @upcoming_sessions.each do |upcoming_session| %>
       <article class="upcoming_event radius10">
          <header>
-            <h1><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
+            <h1><span class="calendarblock"><%= upcoming_session.session_start.strftime("%d") %></span><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
          </header>
          <% session_description = upcoming_session.description %>
          <p class="description"><%= (session_description.length > 150) ? session_description.mb_chars[0..150]+'...' : session_description %></p>
@@ -26,7 +26,8 @@
      
          <div class="event_details">
             <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
-            <p><time><%= humane_date(upcoming_session.session_start) + " #{upcoming_session.time_zone}" %></time></p>
+            <p class="date"><%= upcoming_session.session_start.strftime("%B %e, %Y") %></p>
+            <p><time><%= upcoming_session.session_start.strftime("%l:%M %p") + " <span class=\"timezone\">#{upcoming_session.time_zone}</span>" %></time></p>
          </div>
          
          <% if upcoming_session.tags.length != 0 %>
