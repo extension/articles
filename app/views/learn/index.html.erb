@@ -12,7 +12,7 @@
             <h1><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
          </header>
          <% session_description = upcoming_session.description %>
-         <p class="description"><%= (session_description.length > 50) ? session_description.mb_chars[0..150]+'...' : session_description %></p>
+         <p class="description"><%= (session_description.length > 150) ? session_description.mb_chars[0..150]+'...' : session_description %></p>
          <p class="author">
             <% count = 0 %>
             <% upcoming_session.presenters.each do |presenter| %>

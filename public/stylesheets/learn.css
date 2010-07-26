@@ -122,7 +122,7 @@ body:before {
 .copyright {float:left;}
 .clearing {clear:both;}
 
-
+#recent_sessions {padding:0 20px; width:260px !important}
 #recent_sessions dt, #recent_sessions dd {padding-left:22px;} 
 #recent_sessions dd {color:#999;}
 .no_recording_availble dt {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat;}
@@ -255,3 +255,6 @@ h1 .edit {font-size:14px;}
 h1 .edit a {text-decoration:none;}
 h1 .edit a:hover {text-decoration:underline;}
 
+.event_search {width:60em; margin:0 0 20px;}
+.event_search dt {font-size:1.6em; font-weight:bold;}
+.event_search dd {font-size:1.3em;}
