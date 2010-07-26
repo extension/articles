@@ -157,10 +157,11 @@ class LearnController < ApplicationController
       # timezone of the learn session from the db, strftime chops off the timezone coming out of the db 
       time_obj = ActiveSupport::TimeZone["#{params[:new_time_zone]}"].parse("#{learn_session.session_start.strftime('%B %e, %Y, %l:%M %p')} #{learn_session.time_zone}")
       time_zone_to_display = time_obj.time_zone.name
-      time_to_display = get_humane_date(time_obj)
-    
+      # time_to_display = get_humane_date(time_obj)
+      time_to_display = time_obj.strftime("%l:%M %p")
+      
       render :update do |page|
-        page.replace_html :session_date_time, "#{time_to_display} #{time_zone_to_display}" 
+        page.replace_html :session_date_time, "<span id=\"time\">#{time_to_display}</span><span id=\"timezone\">#{time_zone_to_display}</span>" 
       end
     else
       return

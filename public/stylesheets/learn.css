@@ -78,8 +78,17 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #event_time h2 {}
 #event_time h3 {font-size:2em;}
 
-.calendarblock {background:#efefef url(/images/learn/calendar_64.png) 0 0  no-repeat; padding:middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.9em; padding-top:10px;letter-spacing: -1px}
+.calendarblock {background:#fff url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.9em; padding-top:10px;letter-spacing: -1px;float:right;}
 
+#session_duration {font-size:1.8em; background:#fff; padding:.2em .5em; clear:left;}
+
+#session_date {float:left; display:block;padding:0 0 0 10px; width:180px;}
+#session_date_time {float:left; display:block;padding:10px 0 0 10px; width:190px;}
+#time {font-size:1.6em; display:block;margin-bottom:20px;}
+#timezone {display:block; font-size:14px; line-height:1.2em;}
+#event_time h2 {background:#fff; float:left; padding: 10px 10px 10px 0;}
+#event #presenters {font-size:1.6em;}
+#event #tags {font-size:1.6em;}
 /* sticky footer
 -----------------------------------------------------------------------------*/
 html, body {height: 100%;}
@@ -245,3 +254,4 @@ fieldset {margin-bottom:0;}
 h1 .edit {font-size:14px;}
 h1 .edit a {text-decoration:none;}
 h1 .edit a:hover {text-decoration:underline;}
+
