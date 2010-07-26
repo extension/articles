@@ -1,5 +1,10 @@
 <% top_level_category.children.each do |sub_cat| %>
-    <li id="<%= sub_cat.id %>">
+  <%- if sub_cat.show_to_public? 
+        subcatclass = "aaesubcategory public" 
+      else
+        subcatclass = "aaesubcategory" 
+      end -%>
+    <li id="<%= sub_cat.id %>" class="<%= subcatclass %>">
     <%= check_box_tag "areas_of_expertise[]", sub_cat.id, @currentuser.get_expertise.include?(sub_cat), { :id => "areas_of_expertise#{sub_cat.id}"} %> 
     <%= sub_cat.name %>
     <div id="loading_<%= sub_cat.id %>" class="float-spinner" style="display:none">Saving... </div>

@@ -86,4 +86,36 @@ class Aae::ExpertiseController < ApplicationController
     end
   end
   
+  def change_category_public_visibility
+    @category = Category.find_by_id(params[:id])
+    
+    if(params[:show_to_public] && params[:show_to_public] == 'yes' )
+       @category.update_attribute(:show_to_public, true)
+       AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_CATEGORY,{:category_id => @category.id, :show_to_public => false})       
+     else
+       @category.update_attribute(:show_to_public, false)
+       AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_CATEGORY,{:category_id => @category.id, :show_to_public => false})       
+    end
+        
+    respond_to do |format|
+      format.js
+    end
+  end
+  
+  def change_subcategory_public_visibility
+    @subcategory = Category.find_by_id(params[:id])
+    
+    if(params[:show_to_public] && params[:show_to_public] == 'yes' )
+       @subcategory.update_attribute(:show_to_public, true)
+       AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_CATEGORY,{:category_id => @subcategory.id, :show_to_public => false})       
+     else
+       @subcategory.update_attribute(:show_to_public, false)
+       AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_CATEGORY,{:category_id => @subcategory.id, :show_to_public => false})       
+    end
+        
+    respond_to do |format|
+      format.js
+    end
+  end
+  
 end

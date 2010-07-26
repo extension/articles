@@ -1,0 +1,42 @@
+<%- subcategories = showcategory.children -%>
+  <%- expertcount = showcategory.users.count %>
+      <%- if showcategory.show_to_public? -%>
+        <span class="aaecategory public">
+      <%- else -%>
+        <span class="aaecategory">
+      <%- end -%>
+      <%- if subcategories.length > 0 -%>
+          <%= link_to_function("#{showcategory.name} (#{subcategories.length} subcategories)", "Effect.toggle('subcategory_div_#{showcategory.id}','blind', { duration: .4});") %></span>
+      <%- else -%>
+          <%= showcategory.name %>            
+      <%- end -%>
+      </span>
+      
+     
+      <%- if expertcount > 0 -%>
+        <span class="experts"><%= link_to("#{showcategory.users.count} experts", {:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => showcategory.name }) %></span>
+      <%- else -%>
+        <span class="experts"><strong>no experts!</strong></span>
+      <%- end -%>
+        
+      <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :legacycategory => showcategory.id %></span>            
+      
+      <span class="aaecategoryadmin">
+        <%- if(admin_mode? and expertcount > 0) -%>
+        	<%= check_box_tag("show_to_public","yes",showcategory.show_to_public?, {:id => "aaecategory_public_control_#{showcategory.id}"}) %> Public?
+        	<%= observe_field("aaecategory_public_control_#{showcategory.id}", :update => "aaecategoryadmin", :url => {:controller => '/aae/expertise', :action => :change_category_public_visibility, :id => showcategory.id}, :with => "'show_to_public=' + value") %>
+          <%- else -%>
+           &nbsp;
+          <%- end -%>	
+      </span>
+      
+      <%- if subcategories.length > 0 -%>
+      <ul class="aoe_subcat" id="subcategory_div_<%= showcategory.id %>" style='display:none;'>
+        <%- subcategories.each do |subcategory| -%>
+            <li id="expertisesubcategory_<%= subcategory.id %>">
+              <%= render(:partial => "subcategory_listitem", :locals => {:subcategory => subcategory}) %>
+            </li>
+        <%- end -%>
+      </ul>
+      <%- end -%>
+  </li>

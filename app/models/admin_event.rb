@@ -37,6 +37,7 @@ class AdminEvent < ActiveRecord::Base
   CREATE_SPONSOR = 61
   UPDATE_SPONSOR = 62
   REORDER_SPONSORS = 63
+  UPDATE_PUBLIC_CATEGORY = 64
   
   # LIST EVENTS
   CREATE_LIST = 100
@@ -95,7 +96,8 @@ class AdminEvent < ActiveRecord::Base
            DELETE_SPONSOR => {:description => 'Deleted Sponsor'},
            CREATE_SPONSOR => {:description => 'Created Sponsor'},
            UPDATE_SPONSOR => {:description => 'Updated Sponsor'},
-           REORDER_SPONSORS => {:description => 'Reordered Sponsors'}}
+           REORDER_SPONSORS => {:description => 'Reordered Sponsors'},
+           UPDATE_PUBLIC_CATEGORY => {:description => 'Updated public setting for category'}}
 
   
   def description
