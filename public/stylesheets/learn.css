@@ -71,8 +71,14 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #two_col_col_one {padding:0 20px 20px; width: 560px; float:left; margin:0 40px 0 0;}
 #two_col_col_two {width:300px;margin:0 10px; float:left;}
 
-#event .description {font-size:1.5em;} 
+#event .description {font-size:1.5em;}
 
+/* View events
+-----------------------------------------------------------------------------*/
+#event_time h2 {}
+#event_time h3 {font-size:2em;}
+
+.calendarblock {background:#efefef url(/images/learn/calendar_64.png) 0 0  no-repeat; padding:middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.9em; padding-top:10px;letter-spacing: -1px}
 
 /* sticky footer
 -----------------------------------------------------------------------------*/
@@ -113,7 +119,7 @@ body:before {
 .no_recording_availble dt {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat;}
 .recording_availble dt {background: transparent url(/images/common/television.png) left 50% no-repeat;}
 
-#event_time {background:#ededed; padding:10px;}
+
 aside {background:#ededed; padding:10px;}
 #secondary ul li {margin:0 0 10px;}
 .feed {background: transparent url(/images/people/feed-icon-16x16.gif) left 50% no-repeat; padding-left:22px;}

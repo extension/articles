@@ -31,10 +31,10 @@
 
 <section id="two_col_col_two">
    <aside id="event_time" class="radius10">
-      <h3>When</h3>
-      <p>
-      <%= humane_date(@learn_session.session_start) + " #{@learn_session.time_zone}" %><br />
-      <%= "#{@learn_session.session_length} minute session" %>
-      </p>      
+      <header>
+         <h1>When</h1>
+      </header>
+      <h2><span class="calendarblock"><%= @learn_session.session_start.strftime("%d") %></span> <%= humane_date(@learn_session.session_start) + " #{@learn_session.time_zone}" %></h2>
+      <p><%= "#{@learn_session.session_length} minute session" %></p>      
    </aside>
 </section>
