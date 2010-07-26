@@ -242,3 +242,6 @@ fieldset {margin-bottom:0;}
    -moz-box-shadow: 3px 4px 3px #bbb;
    -webkit-box-shadow: 3px 4px 3px #bbb;
 }
+h1 .edit {font-size:14px;}
+h1 .edit a {text-decoration:none;}
+h1 .edit a:hover {text-decoration:underline;}

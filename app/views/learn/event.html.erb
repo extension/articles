@@ -7,7 +7,7 @@
    <h1>
    <%= @learn_session.title %> 
    <% if @currentuser %>
-     <%= link_to '[edit]', :action => :edit_session, :id => @learn_session.id %>
+     <span class="edit"><%= link_to 'edit', :action => :edit_session, :id => @learn_session.id %></span>
    <% end %>
    </h1>
 
@@ -36,10 +36,6 @@
 
 <section id="two_col_col_two">
    <aside id="event_time" class="radius10">
-
-      <header>
-         <h1>When</h1>
-      </header>
 
       <h2>
          <span class="calendarblock"><%= @learn_session.session_start.strftime("%d") %></span>
