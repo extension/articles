@@ -15,16 +15,17 @@
 
 <section id="two_col_col_two">
    <aside id="secondary" class="radius10">
-      <h3>Currently Scheduled</h3>
+      <h3>Upcoming Events</h3>
       
-      <p><%= image_tag("/images/interface/calendar_image.png", :size => "263x207") %></p>
-      <ul>
-         <li>7/5/10: Session name</li>
-         <li>7/6/10: Session name</li>
-         <li>7/15/10: Session name</li>
-         <li>7/12/10: Session name</li>
-         <li>7/21/10: Session name</li>
-      </ul>
+      
+      <% @scheduled_sessions.each do |scheduled_session| %>
+         <dl>
+         <dt><%= link_to scheduled_session.title, :action => :event, :id => scheduled_session.id %></dt>
+         <dd><strong><%= scheduled_session.session_start.strftime("%B %e, %Y") %></strong></dd>
+         <dd><%= scheduled_session.session_start.strftime("%l:%M %p") %></dd>
+         </dl>
+      <% end %>
+      
    </aside>
    
 </section>

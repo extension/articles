@@ -150,7 +150,7 @@ a:hover     {color: #0043da;}
 .upcoming_event h1 {font-size:2.2em; margin:0 0 0; line-height:1.2em;}
 .upcoming_event h1 a {text-decoration:none;color:#06217f;}
 .upcoming_event h1 a:visited {color:#06217f;}
-.upcoming_event h1 a:hover {color:#000;}
+.upcoming_event h1 a:hover {color:blue;}
 
 .upcoming_event .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.5em; padding-top:10px;letter-spacing: -1px;float:right;}
 .upcoming_event .date {font-size:1.6em;}

@@ -29,6 +29,7 @@ class LearnController < ApplicationController
   end
   
   def create_session
+    @scheduled_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 20, :order => "session_start ASC")
     if request.post?
       @learn_session = LearnSession.new(params[:learn_session])
       @learn_session.session_start = params[:session_start]
