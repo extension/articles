@@ -52,7 +52,10 @@
 
       <h2>
          <span id="session_date"><%= @learn_session.session_start.strftime("%B %e, %Y") %></span>
-         <span class="calendarblock"><%= @learn_session.session_start.strftime("%d") %></span>
+         <div class="calendarblock">
+            <span class="month"><%= @learn_session.session_start.strftime("%b") %></span>
+            <span class="date"><%= @learn_session.session_start.strftime("%d") %></span>
+         </div>
          <span id="session_date_time">
             <span id="time"><%= @learn_session.session_start.strftime("%l:%M %p") %></span>
             <span id="timezone"><%= @learn_session.time_zone %></span>
