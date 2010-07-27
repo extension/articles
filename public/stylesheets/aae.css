@@ -1508,3 +1508,6 @@ a.nodec:hover {text-decoration:underline;}
 
 .lessmb {margin-bottom:0;}
 #ie_aae_faq_error {background:#b7f9ff;display:block;padding:10px;}
+.qw strong,
+.qw {background: #fff url(/images/common/lasso.png) 3px 50% no-repeat !important; padding:6px 0px 6px 22px !important;}
+.qw .profile{background:none; padding-left:0 !important;} 
