@@ -80,6 +80,10 @@ ActionController::Routing::Routes.draw do |map|
      aae.home '/', :controller => :home, :action => :index     
   end
   
+  # redirect
+  map.redirect 'aae/admin', :controller => 'admin', :action => 'index', :permanent => true
+  
+  
   ### AaE API ###
   map.connect 'api/aae/ask.json', :controller => 'api/aae', :action => :ask  
   
