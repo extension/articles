@@ -10,7 +10,6 @@ class Aae::ExpertiseController < ApplicationController
   before_filter :login_required
   before_filter :check_purgatory  
   
-  # they can specify their areas of expertise by category/subcategory 
   def categories
     @categories = Category.root_categories.all(:order => 'name')
     @current_user_categories = @currentuser.get_expertise
