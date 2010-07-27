@@ -17,9 +17,25 @@
       <%- else -%>
         <li id="expertisecategory_<%= category.id %>">
       <%- end -%>
-        <%= render(:partial => "category_listitem", :locals => {:showcategory => category}) %>
+        <%= render(:partial => "category_listitem", :locals => {:category => category}) %>
       </li>
     <%- end -%>
+    
+    <%- if(admin_mode?)-%>  
+    <li>
+      <span><%= link_to_function("Add a new category", "Effect.toggle('addnewcategory','blind', { duration: .4});") %></span>
+      <span id="addnewcategory" style='display:none;'>
+        <% form_tag :action => 'add_category' do %>
+          <p><label for="category_name">Name</label>
+        <%= text_field 'category', 'name'  %></p>
+          <%= submit_tag "Save" %>
+        <% end %>
+      </span>
+    </li>
+    <%- end -%>
+    
+
+    
   </ul>
 </div>
 

@@ -118,4 +118,61 @@ class Aae::ExpertiseController < ApplicationController
     end
   end
   
+  def add_category
+    if(request.post?)
+      @category = Category.new(params[:category])
+      if @category.save
+        flash[:success] = "Category '#{@category.name}' created."
+        redirect_to :action => "categories"
+      else
+        failuremsg = "Unable to create the '#{@category.name}' Category: "
+        failuremsg += "<ul>"
+        @category.errors.each { |value,msg|
+          failuremsg += "<li>#{value} - #{msg}</li>"
+        }
+        failuremsg += "</ul>"
+        flash[:error] = failuremsg
+        redirect_to :action => "categories"
+      end
+    end    
+  end
+  
+  def add_subcategory
+    if(request.post?)
+      @parent_category = Category.find_by_id(params[:categoryparent])
+      if !@parent_category
+        flash[:error] = "Invalid category."
+        return redirect_to :action => "categories"
+      end
+      
+      if @parent_category.parent
+        flash[:failure] = "Subcategories are only allowed for root categories."
+        return redirect_to :action => "categories"
+      end
+      
+      @category = Category.new(params[:category])
+      @category.parent = @parent_category
+      
+      if @parent_category.children.detect { |cat| cat.name == @category.name }
+        flash[:failure] = @parent_category.name + " already has a subcategory named " + @category.name + "."
+        return redirect_to :action => "categories"
+      end
+      
+      if @category.save
+        flash[:success] = "New subcategory '" + @category.name + "' added to " + @category.parent.name + "."
+        redirect_to :action => "categories"
+      else
+        failuremsg = "Unable to create the '#{@category.name}' sub category: "
+        failuremsg += "<ul>"
+        @category.errors.each { |value,msg|
+          failuremsg += "<li>#{value} - #{msg}</li>"
+        }
+        failuremsg += "</ul>"
+        flash[:error] = failuremsg
+        redirect_to :action => "categories"
+      end
+    end    
+  end
+  
+  
 end
