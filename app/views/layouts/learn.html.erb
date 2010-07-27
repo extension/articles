@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8" />
+   <title>eXtension Learn: <%= @page_title || controller.action_name %></title>
+   
+   <!--[if lt IE 9]>
+      <%= javascript_include_tag 'html5' %>
+   <![endif]-->
+   
+    <% if @mobile_device %>
+        <meta name = "viewport" content = "width = device-width, user-scalable = yes">
+        <%= stylesheet_link_tag 'mobile_learn' %>
+    <% else %>
+        <%= stylesheet_link_tag 'common' %>
+        <%= stylesheet_link_tag 'learn' %>
+        <%= stylesheet_link_tag 'learn_print', :media => 'print' %>
+    <% end %>
+    
+    <%= javascript_include_tag 'prototype' %>
+    <%= javascript_include_tag 'effects' %>
+    <%= javascript_include_tag 'application' %>
+    <%= javascript_include_tag 'tooltip' %>
+    <%= calendar_date_select_includes "silver" %>
+    <% javascript_include_tag 'date' %>
+    <!--[if !IE 7]><style type="text/css">#wrap {display:table;height:100%}</style><![endif]-->
+</head>
+    
+<body>
+   <div id="wrapper">
+       <% if (@app_location_for_display != 'production') %>
+           <div id="app_location" class="<%= @app_location_for_display %>">
+               <p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p>
+           </div>
+       <% end %>
+
+       <% if !@mobile_device %>
+           <%= render(:partial => 'learn/global_nav_banner') %>
+       <% end %>
+       
+       <header id="masthead">
+           <div id="logo"><%= link_to(image_tag("/images/common/extension_logo_250px_0k_shad.png", :alt => "eXtension - more mind reach"), learn_url) %></div>
+           <h1><%= link_to("eXtension Learn", learn_url) %></h1>
+            
+           <% if !@mobile_device %>
+            <nav>
+                <ul id="userinfo">
+                    <%- if(!@currentuser.nil?) -%>
+                        <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
+                        <% if @currentuser.is_admin? %>
+                     		<li id="admintoggle"><strong>Admin Mode:</strong> <span id="admin_mode_block"><%= admin_mode_text %></span></li>
+                     	<% end %>
+                    <%- end -%>
+                </ul>
+            </nav>
+            <% end %>
+            
+            <div id="search">
+               <form>
+                  <input name="q" type="search" placeholder="Search for sessions" class="searchbox">
+                  <%= submit_tag 'Search' %>
+               </form>
+            </div>
+        </header>
+        
+        <div id="content">         
+            <%= yield :layout %>
+        </div>
+        
+        <% if @mobile_device %>
+            <nav>
+                <ul id="userinfo">
+                    <%- if(!@currentuser.nil?) -%>
+                        <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
+                        <% if @currentuser.is_admin? %>
+                     		<li id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></li>
+                     	<% end %>
+                    <%- end -%>
+                </ul>
+            </nav>
+        
+            <h3>Other eXtension Sites</h3>
+            <%= render(:partial => 'learn/global_nav_banner') %>
+        <% end %>
+        
+     </div><!-- wrapper -->
+        <div id="footer">    
+           <p><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is an educational partnership of 74 universities in the United States.</p>
+           <p class="copyright">&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
+           <nav>
+           <ul>
+              <li><%= link_to_unless_current "Contact us", :controller => "/main", :action => "contact_us" %></li>
+              <li class="last"><%= link_to_unless_current "Terms of use", :controller => "/main", :action => "termsofuse" %></li>
+           </ul>
+           </nav>
+        </div>
+
+    
+    <%= render(:partial => 'learn/googleanalytics') %>
+ 
+</body>
+</html>

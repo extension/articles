@@ -1,0 +1,85 @@
+<% @page_title = "eXtension Learn" %>
+<div id="home">
+   <p class="summary_statement">These professional development sessions are open to anyone in Extension, and you're all welcomed to participate! If you have suggestions for topics that are not currently listed, please add them to the Learn Community Wave or let Beth Raney know!</p>
+   
+<section id="upcoming_events">
+   <h3>Upcoming Events</h3>
+   <p id="calendar_link">view calendar</p>
+   
+   <% @upcoming_sessions.each do |upcoming_session| %>
+      <article class="upcoming_event radius10">
+         <header>
+            <h1><span class="calendarblock"><%= upcoming_session.session_start.strftime("%d") %></span><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
+         </header>
+         <% session_description = upcoming_session.description %>
+         <p class="description"><%= (session_description.length > 150) ? session_description.mb_chars[0..150]+'...' : session_description %></p>
+         <p class="author">
+            <% count = 0 %>
+            <% upcoming_session.presenters.each do |presenter| %>
+               <% if count > 0 %>
+               , 
+               <% end %>
+               <%= link_to_user(presenter) %> 
+               <% count = count + 1 %>
+            <% end %>
+         </p>
+     
+         <div class="event_details">
+            <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
+            <p class="date"><%= upcoming_session.session_start.strftime("%B %e, %Y") %></p>
+            <p><time><%= upcoming_session.session_start.strftime("%l:%M %p") + " <span class=\"timezone\">#{upcoming_session.time_zone}</span>" %></time></p>
+         </div>
+         
+         <% if upcoming_session.tags.length != 0 %>
+            <ul class="tags">
+               <% upcoming_session.tags.each do |t| %>
+                  <li><%= link_to t.name, :action => :events_tagged_with, :id => t.name %></li>
+               <% end %>
+            </ul>
+         <% else %>
+            <p>There are no tags for this session.</p>
+         <% end %>
+      </article>
+   <% end %>
+   
+</section>
+
+
+<section id="recent_sessions">
+   <h3>Recent Sessions</h3>
+   
+   <% @recent_sessions.each do |recent_session| %>
+      <% if recent_session.recording.blank? %>
+         <dl class="no_recording_availble">
+      <% else %>
+         <dl class="recording_availble">
+      <% end %>
+      <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
+      <dd><%= time_ago_in_words(recent_session.session_start) %> ago</dd>
+      </dl>
+   <% end %>
+   
+    
+   <p><%= link_to("View more", "") %></p>
+</section>
+
+
+<section>  
+   <aside id="secondary" class="radius10">
+      <p id="create_link"><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}, :class => "bigbutton blue") %></p>
+      <ul>
+         <li class="feed">Subscribe to a feed of PD recordings</li>
+         <li class="groupicon">How to participate in eXtension professional development</li>
+         <li class="email">Get email announcements: <br /> 1) Visit the <%= link_to("Learn Community", "https://people.extension.org/communities/learn") %> <br />2) Click "Join Community"</li>
+      </ul>
+   </aside>
+   
+   <h3>Browse by recent tags</h3>
+   
+   <ul class="tags">
+      <% @recent_tags.each do |tag| %>
+      <li><%= link_to tag.name, :action => :events_tagged_with, :id => tag.name %></li>
+      <% end %>
+   </ul>
+</section>
+</div>

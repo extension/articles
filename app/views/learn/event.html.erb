@@ -1,0 +1,74 @@
+<% @page_title = @learn_session.title %>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<div id="two_col_col_one">
+   <section id="event">
+   <h1>
+   <%= @learn_session.title %> 
+   <% if @currentuser %>
+     <span class="edit"><%= link_to 'edit', :action => :edit_session, :id => @learn_session.id %></span>
+   <% end %>
+   </h1>
+
+   <p class="description"><%= @learn_session.description %></p>
+
+   <h2>Presented by</h2>
+   <p id="presenters">
+      <% count = 0 %>
+         <% @learn_session.presenters.each do |presenter| %>
+         <% if count > 0 %>, 
+         <% end %>
+         <%= link_to_user(presenter) %> 
+         <% count = count + 1 %>
+      <% end %>  
+     </p>
+      
+      <h3>Tags</h3>
+      <p id="tags">
+      <% if @learn_session.tags.length != 0 %>  
+      <%= @learn_session.tags.collect{|t| link_to t.name, :action => :events_tagged_with, :id => t.name}.join(' , ') %>
+      <% else %>
+      There are no tags at this time
+      <% end %>
+      </p>
+      
+      <p>
+        <% if @event_has_concluded %>
+          <% if @learn_session.recording.blank? %>
+            There are currently no recordings posted yet.
+          <% else %>
+            Recording: <%= @learn_session.recording %>
+          <% end %>
+        <% else %>
+          Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)
+        <% end %>
+      </p>
+   </section>
+</div>
+
+<section id="two_col_col_two">
+   <aside id="event_time" class="radius10">
+
+      <h2>
+         <span id="session_date"><%= @learn_session.session_start.strftime("%B %e, %Y") %></span>
+         <span class="calendarblock"><%= @learn_session.session_start.strftime("%d") %></span>
+         <span id="session_date_time">
+            <span id="time"><%= @learn_session.session_start.strftime("%l:%M %p") %></span>
+            <span id="timezone"><%= @learn_session.time_zone %></span>
+         </span>
+      </h2>   
+      
+      <p id="session_duration"><strong><%= "#{@learn_session.session_length}" %> minute</strong> session</p>
+      
+      <p>
+       <%= label_tag :time_zone_label, 'Convert Time Zone' %>
+       <%= select_tag :time_zone, time_zone_options_for_select(@learn_session.time_zone, ActiveSupport::TimeZone.us_zones) %>
+      </p>
+      
+      <%= observe_field(:time_zone,
+                        :url       => { :action => :update_time_zone, :id => @learn_session.id },
+                        :with      => "'new_time_zone='+escape(value)") %>
+               
+   </aside>
+</section>
