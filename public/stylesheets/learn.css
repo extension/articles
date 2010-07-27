@@ -139,7 +139,7 @@ aside {background:#ededed; padding:10px;}
 .groupicon {background: transparent url(/images/common/group.png) left 2px no-repeat; padding-left:22px;}
 
 /*#create_link {float:left;}*/
-#calendar_link {float:right; padding:10px;}
+#calendar_link {float:right; padding:10px; display:none;}
 
 /* Home styles
 -----------------------------------------------------------------------------*/
