@@ -8,9 +8,14 @@
    
    <% @upcoming_sessions.each do |upcoming_session| %>
       <article class="upcoming_event radius10">
+         <div class="calendarblock">
+            <span class="month"><%= upcoming_session.session_start.strftime("%b") %></span>
+            <span class="date"><%= upcoming_session.session_start.strftime("%d") %></span>
+         </div>
          <header>
-            <h1><span class="calendarblock"><%= upcoming_session.session_start.strftime("%d") %></span><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
+            <h1><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
          </header>
+         
          <% session_description = upcoming_session.description %>
          <p class="description"><%= (session_description.length > 150) ? session_description.mb_chars[0..150]+'...' : session_description %></p>
          <p class="author">

@@ -78,7 +78,10 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #event_time h2 {}
 #event_time h3 {font-size:2em;}
 
-.calendarblock {background:#fff url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.9em; padding-top:10px;letter-spacing: -1px;float:right;}
+/*.calendarblock {background:#fff url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.9em; padding-top:10px;letter-spacing: -1px;float:right;}*/
+#event_time .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;padding-top:0;float:right;}
+#event_time .calendarblock .month {display:block; height:20px; line-height:25px;font-size:.7em; text-transform:uppercase; font-weight:bold;}
+#event_time .calendarblock .date {display:block; height:40px; line-height:43px;font-weight:bold; font-size:1.8em; }
 
 #session_duration {font-size:1.8em; background:#fff; padding:.2em .5em; clear:left;}
 
@@ -152,7 +155,9 @@ a:hover     {color: #0043da;}
 .upcoming_event h1 a:visited {color:#06217f;}
 .upcoming_event h1 a:hover {color:blue;}
 
-.upcoming_event .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.5em; padding-top:10px;letter-spacing: -1px;float:right;}
+.upcoming_event .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;padding-top:0;float:right;}
+.upcoming_event .calendarblock .month {display:block; height:20px; line-height:25px;font-size:1.3em; text-transform:uppercase; font-weight:bold;}
+.upcoming_event .calendarblock .date {display:block; height:40px; line-height:43px;font-weight:bold; font-size:2.8em; }
 .upcoming_event .date {font-size:1.6em;}
 .upcoming_event time {font-size:17px;}
 .upcoming_event time span {font-size:13px;}
