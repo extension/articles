@@ -208,22 +208,16 @@ class Article < ActiveRecord::Base
   end
   
   def to_atom_entry
-   xml = Builder::XmlMarkup.new(:indent => 2)
-   
-   xml.entry do
-    xml.title(self.title, :type => 'html')
-    xml.content(self.content, :type => 'html')
-    
-    self.tag_list.each do |cat|
-      xml.category "term" => cat  
+    Atom::Entry.new do |e|
+      e.title = Atom::Content::Html.new(self.title)
+      e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
+      e.authors << Atom::Person.new(:name => 'Contributors')
+      e.id = self.id_and_link
+      e.updated = self.wiki_updated_at
+      e.categories = self.tag_list.split(',').each { |cat| Atom::Category.new(cat.strip) }
+      e.content = Atom::Content::Html.new(self.content)
     end
-    
-    xml.author { xml.name "Contributors" }
-    xml.id(self.id_and_link)
-    xml.link(:rel => 'alternate', :type => 'text/html', :href => self.id_and_link)
-    xml.updated self.wiki_updated_at.xmlschema
-   end
-  end  
+  end
   
   def self.find_by_title_url(url)
    return nil unless url
