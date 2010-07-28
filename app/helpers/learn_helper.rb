@@ -55,7 +55,7 @@ module LearnHelper
   def get_tags_for_learn_session
     if params[:tags].blank?
       if @learn_session.tags.length > 0
-        return @learn_session.tags.collect{|t| t.name}.join(Tag::JOINER)
+        return @learn_session.tags.map(&:name).join(Tag::JOINER)
       else
         return nil
       end
