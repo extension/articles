@@ -1,14 +1,11 @@
 <%- subcategories = category.children -%>
   <%- expertcount = category.users.count %>
-      <%- if category.show_to_public? -%>
-        <span class="aaecategory public">
-      <%- else -%>
-        <span class="aaecategory">
-      <%- end -%>
+      <span class="aaecategory">
         <%= category.name %>            
-      
+      </span>
+      <span class="aaesubcategories">
       <%- if subcategories.length > 0 -%>
-          <br/><%= link_to_function("(#{subcategories.length} subcategories)", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %></span>
+          <%= link_to_function("#{subcategories.length} subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
       <%- end -%>
       </span>
       
@@ -18,8 +15,7 @@
       <%- else -%>
         <span class="experts"><strong>no experts!</strong></span>
       <%- end -%>
-        
-      <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :legacycategory => category.id %></span>            
+
       
       <span class="aaecategoryadmin">
         <%- if(admin_mode?) -%>
@@ -33,7 +29,7 @@
       <%- if subcategories.length > 0 -%>
       <ul class="aoe_subcat" id="subcategory_div_<%= category.id %>" style='display:none;'>
         <%- subcategories.each do |subcategory| -%>
-            <li id="expertisesubcategory_<%= subcategory.id %>">
+            <li id="expertisesubcategory_<%= subcategory.id %>"  class="<%= subcategory.show_to_public?  ? "public" : '' %>">
               <%= render(:partial => "subcategory_listitem", :locals => {:subcategory => subcategory}) %>
             </li>
         <%- end -%>
