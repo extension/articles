@@ -230,7 +230,7 @@ class FeedsController < ApplicationController
         end
        end
        
-      total_possible_results = entries.nil? ? entries[0].class.count_by_sql("SELECT FOUND_ROWS()") : 0
+      total_possible_results = entries.empty? ? 0 : entries[0].class.count_by_sql("SELECT FOUND_ROWS()")
       
       return entries, total_possible_results
     end
