@@ -5,7 +5,9 @@
 <%- end -%>
 <%= subcategory.name %>
 </span>
+<%- if(admin_mode?)-%>  
 <span id="aaecategoryadmin_<%= subcategory.id %>">
 	<%= check_box_tag("show_to_public","yes",subcategory.show_to_public?, {:id => "aaecategory_public_control_#{subcategory.id}"}) %> Public?
 	<%= observe_field("aaecategory_public_control_#{subcategory.id}", :update => "aaecategoryadmin", :url => {:controller => '/aae/expertise', :action => :change_subcategory_public_visibility, :id => subcategory.id}, :with => "'show_to_public=' + value") %>
 </span>
+<%- end -%>
