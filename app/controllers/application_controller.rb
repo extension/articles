@@ -436,8 +436,8 @@ class ApplicationController < ActionController::Base
   def convert_timezone(new_zone, old_zone, date_time_to_convert)
     if !new_zone.blank? and !old_zone.blank? and !date_time_to_convert.blank?
       begin
-        # kind of a hack to do the strftime here, but the date-time is coming out of the db as UTC and .parse is ignoring the 
-        # timezone passed in, strftime chops off the timezone coming out of the db
+        # kind of a hack to do the strftime here, but we want to format the timestamp for consistency so that .parse is looking at the 
+        # timezone passed in instead of the timezone with the time stamp, strftime basically formats the timestamp and chops off the timezone from it in this case
         time_zone_obj = ActiveSupport::TimeZone["#{new_zone}"].parse("#{date_time_to_convert.strftime('%B %e, %Y, %l:%M %p')} #{old_zone}")
         return time_zone_obj
       rescue Exception => e

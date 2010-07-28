@@ -30,7 +30,7 @@
  <fieldset id="datetime">
    <p>
    <%= learn_form.label :session_start, 'Date and Time' %>
-   <%= calendar_date_select_tag :session_start, @learn_session.session_start ? @learn_session.session_start : Time.parse("2:00").strftime('%Y-%m-%d %H:%M PM'), :time => true %>
+   <%= calendar_date_select_tag :session_start, @learn_session.session_start ? format_time(@learn_session, @learn_session.session_start) : Time.parse("2:00").strftime('%Y-%m-%d %H:%M PM'), :time => true %>
    </p>
    
    <p>
