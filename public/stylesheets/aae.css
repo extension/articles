@@ -754,23 +754,26 @@ a.profile {
 #expertiselist li ul li {margin:.5em 0 .1em;float:left;width:100%;padding:0 !important;position:relative; font-size:1em;}
 
 /* categories */
-#expertiselist li.expertiselisting {margin:0;}
-#expertiselist li.expertiselisting.public {background:#eaf7f3;}
+#expertiselist li.expertiselisting {margin:0 !important; padding:0 !important;}
+#expertiselist li.expertiselisting div {float:left;width:100%; padding:5px 0 .5em;}
+#expertiselist li.expertiselisting div.public {background:#eaf7f3;}
 #expertiselist li.expertiselisting.highlight .experts {background: transparent url(/images/common/star.png) 6px center no-repeat;}
 
 #expertiselist li span {display:block; float:left;}
 #expertiselist li .experts {width:100px;color:#666; font-weight:normal; padding-left:28px;}
-#expertiselist li.expertiselisting.public .aaecategory {color: #007a7d; background: transparent url(/images/common/world.png) 6px center no-repeat;}
+#expertiselist li.expertiselisting div.public .aaecategory {color: #007a7d; background: transparent url(/images/common/world.png) 6px center no-repeat;}
 #expertiselist li.expertiselisting .aaecategory {width:300px; padding-left:28px; /*border:1px solid lime*/}
 #expertiselist li.expertiselisting .aaesubcategories {width:150px; /*border:1px solid magenta*/ display:block; border:1px solid transparent;}
 
-#expertiselist li.expertiselisting.public .aaecategory a:link,
-#expertiselist li.expertiselisting.public .aaecategory a:visited {color: #f47B28} {color: #f47B28}
-#expertiselist li.expertiselisting.public .aaecategory a:hover {color: #f47B28}
+#expertiselist li.expertiselisting div.public .aaecategory a:link,
+#expertiselist li.expertiselisting div.public .aaecategory a:visited {color: #f47B28} {color: #f47B28}
+#expertiselist li.expertiselisting div.public .aaecategory a:hover {color: #f47B28}
 
 
 /* subcats */
 #expertiselist li.expertiselisting ul.aoe_subcat .aaesubcategory {width:300px; padding-left:48px;}
+.addsubcat {padding-left:48px;}
+.addsubcatform {clear:left; padding-left:48px;}
 #expertiselist li.expertiselisting ul.aoe_subcat .public .aaesubcategory {color: #007a7d; background: transparent url(/images/common/world.png) 26px center no-repeat;}
 #expertiselist li.expertiselisting ul.aoe_subcat .makepublic {margin-left:250px;}
 

@@ -30,7 +30,7 @@
 <div id="areas_of_expertise" class="categories">
    <ul id="expertiselist">
       <% @categories.each do |category| %>
-         <li id="expertisecategory_<%= category.id %>" class="expertiselisting <%= @current_user_categories.include?(category)  ? "highlight " : '' %> <%= category.show_to_public?  ? "public" : '' %>">
+         <li id="expertisecategory_<%= category.id %>" class="expertiselisting <%= @current_user_categories.include?(category)  ? "highlight " : '' %>">
             <%= render(:partial => "category_listitem", :locals => {:category => category}) %>
          </li>
       <%- end -%>

@@ -1,13 +1,21 @@
 <%- subcategories = category.children -%>
-  <%- expertcount = category.users.count %>
-      <span class="aaecategory">
-        <%= category.name %>            
-      </span>
-      <span class="aaesubcategories">
+<%- expertcount = category.users.count %>
+  
+<%- if category.show_to_public? -%>
+   <div class="public">
+<%- else -%>
+   <div class="notpublic">
+<%- end -%>
+
+   <span class="aaecategory">
+      <%= category.name %>        
+   </span>
+   
+   <span class="aaesubcategories">
       <%- if subcategories.length > 0 -%>
-          <%= link_to_function("#{subcategories.length} subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
+         <%= link_to_function("#{subcategories.length} subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
       <%- end -%>
-      </span>
+   </span>
       
      
       <%- if expertcount > 0 -%>
@@ -36,8 +44,8 @@
         
         <%- if(admin_mode?)-%>  
         <li>
-          <span><%= link_to_function("Add a new subcategory", "Effect.toggle('addnewsubcategory','blind', { duration: .4});") %></span>
-          <span id="addnewsubcategory" style='display:none;'>
+          <span class="addsubcat"><%= link_to_function("Add a new subcategory", "Effect.toggle('addnewsubcategory_#{category.id}','blind', { duration: .4});") %></span>
+          <span id="addnewsubcategory_<%= category.id %>" style='display:none;' class="addsubcatform">
             <% form_tag :action => 'add_subcategory' do %>
               <%= hidden_field_tag("categoryparent", category.id) %>
               <p><label for="category_name">Name</label>
