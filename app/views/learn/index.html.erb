@@ -9,8 +9,9 @@
    <% @upcoming_sessions.each do |upcoming_session| %>
       <article class="upcoming_event radius10">
          <div class="calendarblock">
-            <span class="month"><%= upcoming_session.session_start.strftime("%b") %></span>
-            <span class="date"><%= upcoming_session.session_start.strftime("%d") %></span>
+            <% formatted_start_time = format_time(upcoming_session, upcoming_session.session_start) %>
+            <span class="month"><%= formatted_start_time.strftime("%b") %></span>
+            <span class="date"><%= formatted_start_time.strftime("%d") %></span>
          </div>
          <header>
             <h1><%= link_to upcoming_session.title, :action => :event, :id => upcoming_session.id %></h1>
@@ -31,8 +32,8 @@
      
          <div class="event_details">
             <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
-            <p class="date"><%= upcoming_session.session_start.strftime("%B %e, %Y") %></p>
-            <p><time><%= upcoming_session.session_start.strftime("%l:%M %p") + " <span class=\"timezone\">#{upcoming_session.time_zone}</span>" %></time></p>
+            <p class="date"><%= formatted_start_time.strftime("%B %e, %Y") %></p>
+            <p><time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{upcoming_session.time_zone}</span>" %></time></p>
          </div>
          
          <% if upcoming_session.tags.length != 0 %>
@@ -59,8 +60,9 @@
       <% else %>
          <dl class="recording_availble">
       <% end %>
+      <% formatted_start_time = format_time(recent_session, recent_session.session_start) %>
       <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
-      <dd><%= time_ago_in_words(recent_session.session_start) %> ago</dd>
+      <dd><%= time_ago_in_words(formatted_start_time) %> ago</dd>
       </dl>
    <% end %>
    

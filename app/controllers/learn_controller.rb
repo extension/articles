@@ -13,8 +13,8 @@ class LearnController < ApplicationController
   before_filter :login_required, :check_purgatory, :except => [:index, :event, :events_tagged_with]
   
   def index
-    @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
-    @recent_sessions = LearnSession.find(:all, :conditions => "session_start < '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 10, :order => "session_start DESC")
+    @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
+    @recent_sessions = LearnSession.find(:all, :conditions => "session_start < '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 10, :order => "session_start DESC")
     @recent_tags = Tag.find(:all, :joins => [:taggings], :conditions => {"taggings.tag_kind" => Tagging::SHARED, "taggings.taggable_type" => "LearnSession"}, :limit => 12, :order => "taggings.created_at DESC")
   end
   
@@ -25,6 +25,7 @@ class LearnController < ApplicationController
       return
     end
     
+    @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start.to_time)
     @event_has_concluded = event_concluded?(@learn_session)
   end
   
@@ -32,9 +33,8 @@ class LearnController < ApplicationController
     @scheduled_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 20, :order => "session_start ASC")
     if request.post?
       @learn_session = LearnSession.new(params[:learn_session])
-      @learn_session.session_start = params[:session_start]
-      @learn_session.session_end = params[:session_end]
       
+      @learn_session.session_start = params[:session_start]
       @learn_session.creator = @currentuser
       @learn_session.last_modifier = @currentuser
       
@@ -60,6 +60,9 @@ class LearnController < ApplicationController
         render :template => '/learn/create_session'
         return
       else
+        # store start time in the db as utc
+        @learn_session.session_start = convert_timezone("UTC", @learn_session.time_zone, @learn_session.session_start.to_time)
+        
         creator_connection = LearnConnection.new(:email => @currentuser.email, :user => @currentuser, :connectiontype => LearnConnection::CREATOR)
         @learn_session.learn_connections << creator_connection
         @learn_session.save
@@ -88,8 +91,7 @@ class LearnController < ApplicationController
     @event_has_concluded = event_concluded?(@learn_session)
     
     if request.post?
-      @learn_session.session_start = params[:session_start]
-      @learn_session.session_end = params[:session_end]
+      @learn_session.session_start = convert_timezone("UTC", params[:learn_session][:time_zone], params[:session_start].to_time) if (!params[:session_start].blank? and !params[:learn_session][:time_zone].blank?)
       @learn_session.last_modifier = @currentuser
       
       # process presenters
@@ -158,9 +160,8 @@ class LearnController < ApplicationController
   def update_time_zone
     if request.post? and !params[:new_time_zone].blank? and !params[:id].blank? and learn_session = LearnSession.find_by_id(params[:id])
       # we need to do a timezone conversion here, take the time from the learn session and convert to the desired time zone
-      time_obj = convert_timezone(params[:new_time_zone], learn_session.time_zone, learn_session.session_start)
+      time_obj = convert_timezone(params[:new_time_zone], "UTC", learn_session.session_start)
       time_zone_to_display = time_obj.time_zone.name
-      # time_to_display = get_humane_date(time_obj)
       time_to_display = time_obj.strftime("%l:%M %p")
       
       render :update do |page|
@@ -222,13 +223,7 @@ class LearnController < ApplicationController
   private
   
   def event_concluded?(learn_session)
-    # convert the current time to the timezone of the learn session for comparison
-    current_time_obj = convert_timezone(learn_session.time_zone, Time.now.zone, Time.now)
-    # get session end time in it's timezone (db timezones are all in UTC, gotta make the conversion for the session as well)
-    # yeah, i know this is a hack, but want to get it working right now, might go back later and add utc converted 
-    # columns to the learn session table for sanity
-    session_end_time_obj = convert_timezone(learn_session.time_zone, learn_session.time_zone, learn_session.session_end)
-    return (current_time_obj > session_end_time_obj)
+    return (Time.now.utc > learn_session.session_end)
   end
   
 end
