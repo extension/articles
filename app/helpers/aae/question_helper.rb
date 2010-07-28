@@ -22,7 +22,11 @@ def stringify_submitted_question_event(sq_event)
   
   case sq_event.event_state
   when SubmittedQuestionEvent::ASSIGNED_TO 
-    reassign_msg = "Assigned to <strong #{@qw}><a href='/aae/profile?id=#{sq_event.recipient.login}'>#{sq_event.recipient.fullname}</a></strong> by <strong #{@qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
+    @recipient = ""
+    if sq_event.recipient.is_question_wrangler?
+      @recipient = "class='qw'"
+    end
+    reassign_msg = "Assigned to <strong #{@recipient}><a href='/aae/profile?id=#{sq_event.recipient.login}'>#{sq_event.recipient.fullname}</a></strong> by <strong #{@qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
     reassign_msg = reassign_msg + " <span>Comments: #{sq_event.response}</span>" if sq_event.response
     return reassign_msg 
   when SubmittedQuestionEvent::RESOLVED 
