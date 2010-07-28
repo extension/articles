@@ -66,7 +66,7 @@ class LearnController < ApplicationController
         
         # process tags
         if !params[:tags].blank?
-          @learn_session.tag_with(params[:tags], @currentuser.id, Tagging::SHARED)
+          @learn_session.tag_with(params[:tags], User.systemuserid, Tagging::SHARED)
         end
         
         flash[:success] = "Learning lesson saved successfully!<br />Thank you for your submission!"
@@ -114,9 +114,9 @@ class LearnController < ApplicationController
       if @learn_session.update_attributes(params[:learn_session])
         # process tags
         if !params[:tags].blank?
-          @learn_session.replace_tags(params[:tags], @currentuser.id, Tagging::SHARED)
+          @learn_session.replace_tags(params[:tags], User.systemuserid, Tagging::SHARED)
         else
-          @learn_session.replace_tags('', @currentuser.id, Tagging::SHARED)
+          @learn_session.replace_tags('', User.systemuserid, Tagging::SHARED)
         end
         flash[:success] = "Learn session updated successfully!"
         redirect_to :action => :event, :id => @learn_session.id
