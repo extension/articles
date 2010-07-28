@@ -86,6 +86,11 @@ class FeedsController < ApplicationController
     gen_feed
   end
   
+  def learn
+    @feed_title = "Professional Development Sessions - eXtension"
+    @alternate_link = url_for(:controller => 'learn', :action => 'index', :only_path => false)
+    gen_feed
+  end
   
   def events
     @feed_title = 'Events - eXtension'
@@ -111,7 +116,7 @@ class FeedsController < ApplicationController
     alt = nil
     # eX content did not exist in published fashion prior to 10/2006.
     updated_min = @filteredparams.updated_min || Time.utc(2006,10)
-    updated_max = @filteredparams.updated_max || Time.now.utc
+    updated_max = @filteredparams.updated_max || Time.utc(Time.now.year + 1, Time.now.month)
     published_min = @filteredparams.published_min || updated_min
     published_max = @filteredparams.published_max || updated_max
     category_array = nil
@@ -140,10 +145,12 @@ class FeedsController < ApplicationController
         y_date.to_time <=> x_date.to_time
       }
     else
+      if type == 'learn'
+        updated_min = Time.now.utc
+      end
       entries, total_possible_results = get_entries(type, category_array, updated_min, 
           updated_max, published_min, published_max, start_index, max_results)  
     end
-    
     
     updated = entries.first.nil? ? Time.now.utc : entries.first.updated_at
     
@@ -151,12 +158,12 @@ class FeedsController < ApplicationController
                  :subtitle => "eXtension published content",
                  :url => url_for(:only_path => false),
                  :alt_url => url_for(:only_path => false, :controller => 'main', :action => 'index'),
-                 :total_results => total_possible_results.to_s,
-                 :start_index => start_index.to_s,
-                 :items_per_page => max_results.to_s,
+                 :total_results => total_possible_results,
+                 :start_index => start_index,
+                 :items_per_page => max_results,
                  :updated_at => updated}
+                 
     render_atom_feed_from(entries, feed_meta)
-
   end
   
   private 
@@ -168,6 +175,8 @@ class FeedsController < ApplicationController
     alias_name='events' if type=='events'
     alias_name='articles' if type=='articles'
     alias_name='faqs' if type=='faqs'
+    alias_name='learn_sessions' if type=='learn'
+    
     
     select = "SQL_CALC_FOUND_ROWS "+alias_name+".*"
     
@@ -209,10 +218,20 @@ class FeedsController < ApplicationController
         else
           entries = Event.ordered('events.date DESC').limit(limit).
                       find(:all, :select => select, :joins => joins, :conditions => conditions)
-        end   
+        end
         
+      when 'learn'
+        if category_array
+          entries = LearnSession.tagged_with_shared_tags(category_array).ordered.limit(limit).
+                      find(:all, :select => select, :joins => joins, :conditions => conditions)
+        else
+          entries = LearnSession.ordered.limit(limit).
+                      find(:all, :select => select, :joins => joins, :conditions => conditions)
+        end
        end
-      total_possible_results = entries[0].class.count_by_sql("SELECT FOUND_ROWS()")
+       
+      total_possible_results = entries.empty? ? 0 : entries[0].class.count_by_sql("SELECT FOUND_ROWS()")
+      
       return entries, total_possible_results
     end
   
@@ -229,35 +248,38 @@ class FeedsController < ApplicationController
   end
   
   def atom_feed_from(entries, meta)
-    xml = Builder::XmlMarkup.new(:indent => 2)
-      
-    xml.instruct!
-    xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:opensearch" => "http://a9.com/-/spec/opensearch/1.1/"  do
-      xml.title(meta[:title])
-      xml.id(meta[:url])
-      xml.link(:rel => 'alternate', :type => 'text/html', :href => meta[:alt_url])
-      xml.link(:rel => 'self', :type => 'application/atom+xml', :href => meta[:url])
-      xml.subtitle(meta[:subtitle])
-      
-      #namespaces for result parameters
-      xml.opensearch :totalResults do
-        xml.text! meta[:total_results]
+    last_index = meta[:total_results] - meta[:items_per_page]
+    last_index = 1 if last_index < 1
+    first_index = 1
+    next_index = meta[:start_index] + meta[:items_per_page]
+    next_index = 0 if next_index > meta[:total_results]
+    prev_index = meta[:start_index] - meta[:items_per_page]
+    prev_index = 0 if prev_index < 1
+    items_per_page = meta[:items_per_page].to_s
+    
+    feed = Atom::Feed.new do |f|
+      f.title = meta[:title]
+      f.subtitle = meta[:subtitle]
+      f.links << Atom::Link.new(:type => "application/atom+xml", :rel => "self", :href => meta[:url])
+      f.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => "http://www.extension.org/")
+      if first_index != last_index
+        f.links << Atom::Link.new(:type => "application/atom+xml", :rel => "first", :href => meta[:url] + "?max_results=" + items_per_page + "&start_index=" + first_index.to_s)
       end
-      
-      xml.opensearch :startIndex do
-        xml.text! meta[:start_index] 
+      if prev_index > 0
+        f.links << Atom::Link.new(:type => "application/atom+xml", :rel => "prev", :href => meta[:url] + "?max_results=" + items_per_page + "&start_index=" + prev_index.to_s) 
       end
-      
-      xml.opensearch :itemsPerPage do
-        xml.text! meta[:items_per_page]
+      if next_index > 0
+        f.links << Atom::Link.new(:type => "application/atom+xml", :rel => "next", :href => meta[:url] + "?max_results=" + items_per_page + "&start_index=" + next_index.to_s)
       end
-      
-      xml.updated meta[:updated_at].xmlschema
-      
+      f.links << Atom::Link.new(:type => "application/atom+xml", :rel => "last", :href => meta[:url] + "?max_results=" + items_per_page + "&start_index=" + last_index.to_s)
+      f.updated = meta[:updated_at]
+      f.authors << Atom::Person.new(:name => 'Contributors')
+      f.id = meta[:url]
       for entry in entries
-        xml << entry.to_atom_entry
+        f.entries << entry.to_atom_entry
       end
     end
+    feed.to_xml
   end
   
   def render_atom_feed_for(resources, options = {}) 

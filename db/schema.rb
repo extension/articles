@@ -9,6 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+
 ActiveRecord::Schema.define(:version => 20100716141139) do
 
   create_table "activities", :force => true do |t|
@@ -83,7 +84,7 @@ ActiveRecord::Schema.define(:version => 20100716141139) do
   end
 
   create_table "annotation_events", :force => true do |t|
-    t.integer  "user_id"
+    t.integer  "user_id",        :default => 1
     t.string   "annotation_id"
     t.string   "action"
     t.string   "ip"
@@ -836,8 +837,8 @@ ActiveRecord::Schema.define(:version => 20100716141139) do
 
   create_table "update_times", :force => true do |t|
     t.integer  "datasource_id"
-    t.string   "datasource_type",     :limit => 25
-    t.string   "datatype",            :limit => 25
+    t.string   "datasource_type"
+    t.string   "datatype"
     t.datetime "last_datasourced_at"
     t.datetime "created_at"
     t.datetime "updated_at"

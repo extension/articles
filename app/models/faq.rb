@@ -123,22 +123,14 @@ class Faq < ActiveRecord::Base
   end
   
   def to_atom_entry
-    xml = Builder::XmlMarkup.new(:indent => 2)
-    
-    xml.entry do
-      xml.title(self.question, :type => 'html')
-      xml.content(self.answer, :type => 'html')
-      
-      if self.categories
-        self.categories.split(',').each do |cat|
-          xml.category "term" => cat  
-        end
-      end
-      
-      xml.author { xml.name "Contributors" }
-      xml.id(self.id_and_link)
-      xml.link(:rel => 'alternate', :type => 'text/html', :href => self.id_and_link)
-      xml.updated self.heureka_published_at.xmlschema
+    Atom::Entry.new do |e|
+      e.title = Atom::Content::Html.new(self.question)
+      e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
+      e.authors << Atom::Person.new(:name => 'Contributors')
+      e.id = self.id_and_link
+      e.updated = self.heureka_published_at
+      e.categories = self.tag_list.split(',').each { |cat| Atom::Category.new(cat.strip) }
+      e.content = Atom::Content::Html.new(self.answer)
     end
   end  
     
