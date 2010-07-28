@@ -11,7 +11,7 @@
    <% end %>
    </h1>
 
-   <p class="description"><%= @learn_session.description %></p>
+   <p class="description"><%= format_text_for_display(@learn_session.description) %></p>
 
    <h2>Presented by</h2>
    <p id="presenters">
