@@ -788,9 +788,10 @@ fieldset.disabled p.warning {background: #f5f5f5 url(/images/common/warning.gif)
     font-size: 80%;
 }
 a.help {font-size: 90%;}
-.aoe_subcat {padding: 0; margin: .35em 0 0;}
+.aoe_subcat {padding: 0; margin: 0 !important;}
 .aoe_subcat.public {color: #f47B28; }
-    
+
+ul.aoe_subcat {float:left; clear:left; width:100%;}
 .save_it {background: #caffbe;padding: .5em;font-size:1.4em;}
 .save_it input {font-size:1em !important;}
     
