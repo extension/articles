@@ -38,7 +38,7 @@
           <% if @learn_session.recording.blank? %>
             There are currently no recordings posted yet.
           <% else %>
-            Recording: <%= @learn_session.recording %>
+            Recording: <%= link_to(@learn_session.recording, @learn_session.recording) %>
           <% end %>
         <% else %>
           Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)
