@@ -87,6 +87,8 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 p.no_recording_available {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
 p.recording_available {background: transparent url(/images/common/television.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
+span.no_recording_available {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat; padding-left:24px; display:block;}
+span.recording_available {background: transparent url(/images/common/television.png) left 50% no-repeat; padding-left:24px; display:block;}
 
 #event_time .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; width:64px; display:block; text-align:center; height:64px;padding-top:0;float:right;}
 #event_time .calendarblock .month {display:block; height:20px; line-height:25px;font-size:.7em; text-transform:uppercase; font-weight:bold;}

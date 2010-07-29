@@ -14,7 +14,15 @@
   <% @learn_sessions.each do |learn_session| %>
     <% formatted_time = format_time(learn_session, learn_session.session_start) %>
     <tr>
-      <td><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></td>
+      <td>
+         <% if learn_session.recording.blank? %>
+            <span class="no_recording_available">
+         <% else %>
+            <span class="recording_available">
+         <% end %>
+      <%= link_to learn_session.title, :action => :event, :id => learn_session.id %>
+      </span>
+      </td>
       <td><%= (learn_session.description.length > 150) ? learn_session.description.mb_chars[0..150]+'...' : learn_session.description %></td>
       <td><%= formatted_time.strftime("%B %e, %Y") %></td>
       <td><%= formatted_time.strftime("%l:%M %p #{format_time_zone(learn_session.time_zone)}") %></td>
