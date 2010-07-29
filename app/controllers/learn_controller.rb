@@ -194,7 +194,7 @@ class LearnController < ApplicationController
       time_to_display = time_obj.strftime("%l:%M %p")
       
       render :update do |page|
-        page.replace_html :session_date_time, "<span id=\"time\">#{time_to_display}</span><span id=\"timezone\">#{time_zone_to_display}</span>" 
+        page.replace_html :session_date_time, "<span id=\"time\">#{time_to_display}</span><span id=\"timezone\">#{format_time_zone(time_zone_to_display)}</span>" 
       end
     else
       return

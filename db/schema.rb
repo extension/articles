@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100727160421) do
+ActiveRecord::Schema.define(:version => 20100716141139) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -169,11 +169,10 @@ ActiveRecord::Schema.define(:version => 20100727160421) do
   create_table "categories", :force => true do |t|
     t.string   "name"
     t.string   "default_keyword"
-    t.integer  "community_id",    :default => 0,     :null => false
+    t.integer  "community_id",    :default => 0, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "parent_id"
-    t.boolean  "show_to_public",  :default => false
   end
 
   add_index "categories", ["community_id"], :name => "community_id_idx"
@@ -948,7 +947,7 @@ ActiveRecord::Schema.define(:version => 20100727160421) do
   create_table "widgets", :force => true do |t|
     t.string   "name",                              :null => false
     t.string   "fingerprint",                       :null => false
-    t.string   "widget_url",                        :null => false
+    t.string   "widgeturl",                         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active",         :default => true,  :null => false

@@ -62,7 +62,7 @@
          </div>
          <span id="session_date_time">
             <span id="time"><%= @session_start.strftime("%l:%M %p") %></span>
-            <span id="timezone"><%= @learn_session.time_zone %></span>
+            <span id="timezone"><%= format_time_zone(@learn_session.time_zone) %></span>
          </span>
       </h2>   
       

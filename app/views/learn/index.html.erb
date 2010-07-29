@@ -4,7 +4,7 @@
    
 <section id="upcoming_events">
    <h3>Upcoming Events</h3>
-   <p><%= link_to 'view more', {:action => :pd_events, :id => 'upcoming'}, {:class => "view_more"} %></p>
+   <p><%= link_to 'view more', {:action => :events, :id => 'upcoming'}, {:class => "view_more"} %></p>
    
    <% @upcoming_sessions.each do |upcoming_session| %>
       <article class="upcoming_event radius10">
@@ -33,7 +33,7 @@
          <div class="event_details">
             <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
             <p class="date"><%= formatted_start_time.strftime("%B %e, %Y") %></p>
-            <p><time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{upcoming_session.time_zone}</span>" %></time></p>
+            <p><time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{format_time_zone(upcoming_session.time_zone)}</span>" %></time></p>
          </div>
          
          <% if upcoming_session.tags.length != 0 %>
@@ -67,7 +67,7 @@
    <% end %>
    
     
-   <p><%= link_to("View more", :action => :pd_events, :id => 'recent') %></p>
+   <p><%= link_to("View more", :action => :events, :id => 'recent') %></p>
 </section>
 
 
