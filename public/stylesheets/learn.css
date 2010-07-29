@@ -9,7 +9,7 @@ section, article, aside {display:block;}
 -moz-box-shadow: 0 4px 10px rgba(0,0,0,.2);
 box-shadow: 0 4px 10px rgba(0,0,0,.2);*/
 }
-header#masthead {float:left; padding:10px;width:940px; position:relative; background: #ffa221 url(/images/learn/learn_header.png) top center no-repeat; margin-bottom:30px;}
+header#masthead {float:left; padding:10px;width:940px; position:relative; background: #ffa221 url(/images/learn/learn_header.png) top center no-repeat; margin-bottom:0;}
 #content {clear:both; }
 #masthead h1 a {text-decoration:none; color:#fff; text-shadow: 2px 2px 2px #000;}
 
@@ -72,6 +72,12 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #two_col_col_two {width:300px;margin:0 10px; float:left;}
 
 #event .description {font-size:1.5em;}
+
+#learn_nav {float:left; width:100%; background: #ffa221; margin-bottom:30px;}
+#learn_nav ul li {float:left; display:block; padding:4px 10px;}
+#learn_nav ul li a:link, 
+#learn_nav ul li a:visited {color:#76400a; text-decoration:none;}
+#learn_nav ul li a:hover {color:#8e0705; text-decoration:underline;}
 
 /* View events
 -----------------------------------------------------------------------------*/
