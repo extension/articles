@@ -46,6 +46,15 @@ class LearnSession < ActiveRecord::Base
     self.session_end = self.session_start + (self.session_length * 60)
   end
   
+  def event_concluded?
+    return (Time.now.utc > self.session_end)
+  end
+  
+  def event_started?
+    return (Time.now.utc > self.session_start)
+  end
+  
+  
   def to_atom_entry
     Atom::Entry.new do |e|
       e.title = Atom::Content::Html.new(self.title)
