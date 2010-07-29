@@ -4,8 +4,7 @@
    
 <section id="upcoming_events">
    <h3>Upcoming Events</h3>
-   <p><%= link_to 'view more', :action => :pd_events, :id => 'upcoming' %></p>
-   <p id="calendar_link">view calendar</p>
+   <p><%= link_to 'view more', {:action => :pd_events, :id => 'upcoming'}, {:class => "view_more"} %></p>
    
    <% @upcoming_sessions.each do |upcoming_session| %>
       <article class="upcoming_event radius10">
@@ -57,9 +56,9 @@
    
    <% @recent_sessions.each do |recent_session| %>
       <% if recent_session.recording.blank? %>
-         <dl class="no_recording_availble">
+         <dl class="no_recording_available">
       <% else %>
-         <dl class="recording_availble">
+         <dl class="recording_available">
       <% end %>
       <% formatted_start_time = format_time(recent_session, recent_session.session_start) %>
       <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
@@ -74,7 +73,6 @@
 
 <section>  
    <aside id="secondary" class="radius10">
-      <p id="create_link"><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}, :class => "bigbutton blue") %></p>
       <ul>
          <li class="feed"><%= link_to("Subscribe", {:controller => "feeds", :action => "learn"}) %> to a feed of PD recordings</li>
          <li class="groupicon">How to participate in eXtension professional development</li>

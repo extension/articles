@@ -13,7 +13,7 @@
 
    <p class="description"><%= format_text_for_display(@learn_session.description) %></p>
 
-   <h2>Presented by</h2>
+   <h3>Presented by</h3>
    <p id="presenters">
       <% count = 0 %>
          <% @learn_session.presenters.each do |presenter| %>
@@ -33,17 +33,21 @@
       <% end %>
       </p>
       
-      <p>
+      
         <% if @learn_session.event_concluded? %>
           <% if @learn_session.recording.blank? %>
+            <p class="no_recording_available">
             There are currently no recordings posted yet.
+            </p>
           <% else %>
-            Recording: <%= link_to(@learn_session.recording, @learn_session.recording) %>
+          <h3>Watch</h3>
+            <p class="recording_available">
+               <%= link_to(@learn_session.recording, @learn_session.recording) %>
+            </p>
           <% end %>
         <% else %>
-          Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)
+          <p>Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)</p>
         <% end %>
-      </p>
    </section>
 </div>
 

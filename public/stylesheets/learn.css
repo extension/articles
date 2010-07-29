@@ -84,8 +84,10 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #event_time h2 {}
 #event_time h3 {font-size:2em;}
 
-/*.calendarblock {background:#fff url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;line-height:64px; font-size:1.9em; padding-top:10px;letter-spacing: -1px;float:right;}*/
-#event_time .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; padding: middle center; width:64px; display:block; text-align:center; height:64px;padding-top:0;float:right;}
+p.no_recording_available {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
+p.recording_available {background: transparent url(/images/common/television.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
+
+#event_time .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; width:64px; display:block; text-align:center; height:64px;padding-top:0;float:right;}
 #event_time .calendarblock .month {display:block; height:20px; line-height:25px;font-size:.7em; text-transform:uppercase; font-weight:bold;}
 #event_time .calendarblock .date {display:block; height:40px; line-height:43px;font-weight:bold; font-size:1.8em; }
 
@@ -97,7 +99,7 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #timezone {display:block; font-size:14px; line-height:1.2em;}
 #event_time h2 {background:#fff; float:left; padding: 10px 10px 10px 0;}
 #event #presenters {font-size:1.6em;}
-#event #tags {font-size:1.6em;}
+#event #tags {font-size:1.6em; background: transparent url(/images/common/tag_orange.png) left center no-repeat; padding-left:20px;}
 /* sticky footer
 -----------------------------------------------------------------------------*/
 html, body {height: 100%;}
@@ -134,8 +136,9 @@ body:before {
 #recent_sessions {padding:0 20px; width:260px !important}
 #recent_sessions dt, #recent_sessions dd {padding-left:22px;} 
 #recent_sessions dd {color:#999;}
-.no_recording_availble dt {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat;}
-.recording_availble dt {background: transparent url(/images/common/television.png) left 50% no-repeat;}
+.no_recording_available dt {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat;}
+.recording_available dt {background: transparent url(/images/common/television.png) left 50% no-repeat;}
+
 
 
 aside {background:#ededed; padding:10px;}
@@ -144,8 +147,7 @@ aside {background:#ededed; padding:10px;}
 .email {background: transparent url(/images/common/email.png) left 2px no-repeat; padding-left:22px;}
 .groupicon {background: transparent url(/images/common/group.png) left 2px no-repeat; padding-left:22px;}
 
-/*#create_link {float:left;}*/
-#calendar_link {float:right; padding:10px; display:none;}
+#upcoming_events .view_more {float:right; padding:10px;}
 
 /* Home styles
 -----------------------------------------------------------------------------*/
@@ -156,7 +158,7 @@ a:hover     {color: #0043da;}
 
 .radius10 {-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
 .upcoming_event {padding:10px; margin-bottom:20px;}
-.upcoming_event h1 {font-size:2.2em; margin:0 0 0; line-height:1.2em;}
+.upcoming_event h1 {font-size:2.0em; margin:0 0 0; line-height:1.2em;}
 .upcoming_event h1 a {text-decoration:none;color:#06217f;}
 .upcoming_event h1 a:visited {color:#06217f;}
 .upcoming_event h1 a:hover {color:blue;}
