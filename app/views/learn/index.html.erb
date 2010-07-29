@@ -39,7 +39,7 @@
          <% if upcoming_session.tags.length != 0 %>
             <ul class="tags">
                <% upcoming_session.tags.each do |t| %>
-                  <li><%= link_to t.name, :action => :events_tagged_with, :id => t.name %></li>
+                  <li><%= link_to t.name, :action => :events, :sessiontype => "by_tag", :tag => t.name %></li>
                <% end %>
             </ul>
          <% else %>
@@ -84,7 +84,7 @@
    
    <ul class="tags">
       <% @recent_tags.each do |tag| %>
-      <li><%= link_to tag.name, :action => :events_tagged_with, :id => tag.name %></li>
+      <li><%= link_to tag.name, :action => :events, :sessiontype => "by_tag", :tag => tag.name %></li>
       <% end %>
    </ul>
 </section>

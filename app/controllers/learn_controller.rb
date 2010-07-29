@@ -34,7 +34,7 @@ class LearnController < ApplicationController
   end
   
   def events
-    if(!params[:sessiontype].blank? and ['recent','upcoming','myattended','myinterested'].include?(params[:sessiontype]))
+    if(!params[:sessiontype].blank? and ['recent','upcoming','myattended','myinterested','by_tag'].include?(params[:sessiontype]))
       if params[:sessiontype] == 'recent'
         @page_title = 'Recent Learn Sessions'
         @learn_sessions = LearnSession.paginate(:all, 
@@ -53,6 +53,20 @@ class LearnController < ApplicationController
       elsif params[:sessiontype] == 'myinterested'
         @page_title = 'My Interested Learn Sessions'
         @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::INTERESTED}", :order => "session_start DESC",:page => params[:page])
+      elsif params[:sessiontype] == 'by_tag'
+        if !params[:tag].blank? 
+          @tag_param = params[:tag]
+          event_tag = Tag.find_by_name(@tag_param)
+          if event_tag
+            @learn_sessions = event_tag.learn_sessions.paginate(:all, :order => "session_start DESC", :page => params[:page])
+          else
+            @learn_sessions = []
+          end
+        else
+          flash[:failure] = "Invalid tag name"
+          redirect_to :action => :index
+        end
+        @page_title = "Learn Sessions Tagged with '#{@tag_param}'"
       end
       
     else
@@ -159,21 +173,6 @@ class LearnController < ApplicationController
     end
   end
   
-  def events_tagged_with
-    if !params[:id].blank? 
-      @tag_param = params[:id]
-      event_tag = Tag.find_by_name(@tag_param)
-      if event_tag
-        @learn_sessions = event_tag.learn_sessions
-      else
-        @learn_sessions = []
-      end
-    else
-      flash[:failure] = "Invalid tag name"
-      redirect_to :action => :index
-    end
-  end
-
   def presenters_by_name
     #if a login/name was typed into the field to search for users
     name_str = params[:name]

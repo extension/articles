@@ -1,7 +1,7 @@
 <h1><%= @page_title.blank? ? 'Learn Sessions' : @page_title %></h1>
 
 <%- if(!@learn_sessions.blank?) -%>
-<%= will_paginate(@learn_sessions,:params => {:sessiontype => params[:sessiontype]}) %>
+<%= will_paginate(@learn_sessions,:params => {:sessiontype => params[:sessiontype], :tag => params[:tag]}) %>
 
 <table cellspacing="0">
   <tr>
@@ -29,7 +29,7 @@
     </tr>
   <% end %>
 </table>
-<%= will_paginate(@learn_sessions,:params => {:sessiontype => params[:sessiontype]}) %>
+<%= will_paginate(@learn_sessions,:params => {:sessiontype => params[:sessiontype], :tag => params[:tag]}) %>
 <%- else -%>
   <%- if(params[:sessiontype]) -%>
     <%- case params[:sessiontype] -%>
