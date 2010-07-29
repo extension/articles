@@ -82,4 +82,11 @@
                         :complete => "Element.hide('loading_tz')") %>
                
    </aside>
+   
+   <%- if @currentuser -%>
+    <aside id="sessionconnection" class="radius10">
+      <%= render(:partial => 'auth_session_connection') %>
+   </aside>
+   <%- end -%>
+   
 </section>

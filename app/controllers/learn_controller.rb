@@ -9,8 +9,8 @@ class LearnController < ApplicationController
   
   layout 'learn'
   
-  before_filter :login_optional, :only => [:event, :events_tagged_with]
-  before_filter :login_required, :check_purgatory, :except => [:index, :event, :events_tagged_with]
+  before_filter :login_optional
+  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session]
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
@@ -26,6 +26,11 @@ class LearnController < ApplicationController
     end
     
     @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start.to_time)
+  end
+  
+  def login_redirect
+    session[:return_to] = params[:return_back]
+    redirect_to :controller => 'people/account', :action => :login
   end
   
   def pd_events
@@ -84,9 +89,6 @@ class LearnController < ApplicationController
       else
         # store start time in the db as utc
         @learn_session.session_start = convert_timezone("UTC", @learn_session.time_zone, @learn_session.session_start.to_time)
-        
-        creator_connection = LearnConnection.new(:email => @currentuser.email, :user => @currentuser, :connectiontype => LearnConnection::CREATOR)
-        @learn_session.learn_connections << creator_connection
         @learn_session.save
         
         # process tags
@@ -239,6 +241,33 @@ class LearnController < ApplicationController
       return
     end
   end
+  
+  def change_my_connection
+    @learn_session = LearnSession.find_by_id(params[:id])
+    
+    if(params[:connection] and params[:connection] == 'makeconnection')
+       if(params[:connectiontype] == 'interested')
+         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
+         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
+       elsif(params[:connectiontype] == 'attended')
+         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
+         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
+       end
+     else
+       if(params[:connectiontype] == 'interested')
+         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,false)
+         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed interest in learn: #{@learn_session.title}")
+       elsif(params[:connectiontype] == 'attended')
+         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,false)
+         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed attendance at learn: #{@learn_session.title}")
+       end
+     end
+    
+    respond_to do |format|
+      format.js
+    end
+  end
+  
   
   
 end

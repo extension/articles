@@ -15,6 +15,7 @@ class LearnSession < ActiveRecord::Base
   has_many :learn_connections
   has_many :users, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, users.*"
   has_many :presenters, :through => :learn_connections, :conditions => "learn_connections.connectiontype = '#{LearnConnection::PRESENTER}'", :source => :user
+  has_many :public_users, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, public_users.*"
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
   belongs_to :last_modifier, :class_name => "User", :foreign_key => "last_modified_by"
   
@@ -30,11 +31,19 @@ class LearnSession < ActiveRecord::Base
   end
   
   def event_concluded?
-    return (Time.now.utc > self.session_end)
+    if(!self.session_end.blank?)
+      return (Time.now.utc > self.session_end)
+    else
+      return false
+    end
   end
   
-  def event_started?
-    return (Time.now.utc > self.session_start)
+  def event_started?(offset = 15.minutes)
+    if(!self.session_start.blank?)
+      return (Time.now.utc > self.session_start - offset)
+    else
+      return false
+    end
   end
   
   
