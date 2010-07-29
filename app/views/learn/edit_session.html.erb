@@ -18,7 +18,10 @@
 </div>
 
 <section id="two_col_col_two">
-   <aside id="secondary" class="radius10"> 
+   <aside id="secondary" class="radius10">
+     <p>
+       <%= button_to "Delete Session", {:action => :delete_event, :id => @learn_session.id}, :confirm => "Are you sure you want to delete this session?" %>   
+     </p> 
    </aside>
 </section>
 

@@ -10,7 +10,7 @@ class LearnController < ApplicationController
   layout 'learn'
   
   before_filter :login_optional
-  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session]
+  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event]
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
