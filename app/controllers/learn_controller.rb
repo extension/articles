@@ -28,6 +28,29 @@ class LearnController < ApplicationController
     @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start.to_time)
   end
   
+  def pd_events
+    if !params[:id].blank?
+      if params[:id] == 'recent'
+        @page_title = 'Recent Learn Sessions'
+        @learn_sessions = LearnSession.paginate(:all, 
+                                                :conditions => "session_start < '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", 
+                                                :order => "session_start DESC",
+                                                :page => params[:page])
+      elsif params[:id] == 'upcoming'
+        @page_title = 'Upcoming Learn Sessions'
+        @learn_sessions = LearnSession.paginate(:all, 
+                                                :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", 
+                                                :order => "session_start ASC",
+                                                :page => params[:page])
+      end
+    else
+      @page_title = 'All Learn Sessions'
+      @learn_sessions = LearnSession.paginate(:all,
+                                              :order => "session_start DESC",
+                                              :page => params[:page])
+    end
+  end
+  
   def create_session
     @scheduled_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 20, :order => "session_start ASC")
     if request.post?

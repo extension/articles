@@ -1,0 +1,27 @@
+<h1><%= @page_title.blank? ? 'Learn Sessions' : @page_title %></h1>
+
+<%= will_paginate @learn_sessions %>
+
+<table cellspacing="0">
+  <tr>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Session Date</th>
+    <th>Session Time</th>
+  </tr>
+  
+  <% @learn_sessions.each do |learn_session| %>
+    <% formatted_time = format_time(learn_session, learn_session.session_start) %>
+    <tr>
+      <td><%= learn_session.id %></td>
+      <td><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></td>
+      <td><%= (learn_session.description.length > 150) ? learn_session.description.mb_chars[0..150]+'...' : learn_session.description %></td>
+      <td><%= formatted_time.strftime("%B %e, %Y") %></td>
+      <td><%= formatted_time.strftime("%l:%M %p #{learn_session.time_zone}") %></td>
+    </tr>
+  <% end %>
+</table>
+
+
+<%= will_paginate @learn_sessions %>
