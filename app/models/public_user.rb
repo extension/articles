@@ -42,7 +42,7 @@ class PublicUser < ActiveRecord::Base
   def update_connection_to_learn_session(learn_session,connectiontype,connected=true)
     connection = self.learn_connections.find(:first, :conditions => "connectiontype = #{connectiontype} and learn_session_id = #{learn_session.id}")
     if(!connection.nil?)
-      if(!connect)
+      if(!connected)
         connection.destroy
       end
     elsif(connected == true)
