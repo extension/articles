@@ -24,6 +24,12 @@
     <%= calendar_date_select_includes "silver" %>
     <% javascript_include_tag 'date' %>
     <!--[if !IE 7]><style type="text/css">#wrap {display:table;height:100%}</style><![endif]-->
+    
+    <% if params[:action] == "events_tagged_with" %>
+      <%= auto_discovery_link_tag(:atom, {:controller => "feeds", :action => "learn", :content_tags => params[:id]}, {:title => "Professional Development Sessions tagged #{params[:id]} - eXtension"}) %>
+    <% else %>
+      <%= auto_discovery_link_tag(:atom, {:controller => "feeds", :action => "learn"}, {:title => "Professional Development Sessions - eXtension"}) %>
+    <% end %>
 </head>
     
 <body>
