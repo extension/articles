@@ -33,21 +33,28 @@ class LearnController < ApplicationController
     redirect_to :controller => 'people/account', :action => :login
   end
   
-  def pd_events
-    if !params[:id].blank?
-      if params[:id] == 'recent'
+  def events
+    if(!params[:sessiontype].blank? and ['recent','upcoming','myattended','myinterested'].include?(params[:sessiontype]))
+      if params[:sessiontype] == 'recent'
         @page_title = 'Recent Learn Sessions'
         @learn_sessions = LearnSession.paginate(:all, 
-                                                :conditions => "session_start < '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", 
+                                                :conditions => "session_start < '#{Time.now.utc.to_s(:db)}'", 
                                                 :order => "session_start DESC",
                                                 :page => params[:page])
-      elsif params[:id] == 'upcoming'
+      elsif params[:sessiontype] == 'upcoming'
         @page_title = 'Upcoming Learn Sessions'
         @learn_sessions = LearnSession.paginate(:all, 
-                                                :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", 
+                                                :conditions => "session_start > '#{Time.now.utc.to_s(:db)}'", 
                                                 :order => "session_start ASC",
-                                                :page => params[:page])
+                                                :page => params[:page])        
+      elsif params[:sessiontype] == 'myattended'
+        @page_title = 'My Attended Learn Sessions'
+        @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::ATTENDED}", :order => "session_start DESC",:page => params[:page])
+      elsif params[:sessiontype] == 'myinterested'
+        @page_title = 'My Interested Learn Sessions'
+        @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::INTERESTED}", :order => "session_start DESC",:page => params[:page])
       end
+      
     else
       @page_title = 'All Learn Sessions'
       @learn_sessions = LearnSession.paginate(:all,
@@ -57,7 +64,7 @@ class LearnController < ApplicationController
   end
   
   def create_session
-    @scheduled_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 20, :order => "session_start ASC")
+    @scheduled_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.to_s(:db)}'", :limit => 20, :order => "session_start ASC")
     if request.post?
       @learn_session = LearnSession.new(params[:learn_session])
       
@@ -187,7 +194,7 @@ class LearnController < ApplicationController
       time_to_display = time_obj.strftime("%l:%M %p")
       
       render :update do |page|
-        page.replace_html :session_date_time, "<span id=\"time\">#{time_to_display}</span><span id=\"timezone\">#{time_zone_to_display}</span>" 
+        page.replace_html :session_date_time, "<span id=\"time\">#{time_to_display}</span><span id=\"timezone\">#{format_time_zone(time_zone_to_display)}</span>" 
       end
     else
       return

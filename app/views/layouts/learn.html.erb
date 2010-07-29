@@ -71,8 +71,12 @@
         <nav id="learn_nav">
            <ul>
               <li><%= link_to("Home", learn_url) %></li>
-              <li><%= link_to("Upcoming Events", {:controller => 'learn/pd_events/upcoming'}) %></li>
-              <li><%= link_to("Recent Events", {:controller => 'learn/pd_events/recent'}) %></li>
+              <li><%= link_to("Upcoming Events", {:controller => 'learn/events/upcoming'}) %></li>
+              <li><%= link_to("Recent Events", {:controller => 'learn/events/recent'}) %></li>
+              <%- if(!@currentuser.nil?) -%>
+              <li><%= link_to("Your Attended Events", {:controller => 'learn/events/myattended'}) %></li>
+              <li><%= link_to("Your Interested Events", {:controller => 'learn/events/myinterested'}) %></li>
+              <%- end -%>
               <li><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}) %></li>
            </ul>
         </nav>
