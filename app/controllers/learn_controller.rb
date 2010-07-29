@@ -201,6 +201,18 @@ class LearnController < ApplicationController
     end
   end
   
+  def delete_event
+    if request.post? and @currentuser
+      if !params[:id].blank? and learn_session = LearnSession.find_by_id(params[:id])
+        learn_session.destroy
+        flash[:success] = "Learn session successfully deleted."
+      else
+        flash[:failure] = "Learn session referenced does not exist."
+      end
+    end
+    redirect_to :action => :index
+  end
+  
   def add_remove_presenters
     if request.post?
       if !params[:user_id].blank? and user = User.find_by_id(params[:user_id].to_i)

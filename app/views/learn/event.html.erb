@@ -79,13 +79,18 @@
                         :with      => "'new_time_zone='+escape(value)",
                         :loading => "Element.show('loading_tz')", 
                         :complete => "Element.hide('loading_tz')") %>
-               
+                        
+      <% if @currentuser %>                  
+        <%= button_to "Delete Session", {:action => :delete_event, :id => @learn_session.id}, :confirm => "Are you sure you want to delete this session?" %>   
+      <% end %>
    </aside>
    
    <%- if @currentuser -%>
     <aside id="sessionconnection" class="radius10">
       <%= render(:partial => 'auth_session_connection') %>
-   </aside>
+    </aside> 
    <%- end -%>
+   
+   
    
 </section>
