@@ -147,8 +147,7 @@ aside {background:#ededed; padding:10px;}
 .email {background: transparent url(/images/common/email.png) left 2px no-repeat; padding-left:22px;}
 .groupicon {background: transparent url(/images/common/group.png) left 2px no-repeat; padding-left:22px;}
 
-/*#create_link {float:left;}*/
-#calendar_link {float:right; padding:10px; display:none;}
+#upcoming_events .view_more {float:right; padding:10px;}
 
 /* Home styles
 -----------------------------------------------------------------------------*/
@@ -159,7 +158,7 @@ a:hover     {color: #0043da;}
 
 .radius10 {-webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
 .upcoming_event {padding:10px; margin-bottom:20px;}
-.upcoming_event h1 {font-size:2.2em; margin:0 0 0; line-height:1.2em;}
+.upcoming_event h1 {font-size:2.0em; margin:0 0 0; line-height:1.2em;}
 .upcoming_event h1 a {text-decoration:none;color:#06217f;}
 .upcoming_event h1 a:visited {color:#06217f;}
 .upcoming_event h1 a:hover {color:blue;}
