@@ -10,7 +10,7 @@ class LearnController < ApplicationController
   layout 'learn'
   
   before_filter :login_optional
-  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session]
+  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event]
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
@@ -198,6 +198,18 @@ class LearnController < ApplicationController
     else
       return
     end
+  end
+  
+  def delete_event
+    if request.post? and @currentuser
+      if !params[:id].blank? and learn_session = LearnSession.find_by_id(params[:id])
+        learn_session.destroy
+        flash[:success] = "Learn session successfully deleted."
+      else
+        flash[:failure] = "Learn session referenced does not exist."
+      end
+    end
+    redirect_to :action => :index
   end
   
   def add_remove_presenters

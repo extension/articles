@@ -94,13 +94,16 @@
                         :with      => "'new_time_zone='+escape(value)",
                         :loading => "Element.show('loading_tz')", 
                         :complete => "Element.hide('loading_tz')") %>
+                        
       <% end %>
    </aside>
    
    <%- if @currentuser -%>
     <aside id="sessionconnection" class="radius10">
       <%= render(:partial => 'auth_session_connection') %>
-   </aside>
+    </aside> 
    <%- end -%>
+   
+   
    
 </section>
