@@ -53,9 +53,8 @@
                 <ul id="userinfo">
                     <%- if(!@currentuser.nil?) -%>
                         <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
-                        <% if @currentuser.is_admin? %>
-                     		<li id="admintoggle"><strong>Admin Mode:</strong> <span id="admin_mode_block"><%= admin_mode_text %></span></li>
-                     	<% end %>
+                    <%- else -%>
+                        <li><%= link_to "sign in", :action => :login_redirect, :return_back => request.request_uri %>
                     <%- end -%>
                 </ul>
             </nav>
