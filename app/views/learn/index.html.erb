@@ -75,7 +75,7 @@
    <aside id="secondary" class="radius10">
       <p id="create_link"><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}, :class => "bigbutton blue") %></p>
       <ul>
-         <li class="feed">Subscribe to a feed of PD recordings</li>
+         <li class="feed"><%= link_to("Subscribe", {:controller => "feeds", :action => "learn"}) %> to a feed of PD recordings</li>
          <li class="groupicon">How to participate in eXtension professional development</li>
          <li class="email">Get email announcements: <br /> 1) Visit the <%= link_to("Learn Community", "https://people.extension.org/communities/learn") %> <br />2) Click "Join Community"</li>
       </ul>
