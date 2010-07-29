@@ -53,6 +53,21 @@
 
 <section id="two_col_col_two">
    <aside id="event_time" class="radius10">
+      
+      <% if @learn_session.event_concluded? %>
+      
+         <% if @learn_session.recording.blank? %>
+            <h3>No Recording Yet</h3>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong>. A recording of this session has not been uploaded yet.</p>
+          <% else %>
+          <h3>Watch</h3>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong></p>
+            <p class="recording_available">
+               <%= link_to(@learn_session.recording, @learn_session.recording) %>
+            </p>
+          <% end %>
+      
+      <% else %>
 
       <h2>
          <span id="session_date"><%= @session_start.strftime("%B %e, %Y") %></span>
@@ -79,7 +94,7 @@
                         :with      => "'new_time_zone='+escape(value)",
                         :loading => "Element.show('loading_tz')", 
                         :complete => "Element.hide('loading_tz')") %>
-               
+      <% end %>
    </aside>
    
    <%- if @currentuser -%>

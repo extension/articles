@@ -81,6 +81,7 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 /* View events
 -----------------------------------------------------------------------------*/
+#event_time {margin-bottom:20px;}
 #event_time h2 {}
 #event_time h3 {font-size:2em;}
 
