@@ -9,8 +9,8 @@ class LearnController < ApplicationController
   
   layout 'learn'
   
-  before_filter :login_optional, :only => [:event, :events_tagged_with]
-  before_filter :login_required, :check_purgatory, :except => [:index, :event, :events_tagged_with]
+  before_filter :login_optional
+  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session]
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
@@ -26,6 +26,11 @@ class LearnController < ApplicationController
     end
     
     @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start.to_time)
+  end
+  
+  def login_redirect
+    session[:return_to] = params[:return_back]
+    redirect_to :controller => 'people/account', :action => :login
   end
   
   def pd_events
