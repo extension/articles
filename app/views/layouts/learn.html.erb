@@ -24,6 +24,12 @@
     <%= calendar_date_select_includes "silver" %>
     <% javascript_include_tag 'date' %>
     <!--[if !IE 7]><style type="text/css">#wrap {display:table;height:100%}</style><![endif]-->
+    
+    <% if params[:action] == "events" and params[:sessiontype] == "by_tag" %>
+      <%= auto_discovery_link_tag(:atom, {:controller => "feeds", :action => "learn", :content_tags => params[:tag]}, {:title => "Professional Development Sessions tagged #{params[:tag]} - eXtension"}) %>
+    <% else %>
+      <%= auto_discovery_link_tag(:atom, {:controller => "feeds", :action => "learn"}, {:title => "Professional Development Sessions - eXtension"}) %>
+    <% end %>
 </head>
     
 <body>
@@ -47,9 +53,8 @@
                 <ul id="userinfo">
                     <%- if(!@currentuser.nil?) -%>
                         <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
-                        <% if @currentuser.is_admin? %>
-                     		<li id="admintoggle"><strong>Admin Mode:</strong> <span id="admin_mode_block"><%= admin_mode_text %></span></li>
-                     	<% end %>
+                    <%- else -%>
+                        <li><%= link_to "sign in", :action => :login_redirect, :return_back => request.request_uri %>
                     <%- end -%>
                 </ul>
             </nav>
@@ -62,6 +67,19 @@
                </form>
             </div>
         </header>
+        
+        <nav id="learn_nav">
+           <ul>
+              <li><%= link_to("Home", learn_url) %></li>
+              <li><%= link_to("Upcoming Events", {:controller => 'learn/events/upcoming'}) %></li>
+              <li><%= link_to("Recent Events", {:controller => 'learn/events/recent'}) %></li>
+              <%- if(!@currentuser.nil?) -%>
+              <li><%= link_to("Your Attended Events", {:controller => 'learn/events/myattended'}) %></li>
+              <li><%= link_to("Your Interested Events", {:controller => 'learn/events/myinterested'}) %></li>
+              <%- end -%>
+              <li><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}) %></li>
+           </ul>
+        </nav>
         
         <div id="content">         
             <%= yield :layout %>

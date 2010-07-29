@@ -13,7 +13,7 @@
 
    <p class="description"><%= format_text_for_display(@learn_session.description) %></p>
 
-   <h2>Presented by</h2>
+   <h3>Presented by</h3>
    <p id="presenters">
       <% count = 0 %>
          <% @learn_session.presenters.each do |presenter| %>
@@ -24,31 +24,50 @@
       <% end %>  
      </p>
       
-      <h3>Tags</h3>
+      <h4>Tags</h4>
       <p id="tags">
       <% if @learn_session.tags.length != 0 %>  
-      <%= @learn_session.tags.collect{|t| link_to t.name, :action => :events_tagged_with, :id => t.name}.join(Tag::JOINER) %>
+      <%= @learn_session.tags.collect{|t| link_to t.name, :action => :events, :sessiontype => "by_tag", :tag => t.name}.join(Tag::JOINER) %>
       <% else %>
       There are no tags at this time
       <% end %>
       </p>
       
-      <p>
-        <% if @event_has_concluded %>
+      
+        <% if @learn_session.event_concluded? %>
           <% if @learn_session.recording.blank? %>
+            <p class="no_recording_available">
             There are currently no recordings posted yet.
+            </p>
           <% else %>
-            Recording: <%= link_to(@learn_session.recording, @learn_session.recording) %>
+          <h3>Watch</h3>
+            <p class="recording_available">
+               <%= link_to(@learn_session.recording, @learn_session.recording) %>
+            </p>
           <% end %>
         <% else %>
-          Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)
+          <p>Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)</p>
         <% end %>
-      </p>
    </section>
 </div>
 
 <section id="two_col_col_two">
    <aside id="event_time" class="radius10">
+      
+      <% if @learn_session.event_concluded? %>
+      
+         <% if @learn_session.recording.blank? %>
+            <h3>No Recording Yet</h3>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong>. A recording of this session has not been uploaded yet.</p>
+          <% else %>
+          <h3>Watch</h3>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong></p>
+            <p class="recording_available">
+               <%= link_to(@learn_session.recording, @learn_session.recording) %>
+            </p>
+          <% end %>
+      
+      <% else %>
 
       <h2>
          <span id="session_date"><%= @session_start.strftime("%B %e, %Y") %></span>
@@ -58,7 +77,7 @@
          </div>
          <span id="session_date_time">
             <span id="time"><%= @session_start.strftime("%l:%M %p") %></span>
-            <span id="timezone"><%= @learn_session.time_zone %></span>
+            <span id="timezone"><%= format_time_zone(@learn_session.time_zone) %></span>
          </span>
       </h2>   
       
@@ -75,6 +94,16 @@
                         :with      => "'new_time_zone='+escape(value)",
                         :loading => "Element.show('loading_tz')", 
                         :complete => "Element.hide('loading_tz')") %>
-               
+                        
+      <% end %>
    </aside>
+   
+   <%- if @currentuser -%>
+    <aside id="sessionconnection" class="radius10">
+      <%= render(:partial => 'auth_session_connection') %>
+    </aside> 
+   <%- end -%>
+   
+   
+   
 </section>

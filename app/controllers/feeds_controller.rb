@@ -146,7 +146,7 @@ class FeedsController < ApplicationController
       }
     else
       if type == 'learn'
-        updated_min = Time.now.utc
+        published_min = @filteredparams.published_min || Time.now.utc
       end
       entries, total_possible_results = get_entries(type, category_array, updated_min, 
           updated_max, published_min, published_max, start_index, max_results)  
@@ -185,10 +185,17 @@ class FeedsController < ApplicationController
     conditions.concat([updated_min])
     conditions.first << " and "+alias_name+".updated_at < ?"
     conditions.concat([updated_max])
-    conditions.first << " and "+alias_name+".created_at >= ?"
-    conditions.concat([published_min])
-    conditions.first << " and "+alias_name+".created_at < ?"
-    conditions.concat([published_max])
+    if type == 'learn'
+      conditions.first << " and "+alias_name+".session_start >= ?"
+      conditions.concat([published_min])
+      conditions.first << " and "+alias_name+".session_start < ?"
+      conditions.concat([published_max])
+    else
+      conditions.first << " and "+alias_name+".created_at >= ?"
+      conditions.concat([published_min])
+      conditions.first << " and "+alias_name+".created_at < ?"
+      conditions.concat([published_max])
+    end
     
     joins = "as "+alias_name
      

@@ -9,8 +9,8 @@ class LearnController < ApplicationController
   
   layout 'learn'
   
-  before_filter :login_optional, :only => [:event, :events_tagged_with]
-  before_filter :login_required, :check_purgatory, :except => [:index, :event, :events_tagged_with]
+  before_filter :login_optional
+  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event]
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
@@ -26,11 +26,59 @@ class LearnController < ApplicationController
     end
     
     @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start.to_time)
-    @event_has_concluded = event_concluded?(@learn_session)
+  end
+  
+  def login_redirect
+    session[:return_to] = params[:return_back]
+    redirect_to :controller => 'people/account', :action => :login
+  end
+  
+  def events
+    if(!params[:sessiontype].blank? and ['recent','upcoming','myattended','myinterested','by_tag'].include?(params[:sessiontype]))
+      if params[:sessiontype] == 'recent'
+        @page_title = 'Recent Learn Sessions'
+        @learn_sessions = LearnSession.paginate(:all, 
+                                                :conditions => "session_start < '#{Time.now.utc.to_s(:db)}'", 
+                                                :order => "session_start DESC",
+                                                :page => params[:page])
+      elsif params[:sessiontype] == 'upcoming'
+        @page_title = 'Upcoming Learn Sessions'
+        @learn_sessions = LearnSession.paginate(:all, 
+                                                :conditions => "session_start > '#{Time.now.utc.to_s(:db)}'", 
+                                                :order => "session_start ASC",
+                                                :page => params[:page])        
+      elsif params[:sessiontype] == 'myattended'
+        @page_title = 'My Attended Learn Sessions'
+        @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::ATTENDED}", :order => "session_start DESC",:page => params[:page])
+      elsif params[:sessiontype] == 'myinterested'
+        @page_title = 'My Interested Learn Sessions'
+        @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::INTERESTED}", :order => "session_start DESC",:page => params[:page])
+      elsif params[:sessiontype] == 'by_tag'
+        if !params[:tag].blank? 
+          @tag_param = params[:tag]
+          event_tag = Tag.find_by_name(@tag_param)
+          if event_tag
+            @learn_sessions = event_tag.learn_sessions.paginate(:all, :order => "session_start DESC", :page => params[:page])
+          else
+            @learn_sessions = []
+          end
+        else
+          flash[:failure] = "Invalid tag name"
+          redirect_to :action => :index
+        end
+        @page_title = "Learn Sessions Tagged with '#{@tag_param}'"
+      end
+      
+    else
+      @page_title = 'All Learn Sessions'
+      @learn_sessions = LearnSession.paginate(:all,
+                                              :order => "session_start DESC",
+                                              :page => params[:page])
+    end
   end
   
   def create_session
-    @scheduled_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 20, :order => "session_start ASC")
+    @scheduled_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.to_s(:db)}'", :limit => 20, :order => "session_start ASC")
     if request.post?
       @learn_session = LearnSession.new(params[:learn_session])
       
@@ -62,9 +110,6 @@ class LearnController < ApplicationController
       else
         # store start time in the db as utc
         @learn_session.session_start = convert_timezone("UTC", @learn_session.time_zone, @learn_session.session_start.to_time)
-        
-        creator_connection = LearnConnection.new(:email => @currentuser.email, :user => @currentuser, :connectiontype => LearnConnection::CREATOR)
-        @learn_session.learn_connections << creator_connection
         @learn_session.save
         
         # process tags
@@ -87,9 +132,7 @@ class LearnController < ApplicationController
       redirect_to :action => :index
       return
     end
-    
-    @event_has_concluded = event_concluded?(@learn_session)
-    
+        
     if request.post?
       @learn_session.session_start = convert_timezone("UTC", params[:learn_session][:time_zone], params[:session_start].to_time) if (!params[:session_start].blank? and !params[:learn_session][:time_zone].blank?)
       @learn_session.last_modifier = @currentuser
@@ -130,21 +173,6 @@ class LearnController < ApplicationController
     end
   end
   
-  def events_tagged_with
-    if !params[:id].blank? 
-      @tag_param = params[:id]
-      event_tag = Tag.find_by_name(@tag_param)
-      if event_tag
-        @learn_sessions = event_tag.learn_sessions
-      else
-        @learn_sessions = []
-      end
-    else
-      flash[:failure] = "Invalid tag name"
-      redirect_to :action => :index
-    end
-  end
-
   def presenters_by_name
     #if a login/name was typed into the field to search for users
     name_str = params[:name]
@@ -165,11 +193,23 @@ class LearnController < ApplicationController
       time_to_display = time_obj.strftime("%l:%M %p")
       
       render :update do |page|
-        page.replace_html :session_date_time, "<span id=\"time\">#{time_to_display}</span><span id=\"timezone\">#{time_zone_to_display}</span>" 
+        page.replace_html :session_date_time, "<span id=\"time\">#{time_to_display}</span><span id=\"timezone\">#{format_time_zone(time_zone_to_display)}</span>" 
       end
     else
       return
     end
+  end
+  
+  def delete_event
+    if request.post? and @currentuser
+      if !params[:id].blank? and learn_session = LearnSession.find_by_id(params[:id])
+        learn_session.destroy
+        flash[:success] = "Learn session successfully deleted."
+      else
+        flash[:failure] = "Learn session referenced does not exist."
+      end
+    end
+    redirect_to :action => :index
   end
   
   def add_remove_presenters
@@ -220,10 +260,32 @@ class LearnController < ApplicationController
     end
   end
   
-  private
-  
-  def event_concluded?(learn_session)
-    return (Time.now.utc > learn_session.session_end)
+  def change_my_connection
+    @learn_session = LearnSession.find_by_id(params[:id])
+    
+    if(params[:connection] and params[:connection] == 'makeconnection')
+       if(params[:connectiontype] == 'interested')
+         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
+         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
+       elsif(params[:connectiontype] == 'attended')
+         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
+         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
+       end
+     else
+       if(params[:connectiontype] == 'interested')
+         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,false)
+         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed interest in learn: #{@learn_session.title}")
+       elsif(params[:connectiontype] == 'attended')
+         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,false)
+         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed attendance at learn: #{@learn_session.title}")
+       end
+     end
+    
+    respond_to do |format|
+      format.js
+    end
   end
+  
+  
   
 end

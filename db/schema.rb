@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100727160421) do
+ActiveRecord::Schema.define(:version => 20100729192645) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -461,6 +461,9 @@ ActiveRecord::Schema.define(:version => 20100727160421) do
     t.datetime "updated_at"
   end
 
+  add_index "learn_connections", ["learn_session_id", "connectiontype"], :name => "index_learn_connections_on_learn_session_id_and_connectiontype"
+  add_index "learn_connections", ["user_id", "public_user_id"], :name => "index_learn_connections_on_user_id_and_public_user_id"
+
   create_table "learn_sessions", :force => true do |t|
     t.text     "title",            :null => false
     t.text     "description",      :null => false
@@ -475,6 +478,8 @@ ActiveRecord::Schema.define(:version => 20100727160421) do
     t.datetime "updated_at"
     t.datetime "created_at"
   end
+
+  add_index "learn_sessions", ["session_start", "session_end"], :name => "index_learn_sessions_on_session_start_and_session_end"
 
   create_table "linkings", :force => true do |t|
     t.integer  "content_link_id"

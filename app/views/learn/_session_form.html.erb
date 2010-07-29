@@ -53,7 +53,7 @@
     <%= learn_form.text_field :where, :class => "xxl" %>
  </p>
  
- <% if defined?(@event_has_concluded) and @event_has_concluded %>
+ <% if @learn_session.event_concluded? %>
    <p>
       <%= learn_form.label :recording, 'Recording' %>
       <%= learn_form.text_field :recording %>
