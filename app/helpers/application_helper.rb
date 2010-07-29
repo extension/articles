@@ -94,10 +94,10 @@ module ApplicationHelper
   # right now, we're only doing the pretty timezone display mappings for 
   # the major US timezones
   def format_time_zone(tz)
-    timezone_map = {"Eastern Time (US & Canada)" => "EST",
-    "Central Time (US & Canada)" => "CST",
-    "Mountain Time (US & Canada)" => "MST",
-    "Pacific Time (US & Canada)" => "PST"}
+    timezone_map = {"Eastern Time (US & Canada)" => "ET",
+    "Central Time (US & Canada)" => "CT",
+    "Mountain Time (US & Canada)" => "MT",
+    "Pacific Time (US & Canada)" => "PT"}
     if timezone_map[tz]
       return timezone_map[tz]
     else
