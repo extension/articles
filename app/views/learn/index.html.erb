@@ -57,9 +57,9 @@
    
    <% @recent_sessions.each do |recent_session| %>
       <% if recent_session.recording.blank? %>
-         <dl class="no_recording_availble">
+         <dl class="no_recording_available">
       <% else %>
-         <dl class="recording_availble">
+         <dl class="recording_available">
       <% end %>
       <% formatted_start_time = format_time(recent_session, recent_session.session_start) %>
       <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
