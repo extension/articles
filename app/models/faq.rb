@@ -129,7 +129,7 @@ class Faq < ActiveRecord::Base
       e.authors << Atom::Person.new(:name => 'Contributors')
       e.id = self.id_and_link
       e.updated = self.heureka_published_at
-      e.categories = self.tag_list.split(',').each { |cat| Atom::Category.new(cat.strip) }
+      e.categories = self.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact.map{|tag| Atom::Category.new({:term => tag.name, :scheme => url_for(:controller => 'main', :action => 'index')})}
       e.content = Atom::Content::Html.new(self.answer)
     end
   end  

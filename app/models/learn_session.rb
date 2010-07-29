@@ -53,7 +53,8 @@ class LearnSession < ActiveRecord::Base
       e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
       e.id = self.id_and_link
       e.updated = self.updated_at
-      e.categories = self.tag_list.split(',').each { |cat| Atom::Category.new(cat.strip) }
+      # could just as well use just .tags - but just in case we tag it in some other manner
+      e.categories = self.tags_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED).map{|tag| Atom::Category.new({:term => tag.name, :scheme => url_for(:controller => 'main', :action => 'index')})}
       e.content = Atom::Content::Html.new(self.description)
     end
   end
