@@ -26,7 +26,6 @@ class LearnController < ApplicationController
     end
     
     @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start.to_time)
-    @event_has_concluded = event_concluded?(@learn_session)
   end
   
   def create_session
@@ -87,9 +86,7 @@ class LearnController < ApplicationController
       redirect_to :action => :index
       return
     end
-    
-    @event_has_concluded = event_concluded?(@learn_session)
-    
+        
     if request.post?
       @learn_session.session_start = convert_timezone("UTC", params[:learn_session][:time_zone], params[:session_start].to_time) if (!params[:session_start].blank? and !params[:learn_session][:time_zone].blank?)
       @learn_session.last_modifier = @currentuser
@@ -220,10 +217,5 @@ class LearnController < ApplicationController
     end
   end
   
-  private
-  
-  def event_concluded?(learn_session)
-    return (Time.now.utc > learn_session.session_end)
-  end
   
 end

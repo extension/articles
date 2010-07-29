@@ -34,7 +34,7 @@
       </p>
       
       <p>
-        <% if @event_has_concluded %>
+        <% if @learn_session.event_concluded? %>
           <% if @learn_session.recording.blank? %>
             There are currently no recordings posted yet.
           <% else %>

@@ -73,6 +73,58 @@ module Extension
           {:include => {:taggings => :tag}, :conditions => includeconditions}
         }
       end
+      
+      
+      # ######
+      # TODO: a bit too much repeating ourselves here
+      # ######
+      
+      def has_shared_tags(opts ={})
+        # Get options with defaults
+        add_shared_tags_scope(opts)
+        
+        # single tag scope
+        add_shared_tag_scope(opts)
+
+        # any content tag scope
+        add_any_shared_tag_scope(opts)
+      end
+      
+      def add_shared_tags_scope(opts={})
+        
+        named_scope :tagged_with_shared_tags, lambda { |tagliststring|
+
+          includelist= Tag.castlist_to_array(tagliststring,true,false)
+
+          if(!includelist.empty?)
+            # get a list of all the id's tagged with the includelist
+            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
+            includetaggings = Tagging.find(:all, :include => :tag, :conditions => includeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
+            taggings_we_want = includetaggings
+          end
+
+          if(!taggings_we_want.empty?)
+            {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
+          else
+            {}
+          end
+        }
+      end
+      
+      def add_shared_tag_scope(opts={})
+        named_scope :tagged_with_shared_tag, lambda {|tagname| 
+          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tag_kind = #{Tagging::SHARED}"}
+        }
+      end
+      
+      def add_any_shared_tag_scope(opts={})
+        named_scope :tagged_with_any_shared_tags, lambda {|tagliststring|
+          includelist = Tag.castlist_to_array(tagliststring)
+          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
+          {:include => {:taggings => :tag}, :conditions => includeconditions}
+        }
+      end
+      
           
     end
   end
