@@ -130,6 +130,7 @@ ActionController::Routing::Routes.draw do |map|
   ### Learn Stuff ###
   map.learn 'learn', :controller => 'learn', :action => 'index'
   map.learn_session 'learn/event/:id', :controller => :learn, :action => :event
+  map.connect 'learn/events', :controller => :learn, :action => :events
   map.connect 'learn/events/:sessiontype', :controller => :learn, :action => :events
 
   #################################################################
