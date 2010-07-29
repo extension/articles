@@ -4,6 +4,7 @@
    
 <section id="upcoming_events">
    <h3>Upcoming Events</h3>
+   <p><%= link_to 'view more', :action => :pd_events, :id => 'upcoming' %></p>
    <p id="calendar_link">view calendar</p>
    
    <% @upcoming_sessions.each do |upcoming_session| %>
@@ -67,7 +68,7 @@
    <% end %>
    
     
-   <p><%= link_to("View more", "") %></p>
+   <p><%= link_to("View more", :action => :pd_events, :id => 'recent') %></p>
 </section>
 
 
