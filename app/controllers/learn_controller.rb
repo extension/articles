@@ -25,7 +25,7 @@ class LearnController < ApplicationController
       return
     end
     
-    @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start)
+    @session_start = @learn_session.session_start.in_time_zone(@learn_session.time_zone)
   end
   
   def login_redirect
@@ -81,8 +81,19 @@ class LearnController < ApplicationController
     @scheduled_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.to_s(:db)}'", :limit => 20, :order => "session_start ASC")
     if request.post?
       @learn_session = LearnSession.new(params[:learn_session])
+
+      # store start time in the db as utc relative to the specified time_zone
+      if(!params[:session_start].blank?)      
+        begin
+          Time.zone = @learn_session.time_zone
+          @learn_session.session_start = Time.zone.parse(params[:session_start])
+        rescue
+          flash[:error] = 'Invalid date and time specified'
+          return render :template => '/learn/create_session'
+        end
+      end
       
-      @learn_session.session_start = params[:session_start]
+      
       @learn_session.creator = @currentuser
       @learn_session.last_modifier = @currentuser
       
@@ -107,9 +118,7 @@ class LearnController < ApplicationController
       if !@learn_session.valid?
         render :template => '/learn/create_session'
         return
-      else
-        # store start time in the db as utc
-        @learn_session.session_start = convert_timezone("UTC", @learn_session.time_zone, params[:session_start])
+      else        
         @learn_session.save
         
         # process tags
@@ -134,7 +143,22 @@ class LearnController < ApplicationController
     end
         
     if request.post?
-      @learn_session.session_start = convert_timezone("UTC", params[:learn_session][:time_zone], params[:session_start]) if (!params[:session_start].blank? and !params[:learn_session][:time_zone].blank?)
+  
+      # store start time in the db as utc relative to the specified time_zone
+      if(!params[:session_start].blank?)
+        begin
+          if(params[:learn_session][:time_zone].blank?)
+            Time.zone = @learn_session.time_zone
+          else
+            Time.zone = params[:learn_session][:time_zone]
+          end
+          @learn_session.session_start = Time.zone.parse(params[:session_start])
+        rescue
+          flash[:error] = 'Invalid date and time specified'
+          return render :template => '/learn/create_session'
+        end
+      end
+      
       @learn_session.last_modifier = @currentuser
       
       # process presenters
@@ -188,7 +212,7 @@ class LearnController < ApplicationController
   def update_time_zone
     if request.post? and !params[:new_time_zone].blank? and !params[:id].blank? and learn_session = LearnSession.find_by_id(params[:id])
       # we need to do a timezone conversion here, take the time from the learn session and convert to the desired time zone
-      time_obj = convert_timezone(params[:new_time_zone], "UTC", learn_session.session_start)
+      time_obj = learn_session.session_start.in_time_zone(params[:new_time_zone])
       time_zone_to_display = time_obj.time_zone.name
       time_to_display = time_obj.strftime("%l:%M %p")
       

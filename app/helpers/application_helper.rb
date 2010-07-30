@@ -117,24 +117,6 @@ module ApplicationHelper
      time.strftime("%B %e, %Y, %l:%M %p")
   end
   
-  # used to take a date_time 
-  # and takes a new time zone along with the timezone you want to convert from 
-  # and converts the date-time to the date-time of the new time zone.
-  # time zones are taken in the format of time zone names in ActiveSupport::TimeZone 
-  # ie. 'Eastern Time (US & Canada)'
-  # it returns an ActiveSupport::TimeWithZone object and you'll be able to access it's properties 
-  # like for example 'time_zone_obj.time_zone.name' you can see more in the rails documentation
-  def convert_timezone(new_zone, old_zone, date_time_to_convert)
-    if !new_zone.blank? and !old_zone.blank? and !date_time_to_convert.blank?
-      begin
-        return Time.parse("#{date_time_to_convert} #{old_zone}").in_time_zone("#{new_zone}")
-      rescue Exception => e
-        return nil
-      end
-    else
-      return nil
-    end
-  end
   
   # http://blog.macromates.com/2006/wrapping-text-with-regular-expressions/
   def wrap_text(txt, col=120)
