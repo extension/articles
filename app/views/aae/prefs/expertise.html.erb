@@ -15,6 +15,9 @@
 
 <h2>In What Areas of Expertise Can You Answer Questions?</h2>
 <p>These preferences are indicated on your Ask an Expert profile for other experts to see. Question Wranglers search these areas of expertise when assigning questions.  You can <%= link_to('browse the list of expertise areas', {:controller => '/aae/expertise', :action => :categories}) %> to see colleagues signed up for these areas and get feeds of incoming questions for each area of expertise.</p>
+<p>
+  <span class="publicicon">Listed on the www.extension.org Ask form</span>
+</p>
     
     <div id="areas_of_expertise">
     <ul id="expertisepreflist">
@@ -23,12 +26,13 @@
     
       <%- expertcount = category.users.count %>
     
-        <li id="<%= category.id %>"> 
+        <li id="expertisecategory_<%= category.id %>" class="expertiselisting <%= @current_user_categories.include?(category)  ? "highlight " : '' %>"> 
             <%- if category.show_to_public? -%>
-              <span class="aaecategory public">
+              <div class="public">
             <%- else -%>
-              <span class="aaecategory">
+              <div class="notpublic">
             <%- end -%>
+            <span class="aaecategory">
             <%= check_box_tag "areas_of_expertise[]", category.id, @current_user_categories.include?(category), { :id => "areas_of_expertise#{category.id}"} %> <%= category.name %>
             </span>
             
@@ -46,12 +50,12 @@
                           :loading => "Element.show('loading_#{category.id}')",
                           :complete    => "Element.hide('loading_#{category.id}')") %>
         
-        <ul class="aoe_subcat" id="subcategory_div<%= category.id %>" >
+        <ul class="aoe_subcat" id="subcategory_div<%= category.id %>">
           <% if @current_user_categories.include?(category) and subcategorycount > 0 %>
              <%= render(:partial => "subcategories", :locals => {:top_level_category => category}) %>
           <% end %>
         </ul>
-        
+        </div>
         </li>
     <% end %>
 </ul>
