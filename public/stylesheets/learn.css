@@ -65,6 +65,8 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 #upcoming_events article {background:#fff1d6; /*padding:10px; margin:10px;*/ clear:both;}
 #upcoming_events h3 {float:left;}
+#recent_sessions h3 {float:left;}
+#recent_sessions dl {clear:left;}
 
 #col_one {padding:20px; width: 560px; float:left; margin:0 40px 0 0;}
 
@@ -153,6 +155,7 @@ aside {background:#ededed; padding:10px;}
 .groupicon {background: transparent url(/images/common/group.png) left 2px no-repeat; padding-left:22px;}
 
 #upcoming_events .view_more {float:right; padding:10px;}
+#recent_sessions .view_more {float:right; padding:10px;}
 
 /* Home styles
 -----------------------------------------------------------------------------*/

@@ -7,7 +7,7 @@
    
 <section id="upcoming_events">
    <h3>Upcoming Events</h3>
-   <p><%= link_to 'view more', {:action => :events, :id => 'upcoming'}, {:class => "view_more"} %></p>
+   <p><%= link_to 'view all', {:action => :events, :id => 'upcoming'}, {:class => "view_more"} %></p>
    
    <% @upcoming_sessions.each do |upcoming_session| %>
       <article class="upcoming_event radius10">
@@ -56,6 +56,7 @@
 
 <section id="recent_sessions">
    <h3>Recent Sessions</h3>
+   <p><%= link_to 'view all', {:action => :events, :id => 'recent'}, {:class => "view_more"} %></p>
    
    <% @recent_sessions.each do |recent_session| %>
       <% if recent_session.recording.blank? %>
@@ -68,9 +69,7 @@
       <dd><%= time_ago_in_words(formatted_start_time) %> ago</dd>
       </dl>
    <% end %>
-   
     
-   <p><%= link_to("View more", :action => :events, :id => 'recent') %></p>
 </section>
 
 
@@ -79,7 +78,7 @@
       <p id="create_link"><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}, :class => "bigbutton blue") %></p>
       <ul>
          <li class="feed"><%= link_to("Subscribe", {:controller => "feeds", :action => "learn"}) %> to a feed of PD recordings</li>
-         <li class="groupicon">How to participate in eXtension professional development</li>
+         <li class="groupicon"><%= link_to("How to participate in eXtension professional development", "http://about.extension.org/wiki/Schedule_of_Professional_Development_Opportunities#How_to_Participate_in_eXtension_Professional_Development") %></li>
          <li class="email">Get email announcements: <br /> 1) Visit the <%= link_to("Learn Community", "https://people.extension.org/communities/learn") %> <br />2) Click "Join Community"</li>
       </ul>
    </aside>
