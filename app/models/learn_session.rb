@@ -8,6 +8,9 @@
 require 'uri'
 class LearnSession < ActiveRecord::Base
   include ActionController::UrlWriter # so that we can generate URLs out of the model
+  include ERB::Util
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::TextHelper
   has_shared_tags  # include scopes for shared tags
   
   before_save :calculate_end_time
@@ -46,8 +49,17 @@ class LearnSession < ActiveRecord::Base
     end
   end
   
-  
   def to_atom_entry
+    t_start = self.session_start.in_time_zone(self.time_zone)
+    
+    content = self.description + "\n\n"
+    content << "Location: " + self.where + "\n\n" if !self.where.blank?
+    content << "Session Start: " + t_start.strftime("%B %e, %Y at %l:%M %p %Z") + "\n" +
+               "Session Length: " + self.session_length.to_s + " minutes\n"
+    content << "Recording: " + self.recording if !self.recording.blank?
+    
+    content = word_wrap(simple_format(auto_link(content, :all, :target => "_blank")))
+    
     Atom::Entry.new do |e|
       e.title = Atom::Content::Html.new(self.title)
       e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
@@ -55,7 +67,7 @@ class LearnSession < ActiveRecord::Base
       e.updated = self.updated_at
       # could just as well use just .tags - but just in case we tag it in some other manner
       e.categories = self.tags_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED).map{|tag| Atom::Category.new({:term => tag.name, :scheme => url_for(:controller => 'main', :action => 'index')})}
-      e.content = Atom::Content::Html.new(self.description)
+      e.content = Atom::Content::Html.new(content)
     end
   end
   
