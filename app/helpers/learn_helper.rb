@@ -67,7 +67,7 @@ module LearnHelper
   # convert learn session time from utc db stored time to timezone of the session 
   def format_time(learn_session, session_time)
     return nil if (learn_session.blank? or session_time.blank?)
-    return convert_timezone(learn_session.time_zone, "UTC", session_time.to_time)
+    return convert_timezone(learn_session.time_zone, "UTC", session_time)
   end
   
 end

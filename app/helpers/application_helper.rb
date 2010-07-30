@@ -117,7 +117,7 @@ module ApplicationHelper
      time.strftime("%B %e, %Y, %l:%M %p")
   end
   
-  # used to take a date_time in MySQL date-time format
+  # used to take a date_time 
   # and takes a new time zone along with the timezone you want to convert from 
   # and converts the date-time to the date-time of the new time zone.
   # time zones are taken in the format of time zone names in ActiveSupport::TimeZone 
@@ -127,10 +127,7 @@ module ApplicationHelper
   def convert_timezone(new_zone, old_zone, date_time_to_convert)
     if !new_zone.blank? and !old_zone.blank? and !date_time_to_convert.blank?
       begin
-        # kind of a hack to do the strftime here, but we want to format the timestamp for consistency so that .parse is looking at the 
-        # timezone passed in instead of the timezone with the time stamp, strftime basically formats the timestamp and chops off the timezone from it in this case
-        time_zone_obj = ActiveSupport::TimeZone["#{new_zone}"].parse("#{date_time_to_convert.strftime('%B %e, %Y, %l:%M %p')} #{old_zone}")
-        return time_zone_obj
+        return Time.parse("#{date_time_to_convert} #{old_zone}").in_time_zone("#{new_zone}")
       rescue Exception => e
         return nil
       end

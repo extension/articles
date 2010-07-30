@@ -25,7 +25,7 @@ class LearnController < ApplicationController
       return
     end
     
-    @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start.to_time)
+    @session_start = convert_timezone(@learn_session.time_zone, "UTC", @learn_session.session_start)
   end
   
   def login_redirect
@@ -109,7 +109,7 @@ class LearnController < ApplicationController
         return
       else
         # store start time in the db as utc
-        @learn_session.session_start = convert_timezone("UTC", @learn_session.time_zone, @learn_session.session_start.to_time)
+        @learn_session.session_start = convert_timezone("UTC", @learn_session.time_zone, params[:session_start])
         @learn_session.save
         
         # process tags
@@ -134,7 +134,7 @@ class LearnController < ApplicationController
     end
         
     if request.post?
-      @learn_session.session_start = convert_timezone("UTC", params[:learn_session][:time_zone], params[:session_start].to_time) if (!params[:session_start].blank? and !params[:learn_session][:time_zone].blank?)
+      @learn_session.session_start = convert_timezone("UTC", params[:learn_session][:time_zone], params[:session_start]) if (!params[:session_start].blank? and !params[:learn_session][:time_zone].blank?)
       @learn_session.last_modifier = @currentuser
       
       # process presenters
