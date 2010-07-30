@@ -21,21 +21,9 @@ class Category < ActiveRecord::Base
   ALL = "all"
   
   named_scope :filtered, lambda {|options| Category.category_conditions(options)}
-  
-  def self.root_categories
-    Category.find(:all, :conditions => 'parent_id is null', :order => 'name')
-  end
-  
-  def self.launched_content_categories(options = {})
-    # get the content tags for launched communities and map to a string we can limit a category find to.
-    retrieveoptions = {:launchedonly => true}
-    onlyaae = options[:onlyaae].nil? ? false : options[:onlyaae]
-    if(onlyaae)
-      retrieveoptions.merge!({:onlyaae => true})
-    end
-    launched_community_content_tags = Tag.community_content_tags(retrieveoptions).map{|t| "'#{t.name}'"}
-    self.find(:all, :conditions => "parent_id IS NULL and LOWER(name) IN (#{launched_community_content_tags.join(',')})", :order => 'name')
-  end
+  named_scope :root_categories, {:conditions => 'parent_id is null'}
+  named_scope :show_to_public, {:conditions => 'show_to_public = 1'}
+    
   
   def subcat_names
     self.children.collect{|c| c.name}.join(',')

@@ -14,7 +14,7 @@ class Aae::PrefsController < ApplicationController
 
   # they can specify their areas of expertise by category/subcategory 
   def expertise
-    @categories = Category.root_categories
+    @categories = Category.root_categories.all(:order => 'name')
     @current_user_categories = @currentuser.get_expertise
     
     if request.post?      
@@ -40,7 +40,8 @@ class Aae::PrefsController < ApplicationController
       end
       
       render :update do |page|
-        page.visual_effect :highlight, selected_category.id
+        # TODO: this is causing js errors because it's not actually highlighting the right thing.
+        # page.visual_effect :highlight, selected_category.id 
         #page.replace "subcats_of_#{selected_category.parent.id}", :partial => 'subcategories', :locals => {:top_level_category => selected_category} if !selected_category.is_top_level?
         page.replace_html "subcategory_div#{selected_category.parent.id}", :partial => 'subcategories', :locals => {:top_level_category => selected_category.parent} if !selected_category.is_top_level?     
         if selected_category.is_top_level?

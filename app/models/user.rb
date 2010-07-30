@@ -208,7 +208,7 @@ class User < ActiveRecord::Base
    {:include => :expertise_areas, :conditions => "expertise_areas.category_id = #{category_id}", :order => "last_name,first_name ASC"}
   }
   
-  named_scope :question_responders, :conditions => {:aae_responder => true}
+  named_scope :aae_responders, :conditions => {:aae_responder => true}
   
   
   # all experts who have a particular location marked either in their aae prefs OR in their people profile
@@ -874,6 +874,11 @@ class User < ActiveRecord::Base
   def is_community_leader?(community)
    return (self.connection_with_community(community) == 'leader')
   end
+  
+  def is_aae_auto_router?
+    route_role = Role.find_by_name(Role::AUTO_ROUTE)
+    self.roles.include?(route_role) and self.aae_responder?
+  end  
   
   def connection_with_community(community)
    connection = Communityconnection.find_by_user_id_and_community_id(self.id,community.id)
@@ -1630,7 +1635,7 @@ class User < ActiveRecord::Base
     
     if county
       expertise_county = ExpertiseCounty.find(:first, :conditions => {:fipsid => county.fipsid}) 
-      eligible_wranglers = User.question_wranglers.experts_by_county(expertise_county).question_responders
+      eligible_wranglers = User.question_wranglers.experts_by_county(expertise_county).aae_responders
     end
    
     if location and (!eligible_wranglers or eligible_wranglers.length == 0) 
@@ -2239,7 +2244,7 @@ class User < ActiveRecord::Base
    expertise_location = ExpertiseLocation.find(:first, :conditions => {:fipsid => location.fipsid})
    # get experts signed up to receive questions from that location but take out anyone who 
    # elected to only receive questions in their county
-   location_wranglers = User.question_wranglers.experts_by_location(expertise_location).question_responders - User.experts_by_county_only
+   location_wranglers = User.question_wranglers.experts_by_location(expertise_location).aae_responders - User.experts_by_county_only
   end
   
   def self.get_cat_loc_conditions(category, location, county)
@@ -2266,5 +2271,7 @@ class User < ActiveRecord::Base
 
     (filtered_users and filtered_users != '') ? (return "users.id IN (#{filtered_users})") : (return nil)
   end
+  
+
   
 end

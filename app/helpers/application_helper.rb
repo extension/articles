@@ -79,7 +79,7 @@ module ApplicationHelper
   def options_from_categories(selected = nil)
     categories = Array.new
 
-    categories = Category.root_categories.collect { |cat| [cat.name, cat.id] }
+    categories = Category.root_categories.all(:order => 'name').collect { |cat| [cat.name, cat.id] }
 
     categories.insert(0, [Category::UNASSIGNED, Category::UNASSIGNED])
     categories.insert(0, ["All categories", Category::ALL])

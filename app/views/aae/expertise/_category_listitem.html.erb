@@ -1,0 +1,75 @@
+<%- subcategories = category.children -%>
+<%- expertcount = category.users.count %>
+  
+<%- if category.show_to_public? -%>
+   <div class="public">
+<%- else -%>
+   <div class="notpublic">
+<%- end -%>
+
+   <span class="aaecategory">
+      <%= category.name %>        
+   </span>
+   
+   <span class="aaesubcategories">
+      <%- if subcategories.length > 0 -%>
+         <%= link_to_function("#{subcategories.length} subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
+      <%- end -%>
+   </span>
+      
+     
+      <%- if expertcount > 0 -%>
+        <span class="experts"><%= link_to("#{category.users.count} experts", {:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => category.name }) %></span>
+      <%- else -%>
+        <span class="experts"><strong>no experts!</strong></span>
+      <%- end -%>
+
+      
+      <span class="aaecategoryadmin">
+        <%- if(admin_mode?) -%>
+        	<%= check_box_tag("show_to_public","yes",category.show_to_public?, {:id => "aaecategory_public_control_#{category.id}"}) %> Public?
+        	<%= observe_field("aaecategory_public_control_#{category.id}", :update => "aaecategoryadmin", :url => {:controller => '/aae/expertise', :action => :change_category_public_visibility, :id => category.id}, :with => "'show_to_public=' + value") %>
+          <%- else -%>
+           &nbsp;
+          <%- end -%>	
+      </span>
+      
+      <%- if subcategories.length > 0 -%>
+      <ul class="aoe_subcat" id="subcategory_div_<%= category.id %>" style='display:none;'>
+        <%- subcategories.each do |subcategory| -%>
+            <li id="expertisesubcategory_<%= subcategory.id %>"  class="<%= subcategory.show_to_public?  ? "public" : '' %>">
+              <%= render(:partial => "subcategory_listitem", :locals => {:subcategory => subcategory}) %>
+            </li>
+        <%- end -%>
+        
+        <%- if(admin_mode?)-%>  
+        <li>
+          <span class="addsubcat"><%= link_to_function("Add a new subcategory", "Effect.toggle('addnewsubcategory_#{category.id}','blind', { duration: .4});") %></span>
+          <span id="addnewsubcategory_<%= category.id %>" style='display:none;' class="addsubcatform">
+            <% form_tag :action => 'add_subcategory' do %>
+              <%= hidden_field_tag("categoryparent", category.id) %>
+              <p><label for="category_name">Name</label>
+            <%= text_field 'category', 'name'  %></p>
+              <%= submit_tag "Save" %>
+            <% end %>
+          </span>
+        </li>
+        <%- end -%>
+        
+      </ul>
+      <%- elsif(admin_mode?)-%>
+      <ul class="aoe_subcat" id="subcategory_div_<%= category.id %>" style='display:none;'>
+        <li>
+          <span><%= link_to_function("Add a new subcategory", "Effect.toggle('addnewsubcategory','blind', { duration: .4});") %></span>
+          <span id="addnewsubcategory" style='display:none;'>
+            <% form_tag :action => 'add_subcategory' do %>
+              <%= hidden_field_tag("categoryparent", category.id) %>
+              <p><label for="category_name">Name</label>
+            <%= text_field 'category', 'name'  %></p>
+              <%= submit_tag "Save" %>
+            <% end %>
+          </span>
+        </li>
+      </ul>
+      <%- end -%>
+      

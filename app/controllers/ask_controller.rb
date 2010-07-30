@@ -32,7 +32,7 @@ class AskController < ApplicationController
   end
   
   def submission_form
-    @categories = [""].concat(Category.launched_content_categories({:launchedonly => true, :onlyaae => true}).map{|c| [c.name, c.id]})
+    @categories = [""].concat(Category.root_categories.show_to_public.map{|c| [c.name, c.id]})
     @location_options = get_location_options
     @county_options = get_county_options
     
@@ -397,7 +397,7 @@ class AskController < ApplicationController
   def get_aae_from_subcats
     parent_cat = Category.find_by_id(params[:category_id].strip) if params[:category_id] and params[:category_id].strip != '' 
     if parent_cat 
-      @sub_category_options = [""].concat(parent_cat.children.map{|sq| [sq.name, sq.id]})
+      @sub_category_options = [""].concat(parent_cat.children.show_to_public.map{|sq| [sq.name, sq.id]})
     else
       @sub_category_options = [""]
     end
