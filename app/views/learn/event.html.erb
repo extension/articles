@@ -5,10 +5,7 @@
 <div id="two_col_col_one">
    <section id="event">
    <h1>
-   <%= @learn_session.title %> 
-   <% if @currentuser %>
-     <span class="edit"><%= link_to 'edit', :action => :edit_session, :id => @learn_session.id %></span>
-   <% end %>
+   <%= @learn_session.title %>
    </h1>
 
    <p class="description"><%= format_text_for_display(@learn_session.description) %></p>
@@ -48,6 +45,10 @@
         <% else %>
           <p>Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)</p>
         <% end %>
+        
+        <% if @currentuser %>
+          <p><span class="edit"><%= link_to 'edit this event', :action => :edit_session, :id => @learn_session.id %></span></p>
+        <% end %>
    </section>
 </div>
 
@@ -63,7 +64,7 @@
           <h3>Watch</h3>
             <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong></p>
             <p class="recording_available">
-               <%= link_to(@learn_session.recording, @learn_session.recording) %>
+               <%= link_to("watch recording", @learn_session.recording) %>
             </p>
           <% end %>
       

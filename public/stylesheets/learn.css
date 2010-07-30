@@ -87,6 +87,8 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #event_time h2 {}
 #event_time h3 {font-size:2em;}
 
+/*#event_time .edit {float:right;}*/
+
 p.no_recording_available {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
 p.recording_available {background: transparent url(/images/common/television.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
 span.no_recording_available {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat; padding-left:24px; display:block;}
