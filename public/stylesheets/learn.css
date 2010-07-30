@@ -54,7 +54,7 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #admintoggle a {padding:.1em .3em; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
 #admintoggle a:hover {background:#fff;}
 
-#search {float:right;}
+#search {float:right; display:none;}
 .searchbox {width:160px;}
 
 /* layout
@@ -65,6 +65,8 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 #upcoming_events article {background:#fff1d6; /*padding:10px; margin:10px;*/ clear:both;}
 #upcoming_events h3 {float:left;}
+#recent_sessions h3 {float:left;}
+#recent_sessions dl {clear:left;}
 
 #col_one {padding:20px; width: 560px; float:left; margin:0 40px 0 0;}
 
@@ -84,6 +86,8 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #event_time {margin-bottom:20px;}
 #event_time h2 {}
 #event_time h3 {font-size:2em;}
+
+/*#event_time .edit {float:right;}*/
 
 p.no_recording_available {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
 p.recording_available {background: transparent url(/images/common/television.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
@@ -153,6 +157,7 @@ aside {background:#ededed; padding:10px;}
 .groupicon {background: transparent url(/images/common/group.png) left 2px no-repeat; padding-left:22px;}
 
 #upcoming_events .view_more {float:right; padding:10px;}
+#recent_sessions .view_more {float:right; padding:10px;}
 
 /* Home styles
 -----------------------------------------------------------------------------*/
