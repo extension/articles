@@ -131,7 +131,7 @@ class LearnController < ApplicationController
       end
     # GET request for initial form display
     else
-      @learn_session = LearnSession.new    
+      @learn_session = LearnSession.new(:session_length => 30)
     end
   end
   
