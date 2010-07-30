@@ -10,8 +10,6 @@
 
     <%= observe_field("areas_of_expertise#{subcategory.id}",
                       :url       => { :action => :expertise },
-                      :with      => "'category=#{subcategory.id}'",
-                      :loading => "Element.show('loading_#{subcategory.id}')",
-                      :complete    => "Element.hide('loading_#{subcategory.id}')") %>
+                      :with      => "'category=#{subcategory.id}'") %>
                       
 <% end %>
