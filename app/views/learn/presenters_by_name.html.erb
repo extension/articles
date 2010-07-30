@@ -1,4 +1,4 @@
-<%= link_to_function 'Close [X]', "$('presenter_list').innerHTML = ''"  %>
+<p id="close_link"><%= link_to_function 'Close', "$('presenter_list').innerHTML = ''"  %></p>
 
 <ul>
 <% @users.each do |user| %>
