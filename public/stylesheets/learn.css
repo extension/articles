@@ -98,8 +98,8 @@ span.recording_available {background: transparent url(/images/common/television.
 
 #session_date {float:left; display:block;padding:0 0 0 10px; width:180px;}
 #session_date_time {float:left; display:block;padding:10px 0 0 10px; width:190px;}
-#time {font-size:1.6em; display:block;margin-bottom:20px;}
-#timezone {display:block; font-size:14px; line-height:1.2em;}
+#time {font-size:1.4em; display:block;margin-bottom:20px;}
+#timezone {white-space:nowrap;}
 #event_time h2 {background:#fff; float:left; padding: 10px 10px 10px 0;}
 #event #presenters {font-size:1.6em;}
 #event #tags {font-size:1.6em; background: transparent url(/images/common/tag_orange.png) left center no-repeat; padding-left:20px;}
