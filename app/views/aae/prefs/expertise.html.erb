@@ -46,9 +46,7 @@
         
         <%= observe_field("areas_of_expertise#{category.id}",
                           :url       => { :action => :expertise },
-                          :with      => "'category=#{category.id}'",
-                          :loading => "Element.show('loading_#{category.id}')",
-                          :complete    => "Element.hide('loading_#{category.id}')") %>
+                          :with      => "'category=#{category.id}'") %>
         
         <ul class="aoe_subcat" id="subcategory_div<%= category.id %>">
           <% if @current_user_categories.include?(category) and subcategorycount > 0 %>
