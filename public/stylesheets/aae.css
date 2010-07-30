@@ -738,16 +738,45 @@ a.profile {
 /* used for preferences */
 .publicicon {color: #007a7d; background: transparent url(/images/common/world.png) 6px center no-repeat; padding: 3px 0 3px 28px;}
 .yourexpertise {background: transparent url(/images/common/star.png) 6px center no-repeat; padding: 3px 0 3px 28px;}
-#expertisepreflist li {margin-bottom:.5em;float:left;width:100%;padding:0 0 .5em!important;position:relative;}
+
+/* used for preferences */
+#expertisepreflist li {margin-bottom:.5em;float:left;width:100%;padding:5px 0 .5em !important;position:relative;}
 #expertisepreflist li ul li {margin:.5em 0 .1em;float:left;width:100%;padding:0 !important;position:relative; font-size:1em;}
+
+#expertisepreflist li.expertiselisting {margin:0 !important; padding:0 !important;}
+#expertisepreflist li.expertiselisting div {float:left;width:100%; padding:5px 0 .5em;}
+#expertisepreflist li.expertiselisting div.public {background:#eaf7f3;}
+#expertisepreflist li.expertiselisting.highlight .experts {background: transparent url(/images/common/star.png) 6px center no-repeat;}
+
 #expertisepreflist li span {display:block; float:left;}
-#expertisepreflist li .aaecategory {width:45%;}
-#expertisepreflist li .public {color: #f47B28}
+#expertisepreflist li .experts {width:100px;color:#666; font-weight:normal; padding-left:28px;}
+#expertisepreflist li.expertiselisting div.public .aaecategory {color: #007a7d; background: transparent url(/images/common/world.png) 6px center no-repeat;}
+#expertisepreflist li.expertiselisting .aaecategory {width:300px; padding-left:28px; /*border:1px solid lime*/}
+#expertisepreflist li.expertiselisting .aaesubcategories {width:150px; /*border:1px solid magenta*/ display:block; border:1px solid transparent;}
+
+#expertisepreflist li.expertiselisting div.public .aaecategory a:link,
+#expertisepreflist li.expertiselisting div.public .aaecategory a:visited {color: #f47B28} {color: #f47B28}
+#expertisepreflist li.expertiselisting div.public .aaecategory a:hover {color: #f47B28}
+
+/* subcats */
+#expertisepreflist li.expertiselisting ul.aoe_subcat .aaesubcategory {width:300px; padding-left:48px;}
+#expertisepreflist li.expertiselisting ul.aoe_subcat .public .aaesubcategory {color: #007a7d; background: transparent url(/images/common/world.png) 26px center no-repeat;}
+#expertisepreflist li.expertiselisting ul.aoe_subcat .makepublic {margin-left:250px;}
+
+/*#expertiselist li.expertiselisting:hover {background:#daf5ff;}*/
+#expertisepreflist li.expertiselisting ul li:hover {background:#daf5ff;}
+#expertisepreflist li .highlight {background:#fff9c6;}
+
+#expertisepreflist li .aaesubcategory {width:45%;}
 #expertisepreflist li .aaesubcategory.public {color: #f47B28}
-#expertisepreflist li .experts {width:15%;color:#666; font-weight:normal;}
-#expertisepreflist li .subcats {width:20%;color:#666; font-weight:normal;}
+
+#expertisepreflist li .aaecategoryadmin {width:20%; font-weight:normal;}
+/*#expertiselist li .subcats {width:20%;color:#666; font-weight:normal;}*/
 #expertisepreflist li .syndication {width:15%;font-size:.9em !important;}
 #expertisepreflist li .float-spinner {position:absolute; margin-top:0 !important;left:-120px;top:0;}
+
+
+
 
 /* used for browse list */
 #expertiselist li {margin-bottom:.5em;float:left;width:100%;padding:5px 0 .5em !important;position:relative;}

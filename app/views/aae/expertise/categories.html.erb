@@ -11,7 +11,7 @@
 
 <p>
    <span class="publicicon">Listed on the www.extension.org Ask form</span>
-   <span class="yourexpertise">You are signed up as an expert</span>
+   <span class="yourexpertise">You are signed up as an expert (<%= link_to('manage your expertise preferences', :controller => 'aae/prefs', :action => :expertise)%>)</span>
 </p>
 
 <%- if(admin_mode?)-%>  
