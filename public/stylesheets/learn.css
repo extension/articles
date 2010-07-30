@@ -207,12 +207,15 @@ fieldset {margin-bottom:0;}
 #presenter_name {width:100px;}
 
 #presenter_list {clear:left; position:relative;}
+#close_link {padding:0 !important;margin:0 !important; position:absolute; left:250px; top:0;}
+#close_link a {display:block;padding:5px; background:#477092;color:#fff;text-decoration:none;}
+#close_link a:hover {text-decoration:underline;}
 #people_picker {margin:0 10px 0 0 !important; clear:both; float:left;}
 #presenter_list ul {padding:0; width:250px; position:absolute;}
 #presenter_list ul li {height:30px; border:1px solid #999;}
 #presenter_list ul li a {display:block; height:30;line-height:30px;text-decoration:none; padding:0 6px; background:#fff;}
 #presenter_list ul li a:hover {background:#005bae;color:#fff;}
-#presenter_list ul li a span {float:right;} 
+#presenter_list ul li a span {float:right;}
 
 .bigbutton {
 	display: inline-block;
