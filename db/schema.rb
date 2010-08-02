@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100729192645) do
+ActiveRecord::Schema.define(:version => 20100802181352) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -471,7 +471,7 @@ ActiveRecord::Schema.define(:version => 20100729192645) do
     t.datetime "session_end",      :null => false
     t.string   "time_zone",        :null => false
     t.integer  "session_length",   :null => false
-    t.text     "where"
+    t.text     "location"
     t.text     "recording"
     t.integer  "created_by",       :null => false
     t.integer  "last_modified_by", :null => false

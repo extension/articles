@@ -22,7 +22,7 @@ class LearnSession < ActiveRecord::Base
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
   belongs_to :last_modifier, :class_name => "User", :foreign_key => "last_modified_by"
   
-  validates_presence_of :title, :description, :session_start, :session_length, :time_zone
+  validates_presence_of :title, :description, :session_start, :session_length, :time_zone, :location
   validates_format_of :recording, :with => /(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix, :message => "must be a valid URL." 
   
   ordered_by :orderings => {'Newest to oldest' => 'updated_at DESC'},
@@ -53,7 +53,7 @@ class LearnSession < ActiveRecord::Base
     t_start = self.session_start.in_time_zone(self.time_zone)
     
     content = self.description + "\n\n"
-    content << "Location: " + self.where + "\n\n" if !self.where.blank?
+    content << "Location: " + self.location + "\n\n" if !self.location.blank?
     content << "Session Start: " + t_start.strftime("%B %e, %Y at %l:%M %p %Z") + "\n" +
                "Session Length: " + self.session_length.to_s + " minutes\n"
     content << "Recording: " + self.recording if !self.recording.blank?
