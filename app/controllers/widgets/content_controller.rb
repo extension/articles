@@ -13,7 +13,7 @@ class Widgets::ContentController < ApplicationController
   
   # page with content widget builder
   def index
-    @launched_categories = Category.root_categories.show_to_public 
+    @launched_categories = Category.root_categories.show_to_public.all(:order => 'name')
     @default_quantity = DEFAULT_QUANTITY
     @default_width = DEFAULT_WIDTH
     @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => @default_quantity, :width => @default_width, :type => 'articles_faqs'}\"></script>"  
