@@ -1,0 +1,72 @@
+<fieldset id="presenters">
+    <%= hidden_field_tag "presenter_list_to_save", (learn_connections = get_learn_connections).nil? ? nil : learn_connections.map{|lc| lc.user_id}.join(',') %>
+
+    <p id="people_picker"><label>Presenters</label><%= text_field_tag :presenter_name, nil, { :autocomplete => "off" } %></p>
+    <div id="presenters_to_save">
+    <% if learn_connections %>
+       <%= render(:partial => "/learn/presenters", :locals => {:users => get_users_from_connections(learn_connections)}) %>
+    <% end %>
+    </div>
+
+    <%= observe_field(:presenter_name, :update => :presenter_list, :frequency => 0.6, :url => { :action => 'presenters_by_name' }, :with => "'name=' + value", :loading => "Element.show('loading')", :complete => "Element.hide('loading')") %>
+    <div id="loading" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
+
+    <div id="presenter_list" class="radius10">
+    </div>
+ </fieldset>
+ 
+ <fieldset id="description">
+    <p>
+       <%= learn_form.label :title, 'Title' %>
+       <%= learn_form.text_field :title %>
+    </p>
+
+    <p>
+       <%= learn_form.label :description, 'Description' %>
+       <%= learn_form.text_area :description, {:rows => "7"} %>
+    </p>
+ </fieldset>
+ 
+ <fieldset id="datetime">
+   <p>
+   <%= learn_form.label :session_start, 'Date and Time' %>
+   <%= calendar_date_select_tag :session_start, @learn_session.session_start ? format_time(@learn_session, @learn_session.session_start) : Time.parse("2:00").strftime('%Y-%m-%d %H:%M PM'), :time => true %>
+   </p>
+   
+   <p>
+   <%= learn_form.label :time_zone, 'Time Zone' %>
+   <%= learn_form.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)" %>
+   </p>
+   
+ </fieldset>
+   
+ <fieldset id="session_length">
+   <p>
+   <%= learn_form.label :session_length, 'Duration (in minutes)' %>
+   <%=  learn_form.text_field :session_length, :class => "xs" %>
+   </p>
+ </fieldset>
+ 
+ <fieldset>
+ <p>
+    <%= learn_form.label :where, 'Location (ie. http://connect.iastate.edu/learn)' %>
+    <%= learn_form.text_field :where, :class => "xxl" %>
+ </p>
+ 
+ <% if @learn_session.event_concluded? %>
+   <p>
+      <%= learn_form.label :recording, 'Recording' %>
+      <%= learn_form.text_field :recording %>
+   </p>
+ <% end %>
+ 
+ </fieldset>
+ 
+ <fieldset>
+   <p>
+     <%= learn_form.label :tags, 'Tags (comma separated -- eg. tools, information technology, widgets)' %>
+     <%= text_field_tag :tags, get_tags_for_learn_session, :class => "xxl" %>
+   </p>
+ </fieldset>
+
+ <p><%= submit_tag 'Save Session', :class => "bigbutton blue" %></p>

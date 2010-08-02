@@ -1090,6 +1090,71 @@ class Aae::ReportsController < ApplicationController
 		end	
 	end
  
+	def nonassignee
+	  # What is different about this report than the one above is that this one is counting responses of people who handled or responded
+	  # who were *not* assigned to do so in the first place.
+	     
+		# validate dates
+		@earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+		@latest_date = Date.today
+		@dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})           
+    
+		# aae filter routines
+		# TODO: simplify!!
+		list_view
+		set_filters    #pick up filters set in aae
+		filter_string_helper
+		@filteroptions = {:category => @category, :location => @location, :county => @county, :source => @source}
+   
+		#get list of assignee users  (expertise users)
+		# Roles (id,name)
+		# 1,Administrator
+		# 2,Community Administrator
+		# 3,Uncategorized Question Wrangler
+		# 4,Auto Route Questions
+		# 5,Receive Escalations
+		# 6,Auto Route Widget Questions
+
+		# sortorder
+		if(params[:sortorder] and ['d','descending','desc'].include?(params[:sortorder].downcase))
+			@sortorder = 'desc'
+		else
+			@sortorder = 'asc'
+		end
+		
+		if(params[:orderby] and ['name','total','handled','ratio','response_ratio','handled_average','hold_average','response_average','responded'].include?(params[:orderby]))
+			@orderby = params[:orderby]
+		else 
+			@orderby = 'name'
+		end
+	
+		@userlist = User.find(:all, :select => "DISTINCT users.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name #{@sortorder.upcase}")
+    nonassignee_hash={:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}
+    
+		# this will get counts for handled and responded without being assigned first, handling average refers only to the time someone took to handle something if they did assign it to themselves
+		# without being assigned first by someone else. Response averages are an approximation, calculated from last event.
+	  handlingcounts = User.aae_nonassigned_handling_event_count(nonassignee_hash)  
+	  responsecounts = User.aae_nonassigned_response_event_count(nonassignee_hash)    
+		handlingaverages = User.aae_nonassigned_handling_average(nonassignee_hash)        
+   	responseaverages = User.aae_nonassigned_response_average(nonassignee_hash)  
+		# let's merge this together
+		@display_list = []
+		@userlist.each do |u|
+			values = {}
+			values[:user] = u
+			values[:handled] = handlingcounts[u.id].nil? ? 0 : handlingcounts[u.id][:handled]
+			values[:handled_average] = handlingaverages[u.id].nil? ? 0 : handlingaverages[u.id]
+			values[:responded] = responsecounts[u.id].nil? ? 0 : responsecounts[u.id][:responded]
+	  	values[:response_average] = responseaverages[u.id].nil? ? 0 : responseaverages[u.id]
+
+			@display_list << values
+		end
+	
+		# now sort it, if the orderby is name, don't bother, it's already sorted from the mysql query
+		if(@orderby != 'name')
+			@display_list = ((@sortorder == 'asc') ? @display_list.sort!{|a,b| a[@orderby.to_sym] <=> b[@orderby.to_sym]} : @display_list.sort!{|a,b| b[@orderby.to_sym] <=> a[@orderby.to_sym]})
+		end	
+	end
 
     private 
 

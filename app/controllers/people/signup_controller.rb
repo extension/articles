@@ -78,6 +78,10 @@ class People::SignupController < ApplicationController
     if(!params[:signup_affiliation].blank?)
       @user.additionaldata = {} if @user.additionaldata.nil?
       @user.additionaldata.merge!({:signup_affiliation => Hpricot(params[:signup_affiliation].sanitize).to_html})
+    else
+      flash.now[:failure] = "Please let us know how you are involved with Cooperative Extension"
+      @locations = Location.displaylist
+      return render(:action => "new")
     end
     
     

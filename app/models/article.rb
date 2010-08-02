@@ -45,6 +45,15 @@ class Article < ActiveRecord::Base
    self.content_buckets = buckets
   end
   
+  def content_tag_names(forcecacheupdate = false)
+   # OPTIMIZE: keep an eye on this caching
+   cache_key = self.class.get_cache_key(this_method,{})
+   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.class.content_cache_expiry) do
+     self.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact.map{|t| t.name}
+   end
+  end
+  
+  
   def self.get_cache_key(method_name,optionshash={})
    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
    cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
@@ -208,22 +217,16 @@ class Article < ActiveRecord::Base
   end
   
   def to_atom_entry
-   xml = Builder::XmlMarkup.new(:indent => 2)
-   
-   xml.entry do
-    xml.title(self.title, :type => 'html')
-    xml.content(self.content, :type => 'html')
-    
-    self.tag_list.each do |cat|
-      xml.category "term" => cat  
+    Atom::Entry.new do |e|
+      e.title = Atom::Content::Html.new(self.title)
+      e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
+      e.authors << Atom::Person.new(:name => 'Contributors')
+      e.id = self.id_and_link
+      e.updated = self.wiki_updated_at
+      e.categories = self.content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
+      e.content = Atom::Content::Html.new(self.content)
     end
-    
-    xml.author { xml.name "Contributors" }
-    xml.id(self.id_and_link)
-    xml.link(:rel => 'alternate', :type => 'text/html', :href => self.id_and_link)
-    xml.updated self.wiki_updated_at.xmlschema
-   end
-  end  
+  end
   
   def self.find_by_title_url(url)
    return nil unless url

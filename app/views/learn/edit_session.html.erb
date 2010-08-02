@@ -1,0 +1,28 @@
+<% @page_title = "Editing \"#{@learn_session.title}\"" %>
+<% @form_title = "Edit this session" %>
+
+<div id="create_session">
+
+<%= error_messages_for :learn_session %>
+<%= render(:partial => "partial/flashmessages") %>
+
+<div id="primary" class="radius10 shadow">
+
+<% form_for :learn_session, :url => { :action => :edit_session, :id => @learn_session.id } do |learn_form| %>
+   
+   <h1><%= @form_title %></h1>
+   
+   <%= render(:partial => "/learn/session_form", :locals => {:learn_form => learn_form}) %>
+  
+<% end %>
+</div>
+
+<section id="two_col_col_two">
+   <aside id="secondary" class="radius10">
+     <p>
+       <%= button_to "Delete Session", {:action => :delete_event, :id => @learn_session.id}, :confirm => "Are you sure you want to delete this session?" %>   
+     </p> 
+   </aside>
+</section>
+
+</div>

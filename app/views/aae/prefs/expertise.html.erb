@@ -14,35 +14,46 @@
 <br class="clear"/>
 
 <h2>In What Areas of Expertise Can You Answer Questions?</h2>
-<p>These preferences are indicated on your Ask an Expert profile for other experts to see. Question Wranglers search these areas of expertise when assigning questions.</p>
+<p>These preferences are indicated on your Ask an Expert profile for other experts to see. Question Wranglers search these areas of expertise when assigning questions.  You can <%= link_to('browse the list of expertise areas', {:controller => '/aae/expertise', :action => :categories}) %> to see colleagues signed up for these areas and get feeds of incoming questions for each area of expertise.</p>
+<p>
+  <span class="publicicon">Listed on the www.extension.org Ask form</span>
+</p>
     
     <div id="areas_of_expertise">
-    <ul id="expertiselist">
-    <% @categories.each do |cat| %>
-        <li id="<%= cat.id %>"> 
-            <span class="aaecategory"><%= check_box_tag "areas_of_expertise[]", cat.id, @current_user_categories.include?(cat), { :id => "areas_of_expertise#{cat.id}"} %> <%= link_to cat.name, {:controller => 'aae/search', :action => 'experts_by_category', :id => cat.id } %></span>
+    <ul id="expertisepreflist">
+    <% @categories.each do |category| %>
+      <%- subcategorycount = category.children.count -%>
+    
+      <%- expertcount = category.users.count %>
+    
+        <li id="expertisecategory_<%= category.id %>" class="expertiselisting <%= @current_user_categories.include?(category)  ? "highlight " : '' %>"> 
+            <%- if category.show_to_public? -%>
+              <div class="public">
+            <%- else -%>
+              <div class="notpublic">
+            <%- end -%>
+            <span class="aaecategory">
+            <%= check_box_tag "areas_of_expertise[]", category.id, @current_user_categories.include?(category), { :id => "areas_of_expertise#{category.id}"} %> <%= category.name %>
+            </span>
             
-            <% if cat.children.length > 0 %>
-                <span class="subcats"><%= cat.children.length %> subcategories</span>
+            <% if subcategorycount > 0 %>
+                <span class="subcats"><%= subcategorycount %> subcategories</span>
             <% else %>
                 <span class="subcats">&nbsp;</span>
             <% end %>
         
-        <span class="syndication"><%= link_to 'feed', :controller => 'aae/feeds', :action => 'expertise', :legacycategory => cat.id %></span>
-        <span id="loading_<%= cat.id %>" class="float-spinner" style="display:none">Saving...</span>
+        <span id="loading_<%= category.id %>" class="float-spinner" style="display:none">Saving...</span>
         
-        <%= observe_field("areas_of_expertise#{cat.id}",
+        <%= observe_field("areas_of_expertise#{category.id}",
                           :url       => { :action => :expertise },
-                          :with      => "'category=#{cat.id}'",
-                          :loading => "Element.show('loading_#{cat.id}')",
-                          :complete    => "Element.hide('loading_#{cat.id}')") %>
+                          :with      => "'category=#{category.id}'") %>
         
-        <ul class="aoe_subcat" id="subcategory_div<%= cat.id %>" >
-          <% if @current_user_categories.include?(cat) and cat.children.length > 0 %>
-             <%= render(:partial => "subcategories", :locals => {:top_level_category => cat}) %>
+        <ul class="aoe_subcat" id="subcategory_div<%= category.id %>">
+          <% if @current_user_categories.include?(category) and subcategorycount > 0 %>
+             <%= render(:partial => "subcategories", :locals => {:top_level_category => category}) %>
           <% end %>
         </ul>
-        
+        </div>
         </li>
     <% end %>
 </ul>
