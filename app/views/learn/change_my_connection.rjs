@@ -1,1 +1,2 @@
 page.visual_effect :highlight, "sessionconnection"
+page.replace_html "attendees", :partial => 'connected_users'

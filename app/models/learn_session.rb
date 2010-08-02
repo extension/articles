@@ -33,6 +33,14 @@ class LearnSession < ActiveRecord::Base
     self.session_end = self.session_start + (self.session_length * 60)
   end
   
+  def connected_users(connectiontype)
+    if[LearnConnection::PRESENTER,LearnConnection::INTERESTED,LearnConnection::ATTENDED].include?(connectiontype)
+      self.users.find(:all, :conditions => "learn_connections.connectiontype = '#{connectiontype}'")
+    else
+      return []
+    end
+  end
+  
   def event_concluded?
     if(!self.session_end.blank?)
       return (Time.now.utc > self.session_end)

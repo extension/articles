@@ -25,6 +25,13 @@ class LearnController < ApplicationController
       return
     end
     
+    if @learn_session.event_started?
+      @connected_users = @learn_session.connected_users(LearnConnection::ATTENDED)
+    else
+      @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
+    end
+    
+    
     @session_start = @learn_session.session_start.in_time_zone(@learn_session.time_zone)
   end
   
@@ -303,6 +310,12 @@ class LearnController < ApplicationController
          @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,false)
          UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed attendance at learn: #{@learn_session.title}")
        end
+     end
+     
+     if @learn_session.event_started?
+       @connected_users = @learn_session.connected_users(LearnConnection::ATTENDED)
+     else
+       @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
      end
     
     respond_to do |format|
