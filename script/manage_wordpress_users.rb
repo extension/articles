@@ -97,7 +97,7 @@ def set_admin_privs(connection,wordpressdatabase,mydatabase)
   
   puts "updating the user_meta table - setting admin privs..."
   
-  sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.user_roles.user_id, #{mydatabase}.user_roles.user_id, 'wp_capabilities', '#{@admin_privs}' FROM #{mydatabase}.user_roles WHERE #{mydatabase}.user_roles.role_id = 1;"
+sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.users.id, #{mydatabase}.users.id, 'wp_capabilities', '#{@admin_privs}' FROM #{mydatabase}.users WHERE #{mydatabase}.users.is_admin = 1;"
   
   # execute the sql
   begin
