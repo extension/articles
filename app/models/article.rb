@@ -45,6 +45,15 @@ class Article < ActiveRecord::Base
    self.content_buckets = buckets
   end
   
+  def content_tag_names(forcecacheupdate = false)
+   # OPTIMIZE: keep an eye on this caching
+   cache_key = self.class.get_cache_key(this_method,{})
+   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.class.content_cache_expiry) do
+     self.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact.map{|t| t.name}
+   end
+  end
+  
+  
   def self.get_cache_key(method_name,optionshash={})
    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
    cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
@@ -214,7 +223,7 @@ class Article < ActiveRecord::Base
       e.authors << Atom::Person.new(:name => 'Contributors')
       e.id = self.id_and_link
       e.updated = self.wiki_updated_at
-      e.categories = self.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact.map{|tag| Atom::Category.new({:term => tag.name, :scheme => url_for(:controller => 'main', :action => 'index')})}
+      e.categories = self.content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
       e.content = Atom::Content::Html.new(self.content)
     end
   end
