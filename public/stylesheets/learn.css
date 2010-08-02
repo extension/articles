@@ -113,7 +113,6 @@ span.recording_available {background: transparent url(/images/common/television.
 #attendees {background:#fff;}
 #attendees h3 {font-size:1.4em;}
 #attendees ul {margin-left:5px;}
-#attendees {display:none;}
 /* sticky footer
 -----------------------------------------------------------------------------*/
 html, body {height: 100%;}
