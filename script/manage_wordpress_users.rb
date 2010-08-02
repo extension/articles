@@ -84,7 +84,7 @@ def set_editor_privs(connection,wordpressdatabase,mydatabase)
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
+    $stderr.puts "ERROR: Exception raised during the editor user_meta table update: #{err}"
     return false
   end
   
@@ -104,7 +104,7 @@ sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
+    $stderr.puts "ERROR: Exception raised during the admin user_meta table update: #{err}"
     return false
   end
   
@@ -124,11 +124,11 @@ def set_expired_privs(connection,wordpressdatabase,mydatabase)
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
+    $stderr.puts "ERROR: Exception raised during the expired user_meta table update: #{err}"
     return false
   end
   
-  puts "user_meta table updated - editors set..."
+  puts "user_meta table updated - retired accounts expired..."
   return true
   
 end
