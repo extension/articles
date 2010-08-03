@@ -55,7 +55,7 @@ module Extension
           if(!taggings_we_want.empty?)
             {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
           else
-            {}
+            {:conditions => "1 = 0"}
           end
         }
       end
@@ -106,7 +106,7 @@ module Extension
           if(!taggings_we_want.empty?)
             {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
           else
-            {}
+            {:conditions => "1 = 0"}
           end
         }
       end
