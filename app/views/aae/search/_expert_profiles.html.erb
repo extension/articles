@@ -13,7 +13,7 @@
         <li class="profile mute"><%= user.fullname %> (Not available)</li>
     <% else %>
         
-        <li id="<%= "user_trigger_#{user.id}" %>">
+        <li id="<%= "user_trigger_#{user.id}" %>" <%= user.is_question_wrangler? ? "class='qw'" : "" %>>
         
         <!-- this link will get replaced when profile information is expanded -->
         <!-- populate_profile is used to determine whether the profile information that expands under the expert's name -->

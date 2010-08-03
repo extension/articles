@@ -1,0 +1,115 @@
+<% @page_title = @learn_session.title %>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<div id="two_col_col_one">
+   <section id="event">
+   <h1>
+   <%= @learn_session.title %>
+   </h1>
+
+   <p class="description"><%= format_text_for_display(@learn_session.description) %></p>
+
+   <h3>Presented by</h3>
+   <p id="presenters">
+      <% count = 0 %>
+         <% @learn_session.presenters.each do |presenter| %>
+         <% if count > 0 %>, 
+         <% end %>
+         <%= link_to_user(presenter) %> 
+         <% count = count + 1 %>
+      <% end %>  
+     </p>
+      
+      <h4>Tags</h4>
+      <p id="tags">
+      <% if @learn_session.tags.length != 0 %>  
+      <%= @learn_session.tags.collect{|t| link_to t.name, :action => :events, :sessiontype => "by_tag", :tag => t.name}.join(Tag::JOINER) %>
+      <% else %>
+      There are no tags at this time
+      <% end %>
+      </p>
+      
+      
+        <% if @learn_session.event_concluded? %>
+          <% if @learn_session.recording.blank? %>
+            <p class="no_recording_available">
+            There are currently no recordings posted yet.
+            </p>
+          <% else %>
+          <h3>Watch</h3>
+            <p class="recording_available">
+               <%= link_to(@learn_session.recording, @learn_session.recording) %>
+            </p>
+          <% end %>
+        <% else %>
+          <p>View and Participate: <%= link_to(@learn_session.location, @learn_session.location) %></p>
+          <p>Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)</p>
+        <% end %>
+        
+        <% if @currentuser %>
+          <p><span class="edit"><%= link_to 'edit this event', :action => :edit_session, :id => @learn_session.id %></span></p>
+        <% end %>
+   </section>
+</div>
+
+<section id="two_col_col_two">
+   <aside id="event_time" class="radius10">
+      
+      <% if @learn_session.event_concluded? %>
+      
+         <% if @learn_session.recording.blank? %>
+            <h3>No Recording Yet</h3>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong>. A recording of this session has not been uploaded yet.</p>
+          <% else %>
+          <h3>Watch</h3>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong></p>
+            <p class="recording_available">
+               <%= link_to("watch recording", @learn_session.recording) %>
+            </p>
+          <% end %>
+      
+      <% else %>
+
+      <h2>
+         <span id="session_date"><%= @session_start.strftime("%B %e, %Y") %></span>
+         <div class="calendarblock">
+            <span class="month"><%= @session_start.strftime("%b") %></span>
+            <span class="date"><%= @session_start.strftime("%d") %></span>
+         </div>
+         <span id="session_date_time">
+            <span id="time"><%= @session_start.strftime("%l:%M %p").downcase %> <span id="timezone"><%= format_time_zone(@learn_session.time_zone) %></span></span>
+         </span>
+      </h2>   
+      
+      <p id="session_duration"><strong><%= "#{@learn_session.session_length}" %> minute</strong> session</p>
+      
+      <p>
+       <%= label_tag :time_zone_label, 'Convert Time Zone' %>
+       <%= select_tag :time_zone, time_zone_options_for_select(@learn_session.time_zone, ActiveSupport::TimeZone.us_zones) %>
+      </p>
+      <div id="loading_tz" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
+      
+      <%= observe_field(:time_zone,
+                        :url       => { :action => :update_time_zone, :id => @learn_session.id },
+                        :with      => "'new_time_zone='+escape(value)",
+                        :loading => "Element.show('loading_tz')", 
+                        :complete => "Element.hide('loading_tz')") %>
+                        
+      <% end %>
+   </aside>
+   
+   <%- if @currentuser -%>
+    <aside id="sessionconnection" class="radius10">
+      <%= render(:partial => 'auth_session_connection') %>
+    </aside> 
+   <%- end -%>
+
+   <aside id="attendees" class="radius10">   
+     <%= render(:partial => 'connected_users') %>
+   </aside>
+   
+   
+   
+   
+</section>

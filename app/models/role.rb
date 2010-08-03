@@ -11,7 +11,6 @@ class Role < ActiveRecord::Base
 
   ESCALATION = "Receive Escalations"
   AUTO_ROUTE = 'Auto Route Questions'
-  ADMINISTRATOR = 'Administrator'
   COMMUNITY_ADMINISTRATOR = 'Community Administrator'
   WIDGET_AUTO_ROUTE = 'Auto Route Widget Questions'
   

@@ -1,0 +1,41 @@
+<% @page_title = "Ask an Expert Expertise Categories" %>
+
+<a name="top"></a>
+
+<%= render(:partial => "partial/flashmessages") %>
+
+<br class="clear"/>
+
+<h2>Ask an Expert Expertise Categories</h2>
+<p>This list of categories is presented to experts for selecting Areas of Expertise preferences, and for (optionally) displaying on the Ask form at www.extension.org for category matching for routing questions.</p>
+
+<p>
+   <span class="publicicon">Listed on the www.extension.org Ask form</span>
+   <span class="yourexpertise">You are signed up as an expert (<%= link_to('manage your expertise preferences', :controller => 'aae/prefs', :action => :expertise)%>)</span>
+</p>
+
+<%- if(admin_mode?)-%>  
+   <p><%= link_to_function("Add a new category", "Effect.toggle('addnewcategory','blind', { duration: .4});") %></p>
+   <div id="addnewcategory" style='display:none;'>
+      <% form_tag :action => 'add_category' do %>
+         <p>
+            <label for="category_name">Name</label>
+            <%= text_field 'category', 'name'  %> <%= submit_tag "Save" %>
+         </p>
+      <% end %>
+   </div>
+<%- end -%>
+
+    
+<div id="areas_of_expertise" class="categories">
+   <ul id="expertiselist">
+      <% @categories.each do |category| %>
+         <li id="expertisecategory_<%= category.id %>" class="expertiselisting <%= @current_user_categories.include?(category)  ? "highlight " : '' %>">
+            <%= render(:partial => "category_listitem", :locals => {:category => category}) %>
+         </li>
+      <%- end -%>
+   </ul>
+</div>
+
+
+<br class="clear"/>

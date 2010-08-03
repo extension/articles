@@ -79,7 +79,7 @@ module ApplicationHelper
   def options_from_categories(selected = nil)
     categories = Array.new
 
-    categories = Category.root_categories.collect { |cat| [cat.name, cat.id] }
+    categories = Category.root_categories.all(:order => 'name').collect { |cat| [cat.name, cat.id] }
 
     categories.insert(0, [Category::UNASSIGNED, Category::UNASSIGNED])
     categories.insert(0, ["All categories", Category::ALL])
@@ -89,6 +89,20 @@ module ApplicationHelper
     else
       options_for_select(categories, selected)
     end    
+  end
+  
+  # right now, we're only doing the pretty timezone display mappings for 
+  # the major US timezones
+  def format_time_zone(tz)
+    timezone_map = {"Eastern Time (US & Canada)" => "ET",
+    "Central Time (US & Canada)" => "CT",
+    "Mountain Time (US & Canada)" => "MT",
+    "Pacific Time (US & Canada)" => "PT"}
+    if timezone_map[tz]
+      return timezone_map[tz]
+    else
+      return tz
+    end
   end
   
   def time_print(time)
@@ -102,6 +116,7 @@ module ApplicationHelper
   def humane_date(time)
      time.strftime("%B %e, %Y, %l:%M %p")
   end
+  
   
   # http://blog.macromates.com/2006/wrapping-text-with-regular-expressions/
   def wrap_text(txt, col=120)

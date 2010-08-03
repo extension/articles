@@ -1,0 +1,12 @@
+<%- if(!@connected_users.blank?) -%>
+     <%- if @learn_session.event_started? -%>
+       <h3>Attended this session</h3>
+     <%- else -%>
+       <h3>Interested in this session</h3>
+     <%- end -%>
+     <ul>
+        <%- @connected_users.each do |u| -%>
+          <li><%= link_to_user(u)%></li>
+         <%- end -%>
+     </ul>
+<%- end -%>

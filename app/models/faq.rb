@@ -20,10 +20,19 @@ class Faq < ActiveRecord::Base
   
   has_many :expert_questions
   
+  
   def self.get_cache_key(method_name,optionshash={})
     optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
     cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
     return cache_key
+  end
+  
+  def content_tag_names(forcecacheupdate = false)
+   # OPTIMIZE: keep an eye on this caching
+   cache_key = self.class.get_cache_key(this_method,{})
+   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.class.content_cache_expiry) do
+     self.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact.map{|t| t.name}
+   end
   end
   
   def self.main_recent_list(options = {},forcecacheupdate=false)
@@ -123,22 +132,14 @@ class Faq < ActiveRecord::Base
   end
   
   def to_atom_entry
-    xml = Builder::XmlMarkup.new(:indent => 2)
-    
-    xml.entry do
-      xml.title(self.question, :type => 'html')
-      xml.content(self.answer, :type => 'html')
-      
-      if self.categories
-        self.categories.split(',').each do |cat|
-          xml.category "term" => cat  
-        end
-      end
-      
-      xml.author { xml.name "Contributors" }
-      xml.id(self.id_and_link)
-      xml.link(:rel => 'alternate', :type => 'text/html', :href => self.id_and_link)
-      xml.updated self.heureka_published_at.xmlschema
+    Atom::Entry.new do |e|
+      e.title = Atom::Content::Html.new(self.question)
+      e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
+      e.authors << Atom::Person.new(:name => 'Contributors')
+      e.id = self.id_and_link
+      e.updated = self.heureka_published_at
+      e.categories = self.content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
+      e.content = Atom::Content::Html.new(self.answer)
     end
   end  
     

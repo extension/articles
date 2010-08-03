@@ -122,7 +122,7 @@
     <ul id="profile_roles">
       <%= @auto_route_msg %>
        <% if @user.is_question_wrangler? %>
-         <li>Belongs to the <strong>Question Wrangler Community</strong></li>
+         <li class="qw">Belongs to the <strong>Question Wrangler Community</strong></li>
        <% end %>
        <% @user.user_roles.each do |ur| %>
          <li><%= ur %></li>

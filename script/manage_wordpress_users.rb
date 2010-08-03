@@ -11,6 +11,7 @@ progopts = GetoptLong.new(
 @wordpressdatabase = 'demo_aboutblog'
 @editor_privs = "a:1:{s:6:\"editor\";s:1:\"1\";}"
 @admin_privs = "a:1:{s:13:\"administrator\";b:1;}"
+@expired_privs = "a:0:{}"
 
 progopts.each do |option, arg|
   case option
@@ -83,7 +84,7 @@ def set_editor_privs(connection,wordpressdatabase,mydatabase)
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
+    $stderr.puts "ERROR: Exception raised during the editor user_meta table update: #{err}"
     return false
   end
   
@@ -97,17 +98,37 @@ def set_admin_privs(connection,wordpressdatabase,mydatabase)
   
   puts "updating the user_meta table - setting admin privs..."
   
-  sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.user_roles.user_id, #{mydatabase}.user_roles.user_id, 'wp_capabilities', '#{@admin_privs}' FROM #{mydatabase}.user_roles WHERE #{mydatabase}.user_roles.role_id = 1;"
+sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.users.id, #{mydatabase}.users.id, 'wp_capabilities', '#{@admin_privs}' FROM #{mydatabase}.users WHERE #{mydatabase}.users.is_admin = 1;"
   
   # execute the sql
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
+    $stderr.puts "ERROR: Exception raised during the admin user_meta table update: #{err}"
     return false
   end
   
   puts "user_meta table updated - admins set..."
+  return true
+  
+end
+
+def set_expired_privs(connection,wordpressdatabase,mydatabase)
+  ####### # update the user_meta table - disable users that are retired in people
+  
+  puts "updating the user_meta table - expiring retired accounts..."
+  
+  sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.users.id, #{mydatabase}.users.id, 'wp_capabilities', '#{@expired_privs}' FROM #{mydatabase}.users WHERE #{mydatabase}.users.retired = 1;"
+  
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the expired user_meta table update: #{err}"
+    return false
+  end
+  
+  puts "user_meta table updated - retired accounts expired..."
   return true
   
 end
@@ -120,3 +141,5 @@ mydatabase = User.connection.instance_variable_get("@config")[:database]
 result = update_from_darmok_users(User.connection,@wordpressdatabase,mydatabase)
 result = set_editor_privs(User.connection,@wordpressdatabase,mydatabase)
 result = set_admin_privs(User.connection,@wordpressdatabase,mydatabase)
+result = set_expired_privs(User.connection,@wordpressdatabase,mydatabase)
+

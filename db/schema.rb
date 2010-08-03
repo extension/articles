@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100716141139) do
+ActiveRecord::Schema.define(:version => 20100802181352) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -169,10 +169,11 @@ ActiveRecord::Schema.define(:version => 20100716141139) do
   create_table "categories", :force => true do |t|
     t.string   "name"
     t.string   "default_keyword"
-    t.integer  "community_id",    :default => 0, :null => false
+    t.integer  "community_id",    :default => 0,     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "parent_id"
+    t.boolean  "show_to_public",  :default => false
   end
 
   add_index "categories", ["community_id"], :name => "community_id_idx"
@@ -460,6 +461,9 @@ ActiveRecord::Schema.define(:version => 20100716141139) do
     t.datetime "updated_at"
   end
 
+  add_index "learn_connections", ["learn_session_id", "connectiontype"], :name => "index_learn_connections_on_learn_session_id_and_connectiontype"
+  add_index "learn_connections", ["user_id", "public_user_id"], :name => "index_learn_connections_on_user_id_and_public_user_id"
+
   create_table "learn_sessions", :force => true do |t|
     t.text     "title",            :null => false
     t.text     "description",      :null => false
@@ -467,13 +471,15 @@ ActiveRecord::Schema.define(:version => 20100716141139) do
     t.datetime "session_end",      :null => false
     t.string   "time_zone",        :null => false
     t.integer  "session_length",   :null => false
-    t.text     "where"
+    t.text     "location"
     t.text     "recording"
     t.integer  "created_by",       :null => false
     t.integer  "last_modified_by", :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
   end
+
+  add_index "learn_sessions", ["session_start", "session_end"], :name => "index_learn_sessions_on_session_start_and_session_end"
 
   create_table "linkings", :force => true do |t|
     t.integer  "content_link_id"

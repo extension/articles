@@ -116,6 +116,10 @@ class User < ActiveRecord::Base
   
   # has_many :invitations
   
+  has_many :learn_connections
+  has_many :learn_sessions, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, learn_sessions.*"
+  
+  
   after_update :update_chataccount
   before_validation :convert_phonenumber
   before_save :check_status, :generate_feedkey
@@ -204,7 +208,7 @@ class User < ActiveRecord::Base
    {:include => :expertise_areas, :conditions => "expertise_areas.category_id = #{category_id}", :order => "last_name,first_name ASC"}
   }
   
-  named_scope :question_responders, :conditions => {:aae_responder => true}
+  named_scope :aae_responders, :conditions => {:aae_responder => true}
   
   
   # all experts who have a particular location marked either in their aae prefs OR in their people profile
@@ -871,6 +875,11 @@ class User < ActiveRecord::Base
    return (self.connection_with_community(community) == 'leader')
   end
   
+  def is_aae_auto_router?
+    route_role = Role.find_by_name(Role::AUTO_ROUTE)
+    self.roles.include?(route_role) and self.aae_responder?
+  end  
+  
   def connection_with_community(community)
    connection = Communityconnection.find_by_user_id_and_community_id(self.id,community.id)
    if(connection.nil?)
@@ -1139,6 +1148,19 @@ class User < ActiveRecord::Base
     connection.update_attribute(:sendnotifications,notification)
    end
   end
+  
+  def update_connection_to_learn_session(learn_session,connectiontype,connected=true)
+    connection = self.learn_connections.find(:first, :conditions => "connectiontype = #{connectiontype} and learn_session_id = #{learn_session.id}")
+    if(!connection.nil?)
+      if(!connected)
+        connection.destroy
+      end
+    elsif(connected == true)
+      LearnConnection.create(:learn_session_id => learn_session.id, :user_id => self.id, :connectiontype => connectiontype, :email => self.email)
+    end
+  end
+        
+    
  
   def is_sudoer?
    return AppConfig.configtable['sudoers'][self.login.downcase]
@@ -1613,7 +1635,7 @@ class User < ActiveRecord::Base
     
     if county
       expertise_county = ExpertiseCounty.find(:first, :conditions => {:fipsid => county.fipsid}) 
-      eligible_wranglers = User.question_wranglers.experts_by_county(expertise_county).question_responders
+      eligible_wranglers = User.question_wranglers.experts_by_county(expertise_county).aae_responders
     end
    
     if location and (!eligible_wranglers or eligible_wranglers.length == 0) 
@@ -1671,16 +1693,15 @@ class User < ActiveRecord::Base
    #   builds on the submmitted question event association to return stat values for reporting
   
     
-   # aae_handling_event_count 
-   #  gets the total number of handling events that occur - grouped by the previous recipient.  
-   #  This should essentially be the number of assignments made to an individual - minus any 
-   #  open assignments (because we are calculating a rate, and open assignment don't fit into that)
+   # aae_nonassigned_handling_event_count 
+   #  gets the total number of handling events that occur - grouped by current initiator. The conditions warrant that the current initiator
+   # is NOT the same as the previous_handling_recipient 
     #  gets the number of those handling events that they handled 
-    #  gets the ratio of the two.
-   #   returns a hash keyed by user object or user_id if the group_by_id option is present
-   def self.aae_handling_event_count(options = {})
-    # group by user id's or user objects?
-    group_clause = (options[:group_by_id] ? 'previous_handling_recipient_id' : 'previous_handling_recipient')
+    #  returns a hash keyed by user_id 
+       
+   def self.aae_nonassigned_handling_event_count(options = {})
+    # group by user ids 
+    group_clause = 'initiated_by_id' 
     # default date interval is 6 months
     dateinterval = options[:dateinterval] || '6 MONTHS'
     
@@ -1691,23 +1712,17 @@ class User < ActiveRecord::Base
     end
 
     if(!options[:limit_to_handler_ids].blank?)
-      conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
+      conditions << "intiated_by_id IN (#{options[:limit_to_handler_ids].join(',')})"
     end
     
-    if(!options[:submitted_question_filter].nil?)
-      totals_hash = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
-    else
-      totals_hash = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
-    end
-      
 
-    # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
-    conditions = ["initiated_by_id = previous_handling_recipient_id"]
+    # get the total number of handling events for which I am the current initiator *and* I was not the previous_handling_recipient_id 
+    conditions = ["initiated_by_id <> previous_handling_recipient_id and previous_handling_recipient_id <> 1 "]
     if(!dateinterval.nil?)
       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
     end
     if(!options[:limit_to_handler_ids].blank?)
-      conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
+      conditions << "initiated_by_id IN (#{options[:limit_to_handler_ids].join(',')})"
     end
     
     if(!options[:submitted_question_filter].nil?)
@@ -1717,18 +1732,13 @@ class User < ActiveRecord::Base
     end
 
     # loop through the total list, build a return hash
-    # that will return the values per user_id (or user object)
+    # that will return the values per user_id 
     returnvalues = {}
-    totals_hash.keys.each do |groupkey|
-      total = totals_hash[groupkey]
-      handled = (handled_hash[groupkey].nil?? 0 : handled_hash[groupkey])
-      # calculate a floating point ratio
-      if(handled > 0)
-       ratio = handled.to_f / total.to_f
-      else
-       ratio = 0
-      end
-      returnvalues[groupkey] = {:total => total, :handled => handled, :ratio => ratio}
+    handled_hash.keys.each do |groupkey|
+     
+      handled =  handled_hash[groupkey]
+     
+      returnvalues[groupkey] = { :handled => handled}
     end
 
     return returnvalues
@@ -1745,6 +1755,104 @@ class User < ActiveRecord::Base
     end
     return returnvalues
    end
+   
+   def self.aae_handling_event_count(options = {})
+     # group by user id's or user objects?
+     group_clause = (options[:group_by_id] ? 'previous_handling_recipient_id' : 'previous_handling_recipient')
+     # default date interval is 6 months
+     dateinterval = options[:dateinterval] || '6 MONTHS'
+
+     # get the total number of handling events
+     conditions = []      
+     if(!dateinterval.nil? )
+       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+     end
+
+     if(!options[:limit_to_handler_ids].blank?)
+       conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
+     end
+
+     if(!options[:submitted_question_filter].nil?)
+       totals_hash = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
+     else
+       totals_hash = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
+     end
+
+
+     # get the total number of handling events for which I am the previous recipient *and* I was the initiator.
+     conditions = ["initiated_by_id = previous_handling_recipient_id"]
+     if(!dateinterval.nil?)
+       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+     end
+     if(!options[:limit_to_handler_ids].blank?)
+       conditions << "previous_handling_recipient_id IN (#{options[:limit_to_handler_ids].join(',')})"
+     end
+
+     if(!options[:submitted_question_filter].nil?)
+       handled_hash = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
+     else
+       handled_hash = SubmittedQuestionEvent.handling_events.count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
+     end
+
+     # loop through the total list, build a return hash
+     # that will return the values per user_id (or user object)
+     returnvalues = {}
+     totals_hash.keys.each do |groupkey|
+       total = totals_hash[groupkey]
+       handled = (handled_hash[groupkey].nil?? 0 : handled_hash[groupkey])
+       # calculate a floating point ratio
+       if(handled > 0)
+        ratio = handled.to_f / total.to_f
+       else
+        ratio = 0
+       end
+       returnvalues[groupkey] = {:total => total, :handled => handled, :ratio => ratio}
+     end
+
+     return returnvalues
+    end
+    
+     # aae_nonassigned_handling_average 
+     #   gets the handling average (in seconds) for those conditions where the 
+     #   someone not immediately assigned handles the question.  
+     def self.aae_nonassigned_handling_average(options = {})
+      # group by user id's or user objects?
+      group_clause = 'initiated_by_id' 
+      # default date interval is 6 months
+      dateinterval = options[:dateinterval] || '6 MONTHS'
+
+      # get the total number of handling events for which I am *not* the previous recipient *and* I was the initiator 
+      conditions = ["initiated_by_id <> previous_handling_recipient_id and previous_handling_recipient_id <> 1"]
+      if(!dateinterval.nil?)
+        conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+      end
+
+      if(options[:limit_to_handler_ids])
+        conditions << "initiated_by_id IN (#{options[:limit_to_handler_ids].join(',')})"
+      end
+
+      if(!options[:submitted_question_filter].nil?)
+        handlingaverages = SubmittedQuestionEvent.handling_events.submitted_question_filtered(options[:submitted_question_filter]).average('duration_since_last', :conditions => conditions.compact.join(' AND '),:group => group_clause)
+      else
+        handlingaverages = SubmittedQuestionEvent.handling_events.average('duration_since_last', :conditions => conditions.compact.join(' AND '),:group => group_clause)
+      end
+
+      return handlingaverages
+     end
+
+     # instance method version of aae_handling_average
+     def aae_handling_average(options = {})
+      myoptions = options.merge({:group_by_id => true, :limit_to_handler_ids => [self.id]})
+      result = User.aae_handling_average(myoptions)
+      if(result and result[self.id])
+        returnvalues = result[self.id]
+      else
+        returnvalues = 0
+      end
+      return returnvalues
+     end
+    
+   
 
    # aae_handling_average 
    #   gets the handling average (in seconds) for those conditions where the 
@@ -1827,6 +1935,55 @@ class User < ActiveRecord::Base
     end
     return returnvalues
    end
+   
+    # aae_nonassigned_response_event_count
+    
+    #   gets the total response events for the current initiator not previously assigned
+    #  
+    #   returns a hash keyed by user_id 
+    def self.aae_nonassigned_response_event_count(options = {})
+     # group by user id's or user objects?
+     group_clause = 'initiated_by_id'
+     # default date interval is 6 months
+     dateinterval = options[:dateinterval] || '6 MONTHS'
+
+     # get the total number of handling events
+     conditions = []      
+     if(!dateinterval.nil? )
+       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+     end
+
+     if(!options[:limit_to_handler_ids].blank?)
+       conditions << "initiated_by_id IN (#{options[:limit_to_handler_ids].join(',')}) "
+     end
+
+     # get the total number of handling events for which I was *not* the previous recipient *and* I was the initiator 
+     conditions = ["initiated_by_id <> previous_handling_recipient_id and previous_handling_recipient_id <> 1 "]
+     if(!dateinterval.nil?)
+       conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+     end
+     if(!options[:limit_to_handler_ids].blank?)
+       conditions << "initiated_by_id IN (#{options[:limit_to_handler_ids].join(',')})"
+     end
+
+     if(!options[:submitted_question_filter].nil?)
+       responded_hash = SubmittedQuestionEvent.response_events.submitted_question_filtered(options[:submitted_question_filter]).count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
+     else
+       responded_hash = SubmittedQuestionEvent.response_events.count(:all, :conditions => conditions.compact.join(' AND '), :group => group_clause)
+     end
+
+     # loop through the total list, build a return hash
+     # that will return the values per user_id 
+     returnvalues = {}
+     responded_hash.keys.each do |groupkey|
+      
+       responded =  responded_hash[groupkey]
+      
+       returnvalues[groupkey] = { :responded => responded}
+     end
+
+     return returnvalues
+    end
 
    # aae_response_event_count
    #  gets the total number of handling events that occur - grouped by the previous recipient.  
@@ -1903,6 +2060,35 @@ class User < ActiveRecord::Base
     end
     return returnvalues
    end
+   
+   #  This is a response judged by the time from the last event,  not the time of when the question
+   #  came in. Somewhat dubious since we don't know when exactly the responder got involved. We can only guess it was sometime after
+   # the last event. Not necessarily the last handling event, just any event.
+   def self.aae_nonassigned_response_average(options = {})
+    # group by user id's or user objects?
+    group_clause =  'initiated_by_id'
+    # default date interval is 6 months
+    dateinterval = options[:dateinterval] || '6 MONTHS'
+    
+    # get the total number of handling events for which I was not the previous recipient  but I was the initiator 
+    conditions = ["initiated_by_id <> previous_handling_recipient_id and previous_handling_recipient_id <> 1"]
+    if(!dateinterval.nil?)
+      conditions << SubmittedQuestionEvent.build_date_condition({:dateinterval => dateinterval})
+    end
+
+    if(options[:limit_to_handler_ids])
+      conditions << "initiated_by_id IN (#{options[:limit_to_handler_ids].join(',')})"
+    end
+    
+    if(!options[:submitted_question_filter].nil?)
+      responseaverages = SubmittedQuestionEvent.response_events.submitted_question_filtered(options[:submitted_question_filter]).average('duration_since_last', :conditions => conditions.compact.join(' AND '),:group => group_clause)
+    else
+      responseaverages = SubmittedQuestionEvent.response_events.average('duration_since_last', :conditions => conditions.compact.join(' AND '),:group => group_clause)
+    end
+    
+    return responseaverages
+   end    
+   
 
    # aae_response_average 
    #   gets the handling average (in seconds) for those conditions where the 
@@ -2058,7 +2244,7 @@ class User < ActiveRecord::Base
    expertise_location = ExpertiseLocation.find(:first, :conditions => {:fipsid => location.fipsid})
    # get experts signed up to receive questions from that location but take out anyone who 
    # elected to only receive questions in their county
-   location_wranglers = User.question_wranglers.experts_by_location(expertise_location).question_responders - User.experts_by_county_only
+   location_wranglers = User.question_wranglers.experts_by_location(expertise_location).aae_responders - User.experts_by_county_only
   end
   
   def self.get_cat_loc_conditions(category, location, county)
@@ -2085,5 +2271,7 @@ class User < ActiveRecord::Base
 
     (filtered_users and filtered_users != '') ? (return "users.id IN (#{filtered_users})") : (return nil)
   end
+  
+
   
 end
