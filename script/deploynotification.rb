@@ -54,9 +54,9 @@ def runcommand(command)
 end
 
 # let's go!
-#command = "#{@gitcommand} log"
-#@scmoutput = runcommand(command)
-@scmoutput = 'TODO:'
+command = "#{@gitcommand} log --shortstat --summary #{@previous_release}..#{@latest_release}"
+@scmoutput = runcommand(command)
+#@scmoutput = 'TODO:'
 @deployinfo = Hash.new
 @deployinfo['application'] = @application
 @deployinfo['host'] = @host
