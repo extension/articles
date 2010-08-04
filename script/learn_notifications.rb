@@ -34,7 +34,7 @@ if(!tomorrow_learn_sessions.blank?)
       interested_users.each do |person|
         Notification.create(:notifytype => Notification::LEARN_UPCOMING_SESSION, :user => person, :creator => User.systemuser, :additionaldata => {:learn_session_id => learn_session.id})
       end
-      puts "Created #{pluralize(interested_users.size,'notifications')} for tomorrow's Learn Session (ID: #{learn_session.id})"
+      puts "Created #{interested_users.size} notification(s) for tomorrow's Learn Session (ID: #{learn_session.id})"
     else
       puts "No notifications for tomorrow's Learn Session (ID: #{learn_session.id})"
     end
