@@ -20,7 +20,7 @@ class LearnSession < ActiveRecord::Base
   
   has_many :learn_connections, :dependent => :destroy
   has_many :users, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, users.*"
-  has_many :presenters, :through => :learn_connections, :conditions => "learn_connections.connectiontype = '#{LearnConnection::PRESENTER}'", :source => :user
+  has_many :presenters, :through => :learn_connections, :conditions => "learn_connections.connectiontype = #{LearnConnection::PRESENTER}", :source => :user
   has_many :public_users, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, public_users.*"
   has_many :cached_tags, :as => :tagcacheable
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
@@ -70,7 +70,7 @@ class LearnSession < ActiveRecord::Base
   
   def connected_users(connectiontype)
     if[LearnConnection::PRESENTER,LearnConnection::INTERESTED,LearnConnection::ATTENDED].include?(connectiontype)
-      self.users.find(:all, :conditions => "learn_connections.connectiontype = '#{connectiontype}'")
+      self.users.find(:all, :conditions => "learn_connections.connectiontype = #{connectiontype}")
     else
       return []
     end
