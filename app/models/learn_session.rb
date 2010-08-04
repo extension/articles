@@ -11,6 +11,9 @@ class LearnSession < ActiveRecord::Base
   include ERB::Util
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TextHelper
+  
+  DEFAULT_TIMEZONE = 'America/New_York'
+  
   has_shared_tags  # include scopes for shared tags
   
   before_save :calculate_end_time
