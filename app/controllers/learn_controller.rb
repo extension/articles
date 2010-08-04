@@ -234,7 +234,24 @@ class LearnController < ApplicationController
   end
   
   def search_sessions
+    if params[:q].blank?
+      flash[:warning] = "Empty search term"
+      return redirect_to :action => 'index'
+    end
     
+    @search_query = params[:q]
+    search_term = @search_query.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
+    
+    # exact match?
+    if(exact = LearnSession.find(:first, :conditions => {:title => search_term}))
+      return redirect_to :action => :event, :id => exact.id
+    end
+    
+    # query twice, first by title, and then by description and tags
+    @title_list = LearnSession.find(:all, :conditions => ["title like ?",'%' + search_term + '%'], :order => "title" )
+    @description_and_tags_list = LearnSession.find(:all, :joins => [:cached_tags], :conditions => ["description like ? or cached_tags.fulltextlist like ?",'%' + search_term + '%','%' + search_term + '%'], :order => "title" )
+    
+    @learn_session_list = @title_list | @description_and_tags_list
   end
   
   def add_remove_presenters

@@ -1,0 +1,18 @@
+<% @page_title = "Learn Session Search Results" %>
+<h1><%= @page_title %></h1>
+
+<p>
+<% form_tag :action => :search_sessions do %>
+    <%= text_field_tag :q, @search_query %>
+    <%= submit_tag 'Search' %>
+<% end %>
+</p>
+
+<br /><br />
+
+<% @learn_session_list.each do |learn_session| %>
+  <div>
+  <p>Title:<%= link_to learn_session.title, :action => :event, :id => learn_session.id %></p>
+  <p>Description: <%= learn_session.description %></p>
+  </div>
+<% end %>
