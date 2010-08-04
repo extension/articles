@@ -123,4 +123,11 @@ class LearnSession < ActiveRecord::Base
    
    learn_session_url(:id => self.id, :only_path => only_path)
   end
+  
+  def self.find_tomorrow_sessions
+    tomorrow = Time.zone.now.utc + 1.day
+    time_start = Time.zone.at((tomorrow.to_f / 3600).floor * 3600).utc
+    time_end = Time.zone.at((tomorrow.to_f / 3600).ceil * 3600).utc
+    self.find(:all, :conditions => "session_start >= '#{time_start.to_s(:db)}' and session_start < '#{time_end.to_s(:db)}'")
+  end
 end
