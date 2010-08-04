@@ -204,6 +204,10 @@ class LearnController < ApplicationController
     end
   end
   
+  def profile
+    @user = User.find_by_login(params[:id])
+  end
+  
   def presenters_by_name
     #if a login/name was typed into the field to search for users
     name_str = params[:name]
