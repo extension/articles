@@ -1,0 +1,24 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
+Hello <%= @notification.user.first_name %>,
+
+We just wanted to remind you of tomorrow's Learn Session:
+
+Title: 
+<%= @learn_session.title %>
+
+It's happening at: <%= @learn_session.session_start.in_time_zone(@notification.user.time_zone).strftime("%l:%M %p %Z") %>
+
+<%- if @learn_session.presenters.count > 0 -%>
+Presented by:
+  <%= @learn_session.presenters.map(&:fullname).join(', ') %>
+<%- end -%>
+
+You are getting this notification because you indicated an interest in this session.
+
+To see more details about the session, visit the session page:
+
+<%= @urls['learnsession']%>
+
+--
+eXtension Staff
+http://about.extension.org
