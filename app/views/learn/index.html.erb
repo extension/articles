@@ -36,7 +36,7 @@
          <div class="event_details">
             <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
             <p class="date"><%= formatted_start_time.strftime("%B %e, %Y") %></p>
-            <p><time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{format_time_zone(upcoming_session.time_zone)}</span>" %></time></p>
+            <p><time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{formatted_start_time.strftime("%Z")}</span>" %></time></p>
          </div>
          
          <% if upcoming_session.tags.length != 0 %>
