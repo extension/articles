@@ -130,7 +130,8 @@ class LearnController < ApplicationController
         
         # process tags
         if !params[:tags].blank?
-          @learn_session.tag_with(params[:tags], User.systemuserid, Tagging::SHARED)
+          # create new tags for learn session and create the cached_tags for search
+          @learn_session.tag_with_and_cache(params[:tags], User.systemuserid, Tagging::SHARED)
         end
         
         flash[:success] = "Learning lesson saved successfully!<br />Thank you for your submission!"
@@ -190,9 +191,9 @@ class LearnController < ApplicationController
       if @learn_session.update_attributes(params[:learn_session])
         # process tags
         if !params[:tags].blank?
-          @learn_session.replace_tags(params[:tags], User.systemuserid, Tagging::SHARED)
+          @learn_session.replace_tags_with_and_cache(params[:tags], User.systemuserid, Tagging::SHARED)
         else
-          @learn_session.replace_tags('', User.systemuserid, Tagging::SHARED)
+          @learn_session.replace_tags_with_and_cache('', User.systemuserid, Tagging::SHARED)
         end
         flash[:success] = "Learn session updated successfully!"
         redirect_to :action => :event, :id => @learn_session.id
@@ -226,6 +227,10 @@ class LearnController < ApplicationController
       end
     end
     redirect_to :action => :index
+  end
+  
+  def search_sessions
+    
   end
   
   def add_remove_presenters

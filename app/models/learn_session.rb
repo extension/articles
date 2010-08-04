@@ -19,6 +19,7 @@ class LearnSession < ActiveRecord::Base
   has_many :users, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, users.*"
   has_many :presenters, :through => :learn_connections, :conditions => "learn_connections.connectiontype = '#{LearnConnection::PRESENTER}'", :source => :user
   has_many :public_users, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, public_users.*"
+  has_many :cached_tags, :as => :tagcacheable
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
   belongs_to :last_modifier, :class_name => "User", :foreign_key => "last_modified_by"
   
