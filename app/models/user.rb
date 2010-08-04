@@ -120,7 +120,7 @@ class User < ActiveRecord::Base
   
   has_many :learn_connections
   has_many :learn_sessions, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, learn_sessions.*"
-  
+  has_many :learn_sessions_presented, :source => :learn_session, :through => :learn_connections, :conditions => "learn_connections.connectiontype = #{LearnConnection::PRESENTER}"
   
   after_update :update_chataccount
   before_validation :convert_phonenumber
