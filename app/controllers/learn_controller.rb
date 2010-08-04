@@ -215,22 +215,7 @@ class LearnController < ApplicationController
     @users = User.validusers.patternsearch(name_str).all(:limit => User.per_page)
     render :layout => false
   end
-  
-  def update_time_zone
-    if request.post? and !params[:new_time_zone].blank? and !params[:id].blank? and learn_session = LearnSession.find_by_id(params[:id])
-      # we need to do a timezone conversion here, take the time from the learn session and convert to the desired time zone
-      time_obj = learn_session.session_start.in_time_zone(params[:new_time_zone])
-      time_zone_to_display = time_obj.time_zone.name
-      time_to_display = time_obj.strftime("%l:%M %p")
-      
-      render :update do |page|
-        page.replace_html :session_date_time, "<span id=\"time\">#{time_to_display.downcase} <span id=\"timezone\">#{format_time_zone(time_zone_to_display)}</span></span>" 
-      end
-    else
-      return
-    end
-  end
-  
+    
   def delete_event
     if request.post? and @currentuser
       if !params[:id].blank? and learn_session = LearnSession.find_by_id(params[:id])
