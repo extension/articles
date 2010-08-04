@@ -158,7 +158,8 @@ span.label {font-weight:bold; width:150px; display:block;float:left;}
 .event_search {width:60em; margin:0 0 20px;}
 .event_search dt {font-size:1.6em; font-weight:bold;}
 .event_search dd {font-size:1.3em;}
-.event_search .date {color:#ff9606;}
+.event_search .date {color:#777; font-size:1.2em;}
+.event_search .description {font-size:1.4em;}
 
 /* sticky footer
 -----------------------------------------------------------------------------*/

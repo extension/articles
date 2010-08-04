@@ -15,8 +15,16 @@
   <% formatted_start_time = format_time(learn_session, learn_session.session_start) %>
     <dl class="event_search">
       <dt><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></dt>
-      <dd><%= learn_session.description %></dd>
-      <dd class="date"><%= formatted_start_time.strftime("%B %e, %Y") %>, <time><%= formatted_start_time.strftime("%l:%M %p").downcase + " <span class=\"timezone\">#{format_time_zone(learn_session.time_zone)}</span>" %></time></dd>
+      <dd class="description"><%= learn_session.description %></dd>
+      <dd class="date"><%= formatted_start_time.strftime("%B %e, %Y") %>, <time><%= formatted_start_time.strftime("%l:%M %p").downcase + " <span class=\"timezone\">#{format_time_zone(learn_session.time_zone)}</span>" %></time>. Presented by 
+      <% count = 0 %>
+      <% learn_session.presenters.each do |presenter| %>
+        <% if count > 0 %>, 
+        <% end %>
+        <%= presenter.fullname %>
+        <% count = count + 1 %>
+      <% end %>
+      </dd>
     </dl>
   <% end %>
 
