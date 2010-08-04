@@ -71,30 +71,18 @@
       
       <% else %>
 
-      <h2>
-         <span id="session_date"><%= @session_start.strftime("%B %e, %Y") %></span>
-         <div class="calendarblock">
-            <span class="month"><%= @session_start.strftime("%b") %></span>
-            <span class="date"><%= @session_start.strftime("%d") %></span>
-         </div>
-         <span id="session_date_time">
-            <span id="time"><%= @session_start.strftime("%l:%M %p").downcase %> <span id="timezone"><%= format_time_zone(@learn_session.time_zone) %></span></span>
-         </span>
-      </h2>   
+        <h2>
+           <span id="session_date"><%= @session_start.strftime("%B %e, %Y") %></span>
+           <div class="calendarblock">
+              <span class="month"><%= @session_start.strftime("%b") %></span>
+              <span class="date"><%= @session_start.strftime("%d") %></span>
+           </div>
+           <span id="session_date_time">
+              <span id="time"><%= @session_start.strftime("%l:%M %p").downcase %> <span id="timezone"><%= format_time_zone(@learn_session.time_zone) %></span></span>
+           </span>
+        </h2>   
       
-      <p id="session_duration"><strong><%= "#{@learn_session.session_length}" %> minute</strong> session</p>
-      
-      <p>
-       <%= label_tag :time_zone_label, 'Convert Time Zone' %>
-       <%= select_tag :time_zone, time_zone_options_for_select(@learn_session.time_zone, ActiveSupport::TimeZone.us_zones) %>
-      </p>
-      <div id="loading_tz" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
-      
-      <%= observe_field(:time_zone,
-                        :url       => { :action => :update_time_zone, :id => @learn_session.id },
-                        :with      => "'new_time_zone='+escape(value)",
-                        :loading => "Element.show('loading_tz')", 
-                        :complete => "Element.hide('loading_tz')") %>
+        <p id="session_duration"><strong><%= "#{@learn_session.session_length}" %> minute</strong> session</p>
                         
       <% end %>
    </aside>
