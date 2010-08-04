@@ -16,7 +16,7 @@
          <% @learn_session.presenters.each do |presenter| %>
          <% if count > 0 %>, 
          <% end %>
-         <%= link_to_user(presenter) %> 
+         <%= link_to(presenter.fullname, :controller => '/learn', :action => :profile, :id => presenter.login) %>
          <% count = count + 1 %>
       <% end %>  
      </p>
