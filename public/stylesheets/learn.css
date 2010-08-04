@@ -11,8 +11,9 @@ box-shadow: 0 4px 10px rgba(0,0,0,.2);*/
 }
 header#masthead {float:left; padding:10px;width:940px; position:relative; background: #ffa221 url(/images/learn/learn_header.png) top center no-repeat; margin-bottom:0;}
 #content {clear:both; }
-#masthead h1 a {text-decoration:none; color:#fff; text-shadow: 2px 2px 2px #000;}
 
+#masthead h1 a {text-decoration:none; color:#fff;}
+#masthead h1 {margin:0; line-height:0;}
 
 
 
@@ -59,7 +60,6 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 /* layout
 -----------------------------------------------------------------------------*/
-#logo {float:left; }
 #home section {width:300px;margin:0 10px; float:left;}
 #col_one section {width:300px;margin:0 10px; float:left;}
 

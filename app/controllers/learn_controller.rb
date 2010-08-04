@@ -272,42 +272,46 @@ class LearnController < ApplicationController
         return
       end
     else
+      redirect_to :index
       return
     end
   end
   
   def change_my_connection
-    @learn_session = LearnSession.find_by_id(params[:id])
+    if request.post?
+      @learn_session = LearnSession.find_by_id(params[:id])
     
-    if(params[:connection] and params[:connection] == 'makeconnection')
-       if(params[:connectiontype] == 'interested')
-         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
-         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
-       elsif(params[:connectiontype] == 'attended')
-         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
-         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
+      if(params[:connection] and params[:connection] == 'makeconnection')
+         if(params[:connectiontype] == 'interested')
+           @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
+           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
+         elsif(params[:connectiontype] == 'attended')
+           @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
+           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
+         end
+       else
+         if(params[:connectiontype] == 'interested')
+           @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,false)
+           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed interest in learn: #{@learn_session.title}")
+         elsif(params[:connectiontype] == 'attended')
+           @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,false)
+           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed attendance at learn: #{@learn_session.title}")
+         end
        end
-     else
-       if(params[:connectiontype] == 'interested')
-         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,false)
-         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed interest in learn: #{@learn_session.title}")
-       elsif(params[:connectiontype] == 'attended')
-         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,false)
-         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed attendance at learn: #{@learn_session.title}")
-       end
-     end
      
-     if @learn_session.event_started?
-       @connected_users = @learn_session.connected_users(LearnConnection::ATTENDED)
-     else
-       @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
-     end
+       if @learn_session.event_started?
+         @connected_users = @learn_session.connected_users(LearnConnection::ATTENDED)
+       else
+         @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
+       end
     
-    respond_to do |format|
-      format.js
+      respond_to do |format|
+        format.js
+      end
+    else
+      redirect_to :index
+      return
     end
   end
-  
-  
   
 end
