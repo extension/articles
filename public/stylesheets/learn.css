@@ -155,6 +155,10 @@ span.label {font-weight:bold; width:150px; display:block;float:left;}
 /* search results
 -----------------------------------------------------------------------------*/
 #listing {padding:0 20px 20px; width: 560px; float:left; margin:0 40px 0 0;}
+.event_search {width:60em; margin:0 0 20px;}
+.event_search dt {font-size:1.6em; font-weight:bold;}
+.event_search dd {font-size:1.3em;}
+.event_search .date {color:#ff9606;}
 
 /* sticky footer
 -----------------------------------------------------------------------------*/
@@ -334,7 +338,3 @@ fieldset {margin-bottom:0;}
 h1 .edit {font-size:14px;}
 h1 .edit a {text-decoration:none;}
 h1 .edit a:hover {text-decoration:underline;}
-
-.event_search {width:60em; margin:0 0 20px;}
-.event_search dt {font-size:1.6em; font-weight:bold;}
-.event_search dd {font-size:1.3em;}

@@ -5,7 +5,7 @@
   <h1><%= @page_title %></h1>
   <p>
   <% form_tag :action => :search_sessions do %>
-    <%= text_field_tag :q, @search_query %>
+    <%= text_field_tag :q, @search_query, {:placeholder => "Search for sessions", :type => "search", :class => "searchbox"} %>
     <%= submit_tag 'Search' %>
   <% end %>
   </p>
@@ -16,7 +16,7 @@
     <dl class="event_search">
       <dt><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></dt>
       <dd><%= learn_session.description %></dd>
-      <dd class="date"><%= formatted_start_time.strftime("%B %e, %Y") %> <time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{format_time_zone(learn_session.time_zone)}</span>" %></time></dd>
+      <dd class="date"><%= formatted_start_time.strftime("%B %e, %Y") %>, <time><%= formatted_start_time.strftime("%l:%M %p").downcase + " <span class=\"timezone\">#{format_time_zone(learn_session.time_zone)}</span>" %></time></dd>
     </dl>
   <% end %>
 
