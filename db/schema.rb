@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100803220720) do
+ActiveRecord::Schema.define(:version => 20100804200528) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -456,7 +456,7 @@ ActiveRecord::Schema.define(:version => 20100803220720) do
     t.integer  "public_user_id"
     t.string   "email",            :null => false
     t.integer  "learn_session_id", :null => false
-    t.string   "connectiontype",   :null => false
+    t.integer  "connectiontype",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

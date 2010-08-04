@@ -45,15 +45,16 @@
 	</div>
 	
 	<h4>Sessions Presented</h4>
-	<ul>
-	   <li><%= link_to ("Session title") %></li>
-	   <li><%= link_to ("Session title") %></li>
-	   <li><%= link_to ("Session title") %></li>
-	   <li><%= link_to ("Session title") %></li>
-	   <li><%= link_to ("Session title") %></li>
-	</ul>
 	
-
+	   <% if @sessions_presented.length > 0 %>
+	     <ul>
+	     <% @sessions_presented.each do |learn_session| %>
+	       <li><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></li>
+	     <% end %>
+	     </ul>
+	   <% else %>
+	     <p>No Sessions Presented to Date</p>
+	   <% end %>
 </div>
 
 <div id="two_col_col_two">

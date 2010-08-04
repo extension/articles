@@ -207,6 +207,7 @@ class LearnController < ApplicationController
   
   def profile
     @user = User.find_by_login(params[:id])
+    @sessions_presented = @user.learn_sessions_presented
   end
   
   def presenters_by_name
