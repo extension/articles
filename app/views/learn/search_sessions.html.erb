@@ -1,18 +1,23 @@
-<% @page_title = "Learn Session Search Results" %>
-<h1><%= @page_title %></h1>
+<% @page_title = "Search Results" %>
 
-<p>
-<% form_tag :action => :search_sessions do %>
+
+<div id="listing">
+  <h1><%= @page_title %></h1>
+  <p>
+  <% form_tag :action => :search_sessions do %>
     <%= text_field_tag :q, @search_query %>
     <%= submit_tag 'Search' %>
-<% end %>
-</p>
+  <% end %>
+  </p>
 
-<br /><br />
 
-<% @learn_session_list.each do |learn_session| %>
-  <div>
-  <p>Title:<%= link_to learn_session.title, :action => :event, :id => learn_session.id %></p>
-  <p>Description: <%= learn_session.description %></p>
-  </div>
-<% end %>
+  <% @learn_session_list.each do |learn_session| %>
+  <% formatted_start_time = format_time(learn_session, learn_session.session_start) %>
+    <dl class="event_search">
+      <dt><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></dt>
+      <dd><%= learn_session.description %></dd>
+      <dd class="date"><%= formatted_start_time.strftime("%B %e, %Y") %> <time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{format_time_zone(learn_session.time_zone)}</span>" %></time></dd>
+    </dl>
+  <% end %>
+
+</div>
