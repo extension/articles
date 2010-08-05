@@ -10,7 +10,7 @@ class LearnController < ApplicationController
   layout 'learn'
   
   before_filter :login_optional
-  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event]
+  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event, :connect_to_session]
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
@@ -302,6 +302,24 @@ class LearnController < ApplicationController
       redirect_to :index
       return
     end
+  end
+  
+  def connect_to_session
+    @learn_session = LearnSession.find_by_id(params[:id])
+    if(!@learn_session)
+      flash[:failure] = "Unable to find specified learn session."
+      return redirect_to(:action => :index)
+    end
+    
+    if @learn_session.event_started?
+      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
+    else
+      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
+    end
+    
+    return redirect_to(:action => :event, :id => @learn_session.id)
   end
   
   def change_my_connection

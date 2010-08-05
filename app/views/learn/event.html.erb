@@ -91,11 +91,21 @@
     <aside id="sessionconnection" class="radius10">
       <%= render(:partial => 'auth_session_connection') %>
     </aside> 
+   <%- else -%>
+   <aside id="sessionconnection" class="radius10">
+      <%- if @learn_session.event_started? -%>
+        <%= link_to("I attended this session", :controller => :learn, :action => :connect_to_session, :id => @learn_session.id) %> (requires login)
+      <%- else -%>
+        <%= link_to("I'm interested in this session", :controller => :learn, :action => :connect_to_session, :id => @learn_session.id) %> (requires login)
+      <%- end -%>
+   </aside>
    <%- end -%>
 
+   <%- if @currentuser -%>
    <aside id="attendees" class="radius10">   
      <%= render(:partial => 'connected_users') %>
    </aside>
+   <%- end -%>
    
    
    
