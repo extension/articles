@@ -261,7 +261,7 @@ class User < ActiveRecord::Base
   # will allow us to check for a null/empty value so we can
   # prompt people to come set one.
   def has_time_zone?
-    tzinfo_time_zone_string = read_attribute(:timezone)
+    tzinfo_time_zone_string = read_attribute(:time_zone)
     return (!tzinfo_time_zone_string.blank?)
   end
   
