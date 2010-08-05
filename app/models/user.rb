@@ -361,6 +361,8 @@ class User < ActiveRecord::Base
        returnhash.merge!({:email => self.email})
       when 'phone'
        returnhash.merge!({:phone => self.phonenumber.nil? ? '' : self.phonenumber})
+      when 'time_zone'
+       returnhash.merge!({:phone => self.has_time_zone? ? '' : self.time_zone})
       when 'title'
        returnhash.merge!({:title => self.title.nil? ? '' : self.title})
       when 'position'
