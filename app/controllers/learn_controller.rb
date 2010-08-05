@@ -31,8 +31,9 @@ class LearnController < ApplicationController
       @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
     end
     
-    
-    @session_start = @learn_session.session_start.in_time_zone(@learn_session.time_zone)
+    # set timezone to either the people profile pref for the user or the time zone selected for the session
+    tz = @currentuser.nil? ? @learn_session.time_zone : @currentuser.time_zone
+    @session_start = @learn_session.session_start.in_time_zone(tz)
   end
   
   def login_redirect

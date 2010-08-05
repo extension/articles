@@ -9,11 +9,24 @@
 
     <h1><%= @currentuser.fullname%></h1>
     <%= render(:partial => 'user_profile') %>
-
+    
+    <div id="set_time_zone">
+      <h3>My Timezone</h3>
+      <p>
+        <% form_for(:current_user, @currentuser) do |user_form| %>
+        <%= user_form.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)" %>
+        <% end %>  
+      </p>
+      
+      <%= observe_field(:current_user_time_zone, 
+                        :url => { :controller => 'people/profile', :action => :update_timezone, :user_id => @currentuser.id }, 
+                        :with => "'time_zone=' + escape(value)") %>
+    </div>
+    
     <%= render(:partial => 'user_tags') %>
 
     <%= render(:partial => 'user_social_networks') %>
-
+    
     <div id="ex_tools">
         <h3>OpenID URL</h3>
         <p class="directions">You can use this with any OpenID website. <%= link_to('Learn more...', {:action => :openid}) %></p>
