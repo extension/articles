@@ -10,7 +10,7 @@ class LearnController < ApplicationController
   layout 'learn'
   
   before_filter :login_optional
-  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event, :connect_to_session]
+  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event, :connect_to_session, :time_zone_check]
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
@@ -303,6 +303,21 @@ class LearnController < ApplicationController
       redirect_to :index
       return
     end
+  end
+  
+  def time_zone_check
+    @learn_session = LearnSession.find_by_id(params[:id])
+    if(!@learn_session)
+      flash[:failure] = "Unable to find specified learn session."
+      return redirect_to(:action => :index)
+    end
+    
+    if(@currentuser.has_time_zone?)
+      return redirect_to(:action => :event, :id => @learn_session.id)
+    else
+      return redirect_to(:controller => 'people/profile', :action => :edit)
+    end
+      
   end
   
   def connect_to_session

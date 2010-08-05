@@ -80,7 +80,14 @@
            <span id="session_date_time">
               <span id="time"><%= @session_start.strftime("%l:%M %p").downcase %> <span id="timezone"><%= @session_start.strftime("%Z") %></span></span>
            </span>
-        </h2>   
+        </h2>
+        <p><%- if @currentuser -%>
+          <%- if(!@currentuser.has_time_zone?) -%>
+           <%= link_to("Set your time zone", :controller =>  'people/profile', :action => :edit) %>  to display this session in your local time
+          <%- end -%>
+        <%- else -%>
+          <%= link_to("Login to set your time zone", :controller => :learn, :action => :time_zone_check, :id => @learn_session.id) %> to display this session in your local time
+        <%- end -%></p>   
       
         <p id="session_duration"><strong><%= "#{@learn_session.session_length}" %> minute</strong> session</p>
                         
