@@ -80,23 +80,7 @@ class People::ProfileController < ApplicationController
       @socialnetworkslist = SocialNetwork.get_edit_networks
     end
   end
-  
-  def update_timezone
-    if request.post?
-      user = User.find_by_id(params[:user_id])
-      if @currentuser.id == user.id
-        user.update_attribute(:time_zone, params[:time_zone])  
-      end
-      
-      render :update do |page|
-        page.visual_effect :highlight, 'set_time_zone'
-      end
-      return
-    else
-      redirect_to :action => :me
-    end
-  end
-  
+    
   def otheremails
     if request.post?      
       @currentuser.modify_user_emails(params[:useremails])
