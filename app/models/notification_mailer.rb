@@ -506,6 +506,21 @@ class NotificationMailer < ActionMailer::Base
    end
   
    # -----------------------------------
+   #  learn session
+   # -----------------------------------
+
+   def learn_upcoming_session(notification)
+     learn_session = LearnSession.find(notification.additionaldata[:learn_session_id])
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s)
+     @subject        = @subjectlabel+'Upcoming Learn Session'
+     @recipients     = notification.user.email
+     urls = Hash.new
+     urls['learnsession'] = url_for(:controller => 'learn', :action => :event, :id =>  learn_session.id)
+     @body = {:isdemo => @isdemo, :notification => notification, :learn_session => learn_session, :urls => urls}
+   end  
+  
+   # -----------------------------------
    #  system administration
    # -----------------------------------
 

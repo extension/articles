@@ -1,0 +1,74 @@
+<% @page_title = @user.fullname %>
+
+<div id="two_col_col_one" class="profile">
+   <h1>
+   <%= @user.fullname %>
+   </h1>
+   
+   <div id="profile_details">
+   <p>
+		<span class="label">Email:</span>
+		<span><%= @user.email%></span>
+	</p>
+	
+	<%- if @user.phonenumber.nil? or @user.phonenumber == '' %>
+	<%- else -%>
+	<p>
+		<span class="label">Preferred Phone:</span>
+		<span><%= number_to_phone(@user.phonenumber, :area_code => true) %></span>
+	</p>
+	<%- end -%>
+	<p>
+		<span class="label">Title:</span>
+		<span><%= (@user.title.nil? or @user.title == '') ? '&nbsp;': @user.title %></span>
+	</p>
+	<p>
+		<span class="label">Position:</span>
+		<span><%= (@user.position.nil? or @user.position == '') ? '&nbsp;': @user.position.name %></span>
+	</p>
+	
+	<%- if !@user.primary_institution.nil? -%>
+		<p>
+			<span class="label">Primary Institution:</span>
+			<span><%= @user.primary_institution_name('&nbsp;') %></span>
+		</p>
+   <%- end -%>
+   
+   <p>
+      <span class="label" >Location:</span>
+      <span><%= (@user.location.nil? or @user.location == '') ? '&nbsp;': @user.location.name %></span>
+	</p>
+	<p>
+      <span class="label">County:</span>
+		<span><%= (@user.county.nil? or @user.county == '') ? '&nbsp;': @user.county.name %></span>
+	</p>
+	</div>
+	
+	<h4>Sessions Presented</h4>
+	
+	   <% if @sessions_presented.length > 0 %>
+	     <ul>
+	     <% @sessions_presented.each do |learn_session| %>
+	       <li><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></li>
+	     <% end %>
+	     </ul>
+	   <% else %>
+	     <p>No Sessions Presented to Date</p>
+	   <% end %>
+</div>
+
+<div id="two_col_col_two">
+   <aside id="socialnetworks" class="radius10">
+      <h3>Social Network Identities</h3>
+      <p><%= link_to("eXtension People Profile", :controller => '/people/colleagues', :action => :showuser, :id => @user.login) %></p>
+      <% if !@user.social_networks.empty? %>
+          <div id="showuser_socialnetworks">
+              <% @user.social_networks.each do |social_network| %>
+                  <dl class="usernetwork">
+                      <dt class="<%= social_network_class(social_network.network) %>"><%= social_network_link(social_network) %></dt>
+                  </dl>
+              <% end %>
+          </div>
+      <% end %>
+   </aside>
+</div>

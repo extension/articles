@@ -10,12 +10,12 @@ class LearnController < ApplicationController
   layout 'learn'
   
   before_filter :login_optional
-  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event]
+  before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event, :connect_to_session, :time_zone_check]
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
-    @recent_sessions = LearnSession.find(:all, :conditions => "session_start < '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 10, :order => "session_start DESC")
-    @recent_tags = Tag.find(:all, :select => 'DISTINCT tags.*', :joins => [:taggings], :conditions => {"taggings.tag_kind" => Tagging::SHARED, "taggings.taggable_type" => "LearnSession"}, :limit => 12, :order => "taggings.created_at DESC")
+    @recent_sessions = LearnSession.find(:all, :conditions => "session_start < '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 15, :order => "session_start DESC")
+    @recent_tags = Tag.find(:all, :select => 'DISTINCT tags.*', :joins => [:taggings], :conditions => {"taggings.tag_kind" => Tagging::SHARED, "taggings.taggable_type" => "LearnSession"}, :limit => 30, :order => "taggings.created_at DESC")
   end
   
   def event
@@ -31,8 +31,9 @@ class LearnController < ApplicationController
       @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
     end
     
-    
-    @session_start = @learn_session.session_start.in_time_zone(@learn_session.time_zone)
+    # set timezone to either the people profile pref for the user or the time zone selected for the session
+    tz = @currentuser.nil? ? @learn_session.time_zone : @currentuser.time_zone
+    @session_start = @learn_session.session_start.in_time_zone(tz)
   end
   
   def login_redirect
@@ -130,7 +131,8 @@ class LearnController < ApplicationController
         
         # process tags
         if !params[:tags].blank?
-          @learn_session.tag_with(params[:tags], User.systemuserid, Tagging::SHARED)
+          # create new tags for learn session and create the cached_tags for search
+          @learn_session.tag_with_and_cache(params[:tags], User.systemuserid, Tagging::SHARED)
         end
         
         flash[:success] = "Learning lesson saved successfully!<br />Thank you for your submission!"
@@ -190,9 +192,9 @@ class LearnController < ApplicationController
       if @learn_session.update_attributes(params[:learn_session])
         # process tags
         if !params[:tags].blank?
-          @learn_session.replace_tags(params[:tags], User.systemuserid, Tagging::SHARED)
+          @learn_session.replace_tags_with_and_cache(params[:tags], User.systemuserid, Tagging::SHARED)
         else
-          @learn_session.replace_tags('', User.systemuserid, Tagging::SHARED)
+          @learn_session.replace_tags_with_and_cache('', User.systemuserid, Tagging::SHARED)
         end
         flash[:success] = "Learn session updated successfully!"
         redirect_to :action => :event, :id => @learn_session.id
@@ -202,6 +204,11 @@ class LearnController < ApplicationController
         return
       end
     end
+  end
+  
+  def profile
+    @user = User.find_by_login(params[:id])
+    @sessions_presented = @user.learn_sessions_presented
   end
   
   def presenters_by_name
@@ -226,6 +233,27 @@ class LearnController < ApplicationController
       end
     end
     redirect_to :action => :index
+  end
+  
+  def search_sessions
+    if params[:q].blank?
+      flash[:warning] = "Empty search term"
+      return redirect_to :action => 'index'
+    end
+    
+    @search_query = params[:q]
+    search_term = @search_query.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
+    
+    # exact match?
+    if(exact = LearnSession.find(:first, :conditions => {:title => search_term}))
+      return redirect_to :action => :event, :id => exact.id
+    end
+    
+    # query twice, first by title, and then by description and tags
+    @title_list = LearnSession.find(:all, :conditions => ["title like ?",'%' + search_term + '%'], :order => "title" )
+    @description_and_tags_list = LearnSession.find(:all, :joins => [:cached_tags], :conditions => ["description like ? or cached_tags.fulltextlist like ?",'%' + search_term + '%','%' + search_term + '%'], :order => "title" )
+    
+    @learn_session_list = @title_list | @description_and_tags_list
   end
   
   def add_remove_presenters
@@ -272,42 +300,79 @@ class LearnController < ApplicationController
         return
       end
     else
+      redirect_to :index
       return
     end
   end
   
-  def change_my_connection
+  def time_zone_check
     @learn_session = LearnSession.find_by_id(params[:id])
-    
-    if(params[:connection] and params[:connection] == 'makeconnection')
-       if(params[:connectiontype] == 'interested')
-         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
-         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
-       elsif(params[:connectiontype] == 'attended')
-         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
-         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
-       end
-     else
-       if(params[:connectiontype] == 'interested')
-         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,false)
-         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed interest in learn: #{@learn_session.title}")
-       elsif(params[:connectiontype] == 'attended')
-         @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,false)
-         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed attendance at learn: #{@learn_session.title}")
-       end
-     end
-     
-     if @learn_session.event_started?
-       @connected_users = @learn_session.connected_users(LearnConnection::ATTENDED)
-     else
-       @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
-     end
-    
-    respond_to do |format|
-      format.js
+    if(!@learn_session)
+      flash[:failure] = "Unable to find specified learn session."
+      return redirect_to(:action => :index)
     end
+    
+    if(@currentuser.has_time_zone?)
+      return redirect_to(:action => :event, :id => @learn_session.id)
+    else
+      return redirect_to(:controller => 'people/profile', :action => :edit)
+    end
+      
   end
   
+  def connect_to_session
+    @learn_session = LearnSession.find_by_id(params[:id])
+    if(!@learn_session)
+      flash[:failure] = "Unable to find specified learn session."
+      return redirect_to(:action => :index)
+    end
+    
+    if @learn_session.event_started?
+      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
+    else
+      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
+    end
+    
+    return redirect_to(:action => :event, :id => @learn_session.id)
+  end
   
+  def change_my_connection
+    if request.post?
+      @learn_session = LearnSession.find_by_id(params[:id])
+    
+      if(params[:connection] and params[:connection] == 'makeconnection')
+         if(params[:connectiontype] == 'interested')
+           @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
+           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
+         elsif(params[:connectiontype] == 'attended')
+           @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
+           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
+         end
+       else
+         if(params[:connectiontype] == 'interested')
+           @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,false)
+           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed interest in learn: #{@learn_session.title}")
+         elsif(params[:connectiontype] == 'attended')
+           @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,false)
+           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed attendance at learn: #{@learn_session.title}")
+         end
+       end
+     
+       if @learn_session.event_started?
+         @connected_users = @learn_session.connected_users(LearnConnection::ATTENDED)
+       else
+         @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
+       end
+    
+      respond_to do |format|
+        format.js
+      end
+    else
+      redirect_to :index
+      return
+    end
+  end
   
 end

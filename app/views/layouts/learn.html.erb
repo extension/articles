@@ -45,8 +45,8 @@
        <% end %>
        
        <header id="masthead">
-           <div id="logo"><%= link_to(image_tag("/images/common/extension_logo_250px_0k_shad.png", :alt => "eXtension - more mind reach"), learn_url) %></div>
-           <h1><%= link_to("eXtension Learn", learn_url) %></h1>
+           <h1><%= link_to(image_tag("/images/learn/learn_logo2.png", :alt => "eXtension Learn"), learn_url) %></h1>
+
             
            <% if !@mobile_device %>
             <nav>
@@ -61,10 +61,10 @@
             <% end %>
             
             <div id="search">
-               <form>
-                  <input name="q" type="search" placeholder="Search for sessions" class="searchbox">
+               <% form_tag :action => :search_sessions do %>
+                  <%= text_field_tag :q, nil, { :placeholder => "Search for sessions", :type => "search", :class => "searchbox" } %>
                   <%= submit_tag 'Search' %>
-               </form>
+               <% end %>
             </div>
         </header>
         

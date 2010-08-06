@@ -6,7 +6,7 @@
      <%- end -%>
      <ul>
         <%- @connected_users.each do |u| -%>
-          <li><%= link_to_user(u)%></li>
+          <li><%= link_to(u.fullname, :controller => '/learn', :action => :profile, :id => u.login) %></li>
          <%- end -%>
      </ul>
 <%- end -%>
