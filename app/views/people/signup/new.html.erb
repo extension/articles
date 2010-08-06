@@ -70,6 +70,11 @@
                 </p>
                 
                 <p>
+                  <label for="user_time_zone">Time zone:</label>
+                  <%= time_zone_select(:user,:time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)") %>
+                </p>
+                
+                <p>
                     <label>Your Involvement with Cooperative Extension: <em class="required">*</em></label>
                     <%= text_area_tag(:signup_affiliation, params[:signup_affiliation], :rows => 3) %>                
                 <p>

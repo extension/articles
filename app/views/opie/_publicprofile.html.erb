@@ -49,6 +49,12 @@
 		</p>
 		<% end %>
 	</div>
+		<% if !publicattributes[:time_zone].blank? %>
+	<p class="item">
+		<span class="vcardLabel">Time zone:</span>
+		<span class="tz"><%= (showuser.has_time_zone?) ? showuser.time_zone : '&nbsp;' %></span>
+	</p>
+	<% end %>
 	<% end %>
 </div>
 <% end %>

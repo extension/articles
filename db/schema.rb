@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100802181352) do
+ActiveRecord::Schema.define(:version => 20100804200528) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -456,7 +456,7 @@ ActiveRecord::Schema.define(:version => 20100802181352) do
     t.integer  "public_user_id"
     t.string   "email",            :null => false
     t.integer  "learn_session_id", :null => false
-    t.string   "connectiontype",   :null => false
+    t.integer  "connectiontype",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -469,7 +469,6 @@ ActiveRecord::Schema.define(:version => 20100802181352) do
     t.text     "description",      :null => false
     t.datetime "session_start",    :null => false
     t.datetime "session_end",      :null => false
-    t.string   "time_zone",        :null => false
     t.integer  "session_length",   :null => false
     t.text     "location"
     t.text     "recording"
@@ -477,6 +476,7 @@ ActiveRecord::Schema.define(:version => 20100802181352) do
     t.integer  "last_modified_by", :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "time_zone"
   end
 
   add_index "learn_sessions", ["session_start", "session_end"], :name => "index_learn_sessions_on_session_start_and_session_end"
@@ -936,6 +936,7 @@ ActiveRecord::Schema.define(:version => 20100802181352) do
     t.datetime "retired_at"
     t.text     "additionaldata"
     t.boolean  "aae_responder",                          :default => true
+    t.string   "time_zone"
   end
 
   add_index "users", ["email"], :name => "email", :unique => true
