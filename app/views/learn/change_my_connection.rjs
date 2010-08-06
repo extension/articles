@@ -1,2 +1,6 @@
-page.visual_effect :highlight, "sessionconnection"
+if(@connectiontype == 'interested')
+  page.visual_effect :highlight, "sessionconnection_interest"
+elsif(@connectiontype == 'attended')
+  page.visual_effect :highlight, "sessionconnection_attendance"
+end
 page.replace_html "attendees", :partial => 'connected_users'
