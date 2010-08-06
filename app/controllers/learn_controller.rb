@@ -328,10 +328,10 @@ class LearnController < ApplicationController
     end
     
     if @learn_session.event_started?
-      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
+      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
     else
-      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
+      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
     end
     
