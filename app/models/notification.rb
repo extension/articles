@@ -64,9 +64,15 @@ class Notification < ActiveRecord::Base
   ##########################################
   #  Ask an Expert Notifications - Public
   
-  NOTIFICATION_AAE_PUBLIC = [2000,2999]   # 'aae-public'
+  NOTIFICATION_AAE_PUBLIC = [2000,2099]   # 'aae-public'
   AAE_PUBLIC_EXPERT_RESPONSE = 2001  # notification of an expert response, also "A Space Odyssey"
   AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT = 2010  # notification of submission, also "The Year We Make Contact"
+  
+  ##########################################
+  #  Learn Notifications
+  
+  LEARN_UPCOMING_SESSION = 2100
+  
   
   # method names for sending notificationmailer mailers for each notification
   MAILERMETHODS = {}
@@ -104,6 +110,8 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[AAE_PUBLIC_EXPERT_RESPONSE] = ['aae_public_response']    
   MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission'] 
   MAILERMETHODS[AAE_PUBLIC_COMMENT] = ['aae_public_comment']   
+  MAILERMETHODS[LEARN_UPCOMING_SESSION] = ['learn_upcoming_session']   
+
   
   # TODO: add description labels that can get strings from the locale tabel describing each 
   
