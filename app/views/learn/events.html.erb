@@ -25,7 +25,7 @@
       </td>
       <td><%= (learn_session.description.length > 150) ? learn_session.description.mb_chars[0..150]+'...' : learn_session.description %></td>
       <td><%= formatted_time.strftime("%B %e, %Y") %></td>
-      <td><%= formatted_time.strftime("%l:%M %p #{format_time_zone(learn_session.time_zone)}") %></td>
+      <td><%= formatted_time.strftime("%l:%M %p %Z") %></td>
     </tr>
   <% end %>
 </table>

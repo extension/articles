@@ -11,8 +11,9 @@ box-shadow: 0 4px 10px rgba(0,0,0,.2);*/
 }
 header#masthead {float:left; padding:10px;width:940px; position:relative; background: #ffa221 url(/images/learn/learn_header.png) top center no-repeat; margin-bottom:0;}
 #content {clear:both; }
-#masthead h1 a {text-decoration:none; color:#fff; text-shadow: 2px 2px 2px #000;}
 
+#masthead h1 a {text-decoration:none; color:#fff;}
+#masthead h1 {margin:0; line-height:0; float:left;}
 
 
 
@@ -54,12 +55,11 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 #admintoggle a {padding:.1em .3em; -webkit-border-radius:10px;-moz-border-radius:10px;border-radius:10px;}
 #admintoggle a:hover {background:#fff;}
 
-#search {float:right; display:none;}
+#search {position:absolute; right:10px; bottom:10px;}
 .searchbox {width:160px;}
 
 /* layout
 -----------------------------------------------------------------------------*/
-#logo {float:left; }
 #home section {width:300px;margin:0 10px; float:left;}
 #col_one section {width:300px;margin:0 10px; float:left;}
 
@@ -113,6 +113,54 @@ span.recording_available {background: transparent url(/images/common/television.
 #attendees {background:#fff;}
 #attendees h3 {font-size:1.4em;}
 #attendees ul {margin-left:5px;}
+
+/* profile
+-----------------------------------------------------------------------------*/
+span.label {font-weight:bold; width:150px; display:block;float:left;}
+
+#profile_details {margin-bottom:30px;}
+.profile p {margin-bottom:5px;}
+
+.usernetwork {clear:both;float:left;margin-bottom:1em;padding:0;}
+.usernetwork dt {margin:0 !important; height:1.3em;color:#000;float:left;}
+.usernetwork dd {float:left;padding:0 0 0 1em;}
+
+#socialnetworks {float:left; width:280px;}
+
+.aim        {padding:0 0 0 26px; background: url(/images/people/socialnetworks/aim.png) 0 0 no-repeat;}
+.blog       {padding:0 0 0 26px; background: url(/images/people/socialnetworks/blog.png) 0 0 no-repeat;}
+.delicious  {padding:0 0 0 26px; background: url(/images/people/socialnetworks/delicious.png) 0 0 no-repeat;}
+.facebook   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/facebook.png) 0 0 no-repeat;}
+.flickr     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/flickr.png) 0 0 no-repeat;}
+.friendfeed {padding:0 0 0 26px; background: url(/images/people/socialnetworks/friendfeed.png) 0 0 no-repeat;}
+.gizmo      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/gizmo5.png) 0 0 no-repeat;}
+.google     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/google.png) 0 0 no-repeat;}
+.gtalk      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/gtalk.png) 0 0 no-repeat;}
+#socialnetworks .other		{padding:0 0 0 26px; background: url(/images/people/socialnetworks/other.png) 0 0 no-repeat;}
+.identica   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/identica.png) 0 0 no-repeat;}
+.jabber     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/jabber.png) 0 0 no-repeat;}
+.linkedin   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/linkedin.png) 0 0 no-repeat;}
+.magnolia   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/magnolia.png) 0 0 no-repeat;}
+.msnim      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/msnim.png) 0 0 no-repeat;}
+.secondlife {padding:0 0 0 26px; background: url(/images/people/socialnetworks/secondlife.png) 0 0 no-repeat;}
+.skype      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/skype.png) 0 0 no-repeat;}
+.slideshare {padding:0 0 0 26px; background: url(/images/people/socialnetworks/slideshare.png) 0 0 no-repeat;}
+.twitter    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/twitter.png) 0 0 no-repeat;}
+.yahooim    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/yahooim.png) 0 0 no-repeat;}
+.youtube    {padding:0 0 0 26px; background: url(/images/people/socialnetworks/youtube.png) 0 0 no-repeat;}
+.mailto      {padding:0 0 0 26px; background: url(/images/common/email.png) 0 0 no-repeat;}
+.wave      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/wave.png) 0 0 no-repeat;}
+
+
+/* search results
+-----------------------------------------------------------------------------*/
+#listing {padding:0 20px 20px; width: 560px; float:left; margin:0 40px 0 0;}
+.event_search {width:60em; margin:0 0 20px;}
+.event_search dt {font-size:1.6em; font-weight:bold;}
+.event_search dd {font-size:1.3em;}
+.event_search .date {color:#777; font-size:1.2em;}
+.event_search .description {font-size:1.4em;}
+
 /* sticky footer
 -----------------------------------------------------------------------------*/
 html, body {height: 100%;}
@@ -291,7 +339,3 @@ fieldset {margin-bottom:0;}
 h1 .edit {font-size:14px;}
 h1 .edit a {text-decoration:none;}
 h1 .edit a:hover {text-decoration:underline;}
-
-.event_search {width:60em; margin:0 0 20px;}
-.event_search dt {font-size:1.6em; font-weight:bold;}
-.event_search dd {font-size:1.3em;}

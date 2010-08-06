@@ -25,7 +25,7 @@ class People::ProfileController < ApplicationController
   
   def openid
   end
-  
+    
   def change_privacy_setting
     @privacysetting = PrivacySetting.find_by_id(params[:id])
     if (@privacysetting.user == @currentuser)
@@ -80,8 +80,7 @@ class People::ProfileController < ApplicationController
       @socialnetworkslist = SocialNetwork.get_edit_networks
     end
   end
-  
-  
+    
   def otheremails
     if request.post?      
       @currentuser.modify_user_emails(params[:useremails])

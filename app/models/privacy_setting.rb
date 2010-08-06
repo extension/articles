@@ -8,7 +8,7 @@ class PrivacySetting < ActiveRecord::Base
   belongs_to :user
   
   
-  KNOWN_ITEMS = ['email','phone','title','position','institution','location','county','interests']
+  KNOWN_ITEMS = ['email','phone','title','position','institution','location','county','interests','time_zone']
   
   ITEM_LABELS = {'email' => 'Email Address',
                       'phone' => 'Phone Number',
@@ -17,7 +17,8 @@ class PrivacySetting < ActiveRecord::Base
                       'institution' => 'Institution',
                       'location' => 'Location',
                       'county' => 'County',
-                      'interests' => 'Interests'}
+                      'interests' => 'Interests',
+                      'time_zone' => 'Time zone'}
                       
                       
   named_scope :showpublicly, :conditions => {:is_public => 1}

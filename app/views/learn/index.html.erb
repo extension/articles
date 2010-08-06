@@ -3,7 +3,7 @@
 <%= render(:partial => "partial/flashmessages") %>
 
 <div id="home">
-   <p class="summary_statement">These professional development sessions are open to anyone in Extension, and you're all welcomed to participate! If you have suggestions for topics that are not currently listed, please add them to the Learn Community Wave or let Beth Raney know!</p>
+   <p class="summary_statement">These professional development sessions are open to anyone in Extension, and you're all welcome to participate. If you have suggestions for topics that are not currently listed, please add them to the <%= link_to "Learn Community Wave", "https://wave.google.com/wave/#restored:wave:googlewave.com%252Fw%252BaqS4tkeBA" %> or let <%= link_to("Beth Raney", :controller => '/learn', :action => :profile, :id => "bnr1") %> know.</p>
    
 <section id="upcoming_events">
    <h3>Upcoming Events</h3>
@@ -28,7 +28,7 @@
                <% if count > 0 %>
                , 
                <% end %>
-               <%= link_to_user(presenter) %> 
+               <%= link_to(presenter.fullname, :controller => '/learn', :action => :profile, :id => presenter.login) %>
                <% count = count + 1 %>
             <% end %>
          </p>
@@ -36,7 +36,7 @@
          <div class="event_details">
             <p class="session_type"><%= upcoming_session.session_length %> Minute Session</p>
             <p class="date"><%= formatted_start_time.strftime("%B %e, %Y") %></p>
-            <p><time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{format_time_zone(upcoming_session.time_zone)}</span>" %></time></p>
+            <p><time><%= formatted_start_time.strftime("%l:%M %p") + " <span class=\"timezone\">#{formatted_start_time.strftime("%Z")}</span>" %></time></p>
          </div>
          
          <% if upcoming_session.tags.length != 0 %>
@@ -77,8 +77,8 @@
    <aside id="secondary" class="radius10">
       <p id="create_link"><%= link_to("Create a new PD event", {:controller => 'learn/create_session'}, :class => "bigbutton blue") %></p>
       <ul>
-         <li class="feed"><%= link_to("Subscribe", {:controller => "feeds", :action => "learn"}) %> to a feed of PD recordings</li>
-         <li class="groupicon"><%= link_to("How to participate in eXtension professional development", "http://about.extension.org/wiki/Schedule_of_Professional_Development_Opportunities#How_to_Participate_in_eXtension_Professional_Development") %></li>
+         <li class="feed"><%= link_to("Subscribe", {:controller => "feeds", :action => "learn"}) %> to a feed of professional development recordings</li>
+         <li class="groupicon"><%= link_to("How to participate in eXtension PD", "http://about.extension.org/wiki/Schedule_of_Professional_Development_Opportunities#How_to_Participate_in_eXtension_Professional_Development") %></li>
          <li class="email">Get email announcements: <br /> 1) Visit the <%= link_to("Learn Community", "https://people.extension.org/communities/learn") %> <br />2) Click "Join Community"</li>
       </ul>
    </aside>
