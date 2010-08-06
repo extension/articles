@@ -107,8 +107,10 @@ span.recording_available {background: transparent url(/images/common/television.
 #event_time h2 {background:#fff; float:left; padding: 10px 10px 10px 0;}
 #event #presenters {font-size:1.6em;}
 #event #tags {font-size:1.6em; background: transparent url(/images/common/tag_orange.png) left center no-repeat; padding-left:20px;}
-#sessionconnection {background:#cde4f8; font-size:1.3em;}
-#sessionconnection p {margin-bottom:0;}
+#sessionconnection_interest {background:#cde4f8; font-size:1.3em;}
+#sessionconnection_interest p {margin-bottom:0;}
+#sessionconnection_attendance {background:#cde4f8; font-size:1.3em;}
+#sessionconnection_attendance  p {margin-bottom:0;}
 
 #attendees {background:#fff;}
 #attendees h3 {font-size:1.4em;}

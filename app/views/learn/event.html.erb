@@ -95,17 +95,28 @@
    </aside>
    
    <%- if @currentuser -%>
-    <aside id="sessionconnection" class="radius10">
-      <%= render(:partial => 'auth_session_connection') %>
-    </aside> 
-   <%- else -%>
-   <aside id="sessionconnection" class="radius10">
       <%- if @learn_session.event_started? -%>
-        <%= link_to("I attended this session", :controller => :learn, :action => :connect_to_session, :id => @learn_session.id) %> (requires login)
+        <aside id="sessionconnection_interest" class="radius10">
+          <%= render(:partial => 'auth_session_interest') %>
+        </aside>
+        <br/> 
+        <aside id="sessionconnection_attendance" class="radius10">
+          <%= render(:partial => 'auth_session_attendance') %>
+        </aside>
       <%- else -%>
-        <%= link_to("I'm interested in this session", :controller => :learn, :action => :connect_to_session, :id => @learn_session.id) %> (requires login)
+        <aside id="sessionconnection_interest" class="radius10">
+          <%= render(:partial => 'auth_session_interest') %>
+        </aside>
       <%- end -%>
-   </aside>
+   <%- else -%>
+     <aside id="sessionconnection_interest" class="radius10">
+        <%- if @learn_session.event_started? -%>
+          Are you interested in this topic or did you attend this session? 
+        <%- else -%>
+          Interested in this topic?
+        <%- end -%>
+        <%= link_to("Login and let us know", :controller => :learn, :action => :connect_to_session, :id => @learn_session.id) %>
+     </aside>
    <%- end -%>
 
    <%- if @currentuser -%>

@@ -24,11 +24,24 @@ class LearnController < ApplicationController
       redirect_to :action => :index
       return
     end
-    
+  
+    @connected_users = {}
     if @learn_session.event_started?
-      @connected_users = @learn_session.connected_users(LearnConnection::ATTENDED)
+      attended = @learn_session.connected_users(LearnConnection::ATTENDED)
+      interested = @learn_session.connected_users(LearnConnection::INTERESTED)
+      attended.each do |u|
+        @connected_users[u.id] = {:primaryconnectiontype => LearnConnection::ATTENDED, :user => u}
+      end
+      interested.each do |u|
+        if(@connected_users[u.id].blank?)
+          @connected_users[u.id] = {:primaryconnectiontype => LearnConnection::INTERESTED, :user => u}
+        end
+      end
     else
-      @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
+      interested = @learn_session.connected_users(LearnConnection::INTERESTED)
+      interested.each do |u|
+        @connected_users[u.id] = {:primaryconnectiontype => 'interest', :user => u}
+      end
     end
     
     # set timezone to either the people profile pref for the user or the time zone selected for the session
@@ -327,43 +340,48 @@ class LearnController < ApplicationController
       return redirect_to(:action => :index)
     end
     
-    if @learn_session.event_started?
-      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
-      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
-    else
-      @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
-      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
-    end
-    
     return redirect_to(:action => :event, :id => @learn_session.id)
   end
   
   def change_my_connection
     if request.post?
       @learn_session = LearnSession.find_by_id(params[:id])
-    
+      @connectiontype = params[:connectiontype]
       if(params[:connection] and params[:connection] == 'makeconnection')
-         if(params[:connectiontype] == 'interested')
+         if(@connectiontype == 'interested')
            @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,true)
            UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated interest in learn: #{@learn_session.title}")
-         elsif(params[:connectiontype] == 'attended')
+         elsif(@connectiontype == 'attended')
            @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,true)
            UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "indicated attendance at learn: #{@learn_session.title}")
          end
        else
-         if(params[:connectiontype] == 'interested')
+         if(@connectiontype == 'interested')
            @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::INTERESTED,false)
            UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed interest in learn: #{@learn_session.title}")
-         elsif(params[:connectiontype] == 'attended')
+         elsif(@connectiontype == 'attended')
            @currentuser.update_connection_to_learn_session(@learn_session,LearnConnection::ATTENDED,false)
            UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "removed attendance at learn: #{@learn_session.title}")
          end
        end
      
+       @connected_users = {}
        if @learn_session.event_started?
-         @connected_users = @learn_session.connected_users(LearnConnection::ATTENDED)
+         attended = @learn_session.connected_users(LearnConnection::ATTENDED)
+         interested = @learn_session.connected_users(LearnConnection::INTERESTED)
+         attended.each do |u|
+           @connected_users[u.id] = {:primaryconnectiontype => LearnConnection::ATTENDED, :user => u}
+         end
+         interested.each do |u|
+           if(@connected_users[u.id].blank?)
+             @connected_users[u.id] = {:primaryconnectiontype => LearnConnection::INTERESTED, :user => u}
+           end
+         end
        else
-         @connected_users = @learn_session.connected_users(LearnConnection::INTERESTED)
+         interested = @learn_session.connected_users(LearnConnection::INTERESTED)
+         interested.each do |u|
+           @connected_users[u.id] = {:primaryconnectiontype => 'interest', :user => u}
+         end
        end
     
       respond_to do |format|
