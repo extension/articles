@@ -8,7 +8,7 @@ require 'uri'
 
 class People::AccountController < ApplicationController
   include AuthCheck
-  ssl_required :login,:set_password unless Rails.env.development?
+  ssl_required :login,:set_password,:change_password unless Rails.env.development?
   layout 'people'
   before_filter :login_required, :except => [:login, :signup, :new_password, :set_password, :authenticate]
   before_filter :login_optional, :only => [:login]
