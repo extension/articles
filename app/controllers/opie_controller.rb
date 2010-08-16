@@ -21,7 +21,9 @@ end
 class OpieController < ApplicationController
   layout nil
   include OpenID::Server
-  include ApplicationHelper  
+  include ApplicationHelper
+  ssl_required unless Rails.env.development?
+    
   before_filter(:login_required, :only => [:decision])
   before_filter(:check_purgatory, :only => [:decision])
   before_filter :turn_off_right_column
