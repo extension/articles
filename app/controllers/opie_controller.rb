@@ -26,6 +26,10 @@ class OpieController < ApplicationController
   before_filter(:check_purgatory, :only => [:decision])
   before_filter :turn_off_right_column
   
+  def ssl_required?
+    (!Rails.env.development?)
+  end
+  
   def delegate
     @openiduser = User.find_by_login(params[:extensionid])
     @openidmeta = openidmeta(@openiduser)
