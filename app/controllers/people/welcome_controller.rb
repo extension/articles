@@ -7,6 +7,7 @@
 
 class People::WelcomeController < ApplicationController
   include AuthCheck
+  ssl_allowed :home
   
   layout 'people'
   before_filter :login_required
