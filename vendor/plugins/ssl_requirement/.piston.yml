@@ -1,0 +1,8 @@
+--- 
+format: 1
+handler: 
+  commit: 34a9a138c4093bd7d5678822f8f1e62c31d47299
+  branch: master
+lock: false
+repository_class: Piston::Git::Repository
+repository_url: http://github.com/rails/ssl_requirement.git
