@@ -26,7 +26,7 @@ class OpieController < ApplicationController
   before_filter(:check_purgatory, :only => [:decision])
   before_filter :turn_off_right_column
   
-  def ssl_required?
+  def ssl_allowed?
     (!Rails.env.development?)
   end
   
