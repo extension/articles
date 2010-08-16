@@ -7,7 +7,7 @@
 ActionController::Base.session = {
   :key         => '_pubsite_session',
   :secret      => AppConfig.configtable['sessionsecret'],
-  :secure => (!Rails.env.development?),
+  #:secure => (!Rails.env.development?),
   :expire_after => 2.days,
 }
 
