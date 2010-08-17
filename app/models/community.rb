@@ -743,6 +743,12 @@ class Community < ActiveRecord::Base
       return returnhash
     end
   end  
+  
+  # get all content tags (including primary) for all communities
+  def self.content_tag_ids
+    content_tag_ids = Tagging.find(:all, :select => "DISTINCT(taggings.tag_id)", :conditions => "taggings.taggable_type = 'Community' AND (taggings.tag_kind = '#{Tagging::CONTENT}' or taggings.tag_kind = '#{Tagging::CONTENT_PRIMARY}')")
+    return content_tag_ids.map{|tag| tag.tag_id}
+  end
 
   # Gets the count of tags for the specified communities where the # of tags applied is >= 2 - which makes it way more complex
   def self.get_shared_tag_counts(community_ids,options={},inneroptions={})

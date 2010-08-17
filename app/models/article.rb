@@ -53,14 +53,6 @@ class Article < ActiveRecord::Base
    end
   end
   
-  def associated_communities
-    article_content_tags = self.tags.content_tags
-    (article_content_tags and article_content_tags.length > 0) ? (content_tag_ids = article_content_tags.map{|tag| tag.id}.join(',')) : (return [])
-    Community.find(:all, 
-                   :joins => [:taggings], 
-                   :conditions => "taggings.taggable_type = 'Community' AND (taggings.tag_kind = '#{Tagging::CONTENT}' or taggings.tag_kind = '#{Tagging::CONTENT_PRIMARY}') AND communities.is_launched = true AND taggings.tag_id IN (#{content_tag_ids})")
-  end
-  
   def self.get_cache_key(method_name,optionshash={})
    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
    cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
@@ -97,14 +89,25 @@ class Article < ActiveRecord::Base
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
       communities_represented = []
       articles_to_return = []
-      Article.bucketed_as('feature').ordered.each do |article|
-        article_communities = article.associated_communities
-        if article_communities.length > 0
-          if (article_communities & communities_represented) != []
+      
+      community_tag_ids = Community.content_tag_ids.join(',')
+      
+      
+      Article.find(:all, 
+                   :select => "articles.*, GROUP_CONCAT(DISTINCT taggings.tag_id) AS tag_string", 
+                   :joins => [:taggings, :content_buckets], 
+                   :conditions => "taggings.tag_id IN (#{community_tag_ids}) AND content_buckets.name = 'feature'", 
+                   :group => "articles.id",
+                   :order => "articles.wiki_updated_at DESC").each do |article|
+      
+        article_community_tags = article.tag_string.split(',')
+        
+        if article_community_tags.length > 0
+          if (article_community_tags & communities_represented) != []
             next
           else
             articles_to_return << article
-            communities_represented.concat(article_communities)
+            communities_represented.concat(article_community_tags)
           end
         else
           next

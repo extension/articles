@@ -20,7 +20,6 @@ class MainController < ApplicationController
 		Sponsor::SPONSORSHIP_LEVELS.each{ |level| @sponsors[level] = Array.new}
 		sponsorlist.each{ |sponsor| @sponsors[sponsor.level] << sponsor if sponsor.level}
      
-     #@community_highlights = Article.main_feature_list({:limit => 6})
      @community_highlights = Article.diverse_feature_list({:limit => 6})
 
      @calendar_date = get_calendar_date
