@@ -53,6 +53,13 @@ class Article < ActiveRecord::Base
    end
   end
   
+  def associated_communities
+    article_content_tags = self.tags.content_tags
+    (article_content_tags and article_content_tags.length > 0) ? (content_tag_ids = article_content_tags.map{|tag| tag.id}.join(',')) : (return [])
+    Community.find(:all, 
+                   :joins => [:taggings], 
+                   :conditions => "taggings.taggable_type = 'Community' AND (taggings.tag_kind = '#{Tagging::CONTENT}' or taggings.tag_kind = '#{Tagging::CONTENT_PRIMARY}') AND communities.is_launched = true AND taggings.tag_id IN (#{content_tag_ids})")
+  end
   
   def self.get_cache_key(method_name,optionshash={})
    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
@@ -82,6 +89,33 @@ class Article < ActiveRecord::Base
       Article.bucketed_as('feature').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
     end
    end
+  end
+  
+  def self.diverse_feature_list(options = {}, forcecacheupdate=false)
+    # OPTIMIZE: keep an eye on this caching
+    cache_key = self.get_cache_key(this_method,options)
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+      communities_represented = []
+      articles_to_return = []
+      Article.bucketed_as('feature').ordered.each do |article|
+        article_communities = article.associated_communities
+        if article_communities.length > 0
+          if (article_communities & communities_represented) != []
+            next
+          else
+            articles_to_return << article
+            communities_represented.concat(article_communities)
+          end
+        else
+          next
+        end
+        # end of are there associated communities
+        break if articles_to_return.length == options[:limit]
+      end
+      # end of article loop
+      articles_to_return
+    end
+    # end of cache block
   end
   
   def self.main_recent_list(options = {},forcecacheupdate=false)
