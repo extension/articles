@@ -83,6 +83,9 @@ class Article < ActiveRecord::Base
    end
   end
   
+  # get featured articles that are diverse across communities (ie. make sure only one article per community is returned up to limit # of articles).
+  # created so that the homepage has featured articles across diverse areas so if multiple articles are published from a community at once, only one 
+  # is chosen from that community for the home page.
   def self.diverse_feature_list(options = {}, forcecacheupdate=false)
     # OPTIMIZE: keep an eye on this caching
     cache_key = self.get_cache_key(this_method,options)
@@ -90,9 +93,10 @@ class Article < ActiveRecord::Base
       communities_represented = []
       articles_to_return = []
       
+      # get a list of all community content tag ids (including the primary tag)
       community_tag_ids = Community.content_tag_ids.join(',')
       
-      
+      # get articles who are tagged with those community content tags
       Article.find(:all, 
                    :select => "articles.*, GROUP_CONCAT(DISTINCT taggings.tag_id) AS tag_string", 
                    :joins => [:taggings, :content_buckets], 
@@ -103,6 +107,7 @@ class Article < ActiveRecord::Base
         article_community_tags = article.tag_string.split(',')
         
         if article_community_tags.length > 0
+          # if we have already processed an article from the tags applied to this article, go to the next one
           if (article_community_tags & communities_represented) != []
             next
           else

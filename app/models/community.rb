@@ -744,7 +744,7 @@ class Community < ActiveRecord::Base
     end
   end  
   
-  # get all content tags (including primary) for all communities
+  # get all content tag ids (including primary) for all communities
   def self.content_tag_ids
     content_tag_ids = Tagging.find(:all, :select => "DISTINCT(taggings.tag_id)", :conditions => "taggings.taggable_type = 'Community' AND (taggings.tag_kind = '#{Tagging::CONTENT}' or taggings.tag_kind = '#{Tagging::CONTENT_PRIMARY}')")
     return content_tag_ids.map{|tag| tag.tag_id}
