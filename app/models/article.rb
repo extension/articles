@@ -93,26 +93,36 @@ class Article < ActiveRecord::Base
       communities_represented = []
       articles_to_return = []
       
-      # get a list of all community content tag ids (including the primary tag)
-      community_tag_ids = Community.content_tag_ids.join(',')
+      # get a list of launched communities
+      launched_communitylist = Community.launched.all(:order => 'name')
+      launched_community_ids = launched_communitylist.map(&:id).join(',')
       
-      # get articles who are tagged with those community content tags
-      Article.find(:all, 
-                   :select => "articles.*, GROUP_CONCAT(DISTINCT taggings.tag_id) AS tag_string", 
-                   :joins => [:taggings, :content_buckets], 
-                   :conditions => "taggings.tag_id IN (#{community_tag_ids}) AND content_buckets.name = 'feature'", 
+      
+
+      # limit to last AppConfig.configtable['recent_feature_limit'] days so we aren't pulling the full list every single time
+      # converting to a date to take advantage of mysql query caching for the day
+      only_since = Time.zone.now.to_date - AppConfig.configtable['recent_feature_limit'].day
+      
+      # get articles and their communities - joining them up by content tags
+      # we have to do this group concat here because a given article may belong
+      # to more than one community
+      articlelist = Article.find(:all, 
+                   :select => "articles.*, GROUP_CONCAT(communities.id) as community_ids_string", 
+                   :joins => [:content_buckets, {:tags => :communities}], 
+                   :conditions => "DATE(articles.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tag_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
                    :group => "articles.id",
-                   :order => "articles.wiki_updated_at DESC").each do |article|
-      
-        article_community_tags = article.tag_string.split(',')
+                   :order => "articles.wiki_updated_at DESC")
+                   
+      articlelist.each do |article|
+        community_ids = article.community_ids_string.split(',')
         
-        if article_community_tags.length > 0
+        if community_ids.length > 0
           # if we have already processed an article from the tags applied to this article, go to the next one
-          if (article_community_tags & communities_represented) != []
+          if (community_ids & communities_represented) != []
             next
           else
             articles_to_return << article
-            communities_represented.concat(article_community_tags)
+            communities_represented.concat(community_ids)
           end
         else
           next
