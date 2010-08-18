@@ -159,7 +159,7 @@ class Community < ActiveRecord::Base
       self.replace_tags(primary,User.systemuserid,Tagging::CONTENT_PRIMARY)
     end
     
-    # okay do the others - updating the cached_tags for search
+    # okay, do all the tags as CONTENT taggings - updating the cached_tags for search
     self.replace_tags_with_and_cache(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},User.systemuserid,Tagging::CONTENT)
     
     # update the Tag model's community_content_tags
