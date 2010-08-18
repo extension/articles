@@ -164,7 +164,7 @@ class Event < ActiveRecord::Base
       e.id = self.id_and_link
       e.updated = self.xcal_updated_at
       e.categories = self.content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
-      e.content = Atom::Content::Html.new(self.description)
+      e.content = Atom::Content::Html.new(self.description) if self.description
     end
   end 
   
