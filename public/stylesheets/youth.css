@@ -77,3 +77,5 @@ form {padding:0px;}
 .homesection .whatsnewbox ul li {list-style: disc url(/images/layout/youth/youthbullet.gif) !important;}
 .homesection {background: url(/images/layout/youth/youthhomesectionheaders.gif) top left repeat-x;}
 #homesectionHeaderRight {height: 32px; width: 7px; background: url(/images/layout/youth/youthhomesectionright.gif) top right;}
+
+.homesection h2 {margin:5px 0 5px 10px !important; font-size:1.9em !important; color: #346602 !important;}

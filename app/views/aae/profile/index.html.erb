@@ -99,7 +99,7 @@
     <h4>Click to browse by expertise </h4>
     <ul id="aoe_list">
         <% @user.categories.each do |cat| %>
-            <li><%= link_to(cat.full_name, {:controller => 'aae/search', :action => 'experts_by_category', :legacycategory => cat.id }) %></li>
+            <li><%= link_to(cat.full_name, {:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => cat.id }) %></li>
         <% end %>
         
     </ul>
@@ -112,7 +112,7 @@
     <h4>Click to browse by location</h4>
     <ul id="aoe_list">
         <% @user.expertise_locations.each do |loc| %>
-            <li><%= link_to(loc.abbreviation, {:controller => 'aae/search', :action => 'experts_by_location', :id => loc.fipsid }) %></li>
+            <li><%= link_to(loc.abbreviation, {:controller => 'aae/expertise', :action => 'experts_by_location', :id => loc.fipsid }) %></li>
         <% end %>
     </ul>
     <% end %>

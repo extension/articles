@@ -1,12 +1,17 @@
 <%- if(!@connected_users.blank?) -%>
      <%- if @learn_session.event_started? -%>
-       <h3>Attended this session</h3>
+       <h3 class="asterisk">People interested in this session</h3>
+       <p><em class="asterisk">(* indicates attendance)</em></p>
      <%- else -%>
-       <h3>Interested in this session</h3>
+       <h3>People interested in this session</h3>
      <%- end -%>
      <ul>
-        <%- @connected_users.each do |u| -%>
-          <li><%= link_to(u.fullname, :controller => '/learn', :action => :profile, :id => u.login) %></li>
+        <%- @connected_users.each do |user_id,info| -%>
+          <li><%= link_to(info[:user].fullname, :controller => '/learn', :action => :profile, :id => info[:user].login) %>
+            <%- if @learn_session.event_started? and info[:primaryconnectiontype] == LearnConnection::ATTENDED -%>
+              *
+            <%- end -%>
+          </li>
          <%- end -%>
      </ul>
 <%- end -%>

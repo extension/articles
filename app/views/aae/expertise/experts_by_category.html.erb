@@ -12,7 +12,7 @@
         <td>
         <% if user.expertise_locations.length > 0 %>    
           <% user.expertise_locations.each do |l| %>
-            <%= link_to (l.abbreviation, {:controller => 'aae/search', :action => 'experts_by_location', :id => l.fipsid }) %> 
+            <%= link_to (l.abbreviation, {:controller => 'aae/expertise', :action => 'experts_by_location', :id => l.fipsid }) %> 
           <% end %>
         <% end %>
         </td>
