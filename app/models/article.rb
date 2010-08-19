@@ -53,7 +53,6 @@ class Article < ActiveRecord::Base
    end
   end
   
-  
   def self.get_cache_key(method_name,optionshash={})
    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
    cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
@@ -82,6 +81,59 @@ class Article < ActiveRecord::Base
       Article.bucketed_as('feature').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
     end
    end
+  end
+  
+  # get featured articles that are diverse across communities (ie. make sure only one article per community is returned up to limit # of articles).
+  # created so that the homepage has featured articles across diverse areas so if multiple articles are published from a community at once, only one 
+  # is chosen from that community for the home page.
+  def self.diverse_feature_list(options = {}, forcecacheupdate=false)
+    # OPTIMIZE: keep an eye on this caching
+    cache_key = self.get_cache_key(this_method,options)
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+      communities_represented = []
+      articles_to_return = []
+      
+      # get a list of launched communities
+      launched_communitylist = Community.launched.all(:order => 'name')
+      launched_community_ids = launched_communitylist.map(&:id).join(',')
+      
+      
+
+      # limit to last AppConfig.configtable['recent_feature_limit'] days so we aren't pulling the full list every single time
+      # converting to a date to take advantage of mysql query caching for the day
+      only_since = Time.zone.now.to_date - AppConfig.configtable['recent_feature_limit'].day
+      
+      # get articles and their communities - joining them up by content tags
+      # we have to do this group concat here because a given article may belong
+      # to more than one community
+      articlelist = Article.find(:all, 
+                   :select => "articles.*, GROUP_CONCAT(communities.id) as community_ids_string", 
+                   :joins => [:content_buckets, {:tags => :communities}], 
+                   :conditions => "DATE(articles.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tag_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
+                   :group => "articles.id",
+                   :order => "articles.wiki_updated_at DESC")
+                   
+      articlelist.each do |article|
+        community_ids = article.community_ids_string.split(',')
+        
+        if community_ids.length > 0
+          # if we have already processed an article from the tags applied to this article, go to the next one
+          if (community_ids & communities_represented) != []
+            next
+          else
+            articles_to_return << article
+            communities_represented.concat(community_ids)
+          end
+        else
+          next
+        end
+        # end of are there associated communities
+        break if articles_to_return.length == options[:limit]
+      end
+      # end of article loop
+      articles_to_return
+    end
+    # end of cache block
   end
   
   def self.main_recent_list(options = {},forcecacheupdate=false)
