@@ -159,7 +159,7 @@ class Community < ActiveRecord::Base
       self.replace_tags(primary,User.systemuserid,Tagging::CONTENT_PRIMARY)
     end
     
-    # okay do the others - updating the cached_tags for search
+    # okay, do all the tags as CONTENT taggings - updating the cached_tags for search
     self.replace_tags_with_and_cache(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},User.systemuserid,Tagging::CONTENT)
     
     # update the Tag model's community_content_tags
@@ -743,6 +743,12 @@ class Community < ActiveRecord::Base
       return returnhash
     end
   end  
+  
+  # get all content tag ids (including primary) for all communities
+  def self.content_tag_ids
+    content_tag_ids = Tagging.find(:all, :select => "DISTINCT(taggings.tag_id)", :conditions => "taggings.taggable_type = 'Community' AND (taggings.tag_kind = '#{Tagging::CONTENT}' or taggings.tag_kind = '#{Tagging::CONTENT_PRIMARY}')")
+    return content_tag_ids.map{|tag| tag.tag_id}
+  end
 
   # Gets the count of tags for the specified communities where the # of tags applied is >= 2 - which makes it way more complex
   def self.get_shared_tag_counts(community_ids,options={},inneroptions={})
