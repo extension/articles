@@ -105,6 +105,9 @@ class FeedsController < ApplicationController
     gen_feed
   end
   
+  def search
+    AnnotationEvent::changes_feed
+  end
   
   def gen_feed(type=params[:action])
     @filteredparams = FilterParams.new(params)

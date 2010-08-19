@@ -32,4 +32,12 @@ class AnnotationEvent < ActiveRecord::Base
     
     AnnotationEvent.create(opts)
   end
+  
+  def self.changes_feed
+    params = {:feed_title => "Search - Annotation Changes",
+              :alt_link => url_for(:controller => 'search',
+                                   :action => 'index', :only_path => false)}
+    feed = new Feed.new(params)
+    feed.serve
+  end
 end
