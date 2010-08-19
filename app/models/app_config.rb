@@ -134,6 +134,9 @@ class AppConfig
     @@configtable['default_content_limit'] = 3
     @@configtable['max_content_limit'] = 25
     @@configtable['events_within_days'] = 5
+    # value is days
+    @@configtable['recent_feature_limit'] = 30
+    
     
     @@configtable['cse_id'] = 'NotSet'
     @@configtable['cse_secret'] = 'NotSet'
