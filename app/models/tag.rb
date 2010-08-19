@@ -78,14 +78,7 @@ class Tag < ActiveRecord::Base
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
       launchedonly = options[:launchedonly].nil? ? false : options[:launchedonly]
       if(launchedonly)
-        onlyaae = options[:onlyaae].nil? ? false : options[:onlyaae]
-      end
-      if(launchedonly)
-        if(onlyaae)
-          self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE and communities.hide_from_aae = FALSE")
-        else
-          self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
-        end
+        self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
       else
         self.find(:all, :include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggable_type = 'Community'")
       end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100804200528) do
+ActiveRecord::Schema.define(:version => 20100819144041) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -222,7 +222,6 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.integer  "logo_id",                               :default => 0
     t.boolean  "connect_to_drupal",                     :default => false
     t.integer  "drupal_node_id"
-    t.boolean  "hide_from_aae",                         :default => false
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
