@@ -45,7 +45,7 @@ class Tag < ActiveRecord::Base
     self.name = self.class.normalizename(self.name)
   end
   
-  named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT}"}
+  named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}"}
   
   # TODO: review.  This is kind of a hack that might should be done differently
   def content_community(forcecacheupdate=false)
@@ -53,7 +53,7 @@ class Tag < ActiveRecord::Base
     cache_key = self.class.get_object_cache_key(self,this_method,{:name => self.name})
     # just store the id and get the community each time
     communityid = Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
-      self.communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT}")
+      self.communities.first(:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}")
     end
     return Community.find_by_id(communityid)
   end
@@ -78,9 +78,9 @@ class Tag < ActiveRecord::Base
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
       launchedonly = options[:launchedonly].nil? ? false : options[:launchedonly]
       if(launchedonly)
-        self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
+        self.find(:all, :joins => [:communities], :conditions => "taggings.tagging_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
       else
-        self.find(:all, :include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggable_type = 'Community'")
+        self.find(:all, :include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT} and taggable_type = 'Community'")
       end
     end  
   end

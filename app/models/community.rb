@@ -89,11 +89,11 @@ class Community < ActiveRecord::Base
   
   
   named_scope :tagged_with_content_tag, lambda {|tagname| 
-    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tagging::CONTENT}"}
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::CONTENT}"}
   }
   
   named_scope :tagged_with_shared_tag, lambda {|tagname| 
-    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tagging::SHARED}"}
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::SHARED}"}
   }
   
   # validations
@@ -580,7 +580,7 @@ class Community < ActiveRecord::Base
   end
     
   def drop_nonjoined_taggings
-    systemtaggings =  self.taggings.find(:all, :conditions => {:tag_kind => 'system'})
+    systemtaggings =  self.taggings.find(:all, :conditions => {:tagging_kind => 'system'})
     systemtaggings.each do |tagging|
       if (!self.joined.include?(tagging.owner))
         tagging.destroy
@@ -746,7 +746,7 @@ class Community < ActiveRecord::Base
   
   # get all content tag ids (including primary) for all communities
   def self.content_tag_ids
-    content_tag_ids = Tagging.find(:all, :select => "DISTINCT(taggings.tag_id)", :conditions => "taggings.taggable_type = 'Community' AND (taggings.tag_kind = '#{Tagging::CONTENT}' or taggings.tag_kind = '#{Tagging::CONTENT_PRIMARY}')")
+    content_tag_ids = Tagging.find(:all, :select => "DISTINCT(taggings.tag_id)", :conditions => "taggings.taggable_type = 'Community' AND (taggings.tagging_kind = '#{Tagging::CONTENT}' or taggings.tagging_kind = '#{Tagging::CONTENT_PRIMARY}')")
     return content_tag_ids.map{|tag| tag.tag_id}
   end
 
