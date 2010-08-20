@@ -113,7 +113,6 @@ class Event < ActiveRecord::Base
     item.start = vevent.dtstart
     item.date = vevent.dtstart.strftime('%Y-%m-%d')
     item.time = vevent.dtstart.strftime('%H:%M:%S')
-    logger.info "TIMEZONE: #{vevent.tz}" if vevent.tz
     
     if vevent.properties.include?("dtend")
       duration = (vevent.dtend - vevent.dtstart) / (24 * 60 * 60) # result in days
