@@ -46,6 +46,32 @@ class Event < ActiveRecord::Base
    end
   end
   
+  # override timezone writer/reader
+  # use convert=false when you need a timezone string that mysql can handle
+  def time_zone(convert=true)
+    tzinfo_time_zone_string = read_attribute(:time_zone)
+
+    if(convert)
+      reverse_mappings = ActiveSupport::TimeZone::MAPPING.invert
+      if(reverse_mappings[tzinfo_time_zone_string])
+        reverse_mappings[tzinfo_time_zone_string]
+      else
+        nil
+      end
+    else
+      tzinfo_time_zone_string
+    end
+  end
+
+  def time_zone=(time_zone_string)
+    mappings = ActiveSupport::TimeZone::MAPPING
+    if(mappings[time_zone_string])
+      write_attribute(:time_zone, mappings[time_zone_string])
+    else
+      write_attribute(:time_zone, nil)
+    end
+  end
+  
   # helper method for main page items
   def self.main_calendar_list(options = {},forcecacheupdate=false)
     cache_key = self.get_cache_key(this_method,options)
