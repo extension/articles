@@ -123,7 +123,26 @@ class Category < ActiveRecord::Base
     end
   end
   
+  # Callback to normalize the tagname before saving it. 
+  def before_save
+    self.name = self.class.normalizename(self.name)
+  end
+    
+  class << self
   
+    # normalize category names - intentionally does not allow "colons" (while tags and content buckets do)
+    # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces)   
+    def normalizename(name)
+      # make an initial downcased copy - don't want to modify name as a side effect
+      returnstring = name.downcase
+      # now, use the replacement versions of gsub and strip on returnstring
+      returnstring.gsub!('_',' ')
+      returnstring.gsub!(/[^\w\s-]/,'')
+      returnstring.gsub!(/\s+/,' ')
+      returnstring.strip!
+      returnstring
+    end  
+  end
   
 
 
