@@ -137,6 +137,7 @@ class Aae::QuestionController < ApplicationController
   def change_category
     if request.post?
       @submitted_question = SubmittedQuestion.find(params[:sq_id].strip)
+      previous_category_names = @submitted_question.category_names
       category_param = "category_#{@submitted_question.id}"
       parent_category = Category.find(params[category_param].strip) if params[category_param] and params[category_param].strip != '' and params[category_param].strip != "uncat"
       sub_category = Category.find(params[:sub_category].strip) if params[:sub_category] and params[:sub_category].strip != ''
@@ -152,7 +153,6 @@ class Aae::QuestionController < ApplicationController
         if(parent_category)
           tags = [parent_category.name]
           if(sub_category)
-            tags << #{sub_category.name}
             tags << "#{parent_category.name}:#{sub_category.name}"
           end
           @submitted_question.replace_tags_with_and_cache(tags, User.systemuserid, Tagging::SHARED)
@@ -162,7 +162,7 @@ class Aae::QuestionController < ApplicationController
         @submitted_question.replace_tags_with_and_cache('', User.systemuserid, Tagging::SHARED)
       end
       
-      SubmittedQuestionEvent.log_recategorize(@submitted_question, @currentuser, @submitted_question.category_names)
+      SubmittedQuestionEvent.log_recategorize(@submitted_question, @currentuser, @submitted_question.category_names, previous_category_names)
     end
     
     respond_to do |format|

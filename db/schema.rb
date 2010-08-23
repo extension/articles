@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100823145529) do
+ActiveRecord::Schema.define(:version => 20100823204706) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(:version => 20100823145529) do
     t.integer  "tagcacheable_id"
     t.string   "tagcacheable_type"
     t.integer  "owner_id"
-    t.integer  "tag_kind"
+    t.integer  "tagging_kind"
     t.integer  "cache_kind"
     t.text     "fulltextlist"
     t.text     "cachedata"
@@ -168,15 +168,12 @@ ActiveRecord::Schema.define(:version => 20100823145529) do
 
   create_table "categories", :force => true do |t|
     t.string   "name"
-    t.string   "default_keyword"
-    t.integer  "community_id",    :default => 0,     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "parent_id"
-    t.boolean  "show_to_public",  :default => false
+    t.boolean  "show_to_public", :default => false
   end
 
-  add_index "categories", ["community_id"], :name => "community_id_idx"
   add_index "categories", ["parent_id"], :name => "parent_id_idx"
 
   create_table "categories_submitted_questions", :id => false, :force => true do |t|
@@ -747,6 +744,7 @@ ActiveRecord::Schema.define(:version => 20100823145529) do
     t.integer  "previous_handling_event_state"
     t.integer  "previous_handling_recipient_id"
     t.integer  "previous_handling_initiator_id"
+    t.string   "previous_category"
   end
 
   add_index "submitted_question_events", ["created_at", "event_state", "previous_handling_recipient_id"], :name => "handling_idx"

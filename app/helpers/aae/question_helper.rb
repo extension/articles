@@ -44,7 +44,13 @@ def stringify_submitted_question_event(sq_event)
   when SubmittedQuestionEvent::REACTIVATE
     return "Question Reactivated by <strong #{@qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::RECATEGORIZED
-    return "Question Recategorized by <strong #{@qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
+    message = "Question Recategorized by <strong #{@qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
+    message += "<span>Category changed to #{sq_event.category}"
+    if(!sq_event.previous_category.blank? and sq_event.previous_category != 'unknown')
+       message += " from #{sq_event.previous_category}"
+    end
+    message += "</span>"
+    return message
   when SubmittedQuestionEvent::WORKING_ON
     return "Question worked on by <strong #{@qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} UTC</span>"
   when SubmittedQuestionEvent::EDIT_QUESTION
