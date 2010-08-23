@@ -14,6 +14,8 @@
    <span class="aaesubcategories">
       <%- if subcategories.length > 0 -%>
          <%= link_to_function("#{subcategories.length} subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
+      <%- elsif(admin_mode?) -%>
+        <%= link_to_function("no subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
       <%- end -%>
    </span>
       
