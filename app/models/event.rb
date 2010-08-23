@@ -117,8 +117,8 @@ class Event < ActiveRecord::Base
     start_time_array = vevent.dtstart.split('|')
     item.time_zone = start_time_array[1] if start_time_array[1]
     item.start = start_time_array[0]
-    item.date = start_time_array[0].strftime('%Y-%m-%d')
-    item.time = start_time_array[0].strftime('%H:%M:%S')
+    item.date = item.start.strftime('%Y-%m-%d')
+    item.time = item.start.strftime('%H:%M:%S')
     
     if vevent.properties.include?("dtend")
       duration = (vevent.dtend - vevent.dtstart) / (24 * 60 * 60) # result in days
