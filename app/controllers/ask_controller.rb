@@ -394,7 +394,7 @@ class AskController < ApplicationController
     end
   end
   
-  def get_aae_from_subcats
+  def get_aae_form_subcats
     parent_cat = Category.find_by_id(params[:category_id].strip) if params[:category_id] and params[:category_id].strip != '' 
     if parent_cat 
       @sub_category_options = [""].concat(parent_cat.children.show_to_public.all(:order => 'name').map{|sq| [sq.name, sq.id]})
