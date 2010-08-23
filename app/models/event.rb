@@ -98,6 +98,7 @@ class Event < ActiveRecord::Base
     #     :duration, :status, :summary, :uid, :last_modified, 
     #     :url => :url, :location => [ HCard, Adr, Geo, String ]
     
+    
     item.id = vevent.uid
     
     item.title = vevent.summary
@@ -110,9 +111,14 @@ class Event < ActiveRecord::Base
     end
     item.xcal_updated_at = updated
     
-    item.start = vevent.dtstart
-    item.date = vevent.dtstart.strftime('%Y-%m-%d')
-    item.time = vevent.dtstart.strftime('%H:%M:%S')
+    # start_time_array is an array of time data
+    # start_time_array[0] is the timestamp
+    # start_time_array[1] is the timezone if it exists
+    start_time_array = vevent.dtstart.split('|')
+    item.timezone = start_time_array[1] if start_time_array[1]
+    item.start = start_time_array[0]
+    item.date = start_time_array[0].strftime('%Y-%m-%d')
+    item.time = start_time_array[0].strftime('%H:%M:%S')
     
     if vevent.properties.include?("dtend")
       duration = (vevent.dtend - vevent.dtstart) / (24 * 60 * 60) # result in days
