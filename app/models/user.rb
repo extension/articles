@@ -1706,11 +1706,7 @@ class User < ActiveRecord::Base
     
     return eligible_wranglers
    end
-   
-   def is_question_wrangler?
-    return self.community_ids.include?(Community::QUESTION_WRANGLERS_COMMUNITY_ID)
-   end
-   
+      
    def open_question_count
     self.open_questions.count
    end
