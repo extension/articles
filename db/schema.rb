@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100820155434) do
+ActiveRecord::Schema.define(:version => 20100823145529) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -936,6 +936,7 @@ ActiveRecord::Schema.define(:version => 20100820155434) do
     t.text     "additionaldata"
     t.boolean  "aae_responder",                          :default => true
     t.string   "time_zone"
+    t.boolean  "is_question_wrangler",                   :default => false
   end
 
   add_index "users", ["email"], :name => "email", :unique => true
