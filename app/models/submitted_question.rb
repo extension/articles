@@ -9,6 +9,10 @@ require 'hpricot'
 
 class SubmittedQuestion < ActiveRecord::Base
  extend ConditionExtensions
+ 
+ has_many :cached_tags, :as => :tagcacheable
+ has_shared_tags  # include scopes for shared tags
+ 
 belongs_to :county
 belongs_to :location
 belongs_to :widget
@@ -178,16 +182,6 @@ def assign_parent_categories
     if category.parent and !categories.include?(category.parent)
       categories << category.parent
     end
-  end
-end
-
-def setup_categories(cat, subcat)
-  if category = Category.find_by_id(cat)
-    self.categories << category
-  end
-  
-  if category and (subcategory = Category.find_by_id_and_parent_id(subcat, category.id))
-    self.categories << subcategory
   end
 end
 

@@ -66,7 +66,6 @@ class AskController < ApplicationController
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       @submitted_question.location_id = params[:location_id]
       @submitted_question.county_id = params[:county_id]
-      @submitted_question.setup_categories(params[:aae_category], params[:subcategory])
       @submitted_question.status = 'submitted'
       @submitted_question.user_ip = request.remote_ip
       @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
@@ -74,6 +73,16 @@ class AskController < ApplicationController
       @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
       @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
       @submitted_question.external_app_id = 'www.extension.org'
+      
+      # setup categories
+      if(!params[:aae_category].blank? and category = Category.find_by_id(params[:aae_category]))
+        @submitted_question.categories << category
+        
+        if(!params[:subcategory].blank? and subcategory = Category.find_by_id_and_parent_id(params[:subcategory], category.id))
+          @submitted_question.categories << subcategory
+        end
+      end
+      
 
       # error check for submitted question, file_attachment and public user records 
       
@@ -134,12 +143,19 @@ class AskController < ApplicationController
       end
       
       @submitted_question.save
-
+      # tag it, based on the category/subcategory (if present)
+      if(category)
+        tags = [category.name]
+        if(subcategory)
+          tags << "#{category.name}:#{subcategory.name}"
+        end
+        @submitted_question.replace_tags_with_and_cache(tags, User.systemuserid, Tagging::SHARED)
+      end
+        
       session[:public_user_id] = @public_user.id
-
       flash[:notice] = 'Your question has been submitted. Our experts try to answer within 48 hours and we will notify you with an email message when they do.'
       flash[:googleanalytics] = '/ask-an-expert-question-submitted'
-
+        
       if session[:return_to]
         redirect_to(session[:return_to]) 
       else

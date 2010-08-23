@@ -146,6 +146,22 @@ class Aae::QuestionController < ApplicationController
         @submitted_question.categories << sub_category if sub_category
       end
       @submitted_question.save
+      
+      # tag it, based on the category/subcategory (if present)
+      if params[category_param].strip != "uncat"      
+        if(parent_category)
+          tags = [parent_category.name]
+          if(sub_category)
+            tags << #{sub_category.name}
+            tags << "#{parent_category.name}:#{sub_category.name}"
+          end
+          @submitted_question.replace_tags_with_and_cache(tags, User.systemuserid, Tagging::SHARED)
+        end
+      else
+        # not sure this is the best way of doing this - it really needs a nil option
+        @submitted_question.replace_tags_with_and_cache('', User.systemuserid, Tagging::SHARED)
+      end
+      
       SubmittedQuestionEvent.log_recategorize(@submitted_question, @currentuser, @submitted_question.category_names)
     end
     
