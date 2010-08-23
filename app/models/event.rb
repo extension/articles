@@ -115,7 +115,7 @@ class Event < ActiveRecord::Base
     # start_time_array[0] is the timestamp
     # start_time_array[1] is the timezone if it exists
     start_time_array = vevent.dtstart.split('|')
-    item.timezone = start_time_array[1] if start_time_array[1]
+    item.time_zone = start_time_array[1] if start_time_array[1]
     item.start = start_time_array[0]
     item.date = start_time_array[0].strftime('%Y-%m-%d')
     item.time = start_time_array[0].strftime('%H:%M:%S')
