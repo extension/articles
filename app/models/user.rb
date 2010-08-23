@@ -771,6 +771,12 @@ class User < ActiveRecord::Base
       end
       connection.update_attributes(attributes_to_update)
     end
+    # question wrangler community?
+    if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+      if(connectiontype == 'leader' or connectiontype == 'member')
+        self.update_attribute(:is_question_wrangler, true)
+      end
+    end
     return true
    when 'remove'
     if(!connection.nil?)
@@ -784,12 +790,20 @@ class User < ActiveRecord::Base
         connection.update_attributes({:connectiontype => 'member', :connector => connector, :connectioncode => connectioncode})
        else  # TODO:   deal with interest change/wants to join removal
         connection.destroy
+        # question wrangler community?
+        if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+          self.update_attribute(:is_question_wrangler, false)
+        end
        end
       else
        if(community.is_institution?)
         Community.find(Community::INSTITUTIONAL_TEAMS_COMMUNITY_ID).remove_user_from_membership(self,User.systemuser)
        end
        connection.destroy
+       # question wrangler community?
+       if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+         self.update_attribute(:is_question_wrangler, false)
+       end
       end
     end
     return true
