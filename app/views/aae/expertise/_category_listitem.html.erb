@@ -14,6 +14,8 @@
    <span class="aaesubcategories">
       <%- if subcategories.length > 0 -%>
          <%= link_to_function("#{subcategories.length} subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
+      <%- elsif(admin_mode?) -%>
+        <%= link_to_function("no subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
       <%- end -%>
    </span>
       
@@ -60,8 +62,8 @@
       <%- elsif(admin_mode?)-%>
       <ul class="aoe_subcat" id="subcategory_div_<%= category.id %>" style='display:none;'>
         <li>
-          <span><%= link_to_function("Add a new subcategory", "Effect.toggle('addnewsubcategory','blind', { duration: .4});") %></span>
-          <span id="addnewsubcategory" style='display:none;'>
+          <span><%= link_to_function("Add a new subcategory", "Effect.toggle('addnewsubcategory_#{category.id}','blind', { duration: .4});") %></span>
+          <span id="addnewsubcategory_<%= category.id %>" style='display:none;'>
             <% form_tag :action => 'add_subcategory' do %>
               <%= hidden_field_tag("categoryparent", category.id) %>
               <p><label for="category_name">Name</label>
