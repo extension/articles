@@ -106,7 +106,7 @@ class FeedsController < ApplicationController
   end
   
   def search
-    AnnotationEvent::changes_feed
+    AnnotationEvent::changes_feed(params)
   end
   
   def gen_feed(type=params[:action])

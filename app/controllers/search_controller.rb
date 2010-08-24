@@ -37,6 +37,11 @@ class SearchController < ApplicationController
     @events = AnnotationEvent.paginate(:all, :joins => :user, :order => 'created_at DESC', :page => params[:page])
   end
   
+  def manage_event
+    @page_title = "CSE Link Management Event"
+    @event = AnnotationEvent.find_by_id(params[:id])
+  end
+  
   def add
     if (!params[:url].nil? and !params[:url].empty?)
       annote = Annotation.new

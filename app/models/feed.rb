@@ -7,9 +7,18 @@
 
 class Feed < ActiveRecord::Base
   
-  attr_reader :feed_meta, :gdata_params
+  def self.columns() @columns ||= []; end      
+  
+  attr_reader :feed_meta
+  attr_reader :gdata_params
   
   def initialize(opts={})
+    
+    default_url_options[:host] = AppConfig.get_url_host
+    default_url_options[:protocol] = AppConfig.get_url_protocol
+    if(default_port = AppConfig.get_url_port)
+      default_url_options[:port] = default_port
+    end
     
     feed_params = {
       :start_index_default => 1,
@@ -22,7 +31,7 @@ class Feed < ActiveRecord::Base
     }
     
     feed_params.merge!(opts)
-    @filteredparams = FilterParams.new(params)
+    @filteredparams = FilterParams.new(feed_params)
     
     start_index = @filteredparams.start_index || feed_params[:start_index_default]
     max_results = @filteredparams.max_results || feed_params[:max_results_default]
@@ -36,8 +45,8 @@ class Feed < ActiveRecord::Base
     published_max = @filteredparams.published_max || feed_params[:published_max_default]
     category_array = nil
     
-    if params[:content_tags] && params[:content_tags].length > 0
-      category_array = params[:content_tags]
+    if feed_params[:content_tags] && feed_params[:content_tags].length > 0
+      category_array = feed_params[:content_tags]
       if category_array.length > 3
         raise ArgumentError
       end
@@ -51,7 +60,7 @@ class Feed < ActiveRecord::Base
                      :start_index => start_index,
                      :max_results => max_results}
     
-   @feed_meta = {:title => @feed_title, 
+   @feed_meta = {:title => feed_params[:feed_title], 
                 :subtitle => "eXtension published content",
                 :url => url_for(:only_path => false),
                 :alt_url => url_for(:only_path => false, :controller => 'main', :action => 'index'),

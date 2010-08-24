@@ -17,6 +17,10 @@
     <% end %>
     <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
     <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+    
+    <% if params[:action] =~ /^manage/ %>
+      <%= auto_discovery_link_tag(:atom, {:controller => "feeds", :action => "search"}, {:title => "CSE Management Events - eXtension"}) %>
+    <% end %>
 </head>
 <body>
    <div id="wrapper">

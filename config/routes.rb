@@ -130,7 +130,8 @@ ActionController::Routing::Routes.draw do |map|
   ### Search Stuff ###
 
   map.search 'search', :controller => 'search', :action => 'index'
-  
+  map.annotation_event_page 'search/manage_event/:id', :controller => 'search', :action => 'manage_event'
+
   ### Learn Stuff ###
   map.learn 'learn', :controller => 'learn', :action => 'index'
   map.learn_session 'learn/event/:id', :controller => :learn, :action => :event
