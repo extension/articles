@@ -28,11 +28,18 @@ class EventsController < ApplicationController
     return unless @event
     @published_content = true
     
-
-    # get the tags on this faq that correspond to community content tags
+    # handle events w/ timezones
+    if !@event.time_zone.blank?
+      # convert time stored in db to desired tz 
+      @event_start = @event.start.in_time_zone(@event.time_zone)
+    else
+      @event_start = @event.start
+    end
+    
+    # get the tags on this event that correspond to community content tags
     event_content_tags = @event.tags.content_tags
     if(!event_content_tags.blank?)
-      # is this article tagged with youth?
+      # is this event tagged with youth?
       @youth = true if event_content_tags.map(&:name).include?('youth')
       
       # get the tags on this article that are content tags on communities

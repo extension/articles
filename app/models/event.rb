@@ -65,8 +65,11 @@ class Event < ActiveRecord::Base
 
   def time_zone=(time_zone_string)
     mappings = ActiveSupport::TimeZone::MAPPING
+    reverse_mappings = ActiveSupport::TimeZone::MAPPING.invert
     if(mappings[time_zone_string])
       write_attribute(:time_zone, mappings[time_zone_string])
+    elsif(reverse_mappings[time_zone_string])
+      write_attribute(:time_zone, time_zone_string)
     else
       write_attribute(:time_zone, nil)
     end
@@ -136,13 +139,8 @@ class Event < ActiveRecord::Base
       updated = entry.updated
     end
     item.xcal_updated_at = updated
-    
-    # start_time_array is an array of time data
-    # start_time_array[0] is the timestamp
-    # start_time_array[1] is the timezone if it exists
-    start_time_array = "#{vevent.dtstart}".split('|')
-    item.time_zone = start_time_array[1] if start_time_array[1]
-    item.start = start_time_array[0]
+  
+    item.start = vevent.dtstart
     item.date = item.start.strftime('%Y-%m-%d')
     item.time = item.start.strftime('%H:%M:%S')
     
@@ -169,6 +167,17 @@ class Event < ActiveRecord::Base
     else
       returndata = [item.xcal_updated_at, 'updated']
     end
+    
+    # process timezone
+    if (!entry.categories.blank?)
+      if tz_category = entry.categories.detect{|cat| cat.label == "time_zone"}
+        item.time_zone = tz_category.term
+        # remove timezone category so other categories can be parsed out as tags
+        # entry.categories.delete(tz_category) is not working for this, so explicitly find the category
+        entry.categories.delete_if{|cat| cat.label == "time_zone"}
+      end
+    end
+    
     item.save!
     
     if(!entry.categories.blank?)

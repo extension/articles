@@ -23,7 +23,7 @@
     <%end%>
     </p>
 
-    <p><strong><%= micro_time_print(@event.start, 'dtstart') %></strong></p>
+    <p><strong><%= micro_time_print(@event_start, 'dtstart') %> <%= @event_start.strftime("%Z") %></strong></p>
     <div class="description"><p><strong>Description</strong>:<br /><%= @event.description %></p></div>
     <p class="coverage"><strong>Coverage:</strong> <%= @event.coverage %></p> 
     <p class="states"><strong>States:</strong> <%= @event.states.join(', ') %></p>
