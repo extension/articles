@@ -6,7 +6,8 @@
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class PreviewController < ApplicationController
-  before_filter :login_optional
+  before_filter :login_required
+  before_filter :check_purgatory
   before_filter :set_content_tag_and_community_and_topic
   
   layout 'pubsite'
