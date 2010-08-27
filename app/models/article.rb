@@ -109,7 +109,7 @@ class Article < ActiveRecord::Base
       articlelist = Article.find(:all, 
                    :select => "articles.*, GROUP_CONCAT(communities.id) as community_ids_string", 
                    :joins => [:content_buckets, {:tags => :communities}], 
-                   :conditions => "DATE(articles.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tag_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
+                   :conditions => "DATE(articles.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
                    :group => "articles.id",
                    :order => "articles.wiki_updated_at DESC")
                    

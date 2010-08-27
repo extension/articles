@@ -8,7 +8,7 @@
 # The Tagging join model. This model is automatically generated and added to your app if you run the tagging generator included with has_many_polymorphs.
 
 class Tagging < ActiveRecord::Base 
-  # tag_kinds
+  # tagging_kinds
   GENERIC = 0  # table defaults
   USER = 1
   SHARED = 2

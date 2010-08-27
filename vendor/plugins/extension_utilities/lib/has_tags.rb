@@ -30,13 +30,13 @@ module Extension
                                               
           if(!includelist.empty?)
             # get a list of all the id's tagged with the includelist
-            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
+            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
             includetaggings = Tagging.find(:all, :include => :tag, :conditions => includeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
             taggings_we_want = includetaggings
           end
 
           # if(!excludelist.empty?)
-          #   excludeconditions = "(tags.name IN (#{excludelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
+          #   excludeconditions = "(tags.name IN (#{excludelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
           #   excludetaggings = Tagging.find(:all, :include => :tag, :conditions => excludeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
           # end
           
@@ -62,14 +62,14 @@ module Extension
       
       def add_content_tag_scope(opts={})
         named_scope :tagged_with_content_tag, lambda {|tagname| 
-          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tag_kind = #{Tagging::CONTENT}"}
+          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tagging_kind = #{Tagging::CONTENT}"}
         }
       end
       
       def add_any_content_tag_scope(opts={})
         named_scope :tagged_with_any_content_tags, lambda {|tagliststring|
           includelist = Tag.castlist_to_array(tagliststring)
-          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
+          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
           {:include => {:taggings => :tag}, :conditions => includeconditions}
         }
       end
@@ -98,7 +98,7 @@ module Extension
 
           if(!includelist.empty?)
             # get a list of all the id's tagged with the includelist
-            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
+            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
             includetaggings = Tagging.find(:all, :include => :tag, :conditions => includeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
             taggings_we_want = includetaggings
           end
@@ -113,14 +113,14 @@ module Extension
       
       def add_shared_tag_scope(opts={})
         named_scope :tagged_with_shared_tag, lambda {|tagname| 
-          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tag_kind = #{Tagging::SHARED}"}
+          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tagging_kind = #{Tagging::SHARED}"}
         }
       end
       
       def add_any_shared_tag_scope(opts={})
         named_scope :tagged_with_any_shared_tags, lambda {|tagliststring|
           includelist = Tag.castlist_to_array(tagliststring)
-          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
+          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
           {:include => {:taggings => :tag}, :conditions => includeconditions}
         }
       end

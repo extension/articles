@@ -35,7 +35,7 @@
   	<p>
   	<%= select_tag("aae_category", options_for_select(@categories, @submitted_question.top_level_category ? @submitted_question.top_level_category.id : '')) %>
   	</p>
-  	<%= observe_field("aae_category", :update => :subcat_div, :url => { :action => :get_aae_from_subcats }, :with => "'category_id=' + value") %>
+  	<%= observe_field("aae_category", :update => :subcat_div, :url => { :action => :get_aae_form_subcats }, :with => "'category_id=' + value") %>
 
     <p id="subcat_div">
       <% if @sub_category_options %>

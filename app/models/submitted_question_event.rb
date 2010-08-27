@@ -189,11 +189,12 @@ class SubmittedQuestionEvent < ActiveRecord::Base
       :event_state => MARKED_NON_SPAM})
   end
   
-  def self.log_recategorize(question, initiated_by, category_string)
+  def self.log_recategorize(question, initiated_by, category_string, previous_category_string)
     return self.log_event({:submitted_question => question,
       :initiated_by => initiated_by,
       :event_state => RECATEGORIZED,
-      :category => category_string})
+      :category => category_string,
+      :previous_category => previous_category_string})
   end
   
   def self.log_working_on(question, initiated_by)
