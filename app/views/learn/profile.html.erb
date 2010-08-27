@@ -47,9 +47,9 @@
 	<h4>Sessions Presented</h4>
 	
 	   <% if @sessions_presented.length > 0 %>
-	     <ul>
+	     <ul id="profile_sessions">
 	     <% @sessions_presented.each do |learn_session| %>
-	       <li><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></li>
+	       <li><span class="profile_date"><%= learn_session.session_start.in_time_zone(@tz).strftime("%b %e, %Y") %></span> <%= link_to learn_session.title, {:action => :event, :id => learn_session.id}, {:class => "profile_link"} %></li>
 	     <% end %>
 	     </ul>
 	   <% else %>

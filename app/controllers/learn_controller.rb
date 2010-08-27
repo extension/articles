@@ -221,7 +221,8 @@ class LearnController < ApplicationController
   
   def profile
     @user = User.find_by_login(params[:id])
-    @sessions_presented = @user.learn_sessions_presented
+    @sessions_presented = @user.learn_sessions_presented.find(:all, :order => "session_start desc" )
+    @tz = @currentuser.nil? ? @learn_session.time_zone : @currentuser.time_zone
   end
   
   def presenters_by_name
