@@ -221,7 +221,7 @@ class Event < ActiveRecord::Base
   end
   
   def has_map?
-    if !location || location.downcase.match(/web based|http|www|\.com|online/)
+    if location.blank? or location.downcase.match(/web based|http|www|\.com|online/)
       false
     else
       true
