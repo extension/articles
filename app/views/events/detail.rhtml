@@ -37,13 +37,10 @@
     <label for="user_time_zone">Time zone:</label>
     <%= time_zone_select(:event,:time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)") %>
     </p>
-    <div id="loading_tz" style="display:none"><img src='/images/loading.gif' /><p>Loading...</p></div>
     
     <%= observe_field(:event_time_zone,
                       :url       => { :action => :update_time_zone, :id => @event.id },
-                      :with      => "'new_time_zone='+escape(value)",
-                      :loading => "Element.show('loading_tz')", 
-                      :complete => "Element.hide('loading_tz')") %>
+                      :with      => "'new_time_zone='+escape(value)") %>
     <% end %>
     
     
