@@ -9,6 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+
 ActiveRecord::Schema.define(:version => 20100823204706) do
 
   create_table "activities", :force => true do |t|
@@ -324,6 +325,7 @@ ActiveRecord::Schema.define(:version => 20100823204706) do
     t.datetime "start"
     t.integer  "duration"
     t.boolean  "deleted"
+    t.string   "timezone"
   end
 
   add_index "events", ["date"], :name => "index_events_on_date"
