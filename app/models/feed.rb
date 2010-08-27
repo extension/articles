@@ -5,20 +5,12 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class Feed < ActiveRecord::Base
-  
-  def self.columns() @columns ||= []; end      
+class Feed
   
   attr_reader :feed_meta
   attr_reader :gdata_params
   
   def initialize(opts={})
-    
-    default_url_options[:host] = AppConfig.get_url_host
-    default_url_options[:protocol] = AppConfig.get_url_protocol
-    if(default_port = AppConfig.get_url_port)
-      default_url_options[:port] = default_port
-    end
     
     feed_params = {
       :start_index_default => 1,
