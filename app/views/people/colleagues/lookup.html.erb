@@ -19,19 +19,28 @@
   <p><%= link_to 'Go Back', :controller => '/people/colleagues', :action => :lookup %></p>
     <%- if(!@successes.blank?) -%>
         <h2>The following people have an eXtensionID:</h2>
-        <ul>
+        <table class="halfwidth">
+          <tr>
+              <th>Email</th>
+              <th>Profile</th>
+              <th>Unique eXtensionID string</th>
+          </tr>
             <%- @successes.each do |user| -%>
-            <li><%= user.email %> : <%= link_to_user(user) %> (id string: <%= user.login %>)</li>
+            <tr><td><%= user.email %></td><td><%= link_to_user(user) %></td><td><%= user.login %></td></tr>
             <%- end -%>
-        </ul>
+        </table>
     <%- end -%>
     
     <%- if(!@failures.blank?) -%>
         <h2>Unable to find email addresses for the following :</h2>
-        <ul>
-            <%- @failures.each do |failuremsg| -%>
-            <li><%= failuremsg %></li>
+        <table class="halfwidth">
+          <tr>
+              <th>Email</th>
+              <th>Error</th>
+          </tr>
+            <%- @failures.each do |failure| -%>
+            <tr><td><%= failure[:email] %></td><td><%= failure[:message]  %></td></tr>
             <%- end -%>
-        </ul>
+        </table>
     <%- end -%>
 <%- end -%>

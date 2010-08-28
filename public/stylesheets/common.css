@@ -93,6 +93,10 @@ table {
 	margin: 0 0 1.5em;
 }
 
+table.halfwidth { 
+	width: 50%;
+}
+
 th {
 	margin: 0;
 	padding: .1em .5em;
