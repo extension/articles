@@ -455,6 +455,29 @@ class People::ColleaguesController < ApplicationController
     return redirect_to :action => :traininginvitations
   end
   
+  def lookup
+    @page_title = "Lookup eXtensionID status for Multiple Emails"
+    if(request.post?)
+      @showresults = true
+      @successes = []
+      @failures = []
+      email_address_list = params[:email_list].split(%r{,\s*|\s+|\s*\n\s*|\s*\r\n\s*})    
+      email_address_list.each do |email|
+        # validate
+        if(EmailAddress.is_valid_address?(email))
+          u = User.find_by_email(email)
+          if(!u.nil?)
+            @successes << u
+          else
+            @failures << "#{email} : Does not have an eXtensionID with that email address"
+          end
+        else
+          @failures << "#{email} : Does not appear to be a valid email address" 
+        end
+      end
+    end
+  end
+  
   #----------------------------------
   # protected functions
   #----------------------------------
