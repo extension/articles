@@ -469,10 +469,10 @@ class People::ColleaguesController < ApplicationController
           if(!u.nil?)
             @successes << u
           else
-            @failures << "#{email} : Does not have an eXtensionID with that email address"
+            @failures << {:email => email, :message => "Does not have an eXtensionID with that email address"}
           end
         else
-          @failures << "#{email} : Does not appear to be a valid email address" 
+          @failures << {:email => email, :message => "Does not appear to be a valid email address"}
         end
       end
     end
