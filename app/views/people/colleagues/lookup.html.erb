@@ -1,0 +1,37 @@
+<% @selected_tab = :colleagues %>
+<%- if(!@showresults) -%>
+<h1><%= @page_title %></h1>
+<!-- form -->
+<% form_tag({:action => 'lookup'}) do %>
+    <fieldset>
+	    <p>
+	        <label for="email_list">List of email addresses:
+	        <%= text_area_tag(:email_list,'',{:rows => "20"}) %>
+	        <em>Separate email addresses with commas, spaces, or newlines</em>
+	        </label>
+	    </p>
+        <p><%= submit_tag 'Lookup' %> or <%= link_to 'Cancel', :controller => '/people/colleagues', :action => :index %></p>
+	</fieldset>
+<% end %>
+<%- else -%>
+<!-- results -->
+  <h1>eXtensionID Lookup Results</h1>
+  <p><%= link_to 'Go Back', :controller => '/people/colleagues', :action => :lookup %></p>
+    <%- if(!@successes.blank?) -%>
+        <h2>The following people have an eXtensionID:</h2>
+        <ul>
+            <%- @successes.each do |user| -%>
+            <li><%= user.email %> : <%= link_to_user(user) %> (id string: <%= user.login %>)</li>
+            <%- end -%>
+        </ul>
+    <%- end -%>
+    
+    <%- if(!@failures.blank?) -%>
+        <h2>Unable to find email addresses for the following :</h2>
+        <ul>
+            <%- @failures.each do |failuremsg| -%>
+            <li><%= failuremsg %></li>
+            <%- end -%>
+        </ul>
+    <%- end -%>
+<%- end -%>
