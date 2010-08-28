@@ -123,6 +123,13 @@ span.label {font-weight:bold; width:150px; display:block;float:left;}
 #profile_details {margin-bottom:30px;}
 .profile p {margin-bottom:5px;}
 
+#profile_sessions li {margin:0 0 8px;float:left;}
+.profile_date {display:block; width:110px; float:left;}
+.profile_link {display:block; width:440px; float:left; line-height:1.2em;}
+a.profile_link:link {text-decoration:none;}
+a.profile_link:visited {text-decoration:none;}
+a.profile_link:hover {text-decoration:underline;}
+
 .usernetwork {clear:both;float:left;margin-bottom:1em;padding:0;}
 .usernetwork dt {margin:0 !important; height:1.3em;color:#000;float:left;}
 .usernetwork dd {float:left;padding:0 0 0 1em;}
