@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_request_url_options
   before_filter :set_default_request_ip_address
   before_filter :set_app_location
+  before_filter :set_user_time_zone
   
   has_mobile_fu
   skip_before_filter :set_mobile_format
@@ -113,6 +114,10 @@ class ApplicationController < ActionController::Base
   
   def turn_off_right_column
     @right_column = false    
+  end
+  
+  def set_user_time_zone
+    Time.zone = @current_user.time_zone if @currentuser
   end
   
   # def disable_link_prefetching
