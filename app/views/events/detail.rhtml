@@ -18,12 +18,31 @@
     <br class="clearing" />
 	
     <p><strong><span class="location"><%= @event.location %></span></strong>
-    <%if @event.has_map?%>
+    <% if @event.has_map? %>
         <a href='http://maps.google.com/maps?q=<%= @event.location %>'>open in google maps</a>
-    <%end%>
+    <% end %>
     </p>
 
-    <p><strong><%= micro_time_print(@event.start, 'dtstart') %></strong></p>
+    <div id="time_with_tz">
+      <strong>
+      <%= micro_time_print(@event_start, 'dtstart') %> 
+      <% if !@event.time_zone.blank? %>
+      <%= @event_start.strftime("%Z") %>
+      <% end %>
+      </strong>
+    </div>
+    
+    <% if !@event.time_zone.blank? %>
+    <p>
+    <label for="user_time_zone">Time zone:</label>
+    <%= time_zone_select(:event,:time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)") %>
+    </p>
+    
+    <%= observe_field(:event_time_zone,
+                      :url       => { :action => :update_time_zone, :id => @event.id },
+                      :with      => "'new_time_zone='+escape(value)") %>
+    <% end %>
+    
     <div class="description"><p><strong>Description</strong>:<br /><%= @event.description %></p></div>
     <p class="coverage"><strong>Coverage:</strong> <%= @event.coverage %></p> 
     <p class="states"><strong>States:</strong> <%= @event.states.join(', ') %></p>

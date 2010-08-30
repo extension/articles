@@ -771,6 +771,12 @@ class User < ActiveRecord::Base
       end
       connection.update_attributes(attributes_to_update)
     end
+    # question wrangler community?
+    if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+      if(connectiontype == 'leader' or connectiontype == 'member')
+        self.update_attribute(:is_question_wrangler, true)
+      end
+    end
     return true
    when 'remove'
     if(!connection.nil?)
@@ -784,12 +790,20 @@ class User < ActiveRecord::Base
         connection.update_attributes({:connectiontype => 'member', :connector => connector, :connectioncode => connectioncode})
        else  # TODO:   deal with interest change/wants to join removal
         connection.destroy
+        # question wrangler community?
+        if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+          self.update_attribute(:is_question_wrangler, false)
+        end
        end
       else
        if(community.is_institution?)
         Community.find(Community::INSTITUTIONAL_TEAMS_COMMUNITY_ID).remove_user_from_membership(self,User.systemuser)
        end
        connection.destroy
+       # question wrangler community?
+       if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+         self.update_attribute(:is_question_wrangler, false)
+       end
       end
     end
     return true
@@ -1601,7 +1615,7 @@ class User < ActiveRecord::Base
        sql_offset = nil   
      end
        
-     return User.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "users.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
+     return User.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "users.is_question_wrangler DESC, users.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
    end
 
    def get_expertise
@@ -1692,11 +1706,7 @@ class User < ActiveRecord::Base
     
     return eligible_wranglers
    end
-   
-   def is_question_wrangler?
-    return self.community_ids.include?(Community::QUESTION_WRANGLERS_COMMUNITY_ID)
-   end
-   
+      
    def open_question_count
     self.open_questions.count
    end

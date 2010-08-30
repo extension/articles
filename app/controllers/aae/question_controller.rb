@@ -137,6 +137,7 @@ class Aae::QuestionController < ApplicationController
   def change_category
     if request.post?
       @submitted_question = SubmittedQuestion.find(params[:sq_id].strip)
+      previous_category_names = @submitted_question.category_names
       category_param = "category_#{@submitted_question.id}"
       parent_category = Category.find(params[category_param].strip) if params[category_param] and params[category_param].strip != '' and params[category_param].strip != "uncat"
       sub_category = Category.find(params[:sub_category].strip) if params[:sub_category] and params[:sub_category].strip != ''
@@ -146,7 +147,22 @@ class Aae::QuestionController < ApplicationController
         @submitted_question.categories << sub_category if sub_category
       end
       @submitted_question.save
-      SubmittedQuestionEvent.log_recategorize(@submitted_question, @currentuser, @submitted_question.category_names)
+      
+      # tag it, based on the category/subcategory (if present)
+      if params[category_param].strip != "uncat"      
+        if(parent_category)
+          tags = [parent_category.name]
+          if(sub_category)
+            tags << "#{parent_category.name}:#{sub_category.name}"
+          end
+          @submitted_question.replace_tags_with_and_cache(tags, User.systemuserid, Tagging::SHARED)
+        end
+      else
+        # not sure this is the best way of doing this - it really needs a nil option
+        @submitted_question.replace_tags_with_and_cache('', User.systemuserid, Tagging::SHARED)
+      end
+      
+      SubmittedQuestionEvent.log_recategorize(@submitted_question, @currentuser, @submitted_question.category_names, previous_category_names)
     end
     
     respond_to do |format|

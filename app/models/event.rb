@@ -46,6 +46,35 @@ class Event < ActiveRecord::Base
    end
   end
   
+  # override timezone writer/reader
+  # use convert=false when you need a timezone string that mysql can handle
+  def time_zone(convert=true)
+    tzinfo_time_zone_string = read_attribute(:time_zone)
+
+    if(convert)
+      reverse_mappings = ActiveSupport::TimeZone::MAPPING.invert
+      if(reverse_mappings[tzinfo_time_zone_string])
+        reverse_mappings[tzinfo_time_zone_string]
+      else
+        nil
+      end
+    else
+      tzinfo_time_zone_string
+    end
+  end
+
+  def time_zone=(time_zone_string)
+    mappings = ActiveSupport::TimeZone::MAPPING
+    reverse_mappings = ActiveSupport::TimeZone::MAPPING.invert
+    if(mappings[time_zone_string])
+      write_attribute(:time_zone, mappings[time_zone_string])
+    elsif(reverse_mappings[time_zone_string])
+      write_attribute(:time_zone, time_zone_string)
+    else
+      write_attribute(:time_zone, nil)
+    end
+  end
+  
   # helper method for main page items
   def self.main_calendar_list(options = {},forcecacheupdate=false)
     cache_key = self.get_cache_key(this_method,options)
@@ -98,6 +127,7 @@ class Event < ActiveRecord::Base
     #     :duration, :status, :summary, :uid, :last_modified, 
     #     :url => :url, :location => [ HCard, Adr, Geo, String ]
     
+    
     item.id = vevent.uid
     
     item.title = vevent.summary
@@ -109,10 +139,10 @@ class Event < ActiveRecord::Base
       updated = entry.updated
     end
     item.xcal_updated_at = updated
-    
+  
     item.start = vevent.dtstart
-    item.date = vevent.dtstart.strftime('%Y-%m-%d')
-    item.time = vevent.dtstart.strftime('%H:%M:%S')
+    item.date = item.start.strftime('%Y-%m-%d')
+    item.time = item.start.strftime('%H:%M:%S')
     
     if vevent.properties.include?("dtend")
       duration = (vevent.dtend - vevent.dtstart) / (24 * 60 * 60) # result in days
@@ -137,6 +167,17 @@ class Event < ActiveRecord::Base
     else
       returndata = [item.xcal_updated_at, 'updated']
     end
+    
+    # process timezone
+    if (!entry.categories.blank?)
+      if tz_category = entry.categories.detect{|cat| cat.label == "time_zone"}
+        item.time_zone = tz_category.term
+        # remove timezone category so other categories can be parsed out as tags
+        # entry.categories.delete(tz_category) is not working for this, so explicitly find the category
+        entry.categories.delete_if{|cat| cat.label == "time_zone"}
+      end
+    end
+    
     item.save!
     
     if(!entry.categories.blank?)
@@ -180,7 +221,7 @@ class Event < ActiveRecord::Base
   end
   
   def has_map?
-    if !location || location.downcase.match(/web based|http|www|\.com|online/)
+    if location.blank? or location.downcase.match(/web based|http|www|\.com|online/)
       false
     else
       true
