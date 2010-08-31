@@ -8,7 +8,7 @@ progopts = GetoptLong.new(
 )
 
 @environment = 'production'
-@drupaldatabase = 'demo_drupal'
+@drupaldatabase = 'prod_create'
 progopts.each do |option, arg|
   case option
     when '--environment'
