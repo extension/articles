@@ -186,7 +186,7 @@ class WidgetController < ApplicationController
                     :accept => :json,
                     :multipart => true}
       
-      RestClient.post(url_for(:controller => 'api/aae', :action => :ask, :format => :json), params_hash) {|response|
+      RestClient.post(url_for(:controller => 'api/aae', :action => :ask, :format => :json), params_hash) {|response, request, result, &block|
         case response.code
         when 200
           flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
