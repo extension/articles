@@ -79,7 +79,7 @@
             
           </div>
             <p>Comment posted by public user</p>
-            <p><%= humane_date(response.created_at) %> UTC</p>
+            <p><%= humane_date(response.created_at) %></p>
         </div>
         
     <% else %>
@@ -97,7 +97,7 @@
     	    <%= link_to response.resolver.fullname, aae_profile_url(:id => response.resolver.login), :class => "profile" %>
     	    <% end %>
     	    </p>
-            <p><%= humane_date(response.created_at) %> UTC</p>
+            <p><%= humane_date(response.created_at) %></p>
             <% if contributing_question = response.contributing_question %>
     	        <p><strong>This response used 
     	        <% if contributing_question.entrytype == SearchQuestion::FAQ %>
@@ -120,7 +120,7 @@
     <ul id="question_history">
     <% submit_history = "Submitted by <strong>#{@submitter_name}</strong> from <strong>#{@submitted_question.external_app_id}</strong>" %>  
         <li><%= submit_history %> <% if @submitted_question.widget_name %> (<%= @submitted_question.widget_name %>)<% end %>
-        <span><%= humane_date(@submitted_question.created_at) %> UTC</span></li>
+        <span><%= humane_date(@submitted_question.created_at) %></span></li>
         <% @submitted_question.submitted_question_events.each do |event| %>
             <li><%= stringify_submitted_question_event(event) %></li>
         <% end %>
@@ -150,7 +150,7 @@
         	    <% end %>
         	</p>
             <p><strong>Rejection comment:</strong> <%= wrap_text(@submitted_question.current_response) %></p>
-            <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %> UTC</p>
+            <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
         </div>
         <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
         <div class="rejectedaae">

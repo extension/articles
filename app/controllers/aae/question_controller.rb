@@ -9,6 +9,7 @@ class Aae::QuestionController < ApplicationController
   layout 'aae'
   before_filter :login_required
   before_filter :check_purgatory  
+  before_filter :set_user_time_zone
   has_rakismet :only => [:report_spam, :report_ham]
  
   def index
