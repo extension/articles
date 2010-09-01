@@ -68,6 +68,7 @@ class AppConfig
     @@configtable['faq_site'] = 'http://faq.extension.org'
     @@configtable['events_site'] = 'http://events.extension.org'
     @@configtable['people_site'] = 'https://www.extension.org/people/'
+    @@configtable['learn_site'] = 'https://www.extension.org/learn/'
     @@configtable['cop_site'] = 'http://cop.extension.org/wiki'
     @@configtable['collaborate_site'] = 'http://collaborate.extension.org/wiki/'
     @@configtable['about_site'] = 'http://about.extension.org/wiki'

@@ -54,7 +54,7 @@ class Category < ActiveRecord::Base
    
   def full_name
     if parent
-      return parent.name + "/" + name
+      return parent.name + ":" + name
     else
       return name
     end
