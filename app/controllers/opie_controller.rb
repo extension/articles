@@ -96,7 +96,6 @@ class OpieController < ApplicationController
           end
           session[:last_opierequest] = opierequest
           @opierequest = opierequest
-          flash[:notice] = "Do you trust this site with your identity?"
           @desicionurl = url_for(:controller => 'opie', :action => 'decision', :protocol => 'https://')
           sregrequest = OpenID::SReg::Request.from_openid_request(opierequest)
           if(!sregrequest.nil?)
