@@ -23,19 +23,19 @@
             <td><%= showuser.last_name %></td>	
 			<td>
 			<% if @time_column_field.nil?%>
-	        	<%= showuser.updated_at %>
+	        	<%= humane_date(showuser.updated_at) %>
             <% elsif @time_column_field == User::TIMECOLUMN_EMAIL_EVENT_AT %>
-        	    <%= showuser.email_event_at %>
+        	    <%= humane_date(showuser.email_event_at) %>
             <% elsif @time_column_field == User::TIMECOLUMN_CONTRIBUTOR_AGREEMENT_AT %>
-        	    <%= showuser.contributor_agreement_at %>
+        	    <%= humane_date(showuser.contributor_agreement_at) %>
             <% elsif @time_column_field == User::TIMECOLUMN_CREATED_AT %>
-        	    <%= showuser.created_at %>
+        	    <%= humane_date(showuser.created_at) %>
             <% elsif @time_column_field == User::TIMECOLUMN_UPDATED_AT %>
-        	    <%= showuser.updated_at %>
+        	    <%= humane_date(showuser.updated_at) %>
             <% elsif @time_column_field == User::TIMECOLUMN_LAST_LOGIN_AT %>
-              <%= showuser.last_login_at %>
+              <%= humane_date(showuser.last_login_at) %>
             <% else %>
-              <%= showuser.updated_at %>
+              <%= humane_date(showuser.updated_at) %>
             <% end %>
 			</td>
 			<td><%= showuser.account_status_string %></td>

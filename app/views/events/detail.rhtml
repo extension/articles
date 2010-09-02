@@ -25,9 +25,9 @@
 
     <div id="time_with_tz">
       <strong>
-      <%= micro_time_print(@event_start, 'dtstart') %> 
+      <%= micro_time_print(format_time(@event), 'dtstart') %> 
       <% if !@event.time_zone.blank? %>
-      <%= @event_start.strftime("%Z") %>
+      <%= format_time(@event).strftime("%Z") %>
       <% end %>
       </strong>
     </div>

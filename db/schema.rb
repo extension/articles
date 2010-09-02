@@ -324,11 +324,7 @@ ActiveRecord::Schema.define(:version => 20100823204706) do
     t.datetime "start"
     t.integer  "duration"
     t.boolean  "deleted"
-<<<<<<< HEAD
     t.string   "time_zone"
-=======
-    t.string   "timezone"
->>>>>>> master
   end
 
   add_index "events", ["date"], :name => "index_events_on_date"

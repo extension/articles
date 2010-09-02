@@ -60,10 +60,10 @@
       
          <% if @learn_session.recording.blank? %>
             <h3>No Recording Yet</h3>
-            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong>. A recording of this session has not been uploaded yet.</p>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y %Z") %></strong>. A recording of this session has not been uploaded yet.</p>
           <% else %>
           <h3>Watch</h3>
-            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong></p>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y %Z") %></strong></p>
             <p class="recording_available">
                <%= link_to("watch recording", @learn_session.recording) %>
             </p>

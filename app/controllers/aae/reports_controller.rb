@@ -14,7 +14,6 @@ class Aae::ReportsController < ApplicationController
        @locs = Location.find(:all, :order => "entrytype, name")
      end
 
-
     ##Activity Reports
     def activity
        @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date

@@ -19,7 +19,7 @@
             <td><%= event.description %></td>
             <td><%= event.appname %><br /></td>
             <td><%= event.ip %></td>
-            <td><%= event.created_at %></td>
+            <td><%= humane_date(event.created_at) %></td>
         </tr>
     <% end%>
 </table>

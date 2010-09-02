@@ -10,6 +10,7 @@ class People::AdminController < ApplicationController
   before_filter :admin_required
   before_filter :sudo_required, :only => [:adminevents,:adminusers, :makeadmin, :show_config, :reload_config]
   before_filter :check_purgatory
+  before_filter :set_user_time_zone
   
   
   # -----------------------------------
