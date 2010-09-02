@@ -143,7 +143,7 @@ class ApplicationController < ActionController::Base
         @personal[:location] = @personal[:institution].location
       end
     elsif(refering_institution = Community.find_institution_by_referer(request.referer))
-      session[:institution_community_id] = {:value => refering_institution.id.to_s, :expires => 1.month.from_now}
+      session[:institution_community_id] = refering_institution.id.to_s
       @personal[:institution] = refering_institution
       @personal[:location] = refering_institution.location
     end
