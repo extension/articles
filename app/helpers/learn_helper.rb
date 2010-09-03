@@ -65,7 +65,7 @@ module LearnHelper
   end
   
   # convert learn session time from utc db stored time to timezone of the session 
-  def format_time(learn_session, session_time, editing_time = false)
+  def format_learn_time(learn_session, session_time, editing_time = false)
     return nil if (learn_session.blank? or session_time.blank?)
     # if we're editing the time of a session (editing_time = true), 
     # the display needs to be the time of the actual session time in it's set timezone,
@@ -79,6 +79,7 @@ module LearnHelper
       if (@currentuser.nil? or !@currentuser.has_time_zone?)
         tz = learn_session.time_zone
       # if the user has selected a timezone in people, the time will auto-display correctly in their preferred tz
+      # if the user did not select a tz in people, it will just display in it's own tz
       else
         return session_time
       end

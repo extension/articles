@@ -91,10 +91,6 @@ module ApplicationHelper
     end    
   end
   
-  def time_print(time)
-    time.strftime("%m.%d.%y")
-  end
-  
   def expanded_time_print(time)
     time.strftime("%B %d, %Y")
   end

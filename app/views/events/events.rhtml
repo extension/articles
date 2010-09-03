@@ -28,10 +28,12 @@
 <dl class="events">
     <dt><%= link_to event.title, events_page_url(:id => event) %></dt>
     <dd>
-    <%= time_print(event.start) %>
+    
+    <% event_time = format_event_time(event) %>
+    <%= event_time.strftime("%m.%d.%y") %>
+    
     <% if !event.time_zone.blank? %>
-      <% start_time = event.start.in_time_zone(event.time_zone) %>
-      at <%= start_time.strftime('%I:%M %p') %> <%= start_time.strftime("%Z") %> 
+      at <%= event_time.strftime('%I:%M %p %Z') %> 
     <% end %>
     </dd>
     <dd>

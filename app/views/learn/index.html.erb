@@ -12,7 +12,7 @@
    <% @upcoming_sessions.each do |upcoming_session| %>
       <article class="upcoming_event radius10">
          <div class="calendarblock">
-            <% formatted_start_time = format_time(upcoming_session, upcoming_session.session_start) %>
+            <% formatted_start_time = format_learn_time(upcoming_session, upcoming_session.session_start) %>
             <span class="month"><%= formatted_start_time.strftime("%b") %></span>
             <span class="date"><%= formatted_start_time.strftime("%d") %></span>
          </div>
@@ -64,7 +64,7 @@
       <% else %>
          <dl class="recording_available">
       <% end %>
-      <% formatted_start_time = format_time(recent_session, recent_session.session_start) %>
+      <% formatted_start_time = format_learn_time(recent_session, recent_session.session_start) %>
       <dt><%= link_to recent_session.title, :action => :event, :id => recent_session.id %></dt>
       <dd><%= time_ago_in_words(formatted_start_time) %> ago</dd>
       </dl>

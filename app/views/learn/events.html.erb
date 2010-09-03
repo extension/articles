@@ -12,7 +12,7 @@
   </tr>
   
   <% @learn_sessions.each do |learn_session| %>
-    <% formatted_time = format_time(learn_session, learn_session.session_start) %>
+    <% formatted_time = format_learn_time(learn_session, learn_session.session_start) %>
     <tr>
       <td>
          <% if learn_session.recording.blank? %>

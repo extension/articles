@@ -48,7 +48,7 @@
 	   <% if @sessions_presented.length > 0 %>
 	     <ul id="profile_sessions">
 	     <% @sessions_presented.each do |learn_session| %>
-	       <li><span class="profile_date"><%= format_time(learn_session, learn_session.session_start).strftime("%b %e, %Y") %></span> <%= link_to learn_session.title, {:action => :event, :id => learn_session.id}, {:class => "profile_link"} %></li>
+	       <li><span class="profile_date"><%= format_learn_time(learn_session, learn_session.session_start).strftime("%b %e, %Y") %></span> <%= link_to learn_session.title, {:action => :event, :id => learn_session.id}, {:class => "profile_link"} %></li>
 	     <% end %>
 	     </ul>
 	   <% else %>
