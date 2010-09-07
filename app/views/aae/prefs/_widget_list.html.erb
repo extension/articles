@@ -17,7 +17,7 @@
             <div id="loading_filter_<%= widget.id %>" class="float-spinner" style="display:none">Saving...</div></td>
         <td><%= check_box_tag "widget_auto_assign_#{widget.id}", widget.id, @auto_assign_widgets.include?(widget.id) %>
             <div id="loading_assign_<%= widget.id %>" class="float-spinner" style="display:none">Saving...</div></td>
-        <td><%= widget.created_at %></td>
+        <td><%= humane_date(widget.created_at) %></td>
     </tr>
     
     <%= observe_field("filter_widget_#{widget.id}",

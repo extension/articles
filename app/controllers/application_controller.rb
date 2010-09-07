@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_request_url_options
   before_filter :set_default_request_ip_address
   before_filter :set_app_location
-  
+
   has_mobile_fu
   skip_before_filter :set_mobile_format
   before_filter :mobile_detection
@@ -107,6 +107,10 @@ class ApplicationController < ActionController::Base
     personalize if not @personal
     @page_title_text = 'Status 404 - Page Not Found'
     render :template => "/shared/404", :status => "404"
+  end
+  
+  def set_user_time_zone
+    Time.zone = @currentuser.time_zone if @currentuser
   end
   
   private

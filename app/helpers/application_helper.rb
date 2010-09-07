@@ -91,16 +91,12 @@ module ApplicationHelper
     end    
   end
   
-  def time_print(time)
-    time.strftime("%m.%d.%y")
-  end
-  
   def expanded_time_print(time)
     time.strftime("%B %d, %Y")
   end
   
   def humane_date(time)
-     time.strftime("%B %e, %Y, %l:%M %p")
+     time.strftime("%B %e, %Y, %l:%M %p %Z")
   end
   
   

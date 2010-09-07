@@ -27,7 +27,7 @@
 					<%= link_to_user(invitation.user) %>
 				<%- end -%>			
 			</td>
-            <td><%= invitation.created_at %></td>
+            <td><%= humane_date(invitation.created_at) %></td>
             <td>
 				<%- if invitation.status == Invitation::ACCEPTED -%>
 					Accepted by <%= link_to_user(invitation.colleague) %> on <%= humane_date(invitation.accepted_at) %>

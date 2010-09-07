@@ -7,6 +7,8 @@
 
 class EventsController < ApplicationController
   before_filter :set_content_tag_and_community_and_topic
+  before_filter :login_optional, :only => [:index, :detail]
+  before_filter :set_user_time_zone
   
   layout 'pubsite'
   
@@ -28,13 +30,7 @@ class EventsController < ApplicationController
     return unless @event
     @published_content = true
     
-    # handle events w/ timezones
-    if !@event.time_zone.blank?
-      # convert time stored in db to desired tz 
-      @event_start = @event.start.in_time_zone(@event.time_zone)
-    else
-      @event_start = @event.start
-    end
+    (@selected_time_zone = (!@currentuser.nil? and @currentuser.has_time_zone?) ? @currentuser.time_zone : @event.time_zone) if @event.time_zone
     
     # get the tags on this event that correspond to community content tags
     event_content_tags = @event.tags.content_tags

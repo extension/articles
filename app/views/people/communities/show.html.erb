@@ -77,7 +77,7 @@
             	        <dt>Created by:</dt>
             	        <dd><%= link_to_user(@community.creator) %></dd>
             	        <dt>Created:</dt>
-            	        <dd><%= @community.created_at%></dd>
+            	        <dd><%= humane_date(@community.created_at) %></dd>
             	        
             	    </dl>
         	</div>

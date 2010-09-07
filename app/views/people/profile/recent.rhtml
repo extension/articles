@@ -23,7 +23,7 @@
     
     <% for activity in @activitylist %>
         <tr>
-            <td><%= activity.created_at %></td>
+            <td><%= humane_date(activity.created_at) %></td>
             <td><%= activity.ipaddr %></td>
             <td><%= activity_to_s(activity,{:userview => true}) %></td>
         </tr>

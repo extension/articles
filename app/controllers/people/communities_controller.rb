@@ -9,6 +9,7 @@ class People::CommunitiesController < ApplicationController
   layout 'people'
   before_filter :login_required
   before_filter :check_purgatory
+  before_filter :set_user_time_zone
 
   # GET /communities
   def index
