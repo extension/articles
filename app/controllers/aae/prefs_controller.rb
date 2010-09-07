@@ -10,7 +10,7 @@ class Aae::PrefsController < ApplicationController
   layout 'aae'
   before_filter :login_required
   before_filter :check_purgatory 
-  before_filter :set_user_time_zone 
+   
   skip_before_filter :unescape_params
 
   # they can specify their areas of expertise by category/subcategory 

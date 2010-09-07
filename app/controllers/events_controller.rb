@@ -8,7 +8,7 @@
 class EventsController < ApplicationController
   before_filter :set_content_tag_and_community_and_topic
   before_filter :login_optional, :only => [:index, :detail]
-  before_filter :set_user_time_zone
+   
   
   layout 'pubsite'
   

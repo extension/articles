@@ -10,7 +10,7 @@ class People::InvitationsController < ApplicationController
   layout 'people'
   before_filter :login_required
   before_filter :check_purgatory
-  before_filter :set_user_time_zone
+   
   
   def index
     show = params[:show].nil? ? 'pending' : params[:show]

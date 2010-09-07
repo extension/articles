@@ -8,7 +8,7 @@
 class People::ProfileController < ApplicationController
   layout 'people'
   before_filter :login_required, :except => [:xhr_county]
-  before_filter :set_user_time_zone
+   
   
   def me
   end

@@ -9,7 +9,7 @@ class People::ListsController < ApplicationController
   layout 'people'
   before_filter :login_required, :check_purgatory, :except => [:show, :postinghelp, :about]
   before_filter :login_optional, :only => [:show, :postinghelp, :about]
-  before_filter :set_user_time_zone
+   
   
   def postinghelp
   end
