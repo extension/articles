@@ -76,6 +76,7 @@ class EventsController < ApplicationController
         page.visual_effect :highlight, :time_with_tz 
       end
     else
+      do_404
       return
     end
   end
