@@ -60,6 +60,19 @@ module LoginSystem
     end
   end
   
+  # this is a bit of a hack in order to get global
+  # timezones in situations where login_required/login_optional
+  # hasn't yet been executed
+  def set_currentuser_time_zone
+    if session[:userid]      
+      checkuser = User.find_by_id(session[:userid])
+      if (authorize?(checkuser))
+        Time.zone = checkuser.time_zone
+        return true
+      end
+    end
+  end
+  
   def login_required    
 
     if session[:userid]      

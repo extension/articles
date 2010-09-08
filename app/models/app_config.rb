@@ -65,10 +65,10 @@ class AppConfig
         
   
     #Default sites
-    @@configtable['faq_site'] = 'http://faq.extension.org'
-    @@configtable['events_site'] = 'http://events.extension.org'
-    @@configtable['people_site'] = 'https://www.extension.org/people/'
-    @@configtable['learn_site'] = 'https://www.extension.org/learn/'
+    @@configtable['faq_site'] = 'http://cop.extension.org/faq'
+    @@configtable['events_site'] = 'http://cop.extension.org/events'
+    @@configtable['people_site'] = 'http://people.extension.org/'
+    @@configtable['learn_site'] = 'http://learn.extension.org/'
     @@configtable['cop_site'] = 'http://cop.extension.org/wiki'
     @@configtable['collaborate_site'] = 'http://collaborate.extension.org/wiki/'
     @@configtable['about_site'] = 'http://about.extension.org/wiki'

@@ -16,7 +16,7 @@
     	    <h3>List Information</h3>
     	    <dl>
     		    <dt>Created:</dt>
-    	        <dd><%= @list.created_at%></dd>
+    	        <dd><%= humane_date(@list.created_at) %></dd>
 				<% if @list.managed? %>
 				    <dt>Community Connection:</dt>
 	   	        	<dd><%= link_to_people_community(@list.community) %></dd>

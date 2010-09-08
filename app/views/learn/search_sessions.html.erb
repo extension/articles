@@ -12,7 +12,7 @@
 
 
   <% @learn_session_list.each do |learn_session| %>
-  <% formatted_start_time = format_time(learn_session, learn_session.session_start) %>
+  <% formatted_start_time = format_learn_time(learn_session, learn_session.session_start) %>
     <dl class="event_search">
       <dt><%= link_to learn_session.title, :action => :event, :id => learn_session.id %></dt>
       <dd class="description"><%= learn_session.description %></dd>

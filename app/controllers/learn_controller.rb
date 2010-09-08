@@ -11,6 +11,7 @@ class LearnController < ApplicationController
   
   before_filter :login_optional
   before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event, :connect_to_session, :time_zone_check]
+   
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
@@ -45,8 +46,13 @@ class LearnController < ApplicationController
     end
     
     # set timezone to either the people profile pref for the user or the time zone selected for the session
-    tz = @currentuser.nil? ? @learn_session.time_zone : @currentuser.time_zone
-    @session_start = @learn_session.session_start.in_time_zone(tz)
+    if @currentuser.nil? or !@currentuser.has_time_zone?
+      @session_start = @learn_session.session_start.in_time_zone(@learn_session.time_zone) 
+    # Time.zone is already set in the hook for controller method load, 
+    # so we're good here (time is auto-updated) if the user has a timezone selected in their people profile
+    else  
+      @session_start = @learn_session.session_start
+    end
   end
   
   def login_redirect

@@ -29,7 +29,8 @@ class ApplicationController < ActionController::Base
   before_filter :set_request_url_options
   before_filter :set_default_request_ip_address
   before_filter :set_app_location
-  
+  before_filter :set_currentuser_time_zone
+
   has_mobile_fu
   skip_before_filter :set_mobile_format
   before_filter :mobile_detection
@@ -108,7 +109,7 @@ class ApplicationController < ActionController::Base
     @page_title_text = 'Status 404 - Page Not Found'
     render :template => "/shared/404", :status => "404"
   end
-  
+    
   private
   
   def turn_off_right_column
