@@ -104,11 +104,12 @@
 </div>
 
 <script type="text/javascript">
+  $j = jQuery.noConflict();
   $j(document).ready(function() {
     $j('a.title').cluetip({splitTitle: '|'});
     $j('a.tooltip_trigger.local').cluetip({local:true, cursor: 'pointer',width: 300, showTitle:false});
     
-    $j("a#example1").fancybox({
+    $j(".fancybox").fancybox({
 			'titleShow'		: false
 		});
   })
