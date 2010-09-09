@@ -13,6 +13,9 @@
     var options = new google.search.DrawOptions();
     options.setAutoComplete(true);
     customSearchControl.draw('cse', options);
+    <% if params[:q] and not params[:q].blank? %>
+      customSearchControl.execute("<%= params[:q] %>");
+    <% end %>
   }, true);  
 </script>
 
