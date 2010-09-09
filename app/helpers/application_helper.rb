@@ -96,7 +96,11 @@ module ApplicationHelper
   end
   
   def humane_date(time)
-     time.strftime("%B %e, %Y, %l:%M %p %Z")
+     if(time.blank?)
+       ''
+     else
+       time.strftime("%B %e, %Y, %l:%M %p %Z")
+     end
   end
   
   
