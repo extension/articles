@@ -26,7 +26,8 @@
     
     // if we have a query, kick it off
     if (window.location.hash != "") {
-      customSearchControl.execute(window.location.hash.slice(1));
+      var q = window.location.hash.slice(1);
+      customSearchControl.execute(unescape(q));
     }
     // set the callback so we can update the search link
     customSearchControl.setSearchStartingCallback(this, newSearch);
