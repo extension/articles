@@ -3,16 +3,13 @@
   <h2><strong><%= Annotation.count %></strong> Cooperative Extension Sites</h2>
   <p>Easy search access to resources provided by your Land-Grant institutions</p>
 </div>
-<p><a class="share" href="<%= search_url %>">
-  Share Link
-</a></p>
 <div id="cse"></div>
 <script type="text/javascript">
   google.load('search', '1', {language : 'en'});
   google.load("jquery", "1.4.2");
   
-  function setSearchLink(q) {
-    $(".share").attr("href", "<%= search_url() %>?q=" + escape(q));
+  function updateLocation(q) {
+    window.location.hash = escape(q);
   }
   
   google.setOnLoadCallback(function() {
@@ -24,15 +21,13 @@
     
     // called on form submit
     var newSearch = function(searchControl, searcher, query) {
-      setSearchLink(query);
+      updateLocation(query);
     }
     
-    // if we have a q param, kick off the query
-    <% if params[:q] and not params[:q].blank? %>
-      customSearchControl.execute("<%= params[:q] %>");
-      setSearchLink("<%= params[:q] %>");
-    <% end %>
-    
+    // if we have a query, kick it off
+    if (window.location.hash != "") {
+      customSearchControl.execute(window.location.hash.slice(1));
+    }
     // set the callback so we can update the search link
     customSearchControl.setSearchStartingCallback(this, newSearch);
   }, true);  
