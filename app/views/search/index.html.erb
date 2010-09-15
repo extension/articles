@@ -9,7 +9,7 @@
   google.load("jquery", "1.4.2");
   
   function updateLocation(q) {
-    window.location.hash = escape(q);
+    window.location.search = "q=" + encodeURIComponent(q);
   }
   
   google.setOnLoadCallback(function() {
@@ -25,10 +25,10 @@
     }
     
     // if we have a query, kick it off
-    if (window.location.hash != "") {
-      var q = window.location.hash.slice(1);
-      customSearchControl.execute(unescape(q));
-    }
+    <% if params[:q] and not params[:q].blank? %>
+      customSearchControl.execute("<%= params[:q] %>");
+    <% end %>
+    
     // set the callback so we can update the search link
     customSearchControl.setSearchStartingCallback(this, newSearch);
   }, true);  
