@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100823204706) do
+ActiveRecord::Schema.define(:version => 20100915163407) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -414,6 +414,22 @@ ActiveRecord::Schema.define(:version => 20100823204706) do
     t.datetime "attachment_updated_at"
     t.integer  "submitted_question_id"
     t.integer  "response_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "google_accounts", :force => true do |t|
+    t.integer  "user_id",          :default => 0,     :null => false
+    t.string   "username",                            :null => false
+    t.boolean  "no_sync_password", :default => false
+    t.string   "password",                            :null => false
+    t.string   "given_name",                          :null => false
+    t.string   "family_name",                         :null => false
+    t.boolean  "is_admin",         :default => false
+    t.boolean  "suspended",        :default => false
+    t.datetime "apps_updated_at"
+    t.boolean  "has_error",        :default => false
+    t.text     "last_error"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

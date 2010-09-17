@@ -42,6 +42,8 @@ class User < ActiveRecord::Base
   
   has_many :opie_approvals, :dependent => :destroy
   has_one :chat_account, :dependent => :destroy
+  has_one :google_account, :dependent => :destroy
+  
   has_many :user_events, :order => 'created_at DESC', :dependent => :destroy
   has_many :activities, :order => 'created_at DESC', :dependent => :destroy
   
@@ -123,6 +125,7 @@ class User < ActiveRecord::Base
   has_many :learn_sessions_presented, :source => :learn_session, :through => :learn_connections, :conditions => "learn_connections.connectiontype = #{LearnConnection::PRESENTER}"
   
   after_update :update_chataccount
+  after_update :update_google_account
   before_validation :convert_phonenumber
   before_save :check_status, :generate_feedkey
   before_create :set_encrypted_password
@@ -407,6 +410,19 @@ class User < ActiveRecord::Base
       self.create_chat_account
     else
       self.chat_account.save
+    end
+   end
+  end
+  
+  def update_google_account
+   # remove chat account if retired
+   if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
+    if(!self.google_account.nil?)
+      self.google_account.update_attribute(:suspended,true)
+    end
+   else
+    if(!self.google_account.nil?)
+      self.google_account.save
     end
    end
   end
