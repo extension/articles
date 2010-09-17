@@ -235,10 +235,21 @@ class Aae::QuestionController < ApplicationController
     # get the last response type, if a non-answer response was previously sent, respect the status of it in the submitted question, else 
     # set it to resolved
     if last_response = @submitted_question.last_response
+      resolver = last_response.initiated_by
       if last_response.event_state == SubmittedQuestionEvent::NO_ANSWER
-        @submitted_question.update_attributes(:status => SubmittedQuestion::NO_ANSWER_TEXT, :status_state => SubmittedQuestion::STATUS_NO_ANSWER)
+        @submitted_question.update_attributes(:status => SubmittedQuestion::NO_ANSWER_TEXT, 
+                                              :status_state => SubmittedQuestion::STATUS_NO_ANSWER,
+                                              :resolved_by => resolver,
+                                              :resolved_at => last_response.created_at,
+                                              :current_response => last_response.response,
+                                              :resolver_email => resolver.email)
       else
-        @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, :status_state => SubmittedQuestion::STATUS_RESOLVED)
+        @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, 
+                                              :status_state => SubmittedQuestion::STATUS_RESOLVED,
+                                              :resolved_by => resolver,
+                                              :resolved_at => last_response.created_at,
+                                              :current_response => last_response.response,
+                                              :resolver_email => resolver.email)
       end
     else
       flash[:notice] = "This question cannot be closed as it was never responded to. Please either answer it, respond with no answer, or reject it."
