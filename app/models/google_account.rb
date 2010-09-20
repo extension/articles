@@ -14,7 +14,6 @@ class GoogleAccount < ActiveRecord::Base
   belongs_to :user
 
   before_save  :set_values_from_user
-  before_update  :set_values_from_user
 
   GDATA_ERROR_ENTRYDOESNOTEXIST = 1301
 

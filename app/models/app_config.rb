@@ -155,6 +155,7 @@ class AppConfig
     # Google Apps settings
     @@configtable['googleapps_account'] = 'NotSet'
     @@configtable['googleapps_secret'] = 'NotSet'
+    @@configtable['googleapps_domain'] = 'apps.extension.org'
     
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
