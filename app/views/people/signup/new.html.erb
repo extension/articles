@@ -10,7 +10,7 @@
     <div id="signup_help">
         <h4>Registration Help</h4>
         <p><%= link_to 'I forgot my password', :controller => 'people/account', :action => 'new_password' %></p>
-        <p>Already registered? <%= link_to 'Sign-in', :action => 'login' %></p>
+        <p>Already registered? <%= link_to 'Sign-in', :controller => 'people/account', :action => 'login' %></p>
     </div>
         
 
