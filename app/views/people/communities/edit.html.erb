@@ -1,5 +1,6 @@
 <h1>Edit this Community</h1>
 <p><%= link_to 'View Community', people_community_url(@community.id) %></p>
+<%= render(:partial => 'partial/flashmessages') %>
 
 <%= error_messages_for :community %>
 
