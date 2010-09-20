@@ -1,5 +1,5 @@
 <h1>Create a new community</h1>
-
+<%= render(:partial => 'partial/flashmessages') %>
 <%= error_messages_for :community %>
 
 <% form_for :community, @community, :url => people_communities_url  do |community| %>

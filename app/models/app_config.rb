@@ -152,6 +152,11 @@ class AppConfig
 		# Google Maps Key
 		@@configtable['google_map_key'] = "ABQIAAAA1LmtLYh4TNIbY5g8p1Lv7RTX9Q_j-d1gVWC6rr14ybx0yf1UjRTepIB7tNRw_H6gggFEgWdIu5E7ig"
     
+    # Google Apps settings
+    @@configtable['googleapps_account'] = 'NotSet'
+    @@configtable['googleapps_secret'] = 'NotSet'
+    @@configtable['googleapps_domain'] = 'apps.extension.org'
+    
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
     @@configtable['faq_create_url'] = 'http://cop.extension.org/questions/new_from_aae'

@@ -322,6 +322,18 @@ class People::CommunitiesController < ApplicationController
       @community.entrytype = Community::USERCONTRIBUTED
     end
     
+    # shortname check
+    if(!params[:community][:shortname].blank?)
+      shortname = params[:community][:shortname]
+      if(community = Community.find_by_shortname(shortname))
+        flash.now[:failure] = "That Community shortname is already in use."
+        return render(:action => "new")
+      elsif(EmailAlias.mail_alias_in_use?(shortname))
+        flash.now[:failure] = "That shortname is reserved."
+        return render(:action => "new")
+      end
+    end
+    
     @community.creator = @currentuser
 
     respond_to do |format|
@@ -349,6 +361,19 @@ class People::CommunitiesController < ApplicationController
       flash[:warning] = "You are not a leader for this community."
       return(redirect_to(people_community_url(@community.id)))
     end
+    
+    # shortname check
+    if(!params[:community][:shortname].blank?)
+      shortname = params[:community][:shortname]
+      if(community = Community.find_by_shortname(shortname) and community.id != @community.id)
+        flash.now[:failure] = "That Community shortname is already in use."
+        return render(:action => "edit")
+      elsif(ea = EmailAlias.find_by_mail_alias(shortname) and ea.community != @community)
+        flash.now[:failure] = "That shortname is reserved."
+        return render(:action => "edit")
+      end
+    end
+    
     
     respond_to do |format|
       if @community.update_attributes(params[:community])
