@@ -16,6 +16,24 @@ class GoogleAppsIntegration < ActiveRecord::Migration
       t.timestamps
     end
     
+    add_index "google_accounts", ["user_id"], :unique => true
+    
+    # users
+    execute "INSERT INTO google_accounts (user_id, username, password, given_name, family_name, is_admin, created_at, updated_at) " + 
+    "SELECT id, login, password, first_name, last_name, is_admin, NOW(), NOW() FROM users " + 
+    "WHERE users.retired = 0 and users.vouched = 1 and users.id != #{User.systemuserid}"
+    
+    
+    # communities integration
+    add_column(:communities, :connect_to_google_apps, :boolean, :default => false)
+    
+    # rename computerliteracy shortname to networkliteracy
+    execute "UPDATE communities SET shortname='computerliteracy' WHERE id = 68"
+    
+    # force a unique index, will need to enforce in code somewhere
+    add_index "communities", ["shortname"], :unique => true
+    
+    
   end
 
   def self.down
