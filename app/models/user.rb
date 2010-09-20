@@ -44,6 +44,8 @@ class User < ActiveRecord::Base
   has_one :chat_account, :dependent => :destroy
   has_one :google_account, :dependent => :destroy
   
+  has_many :email_aliases
+  
   has_many :user_events, :order => 'created_at DESC', :dependent => :destroy
   has_many :activities, :order => 'created_at DESC', :dependent => :destroy
   
