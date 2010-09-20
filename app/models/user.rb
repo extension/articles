@@ -126,8 +126,11 @@ class User < ActiveRecord::Base
   has_many :learn_sessions, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, learn_sessions.*"
   has_many :learn_sessions_presented, :source => :learn_session, :through => :learn_connections, :conditions => "learn_connections.connectiontype = #{LearnConnection::PRESENTER}"
   
-  after_update :update_chataccount
-  after_update :update_google_account
+  
+  after_save :update_chataccount
+  after_save :update_google_account
+  after_save :update_email_aliases
+  
   before_validation :convert_phonenumber
   before_save :check_status, :generate_feedkey
   before_create :set_encrypted_password
@@ -401,6 +404,15 @@ class User < ActiveRecord::Base
    return returnhash
   end
   
+  def is_validuser?
+    if(self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
+      return false
+    else
+      return true
+    end
+  end
+    
+  
   def update_chataccount
    # remove chat account if retired
    if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
@@ -417,14 +429,43 @@ class User < ActiveRecord::Base
   end
   
   def update_google_account
-   # remove chat account if retired
+   # remove google account if retired
    if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
     if(!self.google_account.nil?)
-      self.google_account.update_attribute(:suspended,true)
+      self.google_account.suspended = true
+      self.google_account.save
     end
    else
     if(!self.google_account.nil?)
+      self.google_account.suspended = false
       self.google_account.save
+    else
+      self.create_google_account
+    end
+   end
+  end
+  
+  def update_email_aliases
+   # remove email aliases if retired
+   if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
+    if(!self.email_aliases.blank?)
+      self.email_aliases.each do |ea|
+        ea.disabled = true
+        ea.save
+      end
+    end
+   else
+    if(!self.email_aliases.blank?)
+      self.email_aliases.each do |ea|
+        if(ea.alias_type == EmailAlias::INDIVIDUAL_FORWARD and (self.account_status == User::STATUS_CONFIRMEMAIL or self.email_changed?))
+          # do nothing
+        else
+          ea.disabled = false
+          ea.save
+        end
+      end
+    else
+      EmailAlias.create(:alias_type => EmailAlias::INDIVIDUAL_FORWARD, :user => self)
     end
    end
   end
@@ -700,7 +741,7 @@ class User < ActiveRecord::Base
   end
   
   def has_whitelisted_email?
-   if (self.email =~ /edu$|gov$|extension\.org$|nasulgc\.org$|fs.fed.us$/i)
+   if (self.email =~ /edu$|gov$/i)
     return true
    else
     return false
