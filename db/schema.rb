@@ -453,6 +453,20 @@ ActiveRecord::Schema.define(:version => 20100917170322) do
 
   add_index "google_accounts", ["user_id"], :name => "index_google_accounts_on_user_id", :unique => true
 
+  create_table "google_groups", :force => true do |t|
+    t.integer  "community_id",     :default => 0,     :null => false
+    t.string   "group_id",                            :null => false
+    t.string   "group_name",                          :null => false
+    t.string   "email_permission",                    :null => false
+    t.datetime "apps_updated_at"
+    t.boolean  "has_error",        :default => false
+    t.text     "last_error"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "google_groups", ["community_id"], :name => "index_google_groups_on_community_id", :unique => true
+
   create_table "help_feeds", :force => true do |t|
     t.string   "title"
     t.string   "etag"

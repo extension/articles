@@ -32,7 +32,7 @@ class GoogleAccount < ActiveRecord::Base
     return true
   end
   
-  def update_apps_account(create_account = nil)
+  def update_apps_account
     self.class.establish_apps_connection
     
     # check for an account

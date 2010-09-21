@@ -88,7 +88,7 @@ class Community < ActiveRecord::Base
   has_many :daily_numbers, :as => :datasource
   
   has_many :email_aliases
-  
+  has_one  :google_group
   
   named_scope :tagged_with_content_tag, lambda {|tagname| 
     {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::CONTENT}"}
@@ -646,10 +646,12 @@ class Community < ActiveRecord::Base
       EmailAlias.create(:alias_type => (self.connect_to_google_apps ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE), :community => self)
     end
   end
+  
       
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
+
     
   def self.communitytype_condition(communitytype)
     if(communitytype.nil?)
