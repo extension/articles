@@ -469,6 +469,14 @@ class User < ActiveRecord::Base
     end
    end
   end
+  
+  def email_forward
+    ea = self.email_aliases.find(:first, :conditions => "alias_type = #{EmailAlias::INDIVIDUAL_FORWARD}")
+    if(!ea)
+      ea = self.email_aliases.find(:first, :conditions => "alias_type = #{EmailAlias::INDIVIDUAL_FORWARD_CUSTOM}")
+    end
+    return ea
+  end
    
   def fullname 
    return "#{self.first_name} #{self.last_name}"
