@@ -44,11 +44,7 @@ class GoogleAppsIntegration < ActiveRecord::Migration
     end
     
     add_index "google_groups", ["community_id"], :unique => true
-    
-    # communities
-    execute "INSERT INTO google_groups (community_id, group_id, group_name, email_permission, created_at, updated_at) " + 
-    "SELECT id, shortname, name, 'Anyone', NOW(), NOW() FROM communities "    
-    
+
   end
 
   def self.down
