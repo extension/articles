@@ -119,7 +119,8 @@ class Community < ActiveRecord::Base
    
   before_create :clean_description_and_shortname, :flag_attributes_for_approved
   before_update :clean_description_and_shortname, :flag_attributes_for_approved
-  after_update :update_email_aliases
+  after_save :update_email_aliases
+  after_save :update_google_group
 
 
   def is_institution?
@@ -640,11 +641,24 @@ class Community < ActiveRecord::Base
   def update_email_aliases
     if(!self.email_aliases.blank?)
       self.email_aliases.each do |ea|
-        ea.update_attribute(:alias_type, (self.connect_to_google_apps ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE))
+        ea.update_attribute(:alias_type, (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE))
       end
     else
-      EmailAlias.create(:alias_type => (self.connect_to_google_apps ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE), :community => self)
+      EmailAlias.create(:alias_type => (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE), :community => self)
     end
+  end
+  
+  def update_google_group
+    if(self.connect_to_google_apps?)
+      if(!self.google_group.blank?)
+        self.google_group.save
+      else
+        self.create_google_group
+      end
+    else
+      # do nothing
+    end
+    return true
   end
   
       
