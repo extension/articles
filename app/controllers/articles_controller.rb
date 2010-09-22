@@ -86,9 +86,14 @@ class ArticlesController < ApplicationController
     @article_content_tag_names = @article_content_tags.map(&:name)
     @article_bucket_names = @article.content_buckets.map(&:name)
     
+
+    
     if(!@article_content_tags.blank?)
       # is this article tagged with youth?
       @youth = true if @article_bucket_names.include?('youth')
+      
+      # news check to set the meta tags for noindex/nofollow
+      @published_content = false if @article_bucket_names.include?('news')
       
       # get the tags on this article that are content tags on communities
       @community_content_tags = (Tag.community_content_tags & @article_content_tags)
