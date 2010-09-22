@@ -112,5 +112,20 @@
 			<td>No <% if @currentuser.is_sudoer? %><%= link_to "make admin", :action => 'makeadmin', :id => @showuser.login, :operation => 'add' %><% end %></td>
 		<% end %>
 	</tr>
+	
+	<%- if @showuser.email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM -%>
+  	<tr>
+  	  <td scope="row" class="label">Email Forwards to: </td>   
+  	  <td><%= @showuser.email_forward.destination%></td>         
+  	</tr>
+  <%- end -%>
+  
+	<%- aliases = @showuser.email_aliases.all(:conditions => "alias_type IN (#{EmailAlias::SYSTEM_ALIAS},#{EmailAlias::INDIVIDUAL_ALIAS})") -%>
+  <%- if !aliases.blank? -%>
+  <tr>
+      <td scope="row" class="label">Email Aliases @extension.org: </td>
+      <td><%= aliases.map{|ea| "#{ea.mail_alias}@extension.org"}.join('<br/>')%></td>
+  </tr>
+  <%- end -%>
 		
 </table>
