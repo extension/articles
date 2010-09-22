@@ -749,7 +749,7 @@ class User < ActiveRecord::Base
   end
   
   def has_whitelisted_email?
-   if (self.email =~ /edu$|gov$/i)
+   if (self.email =~ /edu$|gov$|mil$/i)
     return true
    else
     return false
