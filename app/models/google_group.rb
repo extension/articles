@@ -17,7 +17,7 @@ class GoogleGroup < ActiveRecord::Base
 
   GDATA_ERROR_ENTRYDOESNOTEXIST = 1301
 
-  named_scope :needs_apps_update, {:conditions => "updated_at > apps_updated_at"}
+  named_scope :needs_apps_update, {:conditions => "updated_at > apps_updated_at and has_error = 0"}
 
 
   def set_values_from_community
