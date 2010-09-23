@@ -25,6 +25,12 @@
 		<span class="vcardLabel">Email:</span>
 		<span class="email"><%= @currentuser.email%></span>
 	</p>
+	<%- if !@currentuser.email_forward.blank? and @currentuser.email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM -%>
+  	<p class="item">
+  		<span class="vcardLabel">Email Forwards to:</span>
+  		<span class="email"><%= @currentuser.email_forward.destination%></span>
+  	</p>
+  <%- end -%>
 	
 	<p class="item">
 		<span class="vcardLabel">Preferred Phone:</span>

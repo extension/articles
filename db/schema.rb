@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100823204706) do
+ActiveRecord::Schema.define(:version => 20100922182828) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -219,10 +219,12 @@ ActiveRecord::Schema.define(:version => 20100823204706) do
     t.integer  "logo_id",                               :default => 0
     t.boolean  "connect_to_drupal",                     :default => false
     t.integer  "drupal_node_id"
+    t.boolean  "connect_to_google_apps",                :default => false
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
   add_index "communities", ["referer_domain"], :name => "index_communities_on_referer_domain"
+  add_index "communities", ["shortname"], :name => "index_communities_on_shortname", :unique => true
 
   create_table "communityconnections", :force => true do |t|
     t.integer  "user_id"
@@ -309,6 +311,21 @@ ActiveRecord::Schema.define(:version => 20100823204706) do
   end
 
   add_index "directory_item_caches", ["user_id"], :name => "index_directory_item_caches_on_user_id"
+
+  create_table "email_aliases", :force => true do |t|
+    t.integer  "user_id",          :default => 0,     :null => false
+    t.integer  "community_id",     :default => 0,     :null => false
+    t.string   "mail_alias",                          :null => false
+    t.string   "destination",                         :null => false
+    t.integer  "alias_type",       :default => 0,     :null => false
+    t.integer  "created_by",       :default => 1
+    t.integer  "last_modified_by", :default => 1
+    t.boolean  "disabled",         :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "email_aliases", ["mail_alias", "destination"], :name => "alias_destination_ndx", :unique => true
 
   create_table "events", :force => true do |t|
     t.text     "title"
@@ -417,6 +434,38 @@ ActiveRecord::Schema.define(:version => 20100823204706) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "google_accounts", :force => true do |t|
+    t.integer  "user_id",          :default => 0,     :null => false
+    t.string   "username",                            :null => false
+    t.boolean  "no_sync_password", :default => false
+    t.string   "password",                            :null => false
+    t.string   "given_name",                          :null => false
+    t.string   "family_name",                         :null => false
+    t.boolean  "is_admin",         :default => false
+    t.boolean  "suspended",        :default => false
+    t.datetime "apps_updated_at"
+    t.boolean  "has_error",        :default => false
+    t.text     "last_error"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "google_accounts", ["user_id"], :name => "index_google_accounts_on_user_id", :unique => true
+
+  create_table "google_groups", :force => true do |t|
+    t.integer  "community_id",     :default => 0,     :null => false
+    t.string   "group_id",                            :null => false
+    t.string   "group_name",                          :null => false
+    t.string   "email_permission",                    :null => false
+    t.datetime "apps_updated_at"
+    t.boolean  "has_error",        :default => false
+    t.text     "last_error"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "google_groups", ["community_id"], :name => "index_google_groups_on_community_id", :unique => true
 
   create_table "help_feeds", :force => true do |t|
     t.string   "title"

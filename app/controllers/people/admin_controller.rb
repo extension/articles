@@ -67,6 +67,10 @@ class People::AdminController < ApplicationController
   # End - Sudo Actions
   # -----------------------------------
   
+  def alias_list
+    @alias_list = EmailAlias.all(:conditions => "alias_type IN (#{EmailAlias::INDIVIDUAL_ALIAS},#{EmailAlias::SYSTEM_ALIAS},#{EmailAlias::SYSTEM_FORWARD})", :order => 'mail_alias ASC')
+  end
+  
   def retire
     if not params[:id].nil?
       @showuser = User.find_by_login(params[:id])

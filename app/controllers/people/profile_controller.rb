@@ -149,7 +149,20 @@ class People::ProfileController < ApplicationController
         if announcechange
           @currentuser.reload
           @currentuser.checkannouncelists
-        end           
+        end
+        
+        # custom alias?
+        if(params[:email_forward])
+          email_forward = @user.email_forward
+          if(!email_forward.blank?)
+            if(email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM)
+              if(EmailAddress.is_valid_address?(params[:email_forward]) and !(params[:email_forward] =~ /extension\.org$/i))
+                email_forward.update_attribute(:destination,params[:email_forward])
+              end
+            end
+          end
+        end
+        
         if emailchanged
           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "email address change")                                                                            
           if(@currentuser.account_status == User::STATUS_INVALIDEMAIL_FROM_SIGNUP)

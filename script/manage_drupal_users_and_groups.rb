@@ -13,7 +13,7 @@ progopts.each do |option, arg|
   case option
     when '--environment'
       @environment = arg
-    when '--identitydatabase'
+    when '--drupaldatabase'
       @drupaldatabase = arg
     else
       puts "Unrecognized option #{opt}"

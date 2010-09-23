@@ -87,6 +87,8 @@ class Community < ActiveRecord::Base
 
   has_many :daily_numbers, :as => :datasource
   
+  has_many :email_aliases
+  has_one  :google_group
   
   named_scope :tagged_with_content_tag, lambda {|tagname| 
     {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::CONTENT}"}
@@ -117,6 +119,8 @@ class Community < ActiveRecord::Base
    
   before_create :clean_description_and_shortname, :flag_attributes_for_approved
   before_update :clean_description_and_shortname, :flag_attributes_for_approved
+  after_save :update_email_aliases
+  after_save :update_google_group
 
 
   def is_institution?
@@ -233,11 +237,18 @@ class Community < ActiveRecord::Base
     end
     
     if(self.shortname.blank?)
-      self.shortname = self.name.gsub(/\W/,'').downcase
+      tmpshortname = self.name.gsub(/\W/,'').downcase
     else
-      self.shortname = self.shortname.gsub(/\W/,'').downcase
+      tmpshortname = self.shortname.gsub(/\W/,'').downcase
     end
     
+    increment = 1
+    original = tmpshortname
+    while(EmailAlias.mail_alias_in_use?('tmpshortname'))
+      tmpshortname = "#{original}_#{increment}"
+      increment += 1
+    end
+  
   end
   
   def flag_attributes_for_approved
@@ -626,10 +637,35 @@ class Community < ActiveRecord::Base
       return nil
     end
   end
+  
+  def update_email_aliases
+    if(!self.email_aliases.blank?)
+      self.email_aliases.each do |ea|
+        ea.update_attribute(:alias_type, (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE))
+      end
+    else
+      EmailAlias.create(:alias_type => (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE), :community => self)
+    end
+  end
+  
+  def update_google_group
+    if(self.connect_to_google_apps?)
+      if(!self.google_group.blank?)
+        self.google_group.save
+      else
+        self.create_google_group
+      end
+    else
+      # do nothing
+    end
+    return true
+  end
+  
       
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
+
     
   def self.communitytype_condition(communitytype)
     if(communitytype.nil?)

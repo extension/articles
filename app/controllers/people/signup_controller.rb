@@ -84,6 +84,19 @@ class People::SignupController < ApplicationController
       return render(:action => "new")
     end
     
+    # extensionid check
+    if(!params[:user][:login].blank?)
+      login = params[:user][:login]
+      if(u = User.find_by_login(login))
+        flash.now[:failure] = "That eXtensionID is already in use."
+        @locations = Location.displaylist
+        return render(:action => "new")
+      elsif(EmailAlias.mail_alias_in_use?(login))
+        flash.now[:failure] = "That eXtensionID is reserved."
+        @locations = Location.displaylist
+        return render(:action => "new")
+      end
+    end
     
     # STATUS_SIGNUP
     @user.account_status = User::STATUS_SIGNUP
