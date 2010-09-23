@@ -113,7 +113,7 @@
 		<% end %>
 	</tr>
 	
-	<%- if @showuser.email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM -%>
+	<%- if !@showuser.email_forward.blank? and @showuser.email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM -%>
   	<tr>
   	  <td scope="row" class="label">Email Forwards to: </td>   
   	  <td><%= @showuser.email_forward.destination%></td>         
