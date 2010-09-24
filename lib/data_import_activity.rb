@@ -212,11 +212,10 @@ module DataImportActivity
 
     # build sql
     sql = "INSERT IGNORE INTO #{mydatabase}.#{self.table_name} (created_at,user_id,activitytype,activitycode,activity_application_id,ipaddr,created_by,activity_object_id,privacy)"
-    sql +=  " SELECT #{activitydatabase}.event_updates.created_at, #{mydatabase}.users.id, #{Activity::INFORMATION}, #{Activity::INFORMATION_EDIT},"
-    sql +=  "#{activityapplication.id},'unknown',#{mydatabase}.users.id,#{mydatabase}.activity_objects.id,#{Activity::PROTECTED}"
+    sql +=  " SELECT #{activitydatabase}.event_updates.created_at, #{activitydatabase}.users.id, #{Activity::INFORMATION}, #{Activity::INFORMATION_EDIT},"
+    sql +=  "#{activityapplication.id},'unknown',#{activitydatabase}.users.id,#{mydatabase}.activity_objects.id,#{Activity::PROTECTED}"
     sql +=  " FROM #{activitydatabase}.event_updates, #{activitydatabase}.users, #{mydatabase}.users, #{mydatabase}.activity_objects"
     sql +=  " WHERE #{activitydatabase}.event_updates.user_id = #{activitydatabase}.users.id" 
-    sql +=  " AND LOWER(#{activitydatabase}.users.extension_id) = LOWER(#{mydatabase}.users.login)"
     sql +=  " AND #{activitydatabase}.event_updates.event_id = #{mydatabase}.activity_objects.foreignid"  
     sql +=  " AND #{mydatabase}.activity_objects.entrytype = #{ActivityObject::EVENT}"  
     sql +=  " AND #{mydatabase}.activity_objects.namespace = #{ActivityObject::NS_DEFAULT}"  
