@@ -94,8 +94,6 @@ en:
       collabwiki_page: "Collaborate Wiki Page"
       docswiki_page: "Documentation Wiki Page"
       syswiki_page: "Systems Wiki Page"
-      justcode_changeset: "JustCode Changeset"
-      justcode_issue: "JustCode Issue"
   communities:
       approved: 'eXtension Community of Practice'
       user_contributed: 'User created community'

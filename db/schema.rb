@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100922182828) do
+ActiveRecord::Schema.define(:version => 20100924194501) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -325,7 +325,8 @@ ActiveRecord::Schema.define(:version => 20100922182828) do
     t.datetime "updated_at"
   end
 
-  add_index "email_aliases", ["mail_alias", "destination"], :name => "alias_destination_ndx", :unique => true
+  add_index "email_aliases", ["destination"], :name => "destination_ndx"
+  add_index "email_aliases", ["mail_alias"], :name => "alias_ndx"
 
   create_table "events", :force => true do |t|
     t.text     "title"
