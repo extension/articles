@@ -237,7 +237,7 @@ module DataImportActivityObject
     sql += "CAST((SUBSTRING(#{faqdatabase}.revisions.question_text,1,255)) AS BINARY),CAST(#{faqdatabase}.revisions.question_text AS BINARY),"
     sql += "#{faqdatabase}.questions.status,#{faqdatabase}.questions.created_at,#{faqdatabase}.questions.updated_at"
     sql +=  " FROM #{faqdatabase}.questions, #{faqdatabase}.revisions"
-    sql +=  " WHERE #{faqdatabase}.questions.current = #{faqdatabase}.revisions.id"
+    sql +=  " WHERE #{faqdatabase}.questions.current_revision_id = #{faqdatabase}.revisions.id"
     if(!refreshall and !last_activitysource_at.nil?)
       compare_time_string = last_activitysource_at.strftime("%Y-%m-%d %H:%M:%S")
       sql +=  " AND #{faqdatabase}.questions.updated_at >= '#{compare_time_string}'"
