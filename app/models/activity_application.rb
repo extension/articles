@@ -57,8 +57,6 @@ class ActivityApplication < ActiveRecord::Base
         datatypes = ['eventitems']
       when 'aae'
         datatypes = ['submittedquestions']
-      when 'justcode'
-        datatypes = ['changesets']
       else
         return false
       end
@@ -110,8 +108,6 @@ class ActivityApplication < ActiveRecord::Base
         datatypes = ['edit']
       when 'aae'
         datatypes = ['submission','activity']
-      when 'justcode'
-        datatypes = ['changeset']
       else
         return returninformation
       end
