@@ -58,15 +58,6 @@ module DataImportActivityObject
         else
           return false
         end
-      when 'justcode'
-        case datatype
-        when 'changesets'
-          # this needs a special case because there's no "updated_at" column
-          timestampsql = self.justcode_changesets_timestamp_sql(activityapplication.activitysource)
-          retrievesql = self.justcode_changsets_sql(activityapplication,last_activitysource_at,refreshall)
-        else
-          return false
-        end
       else
         # do nothing
         return false
@@ -246,7 +237,7 @@ module DataImportActivityObject
     sql += "CAST((SUBSTRING(#{faqdatabase}.revisions.question_text,1,255)) AS BINARY),CAST(#{faqdatabase}.revisions.question_text AS BINARY),"
     sql += "#{faqdatabase}.questions.status,#{faqdatabase}.questions.created_at,#{faqdatabase}.questions.updated_at"
     sql +=  " FROM #{faqdatabase}.questions, #{faqdatabase}.revisions"
-    sql +=  " WHERE #{faqdatabase}.questions.current = #{faqdatabase}.revisions.id"
+    sql +=  " WHERE #{faqdatabase}.questions.current_revision_id = #{faqdatabase}.revisions.id"
     if(!refreshall and !last_activitysource_at.nil?)
       compare_time_string = last_activitysource_at.strftime("%Y-%m-%d %H:%M:%S")
       sql +=  " AND #{faqdatabase}.questions.updated_at >= '#{compare_time_string}'"
@@ -258,30 +249,4 @@ module DataImportActivityObject
     return sql
   end
 
-  def justcode_changesets_timestamp_sql(activitydatabase)
-    timestampsql = "SELECT MAX(#{activitydatabase}.changesets.committed_on) as last_updated_time FROM #{activitydatabase}.changesets"
-    return timestampsql
-  end
-
-  def justcode_changsets_sql(activityapplication,last_activitysource_at=nil,refreshall=false)
-    mydatabase = self.connection.instance_variable_get("@config")[:database]
-    activitydatabase = activityapplication.activitysource
-        
-    sql = "INSERT INTO #{mydatabase}.activity_objects (activity_application_id,entrytype,namespace,foreignid,displaytitle,fulltitle,status,created_at,updated_at)"
-    sql +=  " SELECT #{activityapplication.id}, #{ActivityObject::JUSTCODE_CHANGESET},#{activitydatabase}.projects.id,#{activitydatabase}.changesets.revision,"
-    sql += "CAST((SUBSTRING(CONCAT(#{activitydatabase}.projects.name,' - Revision ',#{activitydatabase}.changesets.revision,': ',#{activitydatabase}.changesets.comments),1,255)) AS BINARY),"
-    sql += "CAST(#{activitydatabase}.changesets.comments AS BINARY),"
-    sql += "'active',"
-    sql += "#{activitydatabase}.changesets.committed_on,#{activitydatabase}.changesets.committed_on"
-    sql +=  " FROM #{activitydatabase}.changesets,#{activitydatabase}.repositories,#{activitydatabase}.projects"
-    sql +=  " WHERE #{activitydatabase}.changesets.repository_id = #{activitydatabase}.repositories.id"
-    sql +=  " AND #{activitydatabase}.repositories.project_id = #{activitydatabase}.projects.id"
-    if(!refreshall and !last_activitysource_at.nil?)
-      compare_time_string = last_activitysource_at.strftime("%Y-%m-%d %H:%M:%S")
-      sql +=  " AND #{activitydatabase}.changesets.committed_on >= '#{compare_time_string}'"
-    end
-    sql +=  " ON DUPLICATE KEY UPDATE #{mydatabase}.activity_objects.updated_at = #{activitydatabase}.changesets.committed_on"
-  
-    return sql
-  end
 end

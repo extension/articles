@@ -27,8 +27,7 @@ class ActivityObject < ActiveRecord::Base
   COLLABWIKI_PAGE = 6
   DOCSWIKI_PAGE = 7
   SYSWIKI_PAGE = 8
-  JUSTCODE_CHANGESET = 9
-  JUSTCODE_ISSUE = 10
+  # 9 and 10 were JUSTCODE related, and removed
   LISTPOST = 11
   
   WIKITYPES = [ABOUTWIKI_PAGE,COPWIKI_PAGE,COLLABWIKI_PAGE,DOCSWIKI_PAGE,SYSWIKI_PAGE]
@@ -44,8 +43,6 @@ class ActivityObject < ActiveRecord::Base
     COLLABWIKI_PAGE => 'collabwiki_page',
     DOCSWIKI_PAGE => 'docswiki_page',
     SYSWIKI_PAGE => 'syswiki_page',
-    JUSTCODE_CHANGESET => 'justcode_changeset',
-    JUSTCODE_ISSUE => 'justcode_issue'
   }
   
   named_scope :published, {:conditions => {:status => 'published'}}
