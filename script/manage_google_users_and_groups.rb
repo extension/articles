@@ -46,7 +46,7 @@ if(@refreshall)
     google_group.update_apps_group_members # will create/update group as well
   end
 else
-  needs_update_list = GoogleAccount.needs_apps_update
+  needs_update_list = GoogleAccount.needs_apps_update.all(:order => 'updated_at DESC')
   needs_update_list.each do |google_account|
     puts "Updating Google apps account for #{google_account.username}..."
     google_account.update_apps_account

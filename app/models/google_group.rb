@@ -8,7 +8,7 @@ require 'gappsprovisioning/provisioningapi'
 include GAppsProvisioning
 
 class GoogleGroup < ActiveRecord::Base
-  cattr_accessor :apps_connection
+  attr_accessor :apps_connection
   serialize :last_error
   
   belongs_to :community
@@ -28,7 +28,7 @@ class GoogleGroup < ActiveRecord::Base
   end
   
   def update_apps_group
-    self.class.establish_apps_connection
+    self.establish_apps_connection
     
     # check for a group - a little different than the google
     # account check - there's no single group retrieval, so
@@ -37,7 +37,7 @@ class GoogleGroup < ActiveRecord::Base
     # create the group if it didn't exist
     if(self.apps_updated_at.blank?)
       begin
-        google_group = self.class.apps_connection.create_group(self.group_id,[self.group_name,self.group_name,self.email_permission])
+        google_group = self.apps_connection.create_group(self.group_id,[self.group_name,self.group_name,self.email_permission])
       rescue GDataError => e
         self.update_attributes({:has_error => true, :last_error => e})
         return nil
@@ -45,7 +45,7 @@ class GoogleGroup < ActiveRecord::Base
     else    
       # update the group
       begin
-        google_group = self.class.apps_connection.update_group(self.group_id,[self.group_name,self.group_name,self.email_permission])
+        google_group = self.apps_connection.update_group(self.group_id,[self.group_name,self.group_name,self.email_permission])
 
       rescue GDataError => e
         self.update_attributes({:has_error => true, :last_error => e})
@@ -66,7 +66,7 @@ class GoogleGroup < ActiveRecord::Base
     else
       # get the members @google
       begin
-        apps_group_members = self.class.apps_connection.retrieve_all_members(self.group_id).map(&:member_id)
+        apps_group_members = self.apps_connection.retrieve_all_members(self.group_id).map(&:member_id)
       rescue GDataError => e
         self.update_attributes({:has_error => true, :last_error => e})
         return nil
@@ -81,11 +81,11 @@ class GoogleGroup < ActiveRecord::Base
       # add the adds/remove the removes
       begin
         adds.each do |member_id|
-          member = self.class.apps_connection.add_member_to_group(member_id, self.group_id)
+          member = self.apps_connection.add_member_to_group(member_id, self.group_id)
         end
         
         removes.each do |member_id|
-          member = self.class.apps_connection.remove_member_from_group(member_id, self.group_id)
+          member = self.apps_connection.remove_member_from_group(member_id, self.group_id)
         end
       rescue
         self.update_attributes({:has_error => true, :last_error => e})
@@ -98,15 +98,15 @@ class GoogleGroup < ActiveRecord::Base
       
     
   
-  def self.establish_apps_connection(force_reconnect = false)
+  def establish_apps_connection(force_reconnect = false)
     if(self.apps_connection.nil? or force_reconnect)
       self.apps_connection = ProvisioningApi.new(AppConfig.configtable['googleapps_account'],AppConfig.configtable['googleapps_secret'])
     end
   end
   
   def self.retrieve_all_groups
-    self.establish_apps_connection
-    self.apps_connection.retrieve_all_groups
+    class_apps_connection = ProvisioningApi.new(AppConfig.configtable['googleapps_account'],AppConfig.configtable['googleapps_secret'])
+    class_apps_connection.retrieve_all_groups
   end
     
 end
