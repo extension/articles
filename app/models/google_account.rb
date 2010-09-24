@@ -8,7 +8,7 @@ require 'gappsprovisioning/provisioningapi'
 include GAppsProvisioning
 
 class GoogleAccount < ActiveRecord::Base
-  cattr_accessor :apps_connection
+  attr_accessor :apps_connection
   serialize :last_error
   
   belongs_to :user
@@ -17,7 +17,7 @@ class GoogleAccount < ActiveRecord::Base
 
   GDATA_ERROR_ENTRYDOESNOTEXIST = 1301
 
-  named_scope :needs_apps_update, {:conditions => "updated_at > apps_updated_at and has_error = 0"}
+  named_scope :needs_apps_update, {:conditions => "(apps_updated_at IS NULL or updated_at > apps_updated_at) and has_error = 0"}
 
 
   def set_values_from_user
@@ -33,11 +33,11 @@ class GoogleAccount < ActiveRecord::Base
   end
   
   def update_apps_account
-    self.class.establish_apps_connection
+    self.establish_apps_connection
     
     # check for an account
     begin
-      google_account = self.class.apps_connection.retrieve_user(self.username)
+      google_account = self.apps_connection.retrieve_user(self.username)
     rescue GDataError => e
       if(e.code.to_i != GDATA_ERROR_ENTRYDOESNOTEXIST)
         self.update_attributes({:has_error => true, :last_error => e})
@@ -48,7 +48,7 @@ class GoogleAccount < ActiveRecord::Base
     # create the account if it didn't exist
     if(!google_account)
       begin
-        google_account = self.class.apps_connection.create_user(self.username,self.given_name,self.family_name,self.password,"SHA-1")
+        google_account = self.apps_connection.create_user(self.username,self.given_name,self.family_name,self.password,"SHA-1")
       rescue GDataError => e
         self.update_attributes({:has_error => true, :last_error => e})
         return nil
@@ -58,7 +58,7 @@ class GoogleAccount < ActiveRecord::Base
     
     # update the account
     begin
-      google_account = self.class.apps_connection.update_user(self.username,
+      google_account = self.apps_connection.update_user(self.username,
                                                               self.given_name,
                                                               self.family_name,
                                                               self.password,"SHA-1",
@@ -75,15 +75,15 @@ class GoogleAccount < ActiveRecord::Base
     return google_account
   end
   
-  def self.establish_apps_connection(force_reconnect = false)
+  def establish_apps_connection(force_reconnect = false)
     if(self.apps_connection.nil? or force_reconnect)
       self.apps_connection = ProvisioningApi.new(AppConfig.configtable['googleapps_account'],AppConfig.configtable['googleapps_secret'])
     end
   end
   
   def self.retrieve_all_users
-    self.establish_apps_connection
-    self.apps_connection.retrieve_all_users
+    class_apps_connection = ProvisioningApi.new(AppConfig.configtable['googleapps_account'],AppConfig.configtable['googleapps_secret'])
+    class_apps_connection.retrieve_all_users
   end
     
 end
