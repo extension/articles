@@ -108,5 +108,51 @@ class ParamsFilter
       end
     end
   end
+  
+  
+  # outputs a string of filter settings
+  # TODO: refactor
+  # TODO: facilitate item linking, perhaps
+  # This is a backwards compatibility function to the old fiter_params model
+  def filter_string(options={})
+    returnarray = []
+    show_community_connection_type = options[:show_community_connection_type].nil? ? true :  options[:show_community_connection_type]
+    show_community = options[:show_community].nil? ? true :  options[:show_community_connection_type]
+    
+    
+    @filtered_parameters.keys.each do |param|
+      if(show_community and @filtered_parameters[param].class == 'Community')
+        returnarray << "#{param.to_s}: #{@filtered_parameters[param].name}"
+      elsif(show_community_connection_type and param.to_s == 'connectiontype' or param.to_s == 'communitytype')
+        if(param.to_s == 'connectiontype')
+          returnarray << "community connection: #{@filtered_parameters[param].unfiltered}"
+        end
+        
+        if(param.to_s == 'communitytype')
+          returnarray << "community type: #{@filtered_parameters[param].unfiltered}"
+        end
+      else
+        if(param.to_s != 'connectiontype' and param.to_s != 'communitytype' and @filtered_parameters[param].class != 'Community')
+          returnarray << "#{param.to_s}: #{@filtered_parameters[param].unfiltered}"
+        end
+      end
+        
+    end
+
+    if(!returnarray.blank?)      
+      return "Filtered by: #{returnarray.sort.join(' | ')}"
+    else
+      return ''
+    end
+  end
+  
+  # this is a compatibility function to have the @findoptions = check_for_filters continue to work
+  def findoptions
+    findoptions = {}
+    @filtered_parameters.keys.each do |param|
+      findoptions[param] = @filtered_parameters[param].unfiltered
+    end
+    return findoptions
+  end
 
 end
