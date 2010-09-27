@@ -478,7 +478,7 @@ class People::CommunitiesController < ApplicationController
     end
     if (params[:searchterm] and params[:searchterm].strip != "" and params[:searchterm].strip.length >= 3 )
       @searchterm = params[:searchterm]
-      @userlist = User.validusers.patternsearch(params[:searchterm]).all({:order => 'last_name,first_name', :limit => 11})
+      @userlist = User.notsystem.validusers.patternsearch(params[:searchterm]).all({:order => 'last_name,first_name', :limit => 11})
     end    
     
     respond_to do |format|
@@ -496,7 +496,7 @@ class People::CommunitiesController < ApplicationController
   
     if (params[:searchterm] and params[:searchterm].strip != "" and params[:searchterm].strip.length >= 3 )
       @searchterm = params[:searchterm]
-      @userlist = User.validusers.patternsearch(params[:searchterm]).all({:order => 'last_name,first_name', :limit => 11})      
+      @userlist = User.notsystem.validusers.patternsearch(params[:searchterm]).all({:order => 'last_name,first_name', :limit => 11})      
     end   
 
     respond_to do |format|

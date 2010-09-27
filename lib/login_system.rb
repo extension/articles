@@ -13,6 +13,8 @@ module LoginSystem
       return false
     elsif checkuser.retired?
       return false
+    elsif AppConfig.configtable['reserved_uids'].include?(checkuser.id)
+      return false
     else
       return true
     end

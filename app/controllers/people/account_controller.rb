@@ -204,6 +204,8 @@ class People::AccountController < ApplicationController
       
       if nil == @requestuser
          flash.now[:warning] = 'User not found.'
+      elsif(AppConfig.configtable['reserved_uids'].include?(@requestuser.id))
+         flash.now[:warning] = 'Unable to reset the password for this user.'
       else
          @requestuser.send_resetpass_confirmation
          @sentmail = true
