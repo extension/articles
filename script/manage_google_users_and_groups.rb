@@ -4,17 +4,21 @@ require 'getoptlong'
 ### Program Options
 progopts = GetoptLong.new(
   [ "--environment","-e", GetoptLong::OPTIONAL_ARGUMENT ],
-  [ "--refreshall","-r", GetoptLong::NO_ARGUMENT ]
+  [ "--groupsonly","-g", GetoptLong::NO_ARGUMENT ],
+  [ "--startdate","-d", GetoptLong::OPTIONAL_ARGUMENT ]
 )
 
+@start_date = '2010-09-25'
 @environment = 'production'
-@refreshall = false
+@groupsonly = false
 progopts.each do |option, arg|
   case option
     when '--environment'
       @environment = arg
-    when '--refreshall'
-      @refreshall = true
+    when '--groupsonly'
+      @groupsonly = true
+    when '--startdate'
+      @start_date = arg
     else
       puts "Unrecognized option #{opt}"
       exit 0
@@ -28,35 +32,34 @@ end
 
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-
-# process all accounts?
-if(@refreshall)
-  @userlist = User.all(:include => :google_account, :order => 'updated_at DESC')
-  @userlist.each do |u|
-    if(!u.google_account.blank?)
-      puts "Updating Google apps account for #{u.login}..."
-      u.google_account.update_apps_account
-    end
-  end
-  
-  # groups
-  groups_list = GoogleGroup.all
-  groups_list.each do |google_group|
-    puts "Updating Google groups information for #{google_group.group_id}..."
-    google_group.update_apps_group_members # will create/update group as well
-  end
-else
-  needs_update_list = GoogleAccount.needs_apps_update.all(:order => 'updated_at DESC')
+def update_apps_users
+  # updated accounts
+  needs_update_list = GoogleAccount.needs_apps_update.no_apps_error.all(:order => 'updated_at DESC')
   needs_update_list.each do |google_account|
     puts "Updating Google apps account for #{google_account.username}..."
-    google_account.update_apps_account
+    #google_account.update_apps_account
   end
   
-  # groups
-  groups_list = GoogleGroup.needs_apps_update
-  groups_list.each do |google_group|
-    puts "Updating Google groups information for #{google_group.group_id}..."
-    google_group.update_apps_group_members  # will create/update group as well
+  # new accounts
+  needs_update_list = GoogleAccount.null_apps_update.no_apps_error.all(:conditions => "DATE(created_at) > '#{@start_date}'", :order => 'updated_at DESC')
+  needs_update_list.each do |google_account|
+    puts "Creating Google apps account for #{google_account.username}..."
+    #google_account.update_apps_account
   end
 end
+
+def update_apps_groups
+  groups_list = GoogleGroup.needs_apps_update.no_apps_error
+  groups_list.each do |google_group|
+    puts "Creating/Updating Google groups information for #{google_group.group_id}..."
+    #google_group.update_apps_group_members  # will create/update group as well
+  end
+end
+ 
+
+# process all accounts?
+if(!@groupsonly)
+  update_apps_users
+end
+update_apps_groups
 
