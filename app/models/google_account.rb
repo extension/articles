@@ -17,7 +17,9 @@ class GoogleAccount < ActiveRecord::Base
 
   GDATA_ERROR_ENTRYDOESNOTEXIST = 1301
 
-  named_scope :needs_apps_update, {:conditions => "(apps_updated_at IS NULL or updated_at > apps_updated_at) and has_error = 0"}
+  named_scope :needs_apps_update, {:conditions => "updated_at > apps_updated_at"}
+  named_scope :no_apps_error, {:conditions => "has_error = 0"}
+  named_scope :null_apps_update, {:conditions => "apps_updated_at IS NULL"}
 
 
   def set_values_from_user
@@ -85,5 +87,8 @@ class GoogleAccount < ActiveRecord::Base
     class_apps_connection = ProvisioningApi.new(AppConfig.configtable['googleapps_account'],AppConfig.configtable['googleapps_secret'])
     class_apps_connection.retrieve_all_users
   end
-    
+  
+  def self.clear_errors
+    self.update_all("has_error = 0, last_error = ''","has_error = 1")
+  end
 end
