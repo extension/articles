@@ -112,7 +112,7 @@ class People::NumbersController < ApplicationController
   
 
   def communities
-    @filteredparams = FilterParams.new(params)
+    @filteredparams = ParamsFilter.new([:communitytype, :connectiontype, :dateinterval],params)
     @findoptions = @filteredparams.findoptions
     @filterstring = @filteredparams.filter_string
     

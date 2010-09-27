@@ -669,7 +669,7 @@ class Community < ActiveRecord::Base
     
   def self.communitytype_condition(communitytype)
     if(communitytype.nil?)
-      return "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
+      return "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED},#{Community::INSTITUTION})"
     end
     
     case communitytype
@@ -677,8 +677,10 @@ class Community < ActiveRecord::Base
       returncondition = "communities.entrytype = #{Community::APPROVED}"
     when 'usercontributed'
       returncondition = "communities.entrytype = #{Community::USERCONTRIBUTED}"
+    when 'institution'
+      returncondition = "communities.entrytype = #{Community::INSTITUTION}"
     else
-      returncondition = "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
+      returncondition = "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED},#{Community::INSTITUTION})"
     end
     
     return returncondition      
