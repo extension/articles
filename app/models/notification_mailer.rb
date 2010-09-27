@@ -490,8 +490,8 @@ class NotificationMailer < ActionMailer::Base
      
        
      submitted_questions_list = SubmittedQuestion.escalated(sincehours).filtered({:category => category}).ordered('submitted_questions.last_opened_at asc')
-     escalation_users_for_category = User.validusers.escalators_by_category(category)
-     if(escalation_emails = User.validusers.escalators_by_category(category))
+     escalation_users_for_category = User.notsystem.validusers.escalators_by_category(category)
+     if(escalation_emails = User.notsystem.validusers.escalators_by_category(category))
        @recipients = escalation_users_for_category.map(&:email).join(',')
      else
        # TODO: should this be the extension leadership? question wranglers?

@@ -116,7 +116,7 @@ class People::ColleaguesController < ApplicationController
   end
 
   def tagcloud
-    @tagcloud = User.validusers.tag_frequency(:order => 'name')
+    @tagcloud = User.notsystem.validusers.tag_frequency(:order => 'name')
     @all_peer_popular_tags = User.top_tags(25)
   end
   
@@ -158,11 +158,11 @@ class People::ColleaguesController < ApplicationController
     @backto = {:label => "back to Interests List", :url => url_for(:controller => '/people/colleagues', :action => :tagcloud)}
 
     if(!params[:downloadreport].nil? and params[:downloadreport] == 'csv')
-      reportusers = User.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name'})
+      reportusers = User.notsystem.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name'})
       csvfilename =  @page_title.tr(' ','_').gsub('\W','').downcase
       return csvuserlist(reportusers,csvfilename, @page_title)
     else
-      @userlist =  User.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name', :paginate => true, :page => params[:page]})
+      @userlist =  User.notsystem.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name', :paginate => true, :page => params[:page]})
       if((@userlist.length) > 0)
         @csvreporturl = url_for(:controller => '/people/colleagues', :action => :tags, :taglist => taglist, :match => match, :downloadreport => 'csv')
       end
@@ -229,7 +229,7 @@ class People::ColleaguesController < ApplicationController
   def finduser
     if (!params[:searchterm].nil? and !params[:searchterm].empty?)
     
-      @userlist = User.validusers.patternsearch(params[:searchterm]).paginate({:order => 'last_name,first_name', :page => params[:page]})
+      @userlist = User.notsystem.validusers.patternsearch(params[:searchterm]).paginate({:order => 'last_name,first_name', :page => params[:page]})
       
       if @userlist.nil? || @userlist.length == 0
         flash.now[:warning] = "<p>No colleague was found that matches your search term.</p> <p>Your colleague may not yet have an eXtensionID. <a href='#{url_for(:controller => '/people/colleagues', :action => :invite)}'>Invite your colleague to get an eXtensionID</a></p>"

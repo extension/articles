@@ -156,6 +156,7 @@ class User < ActiveRecord::Base
   
   # scopers
   named_scope :validusers, :conditions => {:retired => false,:vouched => true}
+  named_scope :notsystem, :conditions => ["id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')})"]
   named_scope :unconfirmedemail, :conditions => ["emailconfirmed = ? AND account_status != ?",false,User::STATUS_SIGNUP]
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}
@@ -414,18 +415,21 @@ class User < ActiveRecord::Base
     
   
   def update_chataccount
-   # remove chat account if retired
-   if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
-    if(!self.chat_account.nil?)
-      self.chat_account.destroy
+    if(!AppConfig.configtable['reserved_uids'].include?(self.id))
+      # remove chat account if retired
+      if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
+        if(!self.chat_account.nil?)
+          self.chat_account.destroy
+        end
+      else
+        if(self.chat_account.nil?)
+          self.create_chat_account
+        else
+          self.chat_account.save
+        end
+      end
     end
-   else
-    if(self.chat_account.nil?)
-      self.create_chat_account
-    else
-      self.chat_account.save
-    end
-   end
+    return true
   end
   
   def update_google_account
@@ -443,6 +447,7 @@ class User < ActiveRecord::Base
       self.create_google_account
     end
    end
+   return true
   end
   
   def update_email_aliases
@@ -1511,7 +1516,7 @@ class User < ActiveRecord::Base
     end
     
     if(valid_only)
-      return User.validusers.send("find_by_#{checkfield}",value)
+      return User.notsystem.validusers.send("find_by_#{checkfield}",value)
     else
       return User.send("find_by_#{checkfield}",value)
     end
@@ -1682,7 +1687,7 @@ class User < ActiveRecord::Base
        sql_offset = nil   
      end
        
-     return User.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "users.is_question_wrangler DESC, users.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
+     return User.notsystem.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "users.is_question_wrangler DESC, users.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
    end
 
    def get_expertise
