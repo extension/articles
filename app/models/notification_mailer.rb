@@ -527,7 +527,7 @@ class NotificationMailer < ActionMailer::Base
    def deployment(deployinfo,scmoutput)
       # base parameters for the email
       self.base_email('deploy')
-      @recipients     = 'dev-deploys@lists.extension.org'
+      @recipients     = 'dev-commits@extension.org'
       #override
       @bcc = nil
       @subject        = @subjectlabel+'Darmok deployment notification'
