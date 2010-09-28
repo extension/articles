@@ -376,6 +376,7 @@ h3.instructions {color: #829500; font-weight:normal;}
 .calloutbox {font-size:1.2em; padding:1.2em; margin:0 0 1.5em; border: 1px solid #ccc; background:#fffff2;}
 .calloutbox p {font-size:1.2em !important;padding: 0; margin: 0 0 .9em;}
 .calloutbox h2 {font-size:1.7em !important;padding: 0; margin: 0 0 .9em; margin-top:0 !important;}
+.calloutbox li {font-size:1.2em !important;padding: 0; margin: 0 0 .9em; margin-top:0 !important;}
 
 /* Template:multipage */
 .multipage {background: #fff0bb; padding:0 1em;margin:0;}
