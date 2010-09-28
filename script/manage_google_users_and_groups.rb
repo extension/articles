@@ -49,7 +49,15 @@ def update_apps_users
 end
 
 def update_apps_groups
+  # updated groups
   groups_list = GoogleGroup.needs_apps_update.no_apps_error
+  groups_list.each do |google_group|
+    puts "Creating/Updating Google groups information for #{google_group.group_id}..."
+    google_group.update_apps_group_members  # will create/update group as well
+  end
+  
+  # new groups
+  groups_list = GoogleGroup.null_apps_update.no_apps_error
   groups_list.each do |google_group|
     puts "Creating/Updating Google groups information for #{google_group.group_id}..."
     google_group.update_apps_group_members  # will create/update group as well
