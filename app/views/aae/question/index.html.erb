@@ -91,7 +91,7 @@
           </div>
 
             <p>Response by  
-    	    <% if response.user_id == User.systemuserid %>
+    	    <% if response.resolver_id == User.systemuserid %>
     	    System
     	    <% else %>
     	    <%= link_to response.resolver.fullname, aae_profile_url(:id => response.resolver.login), :class => "profile" %>

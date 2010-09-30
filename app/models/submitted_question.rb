@@ -220,7 +220,7 @@ def all_public_responses
 end
 
 def all_expert_responses
-  self.responses.find(:all, :conditions => "user_id IS NOT NULL").collect{|r| r.response}.join('  (**response divider**)  ')
+  self.responses.find(:all, :conditions => "resolver_id IS NOT NULL").collect{|r| r.response}.join('  (**response divider**)  ')
 end
 
 
