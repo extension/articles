@@ -1423,29 +1423,7 @@ class User < Account
     20
    end
    
-  
-   # used for parameter searching
-   def self.find_by_email_or_extensionid_or_id(value,valid_only = true)
-     #TODO - there possibly may be an issue here with the conditional
-    if(value.to_i != 0)
-      # assume id value
-      checkfield = 'id'
-    elsif (value =~ /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/ )
-      checkfield = 'email'
-    elsif (value =~ /^[a-zA-Z]+[a-zA-Z0-9]+$/) 
-      # looks like a valid extensionid 
-      checkfield = 'login'
-    else
-      return nil
-    end
-    
-    if(valid_only)
-      return User.notsystem.validusers.send("find_by_#{checkfield}",value)
-    else
-      return User.send("find_by_#{checkfield}",value)
-    end
-   end
-         
+       
    def self.institutioncount
     # returns an orderedhash {institutionobj => count}
     validusers.count(:group => :institution, :conditions => ['institution_id >=1'])    

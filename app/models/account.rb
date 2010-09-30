@@ -27,7 +27,7 @@ class Account < ActiveRecord::Base
   validates_presence_of :first_name, :last_name, :email, :login
   validates_presence_of :password_confirmation, :on => :create
   
-  has_many :submitted_questions
+  has_many :submitted_questions, :foreign_key => 'submitter_id'
   
   
   # override email write
@@ -101,6 +101,28 @@ class Account < ActiveRecord::Base
   
   def self.expire_passwords
    # TODO: en masse password update using SQL
+  end
+  
+  # used for parameter searching
+  def self.find_by_email_or_extensionid_or_id(value,valid_only = true)
+    #TODO - there possibly may be an issue here with the conditional
+   if(value.to_i != 0)
+     # assume id value
+     checkfield = 'id'
+   elsif (value =~ /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/ )
+     checkfield = 'email'
+   elsif (value =~ /^[a-zA-Z]+[a-zA-Z0-9]+$/) 
+     # looks like a valid extensionid 
+     checkfield = 'login'
+   else
+     return nil
+   end
+   
+   if(valid_only)
+     return User.notsystem.validusers.send("find_by_#{checkfield}",value)
+   else
+     return Account.send("find_by_#{checkfield}",value)
+   end
   end
   
   protected

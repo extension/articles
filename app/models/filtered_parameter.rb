@@ -24,6 +24,7 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:position] = :position
   RECOGNIZED_PARAMETERS[:institution] = :institution
   RECOGNIZED_PARAMETERS[:person] = :user  # todo: change to method to recognize aliases
+  RECOGNIZED_PARAMETERS[:account] = :account  
   RECOGNIZED_PARAMETERS[:dateinterval] = :string 
   RECOGNIZED_PARAMETERS[:datefield] = :string 
   RECOGNIZED_PARAMETERS[:tz] = :string
@@ -166,6 +167,8 @@ class FilteredParameter
       Position.find_by_id(value)
     when :user        
       User.find_by_email_or_extensionid_or_id(value)
+    when :account        
+      Account.find_by_email_or_extensionid_or_id(value,false)
     when :category    
       Category.find_by_name_or_id(value)
     when :submitted_question
