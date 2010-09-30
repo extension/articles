@@ -75,6 +75,7 @@ ActionController::Routing::Routes.draw do |map|
      aae.connect 'question/escalation_report/:legacycategory', :controller => :question, :action => :escalation_report
      aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }     
      aae.connect 'question/:action/:id', :controller => :question
+     aae.submitterquestions 'questions/submitter/:account', :controller => :questions, :action => :submitter
      aae.connect 'help', :controller => :help
      aae.connect 'feeds/:action/:legacycategory', :controller => :feeds
      aae.home '/', :controller => :home, :action => :index     
