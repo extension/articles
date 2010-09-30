@@ -521,6 +521,10 @@ def self.filterconditions(options={})
     conditions << "#{self.table_name}.county_id = #{options[:county].id}"
   end
   
+  if(!options[:submitter_id].nil?)
+    conditions << "#{self.table_name}.submitter_id = #{options[:submitter_id]}"
+  end
+  
   if(!options[:source].nil?)    
     case options[:source]
     when 'pubsite'
