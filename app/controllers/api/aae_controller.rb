@@ -27,13 +27,20 @@ class Api::AaeController < ApplicationController
         widget = Widget.find_by_fingerprint(params[:widget_id].strip) if params[:widget_id]
         
         name_hash = {}
-        
         name_hash[:first_name] = params[:first_name].strip if !params[:first_name].blank?
         name_hash[:last_name] = params[:last_name].strip if !params[:last_name].blank?
+        email = params[:email].strip
         
-        @public_user = PublicUser.find_and_update_or_create_by_email({:email => params[:email].strip}.merge(name_hash))
-        @submitted_question = SubmittedQuestion.new(:asked_question => params[:question].strip, :submitter_email => params[:email].strip)
-        @submitted_question.public_user = @public_user
+        if(@submitter = Account.find_by_email(email))
+          if(@sumitter.first_name == 'Anonymous' or @submitter.last_name == 'Guest')
+            @submitter.update_attributes(name_hash)
+          end
+        else
+          @submitter = PublicUser.create({:email => params[:email].strip}.merge(name_hash))
+        end
+        
+        @submitted_question = SubmittedQuestion.new(:asked_question => params[:question].strip, :submitter_email => @submitter.email)
+        @submitted_question.submitter = @submitter
         @submitted_question.widget = widget if widget
         @submitted_question.widget_name = widget.name if widget
         @submitted_question.user_ip = request.remote_ip
@@ -69,8 +76,8 @@ class Api::AaeController < ApplicationController
         end
         ############### end of setting up question object ###############
         
-        if(!@submitted_question.valid? or !@public_user.valid?)
-          active_record_errors = (@submitted_question.errors.full_messages + @public_user.errors.full_messages ).join('<br />')
+        if(!@submitted_question.valid? or !@submitter.valid?)
+          active_record_errors = (@submitted_question.errors.full_messages + @submitter.errors.full_messages ).join('<br />')
           return send_json_error(active_record_errors, 403)
         end
         

@@ -138,6 +138,7 @@ class People::AccountController < ApplicationController
         @currentuser = result[:user]
         @currentuser.update_attribute(:last_login_at,Time.now.utc)
         session[:userid] = @currentuser.id
+        session[:account_id] = @currentuser.id
         flash.now[:success] = "Login successful."
         UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login')        
         log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_PASSWORD, :appname => 'local')

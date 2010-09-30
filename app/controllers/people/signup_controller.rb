@@ -136,6 +136,7 @@ class People::SignupController < ApplicationController
       # automatically log them in
       @currentuser = User.find_by_id(@user.id)
       session[:userid] = @currentuser.id
+      session[:account_id] = @currentuser.id
       signupdata = {}     
       if(@invitation)
         signupdata.merge!({:invitation => @invitation})

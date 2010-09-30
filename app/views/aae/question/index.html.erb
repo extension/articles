@@ -63,7 +63,7 @@
 <h3>Question Responses</h3>
 
 <% @submitted_question.responses.each do |response| %>
-    <% if is_public_responder(response) %>
+    <% if is_submitter(response) %>
         
         <div class="commentblock public">
           <div class="comment_wrapper">

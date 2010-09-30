@@ -2,7 +2,7 @@
 <h3>Responses:</h3>
   <% @submitted_question.responses.each do |response| %>
   
-    <div class="commentblock <%= is_public_responder(response) ? "public": "expert" %>" >
+    <div class="commentblock <%= is_submitter(response) ? "public": "expert" %>" >
         <p class="comment">
             <img src="/images/common/extension_icon.jpg" />
             <%= format_text_for_display(response.response) %>
