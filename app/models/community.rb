@@ -52,20 +52,20 @@ class Community < ActiveRecord::Base
   has_many :communityconnections, :dependent => :destroy
 
   has_many :users, :through => :communityconnections
-  has_many :validusers, :through => :communityconnections, :source => :user, :conditions => "users.retired = 0 and users.vouched = 1"
-  has_many :wantstojoin, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'wantstojoin' and users.retired = 0 and users.vouched = 1"
-  has_many :joined, :through => :communityconnections, :source => :user, :conditions => "(communityconnections.connectiontype = 'member' OR communityconnections.connectiontype = 'leader') and users.retired = 0 and users.vouched = 1"
-  has_many :members, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'member' and users.retired = 0 and users.vouched = 1"
-  has_many :leaders, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'leader' and users.retired = 0 and users.vouched = 1"
-  has_many :invited, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'invited' and users.retired = 0 and users.vouched = 1"
-  has_many :interest, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'interest' and users.retired = 0 and users.vouched = 1"
-  has_many :nointerest, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'nointerest' and users.retired = 0 and users.vouched = 1"
+  has_many :validusers, :through => :communityconnections, :source => :user, :conditions => "accounts.retired = 0 and accounts.vouched = 1"
+  has_many :wantstojoin, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'wantstojoin' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :joined, :through => :communityconnections, :source => :user, :conditions => "(communityconnections.connectiontype = 'member' OR communityconnections.connectiontype = 'leader') and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :members, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'member' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :leaders, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'leader' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :invited, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'invited' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :interest, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'interest' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :nointerest, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'nointerest' and accounts.retired = 0 and accounts.vouched = 1"
   
-  has_many :interested, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype IN ('interest','wantstojoin','leader') and users.retired = 0 and users.vouched = 1"
+  has_many :interested, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype IN ('interest','wantstojoin','leader') and accounts.retired = 0 and accounts.vouched = 1"
 
 
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
-  has_many :notifyleaders, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'leader' AND communityconnections.sendnotifications = 1 and users.retired = 0 and users.vouched = 1"
+  has_many :notifyleaders, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'leader' AND communityconnections.sendnotifications = 1 and accounts.retired = 0 and accounts.vouched = 1"
 
   has_many :activities
 

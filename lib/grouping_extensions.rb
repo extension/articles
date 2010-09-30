@@ -54,7 +54,7 @@ module GroupingExtensions
   end
   
   def userfilter_count(options={},returnarray = false)
-    countarray = self.filtered(options).count('users.id', :group => "#{table_name}.id")
+    countarray = self.filtered(options).count('accounts.id', :group => "#{table_name}.id")
     if(returnarray)
       return countarray
     else

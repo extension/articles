@@ -315,9 +315,9 @@ end
              end         
           when "ResolvedM"
                if !options[:county]
-                   conditions <<  " users.location_id=#{options[:location].id}"  
+                   conditions <<  " accounts.location_id=#{options[:location].id}"  
                else
-                   conditions << " users.county_id=#{county.id}"
+                   conditions << " accounts.county_id=#{county.id}"
                end
                conditions << " resolved_by > 0" 
                if cdstring.length > 0 ; conditions << cdstring; end
@@ -708,7 +708,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
       
      def self.resolved_or_assigned_count(options = {})
        # group by user id's or user objects?
-       group_clause = 'users.location_id'
+       group_clause = 'accounts.location_id'
        # default date interval is 3 months
        dateinterval = options[:dateinterval] || '3 MONTHS'
 #  the point of this is to try to get a count of how many questions have been dealt with by responders from each of several locations, mostly states
@@ -867,7 +867,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
       if(!dateinterval.nil?)
            conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
       end
-      conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " users.location_id=#{options[:location].id} " : " location_id=#{options[:location].id}")
+      conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " accounts.location_id=#{options[:location].id} " : " location_id=#{options[:location].id}")
       results << SubmittedQuestion.count(:all, :joins => ((options[:bywhat]== "member") ? [:resolved_by] : nil ), :conditions => conditions.compact.join(' AND ')) 
       
      statuses.each do |stat|
@@ -886,7 +886,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
        if(!dateinterval.nil?)
             conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
        end
-       conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " users.county_id=#{options[:county].id} " : " county_id=#{options[:county].id}")
+       conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " accounts.county_id=#{options[:county].id} " : " county_id=#{options[:county].id}")
        results << SubmittedQuestion.count(:all, :joins => ((options[:bywhat]== "member") ? [:resolved_by] : nil ), :conditions => conditions.compact.join(' AND '))      
        statuses.each do |stat|
           conditions.push " status_state=#{stat}"

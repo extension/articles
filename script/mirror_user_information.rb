@@ -34,18 +34,18 @@ def update_from_identity_users(connection,userinfodb,mydatabase)
   
   ActiveRecord::Base::logger.info "##################### Starting users data retrieval..."
   
-  identitysql = "SELECT users.id as userid, users.login as login,users.email as email,"
-  identitysql += "users.first_name as first_name,users.last_name as last_name,"
-  identitysql += "users.title as title,users.retired as retired,"
-  identitysql += "users.created_at as created_at, users.updated_at as updated_at,"
+  identitysql = "SELECT accounts.id as userid, accounts.login as login,accounts.email as email,"
+  identitysql += "accounts.first_name as first_name,accounts.last_name as last_name,"
+  identitysql += "accounts.title as title,accounts.retired as retired,"
+  identitysql += "accounts.created_at as created_at, accounts.updated_at as updated_at,"
   identitysql += "locations.abbreviation as state,counties.name as county"
-  identitysql += " FROM users"
-  identitysql += " LEFT JOIN locations ON users.location_id = locations.id"
-  identitysql += " LEFT JOIN counties ON users.county_id = counties.id"
-  identitysql += " WHERE (users.vouched = 1 OR users.retired = 1)"
-  identitysql += " AND users.emailconfirmed = 1"
+  identitysql += " FROM accounts"
+  identitysql += " LEFT JOIN locations ON accounts.location_id = locations.id"
+  identitysql += " LEFT JOIN counties ON accounts.county_id = counties.id"
+  identitysql += " WHERE (accounts.vouched = 1 OR accounts.retired = 1)"
+  identitysql += " AND accounts.emailconfirmed = 1"
   # keep peoplebot out of the data
-  identitysql += " AND users.id != 1"
+  identitysql += " AND accounts.id != 1"
   
   
   sql = "REPLACE INTO #{userinfodb}.users (id,login,email,first_name,last_name,title,retired,created_at,updated_at,state,county)"
