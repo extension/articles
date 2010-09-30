@@ -22,7 +22,7 @@ has_and_belongs_to_many :categories
 belongs_to :contributing_question, :class_name => "SearchQuestion", :foreign_key => "current_contributing_question"
 belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
 belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
-belongs_to :public_user
+belongs_to :submitter, :class_name => "Account", :foreign_key => "submitter_id"
 has_many :responses
 has_many :file_attachments
 
@@ -79,7 +79,7 @@ EXPERT_DISCLAIMER = "This message for informational purposes only. " +
 PUBLIC_RESPONSE_REASSIGNMENT_COMMENT = "This question has been reassigned to you because a new comment has been posted to your response. Please " +
 "reply using the link below or close the question out if no reply is needed. Thank You."
                     
-DEFAULT_SUBMITTER_NAME = "External Submitter"
+DEFAULT_SUBMITTER_NAME = "Anonymous Guest"
 
 DECLINE_ANSWER = "Thank you for your question for eXtension. The topic area in which you've made a request is not yet fully staffed by eXtension experts and therefore we cannot provide you with a timely answer. Instead, if you live in the United States, please consider contacting the Cooperative Extension office closest to you. Simply go to http://www.extension.org, drop in your zip code and choose the local office in your neighborhood. We apologize for this inconvenience but please come back to eXtension to check in as we grow and add experts."
 
@@ -211,7 +211,7 @@ end
 
 def all_public_responses
   pub_resp = self.asked_question
-  if additional_responses = self.responses.find(:all, :conditions => "public_user_id IS NOT NULL") and additional_responses.length > 0
+  if additional_responses = self.responses.find(:all, :conditions => "submitter_id IS NOT NULL") and additional_responses.length > 0
     pub_resp.concat('  (**response divider**)  ')
     pub_resp.concat(additional_responses.collect{|r| r.response}.join('  (**response divider**)  '))
   end
@@ -315,9 +315,9 @@ end
              end         
           when "ResolvedM"
                if !options[:county]
-                   conditions <<  " users.location_id=#{options[:location].id}"  
+                   conditions <<  " accounts.location_id=#{options[:location].id}"  
                else
-                   conditions << " users.county_id=#{county.id}"
+                   conditions << " accounts.county_id=#{county.id}"
                end
                conditions << " resolved_by > 0" 
                if cdstring.length > 0 ; conditions << cdstring; end
@@ -349,7 +349,7 @@ def clean_question_and_answer
 end
 
 def submitter_fullname
-  submitter_name = self.public_user.fullname if self.public_user
+  submitter_name = self.submitter.fullname if self.submitter
   if !submitter_name or submitter_name.strip == ''
     submitter_name = DEFAULT_SUBMITTER_NAME 
   end
@@ -708,7 +708,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
       
      def self.resolved_or_assigned_count(options = {})
        # group by user id's or user objects?
-       group_clause = 'users.location_id'
+       group_clause = 'accounts.location_id'
        # default date interval is 3 months
        dateinterval = options[:dateinterval] || '3 MONTHS'
 #  the point of this is to try to get a count of how many questions have been dealt with by responders from each of several locations, mostly states
@@ -867,7 +867,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
       if(!dateinterval.nil?)
            conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
       end
-      conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " users.location_id=#{options[:location].id} " : " location_id=#{options[:location].id}")
+      conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " accounts.location_id=#{options[:location].id} " : " location_id=#{options[:location].id}")
       results << SubmittedQuestion.count(:all, :joins => ((options[:bywhat]== "member") ? [:resolved_by] : nil ), :conditions => conditions.compact.join(' AND ')) 
       
      statuses.each do |stat|
@@ -886,7 +886,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
        if(!dateinterval.nil?)
             conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
        end
-       conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " users.county_id=#{options[:county].id} " : " county_id=#{options[:county].id}")
+       conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " accounts.county_id=#{options[:county].id} " : " county_id=#{options[:county].id}")
        results << SubmittedQuestion.count(:all, :joins => ((options[:bywhat]== "member") ? [:resolved_by] : nil ), :conditions => conditions.compact.join(' AND '))      
        statuses.each do |stat|
           conditions.push " status_state=#{stat}"

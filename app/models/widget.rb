@@ -8,8 +8,8 @@
 class Widget < ActiveRecord::Base
 
   has_many :user_roles
-  has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND users.retired = false AND users.aae_responder = true"
-  has_many :non_active_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND users.retired = false AND users.aae_responder = false"
+  has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = true"
+  has_many :non_active_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = false"
   has_many :submitted_questions
   has_many :widget_events
   belongs_to :user

@@ -526,28 +526,28 @@ class Activity < ActiveRecord::Base
     def count_signups(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
       Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
-        Activity.filtered(options.merge({:activity => 'signup'})).count(:all,:group => "users.id").size
+        Activity.filtered(options.merge({:activity => 'signup'})).count(:all,:group => "accounts.id").size
       end
     end
     
     def count_unique_logins(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
       Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
-        Activity.filtered(options.merge({:activity => 'login'})).count(:all,:group => "users.id").size
+        Activity.filtered(options.merge({:activity => 'login'})).count(:all,:group => "accounts.id").size
       end
     end   
     
     def count_active_users(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
       Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
-        Activity.filtered(options.merge({:activity => 'active'})).count(:all,:group => "users.id").size
+        Activity.filtered(options.merge({:activity => 'active'})).count(:all,:group => "accounts.id").size
       end
     end
     
     def count_unique_users(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
       Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
-        Activity.filtered(options).count(:all,:group => "users.id").size
+        Activity.filtered(options).count(:all,:group => "accounts.id").size
       end
     end    
     
@@ -561,7 +561,7 @@ class Activity < ActiveRecord::Base
     def count_unique_users_as_new_community_members(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
       Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
-        Activity.filtered(options.merge({:activity => 'joincommunity'})).count(:all,:group => "users.id").size
+        Activity.filtered(options.merge({:activity => 'joincommunity'})).count(:all,:group => "accounts.id").size
       end
     end
 

@@ -154,7 +154,7 @@ class Aae::SearchController < ApplicationController
   def get_answering_users(selected_users)
     user_ids = selected_users.map{|u| u.id}.join(',')
     answering_role = Role.find_by_name(Role::AUTO_ROUTE)
-    user_intersection = answering_role.users.find(:all, :select => "users.*", :conditions => "users.id IN (#{user_ids})")
+    user_intersection = answering_role.users.find(:all, :select => "accounts.*", :conditions => "accounts.id IN (#{user_ids})")
   end
   
   def setup_aae_search_params

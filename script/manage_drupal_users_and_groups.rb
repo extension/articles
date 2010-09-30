@@ -36,7 +36,7 @@ def update_from_darmok_users(connection,drupaldatabase,mydatabase)
   puts "starting user table replacement..."
   
   sql = "REPLACE INTO #{drupaldatabase}.users (uid,name,pass,mail,created,status)"
-  sql +=  " SELECT #{mydatabase}.users.id, #{mydatabase}.users.login,'#{passwordstring}', #{mydatabase}.users.email,UNIX_TIMESTAMP(#{mydatabase}.users.created_at),(NOT(#{mydatabase}.users.retired) AND (#{mydatabase}.users.vouched))"
+  sql +=  " SELECT #{mydatabase}.accounts.id, #{mydatabase}.accounts.login,'#{passwordstring}', #{mydatabase}.accounts.email,UNIX_TIMESTAMP(#{mydatabase}.accounts.created_at),(NOT(#{mydatabase}.accounts.retired) AND (#{mydatabase}.accounts.vouched))"
   sql +=  " FROM #{mydatabase}.users"
   
   # execute the sql

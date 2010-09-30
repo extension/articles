@@ -83,21 +83,7 @@ class People::SignupController < ApplicationController
       @locations = Location.displaylist
       return render(:action => "new")
     end
-    
-    # extensionid check
-    if(!params[:user][:login].blank?)
-      login = params[:user][:login]
-      if(u = User.find_by_login(login))
-        flash.now[:failure] = "That eXtensionID is already in use."
-        @locations = Location.displaylist
-        return render(:action => "new")
-      elsif(EmailAlias.mail_alias_in_use?(login))
-        flash.now[:failure] = "That eXtensionID is reserved."
-        @locations = Location.displaylist
-        return render(:action => "new")
-      end
-    end
-    
+        
     # STATUS_SIGNUP
     @user.account_status = User::STATUS_SIGNUP
     
@@ -136,6 +122,7 @@ class People::SignupController < ApplicationController
       # automatically log them in
       @currentuser = User.find_by_id(@user.id)
       session[:userid] = @currentuser.id
+      session[:account_id] = @currentuser.id
       signupdata = {}     
       if(@invitation)
         signupdata.merge!({:invitation => @invitation})

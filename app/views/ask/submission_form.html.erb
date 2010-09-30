@@ -55,32 +55,32 @@
 
   <p><em>Fields marked with an asterisk (<span style="color:red;">*</span>) are required</em></p>
   
-  <% fields_for :public_user, @public_user do |public_user| %>
+  <% fields_for :submitter, @submitter do |submitter| %>
   <fieldset>
       <p class="simplefield">
-          <%= public_user.label :first_name, 'First Name:' %>
-          <%= public_user.text_field :first_name %>
+          <%= submitter.label :first_name, 'First Name:' %>
+          <%= submitter.text_field :first_name %>
       </p>
 
   	  <br class="clearing" />
       
       <p class="simplefield">
-          <%= public_user.label :last_name, 'Last Name:' %>
-          <%= public_user.text_field :last_name %>
+          <%= submitter.label :last_name, 'Last Name:' %>
+          <%= submitter.text_field :last_name %>
       </p>
       
       <br class="clearing" />
       
       <p class="simplefield">
-          <%= public_user.label :email, 'Email:<em class="required">*</em>' %>
-          <%= public_user.text_field :email, { :type => "email", :autocapitalize => "off" } %>
+          <%= submitter.label :email, 'Email:<em class="required">*</em>' %>
+          <%= submitter.text_field :email, { :type => "email", :autocapitalize => "off" } %>
       </p>
       
       <br class="clearing" />
           
       <p class="simplefield">
-          <label for="public_email_confirmation">Email Confirmation:<em class="required">*</em></label>
-          <%= text_field_tag "public_email_confirmation", @public_email_confirmation.nil? ? @public_user.email : @public_email_confirmation, :type => "email",  :autocapitalize => "off" %>
+          <label for="submitter_email_confirmation">Email Confirmation:<em class="required">*</em></label>
+          <%= text_field_tag "submitter_email_confirmation", @submitter_email_confirmation.nil? ? @submitter.email : @submitter_email_confirmation, :type => "email",  :autocapitalize => "off" %>
       </p>
   </fieldset>
   

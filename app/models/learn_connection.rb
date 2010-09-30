@@ -8,7 +8,6 @@
 class LearnConnection < ActiveRecord::Base
   belongs_to :learn_session
   belongs_to :user
-  belongs_to :public_user  
   
   PRESENTER = 2
   INTERESTED = 3

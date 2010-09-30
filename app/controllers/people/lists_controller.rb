@@ -151,7 +151,7 @@ class People::ListsController < ApplicationController
     end
     
     if(@listtype != 'noidsubscribers')
-      findopts = {:order => 'users.last_name'}
+      findopts = {:order => 'accounts.last_name'}
     else
       findopts = {:order => 'email'}
     end
@@ -190,7 +190,7 @@ class People::ListsController < ApplicationController
     end
     
     if(@listtype != 'noidowners')
-      findopts = {:order => 'users.last_name'}
+      findopts = {:order => 'accounts.last_name'}
     else
       findopts = {:order => 'email'}
     end
