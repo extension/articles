@@ -8,6 +8,10 @@ class CombineUsers < ActiveRecord::Migration
     # set them all to user
     execute "UPDATE accounts SET type = 'User'"
     
+    # allow null passwords
+    execute "ALTER TABLE `prod_darmok`.`accounts` CHANGE COLUMN `password` `password` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;"
+    
+    
     # will be used to generate eXtensionID's later
     add_column(:accounts, :base_login_string, :string)
     add_column(:accounts, :login_increment, :integer)

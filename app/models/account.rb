@@ -25,7 +25,6 @@ class Account < ActiveRecord::Base
   validates_confirmation_of :password, :message => 'has to be the same in both fields. Please type both passwords again.'
   validates_length_of :password, :within => 6..40, :allow_blank => true
   validates_presence_of :first_name, :last_name, :email, :login
-  validates_presence_of :password_confirmation, :on => :create
   
   has_many :submitted_questions, :foreign_key => 'submitter_id'
   
@@ -131,7 +130,7 @@ class Account < ActiveRecord::Base
   end
    
   def set_encrypted_password
-   self.password = self.encrypt_password_string(self.password) if (!password.empty? && self.password_changed?)
+   self.password = self.encrypt_password_string(self.password) if (!self.password.blank? && self.password_changed?)
   end
   
   def set_login_string
@@ -143,7 +142,7 @@ class Account < ActiveRecord::Base
       end
     
       # get maximum increment
-      if(max = self.maximum(:login_increment,:conditions => "base_login_string = '#{self.base_login_string}'"))
+      if(max = self.class.maximum(:login_increment,:conditions => "base_login_string = '#{self.base_login_string}'"))
         self.login_increment = max + 1
       else
         self.login_increment = 1

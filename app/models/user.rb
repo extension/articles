@@ -126,6 +126,7 @@ class User < Account
   before_save :check_status, :generate_feedkey
   
   validates_length_of :phonenumber, :is => 10, :allow_blank => true
+  validates_presence_of :password_confirmation, :on => :create
   
   
   # scopers

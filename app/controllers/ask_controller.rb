@@ -60,12 +60,17 @@ class AskController < ApplicationController
       end
     # Question asker submits the question (ie. POST request)
     else
+      
+      name_hash = {}
+      name_hash[:first_name] = params[:submitter][:first_name].strip if !params[:submitter][:first_name].blank?
+      name_hash[:last_name] = params[:submitter][:last_name].strip if !params[:submitter][:last_name].blank?
+      
       if(@submitter = Account.find_by_email(params[:submitter][:email]))
         if(@sumitter.first_name == 'Anonymous' or @submitter.last_name == 'Guest')
           @submitter.update_attributes(name_hash)
         end
       else
-        @submitter = PublicUser.create({:email => params[:email].strip}.merge(name_hash))
+        @submitter = PublicUser.create({:email => params[:submitter][:email].strip}.merge(name_hash))
       end
       
       @submitted_question = SubmittedQuestion.new(params[:submitted_question])
@@ -91,7 +96,7 @@ class AskController < ApplicationController
 
       # error check for submitted question, file_attachment and public user records 
       
-      if params[:submitter][:email].strip != params[:submitter].strip
+      if params[:submitter][:email].strip != params[:submitter_email_confirmation].strip
         # create a new instance variable for submitter so the form can be repopulated if it doesn't already exist
         @submitter = PublicUser.new(params[:submitter]) if !@submitter
         @submitter_email_confirmation = params[:submitter_email_confirmation]
