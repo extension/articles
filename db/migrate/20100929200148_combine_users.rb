@@ -4,12 +4,12 @@ class CombineUsers < ActiveRecord::Migration
     execute "CREATE TABLE accounts LIKE users;"
     execute "INSERT accounts SELECT * FROM users;"
     # add type column
-    execute "ALTER TABLE `prod_darmok`.`accounts` ADD COLUMN `type` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''  AFTER `id`;"
+    execute "ALTER TABLE `accounts` ADD COLUMN `type` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''  AFTER `id`;"
     # set them all to user
     execute "UPDATE accounts SET type = 'User'"
     
     # allow null passwords
-    execute "ALTER TABLE `prod_darmok`.`accounts` CHANGE COLUMN `password` `password` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;"
+    execute "ALTER TABLE `accounts` CHANGE COLUMN `password` `password` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;"
     
     
     # will be used to generate eXtensionID's later
