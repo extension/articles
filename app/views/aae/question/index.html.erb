@@ -24,7 +24,7 @@
     <h2 class="inc_question"><span><%= format_text_for_display(@submitted_question.asked_question) %></span></h2>
     <br class="clear" />
     
-    <p class="inc_descriptive"><strong><%= link_to(@submitter_name, aae_submitterquestions_url(@submitted_question.submitter.id)) %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+    <p class="inc_descriptive"><strong><%= link_to(@submitter_name, aae_submitterquestions_url(@submitted_question.submitter.id), :title => "More questions from this person") %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
     
     <p class="inc_descriptive">Category: <strong><span id="category_names_<%= @submitted_question.id %>"><%= @submitted_question.category_names %></span></strong>
         <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
