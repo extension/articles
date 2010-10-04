@@ -20,8 +20,8 @@
 	</fieldset>
 	</div>
 	<%= render(:partial => 'profile_fields', :locals => {:user => @currentuser, :signup => false}) %>
-	<div class="form_section">
 	<%- if !@user.email_forward.blank? and @user.email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM -%>
+	<div class="form_section">
   <h3>Email Forwarding</h3>
   	<div id="emailforward">
     	<p>
