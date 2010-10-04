@@ -134,15 +134,26 @@ class ActivityApplication < ActiveRecord::Base
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
-  class << self
-    
-    def finduri(uri)
-       return find(:first, :conditions => ["trust_root_uri = ? or CONCAT(trust_root_uri,'/') = ?",uri,uri])
-    end
-    
-    def local
-      find(1)
-    end
-    
+  
+  def self.finduri(uri)
+     return find(:first, :conditions => ["trust_root_uri = ? or CONCAT(trust_root_uri,'/') = ?",uri,uri])
   end
+  
+  def self.local
+    find(1)
+  end
+    
+  def self.find_by_id_or_shortname(value)
+    #TODO - there possibly may be an issue here with the conditional
+   if(value.to_i != 0)
+     # assume id value
+     checkfield = 'id'
+   else
+     checkfield = 'shortname'
+   end
+
+   return self.send("find_by_#{checkfield}",value)
+  end
+    
+    
 end

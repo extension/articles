@@ -171,7 +171,7 @@ class FilteredParameter
     when :submitted_question
       SubmittedQuestion.find_by_id(value)
     when :activity_application 
-      ActivityApplication.find_by_id(value)
+      ActivityApplication.find_by_id_or_shortname(value)
     when :activity
       if(activitycodes = Activity.activity_to_codes(value))
         return value
