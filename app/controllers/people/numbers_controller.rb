@@ -133,7 +133,7 @@ class People::NumbersController < ApplicationController
                
     
     # count logins
-    filteroptions = baseoptions.merge({:activitycodes => Activity.activity_to_codes('login')})
+    filteroptions = {:dateinterval => @filteredparams.dateinterval, :activitycodes => Activity.activity_to_codes('login')}
     @logindata = Activity.filtered(filteroptions).count(:id,:group => 'user_id', :order => 'count_id DESC')
     # count edits
     filteroptions = baseoptions.merge({:activitycodes => Activity.activity_to_codes('edit')})

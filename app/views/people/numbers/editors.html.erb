@@ -8,7 +8,7 @@
 <%- totalitems = @objectdata.values.sum -%>
 <table class="general" cellspacing="0">
     <tr>
-        <td>Readers (logins)</td>
+        <td>Potential Readers(*)<br/>(<em> * for all extension.org applications, logins to individual applications are not accurately tracked</em>)</td>
         <td class="bignumber"><%= number_with_delimiter(@logindata.size) %></td>
     </tr>
     <tr>
