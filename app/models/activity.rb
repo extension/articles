@@ -322,7 +322,7 @@ class Activity < ActiveRecord::Base
       return conditions
     end
     
-    def useractivity_filter(options={})
+    def useractivity_filter(options={})    
       joins = [:user]
       
       conditions = []

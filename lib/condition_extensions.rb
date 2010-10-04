@@ -41,7 +41,7 @@ module ConditionExtensions
   end
   
 
-  def build_date_condition(options={})
+  def build_date_condition(options={})    
     # TODO:  other date shortcuts like "thisweek", etc.  
     datefield = options[:datefield] || AppConfig.configtable['default_datefield']
     dateinterval = options[:dateinterval] || AppConfig.configtable['default_dateinterval']
