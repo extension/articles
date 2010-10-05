@@ -159,6 +159,11 @@ class AppConfig
     @@configtable['googleapps_account'] = 'NotSet'
     @@configtable['googleapps_secret'] = 'NotSet'
     @@configtable['googleapps_domain'] = 'apps.extension.org'
+    # Google Apps - AaE emailer
+    @@configtable['googleapps_aaemailer'] = 'NotSet'
+    @@configtable['googleapps_aaemailer_secret'] = 'NotSet'
+
+    
     
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
