@@ -131,7 +131,7 @@ class User < Account
   
   # scopers
   named_scope :validusers, :conditions => {:retired => false,:vouched => true}
-  named_scope :notsystem, :conditions => ["id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')})"]
+  named_scope :notsystem, :conditions => ["#{self.table_name}.id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')})"]
   named_scope :unconfirmedemail, :conditions => ["emailconfirmed = ? AND account_status != ?",false,User::STATUS_SIGNUP]
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}
