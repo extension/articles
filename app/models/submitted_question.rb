@@ -556,6 +556,21 @@ def self.find_uncategorized(*args)
   end
 end
 
+def status_state_to_s
+  case self.status_state
+  when STATUS_SUBMITTED
+    return 'submitted'
+  when STATUS_RESOLVED
+    return 'resolved'
+  when STATUS_NO_ANSWER
+    return 'no answer'
+  when STATUS_REJECTED
+    return 'rejected'
+  else
+    return nil
+  end
+end
+
 # utility function to convert status_state numbers to status strings
 def self.convert_to_string(status_number)
   case status_number
