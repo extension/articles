@@ -127,7 +127,7 @@ class User < Account
   
   validates_length_of :phonenumber, :is => 10, :allow_blank => true
   validates_presence_of :password_confirmation, :on => :create
-  
+  validates_presence_of :last_name, :first_name
   
   # scopers
   named_scope :validusers, :conditions => {:retired => false,:vouched => true}

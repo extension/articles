@@ -8,10 +8,11 @@ class CombineUsers < ActiveRecord::Migration
     # set them all to user
     execute "UPDATE accounts SET type = 'User'"
     
-    # allow null passwords
+    # allow null passwords, first_names, and last_names
     execute "ALTER TABLE `accounts` CHANGE COLUMN `password` `password` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;"
-    
-    
+    execute "ALTER TABLE `accounts` CHANGE COLUMN `first_name` `first_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;"
+    execute "ALTER TABLE `accounts` CHANGE COLUMN `last_name` `last_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;"
+        
     # will be used to generate eXtensionID's later
     add_column(:accounts, :base_login_string, :string)
     add_column(:accounts, :login_increment, :integer)

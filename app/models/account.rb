@@ -24,7 +24,7 @@ class Account < ActiveRecord::Base
   validates_length_of :email, :maximum=>96
   validates_confirmation_of :password, :message => 'has to be the same in both fields. Please type both passwords again.'
   validates_length_of :password, :within => 6..40, :allow_blank => true
-  validates_presence_of :first_name, :last_name, :email, :login
+  validates_presence_of :email, :login
   
   has_many :submitted_questions, :foreign_key => 'submitter_id'
   
@@ -33,7 +33,7 @@ class Account < ActiveRecord::Base
   def email=(emailstring)
     write_attribute(:email, emailstring.mb_chars.downcase)
   end
-  
+    
   def first_name=(first_name_string)
     if(self.type == 'PublicUser' and first_name_string.blank?)
       write_attribute(:first_name, 'Anonymous')
