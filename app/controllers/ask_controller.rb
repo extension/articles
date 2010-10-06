@@ -66,7 +66,7 @@ class AskController < ApplicationController
       name_hash[:last_name] = params[:submitter][:last_name].strip if !params[:submitter][:last_name].blank?
       
       if(@submitter = Account.find_by_email(params[:submitter][:email]))
-        if(@sumitter.first_name == 'Anonymous' or @submitter.last_name == 'Guest')
+        if(@submitter.first_name == 'Anonymous' or @submitter.last_name == 'Guest')
           @submitter.update_attributes(name_hash)
         end
       else
