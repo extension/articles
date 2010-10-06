@@ -138,6 +138,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'learn/events', :controller => :learn, :action => :events
   map.connect 'learn/events/:sessiontype', :controller => :learn, :action => :events
 
+  ## Debug ##
+  map.debuglocation 'debug/location', :controller => 'debug', :action => 'location'
+
+
   #################################################################
   ### pubsite routes ###
   map.connect 'main/:action', :controller => 'main'

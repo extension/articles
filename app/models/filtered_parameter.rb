@@ -34,6 +34,7 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:apikey] = :apikey
   RECOGNIZED_PARAMETERS[:tags] = :taglist
   RECOGNIZED_PARAMETERS[:content_types] = :method
+  RECOGNIZED_PARAMETERS[:ipaddress] = :string 
   
   
   # AaE params

@@ -50,29 +50,6 @@
     
     <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
     
-	<% if session[:institution_community_id].nil? or
-	     (session[:institution_community_id] and session[:institution_community_id].empty?) %>
-	<script type="text/javascript">
-	//<![CDATA[
-	// -- docs say u need to load a module, but my testing says not. @JER
-   // google.load("maps", "2.x");
-
-   google.setOnLoadCallback(function() {
-      if (google.loader.ClientLocation) {
-        if (google.loader.ClientLocation.address.country_code == "US" &&
-          google.loader.ClientLocation.address.region) {
-            findInstitution(google.loader.ClientLocation.address.city,
-                         google.loader.ClientLocation.address.region);
-        } else {
-          findInstitution("ignored", "OUTSIDEUS");
-        }
-      } else {
-        findInstitution("ignored", "OUTSIDEUS");
-      }
-   });
-   //]]>
-   </script>
-   <% end %>
 	<link rel="stylesheet" type="text/css" href="/stylesheets/contentslider.css" />
 	<!--[if lt IE 7]>
 	    <%= stylesheet_link_tag 'ie6.css' %>
@@ -165,14 +142,14 @@
                      <p class="aboutex">These resources are brought to you by the Cooperative Extension System and your Local Institution</p>
                      <% end %>
 
-                     <% if @personal[:institution] and ['KY', 'TX'].include?(@personal[:institution].location.abbreviation) %>
-                        <div class="branding_wrapper doublewide">
-                     <% else %>
-                        <div class="branding_wrapper">
-                     <% end %>                    
+                     <div class="branding_wrapper">
                        <div id="logo">
-                          <%=render :partial => 'shared/logo', :locals => {:person => @personal} %>
-                       </div>
+                         <%- if(@personal[:location]) -%>
+                           <%= render(:partial => 'shared/logo') %>
+                         <%- else -%>
+                          <%= render(:partial => "shared/no_institution") %>
+                         <%- end -%>
+                        </div>
 
                        <% if !@mobile_device %>
                          <h3 id="eXlogo"><a href="/">eXtension: more mind reach</a></h3>
