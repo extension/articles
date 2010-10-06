@@ -48,7 +48,7 @@ class Location < ActiveRecord::Base
     end
   end
   
-  def self.get_geoip_data(ipaddress = AppConfig.configtable['default_request_ip'])
+  def self.get_geoip_data(ipaddress = AppConfig.configtable['request_ip_address'])
     returnhash = {}
     if(geoip_data_file = AppConfig.geoip_data_file)
       if(data = GeoIP.new(geoip_data_file).city(ipaddress))
@@ -68,7 +68,7 @@ class Location < ActiveRecord::Base
     end
   end
   
-  def self.find_by_geoip(ipaddress = AppConfig.configtable['default_request_ip'])
+  def self.find_by_geoip(ipaddress = AppConfig.configtable['request_ip_address'])
     if(geoip_data = self.get_geoip_data(ipaddress))
       if(geoip_data[:country_code] == 'US')
         self.find_by_abbreviation(geoip_data[:region])
