@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 include GroupingExtensions
-
+require 'geoip'
 class Location < ActiveRecord::Base
   UNKNOWN = 0
   STATE = 1
@@ -46,6 +46,39 @@ class Location < ActiveRecord::Base
     else
       return nil
     end
-  end 
+  end
+  
+  def self.get_geoip_data(ipaddress = AppConfig.configtable['default_request_ip'])
+    returnhash = {}
+    if(geoip_data_file = AppConfig.geoip_data_file)
+      if(data = GeoIP.new(geoip_data_file).city(ipaddress))
+        returnhash[:country_code] = data[2]
+        returnhash[:region] = data[6]
+        returnhash[:city] = data[7]
+        returnhash[:postal_code] = data[8]
+        returnhash[:lat] = data[9]
+        returnhash[:lon] = data[10]
+        returnhash[:tz] = data[13]
+        return returnhash
+      else
+        return nil
+      end      
+    else
+      return nil
+    end
+  end
+  
+  def self.find_by_geoip(ipaddress = AppConfig.configtable['default_request_ip'])
+    if(geoip_data = self.get_geoip_data(ipaddress))
+      if(geoip_data[:country_code] == 'US')
+        self.find_by_abbreviation(geoip_data[:region])
+      else
+        self.find_by_abbreviation('OUTSIDEUS')
+      end
+    else
+      return nil
+    end
+  end
+      
   
 end

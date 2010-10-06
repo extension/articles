@@ -26,6 +26,7 @@ Rails::Initializer.run do |config|
   config.gem "paperclip", :version => '~>2.3', :source => 'http://systems.extension.org/rubygems/'
   config.gem "calendar_date_select"
   config.gem 'gdata', :version => '~>1.1', :lib => 'gdata', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'geoip', :source => 'http://systems.extension.org/rubygems/'
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 
