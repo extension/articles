@@ -47,6 +47,10 @@
           <p>Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)</p>
         <% end %>
         
+        <br /><br />
+        <p>Created by: <%= link_to(@learn_session_creator.fullname, :controller => '/learn', :action => :profile, :id => @learn_session_creator.login) %></p>
+        
+        
         <% if @currentuser %>
           <p><span class="edit"><%= link_to 'edit this event', :action => :edit_session, :id => @learn_session.id %></span></p>
         <% end %>

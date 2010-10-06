@@ -27,6 +27,7 @@ class LearnController < ApplicationController
     end
   
     @connected_users = {}
+    @learn_session_creator = @learn_session.creator
     if @learn_session.event_started?
       attended = @learn_session.connected_users(LearnConnection::ATTENDED)
       interested = @learn_session.connected_users(LearnConnection::INTERESTED)
