@@ -87,6 +87,9 @@ class People::SignupController < ApplicationController
     # STATUS_SIGNUP
     @user.account_status = User::STATUS_SIGNUP
     
+    # last login at == now
+    @user.last_login_at = Time.zone.now
+    
     begin
       didsave = @user.save
     rescue ActiveRecord::StatementInvalid => e
