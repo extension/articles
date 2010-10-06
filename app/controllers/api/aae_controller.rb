@@ -32,7 +32,7 @@ class Api::AaeController < ApplicationController
         email = params[:email].strip
         
         if(@submitter = Account.find_by_email(email))
-          if(@sumitter.first_name == 'Anonymous' or @submitter.last_name == 'Guest')
+          if(@submitter.first_name == 'Anonymous' or @submitter.last_name == 'Guest')
             @submitter.update_attributes(name_hash)
           end
         else
