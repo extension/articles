@@ -37,7 +37,8 @@ def update_from_darmok_users(connection,drupaldatabase,mydatabase)
   
   sql = "REPLACE INTO #{drupaldatabase}.users (uid,name,pass,mail,created,status)"
   sql +=  " SELECT #{mydatabase}.accounts.id, #{mydatabase}.accounts.login,'#{passwordstring}', #{mydatabase}.accounts.email,UNIX_TIMESTAMP(#{mydatabase}.accounts.created_at),(NOT(#{mydatabase}.accounts.retired) AND (#{mydatabase}.accounts.vouched))"
-  sql +=  " FROM #{mydatabase}.users"
+  sql +=  " FROM #{mydatabase}.accounts"
+  sql +=  " WHERE #{mydatabase}.accounts.type = 'User'"
   
   # execute the sql
   
