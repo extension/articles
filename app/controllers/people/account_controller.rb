@@ -150,11 +150,7 @@ class People::AccountController < ApplicationController
       end
     end
   end
-  
-  def authenticate
-    render(:text => 'Invalid Request - Authenticate Method No Longer Used', :status => 401, :layout => false)
-  end
-      
+        
   def signup
     return redirect_to(:controller => '/people/signup', :action => :new, :invite => params[:invite], :status => 301)
   end
