@@ -125,7 +125,7 @@ class People::AccountController < ApplicationController
   def login
     @openidmeta = openidmeta(@openiduser)
     if request.post?
-      result = authuser(params[:user_login],params[:user_password])
+      result = authuser(params[:email],params[:password])
       if(AUTH_SUCCESS != result[:code] and result[:localfail])
         if(result[:localfail])
           flash.now[:failure]  = explainauthresult(result[:code])
