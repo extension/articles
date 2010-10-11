@@ -254,6 +254,6 @@ mydatabase = User.connection.instance_variable_get("@config")[:database]
 # replace/insert user accounts
 result = update_from_darmok_users(User.connection,@drupaldatabase,mydatabase)
 # new groups
-result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+#result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
 # groups update
-result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+#result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
