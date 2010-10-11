@@ -156,6 +156,7 @@ class ApplicationController < ActionController::Base
           session[:institution_community_id] = @personal[:institution].id.to_s
           session[:multistate] = nil
         else
+          @public_institutions_for_location = public_institutions_for_location
           session[:multistate] =  @personal[:location].abbreviation
         end
       end

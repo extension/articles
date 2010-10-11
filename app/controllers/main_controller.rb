@@ -164,7 +164,10 @@ class MainController < ApplicationController
             end
             return
           else
-            return render :partial => "shared/institution_select", :locals => {:institutions => public_institutions_for_location}, :layout => false
+            render(:update) do |page| 
+              page.replace_html "logo", :partial => "shared/multistate", :locals => {:institutions => public_institutions_for_location}
+            end
+            return
           end
         else
           render(:update) do |page| 
