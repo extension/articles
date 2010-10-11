@@ -18,3 +18,5 @@
 # /db/
 /db/schema.rb
 
+# /data/
+/data/*

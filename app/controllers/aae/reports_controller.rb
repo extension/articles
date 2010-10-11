@@ -314,7 +314,7 @@ class Aae::ReportsController < ApplicationController
           if (@catname  && @catname != "")
             @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
             @loccnt = ExpertiseLocation.expert_loc_userfilter_count(@filteredoptions)
-            @user_list = catobj.users.find(:all, :order => "users.last_name")
+            @user_list = catobj.users.find(:all, :order => "accounts.last_name")
             setup_routers_and_wranglers
             
             @capcatname = @catname[0].chr.to_s.upcase + @catname[1..(@catname.length - 1)]
@@ -336,7 +336,7 @@ class Aae::ReportsController < ApplicationController
              @catcnt = Category.catuserfilter_count(@filteredoptions)
              @cntycnt = ExpertiseCounty.expert_county_userfilter_count(@filteredoptions)
              
-             @user_list = ExpertiseLocation.find_by_id(params[:location]).users.find(:all, :order => "users.last_name")
+             @user_list = ExpertiseLocation.find_by_id(params[:location]).users.find(:all, :order => "accounts.last_name")
              setup_routers_and_wranglers
              
              @usize = @user_list.size ; @locid = params[:location]
@@ -367,7 +367,7 @@ class Aae::ReportsController < ApplicationController
              @csize = @cats.size
              @ctycnt = Category.catuserfilter_count(@filteredoptions)
              
-             @user_list = ExpertiseCounty.find_by_id(@countyid).users.find(:all, :order => "users.last_name")
+             @user_list = ExpertiseCounty.find_by_id(@countyid).users.find(:all, :order => "accounts.last_name")
              setup_routers_and_wranglers
              
              @usize = @user_list.size
@@ -907,8 +907,8 @@ class Aae::ReportsController < ApplicationController
         if extstr == " IS NULL";  return [ {}, {}, {}]; end
         (date1 && date2) ? dateinterval = [date1, date2] : dateinterval = nil
         noq = SubmittedQuestion.resolved_or_assigned_count({:dateinterval => dateinterval, :external => extstr})
-        avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "users.location_id"})
-        noopen = SubmittedQuestion.get_number_open({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "users.location_id"})
+        avgr = SubmittedQuestion.get_loc_or_category_average({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "accounts.location_id"})
+        noopen = SubmittedQuestion.get_number_open({:dateinterval => dateinterval, :external => extstr, :joinclause => [:assignee], :groupclause => "accounts.location_id"})
         [noq, avgr, noopen]
       end
 
@@ -1058,7 +1058,7 @@ class Aae::ReportsController < ApplicationController
 			@orderby = 'name'
 		end
 	
-		@userlist = User.find(:all, :select => "DISTINCT users.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name #{@sortorder.upcase}")
+		@userlist = User.find(:all, :select => "DISTINCT accounts.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name #{@sortorder.upcase}")
     assignee_hash={:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}
     
 		# this will get assigned, handled, and the ratio - assigned could be actual # of assignments minus 1 if the person is currently assigned something
@@ -1127,7 +1127,7 @@ class Aae::ReportsController < ApplicationController
 			@orderby = 'name'
 		end
 	
-		@userlist = User.find(:all, :select => "DISTINCT users.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name #{@sortorder.upcase}")
+		@userlist = User.find(:all, :select => "DISTINCT accounts.*", :joins => [:roles], :conditions => "role_id IN (3,4,5,6)", :order => "last_name #{@sortorder.upcase}")
     nonassignee_hash={:group_by_id => true, :dateinterval => @dateinterval, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})}
     
 		# this will get counts for handled and responded without being assigned first, handling average refers only to the time someone took to handle something if they did assign it to themselves

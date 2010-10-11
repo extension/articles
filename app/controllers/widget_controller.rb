@@ -34,7 +34,7 @@ class WidgetController < ApplicationController
     end
     
     @submitted_question = SubmittedQuestion.new
-    @public_user = PublicUser.new
+    @submitter = PublicUser.new
   
     @host_name = request.host_with_port
     render :layout => false
@@ -60,12 +60,12 @@ class WidgetController < ApplicationController
         # setup the question to be saved and fill in attributes with parameters
         create_question
         
-        if !@public_user
-          # create a new instance variable for public_user so the form can be repopulated and we can see what's gone wrong in validating
-          @public_user = PublicUser.new(params[:public_user])
+        if !@submitter
+          # create a new instance variable for submitter so the form can be repopulated and we can see what's gone wrong in validating
+          @submitter = PublicUser.new(params[:submitter])
           # we know it wasn't saved, but let's see why
-          if !@public_user.valid?
-            @argument_errors = ("Errors occured when saving:<br />" + @public_user.errors.full_messages.join('<br />'))
+          if !@submitter.valid?
+            @argument_errors = ("Errors occured when saving:<br />" + @submitter.errors.full_messages.join('<br />'))
             raise ArgumentError
           end
         end
@@ -101,7 +101,7 @@ class WidgetController < ApplicationController
         end
         
         if @submitted_question.save
-          session[:public_user_id] = @public_user.id
+          session[:account_id] = @submitter.id
           flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
           redirect_to widget_url(:id => params[:id], :location => @location ? @location.abbreviation : nil, :county => @county ? @county.name : nil), :layout => false
           return
@@ -141,7 +141,7 @@ class WidgetController < ApplicationController
     end
     
     @submitted_question = SubmittedQuestion.new
-    @public_user = PublicUser.new
+    @submitter = PublicUser.new
     @fingerprint = params[:id]
     @host_name = request.host_with_port
     @location_options = get_location_options
@@ -244,8 +244,10 @@ class WidgetController < ApplicationController
     widget = Widget.find_by_fingerprint(params[:id].strip) if params[:id]
     
     @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-    @public_user = PublicUser.find_and_update_or_create_by_email({:email => @submitted_question.submitter_email})
-    @submitted_question.public_user = @public_user
+    if(!(@submitter = Account.find_by_email(@submitted_question.submitter_email)))
+      @submitter = PublicUser.create({:email => @submitted_question.submitter_email})
+    end
+    @submitted_question.submitter = @submitter
     @submitted_question.widget = widget if widget
     @submitted_question.widget_name = widget.name if widget
     @submitted_question.user_ip = request.remote_ip

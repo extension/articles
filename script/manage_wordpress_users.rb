@@ -40,8 +40,8 @@ def update_from_darmok_users(connection,wordpressdatabase,mydatabase)
   puts "starting user table replacement..."
   
   sql = "REPLACE INTO #{wordpressdatabase}.wp_users (id,user_login,user_pass,user_email,user_nicename,display_name)"
-  sql +=  " SELECT #{mydatabase}.users.id,#{mydatabase}.users.login,'#{passwordstring}',#{mydatabase}.users.email,#{mydatabase}.users.login,(CONCAT(#{mydatabase}.users.first_name,' ',#{mydatabase}.users.last_name))"
-  sql +=  " FROM #{mydatabase}.users WHERE (NOT(#{mydatabase}.users.retired) AND (#{mydatabase}.users.vouched))"
+  sql +=  " SELECT #{mydatabase}.accounts.id,#{mydatabase}.accounts.login,'#{passwordstring}',#{mydatabase}.accounts.email,#{mydatabase}.accounts.login,(CONCAT(#{mydatabase}.accounts.first_name,' ',#{mydatabase}.accounts.last_name))"
+  sql +=  " FROM #{mydatabase}.accounts WHERE (NOT(#{mydatabase}.accounts.retired) AND (#{mydatabase}.accounts.vouched) AND #{mydatabase}.accounts.type = 'User')"
   
   # execute the sql
   
@@ -98,7 +98,7 @@ def set_admin_privs(connection,wordpressdatabase,mydatabase)
   
   puts "updating the user_meta table - setting admin privs..."
   
-sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.users.id, #{mydatabase}.users.id, 'wp_capabilities', '#{@admin_privs}' FROM #{mydatabase}.users WHERE #{mydatabase}.users.is_admin = 1;"
+sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.accounts.id, #{mydatabase}.accounts.id, 'wp_capabilities', '#{@admin_privs}' FROM #{mydatabase}.accounts WHERE #{mydatabase}.accounts.is_admin = 1;"
   
   # execute the sql
   begin
@@ -118,7 +118,7 @@ def set_expired_privs(connection,wordpressdatabase,mydatabase)
   
   puts "updating the user_meta table - expiring retired accounts..."
   
-  sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.users.id, #{mydatabase}.users.id, 'wp_capabilities', '#{@expired_privs}' FROM #{mydatabase}.users WHERE #{mydatabase}.users.retired = 1;"
+  sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{mydatabase}.accounts.id, #{mydatabase}.accounts.id, 'wp_capabilities', '#{@expired_privs}' FROM #{mydatabase}.accounts WHERE #{mydatabase}.accounts.retired = 1 AND #{mydatabase}.accounts.type = 'User';"
   
   # execute the sql
   begin

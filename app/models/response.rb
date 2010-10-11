@@ -9,8 +9,8 @@ require 'hpricot'
 
 class Response < ActiveRecord::Base
   belongs_to :submitted_question
-  belongs_to :resolver, :class_name => "User", :foreign_key => "user_id"
-  belongs_to :public_responder, :class_name => "PublicUser", :foreign_key => "public_user_id"
+  belongs_to :resolver, :class_name => "User", :foreign_key => "resolver_id"
+  belongs_to :submitter, :class_name => "Account", :foreign_key => "submitter_id"
   belongs_to :contributing_question, :class_name => "SearchQuestion", :foreign_key => "contributing_question_id"
   has_many :file_attachments
   

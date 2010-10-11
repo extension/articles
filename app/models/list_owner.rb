@@ -11,9 +11,9 @@ class ListOwner < ActiveRecord::Base
   
   after_update :touchlist
 
-  named_scope :idowners,  :joins => [:user],  :conditions => "list_owners.user_id > 0", :order => "users.last_name"  
-  named_scope :moderators,  :joins => [:user],  :conditions => "list_owners.ineligible = 0 and list_owners.moderator = 1 and list_owners.user_id > 0", :order => "users.last_name"
-  named_scope :nonmoderators, :joins => [:user], :conditions => "list_owners.ineligible = 0 and list_owners.moderator = 0 and list_owners.user_id > 0", :order => "users.last_name"  
+  named_scope :idowners,  :joins => [:user],  :conditions => "list_owners.user_id > 0", :order => "accounts.last_name"  
+  named_scope :moderators,  :joins => [:user],  :conditions => "list_owners.ineligible = 0 and list_owners.moderator = 1 and list_owners.user_id > 0", :order => "accounts.last_name"
+  named_scope :nonmoderators, :joins => [:user], :conditions => "list_owners.ineligible = 0 and list_owners.moderator = 0 and list_owners.user_id > 0", :order => "accounts.last_name"  
   named_scope :noidowners, :conditions => "list_owners.user_id = 0 and list_owners.email != '#{AppConfig.configtable['default-list-owner']}'", :order => "list_owners.email"
   
   def notassociated?

@@ -1,0 +1,11 @@
+<div id="multipicker">
+  <h3><strong>Welcome!</strong> What's your local institution?</h3>
+  <ul>
+    <% institutions.each{ |inst|  %>
+    <li><%=link_to inst.name, :controller => 'main', :action => 'set_institution', :institution_id => inst.id %></li>
+    <% } %>
+  </ul>
+</div>
+<script type="text/javascript">
+Effect.BlindUp('institution_picker', {duration: .4});
+</script>

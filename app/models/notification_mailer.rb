@@ -460,7 +460,7 @@ class NotificationMailer < ActionMailer::Base
      # base parameters for the email
      self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
      @subject = "[Message from eXtension] Thank you for your question submission."          
-     @recipients     = submitted_question.public_user.email
+     @recipients     = submitted_question.submitter.email
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :urls => urls }
