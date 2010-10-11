@@ -67,24 +67,6 @@ function getBodyHeight() {
     $("preview_wrapper").style.height = dimensions.height + 'px';
 }
 
-
-function findInstitution(city, state) {
-   new Ajax.Updater({ success:'logo', failure:'flash_notice' },
-                    '/main/find_institution',
-                    {
-                      method: 'post',
-                      parameters: {city: city, state: state},
-                      onFailure: function(){ return; },
-                      onComplete: function(){ return; }
-                    });
-   if (state == 'KY' || state == 'TX') {
-      $$('.branding_wrapper')[0].addClassName('doublewide');
-   } else {
-      $$('.branding_wrapper')[0].removeClassName('doublewide');
-   }
-   return;
-}
-
 function processFlash() {
 	fn = $('flash_notice')
 	if(!fn) return;

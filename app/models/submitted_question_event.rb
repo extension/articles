@@ -150,11 +150,11 @@ class SubmittedQuestionEvent < ActiveRecord::Base
       :response => assignment_comment})
   end
   
-  def self.log_public_response(question, public_user_id)
+  def self.log_public_response(question, submitter_id)
     return self.log_event({:submitted_question => question,
       :initiated_by => User.systemuser,
       :event_state => PUBLIC_RESPONSE,
-      :public_user_id => public_user_id})
+      :submitter_id => submitter_id})
   end
   
   def self.log_close(question, initiated_by)

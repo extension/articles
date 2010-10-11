@@ -100,14 +100,14 @@ class People::ColleaguesController < ApplicationController
     end
     
     if(params[:id] == 'all')
-      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'users.last_name', :conditions => ["users.vouched = 1 and users.retired = 0"], :page => params[:page])
+      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'accounts.last_name', :conditions => ["accounts.vouched = 1 and accounts.retired = 0"], :page => params[:page])
       @page_title = "Social Network Identities - All Networks"
     elsif(params[:id] == 'other')
       known_list = SocialNetwork::NETWORKS.keys.sort.map{|network| "'#{network}'"}.join(",")
-      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'users.last_name', :conditions => ["users.vouched = 1 and users.retired = 0 and social_networks.network NOT IN (#{known_list})"], :page => params[:page])
+      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'accounts.last_name', :conditions => ["accounts.vouched = 1 and accounts.retired = 0 and social_networks.network NOT IN (#{known_list})"], :page => params[:page])
       @page_title = "Social Network Identities - Other Networks"     
     else
-      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'users.last_name', :conditions => ["users.vouched = 1 and users.retired = 0 and social_networks.network = '#{params[:id]}'"], :page => params[:page])
+      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'accounts.last_name', :conditions => ["accounts.vouched = 1 and accounts.retired = 0 and social_networks.network = '#{params[:id]}'"], :page => params[:page])
       @page_title = "Social Network Identities - #{SocialNetwork.get_name(params[:id])}"
     end
     

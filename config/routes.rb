@@ -75,6 +75,7 @@ ActionController::Routing::Routes.draw do |map|
      aae.connect 'question/escalation_report/:legacycategory', :controller => :question, :action => :escalation_report
      aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }     
      aae.connect 'question/:action/:id', :controller => :question
+     aae.submitterquestions 'questions/submitter/:account', :controller => :questions, :action => :submitter
      aae.connect 'help', :controller => :help
      aae.connect 'feeds/:action/:legacycategory', :controller => :feeds
      aae.home '/', :controller => :home, :action => :index     
@@ -136,6 +137,10 @@ ActionController::Routing::Routes.draw do |map|
   map.learn_session 'learn/event/:id', :controller => :learn, :action => :event
   map.connect 'learn/events', :controller => :learn, :action => :events
   map.connect 'learn/events/:sessiontype', :controller => :learn, :action => :events
+
+  ## Debug ##
+  map.debuglocation 'debug/location', :controller => 'debug', :action => 'location'
+
 
   #################################################################
   ### pubsite routes ###

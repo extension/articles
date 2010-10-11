@@ -29,7 +29,7 @@ class Aae::QuestionController < ApplicationController
       @category = @submitted_question.categories.first
       @category = @category.parent if @category.parent
       @category_id = @category.id
-      @users = @category.users.find(:all, :select => "users.*", :order => "users.first_name")
+      @users = @category.users.find(:all, :select => "accounts.*", :order => "accounts.first_name")
     # find subcategories
       @sub_category_options = [""].concat(@category.children.map{|sq| [sq.name, sq.id]})
       if subcategory = @submitted_question.categories.find(:first, :conditions => "parent_id IS NOT NULL")

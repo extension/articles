@@ -1,0 +1,23 @@
+<% @page_title = "Questions Submitted by #{@submitter.fullname} (#{@submitter.id})" if !@page_title %>
+
+<% if !@category and !@location and !@county and !@source %>
+    <h2><%= @page_title %> <small>(<%= @filter_string %>)</small><span class="syndication">
+    <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :resolved, :type => params[:type])) %></span></h2>
+<% else %>
+    <% if @category == Category::UNASSIGNED %>
+         <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
+         <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :resolved,:legacycategory => Category::UNASSIGNED, :location => @location, :county => @county, :source => @source, :type => params[:type])) %></span></h2> 
+    <% else %>
+         <h2><%= @page_title %> <small>(<%= @filter_string %>)</small> <span class="syndication">
+         <%= link_to('feed', url_for(:controller => 'aae/feeds', :action => :resolved,:legacycategory => @category, :location => @location, :county => @county, :source => @source, :type => params[:type])) %></span></h2>
+    <% end %>
+<% end %>
+
+<%= render(:partial => "aae/partial/submitted_questions") %>
+
+<% if @submitted_questions.length == 0 %>
+    <div class="noresults">
+        <h3>There are no questions that match your question filter</h3>
+        <p>(You can change your filter settings on the right)</p>
+    </div>
+<% end %>

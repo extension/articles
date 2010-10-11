@@ -1,0 +1,56 @@
+<% @page_title = "Location Information" %>
+
+
+<%- if !@geoip_data -%>
+  <h2>No GeoIP data returned for your IP Address! <%= @search_ip %></h2>
+<%- else -%>
+  <h2>Location Information for IP Address: <%= @search_ip %></h2>
+  <h3>GeoIP Data</h3>  
+  <table cellspacing="0">
+     	<tr>
+     	  <td scope="row" class="label">Country Code</td>   
+     	  <td><%= @geoip_data[:country_code] %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">Region</td>   
+     	  <td><%= @geoip_data[:region] %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">City</td>   
+     	  <td><%= @geoip_data[:city] %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">Postal Code</td>   
+     	  <td><%= @geoip_data[:postal_code] %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">Lat/Lon</td>   
+     	  <td><%= @geoip_data[:lat] %>/<%= @geoip_data[:lon] %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">Time Zone</td>   
+     	  <td><%= @geoip_data[:tz] %></td>         
+     	</tr>
+  </table>
+
+  <%- if @geo_location -%>
+    <h3>Institutional Information for this Location</h3>
+        <table class="logos">
+            <tr>
+                <th scope="col">Institution Name</th>
+                <th scope="col">Image</th>	
+            </tr>
+
+            <%- @public_institutions_for_location.each do |community| -%>
+            <tr>
+                <td><%= link_to_people_community(community) %></td>
+                <%- if community.logo.nil? %>
+                    <td>Not yet provided.</td>
+            	<%- else -%>
+            	    <td><%= render_inline_logo({:logo => community.logo, :show_thumbnail => false }) %></td>
+                <%- end -%>
+            </tr>
+            <%- end -%>
+    </table>
+  <%- end -%>
+<%- end -%>

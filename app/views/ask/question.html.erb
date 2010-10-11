@@ -19,7 +19,7 @@
                 <h2>We don’t have an answer for you yet...</h2>
                 <p>As soon as we have one, we’ll send you an email.</p>
             
-                <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
+                <% if (@submitted_question.submitter.id == session[:account_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
                 <h3>Need to clarify or correct any information?</h3>
                 <p>Your question is editable until one of our experts responds. Click the "Edit my question" link above.</p>
                 <% end %>
@@ -31,7 +31,7 @@
                 <h3>Responses:</h3>
                 <% @submitted_question_responses.each do |response| %>
       
-                    <div class="commentblock <%= is_public_responder(response) ? "public": "expert" %>" >
+                    <div class="commentblock <%= is_submitter(response) ? "public": "expert" %>" >
                       <div class="comment_wrapper">
                         <p class="comment">
                             <img src="/images/common/extension_icon.jpg" />
@@ -51,11 +51,11 @@
         </div>
     <p id="loading_response" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </p>
     
-        <% if @submitted_question_responses.length > 0 and ((@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email)) %>
+        <% if @submitted_question_responses.length > 0 and ((@submitted_question.submitter.id == session[:account_id]) or (@currentuser.email == @submitted_question.submitter_email)) %>
             <h3><%= link_to_function 'Add a comment', "Effect.toggle('additional_comment','blind', { duration: .4 });" %> or <%= link_to 'Ask a new question', ask_form_url %></h3>
             <div id="additional_comment" style="display:none;">
-            <% form_for :response, :url => {:controller => :ask, :action => :post_public_response, :squid => @submitted_question.id, :public_user_id => @submitted_question.public_user_id}, :html => {:multipart => true} do %>
-                <%= text_area_tag("public_user_response", nil, :cols => "20", :rows => "3") %>
+            <% form_for :response, :url => {:controller => :ask, :action => :post_submitter_response, :squid => @submitted_question.id, :submitter_id => @submitted_question.submitter_id}, :html => {:multipart => true} do %>
+                <%= text_area_tag("submitter_response", nil, :cols => "20", :rows => "3") %>
                 
                 
                 

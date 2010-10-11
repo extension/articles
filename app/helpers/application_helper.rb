@@ -11,8 +11,8 @@ module ApplicationHelper
     'class="selected"' if @selected_tab == tab_name
   end
   
-  def is_public_responder(question_response)
-    if question_response.public_responder 
+  def is_submitter(question_response)
+    if question_response.submitter 
       return true 
     else
       return false
