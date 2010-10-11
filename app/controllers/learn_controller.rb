@@ -226,8 +226,13 @@ class LearnController < ApplicationController
   end
   
   def profile
-    @user = User.find_by_login(params[:id])
-    @sessions_presented = @user.learn_sessions_presented.find(:all, :order => "session_start desc" )
+    if(@showuser = User.find_by_login(params[:id]))
+      @sessions_presented = @showuser.learn_sessions_presented.find(:all, :order => "session_start desc" )
+      # TODO: show public attributes
+      # if(!@currentuser)
+      #   @publicattributes = @showuser.public_attributes
+      # end
+    end
   end
   
   def presenters_by_name
