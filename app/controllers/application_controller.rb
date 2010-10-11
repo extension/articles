@@ -76,9 +76,10 @@ class ApplicationController < ActionController::Base
   end
   
   def set_default_request_ip_address
-    if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
-      AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
-    elsif(!request.env["REMOTE_ADDR"].nil?)
+    # if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
+    #   AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
+    # elsif(!request.env["REMOTE_ADDR"].nil?)
+    if(!request.env["REMOTE_ADDR"].nil?)
       AppConfig.configtable['request_ip_address'] = request.env["REMOTE_ADDR"]
     else
       AppConfig.configtable['request_ip_address'] = AppConfig.configtable['default_request_ip']
