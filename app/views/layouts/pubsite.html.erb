@@ -147,7 +147,7 @@
                           <%- if(@personal[:location] and @personal[:institution]) -%>
                              <%= render(:partial => 'shared/logo') %>
                            <%- elsif session[:multistate] and !@public_institutions_for_location.blank? -%>
-                             <%= render(:partial => "shared/multistate",:locals => {:institutions => public_institutions_for_location}) %>
+                             <%= render(:partial => "shared/multistate",:locals => {:institutions => @public_institutions_for_location}) %>
                            <%- else -%>
                             <%= render(:partial => "shared/no_institution") %>
                            <%- end -%>
