@@ -26,7 +26,9 @@ class CombineUsers < ActiveRecord::Migration
     # set first and last names
     execute "UPDATE accounts SET first_name = 'Anonymous' where first_name IS NULL"
     execute "UPDATE accounts SET last_name = 'Guest' where last_name IS NULL"
-        
+    
+    # change taggings table to account from user
+    execute "UPDATE taggings SET taggable_type = 'Account' where taggable_type = 'User'"    
   end
 
   def self.down
