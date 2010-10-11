@@ -28,7 +28,11 @@
                <% if count > 0 %>
                , 
                <% end %>
-               <%= link_to(presenter.fullname, :controller => '/learn', :action => :profile, :id => presenter.login) %>
+               <%- if(!@currentuser.nil?) -%>
+                <%= link_to(presenter.fullname, :controller => '/learn', :action => :profile, :id => presenter.login) %>
+               <%- else -%>
+                 <%= presenter.fullname %>
+               <%- end -%>
                <% count = count + 1 %>
             <% end %>
          </p>
