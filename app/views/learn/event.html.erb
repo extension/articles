@@ -52,7 +52,13 @@
         <% end %>
         
         <br /><br />
-        <p>Created by: <%= link_to(@learn_session_creator.fullname, :controller => '/learn', :action => :profile, :id => @learn_session_creator.login) %></p>
+        <p>Created by: 
+          <%- if(!@currentuser.nil?) -%>
+            <%= link_to(@learn_session_creator.fullname, :controller => '/learn', :action => :profile, :id => @learn_session_creator.login) %>
+          <%- else -%>
+            <%= @learn_session_creator.fullname %>
+          <%- end -%>
+        </p>
         
         
         <% if @currentuser %>
