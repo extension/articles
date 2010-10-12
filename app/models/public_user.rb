@@ -16,7 +16,21 @@ class PublicUser < Account
   has_many :learn_sessions, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, learn_sessions.*"
   
   
-
+  def first_name
+    if(first_name = read_attribute(:first_name))
+      return first_name
+    else
+      return 'Anonymous'
+    end
+  end
+  
+  def last_name
+    if(last_name = read_attribute(:last_name))
+      return last_name
+    else
+      return 'Guest'
+    end
+  end
   
   def update_connection_to_learn_session(learn_session,connectiontype,connected=true)
     connection = self.learn_connections.find(:first, :conditions => "connectiontype = #{connectiontype} and learn_session_id = #{learn_session.id}")

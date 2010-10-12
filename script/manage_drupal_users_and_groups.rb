@@ -37,7 +37,8 @@ def update_from_darmok_users(connection,drupaldatabase,mydatabase)
   
   sql = "REPLACE INTO #{drupaldatabase}.users (uid,name,pass,mail,created,status)"
   sql +=  " SELECT #{mydatabase}.accounts.id, #{mydatabase}.accounts.login,'#{passwordstring}', #{mydatabase}.accounts.email,UNIX_TIMESTAMP(#{mydatabase}.accounts.created_at),(NOT(#{mydatabase}.accounts.retired) AND (#{mydatabase}.accounts.vouched))"
-  sql +=  " FROM #{mydatabase}.users"
+  sql +=  " FROM #{mydatabase}.accounts"
+  sql +=  " WHERE #{mydatabase}.accounts.type = 'User'"
   
   # execute the sql
   
@@ -253,6 +254,6 @@ mydatabase = User.connection.instance_variable_get("@config")[:database]
 # replace/insert user accounts
 result = update_from_darmok_users(User.connection,@drupaldatabase,mydatabase)
 # new groups
-result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+#result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
 # groups update
-result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+#result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)

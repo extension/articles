@@ -20,6 +20,14 @@
             <div id="closebutton">
             <%= button_to 'Close Question', :controller => 'aae/question', :action => :close_out, :squid => @submitted_question.id %> <p><a class="tooltip-help" href="#" id="source_trigger">?</a></p>
             </div>
+            
+            <div id='source_tooltip' style="display:none;" class="tooltip">
+            	<p id="tooltip_hook">If no response is needed to the last reply from the public user, please close this question.</p>
+            </div>
+
+            <script type="text/javascript">
+              var my_tooltip = new Tooltip('source_trigger', 'source_tooltip')
+            </script>
         <% end %>
         
         <% if (work_time_remaining and work_time_remaining > 0) and (@currentuser.id != @submitted_question.assignee.id) %>
@@ -54,12 +62,4 @@
           <br /><br /><p><%= button_to "Hand off to a Question Wrangler", :action => :assign_to_wrangler, :squid => @submitted_question.id %></p>
         <% end %>
 
-</div>		
-
-<div id='source_tooltip' style="display:none;" class="tooltip">
-	<p id="tooltip_hook">If no response is needed to the last reply from the public user, please close this question.</p>
 </div>
-
-<script type="text/javascript">
-  var my_tooltip = new Tooltip('source_trigger', 'source_tooltip')
-</script>

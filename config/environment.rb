@@ -28,6 +28,7 @@ Rails::Initializer.run do |config|
   config.gem 'gdata', :version => '~>1.1', :lib => 'gdata', :source => 'http://systems.extension.org/rubygems/'
   config.gem 'lockfile', :version => '~>1.4', :lib => 'lockfile', :source => 'http://systems.extension.org/rubygems/'
   config.gem 'SystemTimer', :version => '~>1.2', :lib => 'system_timer', :source => 'http://systems.extension.org/rubygems/'
+  config.gem 'geoip', :source => 'http://systems.extension.org/rubygems/'
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 

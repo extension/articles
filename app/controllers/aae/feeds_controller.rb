@@ -20,7 +20,7 @@ class Aae::FeedsController < ApplicationController
     @category = @filterparams.legacycategory
 
     @alternate_link = url_for(:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => @category.id, :only_path => false)
-    @users = @category.get_experts(:select => "users.*, expertise_areas.created_at as added_at", 
+    @users = @category.get_experts(:select => "accounts.*, expertise_areas.created_at as added_at", 
                                    :order => "expertise_areas.created_at desc", 
                                    :conditions => "expertise_areas.created_at > #{DATE_EXPRESSION}" )
     @updated_time = @users.any? ? @users.first.added_at.to_time : Time.now.utc 

@@ -108,6 +108,8 @@ input[type="password"] {
 	width:12em;
 	font-size:1.1em;
 }
+#login input[type="text"], 
+#login input[type="password"] {width:20em;}
 label em {font-weight: normal;}
 label em.required {
         color: red;

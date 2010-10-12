@@ -22,12 +22,12 @@ class ApplicationController < ActionController::Base
 
   require 'zip_code_to_state'
   require 'image_size'
-  
+
+  before_filter :set_default_request_ip_address
   before_filter :set_locale
   before_filter :unescape_params
   before_filter :personalize
   before_filter :set_request_url_options
-  before_filter :set_default_request_ip_address
   before_filter :set_app_location
   before_filter :set_currentuser_time_zone
 
@@ -76,15 +76,17 @@ class ApplicationController < ActionController::Base
   end
   
   def set_default_request_ip_address
-    if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
-      AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
-    elsif(!request.env["REMOTE_ADDR"].nil?)
+    # if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
+    #   AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
+    # elsif(!request.env["REMOTE_ADDR"].nil?)
+    if(!request.env["REMOTE_ADDR"].nil?)
       AppConfig.configtable['request_ip_address'] = request.env["REMOTE_ADDR"]
     else
       AppConfig.configtable['request_ip_address'] = AppConfig.configtable['default_request_ip']
     end
+    return true
   end
-  
+    
   def set_locale
     # update session if passed
     session[:locale] = params[:locale] if params[:locale]
@@ -131,7 +133,6 @@ class ApplicationController < ActionController::Base
   
   def personalize
     @personal = {}
-    
     if(!session[:institution_community_id].nil?)
       search_id = session[:institution_community_id]
       begin
@@ -147,6 +148,19 @@ class ApplicationController < ActionController::Base
       session[:institution_community_id] = refering_institution.id.to_s
       @personal[:institution] = refering_institution
       @personal[:location] = refering_institution.location
+    elsif(location = Location.find_by_geoip)
+      @personal[:location] = location
+      public_institutions_for_location = @personal[:location].communities.institutions.public_list
+      if(!public_institutions_for_location.blank?)
+        if(public_institutions_for_location.size == 1)
+          @personal[:institution] = public_institutions_for_location[0]
+          session[:institution_community_id] = @personal[:institution].id.to_s
+          session[:multistate] = nil
+        else
+          @public_institutions_for_location = public_institutions_for_location
+          session[:multistate] =  @personal[:location].abbreviation
+        end
+      end
     end
   end
   

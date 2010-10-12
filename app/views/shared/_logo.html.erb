@@ -1,28 +1,18 @@
-<%if person[:institution] %>
-    <h1 class="logo">
-<%   inst = person[:institution]
-	if !inst.logo.nil? %>
-		<%= link_to(render_inline_logo({:logo => inst.logo, :alt_text => inst.name}), home_url, {:style => "width: #{inst.logo.width}px;"}) %>
-	<%else%>
-		<%= link_to(inst.name, home_url, {:style => ''}) %>
-	<%end%>
-    </h1>
-    <div class="institution_actions_wrapper">
-        <ul id="institution_actions">
-            <li><%=link_to 'Local Extension offices near you', @personal[:location].office_link if @personal[:location] and !@personal[:location].office_link.blank? %></li>
-            <li><%=link_to 'Learn more about this institution', @personal[:institution].public_uri if @personal[:institution] %></li>                 
-            <li class="changeint"><%= link_to_function 'Select a different institution', "Effect.toggle('institution_picker','blind', { duration: .4}); setTimeout(set_select_focus, 500);", :class => "sample" %></li>
-        </ul>
-    </div>
-<% elsif session[:multistate] %>
-   <div id="multipicker">
-       <h3><strong>Welcome!</strong> What's your local institution?</h3>
-       <ul>
-          <%= render :partial => 'shared/institution_select_list', :locals => {:institutions => Community.institutions.public_list.find(:all, :include => :location, :conditions => ["locations.abbreviation = ?", session[:multistate]])} %>
-          <li class="changeint"><%= link_to_function 'Select a different institution', "Effect.toggle('institution_picker','blind', { duration: .4}); setTimeout(set_select_focus, 500);", :class => "sample" %></li>
-       </ul>
-       <div class="institution_actions_wrapper">
-           <p><%=link_to 'Local Extension offices near you', @personal[:location].office_link if @personal[:location] and !@personal[:location].office_link.blank? %></p>
-       </div>
-   </div>
-<%end%>
+<%- showdoublewide = (!@personal[:location].nil? and (@personal[:location].abbreviation == 'KY' or @personal[:location].abbreviation == 'TX')) -%>
+  <h1 class="logo" >
+  <%- if !(@personal[:institution].logo.nil?) -%>
+    <%= link_to(render_inline_logo({:logo => @personal[:institution].logo, :alt_text => @personal[:institution].name}), home_url, {:style => "width: #{@personal[:institution].logo.width}px;"}) %>
+  <%- else -%>
+  		<%= link_to(@personal[:institution].name, home_url, {:style => ''}) %>
+  <%- end -%>
+  </h1>
+  <div class='<%= (showdoublewide) ? "doublewide_institution_actions_wrapper" : "institution_actions_wrapper" %>'>
+    <ul id="institution_actions">
+      <li><%=link_to 'Local Extension offices near you', @personal[:location].office_link if @personal[:location] and !@personal[:location].office_link.blank? %></li>
+      <li><%=link_to 'Learn more about this institution', @personal[:institution].public_uri if @personal[:institution] %></li>                 
+      <li class="changeint"><%= link_to_function 'Select a different institution', "Effect.toggle('institution_picker','blind', { duration: .4}); setTimeout(set_select_focus, 500);", :class => "sample" %></li>
+    </ul>
+  </div>
+  <script type="text/javascript">
+  Effect.BlindUp('institution_picker', {duration: .4});
+  </script>

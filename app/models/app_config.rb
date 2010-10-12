@@ -168,6 +168,9 @@ class AppConfig
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
     @@configtable['faq_create_url'] = 'http://cop.extension.org/questions/new_from_aae'
+    
+    # GEOIP data - going to target specific versions until that becomes a PITA
+    @@configtable['geoip_data_file'] = "#{RAILS_ROOT}/data/GeoIP-133_20101001/GeoIPCity.dat"
 
   end
   
@@ -207,6 +210,18 @@ class AppConfig
     end
   end
   
+  def AppConfig.set_content_widget_css
+    css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
+    @@content_widget_styles = '<br /><style type="text/css" media="screen">' + css_data + '</style>'
+  end
+  
+  def AppConfig.geoip_data_file
+    if(File.exists?(@@configtable['geoip_data_file']))
+      return @@configtable['geoip_data_file']
+    else
+      return nil
+    end
+  end
   
   def AppConfig.load_config
     self.default_config
@@ -219,10 +234,9 @@ class AppConfig
     end    
   end
   
-  def AppConfig.set_content_widget_css
-    css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
-    @@content_widget_styles = '<br /><style type="text/css" media="screen">' + css_data + '</style>'
-  end
+
+  
+
 
   # load the configuration on Class load
   self.load_config 

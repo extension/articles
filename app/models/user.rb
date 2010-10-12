@@ -127,11 +127,11 @@ class User < Account
   
   validates_length_of :phonenumber, :is => 10, :allow_blank => true
   validates_presence_of :password_confirmation, :on => :create
-  
+  validates_presence_of :last_name, :first_name
   
   # scopers
   named_scope :validusers, :conditions => {:retired => false,:vouched => true}
-  named_scope :notsystem, :conditions => ["id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')})"]
+  named_scope :notsystem, :conditions => ["#{self.table_name}.id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')})"]
   named_scope :unconfirmedemail, :conditions => ["emailconfirmed = ? AND account_status != ?",false,User::STATUS_SIGNUP]
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}

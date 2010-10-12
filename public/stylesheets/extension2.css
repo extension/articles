@@ -195,7 +195,7 @@ h3.headerdescription {text-transform:none !important;}
 .branding_wrapper ul a:hover {text-decoration:underline;}
 
 h1.logo {padding:0;margin:0; float:left;height:80px;}
-h1.logo a {display:block;overflow:hidden; height:78px;line-height:1;color:#fff;}
+h1.logo a {display:block;overflow:hidden; height:78px;line-height:1;color:#666;}
 #multipicker {float:left;text-align:left;}
 #multipicker h3 {/*float:left;*/text-align:left;padding:0; margin:0 0 .2em;width:100%;}
 #multipicker h3 strong {font-size:1.3em;}
@@ -215,9 +215,9 @@ h1.logo a {display:block;overflow:hidden; height:78px;line-height:1;color:#fff;}
 #institution_actions li {text-align:left;list-style:none;margin:0;font-weight:bold;line-height:1.1em;}
 #institution_actions li.changeint {margin-top:1em;font-weight:normal;}
 
-.doublewide .institution_actions_wrapper {height:auto;position:static;width:963px;overflow:auto;}
-.doublewide #institution_actions {position:static;margin-top:.25em;}
-.doublewide #institution_actions li {float:left;margin:0 1.45em .45em 0;}
+.doublewide_institution_actions_wrapper {height:auto;position:relative;float:left;width:963px;margin-left:24px;overflow:auto;}
+.doublewide_institution_actions_wrapper #institution_actions {position:static;margin-top:.25em;}
+.doublewide_institution_actions_wrapper #institution_actions li {float:left;margin:0 1.45em .45em 0;}
 
 
 #eXlogo {position:absolute; background:url(/images/layout/extensionlogo.gif) no-repeat left top;text-indent:-5000px;overflow:none;padding:0;margin:0 0 10px;top:0;right:10px;}
@@ -873,7 +873,7 @@ border-radius: 4px;
 #footer  a:hover.feeds  {padding-left: 28px; background: url(/images/layout/feed.gif) left center no-repeat;}
 .aboutex {padding:.65em 0 .65em 10px;}
 .branding_wrapper {padding-left:10px;width:950px;height:80px;position:relative;margin-bottom:1em;}
-.doublewide .institution_actions_wrapper {width:925px;}
+.doublewide_institution_actions_wrapper {width:925px;}
 
 #content_css_reset {margin:0;padding:0;width:630px;}
 /* this constrains the div when there images or tables that exceed the column width */
@@ -975,3 +975,5 @@ form.aae {clear:both;}
 -moz-border-radius: 10px;
 border-radius: 10px;}
 #add_uploads h3 {margin-top:0;}
+
+#time_with_tz {font-size:1.8em; margin-bottom:1em;}

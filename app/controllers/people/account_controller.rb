@@ -125,7 +125,7 @@ class People::AccountController < ApplicationController
   def login
     @openidmeta = openidmeta(@openiduser)
     if request.post?
-      result = authuser(params[:user_login],params[:user_password])
+      result = authuser(params[:email],params[:password])
       if(AUTH_SUCCESS != result[:code] and result[:localfail])
         if(result[:localfail])
           flash.now[:failure]  = explainauthresult(result[:code])
@@ -150,11 +150,7 @@ class People::AccountController < ApplicationController
       end
     end
   end
-  
-  def authenticate
-    render(:text => 'Invalid Request - Authenticate Method No Longer Used', :status => 401, :layout => false)
-  end
-      
+        
   def signup
     return redirect_to(:controller => '/people/signup', :action => :new, :invite => params[:invite], :status => 301)
   end
