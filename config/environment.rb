@@ -26,9 +26,14 @@ Rails::Initializer.run do |config|
   config.gem "paperclip", :version => '~>2.3', :source => 'http://systems.extension.org/rubygems/'
   config.gem "calendar_date_select"
   config.gem 'gdata', :version => '~>1.1', :lib => 'gdata', :source => 'http://systems.extension.org/rubygems/'
+  # required by cron'd scripts that need to have a lock on running
   config.gem 'lockfile', :version => '~>1.4', :lib => 'lockfile', :source => 'http://systems.extension.org/rubygems/'
+  # required by fetcher library
   config.gem 'SystemTimer', :version => '~>1.2', :lib => 'system_timer', :source => 'http://systems.extension.org/rubygems/'
+  # required for IP branding
   config.gem 'geoip', :source => 'http://systems.extension.org/rubygems/'
+  # required for email parsing
+  config.gem 'mail'
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 

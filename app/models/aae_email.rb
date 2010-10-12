@@ -5,71 +5,104 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-require "tmail"
-require "bounce_email"
+# Vacation Regex processing adapted from
+# http://github.com/whatcould/bounce-email
+# Copyright (c) 2009 Agris Ameriks
+
+require "mail"
 
 class AaeEmail < ActiveRecord::Base
 
   NOTIFY_ADDRESS = 'aaenotify@extension.org'
   PUBLIC_ADDRESS = 'ask-an-expert@extension.org'
+  ESCALATION_ADDRESS = 'aae-escalation@extension.org'
+  
+  # email destination
+  PUBLIC = 'public'
+  EXPERT = 'expert'
+  ESCALATION = 'escalation'
+  UNKNOWN = 'unknown'
+  
+  # email types
+  VACATION = 'vacation'
+  BOUNCE = 'bounce'
+  DIRECT = 'direct'
+  
+  # code for multiple assigns/submits
+  MULTI_QUESTION = 0
+  
   
   def self.receive(email)
-    mail = TMail::Mail.parse(email)
-    bounce = BounceEmail::Mail.new(mail)
-    logger.info("Got mail! #{mail.subject} #{mail.from} #{mail.to} #{mail.message_id} #{mail.date} #{bounce.is_bounce?}")
+    mail = Mail.read_from_string(email)
+    mail.charset='UTF-8'
+    mail_bounced = mail.bounced? ? true : false
+    logger.info("Got mail! #{mail.subject} #{mail.from} #{mail.to} #{mail.message_id} #{mail.date} #{mail_bounced}")
     
-    # was this a bounce?
-    if(bounce.is_bounce?)
-      logger.info("=-=-=-=-=-= Processing bounce email.")      
-      # public?
-      if(mail.to.include?(PUBLIC_ADDRESS))
-        logger.info("=-=-=-=-=-= Processing public bounce #{bounce.type}.")
-        from_address = mail.from[0]
-        # find account
-        if(account = Account.find_by_email(from_address))
-          logger.info("=-=-=-=-=-= Found account match - Account ID #{account.id}.")
-          if(submitted_questions = account.submitted_questions)
-            logger.info("=-=-=-=-=-= Found #{submitted_questions.size} submitted questions.")
-          else
-            logger.info("=-=-=-=-=-= WARNING - found no submitted questions!")
-          end
-        else
-          logger.info("=-=-=-=-=-= WARNING found no account match! - #{from_address}.")
-        end
-      elsif(mail.to.include?(NOTIFY_ADDRESS))
-        logger.info("=-=-=-=-=-= Processing expert bounce #{bounce.type}.")
-        from_address = mail.from[0]
-        # find account
-        if(user = User.find_by_email(from_address))
-          logger.info("=-=-=-=-=-= Found account match - Account ID #{user.id}.")
-          if(assigned_questions = user.assigned_questions)
-            logger.info("=-=-=-=-=-= Found #{assigned_questions.size} assigned questions.")
-          else
-            logger.info("=-=-=-=-=-= WARNING - found no assigned questions!")
-          end
-        else
-          logger.info("=-=-=-=-=-= WARNING found no user match! - #{from_address}.")
-        end
+    from_address = mail.from[0]  
+    if(mail_bounced)
+      # try to get the address from the final recipient
+      if(mail.final_recipient)
+        (spec,email_string) = mail.final_recipient.split(';')
+        from_address = email_string.strip
+      end
+    end        
+    
+    logged_attributes = {:from => from_address, :to => mail.to.join(','), :subject => mail.subject, :message_id => mail.message_id, :mail_date => mail.date, :bounced => mail_bounced, :raw => mail.to_s}
+    
+    if(mail_bounced)
+      logged_attributes.merge!({:bounce_code => mail.error_status, :bounce_diagnostic => mail.diagnostic_code})
+    end
+    
+    # figure out destination
+    if(mail.to.include?(PUBLIC_ADDRESS))
+      logged_attributes[:destination] = PUBLIC
+    elsif(mail.to.include?(NOTIFY_ADDRESS))
+      if(mail.subject =~ /Escalation Report/)
+        logged_attributes[:destination] = ESCALATION
+      else
+        logged_attributes[:destination] = EXPERT
       end
     else
-      logger.info("=-=-=-=-=-= Processing non-bounce email.")      
-      if(mail.to.include?(PUBLIC_ADDRESS))
-        logger.info("=-=-=-=-=-= Processing public mail.")
-      elsif(mail.to.include?(NOTIFY_ADDRESS))
-        logger.info("=-=-=-=-=-= Processing expert mail.")
-      end
-      from_address = mail.from[0]
-      # find account
-      if(account = Account.find_by_email(from_address))
-        logger.info("=-=-=-=-=-= Found account match - Account ID #{account.id}.")
+      logged_attributes[:destination] = UNKNOWN
+    end  
+    
+    # vacation?
+    if(self.is_vacation?(mail))
+      logged_attributes[:vacation] = true
+    end
+    
+
+    
+    # find account
+    if(account = Account.find_by_email(from_address))
+      logged_attributes[:account_id] = account.id
+    end
+    
+    # get submitted or assigned questions
+    if(account)
+      if(logged_attributes[:destination] = PUBLIC)
+        if(submitted_questions = account.submitted_questions.submitted)
+          if(submitted_questions.size == 1)
+            logged_attributes[:submitted_question_id] = submitted_questions[0].id
+          else
+            logged_attributes[:submitted_question_id] = MULTI_QUESTION
+            logged_attributes[:submitted_question_ids] = submitted_questions.map(&:id).join(',')
+          end
+        end
+      elsif(logged_attributes[:destination] = EXPERT)
+        if(assigned_questions = account.assigned_questions.submitted)
+          if(assigned_questions.size == 1)
+            logged_attributes[:submitted_question_id] = assigned_questions[0].id
+          else
+            logged_attributes[:submitted_question_id] = MULTI_QUESTION
+            logged_attributes[:submitted_question_ids] = assigned_questions.map(&:id).join(',')
+          end
+        end
       end
     end
+
       
-    creation_attributes = {:from => mail.from.join(','), :to => mail.to.join(','), :subject => mail.subject, :message_id => mail.message_id, :mail_date => mail.date, :bounced => bounce.is_bounce?}
-    if(bounce.is_bounce?)
-      creation_attributes.merge!({:bounce_code => bounce.code, :bounce_type => bounce.type, :bounce_reason => bounce.reason})
-    end
-    self.create(creation_attributes)
+    self.create(logged_attributes)
   end
   
   
@@ -85,5 +118,22 @@ class AaeEmail < ActiveRecord::Base
       :processed_folder => 'processed',
       :receiver => AaeEmail}
   end
+  
+  ###########################################################
+  # base regex's from http://github.com/whatcould/bounce-email
+  # Copyright (c) 2009 Agris Ameriks
+  #
+  # will catch spamblocks too
+  def self.is_vacation?(mail)
+    if(!mail.bounced?)
+      return true if mail.subject.match(/auto.*reply|vacation|vocation|(out|away).*office|on holiday|abwesenheits|autorespond|Automatische|eingangsbestätigung/i)
+      return true if mail['precedence'].to_s.match(/auto.*(reply|replied|responder|antwort)/i)
+      return true if mail['auto-submitted'].to_s.match(/auto.*(reply|replied|responder|antwort)/i)
+    end
+    false
+  end
+
+  
+
     
 end
