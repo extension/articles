@@ -13,7 +13,7 @@ require "mail"
 
 class AaeEmail < ActiveRecord::Base
 
-  NOTIFY_ADDRESS = 'aaenotify@extension.org'
+  NOTIFY_ADDRESS = 'aae-notify@extension.org'
   PUBLIC_ADDRESS = 'ask-an-expert@extension.org'
   ESCALATION_ADDRESS = 'aae-escalation@extension.org'
   
