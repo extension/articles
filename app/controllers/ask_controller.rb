@@ -60,7 +60,17 @@ class AskController < ApplicationController
       end
     # Question asker submits the question (ie. POST request)
     else
+      @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       
+      
+      if(params[:submitter][:email].blank?)
+        # create a new instance variable for submitter so the form can be repopulated if it doesn't already exist
+        @submitter = PublicUser.new(params[:submitter]) if !@submitter
+        @submitter_email_confirmation = params[:submitter_email_confirmation]
+        render_aae_submission_error('Your email address cannot be blank')
+        return
+      end
+            
       name_hash = {}
       name_hash[:first_name] = params[:submitter][:first_name].strip if !params[:submitter][:first_name].blank?
       name_hash[:last_name] = params[:submitter][:last_name].strip if !params[:submitter][:last_name].blank?
@@ -73,7 +83,6 @@ class AskController < ApplicationController
         @submitter = PublicUser.create({:email => params[:submitter][:email].strip}.merge(name_hash))
       end
       
-      @submitted_question = SubmittedQuestion.new(params[:submitted_question])
       @submitted_question.location_id = params[:location_id]
       @submitted_question.county_id = params[:county_id]
       @submitted_question.status = 'submitted'
