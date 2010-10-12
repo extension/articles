@@ -388,7 +388,7 @@ class NotificationMailer < ActionMailer::Base
      
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
-     @subject        = @subjectlabel+'Incoming question assigned to you'
+     @subject        = "[eXtension Question:#{submitted_question.id}] Incoming question assigned to you"
      @recipients     = notification.user.email
      assigned_at = @sent_on     
      respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
@@ -402,7 +402,7 @@ class NotificationMailer < ActionMailer::Base
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
-     @subject        = @subjectlabel+'Incoming question edited by submitter'
+     @subject        = "[eXtension Question:#{submitted_question.id}] Incoming question edited by submitter"
      @recipients     = notification.user.email
      assigned_at = @sent_on     
      respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
@@ -417,7 +417,7 @@ class NotificationMailer < ActionMailer::Base
      
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
-     @subject        = @subjectlabel+'Incoming question reassigned'
+     @subject        = "[eXtension Question:#{submitted_question.id}] Incoming question reassigned"
      @recipients     = notification.user.email
      assigned_at = @sent_on
      urls = Hash.new
@@ -433,7 +433,7 @@ class NotificationMailer < ActionMailer::Base
      
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
-     @subject        = @subjectlabel+'Incoming question rejected'
+     @subject        = "[eXtension Question:#{submitted_question.id}] Incoming question rejected"
      @recipients     = notification.user.email
      urls = Hash.new
      urls['incoming'] = incoming_url
@@ -447,7 +447,7 @@ class NotificationMailer < ActionMailer::Base
      signature = notification.additionaldata[:signature]
      # base parameters for the email
      self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
-     @subject = "[Message from eXtension] Your question has been responded to by one of our experts."           
+     @subject = "[eXtension Question:#{submitted_question.id}] Your question has been responded to by one of our experts."           
      @recipients     = submitted_question.submitter_email
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
@@ -459,7 +459,7 @@ class NotificationMailer < ActionMailer::Base
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      # base parameters for the email
      self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
-     @subject = "[Message from eXtension] Thank you for your question submission."          
+     @subject = "[eXtension Question:#{submitted_question.id}] Thank you for your question submission."          
      @recipients     = submitted_question.submitter.email
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
@@ -473,7 +473,7 @@ class NotificationMailer < ActionMailer::Base
      respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
-     @subject = "[Message from eXtension] A question you have been assigned has a new comment"          
+     @subject = "[eXtension Question:#{submitted_question.id}] A question you have been assigned has a new comment"          
      @recipients     = notification.user.email
      urls = Hash.new
      urls['question'] = aae_question_url(:id => submitted_question.id)
@@ -485,7 +485,7 @@ class NotificationMailer < ActionMailer::Base
    ### NOTE: not based on a notification
    def aae_escalation_for_category(category, sincehours)
      # base parameters for the email
-     self.base_email('aae_internal')     
+     self.base_email('aae_escalation')     
      @subject        = @subjectlabel+'Ask an Expert Escalation Report'
      
        
