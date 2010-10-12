@@ -1,8 +1,0 @@
---- 
-format: 1
-handler: 
-  commit: 1ce145d78ddfa6a351229f9486bcc5d0a6915200
-  branch: master
-lock: false
-repository_class: Piston::Git::Repository
-repository_url: http://github.com/whatcould/bounce-email.git
