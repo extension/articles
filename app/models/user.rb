@@ -136,34 +136,6 @@ class User < Account
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}
   
-  named_scope :patternsearch, lambda {|searchterm|
-    # remove any leading * to avoid borking mysql
-    # remove any '\' characters because it's WAAAAY too close to the return key
-    # strip '+' characters because it's causing a repitition search error
-    sanitizedsearchterm = searchterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
-    # in the format wordone wordtwo?
-    words = sanitizedsearchterm.split(%r{\s*,\s*|\s+})
-    if(words.length > 1)
-      findvalues = { 
-       :firstword => words[0],
-       :secondword => words[1]
-      }
-      conditions = ["((first_name rlike :firstword AND last_name rlike :secondword) OR (first_name rlike :secondword AND last_name rlike :firstword))",findvalues]
-    elsif(sanitizedsearchterm.to_i != 0)
-      # special case of an id search - needed in admin/colleague searches
-      conditions = ["id = #{sanitizedsearchterm.to_i}"]
-    else
-      findvalues = {
-       :findlogin => sanitizedsearchterm,
-       :findemail => sanitizedsearchterm,
-       :findfirst => sanitizedsearchterm,
-       :findlast => sanitizedsearchterm 
-      }
-      conditions = ["(email rlike :findemail OR login rlike :findlogin OR first_name rlike :findfirst OR last_name rlike :findlast)",findvalues]
-    end
-    {:conditions => conditions}
-  }
-  
   named_scope :filtered, lambda {|options| filterconditions(options)}  
   
   named_scope :missingtags,  :joins => "LEFT JOIN taggings ON (accounts.id = taggings.taggable_id AND taggings.taggable_type = 'User')", :conditions => 'taggings.id IS NULL'

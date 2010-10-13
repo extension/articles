@@ -10,6 +10,7 @@
 # Copyright (c) 2009 Agris Ameriks
 
 require "mail"
+require "fetcher"
 
 class AaeEmail < ActiveRecord::Base
 
@@ -57,11 +58,9 @@ class AaeEmail < ActiveRecord::Base
     if(mail.to.include?(PUBLIC_ADDRESS))
       logged_attributes[:destination] = PUBLIC
     elsif(mail.to.include?(NOTIFY_ADDRESS))
-      if(mail.subject =~ /Escalation Report/)
-        logged_attributes[:destination] = ESCALATION
-      else
-        logged_attributes[:destination] = EXPERT
-      end
+      logged_attributes[:destination] = EXPERT
+    elsif(mail.to.include?(ESCALATION_ADDRESS))
+      logged_attributes[:destination] = ESCALATION
     else
       logged_attributes[:destination] = UNKNOWN
     end  
@@ -76,11 +75,28 @@ class AaeEmail < ActiveRecord::Base
     # find account
     if(account = Account.find_by_email(from_address))
       logged_attributes[:account_id] = account.id
-    end
+    else
+      # let's try to get a little cuter with this
+      # get the user@host - and search like that
+      if(EmailAddress.is_valid_address?(from_address))
+        parsed_address = TMail::Address.parse(from_address)
+        localpart = parsed_address.local
+        domainpart = parsed_address.domain.split('.').slice(-2, 2).join(".") rescue nil
+        if(domainpart)
+          if(accounts = Account.patternsearch(localpart).all(:conditions => "email like '%#{domainpart}%'"))
+            if(accounts.size == 1)
+              # found match!
+              logged_attributes[:account_id] = accounts[0].id
+            end
+          end
+        end
+      end
+    end    
+      
     
     # get submitted or assigned questions
     if(account)
-      if(logged_attributes[:destination] = PUBLIC)
+      if(logged_attributes[:destination] == PUBLIC)
         if(submitted_questions = account.submitted_questions.submitted)
           if(submitted_questions.size == 1)
             logged_attributes[:submitted_question_id] = submitted_questions[0].id
@@ -89,7 +105,7 @@ class AaeEmail < ActiveRecord::Base
             logged_attributes[:submitted_question_ids] = submitted_questions.map(&:id).join(',')
           end
         end
-      elsif(logged_attributes[:destination] = EXPERT)
+      elsif(logged_attributes[:destination] == EXPERT and account.class == 'User')
         if(assigned_questions = account.assigned_questions.submitted)
           if(assigned_questions.size == 1)
             logged_attributes[:submitted_question_id] = assigned_questions[0].id
@@ -100,8 +116,6 @@ class AaeEmail < ActiveRecord::Base
         end
       end
     end
-
-      
     self.create(logged_attributes)
   end
   
@@ -119,11 +133,17 @@ class AaeEmail < ActiveRecord::Base
       :receiver => AaeEmail}
   end
   
+  def self.fetch_email
+    fetcher = Fetcher.create(self.fetcher_config)
+    fetcher.fetch
+  end
+  
   ###########################################################
   # base regex's from http://github.com/whatcould/bounce-email
   # Copyright (c) 2009 Agris Ameriks
   #
-  # will catch spamblocks too
+  # will catch spamblocks too - well some spam blocks - others look like email responses
+  # yes, I'm looking at you "boxbe"
   def self.is_vacation?(mail)
     if(!mail.bounced?)
       return true if mail.subject.match(/auto.*reply|vacation|vocation|(out|away).*office|on holiday|abwesenheits|autorespond|Automatische|eingangsbestätigung/i)
