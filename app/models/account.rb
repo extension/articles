@@ -163,7 +163,7 @@ class Account < ActiveRecord::Base
   def set_login_string
     if(self.login.blank?)
       if(self.type == 'User')
-        self.base_login_string = (self.first_name + self.last_name.each_char[0]).mb_chars.downcase
+        self.base_login_string = (self.first_name + self.last_name.each_char[0]).mb_chars.downcase.gsub!(/[^\w]/,'')
       elsif(self.type == 'PublicUser')
         self.base_login_string = 'public'
       end
