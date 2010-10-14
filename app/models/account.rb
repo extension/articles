@@ -38,7 +38,7 @@ class Account < ActiveRecord::Base
     if(self.type == 'PublicUser' and first_name_string.blank?)
       write_attribute(:first_name, 'Anonymous')
     elsif(!first_name_string.blank?)
-      write_attribute(:first_name, first_name_string)
+      write_attribute(:first_name, first_name_string.strip)
     end
   end
   
@@ -46,7 +46,7 @@ class Account < ActiveRecord::Base
     if(self.type == 'PublicUser' and last_name_string.blank?)
       write_attribute(:last_name, 'Guest')
     elsif(!last_name_string.blank?)
-      write_attribute(:last_name, last_name_string)
+      write_attribute(:last_name, last_name_string.strip)
     end
   end
     
