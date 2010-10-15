@@ -24,6 +24,18 @@ class AaeEmail < ActiveRecord::Base
   ESCALATION = 'escalation'
   UNKNOWN = 'unknown'
   
+  # reply type
+  NEW_QUESTION = 'new_question'
+  PUBLIC_REPLY = 'public_reply'
+  # only relevant to experts
+  REASSIGN_REPLY = 'reassign_reply'
+  ASSIGN_REPLY = 'assign_reply'
+  EDIT_REPLY = 'edit_reply'
+  REJECT_REPLY = 'reject_reply'
+  ESCALATION_REPLY = 'escalation_reply'
+  # and all else
+  TBD = 'tbd'
+  
   # email types
   VACATION = 'vacation'
   BOUNCE = 'bounce'
@@ -32,12 +44,18 @@ class AaeEmail < ActiveRecord::Base
   # code for multiple assigns/submits
   MULTI_QUESTION = 0
   
+  # actions
+  TOLD_SOMEBODY = 'told somebody'
+  IGNORED = 'ignored'
+  REJECTED = 'rejected'
+  COMMENTED = 'commented'
   
-  def self.receive(email)
+  
+  
+  def self.receive(email)  
     mail = Mail.read_from_string(email)
     mail.charset='UTF-8'
     mail_bounced = mail.bounced? ? true : false
-    logger.info("Got mail! #{mail.subject} #{mail.from} #{mail.to} #{mail.message_id} #{mail.date} #{mail_bounced}")
     
     from_address = mail.from[0]  
     if(mail_bounced)
@@ -51,31 +69,82 @@ class AaeEmail < ActiveRecord::Base
     logged_attributes = {:from => from_address, :to => mail.to.join(','), :subject => mail.subject, :message_id => mail.message_id, :mail_date => mail.date, :bounced => mail_bounced, :raw => mail.to_s}
     
     if(mail_bounced)
-      logged_attributes.merge!({:bounce_code => mail.error_status, :bounce_diagnostic => mail.diagnostic_code})
+      logged_attributes.merge!({:bounce_code => mail.error_status, :bounce_diagnostic => mail.diagnostic_code, :retryable => mail.retryable?})
     end
+    
+    # check the subject line for a question id, if we get one, let's use it
+    if(mail.subject =~ /\[eXtension Question:\s*(\d+)\s*\]/)
+      squid = $1
+      if(@submitted_question = SubmittedQuestion.find_by_id(squid))
+        logged_attributes[:submitted_question_id] = @submitted_question.id
+      end
+    end
+    
+    # vacation?
+    if(self.is_vacation?(mail))
+      is_vacation = true
+      logged_attributes[:vacation] = true
+    else
+      is_vacation = false
+    end
+    
+    logged_attributes[:reply_type] = TBD
     
     # figure out destination
     if(mail.to.include?(PUBLIC_ADDRESS))
       logged_attributes[:destination] = PUBLIC
+      if(@submitted_question or mail_bounced or is_vacation)
+        logged_attributes[:reply_type] = PUBLIC_REPLY
+      else 
+        # assume new question
+        logged_attributes[:reply_type] = NEW_QUESTION
+      end        
     elsif(mail.to.include?(NOTIFY_ADDRESS))
       logged_attributes[:destination] = EXPERT
+      # figure out some other attributes if we have them - was this a reassign response, etc.
+      if(mail.subject =~ /question reassigned/)
+        logged_attributes[:reply_type] = REASSIGN_REPLY
+      elsif(mail.subject =~ /question rejected/)
+        logged_attributes[:reply_type] = REJECT_REPLY
+      elsif(mail.subject =~ /question assigned/)
+        logged_attributes[:reply_type] = ASSIGN_REPLY
+      elsif(mail.subject =~ /question edited/)
+        logged_attributes[:reply_type] = EDIT_REPLY
+      end
     elsif(mail.to.include?(ESCALATION_ADDRESS))
       logged_attributes[:destination] = ESCALATION
+      logged_attributes[:reply_type] = ESCALATION_REPLY
     else
       logged_attributes[:destination] = UNKNOWN
     end  
-    
-    # vacation?
-    if(self.is_vacation?(mail))
-      logged_attributes[:vacation] = true
+  
+        
+    # find account
+    if(@account = Account.find_by_email(from_address))
+      logged_attributes[:account_id] = @account.id
+    elsif(@submitted_question)
+      # let's cheat and get the account from the question
+      case logged_attributes[:destination]
+      when PUBLIC
+        # todo - probably should sanity check email with submitter.email (domain or whatever), this could
+        # be a response to the question from another person?
+        if(@submitted_question.submitter)
+          @account = @submitted_question.submitter
+          logged_attributes[:account_id] = @account.id
+        end
+      when EXPERT
+        if((logged_attributes[:reply_type] == ASSIGN_REPLY) or (logged_attributes[:reply_type] == EDIT_REPLY) or (logged_attributes[:reply_type] == REJECT_REPLY))
+          if(@submitted_question.assignee)
+            @account = @submitted_question.assignee
+            logged_attributes[:account_id] = @account.id
+          end
+        elsif(logged_attributes[:reply_type] == REASSIGN_REPLY)
+          # todo - get the last reasssign event, and hope that's it
+        end
+      end
     end
     
-
-    
-    # find account
-    if(account = Account.find_by_email(from_address))
-      logged_attributes[:account_id] = account.id
-    else
+    if(!@account)
       # let's try to get a little cuter with this
       # get the user@host - and search like that
       if(EmailAddress.is_valid_address?(from_address))
@@ -86,38 +155,34 @@ class AaeEmail < ActiveRecord::Base
           if(accounts = Account.patternsearch(localpart).all(:conditions => "email like '%#{domainpart}%'"))
             if(accounts.size == 1)
               # found match!
-              logged_attributes[:account_id] = accounts[0].id
+              @account = accounts[0]
+              logged_attributes[:account_id] = @account.id
+            else # hmmm, we found multiple accounts - we need to probably to do something
+              # todo: do something
             end
           end
         end
       end
     end    
-      
     
-    # get submitted or assigned questions
-    if(account)
+        
+    # get submitted or assigned question - this is a best guess deal, may not be accurate.
+    if(@account and @submitted_question.blank?)
       if(logged_attributes[:destination] == PUBLIC)
-        if(submitted_questions = account.submitted_questions.submitted)
-          if(submitted_questions.size == 1)
-            logged_attributes[:submitted_question_id] = submitted_questions[0].id
-          else
-            logged_attributes[:submitted_question_id] = MULTI_QUESTION
-            logged_attributes[:submitted_question_ids] = submitted_questions.map(&:id).join(',')
-          end
+        if(@submitted_question = @account.submitted_questions.first(:order => 'updated_at DESC'))
+          logged_attributes[:submitted_question_id] = @submitted_question.id
         end
-      elsif(logged_attributes[:destination] == EXPERT and account.class == 'User')
-        if(assigned_questions = account.assigned_questions.submitted)
-          if(assigned_questions.size == 1)
-            logged_attributes[:submitted_question_id] = assigned_questions[0].id
-          else
-            logged_attributes[:submitted_question_id] = MULTI_QUESTION
-            logged_attributes[:submitted_question_ids] = assigned_questions.map(&:id).join(',')
-          end
+      elsif(logged_attributes[:destination] == EXPERT and @account.class == User)
+        if(@submitted_question = @account.assigned_questions.first(:order => 'updated_at DESC'))
+          logged_attributes[:submitted_question_id] = @submitted_question.id
         end
       end
     end
+    
     self.create(logged_attributes)
   end
+  
+  
   
   
   

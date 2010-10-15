@@ -4,11 +4,13 @@ class CreateAaeEmailTable < ActiveRecord::Migration
       t.string   "from"
       t.string   "to"
       t.string  "destination"
+      t.string  "reply_type"
       t.string   "subject"
       t.string   "message_id"
       t.datetime "mail_date"
       t.boolean  "attachments",  :default => false
       t.boolean  "bounced",  :default => false
+      t.boolean  "retryable",  :default => false
       t.boolean  "vacation",  :default => false
       t.string   "bounce_code"
       t.string   "bounce_diagnostic"
@@ -16,6 +18,7 @@ class CreateAaeEmailTable < ActiveRecord::Migration
       t.integer  "submitted_question_id"
       t.string   "submitted_question_ids"
       t.integer  "account_id"
+      t.string  "action_taken"
       t.datetime "created_at"
     end
   end
