@@ -4,5 +4,7 @@
     <p><%= link_to_function 'Find a U.S. Institution', "Effect.toggle('institution_picker','blind', { duration: .4}); setTimeout(set_select_focus, 500);", :class => "sample" %></p>
 </div>
 <script type="text/javascript">
-Effect.BlindUp('institution_picker', {duration: .4});
+if ($('institution_picker')!=null) {
+  Effect.BlindUp('institution_picker', {duration: .4});
+}
 </script>
