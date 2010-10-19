@@ -11,8 +11,12 @@
 
 require "mail"
 require "fetcher"
+require 'Hpricot'
 
 class AaeEmail < ActiveRecord::Base
+  
+  belongs_to :account
+  belongs_to :submitted_question
 
   NOTIFY_ADDRESS = 'aae-notify@extension.org'
   PUBLIC_ADDRESS = 'ask-an-expert@extension.org'
@@ -25,16 +29,18 @@ class AaeEmail < ActiveRecord::Base
   UNKNOWN = 'unknown'
   
   # reply type
-  NEW_QUESTION = 'new_question'
-  PUBLIC_REPLY = 'public_reply'
+  NEW_QUESTION = 'new question'
+  PUBLIC_REPLY = 'public reply'
   # only relevant to experts
-  REASSIGN_REPLY = 'reassign_reply'
-  ASSIGN_REPLY = 'assign_reply'
-  EDIT_REPLY = 'edit_reply'
-  REJECT_REPLY = 'reject_reply'
-  ESCALATION_REPLY = 'escalation_reply'
+  REASSIGN_REPLY = 'reassign reply'
+  ASSIGN_REPLY = 'assign reply'
+  EDIT_REPLY = 'edit reply'
+  REJECT_REPLY = 'reject reply'
+  ESCALATION_REPLY = 'reply'
+  COMMENT_REPLY = 'comment reply'
+  OTHER_REPLY = 'other reply'
   # and all else
-  TBD = 'tbd'
+  UNKNOWN_EMAIL = 'unknown'
   
   # email types
   VACATION = 'vacation'
@@ -45,12 +51,16 @@ class AaeEmail < ActiveRecord::Base
   MULTI_QUESTION = 0
   
   # actions
-  TOLD_SOMEBODY = 'told somebody'
   IGNORED = 'ignored'
   REJECTED = 'rejected'
   COMMENTED = 'commented'
+  REASSIGNED = 'reassigned'
+  FAILURE = "unable to process"
   
-  
+  named_scope :unhandled, :conditions => "action_taken IS NULL or action_taken = 'unhandled'"
+  named_scope :vacations, :conditions => "vacation = 1"
+  named_scope :bounces, :conditions => "bounced = 1"
+    
   
   def self.receive(email)  
     mail = Mail.read_from_string(email)
@@ -88,7 +98,7 @@ class AaeEmail < ActiveRecord::Base
       is_vacation = false
     end
     
-    logged_attributes[:reply_type] = TBD
+    logged_attributes[:reply_type] = UNKNOWN_EMAIL
     
     # figure out destination
     if(mail.to.include?(PUBLIC_ADDRESS))
@@ -110,6 +120,10 @@ class AaeEmail < ActiveRecord::Base
         logged_attributes[:reply_type] = ASSIGN_REPLY
       elsif(mail.subject =~ /question edited/)
         logged_attributes[:reply_type] = EDIT_REPLY
+      elsif(mail.subject =~ /comment/)
+        logged_attributes[:reply_type] = COMMENT_REPLY
+      else
+        logged_attributes[:reply_type] = OTHER_REPLY
       end
     elsif(mail.to.include?(ESCALATION_ADDRESS))
       logged_attributes[:destination] = ESCALATION
@@ -182,9 +196,14 @@ class AaeEmail < ActiveRecord::Base
     self.create(logged_attributes)
   end
   
+  def original_email
+    Mail.read_from_string(self.raw)
+  end
   
-  
-  
+  def plain_text_message
+    mail = self.original_email
+    Hpricot(mail.body.decoded).to_plain_text
+  end
   
   def self.fetcher_config
     {:type => :imap,

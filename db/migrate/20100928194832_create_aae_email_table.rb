@@ -19,7 +19,9 @@ class CreateAaeEmailTable < ActiveRecord::Migration
       t.string   "submitted_question_ids"
       t.integer  "account_id"
       t.string  "action_taken"
+      t.string  "action_taken_at"
       t.datetime "created_at"
+      t.datetime "updated_at"
     end
   end
 

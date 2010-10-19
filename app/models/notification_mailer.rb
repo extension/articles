@@ -482,6 +482,18 @@ class NotificationMailer < ActionMailer::Base
    end
    
    
+   def aae_vacation_response(notification)
+     aae_email = AaeEmail.find(notification.additionaldata[:aae_email_id])
+     submitted_question = aae_email.submitted_question
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
+     @subject = "[eXtension Question:#{submitted_question.id}] A question that you assigned to another expert has a vacation response"           
+     @recipients     = notification.user.email
+     urls = Hash.new
+     urls['question'] = aae_question_url(:id => submitted_question.id)
+     @body           = {:isdemo => @isdemo, :notification => notification,  :aae_email => aae_email, :urls => urls }
+   end
+   
    ### NOTE: not based on a notification
    def aae_escalation_for_category(category, sincehours)
      # base parameters for the email
