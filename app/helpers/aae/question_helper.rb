@@ -63,7 +63,7 @@ def stringify_submitted_question_event(sq_event)
     return "Comment posted by <strong #{qw}>public user</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::COMMENT 
     comment_msg = "Comment posted by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
-    comment_msg = comment_msg + " <span>Comments: #{format_text_for_display(sq_event.response)}</span>" if sq_event.response
+    comment_msg = comment_msg + " <span class='comment_icon'>Comments: #{format_text_for_display(sq_event.response)}</span>" if sq_event.response
     return comment_msg
   else
     return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.recipient) ? sq_event.recipient.fullname : '')} by #{initiated_by_full_name} <span> #{humane_date(sq_event.created_at)} </span>"
