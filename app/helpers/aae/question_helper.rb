@@ -22,11 +22,11 @@ def stringify_submitted_question_event(sq_event)
   
   case sq_event.event_state
   when SubmittedQuestionEvent::ASSIGNED_TO 
-    @recipient = ""
+    recipient_class = ""
     if sq_event.recipient.is_question_wrangler?
-      @recipient = "class='qw'"
+      recipient_class = "class='qw'"
     end
-    reassign_msg = "Assigned to <strong #{@recipient}><a href='/aae/profile?id=#{sq_event.recipient.login}'>#{sq_event.recipient.fullname}</a></strong> by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
+    reassign_msg = "Assigned to <strong #{recipient_class}><a href='/aae/profile?id=#{sq_event.recipient.login}'>#{sq_event.recipient.fullname}</a></strong> by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
     reassign_msg = reassign_msg + " <span>Comments: #{sq_event.response}</span>" if sq_event.response
     return reassign_msg 
   when SubmittedQuestionEvent::RESOLVED 
@@ -61,6 +61,10 @@ def stringify_submitted_question_event(sq_event)
     return "Question closed by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::PUBLIC_RESPONSE
     return "Comment posted by <strong #{qw}>public user</strong> <span> #{humane_date(sq_event.created_at)} </span>"
+  when SubmittedQuestionEvent::COMMENT 
+    reassign_msg = "Comment posted by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
+    reassign_msg = reassign_msg + " <span>Comments: #{sq_event.response}</span>" if sq_event.response
+    return reassign_msg
   else
     return "Submitted question #{sq_event.submitted_question.id.to_s} #{SubmittedQuestion.convert_state_to_text(sq_event.event_state)} #{((sq_event.recipient) ? sq_event.recipient.fullname : '')} by #{initiated_by_full_name} <span> #{humane_date(sq_event.created_at)} </span>"
   end

@@ -362,6 +362,27 @@ class Aae::QuestionController < ApplicationController
     end   
   end
   
+  def comment
+    filteredparams = ParamsFilter.new([:squid,{:comment => :string}],params)
+    if request.post?
+      if(!filteredparams.squid)
+        flash[:failure] = "Question does not exist."
+        redirect_to incoming_url
+      elsif(filteredparams.comment.blank?)
+        flash[:failure] = "Comment cannot be empty."
+        redirect_to aae_question_url(:id => filteredparams.squid.id)
+      else
+        filteredparams.squid.log_comment(@currentuser,filteredparams.comment)
+        flash[:success] = "Comment posted."
+        redirect_to aae_question_url(:id => filteredparams.squid.id)
+      end
+    elsif(filteredparams.squid)
+      redirect_to aae_question_url(:id => filteredparams.squid.id)
+    else
+      redirect_to incoming_url
+    end
+  end
+  
   def reject    
     filteredparams = ParamsFilter.new([:squid],params)
     

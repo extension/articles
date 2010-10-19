@@ -348,6 +348,10 @@ def clean_question_and_answer
   self.asked_question = Hpricot(self.asked_question.sanitize).to_html
 end
 
+def log_comment(commentator,comment)
+  SubmittedQuestionEvent.log_comment(self,self.assignee.blank? ? nil : self.assignee, commentator, comment)
+end
+
 def submitter_fullname
   submitter_name = self.submitter.fullname if self.submitter
   if !submitter_name or submitter_name.strip == ''
@@ -442,13 +446,8 @@ def assign_to(user, assigned_by, comment, public_reopen = false, public_comment 
   end
     
   # update and log
-  update_attributes(:assignee => user)
-  SubmittedQuestionEvent.log_event({:submitted_question => self,
-                                    :recipient => user,
-                                    :initiated_by => assigned_by,
-                                    :event_state => SubmittedQuestionEvent::ASSIGNED_TO,
-                                    :response => comment})
-    
+  update_attributes(:assignee => user)  
+  SubmittedQuestionEvent.log_assignment(self,user,assigned_by,comment)    
   # if this is a reopen reassignment due to the public user commenting on the sq                                  
   if public_comment
     asker_comment = public_comment.response
