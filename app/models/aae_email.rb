@@ -233,6 +233,18 @@ class AaeEmail < ActiveRecord::Base
     end
   end
   
+  def email_response
+    plain_text_response = self.plain_text_message
+    (comment,original) = plain_text_message.split(/-+\s*original\s*message\s*-+/i)
+    if(!original)
+      (comment,original) = plain_text_message.split(/From:.*<ask-an-expert@extension.org>/i)
+    end
+    if(!original)
+      (comment,original) = plain_text_message.split(/<ask-an-expert@extension.org>/i)
+    end
+    return comment
+  end
+    
   def self.fetcher_config
     {:type => :imap,
       :server => 'imap.gmail.com',
