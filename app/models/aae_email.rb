@@ -67,14 +67,21 @@ class AaeEmail < ActiveRecord::Base
     mail.charset='UTF-8'
     mail_bounced = mail.bounced? ? true : false
     
-    from_address = mail.from[0]  
+    if(email_address = EmailAddress.new(mail.from[0]))
+      from_address = mail.from[0]
+    end
+    
     if(mail_bounced)
       # try to get the address from the final recipient
       if(mail.final_recipient)
         (spec,email_string) = mail.final_recipient.split(';')
-        from_address = email_string.strip
+        email_string.strip!
+        if(email_address = EmailAddress.new(email_string))
+          from_address = email_string
+        end
       end
-    end        
+    end
+            
     
     logged_attributes = {:from => from_address, :to => mail.to.join(','), :subject => mail.subject, :message_id => mail.message_id, :mail_date => mail.date, :bounced => mail_bounced, :raw => mail.to_s}
     
@@ -134,51 +141,48 @@ class AaeEmail < ActiveRecord::Base
   
         
     # find account
-    if(@account = Account.find_by_email(from_address))
-      logged_attributes[:account_id] = @account.id
-    elsif(@submitted_question)
-      # let's cheat and get the account from the question
-      case logged_attributes[:destination]
-      when PUBLIC
-        # todo - probably should sanity check email with submitter.email (domain or whatever), this could
-        # be a response to the question from another person?
-        if(@submitted_question.submitter)
-          @account = @submitted_question.submitter
-          logged_attributes[:account_id] = @account.id
-        end
-      when EXPERT
-        if((logged_attributes[:reply_type] == ASSIGN_REPLY) or (logged_attributes[:reply_type] == EDIT_REPLY) or (logged_attributes[:reply_type] == REJECT_REPLY))
-          if(@submitted_question.assignee)
-            @account = @submitted_question.assignee
+    if(email_address)
+      if(@account = Account.find_by_email(email_address))
+        logged_attributes[:account_id] = @account.id
+      elsif(@submitted_question)
+        # let's cheat and get the account from the question
+        case logged_attributes[:destination]
+        when PUBLIC
+          # todo - probably should sanity check email with submitter.email (domain or whatever), this could
+          # be a response to the question from another person?
+          if(@submitted_question.submitter)
+            @account = @submitted_question.submitter
             logged_attributes[:account_id] = @account.id
           end
-        elsif(logged_attributes[:reply_type] == REASSIGN_REPLY)
-          # todo - get the last reasssign event, and hope that's it
-        end
-      end
-    end
-    
-    if(!@account)
-      # let's try to get a little cuter with this
-      # get the user@host - and search like that
-      if(EmailAddress.is_valid_address?(from_address))
-        parsed_address = TMail::Address.parse(from_address)
-        localpart = parsed_address.local
-        domainpart = parsed_address.domain.split('.').slice(-2, 2).join(".") rescue nil
-        if(domainpart)
-          if(accounts = Account.patternsearch(localpart).all(:conditions => "email like '%#{domainpart}%'"))
-            if(accounts.size == 1)
-              # found match!
-              @account = accounts[0]
-              logged_attributes[:account_id] = @account.id
-            else # hmmm, we found multiple accounts - we need to probably to do something
-              # todo: do something
+        when EXPERT
+          if((logged_attributes[:reply_type] == ASSIGN_REPLY) or (logged_attributes[:reply_type] == EDIT_REPLY) or (logged_attributes[:reply_type] == REJECT_REPLY))
+            if(@submitted_question.assignee)
+              assignee_email = EmailAddress.new(@submitted_question.assignee.email)
+              if(assignee_email.base_domain == email_address.base_domain)
+                @account = @submitted_question.assignee
+                logged_attributes[:account_id] = @account.id
+              end
             end
+          elsif(logged_attributes[:reply_type] == REASSIGN_REPLY)
+            # todo - get the last reasssign event, and hope that's it
           end
         end
       end
-    end    
     
+      if(!@account)
+        # let's try to get a little cuter with this
+        # get the user@host - and search like that
+        if(accounts = Account.patternsearch(email_address.local).all(:conditions => "email like '%#{email_address.base_domain}%'"))
+          if(accounts.size == 1)
+            # found match!
+            @account = accounts[0]
+            logged_attributes[:account_id] = @account.id
+          else # hmmm, we found multiple accounts - we need to probably to do something
+            # todo: do something
+          end
+        end
+      end    
+    end # had a valid email address
         
     # get submitted or assigned question - this is a best guess deal, may not be accurate.
     if(@account and @submitted_question.blank?)
@@ -222,6 +226,7 @@ class AaeEmail < ActiveRecord::Base
     fetcher.fetch
   end
   
+
   ###########################################################
   # base regex's from http://github.com/whatcould/bounce-email
   # Copyright (c) 2009 Agris Ameriks
