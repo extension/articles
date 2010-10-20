@@ -149,7 +149,8 @@ class AaeEmail < ActiveRecord::Base
         case logged_attributes[:destination]
         when PUBLIC
           # todo - probably should sanity check email with submitter.email (domain or whatever), this could
-          # be a response to the question from another person?
+          # be a response to the question from another person?  But the odds of different emails with the
+          # public are a lot lower than with the experts
           if(@submitted_question.submitter)
             @account = @submitted_question.submitter
             logged_attributes[:account_id] = @account.id
