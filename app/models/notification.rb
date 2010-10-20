@@ -61,6 +61,8 @@ class Notification < ActiveRecord::Base
   AAE_PUBLIC_COMMENT = 1005 # a public user posted another comment
   AAE_REJECT = 1006 # an expert has rejected a question
   AAE_VACATION_RESPONSE = 1007 # received a vacation response to an assigned question
+  AAE_EXPERT_COMMENT = 1008 # an expert posted a comment
+  
     
   ##########################################
   #  Ask an Expert Notifications - Public
@@ -112,7 +114,7 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission'] 
   MAILERMETHODS[AAE_PUBLIC_COMMENT] = ['aae_public_comment']   
   MAILERMETHODS[AAE_VACATION_RESPONSE] = ['aae_vacation_response']   
-
+  MAILERMETHODS[AAE_EXPERT_COMMENT] = ['aae_expert_comment']   
   MAILERMETHODS[LEARN_UPCOMING_SESSION] = ['learn_upcoming_session']   
 
   

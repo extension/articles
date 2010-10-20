@@ -494,6 +494,19 @@ class NotificationMailer < ActionMailer::Base
      @body           = {:isdemo => @isdemo, :notification => notification,  :aae_email => aae_email, :urls => urls }
    end
    
+   def aae_expert_comment(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     comment = notification.additionaldata[:comment]
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s)
+     @subject = "[eXtension Question:#{submitted_question.id}] A question you have been assigned has a new comment from an expert"          
+     @recipients     = notification.user.email
+     urls = Hash.new
+     urls['question'] = aae_question_url(:id => submitted_question.id)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :comment => comment, :urls => urls}
+   end
+   
    ### NOTE: not based on a notification
    def aae_escalation_for_category(category, sincehours)
      # base parameters for the email

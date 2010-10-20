@@ -84,7 +84,11 @@ def handle_vacations
               # no latest handling event, ignore and notify hall monitors
               aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
             end
-          end              
+          else
+            # submitted question, but no account, since in the AaeEmail fetch, we try a best effort to 
+            # match assignee to account, we are just going to fail here.
+            aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::FAILURE)
+          end
         else
           # all other replies - ignore it
           aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
@@ -187,6 +191,65 @@ def handle_bounces
   end # empty list
 end
 
+def handle_escalation_replies
+  # just ignore them all 
+  escalation_emails = AaeEmail.unhandled.escalations
+  if(!escalation_emails.blank?)
+    escalation_emails.each do |aae_email|
+      # should have handled the bounces and vacations already, but don't process those if still here
+      if(!aae_email.bounced? and !aae_email.vacation?)
+        aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
+      end
+    end
+  end
+end
+
+def handle_expert_replies
+  expert_emails = AaeEmail.unhandled.experts
+  if(!expert_emails.blank?)
+    expert_emails.each do |aae_email|
+      # should have handled the bounces and vacations already, but don't process those if still here
+      if(!aae_email.bounced? and !aae_email.vacation?)
+        # if we have a submitted question and an user account, post a comment.  If not, ignore it.
+        if(aae_email.submitted_question and aae_email.account and aae_email.account.class == User)
+          # this split really only works for top-posted replies and for the specific delimiter, but that's the most common
+          # if not a match, we'll get the whole message, which I'm sure will generate a complaint
+          (comment,original) = aae_email.plain_text_message.split(/-+\s*original\s*message\s*-+/i)
+          aae_email.submitted_question.log_comment(aae_email.account, comment)          
+          aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::COMMENTED)
+          # notification
+          if(aae_email.submitted_question.assignee)
+            Notification.create(:notifytype => Notification::AAE_EXPERT_COMMENT, :user => aae_email.submitted_question.assignee, :additionaldata => {:submitted_question_id => aae_email.submitted_question.id, :comment => comment})
+          end
+        else
+          aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
+        end
+      end
+    end
+  end
+end
+
+def handle_public_replies
+  # just ignore them all 
+  public_emails = AaeEmail.unhandled.publics
+  if(!public_emails.blank?)
+    public_emails.each do |aae_email|
+      if(!aae_email.bounced? and !aae_email.vacation?)
+        if(aae_email.reply_type == PUBLIC_REPLY)
+          # post a public comment
+        elsif(aae_email.reply_type == NEW_QUESTION)
+          # post a new question
+        else
+          # ignore
+          aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
+        end
+      end
+    end
+  end
+end
+
+  
+
 begin
   Lockfile.new('/tmp/cron_mail_fetcher.lock', :retries => 0) do
     if(!@skip_fetch)
@@ -194,6 +257,9 @@ begin
     end
     handle_vacations
     handle_bounces
+    handle_escalation_replies
+    handle_expert_replies
+    # handle_public_replies
   end
 rescue Lockfile::MaxTriesLockError => e
   puts "Another fetcher is already running. Exiting."

@@ -60,7 +60,10 @@ class AaeEmail < ActiveRecord::Base
   named_scope :unhandled, :conditions => "action_taken IS NULL or action_taken = 'unhandled'"
   named_scope :vacations, :conditions => "vacation = 1"
   named_scope :bounces, :conditions => "bounced = 1"
-    
+  named_scope :escalations, :conditions => "destination = '#{ESCALATION}'"
+  named_scope :experts, :conditions => "destination = '#{EXPERT}'"
+  named_scope :publics, :conditions => "destination = '#{PUBLIC}'"
+  
   
   def self.receive(email)  
     mail = Mail.read_from_string(email)
@@ -198,6 +201,13 @@ class AaeEmail < ActiveRecord::Base
       end
     end
     
+    # attachements?
+    if(!mail.attachments.blank?)
+      logged_attributes[:attachments] = true
+    else
+      logged_attributes[:attachments] = false
+    end
+    
     self.create(logged_attributes)
   end
   
@@ -207,7 +217,20 @@ class AaeEmail < ActiveRecord::Base
   
   def plain_text_message
     mail = self.original_email
-    Hpricot(mail.body.decoded).to_plain_text
+    if(mail.multipart?)
+      if(mail.parts[0].multipart?)
+        if(mail.parts[0].parts[0].multipart?)
+          # give up
+          return ''
+        else
+          Hpricot(mail.parts[0].parts[0].decoded).to_plain_text
+        end
+      else
+        Hpricot(mail.parts[0].decoded).to_plain_text
+      end
+    else
+      Hpricot(mail.body.decoded).to_plain_text
+    end
   end
   
   def self.fetcher_config
