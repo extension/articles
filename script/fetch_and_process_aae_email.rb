@@ -115,7 +115,7 @@ def handle_bounces
             aae_email.submitted_question.add_resolution(SubmittedQuestion::STATUS_REJECTED, User.systemuser, comment)
             if(aae_email.submitted_question.assignee)
               Notification.create(:notifytype => Notification::AAE_REJECT, :user => aae_email.submitted_question.assignee, 
-                                  :creator => User.systemuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :reject_message => comment})
+                                  :creator => User.systemuser, :additionaldata => {:submitted_question_id => aae_email.submitted_question.id, :reject_message => comment})
             end
             aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REJECTED)
           end
@@ -214,7 +214,7 @@ def handle_expert_replies
         if(aae_email.submitted_question and aae_email.account and aae_email.account.class == User)
           # this split really only works for top-posted replies and for the specific delimiter, but that's the most common
           # if not a match, we'll get the whole message, which I'm sure will generate a complaint
-          (comment,original) = aae_email.plain_text_message.split(/-+\s*original\s*message\s*-+/i)
+          comment = aae_email.email_response
           aae_email.submitted_question.log_comment(aae_email.account, comment)          
           aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::COMMENTED)
           # notification
@@ -231,16 +231,60 @@ end
 
 def handle_public_replies
   # just ignore them all 
-  public_emails = AaeEmail.unhandled.publics
+  public_emails = AaeEmail.unhandled.public_replies
   if(!public_emails.blank?)
     public_emails.each do |aae_email|
       if(!aae_email.bounced? and !aae_email.vacation?)
-        if(aae_email.reply_type == PUBLIC_REPLY)
-          # post a public comment
-        elsif(aae_email.reply_type == NEW_QUESTION)
-          # post a new question
-        else
-          # ignore
+        # post a public comment
+        if(aae_email.submitted_question and aae_email.account)
+          # this split really only works for top-posted replies and for the specific delimiter, but that's the most common
+          # if not a match, we'll get the whole message, which I'm sure will generate a complaint
+          comment = aae_email.email_response
+          if(!comment.blank?)
+            # don't accept duplicates
+            if(!Response.find(:first, :conditions => {:submitted_question_id => aae_email.submitted_question.id, :response => comment, :submitter_id => aae_email.account.id}))
+              response = Response.new(:submitter => aae_email.account, :submitted_question => aae_email.submitted_question, :response => comment, :sent => true)
+
+              if(aae_email.attachments?)
+                # # gotta handle the attachments
+                #   # load up array of passed in photo parameters based on how many are allowed
+                #   photo_array = get_photo_array
+                #   # create each file upload and check for errors
+                #   photo_array.each do |photo_params|
+                #     photo_to_upload = FileAttachment.create(photo_params) 
+                #     if !photo_to_upload.valid?
+                #       render_aae_response_error("Errors occured when uploading one of your images:<br />" + photo_to_upload.errors.full_messages.join('<br />'))        
+                #       return
+                #     else
+                #       response.file_attachments << photo_to_upload
+                #     end   
+                #   end
+              end
+              
+              response.save
+              if aae_email.submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED
+                aae_email.submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED)
+                SubmittedQuestionEvent.log_public_response(aae_email.submitted_question, aae_email.account.id)
+                SubmittedQuestionEvent.log_reopen(aae_email.submitted_question, aae_email.submitted_question.assignee ? aae_email.submitted_question.assignee : nil, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT)
+                if(aae_email.submitted_question.assignee)
+                  aae_email.submitted_question.assign_to(aae_email.submitted_question.assignee, User.systemuser, 
+                                                         SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT, true, response)
+                end
+              else
+                if(aae_email.submitted_question.assignee)
+                  Notification.create(:notifytype => Notification::AAE_PUBLIC_COMMENT, :user => aae_email.submitted_question.assignee, 
+                                      :additionaldata => {:submitted_question_id => aae_email.submitted_question.id, :response_id => response.id})
+                end
+                SubmittedQuestionEvent.log_public_response(aae_email.submitted_question, aae_email.account.id)
+              end
+              aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::COMMENTED)
+            else # found a duplicate response
+              aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
+            end
+          else # blank comment
+            aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
+          end
+        else # no submitted question and/or no account
           aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
         end
       end
@@ -248,6 +292,8 @@ def handle_public_replies
   end
 end
 
+def handle_public_new_questions
+end
   
 
 begin
@@ -259,7 +305,7 @@ begin
     handle_bounces
     handle_escalation_replies
     handle_expert_replies
-    # handle_public_replies
+    handle_public_replies
   end
 rescue Lockfile::MaxTriesLockError => e
   puts "Another fetcher is already running. Exiting."
