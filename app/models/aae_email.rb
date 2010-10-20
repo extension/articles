@@ -63,7 +63,7 @@ class AaeEmail < ActiveRecord::Base
   named_scope :escalations, :conditions => "destination = '#{ESCALATION}'"
   named_scope :experts, :conditions => "destination = '#{EXPERT}'"
   named_scope :publics, :conditions => "destination = '#{PUBLIC}'"
-  
+  named_scope :public_replies, :conditions => "destination = '#{PUBLIC}' and reply_type = '#{PUBLIC_REPLY}'"
   
   def self.receive(email)  
     mail = Mail.read_from_string(email)
@@ -83,8 +83,7 @@ class AaeEmail < ActiveRecord::Base
           from_address = email_string
         end
       end
-    end
-            
+    end    
     
     logged_attributes = {:from => from_address, :to => mail.to.join(','), :subject => mail.subject, :message_id => mail.message_id, :mail_date => mail.date, :bounced => mail_bounced, :raw => mail.to_s}
     
@@ -95,8 +94,8 @@ class AaeEmail < ActiveRecord::Base
     # check the subject line for a question id, if we get one, let's use it
     if(mail.subject =~ /\[eXtension Question:\s*(\d+)\s*\]/)
       squid = $1
-      if(@submitted_question = SubmittedQuestion.find_by_id(squid))
-        logged_attributes[:submitted_question_id] = @submitted_question.id
+      if(submitted_question = SubmittedQuestion.find_by_id(squid))
+        logged_attributes[:submitted_question_id] = submitted_question.id
       end
     end
     
@@ -113,7 +112,7 @@ class AaeEmail < ActiveRecord::Base
     # figure out destination
     if(mail.to.include?(PUBLIC_ADDRESS))
       logged_attributes[:destination] = PUBLIC
-      if(@submitted_question or mail_bounced or is_vacation)
+      if(submitted_question or mail_bounced or is_vacation)
         logged_attributes[:reply_type] = PUBLIC_REPLY
       else 
         # assume new question
@@ -145,26 +144,26 @@ class AaeEmail < ActiveRecord::Base
         
     # find account
     if(email_address)
-      if(@account = Account.find_by_email(email_address))
-        logged_attributes[:account_id] = @account.id
-      elsif(@submitted_question)
+      if(account = Account.find_by_email(email_address))
+        logged_attributes[:account_id] = account.id
+      elsif(submitted_question)
         # let's cheat and get the account from the question
         case logged_attributes[:destination]
         when PUBLIC
           # todo - probably should sanity check email with submitter.email (domain or whatever), this could
           # be a response to the question from another person?  But the odds of different emails with the
           # public are a lot lower than with the experts
-          if(@submitted_question.submitter)
-            @account = @submitted_question.submitter
-            logged_attributes[:account_id] = @account.id
+          if(submitted_question.submitter)
+            account = submitted_question.submitter
+            logged_attributes[:account_id] = account.id
           end
         when EXPERT
           if((logged_attributes[:reply_type] == ASSIGN_REPLY) or (logged_attributes[:reply_type] == EDIT_REPLY) or (logged_attributes[:reply_type] == REJECT_REPLY))
-            if(@submitted_question.assignee)
-              assignee_email = EmailAddress.new(@submitted_question.assignee.email)
+            if(submitted_question.assignee)
+              assignee_email = EmailAddress.new(submitted_question.assignee.email)
               if(assignee_email.base_domain == email_address.base_domain)
-                @account = @submitted_question.assignee
-                logged_attributes[:account_id] = @account.id
+                account = submitted_question.assignee
+                logged_attributes[:account_id] = account.id
               end
             end
           elsif(logged_attributes[:reply_type] == REASSIGN_REPLY)
@@ -173,14 +172,14 @@ class AaeEmail < ActiveRecord::Base
         end
       end
     
-      if(!@account)
+      if(!account)
         # let's try to get a little cuter with this
         # get the user@host - and search like that
         if(accounts = Account.patternsearch(email_address.local).all(:conditions => "email like '%#{email_address.base_domain}%'"))
           if(accounts.size == 1)
             # found match!
-            @account = accounts[0]
-            logged_attributes[:account_id] = @account.id
+            account = accounts[0]
+            logged_attributes[:account_id] = account.id
           else # hmmm, we found multiple accounts - we need to probably to do something
             # todo: do something
           end
@@ -189,14 +188,14 @@ class AaeEmail < ActiveRecord::Base
     end # had a valid email address
         
     # get submitted or assigned question - this is a best guess deal, may not be accurate.
-    if(@account and @submitted_question.blank?)
+    if(account and submitted_question.blank?)
       if(logged_attributes[:destination] == PUBLIC)
-        if(@submitted_question = @account.submitted_questions.first(:order => 'updated_at DESC'))
-          logged_attributes[:submitted_question_id] = @submitted_question.id
+        if(submitted_question = account.submitted_questions.first(:order => 'updated_at DESC'))
+          logged_attributes[:submitted_question_id] = submitted_question.id
         end
-      elsif(logged_attributes[:destination] == EXPERT and @account.class == User)
-        if(@submitted_question = @account.assigned_questions.first(:order => 'updated_at DESC'))
-          logged_attributes[:submitted_question_id] = @submitted_question.id
+      elsif(logged_attributes[:destination] == EXPERT and account.class == User)
+        if(submitted_question = account.assigned_questions.first(:order => 'updated_at DESC'))
+          logged_attributes[:submitted_question_id] = submitted_question.id
         end
       end
     end
