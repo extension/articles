@@ -58,7 +58,7 @@ class AaeEmail < ActiveRecord::Base
   COMMENTED = 'commented'
   REASSIGNED = 'reassigned'
   FAILURE = "unable to process"
-  REPLIES = "replied"
+  REPLIED = "replied"
   
   named_scope :unhandled, :conditions => "action_taken IS NULL or action_taken = 'unhandled'"
   named_scope :vacations, :conditions => "vacation = 1"
@@ -96,7 +96,7 @@ class AaeEmail < ActiveRecord::Base
     end
     
     # check the subject line for a question id, if we get one, let's use it
-    if(mail.subject =~ /\[eXtension Question:\s*(\d+)\s*\]/)
+    if(mail.subject =~ /.*\[eXtension Question:\s*(\d+)\s*\]/)
       squid = $1
       if(submitted_question = SubmittedQuestion.find_by_id(squid))
         logged_attributes[:submitted_question_id] = submitted_question.id
@@ -167,7 +167,7 @@ class AaeEmail < ActiveRecord::Base
           if((logged_attributes[:reply_type] == ASSIGN_REPLY) or (logged_attributes[:reply_type] == EDIT_REPLY) or (logged_attributes[:reply_type] == REJECT_REPLY))
             if(submitted_question.assignee)
               assignee_email = EmailAddress.new(submitted_question.assignee.email)
-              if(assignee_email.base_domain == email_address.base_domain)
+              if((assignee_email.base_domain == email_address.base_domain) or (assignee_email.local == email_address.local))
                 account = submitted_question.assignee
                 logged_attributes[:account_id] = account.id
               end
