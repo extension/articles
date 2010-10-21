@@ -267,7 +267,6 @@ class AaeEmail < ActiveRecord::Base
   # Copyright (c) 2009 Agris Ameriks
   #
   # will catch spamblocks too - well some spam blocks - others look like email responses
-  # yes, I'm looking at you "boxbe"
   def self.is_vacation?(mail)
     if(!mail.bounced?)
       return true if mail.subject.match(/auto.*reply|vacation|vocation|(out|away).*office|on holiday|abwesenheits|autorespond|Automatische|eingangsbestätigung/i)
@@ -275,7 +274,7 @@ class AaeEmail < ActiveRecord::Base
       return true if mail['auto-submitted'].to_s.match(/auto.*(reply|replied|responder|antwort)/i)
       # try to match the body as well
       plain_body = Hpricot(mail.body.decoded).to_plain_text
-      return true if plain_body.match(/auto.*reply|vacation|vocation|(out|away).*office|on holiday|abwesenheits|autorespond|Automatische|eingangsbestätigung/i)
+      return true if plain_body.match(/boxbe|auto.*reply|vacation|vocation|(out|away).*office|on holiday|abwesenheits|autorespond|Automatische|eingangsbestätigung/i)
     end
     false
   end
