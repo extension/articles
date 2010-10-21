@@ -1,5 +1,5 @@
 <%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
-Hello <%= @notification.user.first_name %>,
+Hello <%= @notification.account.first_name %>,
 
 Thank you for your email to our Ask an Expert system.  We are not able to process email replies at this time.  
 <%- if @urls['question']- %>
