@@ -70,7 +70,7 @@ def handle_vacations
                     comment = "Detected a vacation response on question assignment. Sending a notification."
                     aae_email.submitted_question.log_comment(User.systemuser, comment)
                     aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::COMMENTED)
-                    Notification.create(:notifytype => Notification::AAE_VACATION_RESPONSE, :user => event.initiated_by, :additionaldata => {:aae_email_id => aae_email.id})
+                    Notification.create(:notifytype => Notification::AAE_VACATION_RESPONSE, :account => event.initiated_by, :additionaldata => {:aae_email_id => aae_email.id})
                   end
                 else
                   # self-assigned, ignore and notify hall monitors
@@ -114,7 +114,7 @@ def handle_bounces
             comment = "Detected a email bounce from the public email address. Automatically rejecting question, the public email will never receive it."
             aae_email.submitted_question.add_resolution(SubmittedQuestion::STATUS_REJECTED, User.systemuser, comment)
             if(aae_email.submitted_question.assignee)
-              Notification.create(:notifytype => Notification::AAE_REJECT, :user => aae_email.submitted_question.assignee, 
+              Notification.create(:notifytype => Notification::AAE_REJECT, :account => aae_email.submitted_question.assignee, 
                                   :creator => User.systemuser, :additionaldata => {:submitted_question_id => aae_email.submitted_question.id, :reject_message => comment})
             end
             aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REJECTED)
@@ -157,7 +157,7 @@ def handle_bounces
                       comment = "Detected a temporary bounce response on question assignment. Sending a notification."
                       aae_email.submitted_question.log_comment(User.systemuser, comment)
                       aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::COMMENTED)
-                      Notification.create(:notifytype => Notification::AAE_VACATION_RESPONSE, :user => event.initiated_by, :additionaldata => {:aae_email_id => aae_email.id})
+                      Notification.create(:notifytype => Notification::AAE_VACATION_RESPONSE, :account => event.initiated_by, :additionaldata => {:aae_email_id => aae_email.id})
                     else
                       # assign to question wrangler, that's easier
                       if(aae_email.account)
@@ -210,17 +210,11 @@ def handle_expert_replies
     expert_emails.each do |aae_email|
       # should have handled the bounces and vacations already, but don't process those if still here
       if(!aae_email.bounced? and !aae_email.vacation?)
-        # if we have a submitted question and an user account, post a comment.  If not, ignore it.
+        # if we have a submitted question and an user account - send them a notification, else ignore it
         if(aae_email.submitted_question and aae_email.account and aae_email.account.class == User)
-          # this split really only works for top-posted replies and for the specific delimiter, but that's the most common
-          # if not a match, we'll get the whole message, which I'm sure will generate a complaint
-          comment = aae_email.email_response
-          aae_email.submitted_question.log_comment(aae_email.account, comment)          
-          aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::COMMENTED)
           # notification
-          if(aae_email.submitted_question.assignee)
-            Notification.create(:notifytype => Notification::AAE_EXPERT_COMMENT, :user => aae_email.submitted_question.assignee, :additionaldata => {:submitted_question_id => aae_email.submitted_question.id, :comment => comment})
-          end
+          Notification.create(:notifytype => Notification::AAE_EXPERT_NOREPLY, :account => aae_email.account, :additionaldata => {:submitted_question_id => aae_email.submitted_question.id})
+          aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REPLIED)          
         else
           aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
         end
@@ -237,54 +231,10 @@ def handle_public_replies
       if(!aae_email.bounced? and !aae_email.vacation?)
         # post a public comment
         if(aae_email.submitted_question and aae_email.account)
-          # this split really only works for top-posted replies and for the specific delimiter, but that's the most common
-          # if not a match, we'll get the whole message, which I'm sure will generate a complaint
-          comment = aae_email.email_response
-          if(!comment.blank?)
-            # don't accept duplicates
-            if(!Response.find(:first, :conditions => {:submitted_question_id => aae_email.submitted_question.id, :response => comment, :submitter_id => aae_email.account.id}))
-              response = Response.new(:submitter => aae_email.account, :submitted_question => aae_email.submitted_question, :response => comment, :sent => true)
-
-              if(aae_email.attachments?)
-                # # gotta handle the attachments
-                #   # load up array of passed in photo parameters based on how many are allowed
-                #   photo_array = get_photo_array
-                #   # create each file upload and check for errors
-                #   photo_array.each do |photo_params|
-                #     photo_to_upload = FileAttachment.create(photo_params) 
-                #     if !photo_to_upload.valid?
-                #       render_aae_response_error("Errors occured when uploading one of your images:<br />" + photo_to_upload.errors.full_messages.join('<br />'))        
-                #       return
-                #     else
-                #       response.file_attachments << photo_to_upload
-                #     end   
-                #   end
-              end
-              
-              response.save
-              if aae_email.submitted_question.status_state != SubmittedQuestion::STATUS_SUBMITTED
-                aae_email.submitted_question.update_attributes(:status => SubmittedQuestion::SUBMITTED_TEXT, :status_state => SubmittedQuestion::STATUS_SUBMITTED)
-                SubmittedQuestionEvent.log_public_response(aae_email.submitted_question, aae_email.account.id)
-                SubmittedQuestionEvent.log_reopen(aae_email.submitted_question, aae_email.submitted_question.assignee ? aae_email.submitted_question.assignee : nil, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT)
-                if(aae_email.submitted_question.assignee)
-                  aae_email.submitted_question.assign_to(aae_email.submitted_question.assignee, User.systemuser, 
-                                                         SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT, true, response)
-                end
-              else
-                if(aae_email.submitted_question.assignee)
-                  Notification.create(:notifytype => Notification::AAE_PUBLIC_COMMENT, :user => aae_email.submitted_question.assignee, 
-                                      :additionaldata => {:submitted_question_id => aae_email.submitted_question.id, :response_id => response.id})
-                end
-                SubmittedQuestionEvent.log_public_response(aae_email.submitted_question, aae_email.account.id)
-              end
-              aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::COMMENTED)
-            else # found a duplicate response
-              aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
-            end
-          else # blank comment
-            aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
-          end
-        else # no submitted question and/or no account
+          # notification
+          Notification.create(:notifytype => Notification::AAE_PUBLIC_NOREPLY, :account => aae_email.account, :additionaldata => {:submitted_question_id => aae_email.submitted_question.id})
+          aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REPLIED)          
+        else
           aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
         end
       end
@@ -292,8 +242,25 @@ def handle_public_replies
   end
 end
 
-def handle_public_new_questions
+def handle_public_questions
+  # just ignore them all 
+  public_emails = AaeEmail.unhandled.public_questions
+  if(!public_emails.blank?)
+    public_emails.each do |aae_email|
+      if(!aae_email.bounced? and !aae_email.vacation?)
+        # post a public comment
+        if(aae_email.account)
+          # notification
+          Notification.create(:notifytype => Notification::AAE_PUBLIC_NOQUESTION, :account => aae_email.account)
+          aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REPLIED)          
+        else
+          aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
+        end
+      end
+    end
+  end
 end
+
   
 
 begin
@@ -306,6 +273,7 @@ begin
     handle_escalation_replies
     handle_expert_replies
     handle_public_replies
+    handle_public_questions
   end
 rescue Lockfile::MaxTriesLockError => e
   puts "Another fetcher is already running. Exiting."

@@ -528,7 +528,7 @@ class NotificationMailer < ActionMailer::Base
      # base parameters for the email
      self.base_email('aae_noreply')
      @subject = "[eXtension Ask an Expert] You've replied to our no-reply address."          
-     @recipients     = submitted_question.submitter_email
+     @recipients     = notification.account.email
      urls['askanexpert'] = ask_form_url
      @body           = {:isdemo => @isdemo, :notification => notification, :urls => urls}
    end
@@ -538,7 +538,7 @@ class NotificationMailer < ActionMailer::Base
       # base parameters for the email
       self.base_email('aae_noreply')
       @subject = "[eXtension Ask an Expert] You've sent an email to our no-reply address."          
-      @recipients     = submitted_question.submitter_email
+      @recipients     = notification.account.email
       urls['askanexpert'] = ask_form_url
       @body           = {:isdemo => @isdemo, :notification => notification, :urls => urls}
     end  

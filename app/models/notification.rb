@@ -62,15 +62,18 @@ class Notification < ActiveRecord::Base
   AAE_REJECT = 1006 # an expert has rejected a question
   AAE_VACATION_RESPONSE = 1007 # received a vacation response to an assigned question
   AAE_EXPERT_COMMENT = 1008 # an expert posted a comment
-  
+  AAE_EXPERT_NOREPLY = 1009 # an expert replied to the no-reply address
+
     
   ##########################################
   #  Ask an Expert Notifications - Public
   
   NOTIFICATION_AAE_PUBLIC = [2000,2099]   # 'aae-public'
   AAE_PUBLIC_EXPERT_RESPONSE = 2001  # notification of an expert response, also "A Space Odyssey"
+  AAE_PUBLIC_NOREPLY = 2002 # public replied to the no-reply address
+  AAE_PUBLIC_NOQUESTION = 2003 # public sent a new question to the no-reply address
   AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT = 2010  # notification of submission, also "The Year We Make Contact"
-  
+
   ##########################################
   #  Learn Notifications
   
@@ -114,7 +117,10 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission'] 
   MAILERMETHODS[AAE_PUBLIC_COMMENT] = ['aae_public_comment']   
   MAILERMETHODS[AAE_VACATION_RESPONSE] = ['aae_vacation_response']   
-  MAILERMETHODS[AAE_EXPERT_COMMENT] = ['aae_expert_comment']   
+  MAILERMETHODS[AAE_EXPERT_NOREPLY] = ['aae_expert_noreply']   
+  MAILERMETHODS[AAE_PUBLIC_NOREPLY] = ['aae_public_noreply']   
+  MAILERMETHODS[AAE_PUBLIC_NOQUESTION] = ['aae_public_noquestion']   
+
   MAILERMETHODS[LEARN_UPCOMING_SESSION] = ['learn_upcoming_session']   
 
   
