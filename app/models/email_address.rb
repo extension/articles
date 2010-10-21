@@ -24,11 +24,11 @@ class EmailAddress
   end
     
   def domain
-    @parsed_email_address.domain
+    @parsed_email_address.domain.downcase
   end
     
   def local
-    @parsed_email_address.local
+    @parsed_email_address.local.downcase
   end
   
   def inspect
