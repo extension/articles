@@ -21,11 +21,13 @@ class AaeEmail < ActiveRecord::Base
   NOTIFY_ADDRESS = 'aae-notify@extension.org'
   PUBLIC_ADDRESS = 'ask-an-expert@extension.org'
   ESCALATION_ADDRESS = 'aae-escalation@extension.org'
+  NOREPLY_ADDRESS = 'aae-noreply@extension.org'
   
   # email destination
   PUBLIC = 'public'
   EXPERT = 'expert'
   ESCALATION = 'escalation'
+  NOREPLY = 'noreply'
   UNKNOWN = 'unknown'
   
   # reply type
@@ -56,6 +58,7 @@ class AaeEmail < ActiveRecord::Base
   COMMENTED = 'commented'
   REASSIGNED = 'reassigned'
   FAILURE = "unable to process"
+  REPLIES = "replied"
   
   named_scope :unhandled, :conditions => "action_taken IS NULL or action_taken = 'unhandled'"
   named_scope :vacations, :conditions => "vacation = 1"
@@ -64,6 +67,7 @@ class AaeEmail < ActiveRecord::Base
   named_scope :experts, :conditions => "destination = '#{EXPERT}'"
   named_scope :publics, :conditions => "destination = '#{PUBLIC}'"
   named_scope :public_replies, :conditions => "destination = '#{PUBLIC}' and reply_type = '#{PUBLIC_REPLY}'"
+  named_scope :public_questions, :conditions => "destination = '#{PUBLIC}' and reply_type = '#{NEW_QUESTION}'"
   
   def self.receive(email)  
     mail = Mail.read_from_string(email)
@@ -137,6 +141,8 @@ class AaeEmail < ActiveRecord::Base
     elsif(mail.to.include?(ESCALATION_ADDRESS))
       logged_attributes[:destination] = ESCALATION
       logged_attributes[:reply_type] = ESCALATION_REPLY
+    elsif(mail.to.include?(NO_REPLY))
+      logged_attributes[:destination] = NOREPLY
     else
       logged_attributes[:destination] = UNKNOWN
     end  
