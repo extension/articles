@@ -121,9 +121,9 @@ class Notification < ActiveRecord::Base
   # TODO: add description labels that can get strings from the locale tabel describing each 
   
 
-  belongs_to :user
+  belongs_to :account
   belongs_to :community # for many of the notification types
-  belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
+  belongs_to :creator, :class_name => "Account", :foreign_key => "created_by"
   serialize :additionaldata
   
   before_create :createnotification?
@@ -237,24 +237,24 @@ class Notification < ActiveRecord::Base
     end
   end
   
-  def self.userevent(notificationcode,user,community)
+  def self.userevent(notificationcode,account,community)
     case notificationcode
     when COMMUNITY_LEADER_ADDMEMBER
-      userevent = "added #{user.login} to #{community.name} membership"
+      userevent = "added #{account.login} to #{community.name} membership"
     when COMMUNITY_LEADER_ADDLEADER
-      userevent = "added #{user.login} to #{community.name} leadership"
+      userevent = "added #{account.login} to #{community.name} leadership"
     when COMMUNITY_LEADER_REMOVEMEMBER
-      userevent = "removed #{user.login} from #{community.name} membership"
+      userevent = "removed #{account.login} from #{community.name} membership"
     when COMMUNITY_LEADER_REMOVELEADER
-      userevent = "removed #{user.login} from #{community.name} leadership"
+      userevent = "removed #{account.login} from #{community.name} leadership"
     when COMMUNITY_LEADER_INVITELEADER
-      userevent = "invited #{user.login} to #{community.name} leadership"
+      userevent = "invited #{account.login} to #{community.name} leadership"
     when COMMUNITY_LEADER_INVITEMEMBER
-      userevent = "invited #{user.login} to #{community.name} membership"
+      userevent = "invited #{account.login} to #{community.name} membership"
     when COMMUNITY_LEADER_INVITEREMINDER
-      userevent = "sent an invitation reminder to #{user.login} for the #{community.name} community "      
+      userevent = "sent an invitation reminder to #{account.login} for the #{community.name} community "      
     when COMMUNITY_LEADER_RESCINDINVITATION
-      userevent = "rescinded invitation for #{user.login} to #{community.name}"
+      userevent = "rescinded invitation for #{account.login} to #{community.name}"
     when COMMUNITY_USER_LEFT
       userevent = "left #{community.name}"
     when COMMUNITY_USER_WANTSTOJOIN
@@ -277,24 +277,24 @@ class Notification < ActiveRecord::Base
     return userevent
   end
    
-  def self.showuserevent(notificationcode,showuser,byuser,community)
+  def self.showuserevent(notificationcode,showuser,byaccount,community)
     case notificationcode
     when COMMUNITY_LEADER_ADDMEMBER
-      showuserevent = "added to #{community.name} membership by #{byuser.login}"
+      showuserevent = "added to #{community.name} membership by #{byaccount.login}"
     when COMMUNITY_LEADER_ADDLEADER
-      showuserevent = "added to #{community.name} leadership by #{byuser.login}"
+      showuserevent = "added to #{community.name} leadership by #{byaccount.login}"
     when COMMUNITY_LEADER_REMOVEMEMBER
-      showuserevent = "removed from #{community.name} membership by #{byuser.login}"
+      showuserevent = "removed from #{community.name} membership by #{byaccount.login}"
     when COMMUNITY_LEADER_REMOVELEADER
-      showuserevent = "removed from #{community.name} leadership by #{byuser.login}"
+      showuserevent = "removed from #{community.name} leadership by #{byaccount.login}"
     when COMMUNITY_LEADER_INVITELEADER
-      showuserevent = "invited to #{community.name} leadership by #{byuser.login}"
+      showuserevent = "invited to #{community.name} leadership by #{byaccount.login}"
     when COMMUNITY_LEADER_INVITEREMINDER
-      showuserevent = "reminded of #{community.name} invitation by #{byuser.login}"
+      showuserevent = "reminded of #{community.name} invitation by #{byaccount.login}"
     when COMMUNITY_LEADER_INVITEMEMBER
-      showuserevent = "invited to #{community.name} membership by #{byuser.login}"
+      showuserevent = "invited to #{community.name} membership by #{byaccount.login}"
     when COMMUNITY_LEADER_RESCINDINVITATION
-      showuserevent = "invitation to #{community.name} rescinded by #{byuser.login}"
+      showuserevent = "invitation to #{community.name} rescinded by #{byaccount.login}"
     else
       showuserevent = "Unknown event."
     end

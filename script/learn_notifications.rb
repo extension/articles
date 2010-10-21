@@ -32,7 +32,7 @@ if(!tomorrow_learn_sessions.blank?)
     interested_users = learn_session.connected_users(LearnConnection::INTERESTED)
     if(!interested_users.blank?)
       interested_users.each do |person|
-        Notification.create(:notifytype => Notification::LEARN_UPCOMING_SESSION, :user => person, :creator => User.systemuser, :additionaldata => {:learn_session_id => learn_session.id})
+        Notification.create(:notifytype => Notification::LEARN_UPCOMING_SESSION, :account => person, :creator => User.systemuser, :additionaldata => {:learn_session_id => learn_session.id})
       end
       puts "Created #{interested_users.size} notification(s) for tomorrow's Learn Session (ID: #{learn_session.id})"
     else

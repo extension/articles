@@ -151,6 +151,22 @@ class Account < ActiveRecord::Base
    end
   end
   
+  def self.systemuser
+   find(1)
+  end
+  
+  def self.systemuserid
+   1
+  end
+  
+  def self.anyuser
+   0
+  end
+  
+  def self.per_page
+   20
+  end
+  
   protected
   def encrypt_password_string(clear_password_string)
    Digest::SHA1.hexdigest(clear_password_string)

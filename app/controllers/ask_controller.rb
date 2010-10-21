@@ -341,7 +341,7 @@ class AskController < ApplicationController
           SubmittedQuestionEvent.log_reopen(@submitted_question, @submitted_question.assignee ? @submitted_question.assignee : nil, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT)
           @submitted_question.assign_to(@submitted_question.assignee, User.systemuser, SubmittedQuestion::PUBLIC_RESPONSE_REASSIGNMENT_COMMENT, true, response)  
         else
-          Notification.create(:notifytype => Notification::AAE_PUBLIC_COMMENT, :user => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :response_id => response.id}) if @submitted_question.assignee
+          Notification.create(:notifytype => Notification::AAE_PUBLIC_COMMENT, :account => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :response_id => response.id}) if @submitted_question.assignee
           SubmittedQuestionEvent.log_public_response(@submitted_question, submitter.id)
         end
       else
@@ -409,7 +409,7 @@ class AskController < ApplicationController
       
       # create notification if assigned
       if(!@submitted_question.assignee.nil?)
-        Notification.create(:notifytype => Notification::AAE_PUBLIC_EDIT, :user => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :previous_question => previous_question})
+        Notification.create(:notifytype => Notification::AAE_PUBLIC_EDIT, :account => @submitted_question.assignee, :additionaldata => {:submitted_question_id => @submitted_question.id, :previous_question => previous_question})
       end
       flash[:notice] = "Your changes have been saved. Thanks for making your question better!"
       redirect_to :action => :question, :fingerprint => @submitted_question.question_fingerprint

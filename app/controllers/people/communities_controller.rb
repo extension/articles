@@ -65,7 +65,7 @@ class People::CommunitiesController < ApplicationController
       @community.invite_user(@showuser,true,@currentuser)
     when 'invitereminder'      
       Activity.log_activity(:user => @showuser,:creator => @currentuser, :community => @community, :activitycode => Activity::COMMUNITY_INVITEREMINDER , :appname => 'local')
-      Notification.create(:notifytype => Notification::COMMUNITY_LEADER_INVITEREMINDER, :user => @showuser, :creator => @currentuser, :community => @community)
+      Notification.create(:notifytype => Notification::COMMUNITY_LEADER_INVITEREMINDER, :account => @showuser, :creator => @currentuser, :community => @community)
     else
       # do nothing
     end

@@ -363,7 +363,7 @@ end
 
 # creates a notification to the submitter that we've received their question
 def notify_submitter
-  Notification.create(:notifytype => Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT, :user => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
+  Notification.create(:notifytype => Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT, :account => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
 end
 
 def auto_assign_by_preference
@@ -456,9 +456,9 @@ def assign_to(user, assigned_by, comment, public_reopen = false, public_comment 
   end
      
   # create notifications
-  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment, :asker_comment => asker_comment})
+  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :account => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment, :asker_comment => asker_comment})
   if(is_reassign and public_reopen == false)
-    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :user => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
+    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :account => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
   end
 end
 

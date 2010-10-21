@@ -210,7 +210,7 @@ class Aae::QuestionController < ApplicationController
       
       @submitted_question.add_resolution(sq_status, @currentuser, answer, @signature, contributing_question)   
       
-      Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :user => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
+      Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :account => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
         
       redirect_to :action => 'question_answered', :squid => @submitted_question.id
     end
@@ -375,7 +375,7 @@ class Aae::QuestionController < ApplicationController
       else
         submitted_question.log_comment(@currentuser,filteredparams.comment)
         if(submitted_question.assignee)
-          Notification.create(:notifytype => Notification::AAE_EXPERT_COMMENT, :user => submitted_question.assignee, :additionaldata => {:submitted_question_id => submitted_question.id, :comment => filteredparams.comment})
+          Notification.create(:notifytype => Notification::AAE_EXPERT_COMMENT, :account => submitted_question.assignee, :additionaldata => {:submitted_question_id => submitted_question.id, :comment => filteredparams.comment})
         end 
         flash[:success] = "Comment posted."
         redirect_to aae_question_url(:id => submitted_question.id)
@@ -424,7 +424,7 @@ class Aae::QuestionController < ApplicationController
       @submitted_question.add_resolution(SubmittedQuestion::STATUS_REJECTED, @currentuser, message)
         
       if @submitted_question.assignee and (@currentuser.id != @submitted_question.assignee.id)
-        Notification.create(:notifytype => Notification::AAE_REJECT, :user => @submitted_question.assignee, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :reject_message => message})  	    
+        Notification.create(:notifytype => Notification::AAE_REJECT, :account => @submitted_question.assignee, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :reject_message => message})  	    
       end
         
       flash[:success] = "The question has been rejected."
