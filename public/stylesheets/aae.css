@@ -1547,7 +1547,7 @@ a.moreinfo:hover {color:#eee !important;background:#000;text-decoration:none;}
 
 #completions {width:200px;}
 span.completions {display:block; padding:.2em;}
-.completions {width:200px; background: url(/images/aae/green_square.png) no-repeat;}
+.completions {width:200px; background: url(/images/aae/green_square.png) no-repeat;border:1px solid #ccc;}
 #dashboard td a {display:inline; margin-right:.75em;}
 .subtle {color:#888 !important;}
 .subtle:hover {color:blue !important;}
