@@ -17,7 +17,7 @@
    <%= will_paginate @articles, :params => {:articlefilter => params[:articlefilter]} %>
    </div>
 
-
+   <p id="csv"><%= link_to('Download a list of these articles (csv)',:action => 'articlelist', :articlefilter => params[:articlefilter], :download => 'csv') %> </p>
    <table cellspacing="0" border="1">
        <tr>
            <th>Published Title</th>
