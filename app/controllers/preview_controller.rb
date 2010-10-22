@@ -59,42 +59,93 @@ class PreviewController < ApplicationController
   
   def articlelist
     @right_column = false
+
+    if(!params[:download].nil? and params[:download] == 'csv')
+      isdownload = true
+    end
+  
   
     if(!@content_tag.nil?)
       if(params[:articlefilter].nil?)
-        @articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+        if(isdownload) 
+          @articles = Article.tagged_with_content_tag(@content_tag.name).ordered
+        else
+          @articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+        end
       else
         case params[:articlefilter]
         when 'news'
           @articlefilter = 'News'
-          @articles = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          if(isdownload) 
+            @articles = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered
+          else
+            @articles = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          end
         when 'feature'
           @articlefilter = 'Feature'
-          @articles = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          if(isdownload) 
+            @articles = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).ordered
+          else
+            @articles = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          end
         when 'learning lessons'
           @articlefilter = 'Learning Lesson'
-          @articles = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          if(isdownload) 
+            @articles = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered
+          else
+            @articles = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          end  
         when 'contents'
           @articlefilter = 'Contents'
-          @articles = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          if(isdownload) 
+            @articles = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered
+          else
+            @articles = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          end
         when 'homage'
           @articlefilter = 'Homage'
-          @articles = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          if(isdownload) 
+            @articles =  @articles = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered
+          else
+            @articles = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          end
         when 'learn more'
           @articlefilter = 'Learn More'
-          @articles = Article.bucketed_as('learn more').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)         
+          if(isdownload) 
+            @articles = Article.bucketed_as('learn more').tagged_with_content_tag(@content_tag.name).ordered
+          else
+            @articles = Article.bucketed_as('learn more').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)         
+          end
         else
           @articlefilter = nil
-          @articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          if(isdownload) 
+            @articles = Article.tagged_with_content_tag(@content_tag.name).ordered
+          else
+            @articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          end
         end
       end
+      
+      if(isdownload)
+        article_type = (@articlefilter.blank?) ? 'all' : @articlefilter.downcase 
+        csvfilename =  "#{article_type}_articles_for_tag_#{@content_tag.name}"
+        return article_csvlist(@articles,csvfilename,@content_tag)
+      end
     end
+    
+    
   end
   
   def faqlist
     @right_column = false
     if(!@content_tag.nil?)
-      @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+      if(!params[:download].nil? and params[:download] == 'csv')
+        @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered
+        csvfilename =  "faqs_for_tag_#{@content_tag.name}"
+        return faq_csvlist(@faqs,csvfilename,@content_tag)
+      else
+        @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+      end
     end
   end
   
@@ -192,6 +243,22 @@ class PreviewController < ApplicationController
       set_titletag("#{@article.title} - eXtension")
     end
 
+  end
+  
+  def article_csvlist(articlelist,filename,content_tag)
+    @articles = articlelist
+    @content_tag = content_tag
+    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+    response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
+    render(:template => 'preview/article_csvlist', :layout => false)
+  end
+  
+  def faq_csvlist(faqlist,filename,content_tag)
+    @faqs = faqlist
+    @content_tag = content_tag
+    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+    response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
+    render(:template => 'preview/faq_csvlist', :layout => false)
   end
 
   
