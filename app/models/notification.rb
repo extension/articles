@@ -60,14 +60,20 @@ class Notification < ActiveRecord::Base
   AAE_PUBLIC_EDIT = 1004  # a public user edited their question
   AAE_PUBLIC_COMMENT = 1005 # a public user posted another comment
   AAE_REJECT = 1006 # an expert has rejected a question
+  AAE_VACATION_RESPONSE = 1007 # received a vacation response to an assigned question
+  AAE_EXPERT_COMMENT = 1008 # an expert posted a comment
+  AAE_EXPERT_NOREPLY = 1009 # an expert replied to the no-reply address
+
     
   ##########################################
   #  Ask an Expert Notifications - Public
   
   NOTIFICATION_AAE_PUBLIC = [2000,2099]   # 'aae-public'
   AAE_PUBLIC_EXPERT_RESPONSE = 2001  # notification of an expert response, also "A Space Odyssey"
+  AAE_PUBLIC_NOREPLY = 2002 # public replied to the no-reply address
+  AAE_PUBLIC_NOQUESTION = 2003 # public sent a new question to the no-reply address
   AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT = 2010  # notification of submission, also "The Year We Make Contact"
-  
+
   ##########################################
   #  Learn Notifications
   
@@ -110,15 +116,21 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[AAE_PUBLIC_EXPERT_RESPONSE] = ['aae_public_response']    
   MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission'] 
   MAILERMETHODS[AAE_PUBLIC_COMMENT] = ['aae_public_comment']   
+  MAILERMETHODS[AAE_VACATION_RESPONSE] = ['aae_vacation_response']   
+  MAILERMETHODS[AAE_EXPERT_COMMENT] = ['aae_expert_comment']   
+  MAILERMETHODS[AAE_EXPERT_NOREPLY] = ['aae_expert_noreply']   
+  MAILERMETHODS[AAE_PUBLIC_NOREPLY] = ['aae_public_noreply']   
+  MAILERMETHODS[AAE_PUBLIC_NOQUESTION] = ['aae_public_noquestion']   
+
   MAILERMETHODS[LEARN_UPCOMING_SESSION] = ['learn_upcoming_session']   
 
   
   # TODO: add description labels that can get strings from the locale tabel describing each 
   
 
-  belongs_to :user
+  belongs_to :account
   belongs_to :community # for many of the notification types
-  belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
+  belongs_to :creator, :class_name => "Account", :foreign_key => "created_by"
   serialize :additionaldata
   
   before_create :createnotification?
@@ -232,24 +244,24 @@ class Notification < ActiveRecord::Base
     end
   end
   
-  def self.userevent(notificationcode,user,community)
+  def self.userevent(notificationcode,account,community)
     case notificationcode
     when COMMUNITY_LEADER_ADDMEMBER
-      userevent = "added #{user.login} to #{community.name} membership"
+      userevent = "added #{account.login} to #{community.name} membership"
     when COMMUNITY_LEADER_ADDLEADER
-      userevent = "added #{user.login} to #{community.name} leadership"
+      userevent = "added #{account.login} to #{community.name} leadership"
     when COMMUNITY_LEADER_REMOVEMEMBER
-      userevent = "removed #{user.login} from #{community.name} membership"
+      userevent = "removed #{account.login} from #{community.name} membership"
     when COMMUNITY_LEADER_REMOVELEADER
-      userevent = "removed #{user.login} from #{community.name} leadership"
+      userevent = "removed #{account.login} from #{community.name} leadership"
     when COMMUNITY_LEADER_INVITELEADER
-      userevent = "invited #{user.login} to #{community.name} leadership"
+      userevent = "invited #{account.login} to #{community.name} leadership"
     when COMMUNITY_LEADER_INVITEMEMBER
-      userevent = "invited #{user.login} to #{community.name} membership"
+      userevent = "invited #{account.login} to #{community.name} membership"
     when COMMUNITY_LEADER_INVITEREMINDER
-      userevent = "sent an invitation reminder to #{user.login} for the #{community.name} community "      
+      userevent = "sent an invitation reminder to #{account.login} for the #{community.name} community "      
     when COMMUNITY_LEADER_RESCINDINVITATION
-      userevent = "rescinded invitation for #{user.login} to #{community.name}"
+      userevent = "rescinded invitation for #{account.login} to #{community.name}"
     when COMMUNITY_USER_LEFT
       userevent = "left #{community.name}"
     when COMMUNITY_USER_WANTSTOJOIN
@@ -272,24 +284,24 @@ class Notification < ActiveRecord::Base
     return userevent
   end
    
-  def self.showuserevent(notificationcode,showuser,byuser,community)
+  def self.showuserevent(notificationcode,showuser,byaccount,community)
     case notificationcode
     when COMMUNITY_LEADER_ADDMEMBER
-      showuserevent = "added to #{community.name} membership by #{byuser.login}"
+      showuserevent = "added to #{community.name} membership by #{byaccount.login}"
     when COMMUNITY_LEADER_ADDLEADER
-      showuserevent = "added to #{community.name} leadership by #{byuser.login}"
+      showuserevent = "added to #{community.name} leadership by #{byaccount.login}"
     when COMMUNITY_LEADER_REMOVEMEMBER
-      showuserevent = "removed from #{community.name} membership by #{byuser.login}"
+      showuserevent = "removed from #{community.name} membership by #{byaccount.login}"
     when COMMUNITY_LEADER_REMOVELEADER
-      showuserevent = "removed from #{community.name} leadership by #{byuser.login}"
+      showuserevent = "removed from #{community.name} leadership by #{byaccount.login}"
     when COMMUNITY_LEADER_INVITELEADER
-      showuserevent = "invited to #{community.name} leadership by #{byuser.login}"
+      showuserevent = "invited to #{community.name} leadership by #{byaccount.login}"
     when COMMUNITY_LEADER_INVITEREMINDER
-      showuserevent = "reminded of #{community.name} invitation by #{byuser.login}"
+      showuserevent = "reminded of #{community.name} invitation by #{byaccount.login}"
     when COMMUNITY_LEADER_INVITEMEMBER
-      showuserevent = "invited to #{community.name} membership by #{byuser.login}"
+      showuserevent = "invited to #{community.name} membership by #{byaccount.login}"
     when COMMUNITY_LEADER_RESCINDINVITATION
-      showuserevent = "invitation to #{community.name} rescinded by #{byuser.login}"
+      showuserevent = "invitation to #{community.name} rescinded by #{byaccount.login}"
     else
       showuserevent = "Unknown event."
     end

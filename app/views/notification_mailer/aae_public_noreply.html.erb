@@ -1,0 +1,14 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
+
+Thank you for your email to our Ask an Expert system.  We are not able to process email replies at this time.  If you'd like to add a response or additional images to your question, please visit the question page at:
+
+<%= @urls['question'] %>
+
+Please don't reply to this no-reply email. Instead, click the link above to send a reply. Thanks!
+
+Have another question? Please ask!
+<%= @urls['askanexpert']%>
+
+*** PLEASE DO NOT REPLY TO THIS MESSAGE ***
+
+<%= SubmittedQuestion::EXPERT_DISCLAIMER %>

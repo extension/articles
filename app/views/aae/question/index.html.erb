@@ -115,6 +115,22 @@
 </div>
 </div>
 
+<div id="aae_comment">
+  <p><%= link_to_function 'Add a comment', "Effect.toggle('aae_comment_form','blind', { duration: .4}); setTimeout(set_select_focus, 500);"%></p>
+  <div id="aae_comment_form" style='display:none;'>
+    <%- form_tag({:action=> "comment"}, {:id => "aae_comment"}) do -%>
+        <fieldset>
+            <p>
+                <label for="comment">Your comments: </label>
+                <%= text_area_tag("comment", '', :cols => "40", :rows => "7") %>
+                <%= hidden_field_tag('squid',@submitted_question.id) %>
+                <%= submit_tag 'Submit' %> <%= link_to_function 'close', "Effect.toggle('aae_comment_form','blind', { duration: .4}); setTimeout(set_select_focus, 500);"%></p>
+            </p>
+        </fieldset>
+    <%- end -%>
+  </div>
+</div>
+
     <div id="history">
     <h3>History</h3>
     <ul id="question_history">

@@ -44,7 +44,7 @@ class People::ColleaguesController < ApplicationController
               UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "vouched by #{@currentuser.login}",:additionaldata => params[:explanation])
               log_user_activity(:user => @user,:activitycode => Activity::VOUCHED_FOR, :appname => 'local',:colleague => @showuser, :additionaldata => {:explanation => params[:explanation]})              
               log_user_activity(:user => @showuser,:activitycode => Activity::VOUCHED_BY, :appname => 'local',:additionaldata => {:explanation => params[:explanation]})              
-              Notification.create(:notifytype => Notification::WELCOME, :user => @showuser, :send_on_create => true)
+              Notification.create(:notifytype => Notification::WELCOME, :account => @showuser, :send_on_create => true)
               flash[:success] = "Vouched for #{@showuser.fullname}"
               return redirect_to(:action => 'showuser', :id => @showuser.id)     
             else
@@ -395,7 +395,7 @@ class People::ColleaguesController < ApplicationController
       @community.rescind_user_invitation(@showuser,@currentuser)
     when 'invitereminder'
       Activity.log_activity(:user => @showuser,:creator => @currentuser, :community => @community, :activitycode => Activity::COMMUNITY_INVITEREMINDER , :appname => 'local')
-      Notification.create(:notifytype => Notification::COMMUNITY_LEADER_INVITEREMINDER, :user => @showuser, :creator => @currentuser, :community => @community)
+      Notification.create(:notifytype => Notification::COMMUNITY_LEADER_INVITEREMINDER, :account => @showuser, :creator => @currentuser, :community => @community)
     else
       # do nothing
     end
