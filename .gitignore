@@ -20,3 +20,7 @@
 
 # /data/
 /data/*
+
+# /doc
+/.yardoc
+/doc/*

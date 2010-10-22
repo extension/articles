@@ -139,7 +139,7 @@ class People::SignupController < ApplicationController
         if(!@currentuser.additionaldata.nil? and !@currentuser.additionaldata[:signup_institution_id].nil?)
           @currentuser.change_profile_community(Community.find(@currentuser.additionaldata[:signup_institution_id]))
         end       
-        Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
+        Notification.create(:notifytype => Notification::WELCOME, :account => @currentuser, :send_on_create => true)
         return redirect_to(people_welcome_url)
       end
     end
@@ -174,10 +174,10 @@ class People::SignupController < ApplicationController
         if(!@currentuser.additionaldata.nil? and !@currentuser.additionaldata[:signup_institution_id].nil?)
           @currentuser.change_profile_community(Community.find(@currentuser.additionaldata[:signup_institution_id]))
         end       
-        Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
+        Notification.create(:notifytype => Notification::WELCOME, :account => @currentuser, :send_on_create => true)
         return redirect_to(people_welcome_url)
       else
-        Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :user => @currentuser, :send_on_create => true)        
+        Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :account => @currentuser, :send_on_create => true)        
         return redirect_to(:controller => 'signup', :action => 'review')
       end
     end    

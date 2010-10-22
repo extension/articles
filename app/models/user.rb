@@ -136,34 +136,6 @@ class User < Account
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}
   
-  named_scope :patternsearch, lambda {|searchterm|
-    # remove any leading * to avoid borking mysql
-    # remove any '\' characters because it's WAAAAY too close to the return key
-    # strip '+' characters because it's causing a repitition search error
-    sanitizedsearchterm = searchterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
-    # in the format wordone wordtwo?
-    words = sanitizedsearchterm.split(%r{\s*,\s*|\s+})
-    if(words.length > 1)
-      findvalues = { 
-       :firstword => words[0],
-       :secondword => words[1]
-      }
-      conditions = ["((first_name rlike :firstword AND last_name rlike :secondword) OR (first_name rlike :secondword AND last_name rlike :firstword))",findvalues]
-    elsif(sanitizedsearchterm.to_i != 0)
-      # special case of an id search - needed in admin/colleague searches
-      conditions = ["id = #{sanitizedsearchterm.to_i}"]
-    else
-      findvalues = {
-       :findlogin => sanitizedsearchterm,
-       :findemail => sanitizedsearchterm,
-       :findfirst => sanitizedsearchterm,
-       :findlast => sanitizedsearchterm 
-      }
-      conditions = ["(email rlike :findemail OR login rlike :findlogin OR first_name rlike :findfirst OR last_name rlike :findlast)",findvalues]
-    end
-    {:conditions => conditions}
-  }
-  
   named_scope :filtered, lambda {|options| filterconditions(options)}  
   
   named_scope :missingtags,  :joins => "LEFT JOIN taggings ON (accounts.id = taggings.taggable_id AND taggings.taggable_type = 'User')", :conditions => 'taggings.id IS NULL'
@@ -818,7 +790,7 @@ class User < Account
     end
     
     if(options[:notificationcode] and options[:notificationcode] != Notification::NONE)
-      Notification.create(:notifytype => options[:notificationcode], :user => self, :creator => connector, :community => community)
+      Notification.create(:notifytype => options[:notificationcode], :account => self, :creator => connector, :community => community)
       # FIXME: user events really shouldn't be based on notificationcodes, but such is life
       if(connector != self)
        UserEvent.log_event(:etype => UserEvent::COMMUNITY,:user => connector,:description => Notification.userevent(options[:notificationcode],self,community))
@@ -1276,7 +1248,7 @@ class User < Account
     self.updatelistemails
    end
    token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email, :oldemail => old_email_address})
-   Notification.create(:notifytype => Notification::CONFIRM_EMAIL_CHANGE, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})   
+   Notification.create(:notifytype => Notification::CONFIRM_EMAIL_CHANGE, :account => self, :send_on_create => true, :additionaldata => {:token_id => token.id})   
    return true
   end
   
@@ -1293,7 +1265,7 @@ class User < Account
    else
     token.extendtoken
    end
-   Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :account => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
    return true 
   end
   
@@ -1309,7 +1281,7 @@ class User < Account
     passtoken = UserToken.create(:user=>self,:tokentype=>UserToken::RESETPASS)
    end
 
-   Notification.create(:notifytype => Notification::CONFIRM_PASSWORD, :user => self, :send_on_create => true, :additionaldata => {:token_id => passtoken.id})
+   Notification.create(:notifytype => Notification::CONFIRM_PASSWORD, :account => self, :send_on_create => true, :additionaldata => {:token_id => passtoken.id})
    UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "requested new password confirmation")                            
    return true
   end
@@ -1322,7 +1294,7 @@ class User < Account
    
    # create token
    token = UserToken.create(:user=>self,:tokentype=>UserToken::SIGNUP, :tokendata => tokendata)
-   Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :account => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
    return true
   end
    
@@ -1337,7 +1309,7 @@ class User < Account
    token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email})
    
    # send email or create notification
-   Notification.create(:notifytype => Notification::CONFIRM_EMAIL, :user => self, :send_on_create => sendnow, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::CONFIRM_EMAIL, :account => self, :send_on_create => sendnow, :additionaldata => {:token_id => token.id})
    return true
   end
   
@@ -1350,7 +1322,7 @@ class User < Account
    
    # create token
    token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email})
-   Notification.create(:notifytype => Notification::RECONFIRM_EMAIL, :user => self, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::RECONFIRM_EMAIL, :account => self, :additionaldata => {:token_id => token.id})
    return true
   end
   
@@ -1362,7 +1334,7 @@ class User < Account
    else
     token.extendtoken
    end
-   Notification.create(:notifytype => Notification::RECONFIRM_SIGNUP, :user => self, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::RECONFIRM_SIGNUP, :account => self, :additionaldata => {:token_id => token.id})
    return true
   end
   
@@ -1406,23 +1378,7 @@ class User < Account
   end
   
 
-  
-  
-   def self.systemuser
-    find(1)
-   end
-   
-   def self.systemuserid
-    1
-   end
-   
-   def self.anyuser
-    0
-   end
-   
-   def self.per_page
-    20
-   end
+
    
        
    def self.institutioncount

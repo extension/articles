@@ -86,10 +86,10 @@ class People::AccountController < ApplicationController
           allemailtokens = @currentuser.user_tokens.find(:all,:conditions => ["user_tokens.tokentype = ?",UserToken::EMAIL])
           @currentuser.user_tokens.delete(allemailtokens) if allemailtokens                  
           if (@currentuser.vouched?)
-            Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
+            Notification.create(:notifytype => Notification::WELCOME, :account => @currentuser, :send_on_create => true)
             return redirect_to(people_welcome_url)
           else
-            Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :user => @currentuser, :send_on_create => true)        
+            Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :account => @currentuser, :send_on_create => true)        
             return redirect_to(:controller => 'account', :action => 'review')
           end  
         end

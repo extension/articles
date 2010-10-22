@@ -1,0 +1,31 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
+
+There's a new comment on a question assigned to you from another expert:
+
+<%= @comment %>
+
+You can view the question and all comments here:
+<%= @urls['question']%>
+
+
+Please either...
+1) visit the link above and review the comment
+or
+2) close the question if no response is needed
+
+Thanks for your help!
+
+p.s. To serve the public as quickly as possible, we 
+encourage anyone to answer a question if they have 
+the knowledge. Another expert may have stepped in and 
+already answered this question. Please visit the 
+question page before you start working.
+
+*** PLEASE DO NOT REPLY TO THIS MESSAGE ***
+If you have questions please contact us at: 
+ 
+<%= @urls['contactus']%>
+
+--
+eXtension Staff
+http://about.extension.org

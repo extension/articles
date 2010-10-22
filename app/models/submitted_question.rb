@@ -348,6 +348,10 @@ def clean_question_and_answer
   self.asked_question = Hpricot(self.asked_question.sanitize).to_html
 end
 
+def log_comment(commentator,comment)
+  SubmittedQuestionEvent.log_comment(self,self.assignee.blank? ? nil : self.assignee, commentator, comment)
+end
+
 def submitter_fullname
   submitter_name = self.submitter.fullname if self.submitter
   if !submitter_name or submitter_name.strip == ''
@@ -359,7 +363,7 @@ end
 
 # creates a notification to the submitter that we've received their question
 def notify_submitter
-  Notification.create(:notifytype => Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT, :user => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
+  Notification.create(:notifytype => Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT, :account => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
 end
 
 def auto_assign_by_preference
@@ -442,13 +446,8 @@ def assign_to(user, assigned_by, comment, public_reopen = false, public_comment 
   end
     
   # update and log
-  update_attributes(:assignee => user)
-  SubmittedQuestionEvent.log_event({:submitted_question => self,
-                                    :recipient => user,
-                                    :initiated_by => assigned_by,
-                                    :event_state => SubmittedQuestionEvent::ASSIGNED_TO,
-                                    :response => comment})
-    
+  update_attributes(:assignee => user)  
+  SubmittedQuestionEvent.log_assignment(self,user,assigned_by,comment)    
   # if this is a reopen reassignment due to the public user commenting on the sq                                  
   if public_comment
     asker_comment = public_comment.response
@@ -457,9 +456,9 @@ def assign_to(user, assigned_by, comment, public_reopen = false, public_comment 
   end
      
   # create notifications
-  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment, :asker_comment => asker_comment})
+  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :account => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment, :asker_comment => asker_comment})
   if(is_reassign and public_reopen == false)
-    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :user => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
+    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :account => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
   end
 end
 
@@ -553,6 +552,21 @@ end
 def self.find_uncategorized(*args)
   with_scope(:find => { :conditions => "categories.id IS NULL", :include => :categories }) do
     find(*args)
+  end
+end
+
+def status_state_to_s
+  case self.status_state
+  when STATUS_SUBMITTED
+    return 'submitted'
+  when STATUS_RESOLVED
+    return 'resolved'
+  when STATUS_NO_ANSWER
+    return 'no answer'
+  when STATUS_REJECTED
+    return 'rejected'
+  else
+    return nil
   end
 end
 
