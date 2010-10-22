@@ -1,6 +1,6 @@
 Articles for Tag <%= @content_tag.name %>
 
-Title,Link,Source Link,Created,Updated,News?
+Title,Link,Source Link,Created,Updated
 <%- for article in @articles -%>
-"<%= article.title %>","<%= article.id_and_link %>","<%= article.original_url %>",<%= article.wiki_created_at %>,<%= article.wiki_updated_at %>,<%= article.is_news? ? 'Yes' : 'No' %>
+"<%= article.title %>","<%= article.id_and_link %>","<%= article.original_url %>",<%= article.wiki_created_at %>,<%= article.wiki_updated_at %>
 <%- end -%>
