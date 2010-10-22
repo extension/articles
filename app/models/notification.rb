@@ -117,6 +117,7 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission'] 
   MAILERMETHODS[AAE_PUBLIC_COMMENT] = ['aae_public_comment']   
   MAILERMETHODS[AAE_VACATION_RESPONSE] = ['aae_vacation_response']   
+  MAILERMETHODS[AAE_EXPERT_COMMENT] = ['aae_expert_comment']   
   MAILERMETHODS[AAE_EXPERT_NOREPLY] = ['aae_expert_noreply']   
   MAILERMETHODS[AAE_PUBLIC_NOREPLY] = ['aae_public_noreply']   
   MAILERMETHODS[AAE_PUBLIC_NOQUESTION] = ['aae_public_noquestion']   
