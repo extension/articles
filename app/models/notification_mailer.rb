@@ -259,7 +259,7 @@ class NotificationMailer < ActionMailer::Base
     # base parameters for the email
     self.base_email(notification.notifytype_to_s)
     token = UserToken.find(notification.additionaldata[:token_id])
-    @recipients     = token.account.email
+    @recipients     = token.user.email
     @subject        = @subjectlabel+'Please confirm your email address'
     urls = Hash.new
     urls['directurl'] = url_for(:controller => 'people/account', :action => :confirmemail, :token => token.token)
@@ -273,7 +273,7 @@ class NotificationMailer < ActionMailer::Base
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
      token = UserToken.find(notification.additionaldata[:token_id])
-     @recipients     = token.account.email
+     @recipients     = token.user.email
      @subject        = @subjectlabel+'Please confirm your email address'
      urls = Hash.new
      urls['directurl'] = url_for(:controller => '/people/account', :action => :confirmemail, :token => token.token)
@@ -287,7 +287,7 @@ class NotificationMailer < ActionMailer::Base
       # base parameters for the email
       self.base_email(notification.notifytype_to_s)
       token = UserToken.find(notification.additionaldata[:token_id])
-      @recipients     = token.account.email
+      @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
       urls['home'] = url_for(people_welcome_url)
@@ -302,7 +302,7 @@ class NotificationMailer < ActionMailer::Base
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
      token = UserToken.find(notification.additionaldata[:token_id])
-     @recipients     = token.account.email
+     @recipients     = token.user.email
      @subject        = @subjectlabel+'Please confirm your email address'
      urls = Hash.new
      urls['directurl'] = url_for(:controller => 'people/signup', :action => :confirm, :token => token.token)
@@ -316,7 +316,7 @@ class NotificationMailer < ActionMailer::Base
       # base parameters for the email
       self.base_email(notification.notifytype_to_s)
       token = UserToken.find(notification.additionaldata[:token_id])
-      @recipients     = token.account.email
+      @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
       urls['home'] = url_for(people_welcome_url)
@@ -363,7 +363,7 @@ class NotificationMailer < ActionMailer::Base
       # base parameters for the email
       self.base_email(notification.notifytype_to_s)
       token = UserToken.find(notification.additionaldata[:token_id])
-      @recipients     = token.account.email
+      @recipients     = token.user.email
       @subject        = @subjectlabel+'Please confirm your email address'
       urls = Hash.new
       urls['directurl'] = url_for(:controller => '/people/account', :action => :set_password, :token => token.token)
