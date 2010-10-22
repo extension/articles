@@ -375,7 +375,7 @@ class AskController < ApplicationController
       return
     end
     
-    if (params[:email_address] and params[:email_address].strip != '') and (submitter = Account.find_by_email(params[:email_address].strip)) and (request.post?)
+    if (params[:email_address] and params[:email_address].strip != '') and (submitter = Account.find_by_email(params[:email_address].strip.downcase)) and (request.post?)
       # make sure that this question belongs to this user
       if(@submitted_question.submitter == submitter)
         session[:account_id] = submitter.id
