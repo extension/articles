@@ -11,7 +11,7 @@
 
 require "mail"
 require "fetcher"
-require 'Hpricot'
+require 'hpricot'
 
 class AaeEmail < ActiveRecord::Base
   
