@@ -35,6 +35,10 @@ class Article < ActiveRecord::Base
   has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
   # Note: has_many :content_links - outbound links using the has_many_polymorphs for content_links
 
+  def is_news?
+    self.tags.map(&:name).include?('news')
+  end
+  
   def put_in_buckets(categoryarray)
    namearray = []
    categoryarray.each do |name|
