@@ -6,6 +6,46 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Api::DataController < ApplicationController
+  
+  def articlelink
+     filteredparams = ParamsFilter.new([{:original_url => :string},:apikey],params)
+     apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
+     ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
+    
+     if(filteredparams.original_url.nil?)
+       returnhash = {:success => false, :errormessage => 'Not a valid original url'}
+       return render :text => returnhash.to_json
+     end
+     
+     begin 
+       parsed_uri = URI.parse(URI.unescape(filteredparams.original_url))
+     rescue
+       returnhash = {:success => false, :errormessage => 'Not a valid original url'}
+       return render :text => returnhash.to_json
+     end
+     
+     if(parsed_uri.class == URI::Generic)
+       find_url = "http://" + parsed_uri.to_s
+     elsif(parsed_uri.class == URI::HTTP or parsed_uri.class == URI::HTTPS)
+       find_url = parsed_uri.to_s
+     else
+       returnhash = {:success => false, :errormessage => 'Not a valid original url'}
+       return render :text => returnhash.to_json
+     end
+     
+     article = Article.find_by_original_url(find_url)
+     if(!article)
+        returnhash = {:success => false, :errormessage => 'Unable to find an article corresponding to the given URL'}
+        return render :text => returnhash.to_json
+     end
+     
+     returnhash = {}
+     returnhash[:title] = article.title
+     returnhash[:link] = article.id_and_link
+     returnhash[:created] = article.wiki_created_at
+     returnhash[:updated] = article.wiki_updated_at
+     return render :text => returnhash.to_json    
+  end
 
   def aae_numbers
     filteredparams = ParamsFilter.new([:person,:apikey],params)
