@@ -24,12 +24,19 @@
     </p>
 
     <div id="time_with_tz">
-      <% event_time = format_event_time(@event) %>
       <strong>
-      <%= micro_time_print(event_time, 'dtstart') %> 
-      <% if !@event.time_zone.blank? %>
-      <%= event_time.strftime("%Z") %>
-      <% end %>
+      <%- if @event.duration.blank? -%>
+        <% event_time = format_event_time(@event) %>
+        <abbr class="dtstart" title="<%= event_time.strftime("%Y-%m-%dT%H:%M:%S") %>"><%= event_time.strftime("%B %d, %Y at %l:%M %p") %></abbr>
+        <% if !@event.time_zone.blank? %>
+          <%= event_time.strftime("%Z") %>
+          <% end %>
+      <%- else -%>
+        <abbr class="dtstart" title="<%= @event.start.to_date.strftime("%Y%m%d") %>"><%= @event.start.to_date.strftime("%B %d, %Y") %></abbr>
+        <%- if @event.duration > 1 %>
+        – <abbr class="dtend" title="<%= (@event.start.to_date + (@event.duration).day).strftime("%Y%m%d") %>"><%= (@event.start.to_date + (@event.duration).day).strftime("%B %d, %Y") %></abbr>
+        <%- end -%>
+      <%- end -%>
       </strong>
     </div>
     
