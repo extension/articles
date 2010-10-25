@@ -62,7 +62,7 @@ class ExpertiseCounty < ActiveRecord::Base
       # conditions << build_date_condition(options)
     #  conditions << build_entrytype_condition(options)
        if options[:location]
-          joins << "join expertise_counties_users as ecu on ecu.expertise_county_id=expertise_counties.id join users on ecu.user_id=accounts.id join expertise_areas as ea on ecu.user_id=ea.user_id " + 
+          joins << "join expertise_counties_users as ecu on ecu.expertise_county_id=expertise_counties.id join accounts on ecu.user_id=accounts.id join expertise_areas as ea on ecu.user_id=ea.user_id " + 
                     " join categories as c on ea.category_id=c.id "
           conditions << "parent_id is null"
           conditions << "expertise_counties.expertise_location_id = #{options[:location].id}"
