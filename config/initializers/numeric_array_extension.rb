@@ -37,5 +37,4 @@ class Array
       self[i],self[j] = self[j],self[i] if i!=j
     end;self
   end
-  def sample n=1 ; (0...n).collect{ self[rand(self.size)] } ; end
 end
