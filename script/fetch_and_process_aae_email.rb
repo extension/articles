@@ -41,8 +41,7 @@ def handle_vacations
         # ignore it
         aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
       elsif(aae_email.destination == AaeEmail::EXPERT)
-        case aae_email.reply_type
-        when (AaeEmail::ASSIGN_REPLY or AaeEmail::OTHER_REPLY)
+        if(aae_email.reply_type == AaeEmail::ASSIGN_REPLY or aae_email.reply_type == AaeEmail::OTHER_REPLY)
           # notify the previous assignee.  If previous assignee was system, reassign to a question wrangler
           if(!aae_email.submitted_question)
             # no question! - notify the hall monitors
@@ -61,7 +60,7 @@ def handle_vacations
                     comment = "Detected a vacation response on question assignment. Reassigning to a question wrangler."
                     aae_email.submitted_question.log_comment(User.systemuser, comment)
                     aae_email.submitted_question.assign_to_question_wrangler(User.systemuser)
-                    aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REASSIGN)
+                    aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REASSIGNED)
                   else
                     # comment and notify person that made the assignment
                     if(aae_email.account)
@@ -127,8 +126,7 @@ def handle_bounces
         # ignore it
         aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::IGNORED)
       elsif(aae_email.destination == AaeEmail::EXPERT)
-        case aae_email.reply_type
-        when (AaeEmail::ASSIGN_REPLY or AaeEmail::OTHER_REPLY)
+        if (aae_email.reply_type == AaeEmail::ASSIGN_REPLY or aae_email.reply_type == AaeEmail::OTHER_REPLY)
           # notify the previous assignee.  If previous assignee was system, reassign to a question wrangler
           if(!aae_email.submitted_question)
             # no question! - notify the hall monitors
@@ -147,7 +145,7 @@ def handle_bounces
                     comment = "Detected a bounce response on question assignment. Reassigning to a question wrangler."
                     aae_email.submitted_question.log_comment(User.systemuser, comment)
                     aae_email.submitted_question.assign_to_question_wrangler(User.systemuser)
-                    aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REASSIGN)
+                    aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REASSIGNED)
                   else
                     # retryable? comment and notify person that made the assignment
                     if(aae_email.retryable?)
@@ -166,7 +164,7 @@ def handle_bounces
                       comment = "Detected a bounce response on question assignment. Reassigning to a question wrangler."
                       aae_email.submitted_question.log_comment(User.systemuser, comment)
                       aae_email.submitted_question.assign_to_question_wrangler(User.systemuser)
-                      aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REASSIGN)
+                      aae_email.update_attributes(:action_taken_at => Time.now.utc, :action_taken => AaeEmail::REASSIGNED)
                     end
                   end
                 else
