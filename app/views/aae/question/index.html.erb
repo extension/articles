@@ -21,6 +21,12 @@
     
     <h3>Ask an Expert #<%= @submitted_question.id %></h3>
     
+    <% if @comments_exist %>
+    <p>We got comments</p>
+    <% else %>
+    <p>We ain't got no comments</p>
+    <% end %>
+    
     <h2 class="inc_question"><span><%= format_text_for_display(@submitted_question.asked_question) %></span></h2>
     <br class="clear" />
     
