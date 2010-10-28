@@ -1590,3 +1590,4 @@ a.nodec:hover {text-decoration:underline;}
 .comment_icon {background: #ffffa8 url(/images/common/comment.png) 10px 5px no-repeat; padding: 2px 5px 2px 30px !important; color:#000 !important;}
 .comment_icon p {margin-bottom:2px; }
 .aae_comment_description {background: #ffffa8; padding: 2px 5px !important;}
+.comment_alert {background: transparent url(/images/common/comment.png) 0 5px no-repeat; padding: 2px 5px 2px 20px !important; color:#000 !important;}
