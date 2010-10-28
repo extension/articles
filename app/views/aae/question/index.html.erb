@@ -125,7 +125,7 @@
         <%- form_tag({:action=> "comment"}, {:id => "aae_comment"}) do -%>
             <fieldset>
                 <p>
-                    <label for="comment">Your comments: </label>
+                    <label for="comment">Post a comment for other AaE experts: </label>
                     <%= text_area_tag("comment", '', :cols => "40", :rows => "7") %>
                     <%= hidden_field_tag('squid',@submitted_question.id) %>
                     <%= submit_tag 'Submit' %> <%= link_to_function 'close', "Effect.toggle('aae_comment_form','blind', { duration: .4}); setTimeout(set_select_focus, 500);"%></p>
@@ -148,6 +148,10 @@
 </div>
 
 <div id="user_actions">
+  <% if @comments_exist %>
+    <p class="comment_alert">There are comments in this <a href="#history">question's history</a></p>
+  <% end %>
+  
     <% if @submitted_question.spam %>
         <div class="rejectedaae">
             <h3>This question has been marked as spam.</h3>

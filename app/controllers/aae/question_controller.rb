@@ -23,6 +23,13 @@ class Aae::QuestionController < ApplicationController
     @categories = Category.root_categories.all(:order => 'name')
     @category_options = @categories.map{|c| [c.name,c.id]}
     
+    # determine whether this question has any comments or not
+    if @submitted_question.submitted_question_events.find(:first, :conditions => {:event_state => SubmittedQuestionEvent::COMMENT})
+      @comments_exist = true
+    else
+      @comments_exist = false
+    end
+    
     @submitter_name = @submitted_question.submitter_fullname
       
     if @submitted_question.categories and @submitted_question.categories.length > 0
