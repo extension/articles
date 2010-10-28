@@ -1587,6 +1587,6 @@ a.nodec:hover {text-decoration:underline;}
 .qw {background: #fff url(/images/common/lasso.png) 3px 50% no-repeat !important; padding:6px 0px 6px 22px !important;}
 .qw .profile{background:none; padding-left:0 !important;} 
 
-.comment_icon {background: transparent url(/images/common/comment.png) 10px center no-repeat; padding-left: 30px !important;}
-.comment_icon span {background: #ffffa8; display:inline !important; color:#000 !important; padding:2px 5px !important;}
-   
+.comment_icon {background: #ffffa8 url(/images/common/comment.png) 10px 5px no-repeat; padding: 2px 5px 2px 30px !important; color:#000 !important;}
+.comment_icon p {margin-bottom:2px; }
+.aae_comment_description {background: #ffffa8; padding: 2px 5px !important;}
