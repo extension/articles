@@ -66,7 +66,28 @@ class People::SignupController < ApplicationController
       @invitation = Invitation.find_by_token(params[:invite])
     end
     
-    @user = User.new(params[:user])
+    if(params[:user] and params[:user][:email])
+      checkemail = params[:user][:email]
+      if(account = Account.find_by_email(checkemail))
+        if(account.class == User)
+          failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:controller => 'people/account', :action => :new_password)}'>request a new password</a>"
+          flash.now[:failure] = failuremsg
+          @user = account
+          if(!(@user.location.nil?))  
+            @countylist = @user.location.counties
+            @institutionlist = @user.location.communities.institutions.find(:all, :order => 'name')
+          end
+          render :action => "new"
+        elsif(account.class == PublicUser)
+          account.update_attribute(:type,'User')
+          @user = Account.find(account.id)
+          @user.attributes=params[:user]
+          @user.set_login_string(true)
+        end
+      else
+        @user = User.new(params[:user])
+      end
+    end
 
     # institution?
     if(!params[:primary_institution_id].nil? and params[:primary_institution_id] != 0)
