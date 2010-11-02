@@ -596,6 +596,8 @@ h3 {clear:left;}
 .usernetwork {clear:both;float:left;margin-bottom:1em;padding:0;}
 .usernetwork dt {margin:0 !important; height:1.3em;color:#000;float:left;}
 .usernetwork dd {float:left;padding:0 0 0 1em;}
+.usernetwork dd a {text-decoration:none;color:#999;}
+.usernetwork dd a:hover {text-decoration:underline;color:blue;}
 #showuser_socialnetworks, #showuser_communities {clear:left;margin-bottom:2em;overflow:auto;}
 
 
