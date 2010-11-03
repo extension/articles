@@ -167,17 +167,8 @@ class Account < ActiveRecord::Base
    20
   end
   
-  protected
-  def encrypt_password_string(clear_password_string)
-   Digest::SHA1.hexdigest(clear_password_string)
-  end
-   
-  def set_encrypted_password
-   self.password = self.encrypt_password_string(self.password) if (!self.password.blank? && self.password_changed?)
-  end
-  
-  def set_login_string
-    if(self.login.blank?)
+  def set_login_string(reset=false)
+    if(reset or self.login.blank?)
       if(self.type == 'User')
         self.base_login_string = (self.first_name + self.last_name.each_char[0]).mb_chars.downcase.gsub!(/[^\w]/,'')
       elsif(self.type == 'PublicUser')
@@ -194,6 +185,18 @@ class Account < ActiveRecord::Base
       # set login
       self.login = "#{self.base_login_string}#{self.login_increment.to_s}"
     end
+    return true
   end
+  
+  protected
+  def encrypt_password_string(clear_password_string)
+   Digest::SHA1.hexdigest(clear_password_string)
+  end
+   
+  def set_encrypted_password
+   self.password = self.encrypt_password_string(self.password) if (!self.password.blank? && self.password_changed?)
+  end
+  
+
     
 end

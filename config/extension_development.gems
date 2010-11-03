@@ -1,0 +1,9 @@
+# extension_development.gems generated gem export file. Note that any env variable settings will be missing. Append these after using a ';' field separator
+awesome_print -v0.2.1
+looksee -v0.2.1
+map_by_method -v0.8.3
+net-http-spy -v0.2.1
+request-log-analyzer -v1.9.7
+sketches -v0.1.1
+what_methods -v1.0.1
+wirble -v0.1.3
