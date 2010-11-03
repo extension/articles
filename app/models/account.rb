@@ -185,6 +185,7 @@ class Account < ActiveRecord::Base
       # set login
       self.login = "#{self.base_login_string}#{self.login_increment.to_s}"
     end
+    return true
   end
   
   protected
