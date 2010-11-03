@@ -400,8 +400,7 @@ class LearnController < ApplicationController
         format.js
       end
     else
-      redirect_to :index
-      return
+      return redirect_to(:action => :index) 
     end
   end
   

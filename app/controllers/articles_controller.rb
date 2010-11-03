@@ -92,8 +92,11 @@ class ArticlesController < ApplicationController
       # is this article tagged with youth?
       @youth = true if @article_bucket_names.include?('youth')
       
-      # news check to set the meta tags for noindex/nofollow
+      # news check to set the meta tags for noindex
       @published_content = false if @article_bucket_names.include?('news')
+      
+      # noindex check to set the meta tags for noindex
+      @published_content = false if @article_bucket_names.include?('noindex')
       
       # get the tags on this article that are content tags on communities
       @community_content_tags = (Tag.community_content_tags & @article_content_tags)

@@ -29,3 +29,11 @@ config.action_mailer.smtp_settings = {
 }
 
 config.action_mailer.perform_deliveries = false
+
+if(AppConfig.configtable['load_query_trace'])
+  require 'query_trace'
+  
+  class ::ActiveRecord::ConnectionAdapters::AbstractAdapter
+    include QueryTrace
+  end
+end
