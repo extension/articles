@@ -66,10 +66,15 @@ class People::SignupController < ApplicationController
       @invitation = Invitation.find_by_token(params[:invite])
     end
     
+    # search for an existing account.  doing this here instead
+    # of validations because if the person had a "PublicUser" account
+    # we need to convert that to a "User" account - else if there's
+    # a user conflict, just show the "already registered" message
     if(params[:user] and params[:user][:email])
       checkemail = params[:user][:email]
       if(account = Account.find_by_email(checkemail))
-        if(account.class == User)
+        if(account.class == User) 
+          # has existing user account
           failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:controller => 'people/account', :action => :new_password)}'>request a new password</a>"
           flash.now[:failure] = failuremsg
           @user = account
@@ -79,7 +84,9 @@ class People::SignupController < ApplicationController
           end
           render :action => "new"
         elsif(account.class == PublicUser)
+          # convert the account
           account.update_attribute(:type,'User')
+          @account_conversion = true
           @user = Account.find(account.id)
           @user.attributes=params[:user]
           @user.set_login_string(true)
@@ -102,6 +109,9 @@ class People::SignupController < ApplicationController
     else
       flash.now[:failure] = "Please let us know how you are involved with Cooperative Extension"
       @locations = Location.displaylist
+      if(@account_conversion)
+        @user.update_attribute(:type,'PublicUser')
+      end
       return render(:action => "new")
     end
         
@@ -119,7 +129,7 @@ class People::SignupController < ApplicationController
       end
     end
     
-    if(!didsave)
+    if(!didsave)        
       if(!@user.errors.on(:email).nil? and @user.errors.on(:email) == 'has already been taken')
         failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:controller => 'people/account', :action => :new_password)}'>request a new password</a>"
         flash.now[:failure] = failuremsg
@@ -140,6 +150,10 @@ class People::SignupController < ApplicationController
       if(!(@user.location.nil?))  
         @countylist = @user.location.counties
         @institutionlist = @user.location.communities.institutions.find(:all, :order => 'name')
+      end
+      
+      if(@account_conversion)
+        @user.update_attribute(:type,'PublicUser')
       end
       render :action => "new"
     else        
