@@ -25,7 +25,7 @@
 
     <div id="time_with_tz">
       <strong>
-      <%- if @event.duration.blank? -%>
+      <%- if @event.duration.blank? or @event.duration == 0 -%>
         <% event_time = format_event_time(@event) %>
         <abbr class="dtstart" title="<%= event_time.strftime("%Y-%m-%dT%H:%M:%S") %>"><%= event_time.strftime("%B %d, %Y at %l:%M %p") %></abbr>
         <% if !@event.time_zone.blank? %>
