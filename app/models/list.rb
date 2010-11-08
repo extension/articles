@@ -141,6 +141,8 @@ class List < ActiveRecord::Base
     subscriptions = ListSubscription.find(:all, :conditions => {:list_id => self.id, :email => subscriptionemail})
     if(!subscriptions.empty?)
       ListSubscription.delete_all("id IN (#{subscriptions.map{|sub| "'#{sub.id}'"}.join(',')})")
+      # touch updated_at - so that when mailman sync runs, it will update
+      self.touch
       return true
     else
       return false
@@ -157,6 +159,8 @@ class List < ActiveRecord::Base
     ownerships = ListOwner.find(:all, :conditions => {:list_id => self.id, :email => owneremail})
     if(!ownerships.empty?)
       ListOwner.delete_all("id IN (#{ownerships.map{|ownership| "'#{ownership.id}'"}.join(',')})")
+      # touch updated_at - so that when mailman sync runs, it will update
+      self.touch
       return true
     else
       return false
@@ -232,7 +236,10 @@ class List < ActiveRecord::Base
     # update
     list_subscriptions.each do |listsub|
       listsub.save(false)
-    end 
+    end
+    
+    # touch updated_at - so that when mailman sync runs, it will update
+    self.touch 
   
     AdminEvent.log_data_event(AdminEvent::UPDATE_SUBSCRIPTIONS, {:listname => self.name, :adds => addcount, :removes => removecount})
     return {:adds => addcount, :removes => removecount}
@@ -285,7 +292,10 @@ class List < ActiveRecord::Base
     # update
     list_owners.each do |listowner|
       listowner.save(false)
-    end 
+    end
+    
+    # touch updated_at - so that when mailman sync runs, it will update
+    self.touch 
     
     AdminEvent.log_data_event(AdminEvent::UPDATE_OWNERS, {:listname => self.name, :adds => addcount, :removes => removecount})
     return {:adds => addcount, :removes => removecount}
