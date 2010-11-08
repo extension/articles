@@ -20,4 +20,20 @@ class County < ActiveRecord::Base
   # TODO: review heureka county reporting methods.  Justcode Issue #554
   
   
+  def self.find_by_geoip(ipaddress = AppConfig.configtable['request_ip_address'])
+    if(geoip_data = Location.get_geoip_data(ipaddress))
+      if(geoip_data[:country_code] == 'US')
+        if(geoname = GeoName.find(:first, :conditions => "feature_name = '#{geoip_data[:city]}' and state_abbreviation = '#{geoip_data[:region]}'"))
+          self.find_by_name(geoname.county)
+        else
+          return nil
+        end
+      else
+        return nil
+      end
+    else
+      return nil
+    end
+  end          
+  
 end
