@@ -10,7 +10,7 @@
       <tr>
           <th>#</th>
           <th>Question Age</th>
-          <th id="completions">Assigned to</th>
+          <th>Assigned to</th>
           <th>Length<br/>assigned</th>
           <th id="completions">Handled <br> or Completed</br><br/>(last 6 months)</th>
           <th>Avg handling time<br> (anytime assigned)</br> <br/>(last 6 months)</th>        
@@ -43,7 +43,7 @@
                       end                    
                   -%>
                   <td class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
-                  <%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %> (out of <%= aae_handling_event_count[:total] %>)
+                  <%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %> (out of <%= aae_handling_event_count[:total] %>)</td>
                   <td><%= (aae_handling_event_count[:handled] > 0 ? "#{number_with_precision(aae_handling_average / 3600, :precision => 0)} hours" : 'n/a') %></td>
               <% else %>
                   <td>n/a</td>
