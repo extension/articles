@@ -28,7 +28,7 @@
       <% @userlist.each do |user| %>
         <%- if @showall or @handling_counts[user.id] -%>
           <tr>
-              <td><%= link_to("#{user.fullname}", aae_profile_url(:id => user.login), :title => "Ask an Expert profile") %><%= link_to("#{user.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => user.login}, :title => "People profile", :class => "subtle") %>
+              <td <%= user.is_question_wrangler? ? "class='qw'" : "" %>><%= link_to("#{user.fullname}", aae_profile_url(:id => user.login), :title => "Ask an Expert profile") %><%= link_to("#{user.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => user.login}, :title => "People profile", :class => "subtle") %>
               </td>
                   <%- 
                       if @handling_counts[user.id]
