@@ -1780,6 +1780,7 @@ class User < Account
      # loop through the total list, build a return hash
      # that will return the values per user_id (or user object)
      returnvalues = {}
+     returnvalues[:all] = {:total => 0, :handled => 0, :ratio => 0}
      totals_hash.keys.each do |groupkey|
        total = totals_hash[groupkey]
        handled = (handled_hash[groupkey].nil?? 0 : handled_hash[groupkey])
@@ -1790,6 +1791,11 @@ class User < Account
         ratio = 0
        end
        returnvalues[groupkey] = {:total => total, :handled => handled, :ratio => ratio}
+       returnvalues[:all][:total] += total
+       returnvalues[:all][:handled] += handled       
+     end
+     if(returnvalues[:all][:handled] > 0)
+       returnvalues[:all][:ratio] = returnvalues[:all][:handled].to_f / returnvalues[:all][:total].to_f
      end
 
      return returnvalues
