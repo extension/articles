@@ -13,7 +13,6 @@ class Aae::DashboardController < ApplicationController
 
   
   def index
-    @skip_the_postit_display = true
     if err_msg = params_errors
       list_view_error(err_msg)
       return
@@ -34,7 +33,5 @@ class Aae::DashboardController < ApplicationController
       @handling_averages = User.aae_handling_average({:group_by_id => true, :limit_to_handler_ids => assignee_ids,:submitted_question_filter => @filteroptions.merge({:notrejected => true})})  
     end
   end
-  
-  
   
 end
