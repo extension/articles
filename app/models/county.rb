@@ -12,13 +12,8 @@ class County < ActiveRecord::Base
 
   has_many :users
   belongs_to :location
-  #TODO:  review submitted vs. expert questions  Justcode Issue #553
   has_many :submitted_questions    
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
-
-  
-  # TODO: review heureka county reporting methods.  Justcode Issue #554
-  
   
   def self.find_by_geoip(ipaddress = AppConfig.configtable['request_ip_address'])
     if(geoip_data = Location.get_geoip_data(ipaddress))
