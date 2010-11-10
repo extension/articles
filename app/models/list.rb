@@ -28,6 +28,7 @@ class List < ActiveRecord::Base
   MAILMAN_SUBSCRIBE_MODERATE = 2  # admins must approve subscriptions
   MAILMAN_SUBSCRIBE_CONFIRM_AND_MODERATE = 3  # confirm and admin approval
   
+  MAILMAN_ACCEPT = 0
   
   has_many :list_subscriptions, :dependent => :destroy
   has_many :list_owners, :dependent => :destroy
@@ -579,6 +580,7 @@ class List < ActiveRecord::Base
     default_configuration["archive_private"] = MAILMAN_TRUE
     default_configuration["max_num_recipients"] = MAILMAN_UNLIMITED
     default_configuration["admin_notify_mchanges"] = MAILMAN_FALSE
+    default_configuration["generic_nonmember_action"] = MAILMAN_ACCEPT
     owners = self.list_owners.reject(&:ineligible_for_mailman?).map{|listowner| "'#{listowner.email.downcase}'"}
     owners << "'#{AppConfig.configtable['default-list-owner']}'"
     default_configuration["owner"] = "[#{owners.uniq.join(",")}]"
