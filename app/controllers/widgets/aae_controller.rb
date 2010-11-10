@@ -89,7 +89,13 @@ class Widgets::AaeController < ApplicationController
     end
 
     @widget.set_fingerprint(@currentuser)
-    @widget_url = url_for(:controller => '/widget', :location => location_str, :county => county_str, :id => @widget.fingerprint, :only_path => false)  
+    
+    if location
+      @widget_url = url_for(:controller => '/widget', :location => location_str, :county => county_str, :id => @widget.fingerprint, :only_path => false)  
+    else
+      @widget_url = url_for(:controller => '/widget', :id => @widget.fingerprint, :only_path => false)
+    end
+    
     @widget.widgeturl = @widget_url
 
     @currentuser.widgets << @widget
