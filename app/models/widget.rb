@@ -13,6 +13,11 @@ class Widget < ActiveRecord::Base
   has_many :submitted_questions
   has_many :widget_events
   belongs_to :user
+  # has_many :tags from the tags model!
+  has_many :cached_tags, :as => :tagcacheable
+  belongs_to :location
+  belongs_to :county
+  
   
   validates_presence_of :name  
   validates_uniqueness_of :name, :case_sensitive => false
@@ -20,6 +25,9 @@ class Widget < ActiveRecord::Base
   named_scope :inactive, :conditions => "active = false", :order => "name"
   named_scope :active, :conditions => "active = true", :order => "name"
   named_scope :byname, lambda {|widget_name| {:conditions => "name like '#{widget_name}%'", :order => "name"} }
+  
+
+  
   
   def set_fingerprint(user)
     create_time = Time.now.to_s
@@ -44,6 +52,10 @@ class Widget < ActiveRecord::Base
               :group => 'widgets.id',
               :order => options[:order] ||= 'widgets.name'
               )
+  end
+  
+  def tag_myself_with_shared_tags(taglist)
+    self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
   end
   
 end
