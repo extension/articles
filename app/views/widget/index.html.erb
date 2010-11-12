@@ -79,20 +79,6 @@
       <%= text_field_tag(:submitter_email_confirmation, @submitter.email, :type => "email",  :autocapitalize => "off") %>
     </p>
     
-    <% if @location %>
-    <p>
-        <%= hidden_field_tag("location", @location.fipsid) %>
-    </p>
-    <% end %>
-    
-    <% if @location and @county %>
-      <p>
-         <%= hidden_field_tag("county", @county.fipsid) %>
-      </p>      
-    <% end %>
-    
-
-
     <p class="submit"><%= submit_tag "Ask", :id => "ask_submit", :disable_with => "Submitting..." %></p>
     <% end %>
 </body>
