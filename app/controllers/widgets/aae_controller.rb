@@ -61,6 +61,7 @@ class Widgets::AaeController < ApplicationController
   # created new named widget form
   def new
     @location_options = get_location_options
+    @widget = Widget.new
   end
 
   # generates the iframe code for users to paste into their websites 
@@ -78,27 +79,25 @@ class Widgets::AaeController < ApplicationController
 
     @widget = Widget.new(params[:widget])
     
-    if !params[:photo_upload].blank? and params[:photo_upload].strip == 'yes'
-      @widget.upload_capable = true  
-    end
-
     if !@widget.valid?
       @location_options = get_location_options
-      render :template => '/widgets/aae/new'
-      return
+      return render :template => '/widgets/aae/new'
     end
-
+    
     @widget.set_fingerprint(@currentuser)
+    @widget.widgeturl = url_for(:controller => '/widget', :id => @widget.fingerprint, :only_path => false)
     
-    if location
-      @widget_url = url_for(:controller => '/widget', :location => location_str, :county => county_str, :id => @widget.fingerprint, :only_path => false)  
+    if(@widget.save)
+      # handle tags
+      if(@widget.enable_tags?)
+        @widget.tag_myself_with_shared_tags(params[:tag_list])
+      end
+      @currentuser.widgets << @widget
     else
-      @widget_url = url_for(:controller => '/widget', :id => @widget.fingerprint, :only_path => false)
+      @location_options = get_location_options
+      return render :template => '/widgets/aae/new'
     end
     
-    @widget.widgeturl = @widget_url
-
-    @currentuser.widgets << @widget
   end
 
   def get_widgets
