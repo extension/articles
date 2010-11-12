@@ -17,6 +17,7 @@
 <% end %>
 </div>
 
+<%- if @currentuser.is_admin? -%>
 <section id="two_col_col_two">
    <aside id="secondary" class="radius10">
      <p>
@@ -24,5 +25,6 @@
      </p> 
    </aside>
 </section>
+<%- end -%>
 
 </div>
