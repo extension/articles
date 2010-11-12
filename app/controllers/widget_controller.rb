@@ -25,14 +25,7 @@ class WidgetController < ApplicationController
         end
       end
     end
-    
-    if params[:location]
-      @location = Location.find_by_abbreviation(params[:location].strip)
-      if params[:county] and @location
-        @county = County.find_by_name_and_location_id(params[:county].strip, @location.id)
-      end 
-    end
-    
+        
     @submitted_question = SubmittedQuestion.new
     @submitter = PublicUser.new
   
@@ -103,7 +96,7 @@ class WidgetController < ApplicationController
         if @submitted_question.save
           session[:account_id] = @submitter.id
           flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
-          redirect_to widget_url(:id => params[:id], :location => @location ? @location.abbreviation : nil, :county => @county ? @county.name : nil), :layout => false
+          redirect_to widget_url(:id => params[:id]), :layout => false
           return
         else
           raise InternalError
@@ -257,21 +250,12 @@ class WidgetController < ApplicationController
     @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
     @submitted_question.external_app_id = 'widget'
     
-    
-    # check to see if question has location associated with it
-    incoming_location = params[:location].strip if params[:location] and params[:location].strip != '' and params[:location].strip != Location::ALL
-    
-    if incoming_location
-      @location = Location.find_by_fipsid(incoming_location.to_i)
-      @submitted_question.location = @location if @location
+    if(!@submitted_question.location_id and widget.location_id)
+      @submitted_question.location_id = widget.location_id
     end
-    
-    # check to see if question has county and said location associated with it
-    incoming_county = params[:county].strip if params[:county] and params[:county].strip != '' and params[:county].strip != County::ALL
-    
-    if incoming_county and @location
-      @county = County.find_by_fipsid_and_location_id(incoming_county.to_i, @location.id)
-      @submitted_question.county = @county if @county
+
+    if(!@submitted_question.county_id and widget.county_id)
+      @submitted_question.county_id = widget.county_id
     end
   end
   
