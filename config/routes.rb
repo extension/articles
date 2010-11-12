@@ -98,26 +98,21 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widget/create_from_widget_using_api', :controller => 'widget', :action => 'create_from_widget_using_api'
   map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
   
-  # Route for named/tracked widget w/ no location
-  map.connect 'widget/tracking/:id', :controller => 'widget', :action => 'index'
+  # Route for named/tracked widget w/ no location *unused is a catcher for /location and /location/county for
+  # existing widgets, since we aren't using that in the URL anymore
+  map.connect 'widget/tracking/:id/*unused', :controller => 'widget', :action => 'index'
   # Widget route for unnamed/untracked widgets
   map.widget 'widget', :controller => 'widget', :action => 'index'
-  
-  # Routes for widgets that are named and tracked w/ location
-  
-  # insert regular expression for county to let the routing know that if a dot(.) is encountered, it's part of the param and not 
-  # a route separator 
-  map.connect 'widget/tracking/:id/:location/:county', :controller => 'widget', :action => 'index', :requirements => { :county => /.*/ }
-  map.connect 'widget/tracking/:id/:location', :controller => 'widget', :action => 'index'
-  
+
   map.connect 'widget/create_from_widget', :controller => 'widget', :action => 'create_from_widget'
   
-  # Routes for widgets that are not named and tracked and have just location info
-  
+  # jayoung - do we have this anymore?
+  # Routes for widgets that are not named and tracked and have just location info 
   # insert regular expression for county to let the routing know that if a dot(.) is encountered, it's part of the param and not 
   # a route separator
-  map.connect 'widget/:location/:county', :controller => 'widget', :action => 'index', :requirements => { :county => /.*/ }
-  map.connect 'widget/:location', :controller => 'widget', :action => 'index'
+  # map.connect 'widget/:location/:county', :controller => 'widget', :action => 'index', :requirements => { :county => /.*/ }
+  # map.connect 'widget/:location', :controller => 'widget', :action => 'index'
+  
   
   ### Widget Stuff ###
   # redirects
