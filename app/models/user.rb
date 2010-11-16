@@ -763,6 +763,7 @@ class User < Account
         if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
           self.update_attribute(:is_question_wrangler, false)
         end
+        community.touch
        end
       else
        if(community.is_institution?)
