@@ -11,24 +11,25 @@ require 'json/pure'
 class WidgetController < ApplicationController  
   layout 'widgets'
   has_rakismet :only => [:create_from_widget]
+  ssl_allowed :index, :create_from_widget
+
 
   # ask widget pulled from remote iframe
   def index
-    if !params[:id].blank?
-      @fingerprint = params[:id].strip 
-      if !@fingerprint.blank?
-        widget_to_show = Widget.find_by_fingerprint(@fingerprint)
-        if widget_to_show and !widget_to_show.active?
-          @status_message = "This widget has been disabled."
-          render :template => '/widget/status', :layout => false
-          return
-        end
+    filteredparams = ParamsFilter.new([:widget],params)
+    @widget = filteredparams.widget
+    if !@widget.blank?
+      if !@widget.active?
+        @status_message = "This widget has been disabled."
+        return render(:template => '/widget/status', :layout => false)
       end
+    else
+      @status_message = "Unknown widget."
+      return render(:template => '/widget/status', :layout => false)
     end
-        
+      
     @submitted_question = SubmittedQuestion.new
     @submitter = PublicUser.new
-  
     @host_name = request.host_with_port
     render :layout => false
   end
@@ -137,7 +138,6 @@ class WidgetController < ApplicationController
     @submitter = PublicUser.new
     @fingerprint = params[:id]
     @host_name = request.host_with_port
-    @location_options = get_location_options
     render :layout => false
   end
   
@@ -268,8 +268,6 @@ class WidgetController < ApplicationController
     @submitted_question = SubmittedQuestion.new
     @submitted_question.location = @location if @location
     @submitted_question.county = @county if @county
-    @location_options = get_location_options
-    @county_options = get_county_options
     
     return render :template => 'widget/bonnie_plants', :layout => false
   end

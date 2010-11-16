@@ -36,8 +36,9 @@
 </head> 
 
 <body>
-    <% form_for :submitted_question, @submitted_question, :url => widget_submit_question_url(:id => @fingerprint), :html => { :id => 'myForm', :multipart => true } do |f| %>
-    
+    <%- form_for :submitted_question, @submitted_question, :url => widget_submit_question_url, :html => { :id => 'myForm', :multipart => true } do |f| -%>
+      <%= hidden_field_tag(:widget, @widget.fingerprint) %>
+      
     <h1><a href="http://www.extension.org/" target="_blank">eXtension</a></h1>
     <h2>Ask an Expert</h2>
     
@@ -57,7 +58,31 @@
       <%= f.text_area :asked_question, {:rows => "4"} %>
     </p>
     
-    <% if image_upload_capable(@fingerprint) %>
+    <%- if @widget.show_location? -%>
+      <p class="instructions">Your location:</p>
+      <fieldset class="stack_labels">
+        <p>
+            <label>Location
+            <%= select_tag 'location_id', options_for_select(get_location_options, @widget.location_id) %>
+            </label>
+        </p>
+
+        	<%= observe_field('location_id',
+        	                  :update    => :county_list,
+        	                  :url       => { :controller => 'aae/search', :action => :get_counties },
+        	                  :with      => "'location_id='+value") %>
+
+        <p id="county_list">
+          <%- if @widget.location and @widget.location.counties.length > 0 -%>
+          	<label>
+          	<%= select_tag 'county_id', options_for_select(get_county_options, @widget.county_id) %>
+              </label>
+          <%- end -%>
+        </p>
+      </fieldset>
+    <%- end -%>
+    
+    <%- if image_upload_capable(@fingerprint) -%>
       <p>
       <%= f.label :file_attachment, "Image (optional)" %>
       <p><em>You can upload .jpg .png or .gif. Max size of 2MB each.</em></p>
@@ -65,7 +90,7 @@
       <p class="image_upload"><%= file_attachment.file_field :attachment %></p>
       <% end %>
       </p>
-    <% end %>
+    <%- end -%>
     
     <br />
 

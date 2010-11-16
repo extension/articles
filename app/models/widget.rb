@@ -4,7 +4,7 @@
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
-
+require 'uri'
 class Widget < ActiveRecord::Base
 
   has_many :user_roles
@@ -58,4 +58,19 @@ class Widget < ActiveRecord::Base
     self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
   end
   
+  def self.find_by_fingerprint_or_id_or_name(fingerprint_or_id_or_name)
+    if(fingerprint_or_id_or_name.size == 40)
+      self.find_by_fingerprint(fingerprint_or_id_or_name)
+    elsif(fingerprint_or_id_or_name =~ /\d+/)
+      self.find_by_id(fingerprint_or_id_or_name)
+    else
+      self.find_by_name(URI.unescape(fingerprint_or_id_or_name))
+    end
+  end
+  
+  def can_edit_attributes?(user)
+    return (user.is_admin? or self.user == user or self.assignees.include?(user))
+  end
+    
+      
 end

@@ -1,5 +1,5 @@
 <% if location and location.counties.length > 0 %>
 	<label>
-	<%= select_tag 'county_id', options_for_select(@county_options, @submitted_question ? @submitted_question.county_id : nil) %>
+	<%= select_tag 'county_id', options_for_select(get_county_options, @submitted_question ? @submitted_question.county_id : nil) %>
     </label>
 <% end %>

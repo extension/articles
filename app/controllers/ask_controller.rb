@@ -33,8 +33,6 @@ class AskController < ApplicationController
   
   def submission_form
     @categories = [""].concat(Category.root_categories.show_to_public.all(:order => 'name').map{|c| [c.name, c.id]})
-    @location_options = get_location_options
-    @county_options = get_county_options
     
     if request.get?  
       if !params[:q].blank?  

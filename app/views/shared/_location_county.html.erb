@@ -1,6 +1,6 @@
 <p>
     <label>Location
-    <%= select_tag 'location_id', options_for_select(@location_options, @submitted_question ? @submitted_question.location_id : nil) %>
+    <%= select_tag 'location_id', options_for_select(get_location_options, @submitted_question ? @submitted_question.location_id : nil) %>
     </label>
 </p>
 		

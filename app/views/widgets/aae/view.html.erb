@@ -38,35 +38,55 @@
 <h4>Widget Status</h4>
 <div class="active-status">
     <p>This widget is currently <strong id="widget_active"><%= @widget.active? ? "Active" : "Inactive" %></strong></p>
-    <p id="<%= @widget.name %>">
-        <%= check_box_tag "widget_#{@widget.id}", @widget.id, @widget.active?, :class => "inline" %>
-        <%= label_tag "widget_#{@widget.id}", 'Active', :class => "inline" %>
-        <span id="loading_widget_<%= @widget.id %>" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
-    </p>
     <p>When a widget is inactive, questions can not be submitted from it. The widget code should be removed from any web page.</p>
 </div>
 
-<%= observe_field("widget_#{@widget.id}",
-                      :url       => { :controller => 'widgets/aae', :action => :toggle_activation },
-                      :with      => "'widget_id=#{@widget.id}'",
-                      :loading => "Element.show('loading_widget_#{@widget.id}')",
-                      :complete    => "Element.hide('loading_widget_#{@widget.id}')") %>
+<h4>Widget Attributes</h4>
+<%- if @widget.can_edit_attributes?(@currentuser) -%>
+  <p><%= link_to("edit",widgets_edit_aae_url(:id => @widget.id)) %></p>
+<%- end -%>
 
-<h4>Photo Upload Option</h4>
-<div class="active-status">
-<p id="widget_upload">
-    <%= check_box_tag "photo_upload", @widget.id, @widget.upload_capable?, :class => "inline" %>
-    <%= label_tag "photo_upload", 'Allow people to submit photo(s) with their question', :class => "inline" %>
-    <span id="loading_widget_upload" class="float-spinner" style="display:none"><img src='/images/loading.gif' /> Saving... </span>
-    <p>Note: When you enable image upload, the height of the widget will increase. Please check your widget page to make sure the widget still fits in the iframe.</p>
-</p>
-</div>
+<table>
+  <tr>
+    <td>Location:</td>
+    <td>
+    <%- if @widget.location -%>
+      <%- if @widget.county -%>
+        <%= @widget.county.name %>, 
+      <%- end -%>
+      <%= @widget.location.name -%>
+    <%- else -%>
+      None specified.
+    <%- end -%>
+    </td>
+  <tr>
+  <td>Uploads enabled?</td>
+  <td><%= @widget.upload_capable? ? 'Yes' : 'No' %></td>
+  </tr>
+  
+  <tr>
+  <td>Show location menu?</td>
+  <td><%= @widget.show_location? ? 'Yes' : 'No' %></td>
+  </tr>
 
-<%= observe_field("photo_upload",
-                      :url       => { :controller => 'widgets/aae', :action => :toggle_upload_capable },
-                      :with      => "'widget_id=#{@widget.id}'",
-                      :loading => "Element.show('loading_widget_upload')",
-                      :complete    => "Element.hide('loading_widget_upload')") %>
+  <tr>
+  <td>Tags enabled?</td>
+  <td><%= @widget.enable_tags? ? 'Yes' : 'No' %></td>
+  </tr>
+  
+  <%- if @widget.enable_tags? -%>
+  <tr>
+    <td>Default tags:</td>
+    <td><%= @widget.system_sharedtags_displaylist %></td>
+  </tr>
+  <%- end -%>
+  
+  <tr>
+  <td>Widget Key:</td>
+  <td><%= @widget.fingerprint %></td>
+  </tr>
+
+</table>
 
 
 <h4>Widget iFrame Code</h4>
