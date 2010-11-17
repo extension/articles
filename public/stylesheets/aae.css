@@ -818,7 +818,7 @@ a.profile {
 #expertiselist li .float-spinner {position:absolute; margin-top:0 !important;left:-120px;top:0;}
 .nocats {font-weight:normal;}
 .aaesubcategoryexperts {width:100px;}
-
+.noexperts {color:red !important;}
 
 fieldset  p {padding:.35em 0 .35em;}
 fieldset.disabled {color:#888 !important; background:#e5e5e5 !important;}
