@@ -24,7 +24,7 @@ class WidgetController < ApplicationController
         return render(:template => '/widget/status', :layout => false)
       end
     else
-      @status_message = "Unknown widget."
+      @status_message = "Unknown widget specified."
       return render(:template => '/widget/status', :layout => false)
     end
       
@@ -49,13 +49,13 @@ class WidgetController < ApplicationController
   end
   
   def create_from_widget
-    if request.post?
-      @widget = Widget.find_by_fingerprint(params[:widget].strip) if params[:widget]
-      if(!@widget)
-        @status_message = "An internal error has occured. Please check back later."
-        return render(:template => '/widget/status', :layout => false)
-      end
+    @widget = Widget.find_by_fingerprint(params[:widget].strip) if params[:widget]
+    if(!@widget)
+      @status_message = "Unknown widget specified."
+      return render(:template => '/widget/status', :layout => false)
+    end
       
+    if request.post?
       begin
         # setup the question to be saved and fill in attributes with parameters
         # remove all whitespace in question before putting into db.
@@ -124,6 +124,12 @@ class WidgetController < ApplicationController
         
         if @submitted_question.save
           session[:account_id] = @submitter.id
+          # tags
+          if(@widget.enable_tags?)
+            if(!params[:tag_list])
+              @submitted_question.tag_myself_with_shared_tags(@widget.system_sharedtags_displaylist)
+            end
+          end
           flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
           return redirect_to widget_url(:widget => @widget.id), :layout => false
         else
