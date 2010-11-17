@@ -230,10 +230,10 @@ module ApplicationHelper
       if(fallback_location_id.blank?)
         return ''
       else
-        return fallback_location_id.to_s
+        return fallback_location_id
       end
     else
-      return @personal[:location].id.to_s
+      return @personal[:location].id
     end
   end
   

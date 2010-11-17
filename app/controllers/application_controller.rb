@@ -141,14 +141,14 @@ class ApplicationController < ActionController::Base
     @personal = {}
     
     # get location and county from session, then IP
-    if(!session[:location_id].nil?)
+    if(!session[:location_id].blank?)
       @personal[:location] = Location.find_by_id(session[:location_id])
-      if(!session[:county_id].nil?)
+      if(!session[:county_id].blank?)
         @personal[:county] = County.find_by_id(session[:county_id])
       end
     end
     
-    if(@personal[:location].nil?)
+    if(@personal[:location].blank?)
       if(location = Location.find_by_geoip)
         @personal[:location] = location
         session[:location_id] = location.id
@@ -158,6 +158,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+    
         
     if(!session[:institution_community_id].nil?)
       search_id = session[:institution_community_id]
