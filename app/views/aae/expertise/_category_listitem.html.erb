@@ -23,7 +23,7 @@
       <%- if expertcount > 0 -%>
         <span class="experts"><%= link_to(pluralize(expertcount, 'expert'), {:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => category.name }) %></span>
       <%- else -%>
-        <span class="experts"><strong>no experts!</strong></span>
+        <span class="experts noexperts"><strong>No experts!</strong></span>
       <%- end -%>
 
       
