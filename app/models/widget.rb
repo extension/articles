@@ -58,6 +58,10 @@ class Widget < ActiveRecord::Base
     self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
   end
   
+  def system_sharedtags_displaylist
+    return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED)
+  end
+  
   def self.find_by_fingerprint_or_id_or_name(fingerprint_or_id_or_name)
     if(fingerprint_or_id_or_name.size == 40)
       self.find_by_fingerprint(fingerprint_or_id_or_name)
