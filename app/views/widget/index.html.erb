@@ -59,11 +59,10 @@
     </p>
     
     <%- if @widget.show_location? -%>
-      <p class="instructions">Your location:</p>
       <fieldset class="stack_labels">
         <p>
-            <label>Location
-            <%= select_tag 'location_id', options_for_select(get_location_options, @widget.location_id) %>
+            <label>Location and County
+            <%= select_tag 'location_id', options_for_select(get_location_options, default_location_id(@widget.location_id)) %>
             </label>
         </p>
 
@@ -75,7 +74,7 @@
         <p id="county_list">
           <%- if @widget.location and @widget.location.counties.length > 0 -%>
           	<label>
-          	<%= select_tag 'county_id', options_for_select(get_county_options, @widget.county_id) %>
+          	<%= select_tag 'county_id', options_for_select(get_county_options(@widget.location), default_county_id(@widget.county_id)) %>
               </label>
           <%- end -%>
         </p>

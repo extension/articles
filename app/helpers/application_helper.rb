@@ -225,5 +225,29 @@ module ApplicationHelper
     (count.to_i == 0) ? text : link_to(text,params,htmloptions)
   end
   
+  def default_location_id(fallback_location_id = nil)
+    if(@personal[:location].blank?)
+      if(fallback_location_id.blank?)
+        return ''
+      else
+        return fallback_location_id.to_s
+      end
+    else
+      return @personal[:location].id.to_s
+    end
+  end
+  
+  
+  def default_county_id(fallback_county_id = nil)
+    if(@personal[:county].blank?)
+      if(fallback_county_id.blank?)
+        return ''
+      else
+        return fallback_county_id
+      end
+    else
+      return @personal[:county].id
+    end
+  end
   
 end
