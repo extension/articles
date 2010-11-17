@@ -81,7 +81,7 @@
       </fieldset>
     <%- end -%>
     
-    <%- if image_upload_capable(@fingerprint) -%>
+    <%- if @widget.upload_capable? -%>
       <p>
       <%= f.label :file_attachment, "Image (optional)" %>
       <p><em>You can upload .jpg .png or .gif. Max size of 2MB each.</em></p>
