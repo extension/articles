@@ -24,7 +24,7 @@ class CreateGeoNames < ActiveRecord::Migration
     end
     
     # remove auto_increment from id
-    execute "ALTER TABLE `prod_darmok`.`geo_names` CHANGE COLUMN `id` `id` INT(11) NULL DEFAULT 0"
+    execute "ALTER TABLE `geo_names` CHANGE COLUMN `id` `id` INT(11) NULL DEFAULT 0"
     
     add_index("geo_names",["feature_name","state_abbreviation","county"], :name => 'name_state_county_ndx')
   end
