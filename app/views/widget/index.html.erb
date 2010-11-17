@@ -59,7 +59,6 @@
     </p>
     
     <%- if @widget.show_location? -%>
-      <fieldset class="stack_labels">
         <p>
             <label>Location and County
             <%= select_tag 'location_id', options_for_select(get_location_options, default_location_id(@widget.location_id)) %>
@@ -78,7 +77,6 @@
               </label>
           <%- end -%>
         </p>
-      </fieldset>
     <%- end -%>
     
     <%- if @widget.upload_capable? -%>
