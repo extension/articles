@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_default_request_ip_address
   before_filter :set_locale
   before_filter :unescape_params
-  before_filter :personalize
+  before_filter :personalize_location_and_institution
   before_filter :set_request_url_options
   before_filter :set_app_location
   before_filter :set_currentuser_time_zone
@@ -113,7 +113,7 @@ class ApplicationController < ActionController::Base
   end
     
   def do_404
-    personalize if not @personal
+    personalize_location_and_institution if not @personal
     @page_title_text = 'Status 404 - Page Not Found'
     render :template => "/shared/404", :status => "404"
   end
@@ -137,8 +137,28 @@ class ApplicationController < ActionController::Base
     flash[:failure] = err_msg
   end
   
-  def personalize
+  def personalize_location_and_institution
     @personal = {}
+    
+    # get location and county from session, then IP
+    if(!session[:location_id].nil?)
+      @personal[:location] = Location.find_by_id(session[:location_id])
+      if(!session[:county_id].nil?)
+        @personal[:county] = County.find_by_id(session[:county_id])
+      end
+    end
+    
+    if(@personal[:location].nil?)
+      if(location = Location.find_by_geoip)
+        @personal[:location] = location
+        session[:location_id] = location.id
+        if(county = County.find_by_geoip)
+          @personal[:county] = county
+          session[:county_id] = county.id
+        end
+      end
+    end
+        
     if(!session[:institution_community_id].nil?)
       search_id = session[:institution_community_id]
       begin
@@ -153,9 +173,7 @@ class ApplicationController < ActionController::Base
     elsif(refering_institution = Community.find_institution_by_referer(request.referer))
       session[:institution_community_id] = refering_institution.id.to_s
       @personal[:institution] = refering_institution
-      @personal[:location] = refering_institution.location
-    elsif(location = Location.find_by_geoip)
-      @personal[:location] = location
+    elsif(@personal[:location])
       public_institutions_for_location = @personal[:location].communities.institutions.public_list
       if(!public_institutions_for_location.blank?)
         if(public_institutions_for_location.size == 1)
@@ -168,6 +186,7 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+    return true
   end
   
   def set_title(main, sub = nil)
