@@ -50,17 +50,45 @@ class WidgetController < ApplicationController
   
   def create_from_widget
     if request.post?
+      @widget = Widget.find_by_fingerprint(params[:widget].strip) if params[:widget]
+      if(!@widget)
+        @status_message = "An internal error has occured. Please check back later."
+        return render(:template => '/widget/status', :layout => false)
+      end
+      
       begin
         # setup the question to be saved and fill in attributes with parameters
-        create_question
-        
-        if !@submitter
-          # create a new instance variable for submitter so the form can be repopulated and we can see what's gone wrong in validating
-          @submitter = PublicUser.new(params[:submitter])
-          # we know it wasn't saved, but let's see why
+        # remove all whitespace in question before putting into db.
+        params[:submitted_question].collect{|key, val| params[:submitted_question][key] = val.strip}
+
+        @submitted_question = SubmittedQuestion.new(params[:submitted_question])
+        if(!(@submitter = Account.find_by_email(@submitted_question.submitter_email)))
+          @submitter = PublicUser.create({:email => @submitted_question.submitter_email})
           if !@submitter.valid?
             @argument_errors = ("Errors occured when saving:<br />" + @submitter.errors.full_messages.join('<br />'))
             raise ArgumentError
+          end
+        end
+        @submitted_question.submitter = @submitter
+        @submitted_question.widget = @widget
+        @submitted_question.widget_name = @widget.name
+        @submitted_question.user_ip = request.remote_ip
+        @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
+        @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
+        @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
+        @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
+        @submitted_question.external_app_id = 'widget'
+
+        # location and county - separate from params[:submitted_question], but probably shouldn't be
+        if(params[:location_id] and location = Location.find_by_id(params[:location_id].strip.to_i))
+          @submitted_question.location = location
+          if(params[:county_id] and county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id))
+            @submitted_question.county = county
+          end
+        elsif(@widget.location_id)
+          @submitted_question.location_id = @widget.location_id
+          if(@widget.county_id)
+            @submitted_question.county_id = @widget.county_id
           end
         end
         
@@ -97,29 +125,24 @@ class WidgetController < ApplicationController
         if @submitted_question.save
           session[:account_id] = @submitter.id
           flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
-          redirect_to widget_url(:id => params[:id]), :layout => false
-          return
+          return redirect_to widget_url(:widget => @widget.id), :layout => false
         else
           raise InternalError
         end
       
       rescue ArgumentError => ae
         flash[:warning] = @argument_errors
-        @fingerprint = params[:id]
         @host_name = request.host_with_port
         render :template => 'widget/index', :layout => false
         return
       rescue Exception => e
         flash[:notice] = 'An internal error has occured. Please check back later.'
-        @fingerprint = params[:id]
         @host_name = request.host_with_port
-        render :template => 'widget/index', :layout => false
-        return
+        return render :template => 'widget/index', :layout => false
       end
     else
       flash[:notice] = 'Bad request. Only POST requests are accepted.'
-      redirect_to widget_url, :layout => false
-      return
+      return redirect_to widget_url(:widget => @widget.id), :layout => false
     end
   end
   
@@ -230,35 +253,7 @@ class WidgetController < ApplicationController
   end
   
   private
-  
-  def create_question
-    # remove all whitespace in question before putting into db.
-    params[:submitted_question].collect{|key, val| params[:submitted_question][key] = val.strip}
-    widget = Widget.find_by_fingerprint(params[:id].strip) if params[:id]
     
-    @submitted_question = SubmittedQuestion.new(params[:submitted_question])
-    if(!(@submitter = Account.find_by_email(@submitted_question.submitter_email)))
-      @submitter = PublicUser.create({:email => @submitted_question.submitter_email})
-    end
-    @submitted_question.submitter = @submitter
-    @submitted_question.widget = widget if widget
-    @submitted_question.widget_name = widget.name if widget
-    @submitted_question.user_ip = request.remote_ip
-    @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
-    @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
-    @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
-    @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
-    @submitted_question.external_app_id = 'widget'
-    
-    if(!@submitted_question.location_id and widget.location_id)
-      @submitted_question.location_id = widget.location_id
-    end
-
-    if(!@submitted_question.county_id and widget.county_id)
-      @submitted_question.county_id = widget.county_id
-    end
-  end
-  
   ### BONNIE PLANTS STUFF ###
   def render_bonnie_plants_widget_error(status_message)
     flash.now[:warning] = status_message
