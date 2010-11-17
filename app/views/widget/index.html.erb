@@ -72,9 +72,9 @@
         	                  :with      => "'location_id='+value") %>
 
         <p id="county_list">
-          <%- if @widget.location and @widget.location.counties.length > 0 -%>
+          <%- if (@personal[:location] and @personal[:location].counties.length > 0 ) or (@widget.location and @widget.location.counties.length > 0) -%>
           	<label>
-          	<%= select_tag 'county_id', options_for_select(get_county_options(@widget.location), default_county_id(@widget.county_id)) %>
+          	<%= select_tag 'county_id', options_for_select(get_county_options(@personal[:location] || @widget.location), default_county_id(@widget.county_id)) %>
               </label>
           <%- end -%>
         </p>
