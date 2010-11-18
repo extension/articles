@@ -41,7 +41,7 @@ def update_from_darmok_users(connection,wordpressdatabase,mydatabase)
   
   sql = "REPLACE INTO #{wordpressdatabase}.wp_users (id,user_login,user_pass,user_email,user_nicename,display_name)"
   sql +=  " SELECT #{mydatabase}.accounts.id,#{mydatabase}.accounts.login,'#{passwordstring}',#{mydatabase}.accounts.email,#{mydatabase}.accounts.login,(CONCAT(#{mydatabase}.accounts.first_name,' ',#{mydatabase}.accounts.last_name))"
-  sql +=  " FROM #{mydatabase}.accounts WHERE (NOT(#{mydatabase}.accounts.retired) AND (#{mydatabase}.accounts.vouched) AND #{mydatabase}.accounts.type = 'User')"
+  sql +=  " FROM #{mydatabase}.accounts WHERE (#{mydatabase}.accounts.vouched AND #{mydatabase}.accounts.type = 'User')"
   
   # execute the sql
   
