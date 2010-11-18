@@ -39,7 +39,8 @@
 
 <body>
   
-    <% form_tag({ :action => :create_from_bonnie_plants, :id => @fingerprint }, { :id => 'myForm', :multipart => true }) do %>
+    <% form_tag(widget_submit_question_url, { :id => 'myForm', :multipart => true }) do %>
+      <%= hidden_field_tag(:widget, @widget.fingerprint) %>
 
     <h1><a href="http://www.extension.org/" target="_blank">eXtension</a></h1>
     <h2>Ask an Expert</h2>
@@ -84,7 +85,7 @@
     <p>Where does your question take place? (optional, but it helps us give a more precise answer)</p>
     <%= render(:partial => 'shared/location_county') %>
     
-    <% if image_upload_capable(@fingerprint) %>
+    <%- if @widget.upload_capable? -%>
         
       <p>
       <label>Image (optional)</label>

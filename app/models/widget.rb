@@ -27,6 +27,12 @@ class Widget < ActiveRecord::Base
   named_scope :byname, lambda {|widget_name| {:conditions => "name like '#{widget_name}%'", :order => "name"} }
   
 
+  # hardcoded for layout difference
+  BONNIE_PLANTS_WIDGET = '4856a994f92b2ebba3599de887842743109292ce'
+  
+  def is_bonnie_plants_widget?
+    (self.fingerprint == BONNIE_PLANTS_WIDGET)
+  end
   
   
   def set_fingerprint(user)
