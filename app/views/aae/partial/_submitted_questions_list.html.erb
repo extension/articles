@@ -69,7 +69,13 @@
                 <p class="inc_question"><%= link_to sq.asked_question, aae_question_url(:id => sq.id) %></p>
                 
                 <p class="inc_time_ago">
-                    Submitted from <em><%= sq.external_app_id %> <% if sq.widget_name %>(<%= sq.widget_name %>)<% end %></em>
+                    Submitted from 
+                    <em>
+                    <%= sq.external_app_id %> 
+                    <% if sq.widget_name %>
+                      (<%= link_to sq.widget_name, :controller => 'widgets/aae', :action => :view, :id => sq.widget_id %>)
+                    <% end %>
+                    </em>
                     <%= time_ago_in_words(sq.created_at) %> ago
                 </p>
                 
