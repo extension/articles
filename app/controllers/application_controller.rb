@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   require 'image_size'
 
   before_filter :set_default_request_ip_address
+  before_filter :set_analytics_visitor
   before_filter :set_locale
   before_filter :unescape_params
   before_filter :personalize_location_and_institution
@@ -91,6 +92,18 @@ class ApplicationController < ActionController::Base
       AppConfig.configtable['request_ip_address'] = AppConfig.configtable['default_request_ip']
     end
     return true
+  end
+  
+  def set_analytics_visitor
+    if(session[:account_id])
+      if(account = Account.find_by_id(session[:account_id]))
+        @analytics_vistor = (account.class == User) ? 'internal' : 'external'
+      else
+        @analytics_vistor = 'anonymous'
+      end
+    else
+      @analytics_vistor = 'anonymous'
+    end
   end
     
   def set_locale
