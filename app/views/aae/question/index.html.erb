@@ -141,7 +141,7 @@
         <li><%= submit_history %> 
         <% if @submitted_question.widget_name %> 
         (
-        <%= link_to @submitted_question.widget_name, :controller => 'widgets/aae', :action => :view, :id => @submitted_question.widget_id %>
+        <%= link_to @submitted_question.widget_name, widgets_view_aae_url(:id => @submitted_question.widget_id) %>
         )
         <% end %>
         <span><%= humane_date(@submitted_question.created_at) %></span></li>
