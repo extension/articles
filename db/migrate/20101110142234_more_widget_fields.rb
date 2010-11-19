@@ -42,6 +42,9 @@ class MoreWidgetFields < ActiveRecord::Migration
     # special case for widget #708 - which has ?location=AL in it
     execute("UPDATE widgets SET location_id = 11 where id = 708")
     
+    
+    # make sure Bonnie Plants widget is show_location enabled
+    execute "UPDATE widgets SET show_location = 1 WHERE fingerprint = '#{Widget::BONNIE_PLANTS_WIDGET}'"
 
   end
 

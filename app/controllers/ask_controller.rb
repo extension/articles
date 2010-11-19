@@ -50,7 +50,17 @@ class AskController < ApplicationController
           @submitter = Account.find_by_id(session[:account_id]) || PublicUser.new
         else
           @submitter = PublicUser.new
-        end  
+        end
+        
+        if(!@personal[:location].blank?)
+          @submitted_question.location = @personal[:location]
+        end
+        
+        if(!@personal[:county].blank?)
+          @submitted_question.county = @personal[:county]
+        end
+          
+          
       # question was blank
       else
         flash[:notice] = "Please fill in the question field before submitting."
@@ -81,8 +91,6 @@ class AskController < ApplicationController
         @submitter = PublicUser.create({:email => params[:submitter][:email].strip}.merge(name_hash))
       end
       
-      @submitted_question.location_id = params[:location_id]
-      @submitted_question.county_id = params[:county_id]
       @submitted_question.status = 'submitted'
       @submitted_question.user_ip = request.remote_ip
       @submitted_question.user_agent = request.env['HTTP_USER_AGENT']
@@ -100,7 +108,29 @@ class AskController < ApplicationController
         end
       end
       
-
+      # location and county - separate from params[:submitted_question], but probably shouldn't be
+      if(params[:location_id] and location = Location.find_by_id(params[:location_id].strip.to_i))
+        @submitted_question.location = location
+        # change session if different
+        if(!session[:location_and_county].blank?)
+          if(session[:location_and_county][:location_id] != location.id)
+            session[:location_and_county] = {:location_id => location.id}
+          end
+        else
+          session[:location_and_county] = {:location_id => location.id}
+        end
+        if(params[:county_id] and county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id))
+          @submitted_question.county = county
+          if(!session[:location_and_county][:county_id].blank?)
+            if(session[:location_and_county][:county_id] != county.id)
+              session[:location_and_county][:county_id] = county.id
+            end
+          else
+            session[:location_and_county][:county_id] = county.id
+          end
+        end
+      end
+      
       # error check for submitted question, file_attachment and public user records 
       
       if params[:submitter][:email].strip != params[:submitter_email_confirmation].strip

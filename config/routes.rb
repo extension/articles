@@ -95,7 +95,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widget/bonnie_plants/tracking/:widget', :controller => 'widget', :action => 'index'
   # Route for named/tracked widget w/ no location *unused is a catcher for /location and /location/county for
   # existing widgets, since we aren't using that in the URL anymore
-  map.connect 'widget/tracking/:widget/*unused', :controller => 'widget', :action => 'index'
+  map.widget_tracking 'widget/tracking/:widget/*unused', :controller => 'widget', :action => 'index'
   # Widget route for unnamed/untracked widgets
   map.widget 'widget', :controller => 'widget', :action => 'index'
 

@@ -48,7 +48,24 @@
   
   <p class="instructions">Where should the question be directed?</p>
   <fieldset class="stack_labels">
-  	<%= render(:partial => 'shared/location_county') %>
+    <p>
+        <label>Location
+        <%= select_tag 'location_id', options_for_select(get_location_options, default_location_id(@submitted_question ? @submitted_question.location_id : nil)) %>
+        </label>
+    </p>
+
+    	<%= observe_field('location_id',
+    	                  :update    => :county_list,
+    	                  :url       => { :controller => 'aae/search', :action => :get_counties, :show_label => 'yes'},
+    	                  :with      => "'location_id='+value") %>
+
+    <p id="county_list">
+      <% if @submitted_question.location and @submitted_question.location.counties.length > 0 %>
+      	<label>County
+      	<%= select_tag 'county_id', options_for_select(get_county_options(@submitted_question.location), default_county_id(@submitted_question ? @submitted_question.county_id : nil)) %>
+          </label>
+      <% end %>
+    </p>
   </fieldset>
   
   <h3>Personal Information</h3>

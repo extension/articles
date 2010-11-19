@@ -29,7 +29,14 @@ class WidgetController < ApplicationController
     end
       
     @submitted_question = SubmittedQuestion.new
-    @submitter = PublicUser.new
+    if(!session[:account_id].nil? and @submitter = Account.find_by_id(session[:account_id]))      
+      @first_name = @submitter.first_name
+      @last_name = @submitter.last_name
+      @email = @submitter.email
+      @email_confirmation = @email
+    end
+
+    
     @host_name = request.host_with_port
     if(@widget.is_bonnie_plants_widget?)
       return render(:template => 'widget/bonnie_plants', :layout => false)
@@ -97,8 +104,23 @@ class WidgetController < ApplicationController
         # location and county - separate from params[:submitted_question], but probably shouldn't be
         if(params[:location_id] and location = Location.find_by_id(params[:location_id].strip.to_i))
           @submitted_question.location = location
+          # change session if different
+          if(!session[:location_and_county].blank?)
+            if(session[:location_and_county][:location_id] != location.id)
+              session[:location_and_county] = {:location_id => location.id}
+            end
+          else
+            session[:location_and_county] = {:location_id => location.id}
+          end
           if(params[:county_id] and county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id))
             @submitted_question.county = county
+            if(!session[:location_and_county][:county_id].blank?)
+              if(session[:location_and_county][:county_id] != county.id)
+                session[:location_and_county][:county_id] = county.id
+              end
+            else
+              session[:location_and_county][:county_id] = county.id
+            end
           end
         elsif(@widget.location_id)
           @submitted_question.location_id = @widget.location_id
@@ -115,7 +137,7 @@ class WidgetController < ApplicationController
             
         # handle image upload
         if !params[:image].blank?
-          photo_to_upload = FileAttachment.create(params[:image]) 
+          photo_to_upload = FileAttachment.create({:attachment => params[:image]}) 
           if !photo_to_upload.valid?
             @argument_errors = "Errors occured when uploading your image:<br />" + photo_to_upload.errors.full_messages.join('<br />')        
             raise ArgumentError
@@ -140,7 +162,7 @@ class WidgetController < ApplicationController
             end
           end
           flash[:notice] = "Thank You! You can expect a response emailed to the address you provided."
-          return redirect_to widget_url(:widget => @widget.id), :layout => false
+          return redirect_to widget_tracking_url(:widget => @widget.fingerprint), :layout => false
         else
           raise InternalError
         end
@@ -164,7 +186,7 @@ class WidgetController < ApplicationController
       end
     else
       flash[:notice] = 'Bad request. Only POST requests are accepted.'
-      return redirect_to widget_url(:widget => @widget.id), :layout => false
+      return redirect_to widget_tracking_url(:widget => @widget.fingerprint), :layout => false
     end
   end
   
