@@ -70,18 +70,6 @@
   </tr>
 
   <tr>
-  <td>Tags enabled?</td>
-  <td><%= @widget.enable_tags? ? 'Yes' : 'No' %></td>
-  </tr>
-  
-  <%- if @widget.enable_tags? -%>
-  <tr>
-    <td>Default tags:</td>
-    <td><%= @widget.system_sharedtags_displaylist %></td>
-  </tr>
-  <%- end -%>
-  
-  <tr>
   <td>Widget Key:</td>
   <td><%= @widget.fingerprint %></td>
   </tr>

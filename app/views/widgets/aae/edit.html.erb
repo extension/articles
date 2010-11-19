@@ -58,25 +58,7 @@
          <em>Note: if enabled, any provided location will override the default location for this widget.</em>
          </label>
       </p>
-      
-      <%- if @widget.enable_tags? -%>
-      <p>
-         <label>
-         <%= check_box(:widget, :enable_tags, {:class => "checkbox", :onclick => "if(this.checked) {$('widget_tag_field').show();} else {$('widget_tag_field').hide(); }"}) %> Enable taggging for this widget<br/>
-         <em>Note: once enabled, this cannot be changed</em>
-         </label>
-      </p>
-      <%- end -%>
-      
-      <div id="widget_tag_field" style="<%= (@widget.enable_tags? ? 'display:block;' : 'display:none;') %>">
-         <p>
-      	     <label for="tag_list">Tag submitted questions from this widget with: 
-      	     <%= text_area_tag(:tag_list,@widget.system_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
-      	     <em>Separate tags with commas.</em>
-      	     </label>
-      	 </p>
-      </div>
-          
+                
       <p><%= submit_tag "Update Widget" %> or <%= link_to("cancel",widgets_view_aae_url(:id => @widget.id))%></p>
     </fieldset>
 <% end %>
