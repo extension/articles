@@ -82,6 +82,7 @@ class Widgets::AaeController < ApplicationController
     
     @widget.set_fingerprint(@currentuser)
     @widget.widgeturl = url_for(:controller => '/widget', :id => @widget.fingerprint, :only_path => false)
+    @widget.user = @currentuser
     
     if(@widget.save)
       # handle tags
@@ -89,6 +90,7 @@ class Widgets::AaeController < ApplicationController
         @widget.tag_myself_with_shared_tags(params[:tag_list])
       end
       @currentuser.widgets << @widget
+      
     else
       return render :template => '/widgets/aae/new'
     end
