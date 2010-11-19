@@ -1,0 +1,28 @@
+<% @page_title = "Session Information" %>
+
+
+<%- if !session -%>
+  <h2>No session data</h2>
+<%- else -%>
+  <h2>Your Session Information</h2>
+  <table cellspacing="0">
+    <%- session.each do |key,value|%>
+     	<tr>
+     	  <td scope="row" class="label"><%= key %></td>   
+     	  <td><%= value %></td>         
+     	</tr>
+     <%- end -%>
+  </table>
+<%- end -%>
+
+<%- if(@personal.blank?) -%>
+  <h2>No personalized location information</h2>
+  <%- else -%>
+    <h2>Your Personalized Location Information</h2>
+    <table cellspacing="0">
+       	<tr>
+       	  <td scope="row" class="label">Location</td>   
+       	  <td><%= @personal[:location] ? @personal[:location].name : 'Unknown' %></td>         
+       	</tr>
+    </table>
+  <%- end -%>

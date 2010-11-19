@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class FeedsController < ApplicationController
-  skip_before_filter :personalize, :except => :index
+  skip_before_filter :personalize_location_and_institution, :except => :index
   
   layout 'pubsite'
   

@@ -8,7 +8,7 @@
 
 <h2>Edit your Ask an Expert Widget</h2>
 <% form_for :widget, @widget, :url => {:controller => 'widgets/aae', :action => 'update'}  do |f| %>
-   <%= hidden_field_tag(:widget, @widget.id) %>
+   <%= hidden_field_tag(:id, @widget.id) %>
   
    <fieldset>
       <p>Select the location that you want your widget to cover. This will allow questions to be routed to experts who select the corresponding location in their Ask an Expert preferences.</p>
@@ -40,6 +40,14 @@
     
       <p>
          <label>
+         <%= check_box(:widget,:active, {:class => "checkbox" ,:checked => true}) %> Active<br/>
+         </label>
+         <em>When a widget is not active, questions can not be submitted through it. The widget code should be removed from any web page.</em>
+         
+      </p>
+    
+      <p>
+         <label>
          <%= check_box(:widget,:upload_capable, {:class => "checkbox" ,:checked => true}) %> Enable photo upload for your widget
          </label>
       </p>
@@ -63,7 +71,7 @@
       <div id="widget_tag_field" style="<%= (@widget.enable_tags? ? 'display:block;' : 'display:none;') %>">
          <p>
       	     <label for="tag_list">Tag submitted questions from this widget with: 
-      	     <%= text_area_tag(:tag_list,'',{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
+      	     <%= text_area_tag(:tag_list,@widget.system_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
       	     <em>Separate tags with commas.</em>
       	     </label>
       	 </p>

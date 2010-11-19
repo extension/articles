@@ -27,6 +27,12 @@ class Widget < ActiveRecord::Base
   named_scope :byname, lambda {|widget_name| {:conditions => "name like '#{widget_name}%'", :order => "name"} }
   
 
+  # hardcoded for layout difference
+  BONNIE_PLANTS_WIDGET = '4856a994f92b2ebba3599de887842743109292ce'
+  
+  def is_bonnie_plants_widget?
+    (self.fingerprint == BONNIE_PLANTS_WIDGET)
+  end
   
   
   def set_fingerprint(user)
@@ -56,6 +62,10 @@ class Widget < ActiveRecord::Base
   
   def tag_myself_with_shared_tags(taglist)
     self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
+  end
+  
+  def system_sharedtags_displaylist
+    return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED)
   end
   
   def self.find_by_fingerprint_or_id_or_name(fingerprint_or_id_or_name)

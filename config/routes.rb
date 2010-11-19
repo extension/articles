@@ -87,17 +87,12 @@ ActionController::Routing::Routes.draw do |map|
   
   ### AaE API ###
   map.connect 'api/aae/ask.json', :controller => 'api/aae', :action => :ask  
-  
-  # routes for temporary custom Bonnie Plants widget
-  map.connect 'widget/bonnie_plants/tracking/:id', :controller => 'widget', :action => 'bonnie_plants'
-  map.connect 'widget/create_from_bonnie_plants/:id', :controller => 'widget', :action => 'create_from_bonnie_plants'
-  #
-  
+    
   ### Widget iFrame ###
-  map.connect 'widget/api_widget_index', :controller => 'widget', :action => 'api_widget_index'
-  map.connect 'widget/create_from_widget_using_api', :controller => 'widget', :action => 'create_from_widget_using_api'
   map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
   
+  # route for existing bonnie_plants widget for continued operation.
+  map.connect 'widget/bonnie_plants/tracking/:widget', :controller => 'widget', :action => 'index'
   # Route for named/tracked widget w/ no location *unused is a catcher for /location and /location/county for
   # existing widgets, since we aren't using that in the URL anymore
   map.connect 'widget/tracking/:widget/*unused', :controller => 'widget', :action => 'index'

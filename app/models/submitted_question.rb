@@ -592,6 +592,13 @@ def self.find_with_category(category, *args)
   end
 end
 
+def tag_myself_with_shared_tags(taglist)
+  self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
+end
+
+def system_sharedtags_displaylist
+  return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED)
+end
 
 
 def SubmittedQuestion.get_extapp_qual( pub, wgt)

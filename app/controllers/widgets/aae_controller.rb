@@ -110,7 +110,7 @@ class Widgets::AaeController < ApplicationController
     
     @widget.attributes = params[:widget]
     
-    # location and county - separate from params[:widget] because it comes from a partial
+    # location and county - separate from params[:widget], but probably shouldn't be
     if(params[:location_id] and location = Location.find_by_id(params[:location_id].strip.to_i))
       @widget.location = location
       if(params[:county_id] and county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id))
@@ -129,7 +129,7 @@ class Widgets::AaeController < ApplicationController
         @widget.tag_myself_with_shared_tags(params[:tag_list])
       end
       WidgetEvent.log_event(@widget.id, @currentuser.id, WidgetEvent::EDITED_ATTRIBUTES)
-      
+      return redirect_to(widgets_view_aae_url(:id => @widget.id))
     else
       return render :template => '/widgets/aae/edit'
     end

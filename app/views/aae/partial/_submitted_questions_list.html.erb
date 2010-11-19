@@ -82,7 +82,7 @@
                 <% if @questions_status && @questions_status == SubmittedQuestion::STATUS_SUBMITTED %>
                 <% @qw = (sq.assignee and sq.assignee.is_question_wrangler?) ? "qw" : "" %>
                      <p class="inc_assigned">
-                         Assigned to <%= (sq.assignee) ? link_to(sq.assignee.login, aae_profile_url(:id => sq.assignee.login), :class => "#{@qw}") : "<span>nobody</span>" %>
+                         Assigned to <%= (sq.assignee) ? link_to(sq.assignee.fullname, aae_profile_url(:id => sq.assignee.login), :class => "#{@qw}") : "<span>nobody</span>" %>
                          <!-- Show the assigned date of the submitted question if it exists and is valid -->
                       
                         <%= ( sq.last_assigned_at) ? time_ago_in_words(sq.last_assigned_at) + ' ago' : ""%> 
