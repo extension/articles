@@ -42,7 +42,7 @@ class Widget < ActiveRecord::Base
   
   def get_iframe_code
     if(self.show_location?)
-      height = '455px'
+      height = '460px'
     else
       height = '300px'
     end
