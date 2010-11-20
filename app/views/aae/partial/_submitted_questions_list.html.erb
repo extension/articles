@@ -73,7 +73,7 @@
                     <em>
                     <%= sq.external_app_id %> 
                     <% if sq.widget_name %>
-                      (<%= link_to sq.widget_name, :controller => 'widgets/aae', :action => :view, :id => sq.widget_id %>)
+                      (<%= link_to sq.widget_name, widgets_view_aae_url(:id => sq.widget_id) %>)
                     <% end %>
                     </em>
                     <%= time_ago_in_words(sq.created_at) %> ago
