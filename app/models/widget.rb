@@ -41,7 +41,9 @@ class Widget < ActiveRecord::Base
   end
   
   def get_iframe_code
-    if(self.show_location?)
+    if(self.is_bonnie_plants_widget?)
+      height = '575px' 
+    elsif(self.show_location?)
       height = '460px'
     else
       height = '300px'
