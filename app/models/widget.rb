@@ -41,7 +41,12 @@ class Widget < ActiveRecord::Base
   end
   
   def get_iframe_code
-    return '<iframe style="border:0" width="100%" src="' +  self.widgeturl + '" height="300px"></iframe>'
+    if(self.show_location?)
+      height = '455px'
+    else
+      height = '300px'
+    end
+    return "<iframe style='border:0' width='100%' src='#{self.widgeturl}' height='#{height}'></iframe>"
   end
   
   def self.get_all_with_assignee_count(options = {})
