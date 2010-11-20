@@ -81,7 +81,7 @@ class Widgets::AaeController < ApplicationController
     end
     
     @widget.set_fingerprint(@currentuser)
-    @widget.widgeturl = url_for(:controller => '/widget', :id => @widget.fingerprint, :only_path => false)
+    @widget.widgeturl = widget_tracking_url(:widget => @widget.fingerprint, :only_path => false)
     @widget.user = @currentuser
     
     if(@widget.save)
