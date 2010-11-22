@@ -39,6 +39,8 @@ class FilteredParameter
   
   # AaE params
   RECOGNIZED_PARAMETERS[:squid] = :submitted_question
+  RECOGNIZED_PARAMETERS[:widget] = :widget
+  
     
   # TODO: review this vis-a-vis dateinterval and datefield
   RECOGNIZED_PARAMETERS[:datadate] = :date
@@ -174,6 +176,8 @@ class FilteredParameter
       Category.find_by_name_or_id(value)
     when :submitted_question
       SubmittedQuestion.find_by_id(value)
+    when :widget
+      Widget.find_by_fingerprint_or_id_or_name(value)
     when :activity_application 
       ActivityApplication.find_by_id_or_shortname(value)
     when :activity

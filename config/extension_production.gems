@@ -49,5 +49,6 @@ spruz -v0.2.0
 SystemTimer -v1.2
 termios -v0.9.4
 treetop -v1.4.8
+trollop -v1.16.2
 tzinfo -v0.3.23
 will_paginate -v2.3.15

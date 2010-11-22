@@ -147,16 +147,18 @@ class MainController < ApplicationController
       else
         state = params[:zip_or_state].upcase
       end
-      if(!(@personal[:location] = Location.find_by_abbreviation(state)))
+      if(!(location = Location.find_by_abbreviation(state)))
         render(:update) do |page| 
           page.replace_html "logo", :partial =>  "shared/no_institution"
         end
         return
       else
-        public_institutions_for_location = @personal[:location].communities.institutions.public_list
+        public_institutions_for_location = location.communities.institutions.public_list
         if(!public_institutions_for_location.blank?)
           if(public_institutions_for_location.length == 1)
             @personal[:institution] = public_institutions_for_location[0]
+            @personal[:location] = location
+            session[:location_and_county] = {:location_id => location.id}
             session[:institution_community_id] = @personal[:institution].id.to_s
             session[:multistate] = nil
             render(:update) do |page| 
@@ -181,8 +183,11 @@ class MainController < ApplicationController
   end
   
   def set_institution
-    session[:institution_community_id] = params[:institution_id]
-    session[:multistate] = nil
+    if(institution = Community.find_by_id(params[:institution_id]))
+      session[:institution_community_id] = institution.id
+      session[:location_and_county] = {:location_id => institution.location.id}
+      session[:multistate] = nil
+    end
     request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url) 
   end
   

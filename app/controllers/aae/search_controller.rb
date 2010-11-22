@@ -94,6 +94,12 @@ class Aae::SearchController < ApplicationController
       @counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
     end
     
+    if(params[:show_label] and params[:show_label] = 'yes')
+      @show_label = true
+    else
+      @show_label = false
+    end
+    
     render :layout => false
   end
   

@@ -39,7 +39,8 @@
 
 <body>
   
-    <% form_tag({ :action => :create_from_bonnie_plants, :id => @fingerprint }, { :id => 'myForm', :multipart => true }) do %>
+    <% form_tag(widget_submit_question_url, { :id => 'myForm', :multipart => true }) do %>
+      <%= hidden_field_tag(:widget, @widget.fingerprint) %>
 
     <h1><a href="http://www.extension.org/" target="_blank">eXtension</a></h1>
     <h2>Ask an Expert</h2>
@@ -82,9 +83,26 @@
     </p>
 
     <p>Where does your question take place? (optional, but it helps us give a more precise answer)</p>
-    <%= render(:partial => 'shared/location_county') %>
-    
-    <% if image_upload_capable(@fingerprint) %>
+      <p>
+          <label>Location and County
+          <%= select_tag 'location_id', options_for_select(get_location_options, default_location_id(@widget.location_id)) %>
+          </label>
+      </p>
+
+      	<%= observe_field('location_id',
+      	                  :update    => :county_list,
+      	                  :url       => { :controller => 'aae/search', :action => :get_counties },
+      	                  :with      => "'location_id='+value") %>
+
+      <p id="county_list">
+        <%- if (@personal[:location] and @personal[:location].counties.length > 0 ) or (@widget.location and @widget.location.counties.length > 0) -%>
+        	<label>
+        	<%= select_tag 'county_id', options_for_select(get_county_options(@personal[:location] || @widget.location), default_county_id(@widget.county_id)) %>
+            </label>
+        <%- end -%>
+      </p>
+        
+    <%- if @widget.upload_capable? -%>
         
       <p>
       <label>Image (optional)</label>

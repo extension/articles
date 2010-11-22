@@ -18,4 +18,7 @@ class DebugController < ApplicationController
     end
   end
   
+  def session_information  
+    
+  end  
 end
