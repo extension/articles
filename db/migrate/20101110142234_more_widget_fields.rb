@@ -5,22 +5,20 @@ class MoreWidgetFields < ActiveRecord::Migration
     add_column(:widgets,:community_id,:integer)
     add_column(:widgets,:location_id,:integer)
     add_column(:widgets,:county_id,:integer)
-    add_column(:widgets,:old_widget_url,:string)
-    
-    execute "UPDATE widgets SET old_widget_url = widgeturl"
-    
+    rename_column(:widgets,:widgeturl,:old_widget_url)
+        
     Widget.reset_column_information
     
     # set location and county for each widget, and write every widget to be
     # http://www.extension.org/widget/tracking/#{trackingcode}
     Widget.all.each do |widget|
-      if(widget.widgeturl =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)/(\w+)!)
+      if(widget.old_widget_url =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)/(\w+)!)
         # probably has a location
         trackingcode = $1
         location_abbreviation = $2
         if(location = Location.find_by_abbreviation(location_abbreviation))
           widget.location = location
-          if(widget.widgeturl =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)/(\w+)/(.+)!)
+          if(widget.old_widget_url =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)/(\w+)/(.+)!)
             # probably has a county
             # unescape due to URL encoded values like Prince%20George's
             county_name = URI.unescape($3)
@@ -30,11 +28,6 @@ class MoreWidgetFields < ActiveRecord::Migration
             end
           end
         end
-        widget.widgeturl = "http://www.extension.org/widget/tracking/#{trackingcode}"
-        widget.save
-      elsif(widget.widgeturl =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)!)
-        trackingcode = $1
-        widget.widgeturl = "http://www.extension.org/widget/tracking/#{trackingcode}"
         widget.save
       end 
     end
