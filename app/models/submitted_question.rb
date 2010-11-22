@@ -135,9 +135,6 @@ def add_resolution(sq_status, resolver, response, signature = nil, contributing_
       @response = Response.new(:resolver => resolver, 
                                :submitted_question => self, 
                                :response => response,
-                               :user_ip => request.remote_ip,
-                               :user_agent => (request.env['HTTP_USER_AGENT']) ? request.env['HTTP_USER_AGENT'] : '',
-                               :referrer => (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : '',  
                                :sent => true, 
                                :contributing_question_id => contributing_question, 
                                :signature => signature)
@@ -148,9 +145,6 @@ def add_resolution(sq_status, resolver, response, signature = nil, contributing_
       @response = Response.new(:resolver => resolver, 
                                :submitted_question => self, 
                                :response => response, 
-                               :user_ip => request.remote_ip,
-                               :user_agent => (request.env['HTTP_USER_AGENT']) ? request.env['HTTP_USER_AGENT'] : '',
-                               :referrer => (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : '', 
                                :sent => true, 
                                :contributing_question_id => contributing_question, 
                                :signature => signature)
