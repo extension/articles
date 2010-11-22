@@ -96,6 +96,44 @@ class GoogleGroup < ActiveRecord::Base
       return google_group
     end
   end
+  
+  # owners *have* to be a member of the group first, so run this after update_apps_group_members
+  def update_apps_group_owners
+    self.establish_apps_connection
+
+    # get the owners @google
+    begin
+      apps_group_owners = self.apps_connection.retrieve_all_owners(self.group_id).map(&:owner_id)
+    rescue GDataError => e
+      self.update_attributes({:has_error => true, :last_error => e})
+      return nil
+    end
+    
+    # map the community members to an array of "blah@extension.org"
+    community_owners = self.community.leaders.map{|u| "#{u.login}@extension.org"}
+    
+    adds = community_owners - apps_group_owners
+    removes = apps_group_owners - community_owners
+    
+    results = {:adds => 0, :removes => 0}
+    # add the adds/remove the removes
+    begin
+      adds.each do |owner_id|
+        owner = self.apps_connection.add_owner_to_group(owner_id, self.group_id)
+        results[:adds] += 1
+      end
+      
+      removes.each do |owner_id|
+        owner = self.apps_connection.remove_owner_from_group(owner_id, self.group_id)
+        results[:removes] += 1
+      end
+    rescue
+      self.update_attributes({:has_error => true, :last_error => e})
+      return nil
+    end
+    
+    results
+  end
       
     
   
