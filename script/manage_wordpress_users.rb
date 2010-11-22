@@ -101,8 +101,7 @@ def set_editor_privs(connection,wordpressdatabase,mydatabase, wp_capabilities = 
   ####### # update the user_meta table - editor privs
   
   puts "updating the user_meta table - giving all users editor privs..."
-#  sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT (#{blog_id} + #{wordpressdatabase}.wp_users.id), #{wordpressdatabase}.wp_users.id, #{wordpressdatabase}.'#{wp_capabilities}', '#{@editor_privs}' FROM #{wordpressdatabase}.wp_users;"
-   sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{wordpressdatabase}.wp_users.id + #{blog_id_separator} AS 'umeta_id', #{wordpressdatabase}.wp_users.id, '#{wp_capabilities}', '#{@editor_privs}' FROM #{wordpressdatabase}.wp_users;"  
+  sql = "REPLACE INTO #{wordpressdatabase}.wp_usermeta (umeta_id,user_id,meta_key,meta_value) SELECT #{wordpressdatabase}.wp_users.id + #{blog_id_separator} AS 'umeta_id', #{wordpressdatabase}.wp_users.id, '#{wp_capabilities}', '#{@editor_privs}' FROM #{wordpressdatabase}.wp_users;"  
   
   # execute the sql
   begin
@@ -169,7 +168,7 @@ result = update_from_darmok_users(User.connection,@wordpressdatabase,mydatabase)
 
 if @multiuser
   blog_ids.each do |blog_id|
-    blog_id_separator = blog_id[0].to_i * 1000000 # create an id space for each blog so there isn't any overlap
+    blog_id_separator = blog_id[0].to_i * 1000000 # create an id space for each blogs permissions so there isn't any overlap
     result = set_editor_privs(User.connection,@wordpressdatabase,mydatabase, "wp_#{blog_id}_capabilities", blog_id_separator)
     result = set_admin_privs(User.connection,@wordpressdatabase,mydatabase, "wp_#{blog_id}_capabilities", blog_id_separator)
     result = set_expired_privs(User.connection,@wordpressdatabase,mydatabase, "wp_#{blog_id}_capabilities", blog_id_separator)
