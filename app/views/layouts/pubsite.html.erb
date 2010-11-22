@@ -95,16 +95,6 @@
             </script>
       <% end %>
    <% end %>
-   
-   <script type="text/javascript">
-   function recordOutboundLink(link, category, action) {
-     try {
-       var myTracker=_gat._getTrackerByName();
-       _gaq.push(['myTracker._trackEvent', ' + category + ', ' + action + ']);
-       setTimeout('document.location = "' + link.href + '"', 100)
-     }catch(err){}
-   }
-   </script>
 </head>
 <body> <!-- pubsite layout -->
     <div id="body_wrapper"><!-- used for preview -->
@@ -296,6 +286,16 @@
 
 
 <%= render(:partial => '/partial/googleanalytics') %>
+
+<script type="text/javascript">
+ function recordOutboundLink(link, category, action) {
+   try {
+     var myTracker=_gat._getTrackerByName();
+     _gaq.push(['myTracker._trackEvent', ' + category + ', ' + action + ']);
+     setTimeout('document.location = "' + link.href + '"', 100)
+   }catch(err){}
+ }
+ </script>
 
 <% if params[:print] %>
     <p id="pageurl">View this page: <script type="text/javascript">document.write(location.href.replace(/\/print(\/)?$/, ''));</script></p>
