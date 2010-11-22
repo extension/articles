@@ -6,6 +6,12 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'uri'
 class Widget < ActiveRecord::Base
+  include ActionController::UrlWriter
+  default_url_options[:host] = AppConfig.get_url_host
+  default_url_options[:protocol] = AppConfig.get_url_protocol
+  if(default_port = AppConfig.get_url_port)
+    default_url_options[:port] = default_port
+  end
 
   has_many :user_roles
   has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = true"
@@ -34,6 +40,9 @@ class Widget < ActiveRecord::Base
     (self.fingerprint == BONNIE_PLANTS_WIDGET)
   end
   
+  def widgeturl
+    widget_tracking_url(:widget => self.fingerprint, :only_path => false)
+  end
   
   def set_fingerprint(user)
     create_time = Time.now.to_s
@@ -41,7 +50,14 @@ class Widget < ActiveRecord::Base
   end
   
   def get_iframe_code
-    return '<iframe style="border:0" width="100%" src="' +  self.widgeturl + '" height="300px"></iframe>'
+    if(self.is_bonnie_plants_widget?)
+      height = '610px' 
+    elsif(self.show_location?)
+      height = '460px'
+    else
+      height = '300px'
+    end
+    return "<iframe style='border:0' width='100%' src='#{self.widgeturl}' height='#{height}'></iframe>"
   end
   
   def self.get_all_with_assignee_count(options = {})

@@ -5,22 +5,23 @@ class MoreWidgetFields < ActiveRecord::Migration
     add_column(:widgets,:community_id,:integer)
     add_column(:widgets,:location_id,:integer)
     add_column(:widgets,:county_id,:integer)
-    add_column(:widgets,:old_widget_url,:string)
+    rename_column(:widgets,:widgeturl,:old_widget_url)
     
-    execute "UPDATE widgets SET old_widget_url = widgeturl"
-    
+    # allow old_widget_url to be null
+    execute "ALTER TABLE `widgets` CHANGE COLUMN `old_widget_url` `old_widget_url` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;"
+        
     Widget.reset_column_information
     
     # set location and county for each widget, and write every widget to be
     # http://www.extension.org/widget/tracking/#{trackingcode}
     Widget.all.each do |widget|
-      if(widget.widgeturl =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)/(\w+)!)
+      if(widget.old_widget_url =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)/(\w+)!)
         # probably has a location
         trackingcode = $1
         location_abbreviation = $2
         if(location = Location.find_by_abbreviation(location_abbreviation))
           widget.location = location
-          if(widget.widgeturl =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)/(\w+)/(.+)!)
+          if(widget.old_widget_url =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)/(\w+)/(.+)!)
             # probably has a county
             # unescape due to URL encoded values like Prince%20George's
             county_name = URI.unescape($3)
@@ -30,11 +31,6 @@ class MoreWidgetFields < ActiveRecord::Migration
             end
           end
         end
-        widget.widgeturl = "http://www.extension.org/widget/tracking/#{trackingcode}"
-        widget.save
-      elsif(widget.widgeturl =~ %r!https*://\w+\.extension\.org/widget/tracking/(\w+)!)
-        trackingcode = $1
-        widget.widgeturl = "http://www.extension.org/widget/tracking/#{trackingcode}"
         widget.save
       end 
     end
@@ -42,6 +38,9 @@ class MoreWidgetFields < ActiveRecord::Migration
     # special case for widget #708 - which has ?location=AL in it
     execute("UPDATE widgets SET location_id = 11 where id = 708")
     
+    
+    # make sure Bonnie Plants widget is show_location enabled
+    execute "UPDATE widgets SET show_location = 1 WHERE fingerprint = '#{Widget::BONNIE_PLANTS_WIDGET}'"
 
   end
 

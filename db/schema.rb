@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101103132854) do
+ActiveRecord::Schema.define(:version => 20101110142234) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -1049,6 +1049,12 @@ ActiveRecord::Schema.define(:version => 20101103132854) do
     t.integer  "user_id",                           :null => false
     t.string   "email_from"
     t.boolean  "upload_capable", :default => false
+    t.boolean  "show_location"
+    t.boolean  "enable_tags"
+    t.integer  "community_id"
+    t.integer  "location_id"
+    t.integer  "county_id"
+    t.string   "old_widget_url"
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true

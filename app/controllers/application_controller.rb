@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   require 'image_size'
 
   before_filter :set_default_request_ip_address
+  before_filter :set_analytics_visitor
   before_filter :set_locale
   before_filter :unescape_params
   before_filter :personalize_location_and_institution
@@ -92,6 +93,18 @@ class ApplicationController < ActionController::Base
     end
     return true
   end
+  
+  def set_analytics_visitor
+    if(session[:account_id])
+      if(account = Account.find_by_id(session[:account_id]))
+        @analytics_vistor = (account.class == User) ? 'internal' : 'external'
+      else
+        @analytics_vistor = 'anonymous'
+      end
+    else
+      @analytics_vistor = 'anonymous'
+    end
+  end
     
   def set_locale
     # update session if passed
@@ -141,20 +154,20 @@ class ApplicationController < ActionController::Base
     @personal = {}
     
     # get location and county from session, then IP
-    if(!session[:location_id].blank?)
-      @personal[:location] = Location.find_by_id(session[:location_id])
-      if(!session[:county_id].blank?)
-        @personal[:county] = County.find_by_id(session[:county_id])
+    if(!session[:location_and_county].blank? and !session[:location_and_county][:location_id].blank?)
+      @personal[:location] = Location.find_by_id(session[:location_and_county][:location_id])
+      if(!session[:location_and_county][:county_id].blank?)
+        @personal[:county] = County.find_by_id(session[:location_and_county][:county_id])
       end
     end
     
     if(@personal[:location].blank?)
       if(location = Location.find_by_geoip)
         @personal[:location] = location
-        session[:location_id] = location.id
+        session[:location_and_county] = {:location_id => location.id}
         if(county = County.find_by_geoip)
           @personal[:county] = county
-          session[:county_id] = county.id
+          session[:location_and_county][:county_id] = county.id
         end
       end
     end

@@ -89,6 +89,7 @@ module LoginSystem
       checkuser = User.find_by_id(session[:userid])
       if (authorize?(checkuser))
         @currentuser = checkuser
+        session[:account_id] = @currentuser.id  
         return true
       end
     end
@@ -107,6 +108,7 @@ module LoginSystem
       checkuser = User.find_by_id(session[:userid])
       if (authorize?(checkuser))
         @currentuser = checkuser
+        session[:account_id] = @currentuser.id  
         return true
       end
     end
