@@ -13,7 +13,7 @@ class Api::AaeController < ApplicationController
   def ask
     if request.post?
       begin 
-        if !params[:question] or !params[:email] 
+        if !params[:question] or !params[:email] or !params[:widget]
           argument_errors = "Required parameters were not passed. Please check API documentation for correct parameters."
           return send_json_error(argument_errors, 400)
         end
@@ -24,7 +24,9 @@ class Api::AaeController < ApplicationController
         end
         
         ############### setup the question to be saved and fill in attributes with parameters ###############
-        widget = Widget.find_by_fingerprint(params[:widget_id].strip) if params[:widget_id]
+        if(!widget = Widget.find_by_fingerprint(params[:widget].strip))
+          return send_json_error("Unknown widget.", 403)
+        end
         
         name_hash = {}
         name_hash[:first_name] = params[:first_name].strip if !params[:first_name].blank?
@@ -48,6 +50,7 @@ class Api::AaeController < ApplicationController
         @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
         @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
         @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
+        @submitted_question.is_api = true
 
         if params[:type]
           if params[:type] == 'pubsite'
@@ -100,8 +103,12 @@ class Api::AaeController < ApplicationController
         end
        
         if @submitted_question.save
+          # handle tags
+          if(params[:tag_list])
+            @submitted_question.tag_myself_with_shared_tags(params[:tag_list])
+          end
           respond_to do |format|
-            format.json { return render :text => {:completed => true, :submitted_question_url => "aae/question/#{@submitted_question.id}"}.to_json, :layout => false }
+            format.json { return render :text => {:completed => true, :public_url => ask_question_url(:fingerprint => @submitted_question.question_fingerprint), :expert_url => aae_question_url(:id => @submitted_question.id)}.to_json, :layout => false }
           end
         else
           active_record_errors = "Question not successfully saved."

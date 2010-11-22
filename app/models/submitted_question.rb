@@ -132,12 +132,22 @@ def add_resolution(sq_status, resolver, response, signature = nil, contributing_
   case sq_status
     when STATUS_RESOLVED    
       self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
-      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true, :contributing_question_id => contributing_question, :signature => signature)
+      @response = Response.new(:resolver => resolver, 
+                               :submitted_question => self, 
+                               :response => response,
+                               :sent => true, 
+                               :contributing_question_id => contributing_question, 
+                               :signature => signature)
       @response.save
       SubmittedQuestionEvent.log_resolution(self)    
     when STATUS_NO_ANSWER
       self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
-      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true, :contributing_question_id => contributing_question, :signature => signature)
+      @response = Response.new(:resolver => resolver, 
+                               :submitted_question => self, 
+                               :response => response, 
+                               :sent => true, 
+                               :contributing_question_id => contributing_question, 
+                               :signature => signature)
       @response.save
       SubmittedQuestionEvent.log_no_answer(self)  
     when STATUS_REJECTED
@@ -592,6 +602,13 @@ def self.find_with_category(category, *args)
   end
 end
 
+def tag_myself_with_shared_tags(taglist)
+  self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
+end
+
+def system_sharedtags_displaylist
+  return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED)
+end
 
 
 def SubmittedQuestion.get_extapp_qual( pub, wgt)

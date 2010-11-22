@@ -60,45 +60,80 @@ class Widgets::AaeController < ApplicationController
   
   # created new named widget form
   def new
-    @location_options = get_location_options
+    @widget = Widget.new
   end
 
   # generates the iframe code for users to paste into their websites 
   # that pulls the widget code from this app with provided location and county
   def generate_widget_code
-    if params[:location_id]
-      location = Location.find_by_id(params[:location_id].strip.to_i)
-      if params[:county_id] and location
-        county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id)
-      end
-    end
-
-    (location) ? location_str = location.abbreviation : location_str = nil
-    (county and location) ? county_str = county.name : county_str = nil
-
     @widget = Widget.new(params[:widget])
     
-    if !params[:photo_upload].blank? and params[:photo_upload].strip == 'yes'
-      @widget.upload_capable = true  
-    end
-
     if !@widget.valid?
-      @location_options = get_location_options
-      render :template => '/widgets/aae/new'
-      return
+      return render :template => '/widgets/aae/new'
     end
-
+    
+    # location and county
+    if(params[:location_id] and location = Location.find_by_id(params[:location_id].strip.to_i))
+      @widget.location = location
+      if(params[:county_id] and county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id))
+        @widget.county = county
+      end
+    end
+    
     @widget.set_fingerprint(@currentuser)
+    @widget.user = @currentuser
     
-    if location
-      @widget_url = url_for(:controller => '/widget', :location => location_str, :county => county_str, :id => @widget.fingerprint, :only_path => false)  
+    if(@widget.save)
+      # handle tags
+      if(@widget.enable_tags?)
+        @widget.tag_myself_with_shared_tags(params[:tag_list])
+      end
+      @currentuser.widgets << @widget
+      
     else
-      @widget_url = url_for(:controller => '/widget', :id => @widget.fingerprint, :only_path => false)
+      return render :template => '/widgets/aae/new'
     end
     
-    @widget.widgeturl = @widget_url
-
-    @currentuser.widgets << @widget
+  end
+  
+  def edit
+    if(!params[:id] or !(@widget = Widget.find_by_id(params[:id])))
+      flash[:error] = "Missing widget id."
+      return redirect_to(:action => 'index')
+    end
+  end
+  
+  def update
+    if(!params[:id] or !(@widget = Widget.find_by_id(params[:id])))
+      flash[:error] = "Missing widget id."
+      return redirect_to(:action => 'index')
+    end
+    
+    @widget.attributes = params[:widget]
+    
+    # location and county - separate from params[:widget], but probably shouldn't be
+    if(params[:location_id] and location = Location.find_by_id(params[:location_id].strip.to_i))
+      @widget.location = location
+      if(params[:county_id] and county = County.find_by_id_and_location_id(params[:county_id].strip.to_i, location.id))
+        @widget.county = county
+      end
+    end
+    
+    if !@widget.valid?
+      return render :template => '/widgets/aae/edit'
+    end
+    
+    
+    if(@widget.save)
+      # handle tags
+      if(@widget.enable_tags?)
+        @widget.tag_myself_with_shared_tags(params[:tag_list])
+      end
+      WidgetEvent.log_event(@widget.id, @currentuser.id, WidgetEvent::EDITED_ATTRIBUTES)
+      return redirect_to(widgets_view_aae_url(:id => @widget.id))
+    else
+      return render :template => '/widgets/aae/edit'
+    end
   end
 
   def get_widgets
@@ -108,45 +143,6 @@ class Widgets::AaeController < ApplicationController
       @widgets = Widget.get_all_with_assignee_count(:conditions => "widgets.name LIKE '#{params[:widget_name]}%' AND widgets.active = true")
     end
     render :partial => "widget_list", :layout => false
-  end
-
-  def toggle_activation
-    if request.post?
-      if params[:widget_id]
-        @widget = Widget.find(params[:widget_id])
-        @widget.update_attributes(:active => !@widget.active?)
-        event = @widget.active? ? WidgetEvent::ACTIVATED : WidgetEvent::DEACTIVATED
-
-        WidgetEvent.log_event(@widget.id, @currentuser.id, event)
-
-        render :update do |page|
-          page.visual_effect :highlight, @widget.name
-          page.replace_html :widget_active, @widget.active? ? "Active" : "Inactive"
-          page.replace_html :history, :partial => 'widget_history'
-        end        
-      end
-    else
-      do_404
-    end
-  end
-  
-  def toggle_upload_capable
-    if request.post?
-      if params[:widget_id]
-        @widget = Widget.find(params[:widget_id])
-        @widget.update_attributes(:upload_capable => !@widget.upload_capable?)
-        event = @widget.upload_capable? ? WidgetEvent::UPLOAD_CAPABLE : WidgetEvent::NON_UPLOAD_CAPABLE
-
-        WidgetEvent.log_event(@widget.id, @currentuser.id, event)
-
-        render :update do |page|
-          page.visual_effect :highlight, 'widget_upload'
-          page.replace_html :history, :partial => 'widget_history'
-        end        
-      end
-    else
-      do_404
-    end
   end
   
 end

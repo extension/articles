@@ -36,8 +36,9 @@
 </head> 
 
 <body>
-    <% form_for :submitted_question, @submitted_question, :url => widget_submit_question_url(:id => @fingerprint), :html => { :id => 'myForm', :multipart => true } do |f| %>
-    
+    <% form_tag(widget_submit_question_url, { :id => 'myForm', :multipart => true }) do %>
+    <%= hidden_field_tag(:widget, @widget.fingerprint) %>
+      
     <h1><a href="http://www.extension.org/" target="_blank">eXtension</a></h1>
     <h2>Ask an Expert</h2>
     
@@ -53,46 +54,52 @@
     </div><!-- .grid_16 -->
 
     <p>
-      <%= f.label :asked_question, 'Question' %>
-      <%= f.text_area :asked_question, {:rows => "4"} %>
+        <label for="question">Question
+        <%= text_area_tag :question, @question, :rows => 4  %>
+        </label>
     </p>
     
-    <% if image_upload_capable(@fingerprint) %>
+    <%- if @widget.show_location? -%>
+        <p>
+            <label>Location and County
+            <%= select_tag 'location_id', options_for_select(get_location_options, default_location_id(@widget.location_id)) %>
+            </label>
+        </p>
+
+        	<%= observe_field('location_id',
+        	                  :update    => :county_list,
+        	                  :url       => { :controller => 'aae/search', :action => :get_counties },
+        	                  :with      => "'location_id='+value") %>
+
+        <p id="county_list">
+          <%- if (@personal[:location] and @personal[:location].counties.length > 0 ) or (@widget.location and @widget.location.counties.length > 0) -%>
+          	<label>
+          	<%= select_tag 'county_id', options_for_select(get_county_options(@personal[:location] || @widget.location), default_county_id(@widget.county_id)) %>
+              </label>
+          <%- end -%>
+        </p>
+    <%- end -%>
+    
+    <%- if @widget.upload_capable? -%>
       <p>
-      <%= f.label :file_attachment, "Image (optional)" %>
+      <label>Image (optional)</label>
       <p><em>You can upload .jpg .png or .gif. Max size of 2MB each.</em></p>
-      <% fields_for "file_attachment" do |file_attachment| %> 
-      <p class="image_upload"><%= file_attachment.file_field :attachment %></p>
-      <% end %>
+      <p class="image_upload"><%= file_field_tag :image %></p>
       </p>
-    <% end %>
+    <%- end -%>
     
     <br />
 
     <p>
-      <%= f.label :submitter_email, 'Email <small>(please type it twice to confirm)</small>' %>
-      <%= f.text_field :submitter_email, { :type => "email", :autocapitalize => "off" } %>
+        <label for="email">Email <small>(please type it twice to confirm)</small>
+        <%= text_field_tag(:email, @email, { :type => "email", :autocapitalize => "off" }) %>
+        </label>
     </p>
-    
     
     <p>
-      <%= text_field_tag(:submitter_email_confirmation, @submitter.email, :type => "email",  :autocapitalize => "off") %>
+        <%= text_field_tag(:email_confirmation, @email_confirmation, { :type => "email", :autocapitalize => "off" }) %>
     </p>
     
-    <% if @location %>
-    <p>
-        <%= hidden_field_tag("location", @location.fipsid) %>
-    </p>
-    <% end %>
-    
-    <% if @location and @county %>
-      <p>
-         <%= hidden_field_tag("county", @county.fipsid) %>
-      </p>      
-    <% end %>
-    
-
-
     <p class="submit"><%= submit_tag "Ask", :id => "ask_submit", :disable_with => "Submitting..." %></p>
     <% end %>
 </body>

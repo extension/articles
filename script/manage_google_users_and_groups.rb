@@ -54,6 +54,7 @@ def update_apps_groups
   groups_list.each do |google_group|
     puts "Creating/Updating Google groups information for #{google_group.group_id}..."
     google_group.update_apps_group_members  # will create/update group as well
+    google_group.update_apps_group_owners # update owners    
   end
   
   # new groups
@@ -61,6 +62,7 @@ def update_apps_groups
   groups_list.each do |google_group|
     puts "Creating/Updating Google groups information for #{google_group.group_id}..."
     google_group.update_apps_group_members  # will create/update group as well
+    google_group.update_apps_group_owners # update owners    
   end
 end
  

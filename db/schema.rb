@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101008143449) do
+ActiveRecord::Schema.define(:version => 20101110142234) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -501,25 +501,29 @@ ActiveRecord::Schema.define(:version => 20101008143449) do
   end
 
   create_table "geo_names", :force => true do |t|
-    t.string  "name",              :limit => 200,  :default => "",  :null => false
-    t.string  "ansiname",          :limit => 200,  :default => "",  :null => false
-    t.string  "alternatenames",    :limit => 2000, :default => "",  :null => false
-    t.float   "latitude",                          :default => 0.0, :null => false
-    t.float   "longitude",                         :default => 0.0, :null => false
-    t.string  "feature_class",     :limit => 1
-    t.string  "feature_code",      :limit => 10
-    t.string  "country_code",      :limit => 2
-    t.string  "cc2",               :limit => 60
-    t.string  "admin1_code",       :limit => 20,   :default => ""
-    t.string  "admin2_code",       :limit => 80,   :default => ""
-    t.string  "admin3_code",       :limit => 20,   :default => ""
-    t.string  "admin4_code",       :limit => 20,   :default => ""
-    t.integer "population",        :limit => 8,    :default => 0
-    t.integer "elevation",                         :default => 0
-    t.integer "gtopo30",                           :default => 0
-    t.string  "timezone",          :limit => 40
-    t.date    "modification_date"
+    t.string  "feature_name",       :limit => 121
+    t.string  "feature_class",      :limit => 51
+    t.string  "state_abbreviation", :limit => 3
+    t.string  "state_code",         :limit => 3
+    t.string  "county",             :limit => 101
+    t.string  "county_code",        :limit => 4
+    t.string  "lat_dms",            :limit => 8
+    t.string  "long_dms",           :limit => 9
+    t.float   "lat"
+    t.float   "long"
+    t.string  "source_lat_dms",     :limit => 8
+    t.string  "source_long_dms",    :limit => 9
+    t.float   "source_lat"
+    t.float   "source_long"
+    t.integer "elevation"
+    t.string  "map_name"
+    t.string  "create_date_txt"
+    t.string  "edit_date_txt"
+    t.date    "create_date"
+    t.date    "edit_date"
   end
+
+  add_index "geo_names", ["feature_name", "state_abbreviation", "county"], :name => "name_state_county_ndx"
 
   create_table "google_accounts", :force => true do |t|
     t.integer  "user_id",          :default => 0,     :null => false
@@ -704,7 +708,7 @@ ActiveRecord::Schema.define(:version => 20101008143449) do
 
   create_table "notifications", :force => true do |t|
     t.integer  "notifytype",     :default => 0
-    t.integer  "user_id",        :default => 0,     :null => false
+    t.integer  "account_id",     :default => 0,     :null => false
     t.integer  "created_by",     :default => 0
     t.integer  "community_id",   :default => 0,     :null => false
     t.boolean  "sent_email",     :default => false
@@ -1045,6 +1049,12 @@ ActiveRecord::Schema.define(:version => 20101008143449) do
     t.integer  "user_id",                           :null => false
     t.string   "email_from"
     t.boolean  "upload_capable", :default => false
+    t.boolean  "show_location"
+    t.boolean  "enable_tags"
+    t.integer  "community_id"
+    t.integer  "location_id"
+    t.integer  "county_id"
+    t.string   "old_widget_url"
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true

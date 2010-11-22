@@ -87,37 +87,21 @@ ActionController::Routing::Routes.draw do |map|
   
   ### AaE API ###
   map.connect 'api/aae/ask.json', :controller => 'api/aae', :action => :ask  
-  
-  # routes for temporary custom Bonnie Plants widget
-  map.connect 'widget/bonnie_plants/tracking/:id', :controller => 'widget', :action => 'bonnie_plants'
-  map.connect 'widget/create_from_bonnie_plants/:id', :controller => 'widget', :action => 'create_from_bonnie_plants'
-  #
-  
+    
   ### Widget iFrame ###
-  map.connect 'widget/api_widget_index', :controller => 'widget', :action => 'api_widget_index'
-  map.connect 'widget/create_from_widget_using_api', :controller => 'widget', :action => 'create_from_widget_using_api'
   map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
   
-  # Route for named/tracked widget w/ no location
-  map.connect 'widget/tracking/:id', :controller => 'widget', :action => 'index'
+  # route for existing bonnie_plants widget for continued operation.
+  map.connect 'widget/bonnie_plants/tracking/:widget', :controller => 'widget', :action => 'index'
+  # Route for named/tracked widget w/ no location *unused is a catcher for /location and /location/county for
+  # existing widgets, since we aren't using that in the URL anymore
+  map.widget_tracking 'widget/tracking/:widget/*unused', :controller => 'widget', :action => 'index'
+  # recognize widget/index as well
+  map.connect 'widget/index/:widget/*unused', :controller => 'widget', :action => 'index'
   # Widget route for unnamed/untracked widgets
   map.widget 'widget', :controller => 'widget', :action => 'index'
-  
-  # Routes for widgets that are named and tracked w/ location
-  
-  # insert regular expression for county to let the routing know that if a dot(.) is encountered, it's part of the param and not 
-  # a route separator 
-  map.connect 'widget/tracking/:id/:location/:county', :controller => 'widget', :action => 'index', :requirements => { :county => /.*/ }
-  map.connect 'widget/tracking/:id/:location', :controller => 'widget', :action => 'index'
-  
+
   map.connect 'widget/create_from_widget', :controller => 'widget', :action => 'create_from_widget'
-  
-  # Routes for widgets that are not named and tracked and have just location info
-  
-  # insert regular expression for county to let the routing know that if a dot(.) is encountered, it's part of the param and not 
-  # a route separator
-  map.connect 'widget/:location/:county', :controller => 'widget', :action => 'index', :requirements => { :county => /.*/ }
-  map.connect 'widget/:location', :controller => 'widget', :action => 'index'
   
   ### Widget Stuff ###
   # redirects
@@ -128,6 +112,7 @@ ActionController::Routing::Routes.draw do |map|
     widgets.content 'content', :controller => :content, :action => 'index'
     widgets.home '/', :controller => :home, :action => :index     
     widgets.view_aae 'aae/view/:id', :controller => :aae, :action => 'view'
+    widgets.edit_aae 'aae/edit/:id', :controller => :aae, :action => 'edit'
   end
 
   ### Search Stuff ###

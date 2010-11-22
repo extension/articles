@@ -651,7 +651,7 @@ class Community < ActiveRecord::Base
   def update_google_group
     if(self.connect_to_google_apps?)
       if(!self.google_group.blank?)
-        self.google_group.save
+        self.google_group.touch
       else
         self.create_google_group
       end
