@@ -6,6 +6,9 @@ class MoreWidgetFields < ActiveRecord::Migration
     add_column(:widgets,:location_id,:integer)
     add_column(:widgets,:county_id,:integer)
     rename_column(:widgets,:widgeturl,:old_widget_url)
+    
+    # allow old_widget_url to be null
+    execute "ALTER TABLE `widgets` CHANGE COLUMN `old_widget_url` `old_widget_url` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;"
         
     Widget.reset_column_information
     
