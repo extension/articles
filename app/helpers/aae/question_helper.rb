@@ -54,13 +54,13 @@ def stringify_submitted_question_event(sq_event)
   when SubmittedQuestionEvent::WORKING_ON
     return "Question worked on by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::EDIT_QUESTION
-    return "Question edited by public user <span> #{humane_date(sq_event.created_at)} </span>"
+    return "Question edited by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::REOPEN
     return "Question reopened by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::CLOSED
     return "Question closed by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::PUBLIC_RESPONSE
-    return "Comment posted by <strong #{qw}>public user</strong> <span> #{humane_date(sq_event.created_at)} </span>"
+    return "Comment posted by <strong>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::COMMENT 
     comment_msg = "Comment posted by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
     comment_msg = comment_msg + " <div class='comment_icon'>#{format_text_for_display(sq_event.response)}</div>" if sq_event.response
