@@ -341,7 +341,13 @@ class AskController < ApplicationController
           return
         end
         
-        response = Response.new(:submitter => submitter, :submitted_question => @submitted_question, :response => params[:submitter_response], :sent => true)
+        response = Response.new(:submitter => submitter, 
+                                :submitted_question => @submitted_question, 
+                                :response => params[:submitter_response],
+                                :user_ip => request.remote_ip,
+                                :user_agent => (request.env['HTTP_USER_AGENT']) ? request.env['HTTP_USER_AGENT'] : '',
+                                :referrer => (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : '', 
+                                :sent => true)
         
         # handle image upload
 
