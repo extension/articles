@@ -62,6 +62,10 @@ class People::SignupController < ApplicationController
   end
   
   def create
+    if(!request.post?)
+      return redirect_to(:action => :new)
+    end
+    
     if(!params[:invite].nil?)
       @invitation = Invitation.find_by_token(params[:invite])
     end
