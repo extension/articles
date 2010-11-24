@@ -20,6 +20,9 @@ class People::SignupController < ApplicationController
   end
   
   def xhr_county_and_institution
+    if(!request.post?)
+      return redirect_to(:action => :new)
+    end
     @user = @currentuser
     if(!params[:location].nil? and params[:location] != "")
       selected_location = Location.find(:first, :conditions => ["id = ?", params[:location]])	  
