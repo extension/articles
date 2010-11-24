@@ -81,12 +81,13 @@ class People::SignupController < ApplicationController
           # has existing user account
           failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:controller => 'people/account', :action => :new_password)}'>request a new password</a>"
           flash.now[:failure] = failuremsg
-          @user = account
+          @user = User.new(params[:user])          
+          @locations = Location.displaylist
           if(!(@user.location.nil?))  
             @countylist = @user.location.counties
             @institutionlist = @user.location.communities.institutions.find(:all, :order => 'name')
           end
-          render :action => "new"
+          return render(:action => "new")
         elsif(account.class == PublicUser)
           # convert the account
           account.update_attribute(:type,'User')
