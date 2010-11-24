@@ -77,10 +77,14 @@ class LearnController < ApplicationController
                                                 :page => params[:page])        
       elsif params[:sessiontype] == 'myattended'
         @page_title = 'My Attended Learn Sessions'
-        @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::ATTENDED}", :order => "session_start DESC",:page => params[:page])
+        if(@currentuser)
+          @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::ATTENDED}", :order => "session_start DESC",:page => params[:page])
+        end
       elsif params[:sessiontype] == 'myinterested'
         @page_title = 'My Interested Learn Sessions'
-        @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::INTERESTED}", :order => "session_start DESC",:page => params[:page])
+        if(@currentuser)
+          @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::INTERESTED}", :order => "session_start DESC",:page => params[:page])
+        end
       elsif params[:sessiontype] == 'by_tag'
         if !params[:tag].blank? 
           @tag_param = params[:tag]
