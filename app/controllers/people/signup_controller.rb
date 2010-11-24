@@ -20,6 +20,9 @@ class People::SignupController < ApplicationController
   end
   
   def xhr_county_and_institution
+    if(!request.post?)
+      return redirect_to(:action => :new)
+    end
     @user = @currentuser
     if(!params[:location].nil? and params[:location] != "")
       selected_location = Location.find(:first, :conditions => ["id = ?", params[:location]])	  
@@ -62,6 +65,10 @@ class People::SignupController < ApplicationController
   end
   
   def create
+    if(!request.post?)
+      return redirect_to(:action => :new)
+    end
+    
     if(!params[:invite].nil?)
       @invitation = Invitation.find_by_token(params[:invite])
     end
@@ -77,12 +84,13 @@ class People::SignupController < ApplicationController
           # has existing user account
           failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:controller => 'people/account', :action => :new_password)}'>request a new password</a>"
           flash.now[:failure] = failuremsg
-          @user = account
+          @user = User.new(params[:user])          
+          @locations = Location.displaylist
           if(!(@user.location.nil?))  
             @countylist = @user.location.counties
             @institutionlist = @user.location.communities.institutions.find(:all, :order => 'name')
           end
-          render :action => "new"
+          return render(:action => "new")
         elsif(account.class == PublicUser)
           # convert the account
           account.update_attribute(:type,'User')
@@ -155,7 +163,7 @@ class People::SignupController < ApplicationController
       if(@account_conversion)
         @user.update_attribute(:type,'PublicUser')
       end
-      render :action => "new"
+      render(:action => "new")
     else        
       # automatically log them in
       @currentuser = User.find_by_id(@user.id)
