@@ -163,7 +163,7 @@ class People::SignupController < ApplicationController
       if(@account_conversion)
         @user.update_attribute(:type,'PublicUser')
       end
-      render :action => "new"
+      render(:action => "new")
     else        
       # automatically log them in
       @currentuser = User.find_by_id(@user.id)
