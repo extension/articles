@@ -235,8 +235,10 @@ class List < ActiveRecord::Base
     end
     
     # update
-    list_subscriptions.each do |listsub|
-      listsub.save(false)
+    List.transaction do
+      list_subscriptions.each do |listsub|
+        listsub.save(false)
+      end
     end
     
     # touch updated_at - so that when mailman sync runs, it will update
@@ -290,9 +292,12 @@ class List < ActiveRecord::Base
       list_owners.build(:list => self, :email => AppConfig.configtable['default-list-owner'], :user_id => 0, :emailconfirmed => true, :ineligible => false, :moderator => false)
     end
     
+
     # update
-    list_owners.each do |listowner|
-      listowner.save(false)
+    List.transaction do
+      list_owners.each do |listowner|
+        listowner.save(false)
+      end
     end
     
     # touch updated_at - so that when mailman sync runs, it will update
