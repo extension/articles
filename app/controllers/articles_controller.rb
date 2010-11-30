@@ -93,7 +93,7 @@ class ArticlesController < ApplicationController
       @youth = true if @article_bucket_names.include?('youth')
       
       # news check to set the meta tags for noindex
-      @published_content = false if @article_bucket_names.include?('news')
+      @published_content = false if (@article_bucket_names.include?('news') and !@article_bucket_names.include?('originalnews'))
       
       # noindex check to set the meta tags for noindex
       @published_content = false if @article_bucket_names.include?('noindex')

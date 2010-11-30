@@ -42,6 +42,15 @@ class Article < ActiveRecord::Base
    end
    
    buckets = ContentBucket.find(:all, :conditions => "name IN (#{namearray.map{|n| "'#{n}'"}.join(',')})")
+   # bucket as "notnews" if categoryarray doesn't include 'news' or 'originalnews'
+   if(!categoryarray.include?('news') and !categoryarray.include?('originalnews'))
+     buckets << ContentBucket.find_by_name('notnews')
+   end
+   
+   # force news bucket if categoryarray includes 'originalnews'
+   if(categoryarray.include?('originalnews'))
+     buckets << ContentBucket.find_by_name('news')
+   end
    self.content_buckets = buckets
   end
   
