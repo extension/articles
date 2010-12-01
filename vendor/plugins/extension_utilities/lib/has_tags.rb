@@ -18,7 +18,7 @@ module Extension
       end
       
       # no options currently
-      # NOTE! NOTE! NOTE! this scope is designed to do an AND of all the tags or !tags passed to it
+      # NOTE! NOTE! NOTE! this scope is designed to do an AND of all the tags
       def add_content_tags_scope(opts={})
   
         # Get the list that belong to the given categories.
@@ -35,23 +35,6 @@ module Extension
             taggings_we_want = includetaggings
           end
 
-          # if(!excludelist.empty?)
-          #   excludeconditions = "(tags.name IN (#{excludelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
-          #   excludetaggings = Tagging.find(:all, :include => :tag, :conditions => excludeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
-          # end
-          
-          # # if(!includelist.empty? and !excludelist.empty?)
-          # #   taggings_we_want = includetaggings - excludetaggings
-          # elsif(!includelist.empty?)
-          #   taggings_we_want = includetaggings
-          # elsif(!excludelist.empty?)
-          #   taggings_we_want = excludetaggings
-          # else
-          #   taggings_we_want = []
-          # end
-          
-          
-          
           if(!taggings_we_want.empty?)
             {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
           else
