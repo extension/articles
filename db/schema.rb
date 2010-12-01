@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101110142234) do
+ActiveRecord::Schema.define(:version => 20101130203200) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -797,6 +797,9 @@ ActiveRecord::Schema.define(:version => 20101110142234) do
     t.datetime "updated_at"
     t.integer  "contributing_question_id"
     t.text     "signature"
+    t.string   "user_ip"
+    t.string   "user_agent"
+    t.string   "referrer"
   end
 
   add_index "responses", ["resolver_id"], :name => "index_responses_on_user_id"
@@ -912,6 +915,7 @@ ActiveRecord::Schema.define(:version => 20101110142234) do
     t.boolean  "show_publicly",                 :default => true
     t.datetime "last_assigned_at"
     t.datetime "last_opened_at",                                   :null => false
+    t.boolean  "is_api"
   end
 
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"
@@ -1042,7 +1046,7 @@ ActiveRecord::Schema.define(:version => 20101110142234) do
   create_table "widgets", :force => true do |t|
     t.string   "name",                              :null => false
     t.string   "fingerprint",                       :null => false
-    t.string   "widgeturl",                         :null => false
+    t.string   "old_widget_url"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active",         :default => true,  :null => false
@@ -1054,7 +1058,6 @@ ActiveRecord::Schema.define(:version => 20101110142234) do
     t.integer  "community_id"
     t.integer  "location_id"
     t.integer  "county_id"
-    t.string   "old_widget_url"
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true
