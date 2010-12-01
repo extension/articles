@@ -55,6 +55,7 @@ module Extension
           if(!taggings_we_want.empty?)
             {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
           else
+            # intentionally fail the named scope.  Doing something like this means this named_scope should be rethought completely
             {:conditions => "1 = 0"}
           end
         }
@@ -106,6 +107,7 @@ module Extension
           if(!taggings_we_want.empty?)
             {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
           else
+            # intentionally fail the named scope.  Doing something like this means this named_scope should be rethought completely
             {:conditions => "1 = 0"}
           end
         }
