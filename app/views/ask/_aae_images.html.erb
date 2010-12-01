@@ -6,7 +6,7 @@
         <a class="fancybox" href="<%= sq_img.attachment.url %>" title="AaE Image">
           <%= image_tag sq_img.attachment.url(:thumb) %>
         </a>
-        <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
+        <% if (@submitted_question.submitter.id == session[:account_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
           <%= button_to_remote 'Delete Image', :url => { :action => :delete_sq_image, :id => sq_img.id, :squid => @submitted_question.id  },
               :loading => "Element.show('loading')",
               :complete    => "Element.hide('loading')"  %>
@@ -17,7 +17,7 @@
   <% end %>
   
   <br class="clearing" />
-  <% if (@submitted_question.public_user.id == session[:public_user_id]) or (@currentuser.email == @submitted_question.submitter_email) and ((number_of_attachments = @submitted_question.file_attachments.length) < FileAttachment::MAX_AAE_UPLOADS) %>
+  <% if (@submitted_question.submitter.id == session[:account_id]) or (@currentuser.email == @submitted_question.submitter_email) and ((number_of_attachments = @submitted_question.file_attachments.length) < FileAttachment::MAX_AAE_UPLOADS) %>
   <% if !((response = @submitted_question.current_response) and (response.strip != '')) %>
   <p class="inc_descriptive editpitch">
   <%= link_to_function "Add Images", "Effect.toggle('add_uploads','blind', { duration: .4}); if(this.innerHTML == 'Add Images') {this.innerHTML = 'Cancel';} else {this.innerHTML = 'Add Images'}" %>
@@ -45,3 +45,12 @@
   <% end %>
   <% end %>
 </div>
+
+<script type="text/javascript">
+$j = jQuery.noConflict();
+$j(document).ready(function() {
+ $j(".fancybox").fancybox({
+		'titleShow'		: false
+	});
+})
+</script>

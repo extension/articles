@@ -17,8 +17,9 @@ class Tag < ActiveRecord::Base
   
   # terms that can be used as tags, but have special meaning
   CONTENTBLACKLIST = ['article', 'articles','contents', 'dpl', 'events', 'faq', 'feature',
-                    'highlight', 'homage', 'youth', 'learning lessons',
-                    'learning lessons home', 'main', 'news', 'beano','people','ask','aae','status','opie','feeds','data','reports','published']
+                      'highlight', 'homage', 'youth', 'learning lessons','learning lessons home', 
+                      'main', 'news', 'originalnews','beano','people','ask','aae','status','opie','feeds',
+                      'data','reports','published','noindex']
 
   CONTENT_TAG_CACHE_EXPIRY = 24.hours
 
@@ -28,7 +29,7 @@ class Tag < ActiveRecord::Base
   
   # Set up the polymorphic relationship.
   has_many_polymorphs :taggables, 
-    :from => [:users, :communities, :articles, :faqs, :events, :submitted_questions, :sponsors, :learn_sessions], 
+    :from => [:accounts, :communities, :articles, :faqs, :events, :submitted_questions, :sponsors, :learn_sessions, :widgets], 
     :through => :taggings, 
     :dependent => :destroy,
     :as => :tag,
@@ -45,7 +46,7 @@ class Tag < ActiveRecord::Base
     self.name = self.class.normalizename(self.name)
   end
   
-  named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT}"}
+  named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}"}
   
   # TODO: review.  This is kind of a hack that might should be done differently
   def content_community(forcecacheupdate=false)
@@ -53,7 +54,7 @@ class Tag < ActiveRecord::Base
     cache_key = self.class.get_object_cache_key(self,this_method,{:name => self.name})
     # just store the id and get the community each time
     communityid = Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
-      self.communities.first(:include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT}")
+      self.communities.first(:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}")
     end
     return Community.find_by_id(communityid)
   end
@@ -78,16 +79,9 @@ class Tag < ActiveRecord::Base
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
       launchedonly = options[:launchedonly].nil? ? false : options[:launchedonly]
       if(launchedonly)
-        onlyaae = options[:onlyaae].nil? ? false : options[:onlyaae]
-      end
-      if(launchedonly)
-        if(onlyaae)
-          self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE and communities.hide_from_aae = FALSE")
-        else
-          self.find(:all, :joins => [:communities], :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
-        end
+        self.find(:all, :joins => [:communities], :conditions => "taggings.tagging_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE")
       else
-        self.find(:all, :include => :taggings, :conditions => "taggings.tag_kind = #{Tagging::CONTENT} and taggable_type = 'Community'")
+        self.find(:all, :include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT} and taggable_type = 'Community'")
       end
     end  
   end

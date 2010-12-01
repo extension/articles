@@ -1,5 +1,5 @@
 <h1>Create a new community</h1>
-
+<%= render(:partial => 'partial/flashmessages') %>
 <%= error_messages_for :community %>
 
 <% form_for :community, @community, :url => people_communities_url  do |community| %>
@@ -35,6 +35,7 @@
 	     </label>
 	 </p>
 	
+   
     </fieldset>
     
     <% if(admin_mode?)%>
@@ -50,19 +51,23 @@
     		<p>
     		    <label for="community_shortname">Community Shortname:
     		    	<%= community.text_field(:shortname) %>
-            	</label>		
+            	</label>
+            	<em>Community shortnames are an additional unique identifier for the community.  The shortname can be used to link to the community in People, and it becomes the group name (and email address) for Google Apps if this community is connected to Google Apps.</em>		
     		</p>
 		
     		<p>
     	        <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
     	         <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
     	    </p>
-    	    
-    	    <p>
-     	        <label><%= check_box(:community,:connect_to_drupal) %>Connect to the eXtension Drupal CMS?</label>
-     	         <em>Communities can be added as groups within the eXtension Drupal CMS if you check this setting.  eXtension Communities of Practice are automatically connected regardless of this setting.</em>
-     	    </p>
+
+       	 <p>
+              <label><%= check_box(:community,:connect_to_google_apps) %>Connect to Google Apps for eXtension.org?</label>
+              <em>Communities can be added as <a href="http://groups.google.com/a/extension.org">groups within Google Apps for eXtension.org</a>. This provides features for inviting group members to docs or sites, and can also provide a web-based mailing list service for all joined members of the community (separate from the lists.extension.org service).  Please review the community shortname before enabling this setting.</em>
+          </p>
+              	    
 	    </fieldset>
+	    
+
         
 	<% end %>
 	

@@ -6,8 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'digest/sha1'
 
-class PublicUser < ActiveRecord::Base
-  has_many :submitted_questions
+class PublicUser < Account
   has_many :responses
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/
   attr_protected :password 
@@ -16,27 +15,20 @@ class PublicUser < ActiveRecord::Base
   has_many :learn_sessions, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, learn_sessions.*"
   
   
-  # override email write
-  def email=(emailstring)
-    write_attribute(:email, emailstring.mb_chars.downcase)
-  end
-  
-  def fullname 
-    return "#{self.first_name} #{self.last_name}"
-  end
-  
-  def self.find_and_update_or_create_by_email(providedparams)    
-    returnuser = nil
-    if(!providedparams.nil? and !providedparams[:email].blank?)
-      if(!(returnuser = self.find_by_email(providedparams[:email].mb_chars.downcase)))
-        returnuser = self.create(providedparams)
-      else
-        # we have the user, let's update their first_name and last_name if provided
-        returnuser.update_attributes(providedparams)
-      end
+  def first_name
+    if(first_name = read_attribute(:first_name))
+      return first_name
+    else
+      return 'Anonymous'
     end
-    
-    return returnuser
+  end
+  
+  def last_name
+    if(last_name = read_attribute(:last_name))
+      return last_name
+    else
+      return 'Guest'
+    end
   end
   
   def update_connection_to_learn_session(learn_session,connectiontype,connected=true)

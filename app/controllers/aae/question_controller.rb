@@ -9,6 +9,7 @@ class Aae::QuestionController < ApplicationController
   layout 'aae'
   before_filter :login_required
   before_filter :check_purgatory  
+  
   has_rakismet :only => [:report_spam, :report_ham]
  
   def index
@@ -22,13 +23,20 @@ class Aae::QuestionController < ApplicationController
     @categories = Category.root_categories.all(:order => 'name')
     @category_options = @categories.map{|c| [c.name,c.id]}
     
+    # determine whether this question has any comments or not
+    if @submitted_question.submitted_question_events.find(:first, :conditions => {:event_state => SubmittedQuestionEvent::COMMENT})
+      @comments_exist = true
+    else
+      @comments_exist = false
+    end
+    
     @submitter_name = @submitted_question.submitter_fullname
       
     if @submitted_question.categories and @submitted_question.categories.length > 0
       @category = @submitted_question.categories.first
       @category = @category.parent if @category.parent
       @category_id = @category.id
-      @users = @category.users.find(:all, :select => "users.*", :order => "users.first_name")
+      @users = @category.users.find(:all, :select => "accounts.*", :order => "accounts.first_name")
     # find subcategories
       @sub_category_options = [""].concat(@category.children.map{|sq| [sq.name, sq.id]})
       if subcategory = @submitted_question.categories.find(:first, :conditions => "parent_id IS NOT NULL")
@@ -137,6 +145,7 @@ class Aae::QuestionController < ApplicationController
   def change_category
     if request.post?
       @submitted_question = SubmittedQuestion.find(params[:sq_id].strip)
+      previous_category_names = @submitted_question.category_names
       category_param = "category_#{@submitted_question.id}"
       parent_category = Category.find(params[category_param].strip) if params[category_param] and params[category_param].strip != '' and params[category_param].strip != "uncat"
       sub_category = Category.find(params[:sub_category].strip) if params[:sub_category] and params[:sub_category].strip != ''
@@ -146,7 +155,22 @@ class Aae::QuestionController < ApplicationController
         @submitted_question.categories << sub_category if sub_category
       end
       @submitted_question.save
-      SubmittedQuestionEvent.log_recategorize(@submitted_question, @currentuser, @submitted_question.category_names)
+      
+      # tag it, based on the category/subcategory (if present)
+      if params[category_param].strip != "uncat"      
+        if(parent_category)
+          tags = [parent_category.name]
+          if(sub_category)
+            tags << "#{parent_category.name}:#{sub_category.name}"
+          end
+          @submitted_question.replace_tags_with_and_cache(tags, User.systemuserid, Tagging::SHARED)
+        end
+      else
+        # not sure this is the best way of doing this - it really needs a nil option
+        @submitted_question.replace_tags_with_and_cache('', User.systemuserid, Tagging::SHARED)
+      end
+      
+      SubmittedQuestionEvent.log_recategorize(@submitted_question, @currentuser, @submitted_question.category_names, previous_category_names)
     end
     
     respond_to do |format|
@@ -193,7 +217,7 @@ class Aae::QuestionController < ApplicationController
       
       @submitted_question.add_resolution(sq_status, @currentuser, answer, @signature, contributing_question)   
       
-      Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :user => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
+      Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :account => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
         
       redirect_to :action => 'question_answered', :squid => @submitted_question.id
     end
@@ -218,10 +242,21 @@ class Aae::QuestionController < ApplicationController
     # get the last response type, if a non-answer response was previously sent, respect the status of it in the submitted question, else 
     # set it to resolved
     if last_response = @submitted_question.last_response
+      resolver = last_response.initiated_by
       if last_response.event_state == SubmittedQuestionEvent::NO_ANSWER
-        @submitted_question.update_attributes(:status => SubmittedQuestion::NO_ANSWER_TEXT, :status_state => SubmittedQuestion::STATUS_NO_ANSWER)
+        @submitted_question.update_attributes(:status => SubmittedQuestion::NO_ANSWER_TEXT, 
+                                              :status_state => SubmittedQuestion::STATUS_NO_ANSWER,
+                                              :resolved_by => resolver,
+                                              :resolved_at => last_response.created_at,
+                                              :current_response => last_response.response,
+                                              :resolver_email => resolver.email)
       else
-        @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, :status_state => SubmittedQuestion::STATUS_RESOLVED)
+        @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, 
+                                              :status_state => SubmittedQuestion::STATUS_RESOLVED,
+                                              :resolved_by => resolver,
+                                              :resolved_at => last_response.created_at,
+                                              :current_response => last_response.response,
+                                              :resolver_email => resolver.email)
       end
     else
       flash[:notice] = "This question cannot be closed as it was never responded to. Please either answer it, respond with no answer, or reject it."
@@ -334,6 +369,31 @@ class Aae::QuestionController < ApplicationController
     end   
   end
   
+  def comment
+    filteredparams = ParamsFilter.new([:squid,{:comment => :string}],params)
+    submitted_question = filteredparams.squid
+    if request.post?
+      if(!submitted_question)
+        flash[:failure] = "Question does not exist."
+        redirect_to incoming_url
+      elsif(filteredparams.comment.blank?)
+        flash[:failure] = "Comment cannot be empty."
+        redirect_to aae_question_url(:id => submitted_question.id)
+      else
+        submitted_question.log_comment(@currentuser,filteredparams.comment)
+        if(submitted_question.assignee)
+          Notification.create(:notifytype => Notification::AAE_EXPERT_COMMENT, :account => submitted_question.assignee, :additionaldata => {:submitted_question_id => submitted_question.id, :comment => filteredparams.comment})
+        end 
+        flash[:success] = "Comment posted."
+        redirect_to aae_question_url(:id => submitted_question.id)
+      end
+    elsif(submitted_question)
+      redirect_to aae_question_url(:id => submitted_question.id)
+    else
+      redirect_to incoming_url
+    end
+  end
+  
   def reject    
     filteredparams = ParamsFilter.new([:squid],params)
     
@@ -371,7 +431,7 @@ class Aae::QuestionController < ApplicationController
       @submitted_question.add_resolution(SubmittedQuestion::STATUS_REJECTED, @currentuser, message)
         
       if @submitted_question.assignee and (@currentuser.id != @submitted_question.assignee.id)
-        Notification.create(:notifytype => Notification::AAE_REJECT, :user => @submitted_question.assignee, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :reject_message => message})  	    
+        Notification.create(:notifytype => Notification::AAE_REJECT, :account => @submitted_question.assignee, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :reject_message => message})  	    
       end
         
       flash[:success] = "The question has been rejected."

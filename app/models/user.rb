@@ -5,15 +5,8 @@
 # BSD(-compatible)
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'digest/sha1'
-class User < ActiveRecord::Base 
-  extend ConditionExtensions
-  include TaggingScopes
-  serialize :additionaldata
-  ordered_by :default => "last_name,first_name ASC"
-  
-  DEFAULT_TIMEZONE = 'America/New_York'
-  
-  
+class User < Account
+    
   STATUS_CONTRIBUTOR = 0
   STATUS_REVIEW = 1
   STATUS_CONFIRMEMAIL = 2
@@ -31,9 +24,7 @@ class User < ActiveRecord::Base
   TIMECOLUMN_CREATED_AT = 3
   TIMECOLUMN_UPDATED_AT = 4
   TIMECOLUMN_LAST_LOGIN_AT = 5
-   
-  attr_protected :is_admin 
-  
+     
   has_many :sentinvitations, :class_name  => "Invitation"
   has_many :user_tokens, :dependent => :destroy
   has_many :emailtokens, :class_name  => "UserToken", :conditions => "user_tokens.tokentype = #{UserToken::EMAIL}"
@@ -42,6 +33,10 @@ class User < ActiveRecord::Base
   
   has_many :opie_approvals, :dependent => :destroy
   has_one :chat_account, :dependent => :destroy
+  has_one :google_account, :dependent => :destroy
+  
+  has_many :email_aliases
+  
   has_many :user_events, :order => 'created_at DESC', :dependent => :destroy
   has_many :activities, :order => 'created_at DESC', :dependent => :destroy
   
@@ -122,87 +117,48 @@ class User < ActiveRecord::Base
   has_many :learn_sessions, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, learn_sessions.*"
   has_many :learn_sessions_presented, :source => :learn_session, :through => :learn_connections, :conditions => "learn_connections.connectiontype = #{LearnConnection::PRESENTER}"
   
-  after_update :update_chataccount
+  
+  after_save :update_chataccount
+  after_save :update_google_account
+  after_save :update_email_aliases
+  
   before_validation :convert_phonenumber
   before_save :check_status, :generate_feedkey
-  before_create :set_encrypted_password
-  before_update :set_encrypted_password
   
-  validates_uniqueness_of :login, :on => :create
-  
-  # Starts with a letter, has letters, numbers, and underscores in the middle
-  # and doesn't end with an underscore
-  validates_format_of :login, :with => /^[a-zA-Z]+[a-zA-Z0-9]+$/, :on => :create
-
-  validates_uniqueness_of :email
-  validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/
-  validates_length_of :email, :maximum=>96
-
-  validates_confirmation_of :password, :message => 'has to be the same in both fields. Please type both passwords again.'
-  validates_length_of :login, :within => 3..40
-  validates_length_of :password, :within => 6..40
-  validates_presence_of :first_name, :last_name, :email, :login, :password
-  validates_presence_of :password_confirmation, :on => :create
   validates_length_of :phonenumber, :is => 10, :allow_blank => true
-  
+  validates_presence_of :password_confirmation, :on => :create
+  validates_presence_of :last_name, :first_name
   
   # scopers
   named_scope :validusers, :conditions => {:retired => false,:vouched => true}
+  named_scope :notsystem, :conditions => ["#{self.table_name}.id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')})"]
   named_scope :unconfirmedemail, :conditions => ["emailconfirmed = ? AND account_status != ?",false,User::STATUS_SIGNUP]
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}
   
-  named_scope :patternsearch, lambda {|searchterm|
-    # remove any leading * to avoid borking mysql
-    # remove any '\' characters because it's WAAAAY too close to the return key
-    # strip '+' characters because it's causing a repitition search error
-    sanitizedsearchterm = searchterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
-    # in the format wordone wordtwo?
-    words = sanitizedsearchterm.split(%r{\s*,\s*|\s+})
-    if(words.length > 1)
-      findvalues = { 
-       :firstword => words[0],
-       :secondword => words[1]
-      }
-      conditions = ["((first_name rlike :firstword AND last_name rlike :secondword) OR (first_name rlike :secondword AND last_name rlike :firstword))",findvalues]
-    elsif(sanitizedsearchterm.to_i != 0)
-      # special case of an id search - needed in admin/colleague searches
-      conditions = ["id = #{sanitizedsearchterm.to_i}"]
-    else
-      findvalues = {
-       :findlogin => sanitizedsearchterm,
-       :findemail => sanitizedsearchterm,
-       :findfirst => sanitizedsearchterm,
-       :findlast => sanitizedsearchterm 
-      }
-      conditions = ["(email rlike :findemail OR login rlike :findlogin OR first_name rlike :findfirst OR last_name rlike :findlast)",findvalues]
-    end
-    {:conditions => conditions}
-  }
-  
   named_scope :filtered, lambda {|options| filterconditions(options)}  
   
-  named_scope :missingtags,  :joins => "LEFT JOIN taggings ON (users.id = taggings.taggable_id AND taggings.taggable_type = 'User')", :conditions => 'taggings.id IS NULL'
-  named_scope :missingnetworks, :joins => "LEFT JOIN social_networks ON users.id = social_networks.user_id",  :conditions => 'social_networks.id IS NULL'
+  named_scope :missingtags,  :joins => "LEFT JOIN taggings ON (accounts.id = taggings.taggable_id AND taggings.taggable_type = 'User')", :conditions => 'taggings.id IS NULL'
+  named_scope :missingnetworks, :joins => "LEFT JOIN social_networks ON accounts.id = social_networks.user_id",  :conditions => 'social_networks.id IS NULL'
     
-  named_scope :date_users, lambda { |date1, date2| { :conditions => (date1 && date2) ?   [ " TRIM(DATE(users.created_at)) between ? and ?", date1, date2] : "true" } }
+  named_scope :date_users, lambda { |date1, date2| { :conditions => (date1 && date2) ?   [ " TRIM(DATE(accounts.created_at)) between ? and ?", date1, date2] : "true" } }
   
   named_scope :escalators_by_category, lambda {|category|
    {:joins => [:roles, :categories], :conditions => ["roles.name = '#{Role::ESCALATION}' AND categories.name = '#{category.name}'"], :order => "last_name,first_name ASC" }
   }
   
-  named_scope :auto_routers, {:include => :roles, :conditions => "roles.name = '#{Role::AUTO_ROUTE}' AND users.aae_responder = true", :order => "last_name,first_name ASC"}
+  named_scope :auto_routers, {:include => :roles, :conditions => "roles.name = '#{Role::AUTO_ROUTE}' AND accounts.aae_responder = true", :order => "last_name,first_name ASC"}
   
   named_scope :experts_by_location_only, :joins => :user_preferences, :conditions => "user_preferences.name = '#{UserPreference::AAE_LOCATION_ONLY}'", :order => "last_name,first_name ASC"
   named_scope :experts_by_county_only, :joins => :user_preferences, :conditions => "user_preferences.name = '#{UserPreference::AAE_COUNTY_ONLY}'", :order => "last_name,first_name ASC"
   
   named_scope :question_wranglers, :joins => :communityconnections, :conditions => "communityconnections.community_id = #{Community::QUESTION_WRANGLERS_COMMUNITY_ID} and (communityconnections.connectiontype = 'member' or communityconnections.connectiontype = 'leader')", :order => "last_name,first_name ASC"
    
-  named_scope :experts_by_county, lambda {|county| {:joins => "join expertise_counties_users as ecu on ecu.user_id = users.id", :conditions => "ecu.expertise_county_id = #{county.id}", :order => "last_name,first_name ASC"}}
-  named_scope :experts_by_location, lambda {|location| {:joins => "join expertise_locations_users as elu on elu.user_id = users.id", :conditions => "elu.expertise_location_id = #{location.id}", :order => "last_name,first_name ASC"}}
+  named_scope :experts_by_county, lambda {|county| {:joins => "join expertise_counties_users as ecu on ecu.user_id = accounts.id", :conditions => "ecu.expertise_county_id = #{county.id}", :order => "last_name,first_name ASC"}}
+  named_scope :experts_by_location, lambda {|location| {:joins => "join expertise_locations_users as elu on elu.user_id = accounts.id", :conditions => "elu.expertise_location_id = #{location.id}", :order => "last_name,first_name ASC"}}
   named_scope :routers_outside_location, lambda {
    location_routers = UserPreference.find(:all, :conditions => "name = '#{UserPreference::AAE_LOCATION_ONLY}' OR name = '#{UserPreference::AAE_COUNTY_ONLY}'").collect{|up| up.user_id}.uniq.join(',')
-   {:conditions => "users.id NOT IN (#{location_routers}) AND users.aae_responder = true", :order => "last_name,first_name ASC"}
+   {:conditions => "accounts.id NOT IN (#{location_routers}) AND accounts.aae_responder = true", :order => "last_name,first_name ASC"}
   
   }
   
@@ -221,60 +177,14 @@ class User < ActiveRecord::Base
     aae_location = ExpertiseLocation.find_by_fipsid(location_fips)
     aae_location_user_ids = aae_location.users.collect{|eu| eu.id}.join(',')
     if aae_location_user_ids.length > 0
-     {:conditions => "users.id IN (#{aae_location_user_ids}) OR users.location_id = #{location.id}", :group => "users.id"}
+     {:conditions => "accounts.id IN (#{aae_location_user_ids}) OR accounts.location_id = #{location.id}", :group => "accounts.id"}
     else
-     {:conditions => " users.location_id = #{location.id}", :group => "users.id"}
+     {:conditions => " accounts.location_id = #{location.id}", :group => "accounts.id"}
     end
   }
   
-  # override timezone writer/reader
-  # returns Eastern by default, use convert=false
-  # when you need a timezone string that mysql can handle
-  def time_zone(convert=true)
-    tzinfo_time_zone_string = read_attribute(:time_zone)
-    if(tzinfo_time_zone_string.blank?)
-      tzinfo_time_zone_string = DEFAULT_TIMEZONE
-    end
+
       
-    if(convert)
-      reverse_mappings = ActiveSupport::TimeZone::MAPPING.invert
-      if(reverse_mappings[tzinfo_time_zone_string])
-        reverse_mappings[tzinfo_time_zone_string]
-      else
-        nil
-      end
-    else
-      tzinfo_time_zone_string
-    end
-  end
-  
-  def time_zone=(time_zone_string)
-    mappings = ActiveSupport::TimeZone::MAPPING
-    if(mappings[time_zone_string])
-      write_attribute(:time_zone, mappings[time_zone_string])
-    else
-      write_attribute(:time_zone, nil)
-    end
-  end
-  
-  # since we return a default string from timezone, this routine
-  # will allow us to check for a null/empty value so we can
-  # prompt people to come set one.
-  def has_time_zone?
-    tzinfo_time_zone_string = read_attribute(:time_zone)
-    return (!tzinfo_time_zone_string.blank?)
-  end
-  
-  # override login write
-  def login=(loginstring)
-   write_attribute(:login, loginstring.mb_chars.downcase)
-  end
-  
-  # override email write
-  def email=(emailstring)
-   write_attribute(:email, emailstring.mb_chars.downcase)
-  end
-  
   def openid_url(claimed=false)
    peoplecontroller = 'people'
    location = AppConfig.configtable['app_location']
@@ -396,25 +306,84 @@ class User < ActiveRecord::Base
    return returnhash
   end
   
+  def is_validuser?
+    if(self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
+      return false
+    else
+      return true
+    end
+  end
+    
+  
   def update_chataccount
-   # remove chat account if retired
+    if(!AppConfig.configtable['reserved_uids'].include?(self.id))
+      # remove chat account if retired
+      if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
+        if(!self.chat_account.nil?)
+          self.chat_account.destroy
+        end
+      else
+        if(self.chat_account.nil?)
+          self.create_chat_account
+        else
+          self.chat_account.save
+        end
+      end
+    end
+    return true
+  end
+  
+  def update_google_account
+   # remove google account if retired
    if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
-    if(!self.chat_account.nil?)
-      self.chat_account.destroy
+    if(!self.google_account.nil?)
+      self.google_account.suspended = true
+      self.google_account.save
     end
    else
-    if(self.chat_account.nil?)
-      self.create_chat_account
+    if(!self.google_account.nil?)
+      self.google_account.suspended = false
+      self.google_account.save
     else
-      self.chat_account.save
+      self.create_google_account
+    end
+   end
+   return true
+  end
+  
+  def update_email_aliases
+   # remove email aliases if retired
+   if (self.retired? or !self.vouched? or self.account_status == User::STATUS_SIGNUP)
+    if(!self.email_aliases.blank?)
+      self.email_aliases.each do |ea|
+        ea.disabled = true
+        ea.save
+      end
+    end
+   else
+    if(!self.email_aliases.blank?)
+      self.email_aliases.each do |ea|
+        if(ea.alias_type == EmailAlias::INDIVIDUAL_FORWARD and (self.account_status == User::STATUS_CONFIRMEMAIL or self.email_changed?))
+          # do nothing
+        else
+          ea.disabled = false
+          ea.save
+        end
+      end
+    else
+      EmailAlias.create(:alias_type => EmailAlias::INDIVIDUAL_FORWARD, :user => self)
     end
    end
   end
-   
-  def fullname 
-   return "#{self.first_name} #{self.last_name}"
-  end
   
+  def email_forward
+    ea = self.email_aliases.find(:first, :conditions => "alias_type = #{EmailAlias::INDIVIDUAL_FORWARD}")
+    if(!ea)
+      ea = self.email_aliases.find(:first, :conditions => "alias_type = #{EmailAlias::INDIVIDUAL_FORWARD_CUSTOM}")
+    end
+    return ea
+  end
+     
   def retire
     self.retired = true
     self.retired_at = Time.now()
@@ -682,7 +651,7 @@ class User < ActiveRecord::Base
   end
   
   def has_whitelisted_email?
-   if (self.email =~ /edu$|gov$|extension\.org$|nasulgc\.org$|fs.fed.us$/i)
+   if (self.email =~ /edu$|gov$|mil$/i)
     return true
    else
     return false
@@ -771,6 +740,12 @@ class User < ActiveRecord::Base
       end
       connection.update_attributes(attributes_to_update)
     end
+    # question wrangler community?
+    if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+      if(connectiontype == 'leader' or connectiontype == 'member')
+        self.update_attribute(:is_question_wrangler, true)
+      end
+    end
     return true
    when 'remove'
     if(!connection.nil?)
@@ -784,12 +759,21 @@ class User < ActiveRecord::Base
         connection.update_attributes({:connectiontype => 'member', :connector => connector, :connectioncode => connectioncode})
        else  # TODO:   deal with interest change/wants to join removal
         connection.destroy
+        # question wrangler community?
+        if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+          self.update_attribute(:is_question_wrangler, false)
+        end
+        community.touch
        end
       else
        if(community.is_institution?)
         Community.find(Community::INSTITUTIONAL_TEAMS_COMMUNITY_ID).remove_user_from_membership(self,User.systemuser)
        end
        connection.destroy
+       # question wrangler community?
+       if(community.id == Community::QUESTION_WRANGLERS_COMMUNITY_ID)
+         self.update_attribute(:is_question_wrangler, false)
+       end
       end
     end
     return true
@@ -807,7 +791,7 @@ class User < ActiveRecord::Base
     end
     
     if(options[:notificationcode] and options[:notificationcode] != Notification::NONE)
-      Notification.create(:notifytype => options[:notificationcode], :user => self, :creator => connector, :community => community)
+      Notification.create(:notifytype => options[:notificationcode], :account => self, :creator => connector, :community => community)
       # FIXME: user events really shouldn't be based on notificationcodes, but such is life
       if(connector != self)
        UserEvent.log_event(:etype => UserEvent::COMMUNITY,:user => connector,:description => Notification.userevent(options[:notificationcode],self,community))
@@ -1265,7 +1249,7 @@ class User < ActiveRecord::Base
     self.updatelistemails
    end
    token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email, :oldemail => old_email_address})
-   Notification.create(:notifytype => Notification::CONFIRM_EMAIL_CHANGE, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})   
+   Notification.create(:notifytype => Notification::CONFIRM_EMAIL_CHANGE, :account => self, :send_on_create => true, :additionaldata => {:token_id => token.id})   
    return true
   end
   
@@ -1282,7 +1266,7 @@ class User < ActiveRecord::Base
    else
     token.extendtoken
    end
-   Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :account => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
    return true 
   end
   
@@ -1298,7 +1282,7 @@ class User < ActiveRecord::Base
     passtoken = UserToken.create(:user=>self,:tokentype=>UserToken::RESETPASS)
    end
 
-   Notification.create(:notifytype => Notification::CONFIRM_PASSWORD, :user => self, :send_on_create => true, :additionaldata => {:token_id => passtoken.id})
+   Notification.create(:notifytype => Notification::CONFIRM_PASSWORD, :account => self, :send_on_create => true, :additionaldata => {:token_id => passtoken.id})
    UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "requested new password confirmation")                            
    return true
   end
@@ -1311,7 +1295,7 @@ class User < ActiveRecord::Base
    
    # create token
    token = UserToken.create(:user=>self,:tokentype=>UserToken::SIGNUP, :tokendata => tokendata)
-   Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :user => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::CONFIRM_SIGNUP, :account => self, :send_on_create => true, :additionaldata => {:token_id => token.id})
    return true
   end
    
@@ -1326,7 +1310,7 @@ class User < ActiveRecord::Base
    token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email})
    
    # send email or create notification
-   Notification.create(:notifytype => Notification::CONFIRM_EMAIL, :user => self, :send_on_create => sendnow, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::CONFIRM_EMAIL, :account => self, :send_on_create => sendnow, :additionaldata => {:token_id => token.id})
    return true
   end
   
@@ -1339,7 +1323,7 @@ class User < ActiveRecord::Base
    
    # create token
    token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email})
-   Notification.create(:notifytype => Notification::RECONFIRM_EMAIL, :user => self, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::RECONFIRM_EMAIL, :account => self, :additionaldata => {:token_id => token.id})
    return true
   end
   
@@ -1351,7 +1335,7 @@ class User < ActiveRecord::Base
    else
     token.extendtoken
    end
-   Notification.create(:notifytype => Notification::RECONFIRM_SIGNUP, :user => self, :additionaldata => {:token_id => token.id})
+   Notification.create(:notifytype => Notification::RECONFIRM_SIGNUP, :account => self, :additionaldata => {:token_id => token.id})
    return true
   end
   
@@ -1395,47 +1379,9 @@ class User < ActiveRecord::Base
   end
   
 
-  
-  
-   def self.systemuser
-    find(1)
-   end
+
    
-   def self.systemuserid
-    1
-   end
-   
-   def self.anyuser
-    0
-   end
-   
-   def self.per_page
-    20
-   end
-   
-  
-   # used for parameter searching
-   def self.find_by_email_or_extensionid_or_id(value,valid_only = true)
-     #TODO - there possibly may be an issue here with the conditional
-    if(value.to_i != 0)
-      # assume id value
-      checkfield = 'id'
-    elsif (value =~ /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[a-zA-Z]{2,})$/ )
-      checkfield = 'email'
-    elsif (value =~ /^[a-zA-Z]+[a-zA-Z0-9]+$/) 
-      # looks like a valid extensionid 
-      checkfield = 'login'
-    else
-      return nil
-    end
-    
-    if(valid_only)
-      return User.validusers.send("find_by_#{checkfield}",value)
-    else
-      return User.send("find_by_#{checkfield}",value)
-    end
-   end
-         
+       
    def self.institutioncount
     # returns an orderedhash {institutionobj => count}
     validusers.count(:group => :institution, :conditions => ['institution_id >=1'])    
@@ -1539,11 +1485,11 @@ class User < ActiveRecord::Base
         
     if(options[:agreementstatus])
       if(options[:agreementstatus] == 'empty')
-       return "users.contributor_agreement IS NULL"
+       return "accounts.contributor_agreement IS NULL"
       elsif(options[:agreementstatus] == 'agree')
-       return "users.contributor_agreement = 1"
+       return "accounts.contributor_agreement = 1"
       elsif(options[:agreementstatus] == 'reject')
-       return "users.contributor_agreement = 0"
+       return "accounts.contributor_agreement = 0"
       else
        return nil
       end
@@ -1583,7 +1529,7 @@ class User < ActiveRecord::Base
      user_cond = get_cat_loc_conditions(category, location, county)
      return 0 if !user_cond
      
-     return User.count(:all, :conditions => user_cond + " and users.retired = false")
+     return User.count(:all, :conditions => user_cond + " and accounts.retired = false")
    end
 
    def self.find_by_cat_loc(category, location, county, page_number = nil)
@@ -1601,7 +1547,7 @@ class User < ActiveRecord::Base
        sql_offset = nil   
      end
        
-     return User.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "users.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
+     return User.notsystem.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "accounts.is_question_wrangler DESC, accounts.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
    end
 
    def get_expertise
@@ -1655,16 +1601,16 @@ class User < ActiveRecord::Base
       route_role_obj = Role.find_by_name(route_role)
       user_ids = users.collect{|u| u.id}.join(',')
 
-      condition_str = "users.id IN (#{user_ids})"
+      condition_str = "accounts.id IN (#{user_ids})"
       if location_fallback
        location_user_ids = UserPreference.find(:all, 
                                   :conditions => "name = '#{UserPreference::AAE_LOCATION_ONLY}' or name = '#{UserPreference::AAE_COUNTY_ONLY}'" +
                                             " and user_id IN (#{user_ids})").collect{|up| up.user_id}.uniq
 
-       condition_str = "users.id IN (#{user_ids}) AND " + 
-                  "users.id NOT IN (#{location_user_ids.join(',')}) AND users.aae_responder = true" if (location_user_ids and location_user_ids.length > 0)
+       condition_str = "accounts.id IN (#{user_ids}) AND " + 
+                  "accounts.id NOT IN (#{location_user_ids.join(',')}) AND accounts.aae_responder = true" if (location_user_ids and location_user_ids.length > 0)
       end
-      return route_role_obj.users.find(:all, :conditions => condition_str + " and users.retired = false") if route_role_obj
+      return route_role_obj.users.find(:all, :conditions => condition_str + " and accounts.retired = false") if route_role_obj
     end
 
     return []
@@ -1692,11 +1638,7 @@ class User < ActiveRecord::Base
     
     return eligible_wranglers
    end
-   
-   def is_question_wrangler?
-    return self.community_ids.include?(Community::QUESTION_WRANGLERS_COMMUNITY_ID)
-   end
-   
+      
    def open_question_count
     self.open_questions.count
    end
@@ -1710,9 +1652,9 @@ class User < ActiveRecord::Base
    end
    
    def self.get_answerers_in_category(catid)
-     find_by_sql(["Select distinct users.id, users.first_name, users.last_name, users.login, roles.name, roles.id as rid   from users join expertise_areas as ea on users.id=ea.user_id " +
-      " left join user_roles on user_roles.user_id=users.id left join roles on user_roles.role_id=roles.id " +
-      " where ea.category_id=? order by users.last_name", catid ])
+     find_by_sql(["Select distinct accounts.id, accounts.first_name, accounts.last_name, accounts.login, roles.name, roles.id as rid   FROM accounts join expertise_areas as ea on accounts.id=ea.user_id " +
+      " left join user_roles on user_roles.user_id=accounts.id left join roles on user_roles.role_id=roles.id " +
+      " where ea.category_id=? order by accounts.last_name", catid ])
     end
    
    def ever_assigned_questions(options={})
@@ -1839,6 +1781,7 @@ class User < ActiveRecord::Base
      # loop through the total list, build a return hash
      # that will return the values per user_id (or user object)
      returnvalues = {}
+     returnvalues[:all] = {:total => 0, :handled => 0, :ratio => 0}
      totals_hash.keys.each do |groupkey|
        total = totals_hash[groupkey]
        handled = (handled_hash[groupkey].nil?? 0 : handled_hash[groupkey])
@@ -1849,6 +1792,11 @@ class User < ActiveRecord::Base
         ratio = 0
        end
        returnvalues[groupkey] = {:total => total, :handled => handled, :ratio => ratio}
+       returnvalues[:all][:total] += total
+       returnvalues[:all][:handled] += handled       
+     end
+     if(returnvalues[:all][:handled] > 0)
+       returnvalues[:all][:ratio] = returnvalues[:all][:handled].to_f / returnvalues[:all][:total].to_f
      end
 
      return returnvalues
@@ -2223,24 +2171,11 @@ class User < ActiveRecord::Base
   def self.submitted_question_resolvers_by_category(category)
    # TODO: does external_app_id != NULL matter?
    # TODO: should this be validusers?
-   self.find(:all, :select => "users.*, count(submitted_questions.id) as resolved_count", :joins => {:resolved_questions => :categories}, \
-   :conditions => ['categories.id = ? and submitted_questions.external_app_id IS NOT NULL',category.id], :group => 'users.id', \
-   :order => 'users.last_name,users.first_name')
+   self.find(:all, :select => "accounts.*, count(submitted_questions.id) as resolved_count", :joins => {:resolved_questions => :categories}, \
+   :conditions => ['categories.id = ? and submitted_questions.external_app_id IS NOT NULL',category.id], :group => 'accounts.id', \
+   :order => 'accounts.last_name,accounts.first_name')
   end
    
-  def self.cleanup_accounts
-   # TODO
-  end
-  
-  def expire_password
-   # note, will not call before_update (good, not encrypting '') 
-   # but it will call after_update to update the chat_account password
-   self.update_attribute('password','')
-  end
-  
-  def self.expire_passwords
-   # TODO: en masse password update using SQL
-  end
   
   protected
   
@@ -2262,16 +2197,7 @@ class User < ActiveRecord::Base
    logger.debug "Account End Status = #{self.account_status}"
     
   end
-  
-  
-  def encrypt_password_string(clear_password_string)
-   Digest::SHA1.hexdigest(clear_password_string)
-  end
-   
-  def set_encrypted_password
-   self.password = self.encrypt_password_string(self.password) if (!password.empty? && self.password_changed?)
-  end
-  
+    
   def convert_phonenumber
    self.phonenumber = self.phonenumber.to_s.gsub(/[^0-9]/, '') if self.phonenumber
   end
@@ -2296,7 +2222,7 @@ class User < ActiveRecord::Base
     end
 
     if location
-      (filtered_users and filtered_users != '') ? loc_cond = "users.id IN (#{filtered_users})" : loc_cond = nil 
+      (filtered_users and filtered_users != '') ? loc_cond = "accounts.id IN (#{filtered_users})" : loc_cond = nil 
       # not only pull experts that marked the location in AaE prefs, but also the experts who marked 
       # the location in their People profile.
       # this was done so that when searching for experts by location, all experts affiliated with a location will 
@@ -2306,12 +2232,12 @@ class User < ActiveRecord::Base
     end
 
     if location and county
-      county_cond = "users.id IN (#{filtered_users})"
+      county_cond = "accounts.id IN (#{filtered_users})"
       filtered_users = county.users.find(:all, :conditions => county_cond).collect{|cu| cu.id}.join(',') 
       return nil if !filtered_users or filtered_users.strip == ''
     end
 
-    (filtered_users and filtered_users != '') ? (return "users.id IN (#{filtered_users})") : (return nil)
+    (filtered_users and filtered_users != '') ? (return "accounts.id IN (#{filtered_users})") : (return nil)
   end
   
 

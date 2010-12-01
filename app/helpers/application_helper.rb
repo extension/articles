@@ -11,8 +11,8 @@ module ApplicationHelper
     'class="selected"' if @selected_tab == tab_name
   end
   
-  def is_public_responder(question_response)
-    if question_response.public_responder 
+  def is_submitter(question_response)
+    if question_response.submitter 
       return true 
     else
       return false
@@ -91,16 +91,16 @@ module ApplicationHelper
     end    
   end
   
-  def time_print(time)
-    time.strftime("%m.%d.%y")
-  end
-  
   def expanded_time_print(time)
     time.strftime("%B %d, %Y")
   end
   
   def humane_date(time)
-     time.strftime("%B %e, %Y, %l:%M %p")
+     if(time.blank?)
+       ''
+     else
+       time.strftime("%B %e, %Y, %l:%M %p %Z")
+     end
   end
   
   
@@ -225,5 +225,29 @@ module ApplicationHelper
     (count.to_i == 0) ? text : link_to(text,params,htmloptions)
   end
   
+  def default_location_id(fallback_location_id = nil)
+    if(@personal[:location].blank?)
+      if(fallback_location_id.blank?)
+        return ''
+      else
+        return fallback_location_id
+      end
+    else
+      return @personal[:location].id
+    end
+  end
+  
+  
+  def default_county_id(fallback_county_id = nil)
+    if(@personal[:county].blank?)
+      if(fallback_county_id.blank?)
+        return ''
+      else
+        return fallback_county_id
+      end
+    else
+      return @personal[:county].id
+    end
+  end
   
 end

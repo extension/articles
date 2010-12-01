@@ -9,6 +9,10 @@ require 'hpricot'
 
 class SubmittedQuestion < ActiveRecord::Base
  extend ConditionExtensions
+ 
+ has_many :cached_tags, :as => :tagcacheable
+ has_shared_tags  # include scopes for shared tags
+ 
 belongs_to :county
 belongs_to :location
 belongs_to :widget
@@ -18,7 +22,7 @@ has_and_belongs_to_many :categories
 belongs_to :contributing_question, :class_name => "SearchQuestion", :foreign_key => "current_contributing_question"
 belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
 belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
-belongs_to :public_user
+belongs_to :submitter, :class_name => "Account", :foreign_key => "submitter_id"
 has_many :responses
 has_many :file_attachments
 
@@ -75,7 +79,7 @@ EXPERT_DISCLAIMER = "This message for informational purposes only. " +
 PUBLIC_RESPONSE_REASSIGNMENT_COMMENT = "This question has been reassigned to you because a new comment has been posted to your response. Please " +
 "reply using the link below or close the question out if no reply is needed. Thank You."
                     
-DEFAULT_SUBMITTER_NAME = "External Submitter"
+DEFAULT_SUBMITTER_NAME = "Anonymous Guest"
 
 DECLINE_ANSWER = "Thank you for your question for eXtension. The topic area in which you've made a request is not yet fully staffed by eXtension experts and therefore we cannot provide you with a timely answer. Instead, if you live in the United States, please consider contacting the Cooperative Extension office closest to you. Simply go to http://www.extension.org, drop in your zip code and choose the local office in your neighborhood. We apologize for this inconvenience but please come back to eXtension to check in as we grow and add experts."
 
@@ -128,12 +132,22 @@ def add_resolution(sq_status, resolver, response, signature = nil, contributing_
   case sq_status
     when STATUS_RESOLVED    
       self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
-      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true, :contributing_question_id => contributing_question, :signature => signature)
+      @response = Response.new(:resolver => resolver, 
+                               :submitted_question => self, 
+                               :response => response,
+                               :sent => true, 
+                               :contributing_question_id => contributing_question, 
+                               :signature => signature)
       @response.save
       SubmittedQuestionEvent.log_resolution(self)    
     when STATUS_NO_ANSWER
       self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
-      @response = Response.new(:resolver => resolver, :submitted_question => self, :response => response, :sent => true, :contributing_question_id => contributing_question, :signature => signature)
+      @response = Response.new(:resolver => resolver, 
+                               :submitted_question => self, 
+                               :response => response, 
+                               :sent => true, 
+                               :contributing_question_id => contributing_question, 
+                               :signature => signature)
       @response.save
       SubmittedQuestionEvent.log_no_answer(self)  
     when STATUS_REJECTED
@@ -181,16 +195,6 @@ def assign_parent_categories
   end
 end
 
-def setup_categories(cat, subcat)
-  if category = Category.find_by_id(cat)
-    self.categories << category
-  end
-  
-  if category and (subcategory = Category.find_by_id_and_parent_id(subcat, category.id))
-    self.categories << subcategory
-  end
-end
-
 def top_level_category
   return self.categories.detect{|c| c.parent_id == nil}
 end
@@ -217,7 +221,7 @@ end
 
 def all_public_responses
   pub_resp = self.asked_question
-  if additional_responses = self.responses.find(:all, :conditions => "public_user_id IS NOT NULL") and additional_responses.length > 0
+  if additional_responses = self.responses.find(:all, :conditions => "submitter_id IS NOT NULL") and additional_responses.length > 0
     pub_resp.concat('  (**response divider**)  ')
     pub_resp.concat(additional_responses.collect{|r| r.response}.join('  (**response divider**)  '))
   end
@@ -226,7 +230,7 @@ def all_public_responses
 end
 
 def all_expert_responses
-  self.responses.find(:all, :conditions => "user_id IS NOT NULL").collect{|r| r.response}.join('  (**response divider**)  ')
+  self.responses.find(:all, :conditions => "resolver_id IS NOT NULL").collect{|r| r.response}.join('  (**response divider**)  ')
 end
 
 
@@ -321,9 +325,9 @@ end
              end         
           when "ResolvedM"
                if !options[:county]
-                   conditions <<  " users.location_id=#{options[:location].id}"  
+                   conditions <<  " accounts.location_id=#{options[:location].id}"  
                else
-                   conditions << " users.county_id=#{county.id}"
+                   conditions << " accounts.county_id=#{county.id}"
                end
                conditions << " resolved_by > 0" 
                if cdstring.length > 0 ; conditions << cdstring; end
@@ -354,8 +358,12 @@ def clean_question_and_answer
   self.asked_question = Hpricot(self.asked_question.sanitize).to_html
 end
 
+def log_comment(commentator,comment)
+  SubmittedQuestionEvent.log_comment(self,self.assignee.blank? ? nil : self.assignee, commentator, comment)
+end
+
 def submitter_fullname
-  submitter_name = self.public_user.fullname if self.public_user
+  submitter_name = self.submitter.fullname if self.submitter
   if !submitter_name or submitter_name.strip == ''
     submitter_name = DEFAULT_SUBMITTER_NAME 
   end
@@ -365,7 +373,7 @@ end
 
 # creates a notification to the submitter that we've received their question
 def notify_submitter
-  Notification.create(:notifytype => Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT, :user => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
+  Notification.create(:notifytype => Notification::AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT, :account => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
 end
 
 def auto_assign_by_preference
@@ -448,13 +456,8 @@ def assign_to(user, assigned_by, comment, public_reopen = false, public_comment 
   end
     
   # update and log
-  update_attributes(:assignee => user)
-  SubmittedQuestionEvent.log_event({:submitted_question => self,
-                                    :recipient => user,
-                                    :initiated_by => assigned_by,
-                                    :event_state => SubmittedQuestionEvent::ASSIGNED_TO,
-                                    :response => comment})
-    
+  update_attributes(:assignee => user)  
+  SubmittedQuestionEvent.log_assignment(self,user,assigned_by,comment)    
   # if this is a reopen reassignment due to the public user commenting on the sq                                  
   if public_comment
     asker_comment = public_comment.response
@@ -463,9 +466,9 @@ def assign_to(user, assigned_by, comment, public_reopen = false, public_comment 
   end
      
   # create notifications
-  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :user => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment, :asker_comment => asker_comment})
+  Notification.create(:notifytype => Notification::AAE_ASSIGNMENT, :account => user, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id, :comment => comment, :asker_comment => asker_comment})
   if(is_reassign and public_reopen == false)
-    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :user => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
+    Notification.create(:notifytype => Notification::AAE_REASSIGNMENT, :account => previously_assigned_to, :creator => assigned_by, :additionaldata => {:submitted_question_id => self.id})
   end
 end
 
@@ -527,6 +530,10 @@ def self.filterconditions(options={})
     conditions << "#{self.table_name}.county_id = #{options[:county].id}"
   end
   
+  if(!options[:submitter_id].nil?)
+    conditions << "#{self.table_name}.submitter_id = #{options[:submitter_id]}"
+  end
+  
   if(!options[:source].nil?)    
     case options[:source]
     when 'pubsite'
@@ -558,6 +565,21 @@ def self.find_uncategorized(*args)
   end
 end
 
+def status_state_to_s
+  case self.status_state
+  when STATUS_SUBMITTED
+    return 'submitted'
+  when STATUS_RESOLVED
+    return 'resolved'
+  when STATUS_NO_ANSWER
+    return 'no answer'
+  when STATUS_REJECTED
+    return 'rejected'
+  else
+    return nil
+  end
+end
+
 # utility function to convert status_state numbers to status strings
 def self.convert_to_string(status_number)
   case status_number
@@ -580,6 +602,13 @@ def self.find_with_category(category, *args)
   end
 end
 
+def tag_myself_with_shared_tags(taglist)
+  self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
+end
+
+def system_sharedtags_displaylist
+  return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED)
+end
 
 
 def SubmittedQuestion.get_extapp_qual( pub, wgt)
@@ -714,7 +743,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
       
      def self.resolved_or_assigned_count(options = {})
        # group by user id's or user objects?
-       group_clause = 'users.location_id'
+       group_clause = 'accounts.location_id'
        # default date interval is 3 months
        dateinterval = options[:dateinterval] || '3 MONTHS'
 #  the point of this is to try to get a count of how many questions have been dealt with by responders from each of several locations, mostly states
@@ -873,7 +902,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
       if(!dateinterval.nil?)
            conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
       end
-      conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " users.location_id=#{options[:location].id} " : " location_id=#{options[:location].id}")
+      conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " accounts.location_id=#{options[:location].id} " : " location_id=#{options[:location].id}")
       results << SubmittedQuestion.count(:all, :joins => ((options[:bywhat]== "member") ? [:resolved_by] : nil ), :conditions => conditions.compact.join(' AND ')) 
       
      statuses.each do |stat|
@@ -892,7 +921,7 @@ def SubmittedQuestion.find_externally_submitted(options = {})
        if(!dateinterval.nil?)
             conditions << SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
        end
-       conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " users.county_id=#{options[:county].id} " : " county_id=#{options[:county].id}")
+       conditions << " resolved_by > 0 and  " + ((options[:bywhat]== "member") ? " accounts.county_id=#{options[:county].id} " : " county_id=#{options[:county].id}")
        results << SubmittedQuestion.count(:all, :joins => ((options[:bywhat]== "member") ? [:resolved_by] : nil ), :conditions => conditions.compact.join(' AND '))      
        statuses.each do |stat|
           conditions.push " status_state=#{stat}"

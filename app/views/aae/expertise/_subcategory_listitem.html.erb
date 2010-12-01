@@ -2,6 +2,12 @@
 <span class="aaesubcategory">
   <%= subcategory.name %>
 </span>
+<%- if subcategory.users.count > 0 -%>
+<span class="aaesubcategoryexperts"><%= link_to(pluralize(subcategory.users.count, 'expert'), {:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => subcategory.name }) %>
+</span>
+<%- else -%>
+<span class="aaesubcategoryexperts noexperts">No experts</span>
+<%- end -%>
 <%- if(admin_mode?)-%>  
 <span id="aaecategoryadmin_<%= subcategory.id %>" class="makepublic">
 	<%= check_box_tag("show_to_public","yes",subcategory.show_to_public?, {:id => "aaecategory_public_control_#{subcategory.id}"}) %> Public?

@@ -24,7 +24,7 @@
     <h2 class="inc_question"><span><%= format_text_for_display(@submitted_question.asked_question) %></span></h2>
     <br class="clear" />
     
-    <p class="inc_descriptive"><strong><%= @submitter_name %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+    <p class="inc_descriptive"><strong><%= link_to(@submitter_name, aae_submitterquestions_url(@submitted_question.submitter.id), :title => "More questions from this person") %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
     
     <p class="inc_descriptive">Category: <strong><span id="category_names_<%= @submitted_question.id %>"><%= @submitted_question.category_names %></span></strong>
         <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
@@ -63,7 +63,7 @@
 <h3>Question Responses</h3>
 
 <% @submitted_question.responses.each do |response| %>
-    <% if is_public_responder(response) %>
+    <% if is_submitter(response) %>
         
         <div class="commentblock public">
           <div class="comment_wrapper">
@@ -78,8 +78,8 @@
             </p>
             
           </div>
-            <p>Comment posted by public user</p>
-            <p><%= humane_date(response.created_at) %> UTC</p>
+            <p>Comment posted by <%= @submitter_name %></p>
+            <p><%= humane_date(response.created_at) %></p>
         </div>
         
     <% else %>
@@ -91,13 +91,13 @@
           </div>
 
             <p>Response by  
-    	    <% if response.user_id == User.systemuserid %>
+    	    <% if response.resolver_id == User.systemuserid %>
     	    System
     	    <% else %>
     	    <%= link_to response.resolver.fullname, aae_profile_url(:id => response.resolver.login), :class => "profile" %>
     	    <% end %>
     	    </p>
-            <p><%= humane_date(response.created_at) %> UTC</p>
+            <p><%= humane_date(response.created_at) %></p>
             <% if contributing_question = response.contributing_question %>
     	        <p><strong>This response used 
     	        <% if contributing_question.entrytype == SearchQuestion::FAQ %>
@@ -115,12 +115,36 @@
 </div>
 </div>
 
+
     <div id="history">
     <h3>History</h3>
+    
+    <div id="aae_comment">
+      <p><%= link_to_function 'Add an internal comment', "Effect.toggle('aae_comment_form','blind', { duration: .4}); setTimeout(set_select_focus, 500);"%> <span class="aae_comment_description">(only seen by AaE experts)</span></p>
+      <div id="aae_comment_form" style='display:none;'>
+        <%- form_tag({:action=> "comment"}, {:id => "aae_comment"}) do -%>
+            <fieldset>
+                <p>
+                    <label for="comment">Post a comment for other AaE experts: </label>
+                    <%= text_area_tag("comment", '', :cols => "40", :rows => "7") %>
+                    <%= hidden_field_tag('squid',@submitted_question.id) %>
+                    <%= submit_tag 'Submit' %> <%= link_to_function 'close', "Effect.toggle('aae_comment_form','blind', { duration: .4}); setTimeout(set_select_focus, 500);"%></p>
+                </p>
+            </fieldset>
+        <%- end -%>
+      </div>
+    </div>
+    
+    
     <ul id="question_history">
     <% submit_history = "Submitted by <strong>#{@submitter_name}</strong> from <strong>#{@submitted_question.external_app_id}</strong>" %>  
-        <li><%= submit_history %> <% if @submitted_question.widget_name %> (<%= @submitted_question.widget_name %>)<% end %>
-        <span><%= humane_date(@submitted_question.created_at) %> UTC</span></li>
+        <li><%= submit_history %> 
+        <% if @submitted_question.widget_name %> 
+        (
+        <%= link_to @submitted_question.widget_name, widgets_view_aae_url(:id => @submitted_question.widget_id) %>
+        )
+        <% end %>
+        <span><%= humane_date(@submitted_question.created_at) %></span></li>
         <% @submitted_question.submitted_question_events.each do |event| %>
             <li><%= stringify_submitted_question_event(event) %></li>
         <% end %>
@@ -129,6 +153,10 @@
 </div>
 
 <div id="user_actions">
+  <% if @comments_exist %>
+    <p class="comment_alert">There are comments in this <a href="#history">question's history</a></p>
+  <% end %>
+  
     <% if @submitted_question.spam %>
         <div class="rejectedaae">
             <h3>This question has been marked as spam.</h3>
@@ -150,7 +178,7 @@
         	    <% end %>
         	</p>
             <p><strong>Rejection comment:</strong> <%= wrap_text(@submitted_question.current_response) %></p>
-            <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %> UTC</p>
+            <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>
         </div>
         <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_NO_ANSWER %>
         <div class="rejectedaae">
@@ -237,3 +265,12 @@
 <% end %>
 
 </div>
+
+<script type="text/javascript">
+$j = jQuery.noConflict();
+$j(document).ready(function() {
+ $j(".fancybox").fancybox({
+		'titleShow'		: false
+	});
+})
+</script>

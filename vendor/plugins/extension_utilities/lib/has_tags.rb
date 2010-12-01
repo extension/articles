@@ -18,7 +18,7 @@ module Extension
       end
       
       # no options currently
-      # NOTE! NOTE! NOTE! this scope is designed to do an AND of all the tags or !tags passed to it
+      # NOTE! NOTE! NOTE! this scope is designed to do an AND of all the tags
       def add_content_tags_scope(opts={})
   
         # Get the list that belong to the given categories.
@@ -30,31 +30,15 @@ module Extension
                                               
           if(!includelist.empty?)
             # get a list of all the id's tagged with the includelist
-            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
+            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
             includetaggings = Tagging.find(:all, :include => :tag, :conditions => includeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
             taggings_we_want = includetaggings
           end
 
-          # if(!excludelist.empty?)
-          #   excludeconditions = "(tags.name IN (#{excludelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
-          #   excludetaggings = Tagging.find(:all, :include => :tag, :conditions => excludeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
-          # end
-          
-          # # if(!includelist.empty? and !excludelist.empty?)
-          # #   taggings_we_want = includetaggings - excludetaggings
-          # elsif(!includelist.empty?)
-          #   taggings_we_want = includetaggings
-          # elsif(!excludelist.empty?)
-          #   taggings_we_want = excludetaggings
-          # else
-          #   taggings_we_want = []
-          # end
-          
-          
-          
           if(!taggings_we_want.empty?)
             {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
           else
+            # intentionally fail the named scope.  Doing something like this means this named_scope should be rethought completely
             {:conditions => "1 = 0"}
           end
         }
@@ -62,14 +46,14 @@ module Extension
       
       def add_content_tag_scope(opts={})
         named_scope :tagged_with_content_tag, lambda {|tagname| 
-          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tag_kind = #{Tagging::CONTENT}"}
+          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tagging_kind = #{Tagging::CONTENT}"}
         }
       end
       
       def add_any_content_tag_scope(opts={})
         named_scope :tagged_with_any_content_tags, lambda {|tagliststring|
           includelist = Tag.castlist_to_array(tagliststring)
-          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
+          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
           {:include => {:taggings => :tag}, :conditions => includeconditions}
         }
       end
@@ -98,7 +82,7 @@ module Extension
 
           if(!includelist.empty?)
             # get a list of all the id's tagged with the includelist
-            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
+            includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
             includetaggings = Tagging.find(:all, :include => :tag, :conditions => includeconditions, :group => "taggable_id", :having => "COUNT(taggable_id) = #{includelist.size}").collect(&:taggable_id)
             taggings_we_want = includetaggings
           end
@@ -106,6 +90,7 @@ module Extension
           if(!taggings_we_want.empty?)
             {:conditions => "id IN (#{taggings_we_want.join(',')})"}  
           else
+            # intentionally fail the named scope.  Doing something like this means this named_scope should be rethought completely
             {:conditions => "1 = 0"}
           end
         }
@@ -113,14 +98,14 @@ module Extension
       
       def add_shared_tag_scope(opts={})
         named_scope :tagged_with_shared_tag, lambda {|tagname| 
-          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tag_kind = #{Tagging::SHARED}"}
+          {:include => {:taggings => :tag}, :conditions => "tags.name = '#{Tag.normalizename(tagname)}' and taggings.tagging_kind = #{Tagging::SHARED}"}
         }
       end
       
       def add_any_shared_tag_scope(opts={})
         named_scope :tagged_with_any_shared_tags, lambda {|tagliststring|
           includelist = Tag.castlist_to_array(tagliststring)
-          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tag_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
+          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::SHARED}) AND (taggings.taggable_type = '#{self.name}')"
           {:include => {:taggings => :tag}, :conditions => includeconditions}
         }
       end

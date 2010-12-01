@@ -44,7 +44,7 @@ class People::ColleaguesController < ApplicationController
               UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "vouched by #{@currentuser.login}",:additionaldata => params[:explanation])
               log_user_activity(:user => @user,:activitycode => Activity::VOUCHED_FOR, :appname => 'local',:colleague => @showuser, :additionaldata => {:explanation => params[:explanation]})              
               log_user_activity(:user => @showuser,:activitycode => Activity::VOUCHED_BY, :appname => 'local',:additionaldata => {:explanation => params[:explanation]})              
-              Notification.create(:notifytype => Notification::WELCOME, :user => @showuser, :send_on_create => true)
+              Notification.create(:notifytype => Notification::WELCOME, :account => @showuser, :send_on_create => true)
               flash[:success] = "Vouched for #{@showuser.fullname}"
               return redirect_to(:action => 'showuser', :id => @showuser.id)     
             else
@@ -100,14 +100,14 @@ class People::ColleaguesController < ApplicationController
     end
     
     if(params[:id] == 'all')
-      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'users.last_name', :conditions => ["users.vouched = 1 and users.retired = 0"], :page => params[:page])
+      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'accounts.last_name', :conditions => ["accounts.vouched = 1 and accounts.retired = 0"], :page => params[:page])
       @page_title = "Social Network Identities - All Networks"
     elsif(params[:id] == 'other')
       known_list = SocialNetwork::NETWORKS.keys.sort.map{|network| "'#{network}'"}.join(",")
-      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'users.last_name', :conditions => ["users.vouched = 1 and users.retired = 0 and social_networks.network NOT IN (#{known_list})"], :page => params[:page])
+      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'accounts.last_name', :conditions => ["accounts.vouched = 1 and accounts.retired = 0 and social_networks.network NOT IN (#{known_list})"], :page => params[:page])
       @page_title = "Social Network Identities - Other Networks"     
     else
-      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'users.last_name', :conditions => ["users.vouched = 1 and users.retired = 0 and social_networks.network = '#{params[:id]}'"], :page => params[:page])
+      @socialnetworklist =  SocialNetwork.paginate(:all, :include => [:user], :order => 'accounts.last_name', :conditions => ["accounts.vouched = 1 and accounts.retired = 0 and social_networks.network = '#{params[:id]}'"], :page => params[:page])
       @page_title = "Social Network Identities - #{SocialNetwork.get_name(params[:id])}"
     end
     
@@ -116,7 +116,7 @@ class People::ColleaguesController < ApplicationController
   end
 
   def tagcloud
-    @tagcloud = User.validusers.tag_frequency(:order => 'name')
+    @tagcloud = User.notsystem.validusers.tag_frequency(:order => 'name')
     @all_peer_popular_tags = User.top_tags(25)
   end
   
@@ -158,11 +158,11 @@ class People::ColleaguesController < ApplicationController
     @backto = {:label => "back to Interests List", :url => url_for(:controller => '/people/colleagues', :action => :tagcloud)}
 
     if(!params[:downloadreport].nil? and params[:downloadreport] == 'csv')
-      reportusers = User.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name'})
+      reportusers = User.notsystem.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name'})
       csvfilename =  @page_title.tr(' ','_').gsub('\W','').downcase
       return csvuserlist(reportusers,csvfilename, @page_title)
     else
-      @userlist =  User.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name', :paginate => true, :page => params[:page]})
+      @userlist =  User.notsystem.validusers.tagged_with_any(Tag.castlist_to_array(taglist),{:matchall => (match == 'matchall'),:order=> 'last_name,first_name', :paginate => true, :page => params[:page]})
       if((@userlist.length) > 0)
         @csvreporturl = url_for(:controller => '/people/colleagues', :action => :tags, :taglist => taglist, :match => match, :downloadreport => 'csv')
       end
@@ -229,7 +229,7 @@ class People::ColleaguesController < ApplicationController
   def finduser
     if (!params[:searchterm].nil? and !params[:searchterm].empty?)
     
-      @userlist = User.validusers.patternsearch(params[:searchterm]).paginate({:order => 'last_name,first_name', :page => params[:page]})
+      @userlist = User.notsystem.validusers.patternsearch(params[:searchterm]).paginate({:order => 'last_name,first_name', :page => params[:page]})
       
       if @userlist.nil? || @userlist.length == 0
         flash.now[:warning] = "<p>No colleague was found that matches your search term.</p> <p>Your colleague may not yet have an eXtensionID. <a href='#{url_for(:controller => '/people/colleagues', :action => :invite)}'>Invite your colleague to get an eXtensionID</a></p>"
@@ -395,7 +395,7 @@ class People::ColleaguesController < ApplicationController
       @community.rescind_user_invitation(@showuser,@currentuser)
     when 'invitereminder'
       Activity.log_activity(:user => @showuser,:creator => @currentuser, :community => @community, :activitycode => Activity::COMMUNITY_INVITEREMINDER , :appname => 'local')
-      Notification.create(:notifytype => Notification::COMMUNITY_LEADER_INVITEREMINDER, :user => @showuser, :creator => @currentuser, :community => @community)
+      Notification.create(:notifytype => Notification::COMMUNITY_LEADER_INVITEREMINDER, :account => @showuser, :creator => @currentuser, :community => @community)
     else
       # do nothing
     end
@@ -453,6 +453,29 @@ class People::ColleaguesController < ApplicationController
       end
     end
     return redirect_to :action => :traininginvitations
+  end
+  
+  def lookup
+    @page_title = "Lookup eXtensionID status for Multiple Emails"
+    if(request.post?)
+      @showresults = true
+      @successes = []
+      @failures = []
+      email_address_list = params[:email_list].split(%r{,\s*|\s+|\s*\n\s*|\s*\r\n\s*})    
+      email_address_list.each do |email|
+        # validate
+        if(EmailAddress.is_valid_address?(email))
+          u = User.find_by_email(email)
+          if(!u.nil?)
+            @successes << u
+          else
+            @failures << {:email => email, :message => "Does not have an eXtensionID with that email address"}
+          end
+        else
+          @failures << {:email => email, :message => "Does not appear to be a valid email address"}
+        end
+      end
+    end
   end
   
   #----------------------------------

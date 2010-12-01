@@ -4,15 +4,26 @@
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
-
+require 'uri'
 class Widget < ActiveRecord::Base
+  include ActionController::UrlWriter
+  default_url_options[:host] = AppConfig.get_url_host
+  default_url_options[:protocol] = AppConfig.get_url_protocol
+  if(default_port = AppConfig.get_url_port)
+    default_url_options[:port] = default_port
+  end
 
   has_many :user_roles
-  has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND users.retired = false AND users.aae_responder = true"
-  has_many :non_active_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND users.retired = false AND users.aae_responder = false"
+  has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = true"
+  has_many :non_active_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = false"
   has_many :submitted_questions
   has_many :widget_events
   belongs_to :user
+  # has_many :tags from the tags model!
+  has_many :cached_tags, :as => :tagcacheable
+  belongs_to :location
+  belongs_to :county
+  
   
   validates_presence_of :name  
   validates_uniqueness_of :name, :case_sensitive => false
@@ -21,13 +32,32 @@ class Widget < ActiveRecord::Base
   named_scope :active, :conditions => "active = true", :order => "name"
   named_scope :byname, lambda {|widget_name| {:conditions => "name like '#{widget_name}%'", :order => "name"} }
   
+
+  # hardcoded for layout difference
+  BONNIE_PLANTS_WIDGET = '4856a994f92b2ebba3599de887842743109292ce'
+  
+  def is_bonnie_plants_widget?
+    (self.fingerprint == BONNIE_PLANTS_WIDGET)
+  end
+  
+  def widgeturl
+    widget_tracking_url(:widget => self.fingerprint, :only_path => false)
+  end
+  
   def set_fingerprint(user)
     create_time = Time.now.to_s
     self.fingerprint = Digest::SHA1.hexdigest(create_time + user.id.to_s + self.name)
   end
   
   def get_iframe_code
-    return '<iframe style="border:0" width="100%" src="' +  self.widgeturl + '" height="300px"></iframe>'
+    if(self.is_bonnie_plants_widget?)
+      height = '610px' 
+    elsif(self.show_location?)
+      height = '460px'
+    else
+      height = '300px'
+    end
+    return "<iframe style='border:0' width='100%' src='#{self.widgeturl}' height='#{height}'></iframe>"
   end
   
   def self.get_all_with_assignee_count(options = {})
@@ -46,4 +76,27 @@ class Widget < ActiveRecord::Base
               )
   end
   
+  def tag_myself_with_shared_tags(taglist)
+    self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
+  end
+  
+  def system_sharedtags_displaylist
+    return self.tag_displaylist_by_ownerid_and_kind(User.systemuserid,Tagging::SHARED)
+  end
+  
+  def self.find_by_fingerprint_or_id_or_name(fingerprint_or_id_or_name)
+    if(fingerprint_or_id_or_name.size == 40)
+      self.find_by_fingerprint(fingerprint_or_id_or_name)
+    elsif(fingerprint_or_id_or_name =~ /\d+/)
+      self.find_by_id(fingerprint_or_id_or_name)
+    else
+      self.find_by_name(URI.unescape(fingerprint_or_id_or_name))
+    end
+  end
+  
+  def can_edit_attributes?(user)
+    return (user.is_admin? or self.user == user or self.assignees.include?(user))
+  end
+    
+      
 end

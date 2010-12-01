@@ -13,6 +13,16 @@ module LoginSystem
       return false
     elsif checkuser.retired?
       return false
+    elsif AppConfig.configtable['reserved_uids'].include?(checkuser.id)
+      return false
+    elsif(!checkuser.last_login_at.blank?)
+      if(checkuser.last_login_at < Time.now.utc - 4.days)
+        return false
+      else
+        return true
+      end
+    elsif(checkuser.created_at < Time.now.utc - 1.days)
+      return false
     else
       return true
     end
@@ -60,12 +70,26 @@ module LoginSystem
     end
   end
   
+  # this is a bit of a hack in order to get global
+  # timezones in situations where login_required/login_optional
+  # hasn't yet been executed
+  def set_currentuser_time_zone
+    if session[:userid]      
+      checkuser = User.find_by_id(session[:userid])
+      if (authorize?(checkuser))
+        Time.zone = checkuser.time_zone
+        return true
+      end
+    end
+  end
+  
   def login_required    
 
     if session[:userid]      
       checkuser = User.find_by_id(session[:userid])
       if (authorize?(checkuser))
         @currentuser = checkuser
+        session[:account_id] = @currentuser.id  
         return true
       end
     end
@@ -84,6 +108,7 @@ module LoginSystem
       checkuser = User.find_by_id(session[:userid])
       if (authorize?(checkuser))
         @currentuser = checkuser
+        session[:account_id] = @currentuser.id  
         return true
       end
     end

@@ -32,7 +32,7 @@ class Category < ActiveRecord::Base
   # get intersection of users for aae routing
   def get_user_intersection(users_to_intersect)
     if users_to_intersect and users_to_intersect.length > 0
-      User.narrow_by_routers(self.users.find(:all, :conditions => "users.id IN (#{users_to_intersect.collect{|u| u.id}.join(',')})"), Role::AUTO_ROUTE)
+      User.narrow_by_routers(self.users.find(:all, :conditions => "accounts.id IN (#{users_to_intersect.collect{|u| u.id}.join(',')})"), Role::AUTO_ROUTE)
     else
       return []
     end
@@ -54,7 +54,7 @@ class Category < ActiveRecord::Base
    
   def full_name
     if parent
-      return parent.name + "/" + name
+      return parent.name + ":" + name
     else
       return name
     end

@@ -13,6 +13,7 @@
    <%= will_paginate @faqs %>
    </div>
 
+   <p id="csv"><%= link_to('Download a list of these faqs (csv)',:action => 'faqlist', :download => 'csv') %> </p>
 
    <table cellspacing="0" border="1">
        <tr>

@@ -94,6 +94,12 @@ class Aae::SearchController < ApplicationController
       @counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
     end
     
+    if(params[:show_label] and params[:show_label] = 'yes')
+      @show_label = true
+    else
+      @show_label = false
+    end
+    
     render :layout => false
   end
   
@@ -120,7 +126,7 @@ class Aae::SearchController < ApplicationController
       return
     end
     
-    @users = User.validusers.patternsearch(params[:login]).all(:limit => User.per_page, :include => [:expertise_locations, :open_questions, :categories])
+    @users = User.notsystem.validusers.patternsearch(params[:login]).all(:limit => User.per_page, :include => [:expertise_locations, :open_questions, :categories])
     # gets aae question handling counts for all experts returned
     @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id),:submitted_question_filter => {:notrejected => true}})  
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false
@@ -154,7 +160,7 @@ class Aae::SearchController < ApplicationController
   def get_answering_users(selected_users)
     user_ids = selected_users.map{|u| u.id}.join(',')
     answering_role = Role.find_by_name(Role::AUTO_ROUTE)
-    user_intersection = answering_role.users.find(:all, :select => "users.*", :conditions => "users.id IN (#{user_ids})")
+    user_intersection = answering_role.users.find(:all, :select => "accounts.*", :conditions => "accounts.id IN (#{user_ids})")
   end
   
   def setup_aae_search_params

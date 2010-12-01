@@ -1,0 +1,22 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
+Hello <%= @notification.account.first_name %>,
+
+Thank you for your email to our Ask an Expert system.  We are not able to process email replies at this time.  
+<%- if @urls['question'] -%>
+If you'd like to add a response or additional images to your question, please visit the question's detail page at:
+
+<%= @urls['question'] %>
+<%- end -%>
+
+Thank you for your help, and we encourage you to continue to participate in answering incoming questions at: 
+
+<%= @urls['incoming']%>
+ 
+*** PLEASE DO NOT REPLY TO THIS MESSAGE ***
+If you have questions please contact us at: 
+ 
+<%= @urls['contactus']%>
+
+--
+eXtension Staff
+http://about.extension.org

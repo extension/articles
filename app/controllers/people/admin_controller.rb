@@ -10,6 +10,7 @@ class People::AdminController < ApplicationController
   before_filter :admin_required
   before_filter :sudo_required, :only => [:adminevents,:adminusers, :makeadmin, :show_config, :reload_config]
   before_filter :check_purgatory
+   
   
   
   # -----------------------------------
@@ -65,6 +66,10 @@ class People::AdminController < ApplicationController
   # -----------------------------------
   # End - Sudo Actions
   # -----------------------------------
+  
+  def alias_list
+    @alias_list = EmailAlias.all(:conditions => "alias_type IN (#{EmailAlias::INDIVIDUAL_ALIAS},#{EmailAlias::SYSTEM_ALIAS},#{EmailAlias::SYSTEM_FORWARD})", :order => 'mail_alias ASC')
+  end
   
   def retire
     if not params[:id].nil?
@@ -160,8 +165,8 @@ class People::AdminController < ApplicationController
   end
   
   def index
-    @recent_users = User.validusers.count(:conditions => "created_at > date_sub(curdate(), interval #{AppConfig.configtable['recent_account_delta']} day)")
-    @recent_logins = User.validusers.count(:conditions => "last_login_at > date_sub(curdate(), interval #{AppConfig.configtable['recent_login_delta']} day)")
+    @recent_users = User.notsystem.validusers.count(:conditions => "created_at > date_sub(curdate(), interval #{AppConfig.configtable['recent_account_delta']} day)")
+    @recent_logins = User.notsystem.validusers.count(:conditions => "last_login_at > date_sub(curdate(), interval #{AppConfig.configtable['recent_login_delta']} day)")
 
     @review_users = User.count(:conditions => ["vouched = 0 AND retired = 0 AND emailconfirmed = 1"])
     @retired_accounts = User.count(:conditions => ["retired = 1"])
@@ -169,13 +174,13 @@ class People::AdminController < ApplicationController
     @confirmaccount_users = User.count(:conditions => ["account_status = #{User::STATUS_SIGNUP} and retired = 0"])
     @invalidemail_users = User.count(:conditions => ["(account_status = #{User::STATUS_INVALIDEMAIL} or account_status = #{User::STATUS_INVALIDEMAIL_FROM_SIGNUP}) AND retired = 0"])
     
-    # @agreement_accepts = User.validusers.count(:conditions => "contributor_agreement = 1")
-    # @agreement_noaccepts = User.validusers.count(:conditions => "contributor_agreement = 0")
-    # @agreement_pending = User.validusers.count(:conditions => "contributor_agreement is NULL")
+    # @agreement_accepts = User.notsystem.validusers.count(:conditions => "contributor_agreement = 1")
+    # @agreement_noaccepts = User.notsystem.validusers.count(:conditions => "contributor_agreement = 0")
+    # @agreement_pending = User.notsystem.validusers.count(:conditions => "contributor_agreement is NULL")
     
     @missing = Hash.new
-    @missing['location'] = User.validusers.count(:conditions => "location_id = 0 or location_id is NULL")
-    @missing['position'] = User.validusers.count(:conditions => "position_id = 0 or position_id is NULL")
+    @missing['location'] = User.notsystem.validusers.count(:conditions => "location_id = 0 or location_id is NULL")
+    @missing['position'] = User.notsystem.validusers.count(:conditions => "position_id = 0 or position_id is NULL")
     
   end
   
@@ -427,12 +432,12 @@ class People::AdminController < ApplicationController
     
   
     if(!params[:downloadreport].nil? and params[:downloadreport] == 'csv')
-      reportusers = onlyvalid ? User.validusers.find(:all, findopts) : User.find(:all, findopts);
+      reportusers = onlyvalid ? User.notsystem.validusers.find(:all, findopts) : User.find(:all, findopts);
       csvfilename =  @page_title.tr(' ','_').gsub('\W','').downcase
       return csvuserlist(reportusers,csvfilename, @page_title)
     else
       findopts[:page] = params[:page]
-      @userlist =  onlyvalid ? User.validusers.paginate(:all, findopts) : User.paginate(:all, findopts);
+      @userlist =  onlyvalid ? User.notsystem.validusers.paginate(:all, findopts) : User.paginate(:all, findopts);
           
       if((@userlist.length) > 0)
         if(!otherparams.nil?)

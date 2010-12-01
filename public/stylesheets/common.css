@@ -93,6 +93,10 @@ table {
 	margin: 0 0 1.5em;
 }
 
+table.halfwidth { 
+	width: 50%;
+}
+
 th {
 	margin: 0;
 	padding: .1em .5em;
@@ -176,6 +180,8 @@ span.button a {
 #admintoggle strong {color:#680706;}
 #admintoggle strong.on {background:#e2babb;padding:.1em .3em;color:#000;}
 #admintoggle strong.off {background:#ddd;padding:.1em .3em;color:#000;}
+
+#csv {float:right;background: url(/images/common/page_excel.png) no-repeat left 50%;padding-left:20px;clear:right;}
 
 
 /* Styles from Get Satisfaction */

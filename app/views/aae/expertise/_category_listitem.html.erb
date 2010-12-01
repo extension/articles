@@ -15,15 +15,15 @@
       <%- if subcategories.length > 0 -%>
          <%= link_to_function("#{subcategories.length} subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
       <%- elsif(admin_mode?) -%>
-        <%= link_to_function("no subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %>
+        <span class="nocats"><%= link_to_function("no subcategories", "Effect.toggle('subcategory_div_#{category.id}','blind', { duration: .4});") %></span>
       <%- end -%>
    </span>
       
      
       <%- if expertcount > 0 -%>
-        <span class="experts"><%= link_to("#{category.users.count} experts", {:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => category.name }) %></span>
+        <span class="experts"><%= link_to(pluralize(expertcount, 'expert'), {:controller => 'aae/expertise', :action => 'experts_by_category', :legacycategory => category.name }) %></span>
       <%- else -%>
-        <span class="experts"><strong>no experts!</strong></span>
+        <span class="experts noexperts"><strong>No experts!</strong></span>
       <%- end -%>
 
       

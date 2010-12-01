@@ -77,7 +77,7 @@ class Aae::ExpertiseController < ApplicationController
         flash[:failure] = "Invalid Location Entered"
         redirect_to incoming_url
       else
-        @users = @location.users.find(:all, :order => "users.first_name")
+        @users = @location.users.find(:all, :order => "accounts.first_name")
       end
     else
       flash[:failure] = "Invalid Location Entered"

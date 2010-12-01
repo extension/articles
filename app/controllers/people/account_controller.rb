@@ -8,7 +8,7 @@ require 'uri'
 
 class People::AccountController < ApplicationController
   include AuthCheck
-  ssl_required :login,:set_password,:change_password unless Rails.env.development?
+  ssl_required :login,:set_password,:change_password unless (Rails.env.development? or AppConfig.configtable['app_location'] == 'localdev')
   layout 'people'
   before_filter :login_required, :except => [:login, :signup, :new_password, :set_password, :authenticate]
   before_filter :login_optional, :only => [:login]
@@ -86,10 +86,10 @@ class People::AccountController < ApplicationController
           allemailtokens = @currentuser.user_tokens.find(:all,:conditions => ["user_tokens.tokentype = ?",UserToken::EMAIL])
           @currentuser.user_tokens.delete(allemailtokens) if allemailtokens                  
           if (@currentuser.vouched?)
-            Notification.create(:notifytype => Notification::WELCOME, :user => @currentuser, :send_on_create => true)
+            Notification.create(:notifytype => Notification::WELCOME, :account => @currentuser, :send_on_create => true)
             return redirect_to(people_welcome_url)
           else
-            Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :user => @currentuser, :send_on_create => true)        
+            Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :account => @currentuser, :send_on_create => true)        
             return redirect_to(:controller => 'account', :action => 'review')
           end  
         end
@@ -125,7 +125,7 @@ class People::AccountController < ApplicationController
   def login
     @openidmeta = openidmeta(@openiduser)
     if request.post?
-      result = authuser(params[:user_login],params[:user_password])
+      result = authuser(params[:email],params[:password])
       if(AUTH_SUCCESS != result[:code] and result[:localfail])
         if(result[:localfail])
           flash.now[:failure]  = explainauthresult(result[:code])
@@ -138,6 +138,7 @@ class People::AccountController < ApplicationController
         @currentuser = result[:user]
         @currentuser.update_attribute(:last_login_at,Time.now.utc)
         session[:userid] = @currentuser.id
+        session[:account_id] = @currentuser.id
         flash.now[:success] = "Login successful."
         UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login')        
         log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_PASSWORD, :appname => 'local')
@@ -149,11 +150,7 @@ class People::AccountController < ApplicationController
       end
     end
   end
-  
-  def authenticate
-    render(:text => 'Invalid Request - Authenticate Method No Longer Used', :status => 401, :layout => false)
-  end
-      
+        
   def signup
     return redirect_to(:controller => '/people/signup', :action => :new, :invite => params[:invite], :status => 301)
   end
@@ -204,6 +201,8 @@ class People::AccountController < ApplicationController
       
       if nil == @requestuser
          flash.now[:warning] = 'User not found.'
+      elsif(AppConfig.configtable['reserved_uids'].include?(@requestuser.id))
+         flash.now[:warning] = 'Unable to reset the password for this user.'
       else
          @requestuser.send_resetpass_confirmation
          @sentmail = true

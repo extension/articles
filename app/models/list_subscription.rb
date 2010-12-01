@@ -6,14 +6,12 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ListSubscription < ActiveRecord::Base
-  belongs_to :list, :touch => true
+  belongs_to :list
   belongs_to :user
-  
-  after_update :touchlist
-  
-  named_scope :subscribers,  :include => [:user],  :conditions => "list_subscriptions.ineligible = 0 and list_subscriptions.optout = 0 and list_subscriptions.user_id > 0", :order => "users.last_name"
-  named_scope :optout, :include => [:user], :conditions => "list_subscriptions.ineligible = 0 and list_subscriptions.optout = 1 and list_subscriptions.user_id > 0", :order => "users.last_name"  
-  named_scope :ineligible, :include => [:user], :conditions => "(list_subscriptions.ineligible = 1 or list_subscriptions.emailconfirmed = 0) and list_subscriptions.user_id > 0", :order => "users.last_name"  
+    
+  named_scope :subscribers,  :include => [:user],  :conditions => "list_subscriptions.ineligible = 0 and list_subscriptions.optout = 0 and list_subscriptions.user_id > 0", :order => "accounts.last_name"
+  named_scope :optout, :include => [:user], :conditions => "list_subscriptions.ineligible = 0 and list_subscriptions.optout = 1 and list_subscriptions.user_id > 0", :order => "accounts.last_name"  
+  named_scope :ineligible, :include => [:user], :conditions => "(list_subscriptions.ineligible = 1 or list_subscriptions.emailconfirmed = 0) and list_subscriptions.user_id > 0", :order => "accounts.last_name"  
   named_scope :noidsubscribers, :conditions => "list_subscriptions.ineligible = 0 and list_subscriptions.optout = 0 and list_subscriptions.user_id = 0", :order => "list_subscriptions.email"
   
   named_scope :filteredsubscribers, lambda {|userlist,include|
@@ -31,9 +29,6 @@ class ListSubscription < ActiveRecord::Base
     return (self.ineligible or self.optout or !self.emailconfirmed)
   end
   
-  def touchlist
-    self.list.touch
-  end
   
   # -----------------------------------
   # Class-level methods

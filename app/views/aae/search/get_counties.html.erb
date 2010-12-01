@@ -1,3 +1,5 @@
-<% if @counties %>
-  <%= select_tag "county_id", options_for_select([['All Counties', 'all']].concat(@counties.map{|c| [c.name, c.id]})) %>
-<% end %>
+<%- if @counties -%>
+  <%= '<label>County' if @show_label -%>
+    <%= select_tag "county_id", options_for_select([['', '']].concat(@counties.map{|c| [c.name, c.id]})) %>
+  <%= '</label>' if @show_label -%>
+<%- end -%>

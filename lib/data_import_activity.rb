@@ -72,14 +72,6 @@ module DataImportActivity
         else
           return false
         end
-      when 'justcode'
-        case datatype
-        when 'changeset'
-          timestampsql = self.justcode_changeset_timestamp_sql(activityapplication.activitysource)
-          retrievesql = self.justcode_changeset_sql(activityapplication,last_activitysource_at,refreshall)
-        else
-          return false
-        end
       else
         return false
       end
@@ -155,11 +147,6 @@ module DataImportActivity
     return timestampsql
   end
 
-  def justcode_changeset_timestamp_sql(activitydatabase)
-    timestampsql = "SELECT MAX(#{activitydatabase}.changesets.committed_on) as last_updated_time FROM #{activitydatabase}.changesets"
-    return timestampsql
-  end  
-
   def copwiki_publish_timestamp_sql(activitydatabase)
     timestampsql = "SELECT MAX(#{activitydatabase}.peerpublisher_events.created) as last_updated_time FROM #{activitydatabase}.peerpublisher_events"
     return timestampsql
@@ -218,31 +205,6 @@ module DataImportActivity
 
     return sql
   end
-
-
-  def justcode_changeset_sql(activityapplication,last_activitysource_at=nil,refreshall=false)
-    mydatabase = self.connection.instance_variable_get("@config")[:database]
-    activitydatabase = activityapplication.activitysource
-
-    # build sql
-    sql = "INSERT IGNORE INTO #{mydatabase}.#{self.table_name} (created_at,user_id,activitytype,activitycode,activity_application_id,ipaddr,created_by,activity_object_id,privacy)"
-    sql +=  " SELECT #{activitydatabase}.changesets.committed_on, #{mydatabase}.users.id, #{Activity::INFORMATION}, #{Activity::INFORMATION_CHANGESET},"
-    sql +=  "#{activityapplication.id},'unknown',#{mydatabase}.users.id,#{mydatabase}.activity_objects.id,#{Activity::PROTECTED}"
-    sql +=  " FROM #{activitydatabase}.changesets, #{activitydatabase}.repositories, #{mydatabase}.users, #{mydatabase}.activity_objects"
-    sql +=  " WHERE #{activitydatabase}.changesets.committer = #{mydatabase}.users.login" 
-    sql +=  " AND #{activitydatabase}.changesets.repository_id = #{activitydatabase}.repositories.id"
-    sql +=  " AND #{activitydatabase}.changesets.revision = #{mydatabase}.activity_objects.foreignid"  
-    sql +=  " AND #{mydatabase}.activity_objects.entrytype = #{ActivityObject::JUSTCODE_CHANGESET}"  
-    sql +=  " AND #{activitydatabase}.repositories.project_id = #{mydatabase}.activity_objects.namespace"  
-    if(!refreshall and !last_activitysource_at.nil?)
-      compare_time_string = last_activitysource_at.strftime("%Y-%m-%d %H:%M:%S")
-      sql +=  " AND #{activitydatabase}.changesets.committed_on >= '#{compare_time_string}'"
-    else
-      sql +=  " AND #{activitydatabase}.changesets.committed_on >= '#{Activity::EARLIEST_TRACKED_ACTIVITY_DATE}'"
-    end
-  
-    return sql
-  end
   
   def event_edit_sql(activityapplication,last_activitysource_at=nil,refreshall=false)
     mydatabase = self.connection.instance_variable_get("@config")[:database]
@@ -250,11 +212,10 @@ module DataImportActivity
 
     # build sql
     sql = "INSERT IGNORE INTO #{mydatabase}.#{self.table_name} (created_at,user_id,activitytype,activitycode,activity_application_id,ipaddr,created_by,activity_object_id,privacy)"
-    sql +=  " SELECT #{activitydatabase}.event_updates.created_at, #{mydatabase}.users.id, #{Activity::INFORMATION}, #{Activity::INFORMATION_EDIT},"
-    sql +=  "#{activityapplication.id},'unknown',#{mydatabase}.users.id,#{mydatabase}.activity_objects.id,#{Activity::PROTECTED}"
+    sql +=  " SELECT #{activitydatabase}.event_updates.created_at, #{activitydatabase}.users.id, #{Activity::INFORMATION}, #{Activity::INFORMATION_EDIT},"
+    sql +=  "#{activityapplication.id},'unknown',#{activitydatabase}.users.id,#{mydatabase}.activity_objects.id,#{Activity::PROTECTED}"
     sql +=  " FROM #{activitydatabase}.event_updates, #{activitydatabase}.users, #{mydatabase}.users, #{mydatabase}.activity_objects"
     sql +=  " WHERE #{activitydatabase}.event_updates.user_id = #{activitydatabase}.users.id" 
-    sql +=  " AND LOWER(#{activitydatabase}.users.extension_id) = LOWER(#{mydatabase}.users.login)"
     sql +=  " AND #{activitydatabase}.event_updates.event_id = #{mydatabase}.activity_objects.foreignid"  
     sql +=  " AND #{mydatabase}.activity_objects.entrytype = #{ActivityObject::EVENT}"  
     sql +=  " AND #{mydatabase}.activity_objects.namespace = #{ActivityObject::NS_DEFAULT}"  

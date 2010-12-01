@@ -45,7 +45,7 @@ class NotificationMailer < ActionMailer::Base
 
   def community_user(notification)
     community = notification.community
-    bycolleague = notification.user
+    bycolleague = notification.account
 
     # base parameters for the email
     self.base_email(notification.notifytype_to_s)
@@ -101,7 +101,7 @@ class NotificationMailer < ActionMailer::Base
     # setting variables for backwards compatibility
     community = notification.community
     bycolleague = notification.creator
-    oncolleague = notification.user
+    oncolleague = notification.account
     
     # base parameters for the email
     self.base_email(notification.notifytype_to_s)
@@ -164,7 +164,7 @@ class NotificationMailer < ActionMailer::Base
     # setting variables for backwards compatibility
     community = notification.community
     bycolleague = notification.creator
-    oncolleague = notification.user
+    oncolleague = notification.account
 
     # base parameters for the email
     self.base_email(notification.notifytype_to_s)
@@ -230,7 +230,7 @@ class NotificationMailer < ActionMailer::Base
     # base parameters for the email
     self.base_email(notification.notifytype_to_s)
     @recipients     = notification.additionaldata[:invitation_email]
-    @cc             = notification.user.email
+    @cc             = notification.account.email
     @subject        = @subjectlabel+'You have been invited to get an eXtensionID'
     
     urls = Hash.new
@@ -242,7 +242,7 @@ class NotificationMailer < ActionMailer::Base
   def accepted_extensionid_invitation(notification)
     # base parameters for the email
     self.base_email(notification.notifytype_to_s)
-    @recipients     = notification.user.email
+    @recipients     = notification.account.email
     @subject        = @subjectlabel+'Accepted eXtensionID Notification'
     
     urls = Hash.new
@@ -329,12 +329,12 @@ class NotificationMailer < ActionMailer::Base
    
    def welcome(notification)
      self.base_email(notification.notifytype_to_s)
-     @recipients     = notification.user.email
+     @recipients     = notification.account.email
      @subject        = @subjectlabel+'Welcome!'
      urls = Hash.new
      urls['profile'] = url_for(:controller => 'people/profile', :action => 'me')
      urls['contactus'] = people_contact_url
-     @body           = {:isdemo => @isdemo, :user => notification.user, :urls => urls }  
+     @body           = {:isdemo => @isdemo, :user => notification.account, :urls => urls }  
    end
    
    
@@ -344,7 +344,7 @@ class NotificationMailer < ActionMailer::Base
    
    def review_request(notification)
      self.base_email(notification.notifytype_to_s)      
-     reviewuser = notification.user
+     reviewuser = notification.account
      @from           = "\"#{reviewuser.first_name} #{reviewuser.last_name}\" <#{reviewuser.email}>"
      @recipients     = AppConfig.configtable['emailsettings']['people']['review']
      @subject        = @subjectlabel+'Account Review Request'    
@@ -388,8 +388,8 @@ class NotificationMailer < ActionMailer::Base
      
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
-     @subject        = @subjectlabel+'Incoming question assigned to you'
-     @recipients     = notification.user.email
+     @subject        = "[eXtension Question:#{submitted_question.id}] Incoming question assigned to you"
+     @recipients     = notification.account.email
      assigned_at = @sent_on     
      respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
      urls = Hash.new
@@ -402,8 +402,8 @@ class NotificationMailer < ActionMailer::Base
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
-     @subject        = @subjectlabel+'Incoming question edited by submitter'
-     @recipients     = notification.user.email
+     @subject        = "[eXtension Question:#{submitted_question.id}] Incoming question edited by submitter"
+     @recipients     = notification.account.email
      assigned_at = @sent_on     
      respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
      urls = Hash.new
@@ -417,8 +417,8 @@ class NotificationMailer < ActionMailer::Base
      
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)     
-     @subject        = @subjectlabel+'Incoming question reassigned'
-     @recipients     = notification.user.email
+     @subject        = "[eXtension Question:#{submitted_question.id}] Incoming question reassigned"
+     @recipients     = notification.account.email
      assigned_at = @sent_on
      urls = Hash.new
      urls['incoming'] = incoming_url
@@ -433,8 +433,8 @@ class NotificationMailer < ActionMailer::Base
      
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
-     @subject        = @subjectlabel+'Incoming question rejected'
-     @recipients     = notification.user.email
+     @subject        = "[eXtension Question:#{submitted_question.id}] Incoming question rejected"
+     @recipients     = notification.account.email
      urls = Hash.new
      urls['incoming'] = incoming_url
      urls['question'] = aae_question_url(:id => submitted_question.id)
@@ -447,7 +447,7 @@ class NotificationMailer < ActionMailer::Base
      signature = notification.additionaldata[:signature]
      # base parameters for the email
      self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
-     @subject = "[Message from eXtension] Your question has been responded to by one of our experts."           
+     @subject = "[eXtension Question:#{submitted_question.id}] Your question has been responded to by one of our experts."           
      @recipients     = submitted_question.submitter_email
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
@@ -459,8 +459,8 @@ class NotificationMailer < ActionMailer::Base
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      # base parameters for the email
      self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
-     @subject = "[Message from eXtension] Thank you for your question submission."          
-     @recipients     = submitted_question.public_user.email
+     @subject = "[eXtension Question:#{submitted_question.id}] Thank you for your question submission."          
+     @recipients     = submitted_question.submitter.email
      urls = Hash.new
      urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
      @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :urls => urls }
@@ -473,8 +473,8 @@ class NotificationMailer < ActionMailer::Base
      respond_by = assigned_at +  (AppConfig.configtable['aae_escalation_delta']).hours
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
-     @subject = "[Message from eXtension] A question you have been assigned has a new comment"          
-     @recipients     = notification.user.email
+     @subject = "[eXtension Question:#{submitted_question.id}] A question you have been assigned has a new comment"          
+     @recipients     = notification.account.email
      urls = Hash.new
      urls['question'] = aae_question_url(:id => submitted_question.id)
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
@@ -482,16 +482,79 @@ class NotificationMailer < ActionMailer::Base
    end
    
    
+   def aae_vacation_response(notification)
+     aae_email = AaeEmail.find(notification.additionaldata[:aae_email_id])
+     submitted_question = aae_email.submitted_question
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s, submitted_question.get_custom_email_from)
+     @subject = "[eXtension Question:#{submitted_question.id}] A question that you assigned to another expert has a vacation response"           
+     @recipients     = notification.account.email
+     urls = Hash.new
+     urls['question'] = aae_question_url(:id => submitted_question.id)
+     @body           = {:isdemo => @isdemo, :notification => notification,  :aae_email => aae_email, :urls => urls }
+   end
+   
+   def aae_expert_comment(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     comment = notification.additionaldata[:comment]
+     # base parameters for the email
+     self.base_email(notification.notifytype_to_s)
+     @subject = "[eXtension Question:#{submitted_question.id}] A question you have been assigned has a new comment from an expert"          
+     @recipients     = notification.account.email
+     urls = Hash.new
+     urls['question'] = aae_question_url(:id => submitted_question.id)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
+     @body           = {:isdemo => @isdemo, :notification => notification, :submitted_question => submitted_question, :comment => comment, :urls => urls}
+   end
+   
+   def aae_expert_noreply(notification)
+     urls = Hash.new
+     if(notification.additionaldata and notification.additionaldata[:submitted_question_id])
+       submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+       urls['question'] = aae_question_url(:id => submitted_question.id)
+     end
+     # base parameters for the email
+     self.base_email('aae_noreply')
+     @subject = "[eXtension Ask an Expert] You've replied to our no-reply notification address."          
+     @recipients     = notification.account.email
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
+     @body           = {:isdemo => @isdemo, :notification => notification, :urls => urls}
+   end
+   
+   def aae_public_noreply(notification)
+     urls = Hash.new
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     urls['question'] = ask_question_url(:fingerprint => submitted_question.question_fingerprint)
+     # base parameters for the email
+     self.base_email('aae_noreply')
+     @subject = "[eXtension Ask an Expert] You've replied to our no-reply address."          
+     @recipients     = notification.account.email
+     urls['askanexpert'] = ask_form_url
+     @body           = {:isdemo => @isdemo, :notification => notification, :urls => urls}
+   end
+    
+    def aae_public_noquestion(notification)
+      urls = Hash.new
+      # base parameters for the email
+      self.base_email('aae_noreply')
+      @subject = "[eXtension Ask an Expert] You've sent an email to our no-reply address."          
+      @recipients     = notification.account.email
+      urls['askanexpert'] = ask_form_url
+      @body           = {:isdemo => @isdemo, :notification => notification, :urls => urls}
+    end  
+   
+
+   
    ### NOTE: not based on a notification
    def aae_escalation_for_category(category, sincehours)
      # base parameters for the email
-     self.base_email('aae_internal')     
+     self.base_email('aae_escalation')     
      @subject        = @subjectlabel+'Ask an Expert Escalation Report'
      
        
      submitted_questions_list = SubmittedQuestion.escalated(sincehours).filtered({:category => category}).ordered('submitted_questions.last_opened_at asc')
-     escalation_users_for_category = User.validusers.escalators_by_category(category)
-     if(escalation_emails = User.validusers.escalators_by_category(category))
+     escalation_users_for_category = User.notsystem.validusers.escalators_by_category(category)
+     if(escalation_emails = User.notsystem.validusers.escalators_by_category(category))
        @recipients = escalation_users_for_category.map(&:email).join(',')
      else
        # TODO: should this be the extension leadership? question wranglers?
@@ -514,7 +577,7 @@ class NotificationMailer < ActionMailer::Base
      # base parameters for the email
      self.base_email(notification.notifytype_to_s)
      @subject        = @subjectlabel+'Upcoming Learn Session'
-     @recipients     = notification.user.email
+     @recipients     = notification.account.email
      urls = Hash.new
      urls['learnsession'] = url_for(:controller => 'learn', :action => :event, :id =>  learn_session.id)
      @body = {:isdemo => @isdemo, :notification => notification, :learn_session => learn_session, :urls => urls}
@@ -527,7 +590,7 @@ class NotificationMailer < ActionMailer::Base
    def deployment(deployinfo,scmoutput)
       # base parameters for the email
       self.base_email('deploy')
-      @recipients     = 'dev-deploys@lists.extension.org'
+      @recipients     = 'dev-commits@extension.org'
       #override
       @bcc = nil
       @subject        = @subjectlabel+'Darmok deployment notification'

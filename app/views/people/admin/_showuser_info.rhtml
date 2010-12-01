@@ -13,13 +13,13 @@
 
     <tr>
         <td scope="row" class="label">Account created date:</td>
-        <td><%= @showuser.created_at%></td>
+        <td><%= humane_date(@showuser.created_at) %></td>
     </tr>
 
 	<tr>
 		<td scope="row" class="label">Account Enabled?</td>
         <% if @showuser.retired? %>
-			<td>No (retired at: <%= @showuser.retired_at %>) <%= link_to "enable account", :action => 'enable', :id => @showuser.login %></td>
+			<td>No (retired at: <%= humane_date(@showuser.retired_at) %>) <%= link_to "enable account", :action => 'enable', :id => @showuser.login %></td>
 		<% else %>
 			<td>Yes <%= link_to "retire account", :action => 'retire', :id => @showuser.login %></td>
 		<% end %>
@@ -40,13 +40,13 @@
 	    <tr>
 	        <td scope="row" class="label">Account Vouched:</td>
 			<% if @showuser.vouched_by == @showuser.id %>
-	        	<td>Yes (by themself at <%= @showuser.vouched_at%>)</td>
+	        	<td>Yes (by themself on <%= humane_date(@showuser.vouched_at) %>)</td>
 			<% else %>
 				<% @vouchedby = User.find_by_id(@showuser.vouched_by) %>
 				<% if @vouchedby.nil? %>
-					<td>Yes (by system at <%= @showuser.vouched_at%>)</td>
+					<td>Yes (by system on <%= humane_date(@showuser.vouched_at) %>)</td>
 				<% else %>	
-	    			<td>Yes (by <%= link_to(@vouchedby.login, :controller => 'admin',:action => 'showuser', :id => @vouchedby.login) %> at <%= @showuser.vouched_at%>)</td>
+	    			<td>Yes (by <%= link_to(@vouchedby.login, :controller => 'admin',:action => 'showuser', :id => @vouchedby.login) %> on <%= humane_date(@showuser.vouched_at) %>)</td>
 				<% end %>
 			<% end %>
 	    </tr>
@@ -59,12 +59,12 @@
 
     <tr>
         <td scope="row" class="label">Last Login:</td>
-        <td><%= @showuser.last_login_at%></td>
+        <td><%= humane_date(@showuser.last_login_at) %></td>
     </tr>
 
     <tr>
         <td scope="row" class="label">Last User record update:</td>
-        <td><%= @showuser.updated_at%></td>
+        <td><%= humane_date(@showuser.updated_at) %></td>
     </tr>
 
 
@@ -75,7 +75,7 @@
     </tr>
     <tr>
         <td scope="row" class="label">Email address confirmed date:</td>
-        <td><%= @showuser.email_event_at%></td>
+        <td><%= humane_date(@showuser.email_event_at) %></td>
     </tr>
 	<% else %>	
     <tr>
@@ -95,7 +95,7 @@
     </tr>
     <tr>
         <td scope="row" class="label">Contributor Agreement reviewed date: </td>
-        <td><%= @showuser.contributor_agreement_at%></td>
+        <td><%= humane_date(@showuser.contributor_agreement_at) %></td>
     </tr>
 	<% else %>	
     <tr>
@@ -112,5 +112,20 @@
 			<td>No <% if @currentuser.is_sudoer? %><%= link_to "make admin", :action => 'makeadmin', :id => @showuser.login, :operation => 'add' %><% end %></td>
 		<% end %>
 	</tr>
+	
+	<%- if !@showuser.email_forward.blank? and @showuser.email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM -%>
+  	<tr>
+  	  <td scope="row" class="label">Email Forwards to: </td>   
+  	  <td><%= @showuser.email_forward.destination%></td>         
+  	</tr>
+  <%- end -%>
+  
+	<%- aliases = @showuser.email_aliases.all(:conditions => "alias_type IN (#{EmailAlias::SYSTEM_ALIAS},#{EmailAlias::INDIVIDUAL_ALIAS})") -%>
+  <%- if !aliases.blank? -%>
+  <tr>
+      <td scope="row" class="label">Email Aliases @extension.org: </td>
+      <td><%= aliases.map{|ea| "#{ea.mail_alias}@extension.org"}.join('<br/>')%></td>
+  </tr>
+  <%- end -%>
 		
 </table>

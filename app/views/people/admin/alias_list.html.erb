@@ -1,0 +1,31 @@
+<% @page_title = "Admin - Aliases" %>
+<% @selected_tab = :admin %>
+
+<h1>Aliases</h1>
+
+
+<table cellspacing="0" border="1" cellpadding="4">
+    <tr>
+        <th>alias</th>
+        <th>destination</th>
+        <th>disabled</th>
+
+    </tr>
+    <% @alias_list.each do |email_alias| %>
+        <tr>
+            <td><%= email_alias.mail_alias %></td>
+            <%- if email_alias.alias_type == EmailAlias::INDIVIDUAL_ALIAS and !email_alias.user_id.blank? and email_alias.user_id > 1%>
+              <td><%= link_to email_alias.user.fullname, :action => 'showuser', :id => email_alias.user.login %></td>
+            <%- elsif email_alias.alias_type == EmailAlias::SYSTEM_ALIAS and !email_alias.user_id.blank? and email_alias.user_id > 1%>
+              <td><%= link_to email_alias.user.fullname, :action => 'showuser', :id => email_alias.user.login %></td>
+            <%- else -%>
+              <td><%= email_alias.destination %></td>
+            <%- end -%>
+            <td><%= email_alias.disabled? ? 'Yes' : '&nbsp;' %></td>
+        </tr>
+    <% end %>
+</table>
+
+<p>
+    <%= link_to 'Admin Home', :action => :index %>
+</p>

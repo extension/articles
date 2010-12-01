@@ -8,12 +8,12 @@ progopts = GetoptLong.new(
 )
 
 @environment = 'production'
-@drupaldatabase = 'demo_drupal'
+@drupaldatabase = 'prod_create'
 progopts.each do |option, arg|
   case option
     when '--environment'
       @environment = arg
-    when '--identitydatabase'
+    when '--drupaldatabase'
       @drupaldatabase = arg
     else
       puts "Unrecognized option #{opt}"
@@ -36,8 +36,9 @@ def update_from_darmok_users(connection,drupaldatabase,mydatabase)
   puts "starting user table replacement..."
   
   sql = "REPLACE INTO #{drupaldatabase}.users (uid,name,pass,mail,created,status)"
-  sql +=  " SELECT #{mydatabase}.users.id, #{mydatabase}.users.login,'#{passwordstring}', #{mydatabase}.users.email,UNIX_TIMESTAMP(#{mydatabase}.users.created_at),(NOT(#{mydatabase}.users.retired) AND (#{mydatabase}.users.vouched))"
-  sql +=  " FROM #{mydatabase}.users"
+  sql +=  " SELECT #{mydatabase}.accounts.id, #{mydatabase}.accounts.login,'#{passwordstring}', #{mydatabase}.accounts.email,UNIX_TIMESTAMP(#{mydatabase}.accounts.created_at),(NOT(#{mydatabase}.accounts.retired) AND (#{mydatabase}.accounts.vouched))"
+  sql +=  " FROM #{mydatabase}.accounts"
+  sql +=  " WHERE #{mydatabase}.accounts.type = 'User'"
   
   # execute the sql
   
@@ -253,6 +254,6 @@ mydatabase = User.connection.instance_variable_get("@config")[:database]
 # replace/insert user accounts
 result = update_from_darmok_users(User.connection,@drupaldatabase,mydatabase)
 # new groups
-result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+#result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
 # groups update
-result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+#result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)

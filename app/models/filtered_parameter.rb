@@ -24,6 +24,7 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:position] = :position
   RECOGNIZED_PARAMETERS[:institution] = :institution
   RECOGNIZED_PARAMETERS[:person] = :user  # todo: change to method to recognize aliases
+  RECOGNIZED_PARAMETERS[:account] = :account  
   RECOGNIZED_PARAMETERS[:dateinterval] = :string 
   RECOGNIZED_PARAMETERS[:datefield] = :string 
   RECOGNIZED_PARAMETERS[:tz] = :string
@@ -33,10 +34,13 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:apikey] = :apikey
   RECOGNIZED_PARAMETERS[:tags] = :taglist
   RECOGNIZED_PARAMETERS[:content_types] = :method
+  RECOGNIZED_PARAMETERS[:ipaddress] = :string 
   
   
   # AaE params
   RECOGNIZED_PARAMETERS[:squid] = :submitted_question
+  RECOGNIZED_PARAMETERS[:widget] = :widget
+  
     
   # TODO: review this vis-a-vis dateinterval and datefield
   RECOGNIZED_PARAMETERS[:datadate] = :date
@@ -166,12 +170,16 @@ class FilteredParameter
       Position.find_by_id(value)
     when :user        
       User.find_by_email_or_extensionid_or_id(value)
+    when :account        
+      Account.find_by_email_or_extensionid_or_id(value,false)
     when :category    
       Category.find_by_name_or_id(value)
     when :submitted_question
       SubmittedQuestion.find_by_id(value)
+    when :widget
+      Widget.find_by_fingerprint_or_id_or_name(value)
     when :activity_application 
-      ActivityApplication.find_by_id(value)
+      ActivityApplication.find_by_id_or_shortname(value)
     when :activity
       if(activitycodes = Activity.activity_to_codes(value))
         return value

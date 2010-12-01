@@ -1,6 +1,6 @@
 <% if(mailinglist = community.listconnection(listtype)) %>
 	<h4><%= link_to("#{mailinglist.list.name}",  people_list_url(mailinglist.list))%></h4>
-	<p>Created On: <strong><%= mailinglist.list.created_at %></strong></p>
+	<p>Created On: <strong><%= humane_date(mailinglist.list.created_at) %></strong></p>
 	<p>Posting activity within the last month: <%= list_stat_line(mailinglist.list.get_posting_stats('lastmonth')) %></p>
 <% else %>
 

@@ -13,9 +13,9 @@ class ExpertiseLocation < ActiveRecord::Base
   named_scope :filtered, lambda {|options| ExpertiseLocation.loc_conditions(options)}
   
   def self.get_users_in_state(locid)
-     find_by_sql(["Select distinct users.id, users.first_name, users.last_name, users.login, roles.name, roles.id as rid from expertise_locations join expertise_locations_users as lu on lu.expertise_location_id=expertise_locations.id " +
-        "  join users on lu.user_id=users.id left join user_roles on users.id=user_roles.user_id left join roles on user_roles.role_id=roles.id " +
-        " where expertise_locations.id=? order by users.last_name", locid])
+     find_by_sql(["Select distinct accounts.id, accounts.first_name, accounts.last_name, accounts.login, roles.name, roles.id as rid from expertise_locations join expertise_locations_users as lu on lu.expertise_location_id=expertise_locations.id " +
+        "  join users on lu.user_id=accounts.id left join user_roles on accounts.id=user_roles.user_id left join roles on user_roles.role_id=roles.id " +
+        " where expertise_locations.id=? order by accounts.last_name", locid])
    end
    
    def self.count_answerers_for_states_in_category(catname)

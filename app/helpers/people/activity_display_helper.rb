@@ -131,9 +131,6 @@ module People::ActivityDisplayHelper
       tmptitle = activityobject.displaytitle.tr('_',' ')
       output_title = (tmptitle.length > 50) ? tmptitle.mb_chars[0..49]+'...' : tmptitle
       return_title_text = "#{output_title}"
-    elsif(activityobject.entrytype == ActivityObject::JUSTCODE_CHANGESET)
-      output_title = (activityobject.displaytitle.length > 50) ? activityobject.displaytitle.mb_chars[0..49]+'...' : activityobject.displaytitle    
-      return_title_text = "#{output_title}"
     else
       output_title = (activityobject.displaytitle.length > 50) ? activityobject.displaytitle.mb_chars[0..49]+'...' : activityobject.displaytitle
       return_title_text = "##{activityobject.foreignid}: #{output_title}"
@@ -154,8 +151,6 @@ module People::ActivityDisplayHelper
       return_uri_string = "#{activityobject.activity_application.link_uri}/events/#{activityobject.foreignid}"
     elsif(activityobject.entrytype == ActivityObject::FAQ)
       return_uri_string = "#{activityobject.activity_application.link_uri}/publish/show/#{activityobject.foreignid}"
-    elsif(activityobject.entrytype == ActivityObject::JUSTCODE_CHANGESET)
-      return_uri_string = "#{activityobject.activity_application.link_uri}/repositories/revision/#{activityobject.namespace}?rev=#{activityobject.foreignid}"
     else
       return nil
     end    

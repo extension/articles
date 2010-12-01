@@ -11,11 +11,12 @@ class LearnController < ApplicationController
   
   before_filter :login_optional
   before_filter :login_required, :check_purgatory, :only => [:create_session, :edit_session, :delete_event, :connect_to_session, :time_zone_check]
+   
   
   def index
     @upcoming_sessions = LearnSession.find(:all, :conditions => "session_start > '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 3, :order => "session_start ASC")
     @recent_sessions = LearnSession.find(:all, :conditions => "session_start < '#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}'", :limit => 15, :order => "session_start DESC")
-    @recent_tags = Tag.find(:all, :select => 'DISTINCT tags.*', :joins => [:taggings], :conditions => {"taggings.tag_kind" => Tagging::SHARED, "taggings.taggable_type" => "LearnSession"}, :limit => 30, :order => "taggings.created_at DESC")
+    @recent_tags = Tag.find(:all, :select => 'DISTINCT tags.*', :joins => [:taggings], :conditions => {"taggings.tagging_kind" => Tagging::SHARED, "taggings.taggable_type" => "LearnSession"}, :limit => 30, :order => "taggings.created_at DESC")
   end
   
   def event
@@ -26,6 +27,7 @@ class LearnController < ApplicationController
     end
   
     @connected_users = {}
+    @learn_session_creator = @learn_session.creator
     if @learn_session.event_started?
       attended = @learn_session.connected_users(LearnConnection::ATTENDED)
       interested = @learn_session.connected_users(LearnConnection::INTERESTED)
@@ -45,8 +47,13 @@ class LearnController < ApplicationController
     end
     
     # set timezone to either the people profile pref for the user or the time zone selected for the session
-    tz = @currentuser.nil? ? @learn_session.time_zone : @currentuser.time_zone
-    @session_start = @learn_session.session_start.in_time_zone(tz)
+    if @currentuser.nil? or !@currentuser.has_time_zone?
+      @session_start = @learn_session.session_start.in_time_zone(@learn_session.time_zone) 
+    # Time.zone is already set in the hook for controller method load, 
+    # so we're good here (time is auto-updated) if the user has a timezone selected in their people profile
+    else  
+      @session_start = @learn_session.session_start
+    end
   end
   
   def login_redirect
@@ -70,10 +77,14 @@ class LearnController < ApplicationController
                                                 :page => params[:page])        
       elsif params[:sessiontype] == 'myattended'
         @page_title = 'My Attended Learn Sessions'
-        @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::ATTENDED}", :order => "session_start DESC",:page => params[:page])
+        if(@currentuser)
+          @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::ATTENDED}", :order => "session_start DESC",:page => params[:page])
+        end
       elsif params[:sessiontype] == 'myinterested'
         @page_title = 'My Interested Learn Sessions'
-        @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::INTERESTED}", :order => "session_start DESC",:page => params[:page])
+        if(@currentuser)
+          @learn_sessions = @currentuser.learn_sessions.paginate(:all, :conditions => "connectiontype = #{LearnConnection::INTERESTED}", :order => "session_start DESC",:page => params[:page])
+        end
       elsif params[:sessiontype] == 'by_tag'
         if !params[:tag].blank? 
           @tag_param = params[:tag]
@@ -220,8 +231,13 @@ class LearnController < ApplicationController
   end
   
   def profile
-    @user = User.find_by_login(params[:id])
-    @sessions_presented = @user.learn_sessions_presented
+    if(@showuser = User.find_by_login(params[:id]))
+      @sessions_presented = @showuser.learn_sessions_presented.find(:all, :order => "session_start desc" )
+      # TODO: show public attributes
+      # if(!@currentuser)
+      #   @publicattributes = @showuser.public_attributes
+      # end
+    end
   end
   
   def presenters_by_name
@@ -232,7 +248,7 @@ class LearnController < ApplicationController
       return
     end
     
-    @users = User.validusers.patternsearch(name_str).all(:limit => User.per_page)
+    @users = User.notsystem.validusers.patternsearch(name_str).all(:limit => User.per_page)
     render :layout => false
   end
     
@@ -388,8 +404,7 @@ class LearnController < ApplicationController
         format.js
       end
     else
-      redirect_to :index
-      return
+      return redirect_to(:action => :index) 
     end
   end
   

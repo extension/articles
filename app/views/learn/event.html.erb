@@ -16,7 +16,11 @@
          <% @learn_session.presenters.each do |presenter| %>
          <% if count > 0 %>, 
          <% end %>
-         <%= link_to(presenter.fullname, :controller => '/learn', :action => :profile, :id => presenter.login) %>
+         <%- if(!@currentuser.nil?) -%>
+          <%= link_to(presenter.fullname, :controller => '/learn', :action => :profile, :id => presenter.login) %>
+         <%- else -%>
+           <%= presenter.fullname %>
+         <%- end -%>
          <% count = count + 1 %>
       <% end %>  
      </p>
@@ -47,6 +51,16 @@
           <p>Watch: (This session has not taken place yet. The recording should be available here after the session has taken place.)</p>
         <% end %>
         
+        <br /><br />
+        <p>Created by: 
+          <%- if(!@currentuser.nil?) -%>
+            <%= link_to(@learn_session_creator.fullname, :controller => '/learn', :action => :profile, :id => @learn_session_creator.login) %>
+          <%- else -%>
+            <%= @learn_session_creator.fullname %>
+          <%- end -%>
+        </p>
+        
+        
         <% if @currentuser %>
           <p><span class="edit"><%= link_to 'edit this event', :action => :edit_session, :id => @learn_session.id %></span></p>
         <% end %>
@@ -60,10 +74,10 @@
       
          <% if @learn_session.recording.blank? %>
             <h3>No Recording Yet</h3>
-            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong>. A recording of this session has not been uploaded yet.</p>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y %Z") %></strong>. A recording of this session has not been uploaded yet.</p>
           <% else %>
           <h3>Watch</h3>
-            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y") %></strong></p>
+            <p>This <strong><%= "#{@learn_session.session_length}" %> minute</strong> session took place <strong><%= @session_start.strftime("%l:%M %p, %B %e, %Y %Z") %></strong></p>
             <p class="recording_available">
                <%= link_to("watch recording", @learn_session.recording) %>
             </p>

@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class LogoController < ApplicationController
-  skip_before_filter :set_locale, :unescape_params, :personalize
+  skip_before_filter :set_locale, :unescape_params, :personalize_location_and_institution
   def display
     begin
       @logo = Logo.find_by_filename(params[:file].to_s + "." + params[:format].to_s)

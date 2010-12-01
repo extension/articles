@@ -1,0 +1,13 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
+Hello <%= @notification.account.first_name %>,
+
+We have received an automatic vacation response to a question you have recently assigned.  The question has not been reassigned, however we ask that you review the automatic response, and make a determination as to whether the question needs to be reassigned to another expert.
+
+Here's the link to the question's detail page:
+<%= @urls['question']%>
+
+Thanks for helping get the public a quicker response to their question!
+
+--
+eXtension Staff
+http://about.extension.org

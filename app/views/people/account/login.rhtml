@@ -6,17 +6,17 @@
     <fieldset>
 	    <h2><%= login_prompt_string %></h2>
 	    <p>
-	        <label for="user_login">eXtensionID or registered email address:</label>
+	        <label for="email">Email address:</label>
 	        <% if @mobile_device %>
-	            <input class="text" type="email" name="user_login" id="user_login" value="" tabindex="1"/>
+	            <input class="text" type="email" name="email" id="email" value="" tabindex="1"/>
 	        <% else %>
-	            <input class="text" type="text" name="user_login" id="user_login" value="" tabindex="1"/>
+	            <input class="text" type="text" name="email" id="email" value="" tabindex="1"/>
 	        <% end %>
 	    </p>
 
 	    <p>
-	        <label for="user_password">Password:</label>
-	        <input class="text" type="password" name="user_password" id="user_password" tabindex="2"/>
+	        <label for="password">Password:</label>
+	        <input class="text" type="password" name="password" id="password" tabindex="2"/>
 	    </p>
    
 	    <p><input type="submit" name="login" value="Log in" tabindex="3" /> <%= link_to 'Forgot your password?', {:controller => 'people/account', :action => 'new_password'}, :class => "forgotpassword" %></p>

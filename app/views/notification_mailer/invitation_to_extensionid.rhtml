@@ -4,8 +4,8 @@ Hello!
 You have been invited by a colleague to sign up for an eXtensionID.
 
 Your colleague:
-<%= @notification.user.fullname %>
-<%= @notification.user.email %>
+<%= @notification.account.fullname %>
+<%= @notification.account.email %>
 
 <% if !@notification.additionaldata[:invitation_message].nil? %><%= "Message from Colleague:\n" + @notification.additionaldata[:invitation_message] + "\n=====\n" %><% end %>
 Signing up is easy - just visit:

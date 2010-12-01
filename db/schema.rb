@@ -9,7 +9,71 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100804200528) do
+ActiveRecord::Schema.define(:version => 20101130203200) do
+
+  create_table "aae_emails", :force => true do |t|
+    t.string   "from"
+    t.string   "to"
+    t.string   "destination"
+    t.string   "reply_type"
+    t.string   "subject"
+    t.string   "message_id"
+    t.datetime "mail_date"
+    t.boolean  "attachments",                                  :default => false
+    t.boolean  "bounced",                                      :default => false
+    t.boolean  "retryable",                                    :default => false
+    t.boolean  "vacation",                                     :default => false
+    t.string   "bounce_code"
+    t.string   "bounce_diagnostic"
+    t.text     "raw",                    :limit => 2147483647
+    t.integer  "submitted_question_id"
+    t.string   "submitted_question_ids"
+    t.integer  "account_id"
+    t.string   "action_taken"
+    t.string   "action_taken_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "accounts", :force => true do |t|
+    t.string   "type",                                   :default => "",    :null => false
+    t.string   "login",                    :limit => 80,                    :null => false
+    t.string   "password",                 :limit => 40
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email",                    :limit => 96
+    t.string   "title"
+    t.datetime "email_event_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "contributor_agreement"
+    t.datetime "contributor_agreement_at"
+    t.integer  "account_status"
+    t.datetime "last_login_at"
+    t.integer  "position_id",                            :default => 0
+    t.integer  "location_id",                            :default => 0
+    t.integer  "county_id",                              :default => 0
+    t.boolean  "retired",                                :default => false
+    t.boolean  "vouched",                                :default => false
+    t.integer  "vouched_by",                             :default => 0
+    t.datetime "vouched_at"
+    t.boolean  "emailconfirmed",                         :default => false
+    t.boolean  "is_admin",                               :default => false
+    t.string   "phonenumber"
+    t.string   "feedkey"
+    t.boolean  "announcements",                          :default => true
+    t.datetime "retired_at"
+    t.text     "additionaldata"
+    t.boolean  "aae_responder",                          :default => true
+    t.string   "time_zone"
+    t.boolean  "is_question_wrangler",                   :default => false
+    t.string   "base_login_string"
+    t.integer  "login_increment"
+  end
+
+  add_index "accounts", ["email"], :name => "email", :unique => true
+  add_index "accounts", ["login"], :name => "login", :unique => true
+  add_index "accounts", ["vouched", "retired"], :name => "index_users_on_vouched_and_retired"
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -158,7 +222,7 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.integer  "tagcacheable_id"
     t.string   "tagcacheable_type"
     t.integer  "owner_id"
-    t.integer  "tag_kind"
+    t.integer  "tagging_kind"
     t.integer  "cache_kind"
     t.text     "fulltextlist"
     t.text     "cachedata"
@@ -168,15 +232,12 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
 
   create_table "categories", :force => true do |t|
     t.string   "name"
-    t.string   "default_keyword"
-    t.integer  "community_id",    :default => 0,     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "parent_id"
-    t.boolean  "show_to_public",  :default => false
+    t.boolean  "show_to_public", :default => false
   end
 
-  add_index "categories", ["community_id"], :name => "community_id_idx"
   add_index "categories", ["parent_id"], :name => "parent_id_idx"
 
   create_table "categories_submitted_questions", :id => false, :force => true do |t|
@@ -222,11 +283,12 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.integer  "logo_id",                               :default => 0
     t.boolean  "connect_to_drupal",                     :default => false
     t.integer  "drupal_node_id"
-    t.boolean  "hide_from_aae",                         :default => false
+    t.boolean  "connect_to_google_apps",                :default => false
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
   add_index "communities", ["referer_domain"], :name => "index_communities_on_referer_domain"
+  add_index "communities", ["shortname"], :name => "index_communities_on_shortname", :unique => true
 
   create_table "communityconnections", :force => true do |t|
     t.integer  "user_id"
@@ -314,6 +376,22 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
 
   add_index "directory_item_caches", ["user_id"], :name => "index_directory_item_caches_on_user_id"
 
+  create_table "email_aliases", :force => true do |t|
+    t.integer  "user_id",          :default => 0,     :null => false
+    t.integer  "community_id",     :default => 0,     :null => false
+    t.string   "mail_alias",                          :null => false
+    t.string   "destination",                         :null => false
+    t.integer  "alias_type",       :default => 0,     :null => false
+    t.integer  "created_by",       :default => 1
+    t.integer  "last_modified_by", :default => 1
+    t.boolean  "disabled",         :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "email_aliases", ["destination"], :name => "destination_ndx"
+  add_index "email_aliases", ["mail_alias"], :name => "alias_ndx"
+
   create_table "events", :force => true do |t|
     t.text     "title"
     t.text     "description"
@@ -328,6 +406,7 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.datetime "start"
     t.integer  "duration"
     t.boolean  "deleted"
+    t.string   "time_zone"
   end
 
   add_index "events", ["date"], :name => "index_events_on_date"
@@ -421,6 +500,63 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.datetime "updated_at"
   end
 
+  create_table "geo_names", :force => true do |t|
+    t.string  "feature_name",       :limit => 121
+    t.string  "feature_class",      :limit => 51
+    t.string  "state_abbreviation", :limit => 3
+    t.string  "state_code",         :limit => 3
+    t.string  "county",             :limit => 101
+    t.string  "county_code",        :limit => 4
+    t.string  "lat_dms",            :limit => 8
+    t.string  "long_dms",           :limit => 9
+    t.float   "lat"
+    t.float   "long"
+    t.string  "source_lat_dms",     :limit => 8
+    t.string  "source_long_dms",    :limit => 9
+    t.float   "source_lat"
+    t.float   "source_long"
+    t.integer "elevation"
+    t.string  "map_name"
+    t.string  "create_date_txt"
+    t.string  "edit_date_txt"
+    t.date    "create_date"
+    t.date    "edit_date"
+  end
+
+  add_index "geo_names", ["feature_name", "state_abbreviation", "county"], :name => "name_state_county_ndx"
+
+  create_table "google_accounts", :force => true do |t|
+    t.integer  "user_id",          :default => 0,     :null => false
+    t.string   "username",                            :null => false
+    t.boolean  "no_sync_password", :default => false
+    t.string   "password",                            :null => false
+    t.string   "given_name",                          :null => false
+    t.string   "family_name",                         :null => false
+    t.boolean  "is_admin",         :default => false
+    t.boolean  "suspended",        :default => false
+    t.datetime "apps_updated_at"
+    t.boolean  "has_error",        :default => false
+    t.text     "last_error"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "google_accounts", ["user_id"], :name => "index_google_accounts_on_user_id", :unique => true
+
+  create_table "google_groups", :force => true do |t|
+    t.integer  "community_id",     :default => 0,     :null => false
+    t.string   "group_id",                            :null => false
+    t.string   "group_name",                          :null => false
+    t.string   "email_permission",                    :null => false
+    t.datetime "apps_updated_at"
+    t.boolean  "has_error",        :default => false
+    t.text     "last_error"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "google_groups", ["community_id"], :name => "index_google_groups_on_community_id", :unique => true
+
   create_table "help_feeds", :force => true do |t|
     t.string   "title"
     t.string   "etag"
@@ -453,7 +589,6 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
 
   create_table "learn_connections", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "public_user_id"
     t.string   "email",            :null => false
     t.integer  "learn_session_id", :null => false
     t.integer  "connectiontype",   :null => false
@@ -462,7 +597,6 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
   end
 
   add_index "learn_connections", ["learn_session_id", "connectiontype"], :name => "index_learn_connections_on_learn_session_id_and_connectiontype"
-  add_index "learn_connections", ["user_id", "public_user_id"], :name => "index_learn_connections_on_user_id_and_public_user_id"
 
   create_table "learn_sessions", :force => true do |t|
     t.text     "title",            :null => false
@@ -574,7 +708,7 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
 
   create_table "notifications", :force => true do |t|
     t.integer  "notifytype",     :default => 0
-    t.integer  "user_id",        :default => 0,     :null => false
+    t.integer  "account_id",     :default => 0,     :null => false
     t.integer  "created_by",     :default => 0
     t.integer  "community_id",   :default => 0,     :null => false
     t.boolean  "sent_email",     :default => false
@@ -652,22 +786,9 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
 
   add_index "privacy_settings", ["user_id"], :name => "index_privacy_settings_on_user_id"
 
-  create_table "public_users", :force => true do |t|
-    t.string   "email",                        :null => false
-    t.string   "first_name", :default => ""
-    t.string   "last_name",  :default => ""
-    t.string   "password",   :default => ""
-    t.string   "salt",       :default => ""
-    t.boolean  "enabled",    :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "public_users", ["email"], :name => "index_public_users_on_email", :unique => true
-
   create_table "responses", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "public_user_id"
+    t.integer  "resolver_id"
+    t.integer  "submitter_id"
     t.integer  "submitted_question_id",                       :null => false
     t.text     "response",                                    :null => false
     t.integer  "duration_since_last",                         :null => false
@@ -676,10 +797,14 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.datetime "updated_at"
     t.integer  "contributing_question_id"
     t.text     "signature"
+    t.string   "user_ip"
+    t.string   "user_agent"
+    t.string   "referrer"
   end
 
+  add_index "responses", ["resolver_id"], :name => "index_responses_on_user_id"
   add_index "responses", ["submitted_question_id"], :name => "index_responses_on_submitted_question_id"
-  add_index "responses", ["user_id"], :name => "index_responses_on_user_id"
+  add_index "responses", ["submitter_id"], :name => "index_responses_on_submitter_id"
 
   create_table "roles", :force => true do |t|
     t.string "name"
@@ -737,7 +862,7 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.integer  "event_state",                                           :null => false
     t.text     "additionaldata"
     t.integer  "response_id"
-    t.integer  "public_user_id"
+    t.integer  "submitter_id"
     t.boolean  "sent",                               :default => false, :null => false
     t.integer  "previous_event_id"
     t.integer  "duration_since_last"
@@ -748,12 +873,14 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.integer  "previous_handling_event_state"
     t.integer  "previous_handling_recipient_id"
     t.integer  "previous_handling_initiator_id"
+    t.string   "previous_category"
   end
 
   add_index "submitted_question_events", ["created_at", "event_state", "previous_handling_recipient_id"], :name => "handling_idx"
   add_index "submitted_question_events", ["initiated_by_id"], :name => "initiated_by_idx"
   add_index "submitted_question_events", ["recipient_id"], :name => "subject_user_idx"
   add_index "submitted_question_events", ["submitted_question_id"], :name => "submitted_question_id_idx"
+  add_index "submitted_question_events", ["submitter_id"], :name => "index_submitted_question_events_on_submitter_id"
 
   create_table "submitted_questions", :force => true do |t|
     t.integer  "resolved_by"
@@ -784,21 +911,22 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.integer  "status_state",                                     :null => false
     t.string   "zip_code"
     t.integer  "widget_id"
-    t.integer  "public_user_id",                :default => 0
+    t.integer  "submitter_id",                  :default => 0
     t.boolean  "show_publicly",                 :default => true
     t.datetime "last_assigned_at"
     t.datetime "last_opened_at",                                   :null => false
+    t.boolean  "is_api"
   end
 
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"
   add_index "submitted_questions", ["created_at"], :name => "created_at_idx"
   add_index "submitted_questions", ["current_contributing_question"], :name => "fk_qu_sq"
   add_index "submitted_questions", ["location_id"], :name => "fk_sq_location"
-  add_index "submitted_questions", ["public_user_id"], :name => "index_submitted_questions_on_public_user_id"
   add_index "submitted_questions", ["question_fingerprint"], :name => "index_submitted_questions_on_question_fingerprint"
   add_index "submitted_questions", ["resolved_at"], :name => "resolved_at_idx"
   add_index "submitted_questions", ["resolved_by"], :name => "resolved_by_idx"
   add_index "submitted_questions", ["status_state"], :name => "index_submitted_questions_on_status_state"
+  add_index "submitted_questions", ["submitter_id"], :name => "index_submitted_questions_on_submitter_id"
   add_index "submitted_questions", ["user_id"], :name => "fk_usr_sq"
   add_index "submitted_questions", ["user_id"], :name => "user_id_idx"
   add_index "submitted_questions", ["widget_name"], :name => "index_submitted_questions_on_widget_name"
@@ -812,10 +940,10 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
     t.integer  "weight",                      :default => 1, :null => false
     t.datetime "created_at",                                 :null => false
     t.datetime "updated_at"
-    t.integer  "tag_kind"
+    t.integer  "tagging_kind"
   end
 
-  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tag_kind", "owner_id"], :name => "taggingindex", :unique => true
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagging_kind", "owner_id"], :name => "taggingindex", :unique => true
 
   create_table "tags", :force => true do |t|
     t.string   "name",       :null => false
@@ -907,42 +1035,6 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
 
   add_index "user_tokens", ["token"], :name => "tokenlookup"
 
-  create_table "users", :force => true do |t|
-    t.string   "login",                    :limit => 80,                    :null => false
-    t.string   "password",                 :limit => 40,                    :null => false
-    t.string   "first_name",                                                :null => false
-    t.string   "last_name",                                                 :null => false
-    t.string   "email",                    :limit => 96
-    t.string   "title"
-    t.datetime "email_event_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "contributor_agreement"
-    t.datetime "contributor_agreement_at"
-    t.integer  "account_status"
-    t.datetime "last_login_at"
-    t.integer  "position_id",                            :default => 0
-    t.integer  "location_id",                            :default => 0
-    t.integer  "county_id",                              :default => 0
-    t.boolean  "retired",                                :default => false
-    t.boolean  "vouched",                                :default => false
-    t.integer  "vouched_by",                             :default => 0
-    t.datetime "vouched_at"
-    t.boolean  "emailconfirmed",                         :default => false
-    t.boolean  "is_admin",                               :default => false
-    t.string   "phonenumber"
-    t.string   "feedkey"
-    t.boolean  "announcements",                          :default => true
-    t.datetime "retired_at"
-    t.text     "additionaldata"
-    t.boolean  "aae_responder",                          :default => true
-    t.string   "time_zone"
-  end
-
-  add_index "users", ["email"], :name => "email", :unique => true
-  add_index "users", ["login"], :name => "login", :unique => true
-  add_index "users", ["vouched", "retired"], :name => "index_users_on_vouched_and_retired"
-
   create_table "widget_events", :force => true do |t|
     t.integer  "widget_id",  :null => false
     t.integer  "user_id",    :null => false
@@ -954,13 +1046,18 @@ ActiveRecord::Schema.define(:version => 20100804200528) do
   create_table "widgets", :force => true do |t|
     t.string   "name",                              :null => false
     t.string   "fingerprint",                       :null => false
-    t.string   "widgeturl",                         :null => false
+    t.string   "old_widget_url"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active",         :default => true,  :null => false
     t.integer  "user_id",                           :null => false
     t.string   "email_from"
     t.boolean  "upload_capable", :default => false
+    t.boolean  "show_location"
+    t.boolean  "enable_tags"
+    t.integer  "community_id"
+    t.integer  "location_id"
+    t.integer  "county_id"
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true

@@ -22,20 +22,15 @@
 		<span class="extensionid"><%= @currentuser.login%></span>
 	</p>
 	<p class="item">
-		<span class="vcardLabel">eXtension Chat Account:</span>
-		<span class="extensionchat">
-			<% if !@currentuser.chat_account.nil? %>
-		    	<%= @currentuser.chat_account.username %>@chat.extension.org 
-		    <% else %>
-				Not yet enabled.
-			<% end %>
-			<%= link_to('what is this?', {:action => :chat}, :class => 'help') %>
-		</span>
-	</p>
-	<p class="item">
 		<span class="vcardLabel">Email:</span>
 		<span class="email"><%= @currentuser.email%></span>
 	</p>
+	<%- if !@currentuser.email_forward.blank? and @currentuser.email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM -%>
+  	<p class="item">
+  		<span class="vcardLabel">Email Forwards to:</span>
+  		<span class="email"><%= @currentuser.email_forward.destination%></span>
+  	</p>
+  <%- end -%>
 	
 	<p class="item">
 		<span class="vcardLabel">Preferred Phone:</span>

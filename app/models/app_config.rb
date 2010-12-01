@@ -16,8 +16,12 @@ class AppConfig
 
     @@configtable.clear
     @@configtable['app_location'] = "localdev"
+    @@configtable['load_query_trace'] = false
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
     @@configtable['sudoers'] = Hash.new
+    
+    # reserved user id's, not allowed to login
+    @@configtable['reserved_uids'] = [1,2,3,4,5,6,7,8]
     
     # possibly return different ones for demo?    
     @@configtable['openid_url_prefix'] = {}
@@ -51,7 +55,9 @@ class AppConfig
     
     # address, from string, and bcc for various functional areas
     @@configtable['emailsettings']['aae_public'] = {'address' => 'ask-an-expert@extension.org', 'name' => 'eXtension Ask an Expert Response', 'bcc' => 'aaepublic.bcc.mirror@extension.org'}
-    @@configtable['emailsettings']['aae_internal'] = {'address' => 'aaenotify@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['aae_internal'] = {'address' => 'aae-notify@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['aae_escalation'] = {'address' => 'aae-escalation@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
+    @@configtable['emailsettings']['aae_noreply'] = {'address' => 'aae-noreply@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['people'] = {'address' => 'peoplemail@extension.org', 'name' => 'eXtension People Notification - Do Not Reply', 'bcc' => 'people.bcc.mirror@extension.org', 'review' => 'eXtensionHelp@extension.org'}
     @@configtable['emailsettings']['default'] = {'address' => 'noreply@extension.org', 'name' => 'eXtension Notification', 'bcc' => 'default.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['deploy'] = {'address' => 'exdev@extension.org', 'name' => 'eXDevBot', 'bcc' => 'deploys.mirror@extension.org'}
@@ -65,9 +71,10 @@ class AppConfig
         
   
     #Default sites
-    @@configtable['faq_site'] = 'http://faq.extension.org'
-    @@configtable['events_site'] = 'http://events.extension.org'
-    @@configtable['people_site'] = 'https://www.extension.org/people/'
+    @@configtable['faq_site'] = 'http://cop.extension.org/faq'
+    @@configtable['events_site'] = 'http://cop.extension.org/events'
+    @@configtable['people_site'] = 'http://people.extension.org/'
+    @@configtable['learn_site'] = 'http://learn.extension.org/'
     @@configtable['cop_site'] = 'http://cop.extension.org/wiki'
     @@configtable['collaborate_site'] = 'http://collaborate.extension.org/wiki/'
     @@configtable['about_site'] = 'http://about.extension.org/wiki'
@@ -151,9 +158,22 @@ class AppConfig
 		# Google Maps Key
 		@@configtable['google_map_key'] = "ABQIAAAA1LmtLYh4TNIbY5g8p1Lv7RTX9Q_j-d1gVWC6rr14ybx0yf1UjRTepIB7tNRw_H6gggFEgWdIu5E7ig"
     
+    # Google Apps settings
+    @@configtable['googleapps_account'] = 'NotSet'
+    @@configtable['googleapps_secret'] = 'NotSet'
+    @@configtable['googleapps_domain'] = 'apps.extension.org'
+    # Google Apps - AaE emailer
+    @@configtable['googleapps_aaemailer'] = 'NotSet'
+    @@configtable['googleapps_aaemailer_secret'] = 'NotSet'
+
+    
+    
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
     @@configtable['faq_create_url'] = 'http://cop.extension.org/questions/new_from_aae'
+    
+    # GEOIP data - going to target specific versions until that becomes a PITA
+    @@configtable['geoip_data_file'] = "#{RAILS_ROOT}/data/GeoIP-133_20101101/GeoIPCity.dat"
 
   end
   
@@ -193,6 +213,18 @@ class AppConfig
     end
   end
   
+  def AppConfig.set_content_widget_css
+    css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
+    @@content_widget_styles = '<br /><style type="text/css" media="screen">' + css_data + '</style>'
+  end
+  
+  def AppConfig.geoip_data_file
+    if(File.exists?(@@configtable['geoip_data_file']))
+      return @@configtable['geoip_data_file']
+    else
+      return nil
+    end
+  end
   
   def AppConfig.load_config
     self.default_config
@@ -205,10 +237,9 @@ class AppConfig
     end    
   end
   
-  def AppConfig.set_content_widget_css
-    css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
-    @@content_widget_styles = '<br /><style type="text/css" media="screen">' + css_data + '</style>'
-  end
+
+  
+
 
   # load the configuration on Class load
   self.load_config 

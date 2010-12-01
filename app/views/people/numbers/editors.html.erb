@@ -1,0 +1,134 @@
+<% @page_title = "eXtension Editors by the Numbers"%>
+
+<div id="activity_one" class="activity_summary">
+
+<h2>Totals</h2>
+
+<%- totaledits = @editdata.values.sum -%>
+<%- totalitems = @objectdata.values.sum -%>
+<table class="general" cellspacing="0">
+    <tr>
+        <td>Potential Readers(*)<br/>(<em> * for all extension.org applications, logins to individual applications are not accurately tracked</em>)</td>
+        <td class="bignumber"><%= number_with_delimiter(@logindata.size) %></td>
+    </tr>
+    <tr>
+        <td>Editors</td>
+        <td class="bignumber"><%= number_with_delimiter(@editdata.size) %></td>
+    </tr>
+    <tr>
+        <td>Edits</td>
+        <td class="bignumber"><%= number_with_delimiter(totaledits) %></td>
+    </tr>
+    <tr>
+        <td>Items</td>
+        <td class="bignumber"><%= number_with_delimiter(totalitems) %></td>
+    </tr>
+</table>
+
+
+<h2>Edits</h2>
+<table cellspacing="0">
+  <tr>
+      <td>Mean</td>
+      <td class="bignumber"><%= number_with_precision(@editdata.values.mean, :precision => 2) %></td>
+  </tr>
+  
+  <tr>
+      <td>Median</td>
+      <td class="bignumber"><%= number_with_precision(@editdata.values.median, :precision => 2) %></td>
+  </tr>
+  
+  <tr>
+      <td>Standard Deviation</td>
+      <td class="bignumber"><%= number_with_precision(@editdata.values.deviation, :precision => 2) %></td>
+  </tr>
+  
+  <tr>
+      <td>Top 5% (<%= number_with_delimiter(@edit_percentages['5%'][:users]) %> editors)</td>
+      <td class="bignumber"><%= number_to_percentage(((@edit_percentages['5%'][:edits])/totaledits.to_f)*100,:precision => 1) %> (<%= number_with_delimiter(@edit_percentages['5%'][:edits])%>)</td>
+  </tr>
+
+  <tr>
+      <td>Top 10% (<%= number_with_delimiter(@edit_percentages['10%'][:users]) %> editors)</td>
+      <td class="bignumber"><%= number_to_percentage(((@edit_percentages['10%'][:edits])/totaledits.to_f)*100,:precision => 1) %> (<%= number_with_delimiter(@edit_percentages['10%'][:edits])%>)</td>
+  </tr>
+  
+  <tr>
+      <td>Top 25% (<%= number_with_delimiter(@edit_percentages['25%'][:users]) %> editors)</td>
+      <td class="bignumber"><%= number_to_percentage(((@edit_percentages['25%'][:edits])/totaledits.to_f)*100,:precision => 1) %> (<%= number_with_delimiter(@edit_percentages['25%'][:edits])%>)</td>
+  </tr>  
+
+</table>
+
+
+</div>
+	
+<div id="activity_two" class="activity_summary">
+  <h2>Items</h2>
+  <table cellspacing="0">
+    <tr>
+        <td>Mean</td>
+        <td class="bignumber"><%= number_with_precision(@objectdata.values.mean, :precision => 2) %></td>
+    </tr>
+
+    <tr>
+        <td>Median</td>
+        <td class="bignumber"><%= number_with_precision(@objectdata.values.median, :precision => 2) %></td>
+    </tr>
+
+    <tr>
+        <td>Standard Deviation</td>
+        <td class="bignumber"><%= number_with_precision(@objectdata.values.deviation, :precision => 2) %></td>
+    </tr>
+    
+    <tr>
+        <td>Top 5% (<%= number_with_delimiter(@item_percentages['5%'][:users]) %> editors)</td>
+        <td class="bignumber"><%= number_to_percentage(((@item_percentages['5%'][:edits])/totalitems.to_f)*100,:precision => 1) %> (<%= number_with_delimiter(@item_percentages['5%'][:edits])%>)</td>
+    </tr>
+
+    <tr>
+        <td>Top 10% (<%= number_with_delimiter(@item_percentages['10%'][:users]) %> editors)</td>
+        <td class="bignumber"><%= number_to_percentage(((@item_percentages['10%'][:edits])/totalitems.to_f)*100,:precision => 1) %> (<%= number_with_delimiter(@item_percentages['10%'][:edits])%>)</td>
+    </tr>
+
+    <tr>
+        <td>Top 25% (<%= number_with_delimiter(@item_percentages['25%'][:users]) %> editors)</td>
+        <td class="bignumber"><%= number_to_percentage(((@item_percentages['25%'][:edits])/totalitems.to_f)*100,:precision => 1) %> (<%= number_with_delimiter(@item_percentages['25%'][:edits])%>)</td>
+    </tr>
+
+  </table>
+  
+</div>
+
+<br class="clear">
+<h2>Top <%= @limit %> Editors (by items edited)</h2>
+
+<table cellspacing="0" border="1">
+    <tr>
+        <th>Name</th>
+        <th>eXtensionID</th>
+        <th>Email</th>
+        <th>Institution</th>
+        <th>Location</th>
+        <th>Edits</th>
+        <th>Items</th>
+    </tr>
+    
+    <% @objectdata.to_a.slice(0,@limit-1).each do |value| %>
+      <% user_id = value[0]; items = value[1] %>
+      <% showuser = User.find_by_id(user_id) %>
+        <tr>
+			<td><%= link_to("#{showuser.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => showuser.login) %></td>
+            <td><%= showuser.login %></td>
+            <td><%= showuser.email %></td>            
+	        <td><%= showuser.primary_institution_name('<span class="na">not specified</span>') %></td>
+	        <td><%= (showuser.location.nil?) ? '<span class="na">n/a</span>': showuser.location.abbreviation %></td>
+	        <td><%= @editdata[user_id] %></td>
+          <td><%= items %></td>
+        </tr>
+    <% end%>
+</table>
+</div>
+
+
+

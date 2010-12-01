@@ -96,7 +96,6 @@ class OpieController < ApplicationController
           end
           session[:last_opierequest] = opierequest
           @opierequest = opierequest
-          flash[:notice] = "Do you trust this site with your identity?"
           @desicionurl = url_for(:controller => 'opie', :action => 'decision', :protocol => 'https://')
           sregrequest = OpenID::SReg::Request.from_openid_request(opierequest)
           if(!sregrequest.nil?)
@@ -240,6 +239,7 @@ EOS
         response = opierequest.answer(true)          
       end
       self.add_sreg(opierequest, response)
+      @currentuser.update_attribute(:last_login_at,Time.now.utc)
       UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:appname => opierequest.trust_root)                  
       log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_OPENID,:trustroot => opierequest.trust_root)                                     
       session[:last_opierequest] = nil

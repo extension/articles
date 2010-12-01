@@ -40,7 +40,7 @@ class Invitation < ActiveRecord::Base
     if(self.save)
       UserEvent.log_event(:etype => UserEvent::INVITATION,:user => acceptingcolleague,:description => "accepted invitation from #{self.user.login}")    
       Activity.log_activity(:user => acceptingcolleague,:colleague => self.user, :activitycode => Activity::INVITATION_ACCEPTED, :appname => 'local')
-      Notification.create(:notifytype => Notification::INVITATION_ACCEPTED, :user => self.user, :creator => acceptingcolleague, :additionaldata => {:invitation_id => self.id})
+      Notification.create(:notifytype => Notification::INVITATION_ACCEPTED, :account => self.user, :creator => acceptingcolleague, :additionaldata => {:invitation_id => self.id})
     end
     
     # check for community invitations
@@ -81,7 +81,7 @@ class Invitation < ActiveRecord::Base
       end
     end
     
-    Notification.create(:notifytype => Notification::INVITATION_TO_EXTENSIONID, :user => resentby, :additionaldata => notificationdata)
+    Notification.create(:notifytype => Notification::INVITATION_TO_EXTENSIONID, :account => resentby, :additionaldata => notificationdata)
     UserEvent.log_event(:etype => UserEvent::INVITATION,:user => self.user,:description => "resent invitation to #{self.email}")
     Activity.log_activity(:user => self.user,:activitycode => Activity::INVITATION, :appname => 'local',:additionaldata => {:invitedemail => self.email, :invitation_id => self.id})                  
     
@@ -92,7 +92,7 @@ class Invitation < ActiveRecord::Base
     if(!self.message.blank?)
       notificationdata[:invitation_message] = Hpricot(self.message).to_plain_text
     end
-    Notification.create(:notifytype => Notification::INVITATION_TO_EXTENSIONID, :user => self.user, :additionaldata => notificationdata)
+    Notification.create(:notifytype => Notification::INVITATION_TO_EXTENSIONID, :account => self.user, :additionaldata => notificationdata)
     UserEvent.log_event(:etype => UserEvent::INVITATION,:user => self.user,:description => "sent invitation to #{self.email}")
     Activity.log_activity(:user => self.user,:activitycode => Activity::INVITATION, :appname => 'local',:additionaldata => {:invitedemail => self.email, :invitation_id => self.id})                  
   end

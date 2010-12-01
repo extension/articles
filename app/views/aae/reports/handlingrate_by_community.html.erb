@@ -1,0 +1,53 @@
+<h1>Handling Rates for <%= @community.name %> (<%= @connectiontype %>)</h1>
+<p>This page respects the filters set on the <%= link_to 'Incoming Questions', incoming_url %> page: <%= @filter_string%></p>
+
+<%- if @userlist.blank? -%>
+    <div class="noresults">
+        <h3>There are no questions that match your question filter</h3>
+    </div>
+<%- else -%>
+  <h2>Total handling rate for assigned questions for these colleagues for the last 6 months:</h2>
+  <% if @handling_counts[:all] and @handling_counts[:all][:total] > 0 %>
+     <p><span class="completions" style="background-position: -<%=((100 - (@handling_counts[:all][:ratio]*100).to_i) * 2) %>px 0">
+     <em><%= number_to_percentage(@handling_counts[:all][:ratio]*100, :precision => 0) %> (out of <%= @handling_counts[:all][:total] %>)</em></span></p>
+  <% else %>
+      <p><strong>These colleagues haven't handled any questions in the last 6 months.</strong></p>
+  <% end%>
+
+  <p>The handling rate tries to answer the question "How likely is a person going to do something with a question that is assigned to her/him?" It is calculated by counting the number of times a person was assigned a question and either resolved or reassigned it, and dividing that by the total number of questions assigned to that person. Resolved includes answered, responded with 'no answer' or marked as spam. Rejected questions are excluded from this calculation because rejections usually involve duplicates or bounced emails and the assignee may not be aware of these circumstances.</p>
+
+  <h2>Handling rates by colleague:</h2>
+  <table cellspacing="0" id="dashboard">
+      <tr>
+          <th>Colleague</th>
+          <th id="completions">Handled <br> or Completed</br><br/>(last 6 months)</th>
+          <th>Avg handling time<br> (anytime assigned)</br> <br/>(last 6 months)</th>        
+          <th>Most recent login</th>
+      <tr>
+        
+      <% @userlist.each do |user| %>
+        <%- if @showall or @handling_counts[user.id] -%>
+          <tr>
+              <td <%= user.is_question_wrangler? ? "class='qw'" : "" %>><%= link_to("#{user.fullname}", aae_profile_url(:id => user.login), :title => "Ask an Expert profile") %><%= link_to("#{user.login}", {:controller => '/people/colleagues', :action => 'showuser', :id => user.login}, :title => "People profile", :class => "subtle") %>
+              </td>
+                  <%- 
+                      if @handling_counts[user.id]
+                          aae_handling_event_count = @handling_counts[user.id] 
+                      else 
+                          aae_handling_event_count = {:total => 0, :handled => 0, :ratio => 0} 
+                      end
+                      if @handling_averages[user.id]
+                          aae_handling_average = @handling_averages[user.id] 
+                      else 
+                          aae_handling_average = 0
+                      end                    
+                  -%>
+                <td class="completions" style="background-position: -<%=((100 - (aae_handling_event_count[:ratio]*100).to_i) * 2) %>px 0">
+                <%= number_to_percentage(aae_handling_event_count[:ratio]*100, :precision => 0) %> (out of <%= aae_handling_event_count[:total] %>)</td>
+                <td><%= (aae_handling_event_count[:handled] > 0 ? "#{number_with_precision(aae_handling_average / 3600, :precision => 0)} hours" : 'n/a') %></td>
+              <td><%= (user.last_login_at) ? time_ago_in_words(user.last_login_at) + ' ago': ''%></td>
+          </tr>
+          <%- end -%>
+        <%- end -%>
+  </table>
+<%- end -%>

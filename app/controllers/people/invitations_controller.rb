@@ -10,6 +10,7 @@ class People::InvitationsController < ApplicationController
   layout 'people'
   before_filter :login_required
   before_filter :check_purgatory
+   
   
   def index
     show = params[:show].nil? ? 'pending' : params[:show]

@@ -5,7 +5,7 @@
         <% @currentuser.social_networks.each do |social_network| %>
             <dl class="usernetwork">
                 <dt class="<%= social_network_class(social_network.network) %>"><%= social_network_link(social_network) %> </dt>
-                <dd><%= link_to("eXtension on " + social_network_name(social_network), {:controller => '/people/colleagues', :action => :socialnetwork, :id => social_network.network}) %></dd>
+                <dd><%= link_to("other colleagues on " + social_network_name(social_network), {:controller => '/people/colleagues', :action => :socialnetwork, :id => social_network.network}) %></dd>
             </dl>
         <% end %>
     </div>

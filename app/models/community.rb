@@ -52,20 +52,20 @@ class Community < ActiveRecord::Base
   has_many :communityconnections, :dependent => :destroy
 
   has_many :users, :through => :communityconnections
-  has_many :validusers, :through => :communityconnections, :source => :user, :conditions => "users.retired = 0 and users.vouched = 1"
-  has_many :wantstojoin, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'wantstojoin' and users.retired = 0 and users.vouched = 1"
-  has_many :joined, :through => :communityconnections, :source => :user, :conditions => "(communityconnections.connectiontype = 'member' OR communityconnections.connectiontype = 'leader') and users.retired = 0 and users.vouched = 1"
-  has_many :members, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'member' and users.retired = 0 and users.vouched = 1"
-  has_many :leaders, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'leader' and users.retired = 0 and users.vouched = 1"
-  has_many :invited, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'invited' and users.retired = 0 and users.vouched = 1"
-  has_many :interest, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'interest' and users.retired = 0 and users.vouched = 1"
-  has_many :nointerest, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'nointerest' and users.retired = 0 and users.vouched = 1"
+  has_many :validusers, :through => :communityconnections, :source => :user, :conditions => "accounts.retired = 0 and accounts.vouched = 1"
+  has_many :wantstojoin, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'wantstojoin' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :joined, :through => :communityconnections, :source => :user, :conditions => "(communityconnections.connectiontype = 'member' OR communityconnections.connectiontype = 'leader') and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :members, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'member' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :leaders, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'leader' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :invited, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'invited' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :interest, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'interest' and accounts.retired = 0 and accounts.vouched = 1"
+  has_many :nointerest, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'nointerest' and accounts.retired = 0 and accounts.vouched = 1"
   
-  has_many :interested, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype IN ('interest','wantstojoin','leader') and users.retired = 0 and users.vouched = 1"
+  has_many :interested, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype IN ('interest','wantstojoin','leader') and accounts.retired = 0 and accounts.vouched = 1"
 
 
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
-  has_many :notifyleaders, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'leader' AND communityconnections.sendnotifications = 1 and users.retired = 0 and users.vouched = 1"
+  has_many :notifyleaders, :through => :communityconnections, :source => :user, :conditions => "communityconnections.connectiontype = 'leader' AND communityconnections.sendnotifications = 1 and accounts.retired = 0 and accounts.vouched = 1"
 
   has_many :activities
 
@@ -87,13 +87,15 @@ class Community < ActiveRecord::Base
 
   has_many :daily_numbers, :as => :datasource
   
+  has_many :email_aliases
+  has_one  :google_group
   
   named_scope :tagged_with_content_tag, lambda {|tagname| 
-    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tagging::CONTENT}"}
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::CONTENT}"}
   }
   
   named_scope :tagged_with_shared_tag, lambda {|tagname| 
-    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tag_kind = #{Tagging::SHARED}"}
+    {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::SHARED}"}
   }
   
   # validations
@@ -117,6 +119,8 @@ class Community < ActiveRecord::Base
    
   before_create :clean_description_and_shortname, :flag_attributes_for_approved
   before_update :clean_description_and_shortname, :flag_attributes_for_approved
+  after_save :update_email_aliases
+  after_save :update_google_group
 
 
   def is_institution?
@@ -233,11 +237,18 @@ class Community < ActiveRecord::Base
     end
     
     if(self.shortname.blank?)
-      self.shortname = self.name.gsub(/\W/,'').downcase
+      tmpshortname = self.name.gsub(/\W/,'').downcase
     else
-      self.shortname = self.shortname.gsub(/\W/,'').downcase
+      tmpshortname = self.shortname.gsub(/\W/,'').downcase
     end
     
+    increment = 1
+    original = tmpshortname
+    while(EmailAlias.mail_alias_in_use?('tmpshortname'))
+      tmpshortname = "#{original}_#{increment}"
+      increment += 1
+    end
+  
   end
   
   def flag_attributes_for_approved
@@ -580,7 +591,7 @@ class Community < ActiveRecord::Base
   end
     
   def drop_nonjoined_taggings
-    systemtaggings =  self.taggings.find(:all, :conditions => {:tag_kind => 'system'})
+    systemtaggings =  self.taggings.find(:all, :conditions => {:tagging_kind => 'system'})
     systemtaggings.each do |tagging|
       if (!self.joined.include?(tagging.owner))
         tagging.destroy
@@ -626,14 +637,39 @@ class Community < ActiveRecord::Base
       return nil
     end
   end
+  
+  def update_email_aliases
+    if(!self.email_aliases.blank?)
+      self.email_aliases.each do |ea|
+        ea.update_attribute(:alias_type, (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE))
+      end
+    else
+      EmailAlias.create(:alias_type => (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE), :community => self)
+    end
+  end
+  
+  def update_google_group
+    if(self.connect_to_google_apps?)
+      if(!self.google_group.blank?)
+        self.google_group.touch
+      else
+        self.create_google_group
+      end
+    else
+      # do nothing
+    end
+    return true
+  end
+  
       
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
+
     
   def self.communitytype_condition(communitytype)
     if(communitytype.nil?)
-      return "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
+      return "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED},#{Community::INSTITUTION})"
     end
     
     case communitytype
@@ -641,8 +677,10 @@ class Community < ActiveRecord::Base
       returncondition = "communities.entrytype = #{Community::APPROVED}"
     when 'usercontributed'
       returncondition = "communities.entrytype = #{Community::USERCONTRIBUTED}"
+    when 'institution'
+      returncondition = "communities.entrytype = #{Community::INSTITUTION}"
     else
-      returncondition = "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED})"
+      returncondition = "communities.entrytype IN (#{Community::APPROVED},#{Community::USERCONTRIBUTED},#{Community::INSTITUTION})"
     end
     
     return returncondition      
@@ -746,7 +784,7 @@ class Community < ActiveRecord::Base
   
   # get all content tag ids (including primary) for all communities
   def self.content_tag_ids
-    content_tag_ids = Tagging.find(:all, :select => "DISTINCT(taggings.tag_id)", :conditions => "taggings.taggable_type = 'Community' AND (taggings.tag_kind = '#{Tagging::CONTENT}' or taggings.tag_kind = '#{Tagging::CONTENT_PRIMARY}')")
+    content_tag_ids = Tagging.find(:all, :select => "DISTINCT(taggings.tag_id)", :conditions => "taggings.taggable_type = 'Community' AND (taggings.tagging_kind = '#{Tagging::CONTENT}' or taggings.tagging_kind = '#{Tagging::CONTENT_PRIMARY}')")
     return content_tag_ids.map{|tag| tag.tag_id}
   end
 

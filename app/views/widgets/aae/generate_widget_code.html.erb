@@ -5,10 +5,11 @@
 <h2>Your Widget Code</h2>
 <p>Copy and paste the following code into your website code.</p>
 <p><%= link_to 'Join the AaE Widgets Community', :controller => 'people/communities', :action => :show, :id => 326 %> for important widget updates.</p>
+<p><%= link_to 'View other attributes for your widget', widgets_view_aae_url(:id => @widget.id) %></p>
 
 <div id="widgetcode">
         <textarea>
-<%= h('<iframe style="border:0" width="100%" src="' +  @widget_url + '" height="300px"></iframe>') %>
+<%= h('<iframe style="border:0" width="100%" src="' +  @widget.widgeturl + '" height="300px"></iframe>') %>
 </textarea>
 </div>
 

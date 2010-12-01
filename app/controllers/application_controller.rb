@@ -22,18 +22,23 @@ class ApplicationController < ActionController::Base
 
   require 'zip_code_to_state'
   require 'image_size'
-  
+
+  before_filter :set_default_request_ip_address
+  before_filter :set_analytics_visitor
   before_filter :set_locale
   before_filter :unescape_params
-  before_filter :personalize
+  before_filter :personalize_location_and_institution
   before_filter :set_request_url_options
-  before_filter :set_default_request_ip_address
   before_filter :set_app_location
-  
+  before_filter :set_currentuser_time_zone
+
   has_mobile_fu
   skip_before_filter :set_mobile_format
   before_filter :mobile_detection
 
+  helper_method :get_location_options
+  helper_method :get_county_options
+  
   def set_app_location
     @app_location_for_display = AppConfig.configtable['app_location']
   end
@@ -67,23 +72,40 @@ class ApplicationController < ActionController::Base
     return [['', '']].concat(locations.map{|l| [l.name, l.id]})
   end
   
-  def get_county_options
+  def get_county_options(provided_location = nil)
     if params[:location_id] and params[:location_id].strip != '' and location = Location.find(params[:location_id])
       counties = location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
-      return [['', '']].concat(counties.map{|c| [c.name, c.id]})
+      return ([['', '']].concat(counties.map{|c| [c.name, c.id]}))
+    elsif(provided_location)
+      counties = provided_location.counties.find(:all, :order => 'name', :conditions => "countycode <> '0'")
+      return ([['', '']].concat(counties.map{|c| [c.name, c.id]}))
     end
   end
   
   def set_default_request_ip_address
-    if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
-      AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
-    elsif(!request.env["REMOTE_ADDR"].nil?)
+    # if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
+    #   AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
+    # elsif(!request.env["REMOTE_ADDR"].nil?)
+    if(!request.env["REMOTE_ADDR"].nil?)
       AppConfig.configtable['request_ip_address'] = request.env["REMOTE_ADDR"]
     else
       AppConfig.configtable['request_ip_address'] = AppConfig.configtable['default_request_ip']
     end
+    return true
   end
   
+  def set_analytics_visitor
+    if(session[:account_id])
+      if(account = Account.find_by_id(session[:account_id]))
+        @analytics_vistor = (account.class == User) ? 'internal' : 'external'
+      else
+        @analytics_vistor = 'anonymous'
+      end
+    else
+      @analytics_vistor = 'anonymous'
+    end
+  end
+    
   def set_locale
     # update session if passed
     session[:locale] = params[:locale] if params[:locale]
@@ -104,11 +126,11 @@ class ApplicationController < ActionController::Base
   end
     
   def do_404
-    personalize if not @personal
+    personalize_location_and_institution if not @personal
     @page_title_text = 'Status 404 - Page Not Found'
     render :template => "/shared/404", :status => "404"
   end
-  
+    
   private
   
   def turn_off_right_column
@@ -128,9 +150,29 @@ class ApplicationController < ActionController::Base
     flash[:failure] = err_msg
   end
   
-  def personalize
+  def personalize_location_and_institution
     @personal = {}
     
+    # get location and county from session, then IP
+    if(!session[:location_and_county].blank? and !session[:location_and_county][:location_id].blank?)
+      @personal[:location] = Location.find_by_id(session[:location_and_county][:location_id])
+      if(!session[:location_and_county][:county_id].blank?)
+        @personal[:county] = County.find_by_id(session[:location_and_county][:county_id])
+      end
+    end
+    
+    if(@personal[:location].blank?)
+      if(location = Location.find_by_geoip)
+        @personal[:location] = location
+        session[:location_and_county] = {:location_id => location.id}
+        if(county = County.find_by_geoip)
+          @personal[:county] = county
+          session[:location_and_county][:county_id] = county.id
+        end
+      end
+    end
+    
+        
     if(!session[:institution_community_id].nil?)
       search_id = session[:institution_community_id]
       begin
@@ -143,10 +185,22 @@ class ApplicationController < ActionController::Base
         @personal[:location] = @personal[:institution].location
       end
     elsif(refering_institution = Community.find_institution_by_referer(request.referer))
-      session[:institution_community_id] = {:value => refering_institution.id.to_s, :expires => 1.month.from_now}
+      session[:institution_community_id] = refering_institution.id.to_s
       @personal[:institution] = refering_institution
-      @personal[:location] = refering_institution.location
+    elsif(@personal[:location])
+      public_institutions_for_location = @personal[:location].communities.institutions.public_list
+      if(!public_institutions_for_location.blank?)
+        if(public_institutions_for_location.size == 1)
+          @personal[:institution] = public_institutions_for_location[0]
+          session[:institution_community_id] = @personal[:institution].id.to_s
+          session[:multistate] = nil
+        else
+          @public_institutions_for_location = public_institutions_for_location
+          session[:multistate] =  @personal[:location].abbreviation
+        end
+      end
     end
+    return true
   end
   
   def set_title(main, sub = nil)

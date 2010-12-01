@@ -34,7 +34,7 @@ class Article < ActiveRecord::Base
   
   has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
   # Note: has_many :content_links - outbound links using the has_many_polymorphs for content_links
-
+  
   def put_in_buckets(categoryarray)
    namearray = []
    categoryarray.each do |name|
@@ -42,6 +42,15 @@ class Article < ActiveRecord::Base
    end
    
    buckets = ContentBucket.find(:all, :conditions => "name IN (#{namearray.map{|n| "'#{n}'"}.join(',')})")
+   # bucket as "notnews" if categoryarray doesn't include 'news' or 'originalnews'
+   if(!categoryarray.include?('news') and !categoryarray.include?('originalnews'))
+     buckets << ContentBucket.find_by_name('notnews')
+   end
+   
+   # force news bucket if categoryarray includes 'originalnews'
+   if(categoryarray.include?('originalnews'))
+     buckets << ContentBucket.find_by_name('news')
+   end
    self.content_buckets = buckets
   end
   
@@ -109,7 +118,7 @@ class Article < ActiveRecord::Base
       articlelist = Article.find(:all, 
                    :select => "articles.*, GROUP_CONCAT(communities.id) as community_ids_string", 
                    :joins => [:content_buckets, {:tags => :communities}], 
-                   :conditions => "DATE(articles.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tag_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
+                   :conditions => "DATE(articles.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
                    :group => "articles.id",
                    :order => "articles.wiki_updated_at DESC")
                    

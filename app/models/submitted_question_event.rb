@@ -20,21 +20,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   before_create :clean_response_and_additionaldata
   
   RESERVE_WINDOW = "date_sub(NOW(), interval 2 hour)"
-  
-  ASSIGNED_TO_TEXT = 'assigned to'
-  RESOLVED_TEXT = 'resolved by'
-  MARKED_SPAM_TEXT = 'marked as spam'
-  MARKED_NON_SPAM_TEXT = 'marked as non-spam'
-  REACTIVATE_TEXT = 're-activated by'
-  REJECTED_TEXT = 'rejected by'
-  NO_ANSWER_TEXT = 'no answer given'
-  RECATEGORIZED_TEXT = 're-categorized by'
-  WORKING_ON_TEXT = 'worked on by'
-  EDITED_QUESTION_TEXT = 'edited question'
-  PUBLIC_RESPONSE_TEXT = 'public response'
-  REOPEN_TEXT = 'reopened'
-  CLOSED_TEXT = 'closed'
-  
+    
   ASSIGNED_TO = 1
   RESOLVED = 2
   MARKED_SPAM = 3
@@ -48,6 +34,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   PUBLIC_RESPONSE = 11
   REOPEN = 12
   CLOSED = 13
+  COMMENT = 14
   
   
   #scopes for sq events
@@ -124,6 +111,15 @@ class SubmittedQuestionEvent < ActiveRecord::Base
       :response => assignment_comment})
   end
   
+  def self.log_comment(question, recipient, initiated_by, comment)
+    sanitized_comment = Hpricot(comment.sanitize).to_html
+    return self.log_event({:submitted_question => question,
+      :initiated_by => initiated_by,
+      :recipient => recipient,
+      :event_state => COMMENT,
+      :response => sanitized_comment})
+  end
+  
   def self.log_reactivate(question, initiated_by)
     return self.log_event({:submitted_question => question,
       :initiated_by => initiated_by,
@@ -150,11 +146,11 @@ class SubmittedQuestionEvent < ActiveRecord::Base
       :response => assignment_comment})
   end
   
-  def self.log_public_response(question, public_user_id)
+  def self.log_public_response(question, submitter_id)
     return self.log_event({:submitted_question => question,
       :initiated_by => User.systemuser,
       :event_state => PUBLIC_RESPONSE,
-      :public_user_id => public_user_id})
+      :submitter_id => submitter_id})
   end
   
   def self.log_close(question, initiated_by)
@@ -189,11 +185,12 @@ class SubmittedQuestionEvent < ActiveRecord::Base
       :event_state => MARKED_NON_SPAM})
   end
   
-  def self.log_recategorize(question, initiated_by, category_string)
+  def self.log_recategorize(question, initiated_by, category_string, previous_category_string)
     return self.log_event({:submitted_question => question,
       :initiated_by => initiated_by,
       :event_state => RECATEGORIZED,
-      :category => category_string})
+      :category => category_string,
+      :previous_category => previous_category_string})
   end
   
   def self.log_working_on(question, initiated_by)
@@ -204,28 +201,37 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   
   def self.convert_state_to_text(state_number)
     case state_number
-    when 1
-      return ASSIGNED_TO_TEXT
-    when 2
-      return RESOLVED_TEXT
-    when 3
-      return MARKED_SPAM_TEXT
-    when 4
-      return MARKED_NON_SPAM_TEXT
-    when 5
-      return REACTIVATE_TEXT
-    when 6 
-      return REJECTED_TEXT
-    when 7 
-      return NO_ANSWER_TEXT
-    when 8
-      return RECATEGORIZED_TEXT
-    when 9
-      return WORKING_ON_TEXT
+    when ASSIGNED_TO
+      'assigned to'
+    when RESOLVED
+      'resolved by'
+    when MARKED_SPAM
+      'marked as spam'
+    when MARKED_NON_SPAM
+      'marked as non-spam'
+    when REACTIVATE
+      're-activated by'
+    when REJECTED
+      'rejected by'
+    when NO_ANSWER
+      'no answer given'
+    when RECATEGORIZED
+      're-categorized by'
+    when WORKING_ON
+      'worked on by'
+    when EDIT_QUESTION
+      'edited question'
+    when PUBLIC_RESPONSE
+      'public response'
+    when REOPEN
+      'reopened'
+    when CLOSED
+      'closed'
+    when COMMENT
+      'commented'
     else
       return nil
     end
   end
-  
- 
+   
 end

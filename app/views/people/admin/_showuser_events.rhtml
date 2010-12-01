@@ -8,12 +8,12 @@
         <th>time</th>
     </tr>
     
-    <% @showuser.user_events.each do |user_event| %>
+    <% @showuser.user_events.all(:limit => 50).each do |user_event| %>
         <tr>
             <td><%= user_event.description %></td>
             <td><%= user_event.ip %><br /></td>
             <td><%= user_event.appname %><br /></td>
-            <td><%= user_event.created_at %></td>
+            <td><%= humane_date(user_event.created_at) %></td>
         </tr>
     <% end%>
 </table>

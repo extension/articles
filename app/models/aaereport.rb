@@ -85,7 +85,7 @@ class Aaereport
        cond << " status_state=#{p[:status_state]}"
      end
      if p[:g]=="institution"
-       cond << " users.vouched = 1 and users.retired = 0"
+       cond << " accounts.vouched = 1 and accounts.retired = 0"
      end
      if cond.empty?; return nil
      else

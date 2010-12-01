@@ -12,7 +12,7 @@
   </tr>
   
   <% @learn_sessions.each do |learn_session| %>
-    <% formatted_time = format_time(learn_session, learn_session.session_start) %>
+    <% formatted_time = format_learn_time(learn_session, learn_session.session_start) %>
     <tr>
       <td>
          <% if learn_session.recording.blank? %>
@@ -38,9 +38,17 @@
     <%- when 'recent' -%>
       <p>No recent sessions have been listed yet.</p>
     <%- when 'myattended' -%>
-      <p>You haven't told us that you have attended any sessions yet.  Browse to any recent session, and click the "I attended this session" checkbox. </p>      
+      <%- if @currentuser -%>
+        <p>You haven't told us that you have attended any sessions yet.  Browse to any recent session, and click the "I attended this session" checkbox. </p>
+      <%- else -%>
+        <p>You must be <%= link_to("signed in", :action => :login_redirect, :return_back => request.request_uri) %> to view your attended sessions</p>
+      <%- end -%>
     <%- when 'myinterested' -%>
-      <p>You haven't told us that you are interested in any sessions yet.  Browse to any session, and click the "I'm interested in this topic" checkbox. </p>
+      <%- if @currentuser -%>
+        <p>You haven't told us that you are interested in any sessions yet.  Browse to any session, and click the "I'm interested in this topic" checkbox. </p>
+      <%- else -%>
+        <p>You must be <%= link_to("signed in", :action => :login_redirect, :return_back => request.request_uri) %> to view your interested sessions</p>
+      <%- end -%>
     <%- else -%>
       <p>No sessions have been listed yet.</p>
     <%- end -%>

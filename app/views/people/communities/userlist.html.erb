@@ -16,7 +16,7 @@
 <% end %>
 	
 <% if !@csvreporturl.nil? %>
-	<p id="cvs"><%= link_to('Download a list of these users (csv)',@csvreporturl) %> </p>
+	<p id="csv"><%= link_to('Download a list of these users (csv)',@csvreporturl) %> </p>
 <% end %>
 
 <%= make_community_userlist_filter_line(@community,@findoptions) %>
