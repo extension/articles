@@ -94,6 +94,21 @@ class ParamsFilter
             true
           end
         end
+      elsif(options[:default])
+        @filtered_parameters[name] = FilteredParameter.new(name,nil,options)
+        (class << self; self; end).class_eval do
+          define_method name do 
+            @filtered_parameters[name].filtered
+          end
+          
+          define_method "_#{name}" do 
+            @filtered_parameters[name]
+          end
+          
+          define_method "#{name}?" do 
+            true
+          end
+        end
       else
         # TODO: honor items that might have a default parameter.
         (class << self; self; end).class_eval do
