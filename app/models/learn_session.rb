@@ -99,7 +99,9 @@ class LearnSession < ActiveRecord::Base
     content << "Session Start: " + t_start.strftime("%B %e, %Y at %l:%M %p %Z") + "\n" +
                "Session Length: " + self.session_length.to_s + " minutes\n"
     content << "Recording: " + self.recording if !self.recording.blank?
-        
+    
+    content = word_wrap(simple_format(auto_link(content, :all, :target => "_blank")))
+    
     Atom::Entry.new do |e|
       e.title = Atom::Content::Html.new(self.title)
       e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
