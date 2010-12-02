@@ -7,6 +7,7 @@
 
 require 'uri'
 class LearnSession < ActiveRecord::Base
+  include ActionView::Helpers::UrlHelper
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   include ERB::Util
   include ActionView::Helpers::TagHelper
