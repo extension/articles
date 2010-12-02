@@ -144,6 +144,9 @@ class AppConfig
     # value is days
     @@configtable['recent_feature_limit'] = 30
     
+    @@configtable['default_feed_content_limit'] = 50
+    @@configtable['max_feed_content_limit'] = 200
+    
     
     @@configtable['cse_id'] = 'NotSet'
     @@configtable['cse_secret'] = 'NotSet'

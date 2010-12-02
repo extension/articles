@@ -53,32 +53,5 @@ class AnnotationEvent < ActiveRecord::Base
     
     AnnotationEvent.create(opts)
   end
-  
-  def self.find_with_feed
-    select = "SQL_CALC_FOUND_ROWS #{self.table_name}.*"
 
-    conditions = ['']
-
-    conditions.first << "#{self.table_name}.created_at >= ?"
-    conditions.concat([@feed.gdata_params[:published_min]])
-    conditions.first << " and #{self.table_name}.created_at < ?"
-    conditions.concat([@feed.gdata_params[:published_max]])
-        
-    limit = "#{@feed.gdata_params[:start_index] - 1}, #{@feed.gdata_params[:max_results] - 1}"
-    
-    entries = self.ordered.limit(limit).find(:all, :select => select,
-                  :conditions => conditions)
-    
-    total_possible_results = entries.empty? ? 0 : entries[0].class.count_by_sql("SELECT FOUND_ROWS()")
-    
-    return entries, total_possible_results
-  end
-  
-  def self.changes_feed(params)
-    opts = {:feed_title => "Search - Annotation Changes"}
-    opts.merge!(params)
-    @feed = Feed.new(opts)
-    entries, total_possible_results = AnnotationEvent.find_with_feed
-    feed.serve(entries, total_possible_results)
-  end
 end
