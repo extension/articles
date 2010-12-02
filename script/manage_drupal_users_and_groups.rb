@@ -195,7 +195,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   
   puts "updating the og table..."
   
-  sql = "REPLACE INTO #{drupaldatabase}.og (gid,etid,entity_type,label,state,created) SELECT #{mydatabase}.communities.drupal_node_id,#{mydatabase}.communities.drupal_node_id,'node',#{mydatabase}.communities.name,1,UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+  sql = "REPLACE INTO #{drupaldatabase}.og (etid,entity_type,label,state,created) SELECT #{mydatabase}.communities.drupal_node_id,'node',#{mydatabase}.communities.name,1,UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
   
   # execute the sql
   begin
