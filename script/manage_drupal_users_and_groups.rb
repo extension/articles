@@ -78,7 +78,7 @@ def new_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   puts "inserting revisions..."
   
   # insert into revisions
-  sql = "INSERT INTO #{drupaldatabase}.node_revisions (nid,uid,title,log,timestamp) SELECT 0,1,#{mydatabase}.communities.name,'Added by synchronization script',UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NULL;"
+  sql = "INSERT INTO #{drupaldatabase}.node_revision (nid,uid,title,log,timestamp) SELECT 0,1,#{mydatabase}.communities.name,'Added by synchronization script',UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NULL;"
   
   # execute the sql
   
@@ -96,7 +96,7 @@ def new_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   
   puts "inserting nodes..."
   
-  sql = "INSERT INTO #{drupaldatabase}.node (vid,type,title,uid,created,changed,promote) SELECT vid,'group',#{drupaldatabase}.node_revisions.title,1,UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),1 FROM #{drupaldatabase}.node_revisions WHERE #{drupaldatabase}.node_revisions.nid = 0 and #{drupaldatabase}.node_revisions.log = 'Added by synchronization script';"
+  sql = "INSERT INTO #{drupaldatabase}.node (vid,type,language,title,uid,created,changed,promote) SELECT vid,'group','und',#{drupaldatabase}.node_revision.title,1,UNIX_TIMESTAMP(),UNIX_TIMESTAMP(),1 FROM #{drupaldatabase}.node_revision WHERE #{drupaldatabase}.node_revision.nid = 0 and #{drupaldatabase}.node_revision.log = 'Added by synchronization script';"
   
   # execute the sql
   
@@ -114,7 +114,7 @@ def new_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   
   puts "setting the node revision id..."
   
-  sql = "UPDATE #{drupaldatabase}.node_revisions,#{drupaldatabase}.node SET #{drupaldatabase}.node_revisions.nid = #{drupaldatabase}.node.nid WHERE #{drupaldatabase}.node.vid = #{drupaldatabase}.node_revisions.vid AND #{drupaldatabase}.node.type = 'group' AND #{drupaldatabase}.node_revisions.title = #{drupaldatabase}.node.title;"
+  sql = "UPDATE #{drupaldatabase}.node_revision,#{drupaldatabase}.node SET #{drupaldatabase}.node_revision.nid = #{drupaldatabase}.node.nid WHERE #{drupaldatabase}.node.vid = #{drupaldatabase}.node_revision.vid AND #{drupaldatabase}.node.type = 'group' AND #{drupaldatabase}.node_revision.title = #{drupaldatabase}.node.title;"
   
   # execute the sql
   
@@ -178,7 +178,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   
   puts "updating revisions table..."
   
-  sql = "UPDATE #{drupaldatabase}.node_revisions,#{drupaldatabase}.node SET #{drupaldatabase}.node_revisions.title = #{drupaldatabase}.node.title,#{drupaldatabase}.node_revisions.log = 'Updated by synchronization script',#{drupaldatabase}.node_revisions.uid = 1 WHERE #{drupaldatabase}.node.vid = #{drupaldatabase}.node_revisions.vid AND #{drupaldatabase}.node.type = 'group'  AND #{drupaldatabase}.node_revisions.title != #{drupaldatabase}.node.title;"
+  sql = "UPDATE #{drupaldatabase}.node_revision,#{drupaldatabase}.node SET #{drupaldatabase}.node_revision.title = #{drupaldatabase}.node.title,#{drupaldatabase}.node_revision.log = 'Updated by synchronization script',#{drupaldatabase}.node_revision.uid = 1 WHERE #{drupaldatabase}.node.vid = #{drupaldatabase}.node_revision.vid AND #{drupaldatabase}.node.type = 'group'  AND #{drupaldatabase}.node_revision.title != #{drupaldatabase}.node.title;"
   
   # execute the sql
   begin
@@ -195,7 +195,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   
   puts "updating the og table..."
   
-  sql = "REPLACE INTO #{drupaldatabase}.og (nid,og_selective,og_description,og_register,og_directory,og_private) SELECT #{mydatabase}.communities.drupal_node_id,3,#{mydatabase}.communities.name,0,1,0 FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+  sql = "REPLACE INTO #{drupaldatabase}.og (etid,entity_type,label,state,created) SELECT #{mydatabase}.communities.drupal_node_id,'node',#{mydatabase}.communities.name,1,UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
   
   # execute the sql
   begin
@@ -210,36 +210,40 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
 
   ####### # delete current memberships
   
-  puts "deleting managed memberships from the og_uid table..."
+  puts "deleting managed memberships from the og_users_roles table..."
   
-  sql = "DELETE #{drupaldatabase}.og_uid.* FROM #{drupaldatabase}.og_uid,#{mydatabase}.communities WHERE #{drupaldatabase}.og_uid.nid = #{mydatabase}.communities.drupal_node_id AND #{mydatabase}.communities.connect_to_drupal = 1;"
+  sql = "DELETE #{drupaldatabase}.og_users_roles.* FROM #{drupaldatabase}.og_users_roles,#{drupaldatabase}.og,#{mydatabase}.communities WHERE #{drupaldatabase}.og_users_roles.gid = #{drupaldatabase}.og.gid AND #{drupaldatabase}.og.etid = #{mydatabase}.communities.drupal_node_id AND #{mydatabase}.communities.connect_to_drupal = 1;"
   
   # execute the sql
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during the og_uid deletion: #{err}"
+    $stderr.puts "ERROR: Exception raised during the og_users_roles deletion: #{err}"
     return false
   end
   
-  puts "og_uid managed memberships deleted..."
+  puts "og_users_roles managed memberships deleted..."
 
 
   ####### # set current memberships
   
-  puts "creating managed memberships in the og_uid table..."
+  puts "creating managed memberships in the og_users_roles table..."
   
-  sql = "INSERT INTO #{drupaldatabase}.og_uid (nid,is_active,is_admin,uid,created,changed) SELECT #{mydatabase}.communities.drupal_node_id,1,IF(#{mydatabase}.communityconnections.connectiontype = 'leader',1,0),#{mydatabase}.communityconnections.user_id,UNIX_TIMESTAMP(#{mydatabase}.communityconnections.created_at),UNIX_TIMESTAMP(#{mydatabase}.communityconnections.updated_at) FROM  #{mydatabase}.communities, #{mydatabase}.communityconnections WHERE #{mydatabase}.communities.id = #{mydatabase}.communityconnections.community_id AND #{mydatabase}.communityconnections.connectiontype IN ('leader','member') AND #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+  # hardcoded roles - do not change these roles in drupal!!
+  # leader = 3
+  # member = 2
+
+  sql = "INSERT INTO #{drupaldatabase}.og_users_roles (uid,rid,gid) SELECT #{mydatabase}.communityconnections.user_id,IF(#{mydatabase}.communityconnections.connectiontype = 'leader',3,2),#{drupaldatabase}.og.gid FROM  #{drupaldatabase}.og, #{mydatabase}.communities, #{mydatabase}.communityconnections WHERE #{drupaldatabase}.og.etid = #{mydatabase}.communities.drupal_node_id AND #{mydatabase}.communities.id = #{mydatabase}.communityconnections.community_id AND #{mydatabase}.communityconnections.connectiontype IN ('leader','member') AND #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
   
   # execute the sql
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during the og_uid creation: #{err}"
+    $stderr.puts "ERROR: Exception raised during the og_users_roles creation: #{err}"
     return false
   end
   
-  puts "og_uid managed memberships created..."
+  puts "og_users_roles managed memberships created..."
 
 end
 
@@ -254,6 +258,6 @@ mydatabase = User.connection.instance_variable_get("@config")[:database]
 # replace/insert user accounts
 result = update_from_darmok_users(User.connection,@drupaldatabase,mydatabase)
 # new groups
-#result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
 # groups update
-#result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
