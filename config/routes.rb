@@ -139,9 +139,16 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'sitemap_faq', :controller => 'feeds', :action => 'sitemap_faq'
   map.connect 'sitemap_events', :controller => 'feeds', :action => 'sitemap_events'
   map.connect 'feeds', :controller => 'feeds'
-  map.connect 'feeds/:action', :controller => 'feeds', :requirements => {:action => /articles|article|faqs|events|all/}
-  map.connect 'feeds/:action/-/*content_tags', :controller => 'feeds'
-  map.connect 'feeds/:action/:type/*id', :controller => 'feeds'
+    
+  map.redirect 'feeds/articles', :controller => 'feeds', :action => 'content', :content_types => 'articles', :permanent => true  
+  map.redirect 'feeds/faqs', :controller => 'feeds', :action => 'content', :content_types => 'faqs', :permanent => true  
+  map.redirect 'feeds/events', :controller => 'feeds', :action => 'content', :content_types => 'events', :permanent => true  
+  map.redirect 'feeds/all', :controller => 'feeds', :action => 'content', :permanent => true  
+
+  map.connect 'feeds/community/-/:tags', :controller => 'feeds'
+  map.content_feed 'feeds/content/:tags', :controller => 'feeds', :action => 'content'
+  map.connect 'feeds/:action', :controller => 'feeds'
+  
   ## print routes
   map.connect 'article/:id/print', :controller => 'articles', :action => 'page', :print => 1, :requirements => { :id => /\d+/ }
   map.connect 'faq/:id/print', :controller => 'faq', :action => 'detail', :print => 1
