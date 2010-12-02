@@ -5,6 +5,9 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
+# THIS LIBRARY IS DEPRECATED - DO NOT USE!  DO NOT USE!
+# SLATED FOR REPLACEMENT BY ParamsFilter:  http://justcode.extension.org/issues/938#note-4
+
 class FilterParams < ParamExtensions::ParametersFilter
   
   # -----------------------------------
