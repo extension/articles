@@ -168,5 +168,25 @@ class ParamsFilter
     end
     return findoptions
   end
+  
+
+  def option_values_hash(filter = true)
+    returnhash = {}
+    
+    if(!filter)
+      @filtered_parameters.each do |key,value|
+        returnhash[key] = value.unfiltered
+      end
+    else
+      @filtered_parameters.each do |key,value|
+        returnvalue = value.filtered
+        if(!returnvalue.nil?)
+          returnhash[key] = returnvalue
+        end
+      end
+    end
+    
+    return returnhash
+  end
 
 end
