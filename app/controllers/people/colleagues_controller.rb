@@ -405,56 +405,6 @@ class People::ColleaguesController < ApplicationController
     end
   end
   
-  def traininginvitations
-    @filterparams = FilterParams.new(params)
-    filter_conditions = []
-    show = @filterparams.status.nil? ? 'all' : @filterparams.status
-    creator = @filterparams.author
-    if(!creator.nil?)
-      filter_conditions << "created_by = #{creator.id}"
-    end
-    case show
-    when 'all'
-      show = 'all'
-    when 'completed'
-      filter_conditions << '(user_id NOT NULL and user_id != 0)'
-    when 'pending'
-      filter_conditions << '(user_id IS NULL or user_id = 0)'
-    else # 'all'
-      show = 'all'
-    end
-    
-    @training_invitation_list = TrainingInvitation.paginate(:all, :include => [:user,:creator], :conditions => filter_conditions.join(' AND '), :order => 'created_at desc',:page => params[:page])
-    
-  end    
-  
-  def new_traininginvitations
-    @page_title = "Create New Training Invitations"
-    if(request.post?)
-      @showresults = true
-      @successes = {}
-      @failures = {}
-      email_address_list = params[:invitations_list].split(%r{,\s*|\s+|\s*\n\s*|\s*\r\n\s*})    
-      email_address_list.each do |email|
-        i = TrainingInvitation.create(:email => email, :creator => @currentuser)
-        if(!i.nil? and i.valid?)
-          @successes[email] = i
-        else
-          @failures[email] = i.errors.full_messages
-        end
-      end
-    end
-  end
-  
-  def destroy_traininginvitation
-    if(request.post?)
-      if(invitation = TrainingInvitation.find_by_id(params[:id]))
-        invitation.destroy
-      end
-    end
-    return redirect_to :action => :traininginvitations
-  end
-  
   def lookup
     @page_title = "Lookup eXtensionID status for Multiple Emails"
     if(request.post?)

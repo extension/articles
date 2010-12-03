@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101130203200) do
+ActiveRecord::Schema.define(:version => 20101203202705) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(:version => 20101130203200) do
   end
 
   create_table "annotation_events", :force => true do |t|
-    t.integer  "user_id",        :default => 1
+    t.integer  "user_id"
     t.string   "annotation_id"
     t.string   "action"
     t.string   "ip"
@@ -956,22 +956,10 @@ ActiveRecord::Schema.define(:version => 20101130203200) do
     t.string "name"
   end
 
-  create_table "training_invitations", :force => true do |t|
-    t.string   "email",        :null => false
-    t.integer  "user_id"
-    t.integer  "created_by"
-    t.datetime "completed_at"
-    t.datetime "expires_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "training_invitations", ["email"], :name => "index_training_invitations_on_email", :unique => true
-
   create_table "update_times", :force => true do |t|
     t.integer  "datasource_id"
-    t.string   "datasource_type"
-    t.string   "datatype"
+    t.string   "datasource_type",     :limit => 25
+    t.string   "datatype",            :limit => 25
     t.datetime "last_datasourced_at"
     t.datetime "created_at"
     t.datetime "updated_at"

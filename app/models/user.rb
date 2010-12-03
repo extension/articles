@@ -522,47 +522,7 @@ class User < Account
     UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "set new password") 
    end
   end
-  
-  # very similiar to confirm_signup, only used for bypassing email confirmation and vouching
-  # for those that have a training_invitation 
-  def training_signup?
-   # is there a training_invitation with my email in it?
-   # TODO: deal with expiration at some point
-   training_invitation = TrainingInvitation.find_by_email(self.email)     
-   return false if(training_invitation.nil?)
-   
-   # TODO: should I check if the training_invitation has already been filled,  not sure how on
-   # earth that could happen, but knowing how this goes, I'm sure it would
-   
-   now = Time.now.utc
-   self.vouched = true 
-   self.vouched_by = training_invitation.created_by
-   self.vouched_at = now
-   
-   # is there an unaccepted normal invitation with this email address in it? - then let's call it an accepted invitation
-   invitation = Invitation.find(:first, :conditions => ["email = '#{self.email}' and status = #{Invitation::PENDING}"])
-   if(!invitation.nil?)
-    invitation.accept(self,now)
-   end
-   
-   # email settings
-   self.emailconfirmed = true
-   self.email_event_at = now
-   self.account_status = User::STATUS_OK
-   
-   if(self.save)
-    UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "training signup")
-    Activity.log_activity(:user => self, :creator => self, :activitycode => Activity::SIGNUP, :appname => 'local')      
-    self.checklistemails
-    self.user_tokens.signups.delete_all
-    training_invitation.update_attributes({:user_id => self.id, :completed_at => now})
-    return true
-   else
-    return false
-   end  
-  end
-  
-  
+    
   def confirm_signup(token,dosave=true)
    now = Time.now.utc
    
