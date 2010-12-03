@@ -49,12 +49,10 @@ class People::ActivityController < ApplicationController
   
   def communities
     filteredparams_list = [{:order => {:default => 'name'}},
-                           {:activitydisplay => {:datatype => :string, :default => 'communityconnection'}},
                            {:communitytype => {:default => 'all'}}]
     @filteredparams = ParamsFilter.new(filteredparams_list,params)    
     
     @displayfilter = @filteredparams.communitytype
-    @activitydisplay = @filteredparams.activitydisplay
     
     # doesn't yet accept a filtered listing
     case @displayfilter

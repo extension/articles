@@ -1370,7 +1370,7 @@ class User < Account
      # list everything that User.filterconditions handles
      # build_date_condition
      filteredparams_list += [:dateinterval,:datefield]
-     # community params - 'community' is actually not really accurate for filterconditions
+     # community params
      filteredparams_list += [:community,:communitytype,:connectiontype]
      # build_association_conditions
      filteredparams_list += [:institution,:location,:position, :county]
