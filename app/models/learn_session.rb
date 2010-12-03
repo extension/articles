@@ -7,6 +7,8 @@
 
 require 'uri'
 class LearnSession < ActiveRecord::Base
+  # mail_to - please note - this *must* come before ActionController::UrlWriter, because we need url_for out of ActionController::UrlWriter
+  # don't swap these includes
   include ActionView::Helpers::UrlHelper
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   include ERB::Util
