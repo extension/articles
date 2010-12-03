@@ -110,7 +110,6 @@ class ParamsFilter
           end
         end
       else
-        # TODO: honor items that might have a default parameter.
         (class << self; self; end).class_eval do
           define_method name do 
             nil
