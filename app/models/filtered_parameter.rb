@@ -59,7 +59,6 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:activityaddress] = :string 
   RECOGNIZED_PARAMETERS[:activity] = :activity 
   RECOGNIZED_PARAMETERS[:activitygroup] = :activitygroup 
-  RECOGNIZED_PARAMETERS[:activitydisplay] = :string 
   RECOGNIZED_PARAMETERS[:ignorecommunity] = :community
   RECOGNIZED_PARAMETERS[:communityactivity] = :string 
   # graphing/data/gviz api related
