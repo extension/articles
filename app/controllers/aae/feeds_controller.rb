@@ -11,7 +11,7 @@ class Aae::FeedsController < ApplicationController
   DATE_EXPRESSION = "date_sub(curdate(), interval 7 day)"
   
   def expertise
-    @filterparams = FilterParams.new(params)
+    @filterparams = ParamsFilter.new([:legacycategory],params)
     if(@filterparams.legacycategory.nil?)
       @error_message = "Invalid category identifier"
       return render_error
@@ -33,8 +33,8 @@ class Aae::FeedsController < ApplicationController
   end
   
   def incoming
-    @filterparams = FilterParams.new(params)
-    
+    @filterparams = ParamsFilter.new([:county,:location,:person,:source,:legacycategory],params)
+        
     filteroptions = {}
     filteroptions[:category] = @filterparams.legacycategory
     filteroptions[:county] = @filterparams.county
@@ -69,14 +69,7 @@ class Aae::FeedsController < ApplicationController
   end
   
   def my_assigned
-    @filterparams = FilterParams.new(params)
-    if(@filterparams.person.nil?)
-      # check for use of 'user_id' param
-      if(!params[:user_id].nil?)
-        @filterparams.person = params[:user_id]
-      end
-    end
-    
+    @filterparams = ParamsFilter.new([:county,:location,:person,:source,:legacycategory],params)  
     if(@filterparams.person.nil?)
       @error_message = "Invalid account specified"
       return render_error
@@ -118,8 +111,8 @@ class Aae::FeedsController < ApplicationController
   end
   
   def resolved
-    @filterparams = FilterParams.new(params)
-    
+    @filterparams = ParamsFilter.new([:county,:location,:person,:source,:legacycategory],params)  
+        
     filteroptions = {}
     filteroptions[:category] = @filterparams.legacycategory
     filteroptions[:county] = @filterparams.county
@@ -167,7 +160,7 @@ class Aae::FeedsController < ApplicationController
   end
   
   def escalation
-    @filterparams = FilterParams.new(params)
+    @filterparams = ParamsFilter.new([:legacycategory],params)      
     sincehours = AppConfig.configtable['aae_escalation_delta'] = 24
     
     linkoptions = {}
