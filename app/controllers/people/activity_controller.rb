@@ -34,18 +34,12 @@ class People::ActivityController < ApplicationController
       flash[:error] = 'That user does not exist'  
       return(redirect_to(:action => 'index'))
     end      
-    @filteredparameters = FilterParams.new(params)
-
-
+    
     @activitylist = @showuser.activities.displayactivity.paginate(:all, :order => 'created_at DESC', :page => params[:page])
     @page_title = "Activity for #{@showuser.fullname}"
     feedtitle = "#{@showuser.fullname} Activity Atom Feed"
 
-    urlparams = @filteredparameters.option_values_hash.merge({:id => @showuser.id, :feedkey => @currentuser.feedkey})
-    urlparams.delete(:dateinterval)
-    urlparams.delete(:datefield)
-    urlparams.merge!({:controller => '/people/feeds', :action => :showuser})
-    @feedurl = url_for(urlparams)
+    @feedurl = url_for({:controller => '/people/feeds', :action => :showuser, :id => @showuser.id, :feedkey => @currentuser.feedkey})
     @feedlink = "<link rel='alternate' type='application/atom+xml' href='#{@feedurl}', title='#{feedtitle}' />"
     respond_to do |format|
       format.html # show.html.erb
@@ -54,12 +48,13 @@ class People::ActivityController < ApplicationController
   end
   
   def communities
-    @filteredparams = FilterParams.new(params)
-    @filteredparams.order=@filteredparams.order('name')
-    @findoptions = @filteredparams.findoptions
+    filteredparams_list = [{:order => {:default => 'name'}},
+                           {:activitydisplay => {:datatype => :string, :default => 'communityconnection'}},
+                           {:communitytype => {:default => 'all'}}]
+    @filteredparams = ParamsFilter.new(filteredparams_list,params)    
     
-    @displayfilter = @filteredparams.communitytype.nil? ? 'all' : @filteredparams.communitytype
-    @activitydisplay = @filteredparams.activitydisplay.nil? ? 'communityconnection' : @filteredparams.activitydisplay
+    @displayfilter = @filteredparams.communitytype
+    @activitydisplay = @filteredparams.activitydisplay
     
     # doesn't yet accept a filtered listing
     case @displayfilter
@@ -86,14 +81,14 @@ class People::ActivityController < ApplicationController
   end
   
   def list
-    @filteredparams = FilterParams.new(params)
-    @filteredparams.order=@filteredparams.order('activities.created_at','DESC')
+    filteredparams_list = [{:order => {:default => 'activities.created_at DESC'}}]
+    filteredparams_list += Activity.filteredparameters
+    @filteredparams = ParamsFilter.new(filteredparams_list,params)    
     @findoptions = @filteredparams.findoptions
     @filterstring = @filteredparams.filter_string
-
+  
     @page_title = "Activity"
     feedtitle = "Activity Atom Feed #{@filterstring}"
-    
     
     urlparams = @filteredparams.option_values_hash.merge({:feedkey => @currentuser.feedkey})
     urlparams.delete(:dateinterval)

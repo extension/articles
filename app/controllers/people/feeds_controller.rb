@@ -82,8 +82,9 @@ class People::FeedsController < ApplicationController
   end
   
   def list
-    @filteredparams = FilterParams.new(params)
-    @filteredparams.order=@filteredparams.order('activities.created_at','DESC')
+    filteredparams_list = [{:order => {:default => 'activities.created_at DESC'}}]
+    filteredparams_list += Activity.filteredparameters
+    @filteredparams = ParamsFilter.new(filteredparams_list,params)    
     @findoptions = @filteredparams.findoptions
     @filterstring = @filteredparams.filter_string
     feedoptions = {}
