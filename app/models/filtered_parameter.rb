@@ -147,10 +147,14 @@ class FilteredParameter
         nil # TODO: raise invalid error
       end 
     when :date
-      begin        
-        Time.zone.parse(value).to_date 
-      rescue 
-        nil # TODO: raise invalid error
+      if(value.is_a?(Date))
+        return value
+      else
+        begin        
+          Time.zone.parse(value).to_date 
+        rescue 
+          nil # TODO: raise invalid error
+        end
       end
     when :boolean     
       self.class.value_to_boolean(value)
