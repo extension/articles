@@ -1364,14 +1364,28 @@ class User < Account
    def self.top_tags_by_conditions(conditions,limit=25)
     validusers.tag_frequency(:conditions => conditions, :order => 'frequency DESC', :limit => limit)
    end
-       
+  
+   def self.filteredparameters
+     filteredparams_list = []
+     # list everything that User.filterconditions handles
+     # build_date_condition
+     filteredparams_list += [:dateinterval,:datefield]
+     # community params - 'community' is actually not really accurate for filterconditions
+     filteredparams_list += [:community,:communitytype,:connectiontype]
+     # build_association_conditions
+     filteredparams_list += [:institution,:location,:position, :county]
+     # build_agreement_status_conditions
+     filteredparams_list += [:agreementstatus]
+     # others, socialnetwork name, announcements, allusers
+     filteredparams_list += [{:socialnetwork => :string},{:announcements => :boolean},{:allusers => :boolean}]
+     filteredparams_list
+   end     
        
    def self.filterconditions(options={})      
     joins = []
     conditions = []
 
     conditions << build_date_condition(options)
-    #conditions << build_entrytype_condition(options)
 
     if(options[:community])
       joins << :communities
@@ -1388,18 +1402,13 @@ class User < Account
     
     # agreement status?
     conditions << build_agreement_status_conditions(options)
-    
-    
+      
     # social network?
-    if(options[:socialnetwork] or options[:socialnetworks])
-      networknames = options[:socialnetworks].nil? ? options[:socialnetwork] :   options[:socialnetworks]
+    if(options[:socialnetwork])
       joins << :social_networks
-      conditions << SocialNetwork.get_filter_condition(networknames)
+      conditions << SocialNetwork.get_filter_condition(options[:socialnetwork])
     end
 
-    # agreement status?
-    conditions << build_agreement_status_conditions(options)
-    
     # announcements?
     if(!options[:announcements].nil?)
       if(options[:announcements])

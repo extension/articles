@@ -172,10 +172,11 @@ class People::ColleaguesController < ApplicationController
   end
 
   def list
-    @filteredparams = FilterParams.new(params)
-    if(@filteredparams.dateinterval.nil?)
-      @filteredparams.dateinterval = 'all'
-    end
+    # override :dateinterval
+    filteredparams_list = [{:dateinterval => {:default => 'all'}},:order]
+    filteredparams_list += User.filteredparameters.reject{|key| key.to_s == 'dateinterval'}
+    @filteredparams = ParamsFilter.new(filteredparams_list,params)
+    
     @findoptions = @filteredparams.findoptions
     @filterstring = @filteredparams.filter_string
     
