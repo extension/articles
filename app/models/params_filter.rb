@@ -164,7 +164,7 @@ class ParamsFilter
   def findoptions
     findoptions = {}
     @filtered_parameters.keys.each do |param|
-      findoptions[param] = @filtered_parameters[param].unfiltered
+      findoptions[param] = @filtered_parameters[param].filtered
     end
     return findoptions
   end
