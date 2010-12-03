@@ -194,6 +194,26 @@ class Activity < ActiveRecord::Base
   # -----------------------------------
   class << self
     
+    def filteredparameters
+      filteredparams_list = []
+      # list everything that Activity#useractivity_filter handles - which needs to be refactored
+      # build_date_condition
+      filteredparams_list += [:dateinterval,:datefield]
+      # build_activity_conditions
+      filteredparams_list += [:appname,:activityapplication,:activityaddress,:activity,:activitygroup]
+      # build_activityentrytype_condition
+      filteredparams_list += [:activityentrytype]
+      # build_community_joins, build_communitytype_joins, build_community_conditions, build_communitytype_conditions
+      filteredparams_list += [:communityactivity,:connectiontype]
+      # build_userlimit_condition
+      filteredparams_list += [:person]
+      # build_association_conditions
+      filteredparams_list += [:institution,:location,:position, :county]
+      # useractivity_filter itself
+      filteredparams_list += [{:allactivity => :boolean},:community,:communitytype, {:allusers => :boolean}]
+      filteredparams_list
+    end
+    
     def per_page
       25
     end
