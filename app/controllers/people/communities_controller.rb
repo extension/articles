@@ -174,15 +174,11 @@ class People::CommunitiesController < ApplicationController
   end
   
   def downloadlists
-    @filteredparams = FilterParams.new(params)
-    if(@filteredparams.dateinterval.nil?)
-      @filteredparams.dateinterval = 'all'
-    end
-    if(@filteredparams.communitytype.nil?)
-      @filteredparams.communitytype = 'approved'
-    end    
-    @findoptions = @filteredparams.findoptions
-    
+    # override :dateinterval and communitytype
+    filteredparams_list = [{:dateinterval => {:default => 'all'}},{:communitytype => {:default => 'approved'}}]
+    filteredparams_list += Community.userfilteredparameters.reject{|key| (key.to_s == 'dateinterval' or key.to_s == 'communitytype')}
+    @filteredparams = ParamsFilter.new(filteredparams_list,params)    
+    @findoptions = @filteredparams.findoptions          
     @communities = Community.filtered(@findoptions).displaylist
     @communitycounts = Community.userfilter_count(@findoptions)
   end
@@ -196,17 +192,11 @@ class People::CommunitiesController < ApplicationController
     end
     @am_i_leader = @currentuser.is_community_leader?(@community)   
     
-    @filteredparams = FilterParams.new(params)
-    @filteredparams.community = @community.id
-    if(@filteredparams.connectiontype.nil?)
-      @filteredparams.connectiontype = 'joined'
-    end
-
-    if(@filteredparams.dateinterval.nil?)
-      @filteredparams.dateinterval = 'all'
-    end
-
-    @findoptions = @filteredparams.findoptions
+    # override :dateinterval and communitytype and community
+    filteredparams_list = [{:dateinterval => {:default => 'all'}},{:community => {:default => @community.id}},{:connectiontype => {:default => 'joined'}},:order]
+    filteredparams_list += User.filteredparameters.reject{|key| (key.to_s == 'dateinterval' or key.to_s == 'communitytype' or key.to_s == 'community')}
+    @filteredparams = ParamsFilter.new(filteredparams_list,params)    
+    @filteredparams = ParamsFilter.new(filteredparameters_list,params)
 
     @page_title = @community.name + ': ' + Communityconnection::TYPES[@filteredparams.connectiontype]
         # download check    

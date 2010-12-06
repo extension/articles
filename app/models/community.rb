@@ -733,6 +733,24 @@ class Community < ActiveRecord::Base
     end
   end
   
+  def self.userfilteredparameters
+    filteredparams_list = []
+    # list everything that userfilter_conditions handles
+    # build_date_condition
+    filteredparams_list += [:dateinterval,:datefield]
+    # build_entrytype_condition
+    filteredparams_list += [{:entrytype => :integer}]
+    # community params 
+    filteredparams_list += [:community,:communitytype,:connectiontype]
+    # build_association_conditions
+    filteredparams_list += [:institution,:location,:position, :county]
+    # agreement status
+    filteredparams_list += [:agreementstatus]
+    # allusers
+    filteredparams_list += [{:allusers => :boolean}]
+    filteredparams_list
+  end
+  
   def self.userfilter_conditions(options={})
     joins = [:users]
     

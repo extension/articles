@@ -125,19 +125,11 @@ module People::CommunitiesHelper
   
   
   def make_community_userlist_filter_line(community,options = {})
-    filteredparameters = FilterParams.new(options)    
+    filteredparameters = ParamsFilter.new(User.filteredparameters,params)    
     returntext = '<ul id="usertypes">'
     displayfilter = params[:connectiontype].nil? ? 'all' : params[:connectiontype]
     
-    # # all
-    # if(community.users.count > 0)
-    #   if(displayfilter == 'all')
-    #     returntext += "<li class='filtered'>All</li>"
-    #   else
-    #     returntext += "<li>#{link_to('All',userlist_people_community_url(community.id, :connectiontype => 'all'))}</li>"
-    #   end
-    # end
-    
+  
     # joined
     if(User.filtered_count(options.merge({:community => community, :connectiontype => 'joined'})) > 0)
       if(displayfilter == 'joined')
