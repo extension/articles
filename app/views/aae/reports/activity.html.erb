@@ -2,62 +2,44 @@
 
 <div id="report">
 
-<p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= @page_title %></p>
+  <p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= @page_title %></p>
 
-<h1>General Overview</h1>
+  <h1>General Overview</h1>
 
-<%= render(:partial => 'date_selection') %>
+  <%= render(:partial => 'date_selection') %>
 
-<table class="general_table" cellspacing="0">
-    <tr>
-        <td>Open Questions (awaiting an answer)</td>
-        <td class="count"><%= number_with_delimiter((@rept.NewQuestion({:dateinterval => @dateinterval},[]))[0]) %></td>
-    </tr>
-    <tr>
-        <td>Resolved Questions</td>
-        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:dateinterval => @dateinterval},[]))[0]) %></td>
-    <tr>
-        <td>Answered</td>
-        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:dateinterval => @dateinterval, :status_state=> SubmittedQuestion::STATUS_RESOLVED},[]))[0]) %></td>
-    </tr>
+  <table class="general_table" cellspacing="0">
+      <tr>
+          <td>Open Questions (awaiting an answer)</td>
+          <td class="count"><%= number_with_delimiter(@open) %></td>
+      </tr>
+      <tr>
+          <td>Resolved Questions</td>
+          <td class="count"><%= number_with_delimiter(@resolved) %></td>
+      <tr>
+          <td>Answered</td>
+          <td class="count"><%= number_with_delimiter(@answered) %></td>
+      </tr>
     
-    <tr>
-        <td>Rejected</td>
-        <td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:dateinterval => @dateinterval, :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]) %></td>
-    </tr>
-    <tr>
-		<td>Responded to with 'No Expertise'</td>
-		<td class="count"><%= number_with_delimiter((@rept.ResolvedQuestion({:dateinterval => @dateinterval, :status_state => SubmittedQuestion::STATUS_NO_ANSWER}, []))[0]) %></td>
-	</tr>
+      <tr>
+          <td>Rejected</td>
+          <td class="count"><%= number_with_delimiter(@rejected) %></td>
+      </tr>
+      <tr>
+  		<td>Responded to with 'No Expertise'</td>
+  		<td class="count"><%= number_with_delimiter(@noanswer) %></td>
+  	</tr>
 
-</table>
+  </table>
 
 
-<div id="browse">
+  <div id="browse">
     <h3>Browse Statistics</h3>
     <ul>
-        <li><%= link_to "General Statistics by State", { :action => 'activity_by_state', :datefrom => ((@dateinterval) ? @dateinterval[0].to_s : nil), :dateto => ((@dateinterval) ? @dateinterval[1].to_s : nil)}  %></li>
-       <li><% form_tag({:action => :activity_by_tag, :datefrom => ((@dateinterval) ? @dateinterval[0].to_s : nil), :dateto=> ((@dateinterval) ? @dateinterval[1].to_s : nil)}) do %>
-
-        <% options_array= Array.new%>
-        <%@cats.each do |stobj|
-
-              options_array << stobj.name
-
-         %>      
-        <% end %>
-
-        <%options_array.insert(0, "")%>
-            <label>General Statistics by Tag</label>
-            <select name="category">
-            <%= options_for_select(options_array) %>
-            </select>
-<%= submit_tag "Enter" %>
-
-        <% end %>
-        </li>
+      <li><%= link_to "General Statistics by State", { :action => 'activity_by_state', :datefrom => ((@dateinterval) ? @dateinterval[0].to_s : nil), :dateto => ((@dateinterval) ? @dateinterval[1].to_s : nil)}  %></li>
+      <li><%= link_to "General Statistics by Category", { :action => 'activity_by_tag', :datefrom => ((@dateinterval) ? @dateinterval[0].to_s : nil), :dateto => ((@dateinterval) ? @dateinterval[1].to_s : nil)}  %></li>
     </ul>                
-</div> 
+  </div> 
 		
 </div>	
 	

@@ -16,12 +16,14 @@ class Aae::ReportsController < ApplicationController
 
   ##Activity Reports
   def activity
-     @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
-   	 @latest_date = Date.today
-   	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})           
-     @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
-     @rept = Aaereport.new(:name => "Activity")
-     @cats = Category.find(:all, :order => 'name')
+    @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+    @latest_date = Date.today
+    @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date}) 
+    @open = SubmittedQuestion.by_dateinterval(@dateinterval).submitted.count
+    @resolved = SubmittedQuestion.by_dateinterval(@dateinterval).resolved.count
+    @answered = SubmittedQuestion.by_dateinterval(@dateinterval).answered.count
+    @rejected = SubmittedQuestion.by_dateinterval(@dateinterval).rejected.count
+    @noanswer = SubmittedQuestion.by_dateinterval(@dateinterval).not_answered.count           
   end
     
   def handlingrate_by_community
