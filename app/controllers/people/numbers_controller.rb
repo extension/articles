@@ -87,10 +87,12 @@ class People::NumbersController < ApplicationController
   end
   
   def summary
-    @filteredparams = FilterParams.new(params)
+    filteredparameters_list = [:community,:forcecacheupdate]
+    filteredparameters_list += Activity.filteredparameters
+    @filteredparams = ParamsFilter.new(filteredparameters_list,params)
     @filterstring = @filteredparams.filter_string
     
-    if(params[:community] and @filteredparams.community.nil?)
+    if(@filteredparams.community? and @filteredparams.community.nil?)
       flash[:error] = 'That community does not exist'  
       return(redirect_to(:action => 'index'))
     else
@@ -99,6 +101,7 @@ class People::NumbersController < ApplicationController
     
     totaloptions = baseoptions.merge({:findoptions => @filteredparams.findoptions})
     @total = NumberSummary.new(totaloptions)
+    
             
     lastmonthoptions = baseoptions.merge({:findoptions => @filteredparams.findoptions.merge({:dateinterval => 'withinlastmonth'})})
     lastmonthoptions[:summarydateinterval] = 'withinlastmonth'

@@ -17,7 +17,7 @@
     </tr>
     <% if !total.positions.nil? and total.positions != 0 %>
     <tr>
-        <td><%= link_to("Represented Positions",url_for_itemlist(:positions,total.findoptions)) %></td>
+        <td><%= link_to("Represented Positions",url_for_itemlist(:positions,@filteredparams,{:dateinterval => 'all'})) %></td>
         <td class="bignumber"><%= number_with_delimiter(total.positions)%></td>
     </tr>
     <% end %>
@@ -28,17 +28,17 @@
 <table cellspacing="0">
     <tr><th></th><th class="righttext">Total</th><th class="righttext">Members</th></tr>
     <tr>
-        <td><%= link_to("Institutions",url_for_itemlist(:communities,total.findoptions,{:communitytype => 'institution',:connectiontype => 'joined'})) %></td>
+        <td><%= link_to("Institutions",url_for_itemlist(:communities,@filteredparams,{:dateinterval => 'all',:communitytype => 'institution',:connectiontype => 'joined'})) %></td>
         <td class="bignumber"><%= number_with_delimiter(total.communities[:institution][:count])%></td>
         <td class="bignumber"><%= number_with_delimiter(total.communities[:institution][:joined]) %></td>
     </tr>
     <tr>
-        <td><%= link_to("eXtension Communities of Practice",url_for_itemlist(:communities,total.findoptions,{:communitytype => 'approved',:connectiontype => 'joined'})) %></td>
+        <td><%= link_to("eXtension Communities of Practice",url_for_itemlist(:communities,@filteredparams,{:dateinterval => 'all',:communitytype => 'approved',:connectiontype => 'joined'})) %></td>
         <td class="bignumber"><%= number_with_delimiter(total.communities[:approved][:count])%></td>
         <td class="bignumber"><%= number_with_delimiter(total.communities[:approved][:joined]) %></td>
     </tr>
     <tr>
-        <td><%= link_to("People-contributed Communities",url_for_itemlist(:communities,total.findoptions,{:communitytype => 'usercontributed',:connectiontype => 'joined'})) %></td>
+        <td><%= link_to("People-contributed Communities",url_for_itemlist(:communities,@filteredparams,{:dateinterval => 'all',:communitytype => 'usercontributed',:connectiontype => 'joined'})) %></td>
         <td class="bignumber"><%= number_with_delimiter(total.communities[:usercontributed][:count])%></td>
         <td class="bignumber"><%= number_with_delimiter(total.communities[:usercontributed][:joined]) %></td>
     </tr>
@@ -51,7 +51,7 @@
 
     <% if !total.locations.nil? and !total.locations != 0 %>
     <tr>
-        <td><%= link_to("States and related",url_for_itemlist(:locations,total.findoptions)) %></td>
+        <td><%= link_to("States and related",url_for_itemlist(:locations,@filteredparams,{:dateinterval => 'all'})) %></td>
         <td class="bignumber"><%= number_with_delimiter(total.locations) %></td>
     </tr>
     <tr>
