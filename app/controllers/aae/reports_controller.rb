@@ -123,45 +123,24 @@ class Aae::ReportsController < ApplicationController
          nar
      end 
        
-     def activity_by_tag
-          @filteredparams = FilterParams.new(params)  #can this be useful here? for hackers of the url? filter by location as well...
-          @filteredoptions = @filteredparams.findoptions
-           @typename = params[:category] ;  @locid = nil; @statename=nil ; @locname=nil ; @filtstr=""    #was :Category
-           @statename = params[:State]    #in case someone hacks in &State=NY...use abbreviation
-           if (loc=Location.find_by_id(params[:location]))  #in case someone hacks in &location=n...
-                @locname = "#{loc.id} (" + loc.name + ")"
-                @locid = loc.id
-                if (@statename && (loc.abbreviation != @statename  || loc.name != @statename))   ##someone typed in both and they don't match
-                    params[:State] = nil    ##currently not allowing mutliple locations filtering
-                    @statename = nil
-                end                           
-            end
-            if params[:State] && !@locid
-             if (loc=Location.find_by_abbreviation(params[:State])) || (loc=Location.find_by_name(params[:State]))
-               @locid = loc.id
-               @locname = loc.name
-             end
-            end
-           @filteredoptions.merge!({:location => loc}) if (@locid && !params[:location])  ##should probably add :State into the FilterParams wantsparameter lists
-            cat = Category.find_by_name(@typename); ((@locid) ? @filtstr = "Filtered by Location= #{@locname}" : "") 
-            
-             @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
-          	 @latest_date = Date.today
-          	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
-             
-            @typelist = [cat]
-            if !cat.nil?
-                #tagname = Tag.normalize_tag(cat.name)
-                @rept = Aaereport.new({:name => "ActivityCategory", :filters => @filteredoptions})
-            else
-                redirect_to :controller => 'aae/reports', :action => 'sel_active_cats' 
-            end
-       end  
+  def activity_by_tag
+    @filteredparams = ParamsFilter.new([{:showempty => {:datatype => :boolean, :default => true}}],params)
 
-       def sel_active_cats
-        @cats = Category.find(:all, :order => 'name')
-       end
-       
+    @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+  	@latest_date = Date.today
+    @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+    @categories = Category.find(:all, :order => 'name')
+
+    @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+    @latest_date = Date.today
+
+    @total_by_category = SubmittedQuestion.by_dateinterval(@dateinterval).count(:include => :categories, :group => 'categories.id')
+    @open_by_category = SubmittedQuestion.by_dateinterval(@dateinterval).submitted.count(:include => :categories, :group => 'categories.id')
+    @resolved_by_category = SubmittedQuestion.by_dateinterval(@dateinterval).resolved.count(:include => :categories, :group => 'categories.id')
+    @answered_by_category = SubmittedQuestion.by_dateinterval(@dateinterval).answered.count(:include => :categories, :group => 'categories.id')
+    @rejected_by_category = SubmittedQuestion.by_dateinterval(@dateinterval).rejected.count(:include => :categories, :group => 'categories.id')
+    @noanswer_by_category = SubmittedQuestion.by_dateinterval(@dateinterval).not_answered.count(:include => :categories, :group => 'categories.id')
+  end
              
        def siftna(sa)
           #sift the n/a to the bottom

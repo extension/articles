@@ -31,10 +31,6 @@
        <% end %>
     </div>
 </div>
-<% sta = SubmittedQuestion::STATUS_RESOLVED%>
-<% str = SubmittedQuestion::STATUS_REJECTED%>
-<% stn = SubmittedQuestion::STATUS_NO_ANSWER%>
-<% p = {:date1 => @dateinterval[0], :date2 => @dateinterval[1]}%>
 
 <table cellspacing="0" class="stats" summary="<%= genstring %>">
 	<% even = false %> 
@@ -46,75 +42,33 @@
         <th scope="col">Answered</th>
         <th scope="col">Rejected</th>
         <th scope="col">Responded to with 'No Expertise'</th>
- 
-    </tr>
- 
-<% if @typelist%>
-  
-  <% @typelist.each do |x| %>
-
-    <% p.merge!({:catid => x.id})%>
-
-    <tr <%= ' class="shaded"' if even %>>
-	   <td class="left">
-		  <%= x.name %>
-	   </td>
-	    <% @asgn = (@rept.NewQuestion(p,[]))[0] %>
-       <td <%= ' class="empty"' if @asgn==0 %>>
-	     <!-- number of open incoming faqs in assigned state -->
-	        <% if @asgn%>
-	    	<%= link_to @asgn, :action => "display_tag_questions", :category => @typename, :locname => @locname, :locid => @locid, :descriptor =>"New" , :dateto =>p[:date2], :datefrom => p[:date1], :num => @asgn%>
-	         
-	      <!--   <%= @asgn%>-->
-	        <% end%>
-	   </td>
-	    <% @reslvd = (@rept.ResolvedQuestion(p,[]))[0]%>
-	   <td <%= ' class="empty"' if @reslvd==0 %>>
-		 <!-- number of incoming faqs that have been Resolved one way or another -->
-		    <% if @reslvd%>
-	    	<%= link_to @reslvd, :action => "display_tag_questions", :category => @typename, :locname => @locname, :locid => @locid, :descriptor =>"Resolved" ,  :dateto => p[:date2], :datefrom => p[:date1], :num => @reslvd%>
-			     
-	        <!--  <%= @reslvd%> -->
-           <% end%>
-	   </td>
-	     <% @answ = (@rept.ResolvedQuestion(p.merge!({:status_state => sta}),[]))[0]%>
-	     <td <%= ' class="empty"' if @answ==0 %>>
-			 <!-- number of incoming faqs in answered state -->
-			    <% if @answ%>
-				<%= link_to @answ, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{sta}" ,  :dateto => p[:date2], :datefrom => p[:date1], :num => @answ%>
-				    
-		       <!--  <%= @answ%> -->
-		        <% end %>
-		   </td>
-		   <% @rej = (@rept.ResolvedQuestion(p.merge!({:status_state => str}),[]))[0]%>
-		  <td <%= ' class="empty"' if @rej==0 %>>
-			 <!-- number of incoming faqs in in rejected state -->
-			    <% if @rej%>
-				<%= link_to @rej, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{str}" , :dateto => p[:date2], :datefrom => p[:date1], :num => @rej%>
-				    
-		      <!--   <%= @rej%> -->
-		        <% end%>
-		   </td>
-		   <% @noexp = (@rept.ResolvedQuestion(p.merge!({:status_state => stn}),[]))[0]%>
-		<td <%= ' class="empty"' if @noexp==0 %>>
-			 <!-- number of incoming faqs in no_answer state -->
-			    <% if @noexp%>
-				<%= link_to @noexp, :action => "display_tag_questions", :category => @typename,  :locname => @locname, :locid => @locid, :descriptor =>"Resolved#{stn}" ,:dateto => p[:date2], :datefrom => p[:date1], :num => @noexp%>
-			
-		     <!--   <%= @noexp%> -->
-		        <%end%>
-		   </td>
-
-	 </tr>
-	<% if even 
-         even = false 
-     else 
-         even = true 
-     end %>
-	
-   <% end %>
-<%end %>
-
+     </tr>
+  <%- @categories.each do |category| -%>
+    <%- if @filteredparams.showempty or (@total_by_category[category.id] and @total_by_category[category.id] > 0) -%>
+      <tr <%= ' class="shaded"' if even %>>
+       <td class="left">
+        <%= category.name %>
+       </td>
+       <td>
+         <%=  @open_by_category[category.id] ? @open_by_category[category.id] : 0 %>
+       </td>
+       <td>
+         <%=  @resolved_by_category[category.id] ? @resolved_by_category[category.id] : 0 %>
+       </td>
+       <td>
+         <%=  @answered_by_category[category.id] ? @answered_by_category[category.id] : 0 %>
+       </td>
+       <td>
+         <%=  @rejected_by_category[category.id] ? @rejected_by_category[category.id] : 0 %>
+       </td>
+       <td>
+         <%=  @noanswer_by_category[category.id] ? @noanswer_by_category[category.id] : 0 %>
+       </td>
+      </tr>
+      <% even = !even %> 
+    <%- end -%>
+  <%- end -%>         
+         
  </table>
 
 </div>

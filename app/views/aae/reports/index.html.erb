@@ -63,7 +63,7 @@
         <li>
             <%= link_to " General Overview",  {:action => 'activity'}, {:class => 'report_doc'} %>,
 	        <%= link_to "by State", { :action => 'activity_by_state'}  %>, 
-		    <%= link_to "by Tag", { :action => 'sel_active_cats'} %>
+		    <%= link_to "by Tag", { :action => 'activity_by_tag'} %>
 		</li>
        <li>Response Times: <%= link_to "Overall", :action => "response_times"%>, <%= link_to "by category",  :action => 'response_times_by_category' %>,  <%= link_to "by responder location", :action => 'response_times_by_location' %></li>
        <li>Expertise (Content Area and Geographic Region): <%= link_to "Overview", :action => 'answerers'%></li>
