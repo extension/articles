@@ -258,7 +258,7 @@ class Aae::ReportsController < ApplicationController
            end
          
           if @user
-             @uresolved = @user.resolved_questions.date_subs(@date1, @date2).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
+             @uresolved = @user.resolved_questions.by_dateinterval(@dateinterval).count(:conditions => "status_state in (#{SubmittedQuestion::STATUS_RESOLVED}, #{SubmittedQuestion::STATUS_REJECTED}, #{SubmittedQuestion::STATUS_NO_ANSWER})")
              @uassigned = @user.ever_assigned_questions(:dateinterval => @dateinterval).count
              @ucurrently_assigned = @user.assigned_questions.count(:conditions => "status_state= #{SubmittedQuestion::STATUS_SUBMITTED} and spam= false")
              @avgstdresults = @user.get_avg_resp_time(:dateinterval => @dateinterval)
@@ -532,7 +532,7 @@ class Aae::ReportsController < ApplicationController
          @locid = @typeobj.id; @county_id = nil
       
            @reguser = User.date_users(@date1, @date2).count(:conditions => "location_id=#{@locid}")
-            @open = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@locid} and spam=FALSE")
+            @open = SubmittedQuestion.by_dateinterval(@dateinterval).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and location_id=#{@locid} and spam=FALSE")
            ##################################################################################################################################################        
            # The following is the breakdown of Ask an Expert questions where two different perspectives are requested for the state and shown on the report.
            # The first perspective is on the questions that were asked that pertain to the state. For these we want to know the total resolved,
@@ -656,7 +656,7 @@ class Aae::ReportsController < ApplicationController
        
            @reguser = User.date_users(@date1, @date2).count(:conditions => "county_id = #{@typeobj.id}")
          
-        @open = SubmittedQuestion.date_subs(@date1, @date2).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id} and spam=FALSE")
+        @open = SubmittedQuestion.by_dateinterval(@dateinterval).count(:conditions =>  " status_state=#{SubmittedQuestion::STATUS_SUBMITTED} and county_id=#{@typeobj.id} and spam=FALSE")
          ##############################################################################################################################################################
          # The following is the breakdown of Ask an Expert questions where two different perspectives are requested for the county and shown on the report.
          # The first perspective is on the questions that were asked that pertain to the county. For these we want to know the total resolved,
