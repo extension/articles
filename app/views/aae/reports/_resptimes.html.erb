@@ -78,47 +78,46 @@
   </tr>
   <% end %>
  
-<% if @typelist%>
+<% if @itemlist%>
 
     <% even = false %>
-    <% @typelist.each do |x| %>
+    <%  @itemlist.each do |item| %>
     
         <%if ! ((@date1 || @date2 || @datec1 || @datec2))%>
             <tr <%= ' class="shaded"' if even %>>
-                <td class="left"><%= x[0] %></td>
-                <td <%= ' class="zero"' if !@nof[x[0]] %>>
-                    <%= (@nof[x[0]] && @nof[x[0]] > 0) ? @nof[x[0]] : "0" %>
+                <td class="left"><%= item %></td>
+                <td <%= ' class="zero"' if !@nof[item] %>>
+                    <%= (@nof[item] && @nof[item] > 0) ? @nof[item] : "0" %>
                 </td>
-		        <td <%= ' class="zero"' if !@var3[x[0]] %>>
-			        <%=   (@var3[x[0]] && @var3[x[0]] > 0) ? @var3[x[0]] : "0" %>
+		        <td <%= ' class="zero"' if !@var3[item] %>>
+			        <%=   (@var3[item] && @var3[item] > 0) ? @var3[item] : "0" %>
                 </td>
-                <!-- <td <%= ' class="empty"' if @var2[x[0]]==0 %>><%= (@var2[x[0]] && @var2[x[0]] > 0) ? @var2[x[0]] : "0"%></td> -->
-	            <td <%= ' class="empty"' if !@var1[x[0]] %>>
-			        <%=  (@var1[x[0]] && @var1[x[0]] > 0) ? ("%.2f"  % @var1[x[0]] ): "n/a" %>
+	            <td <%= ' class="empty"' if !@var1[item] %>>
+			        <%=  (@var1[item] && @var1[item] > 0) ? ("%.2f"  % @var1[item] ): "n/a" %>
 		        </td>
             </tr>
         <% end %>
         
         <% if (@date1 && @date2) || (@datec1 && @datec2)%>
             <tr <%= ' class="shaded"' if even %>>
-                <td class="left"><%= x[0]%></td>
+                <td class="left"><%= item%></td>
                 
-                <td class=" <%= "zero" if !@nos1[x[0]] %>">
-	                <%= (@nos1[x[0]] && @nos1[x[0]] > 0) ? @nos1[x[0]] : "0" %>
+                <td class=" <%= "zero" if !@nos1[item] %>">
+	                <%= (@nos1[item] && @nos1[item] > 0) ? @nos1[item] : "0" %>
 	            </td>
 	            
-	            <td <%= 'class="zero"' if !@nostopn1[x[0]] %>>
-	                <%=  (@nostopn1[x[0]] && @nostopn1[x[0]] > 0) ? @nostopn1[x[0]] : "0" %>
+	            <td <%= 'class="zero"' if !@nostopn1[item] %>>
+	                <%=  (@nostopn1[item] && @nostopn1[item] > 0) ? @nostopn1[item] : "0" %>
 	            </td>
 	            
-	            <td class=" <%= "empty" if !@ppd1[x[0]] %>">
-	                <%=  (@ppd1[x[0]] && @ppd1[x[0]] > 0) ? ("%.2f"  % @ppd1[x[0]] ): "n/a" %>
+	            <td class=" <%= "empty" if !@ppd1[item] %>">
+	                <%=  (@ppd1[item] && @ppd1[item] > 0) ? ("%.2f"  % @ppd1[item] ): "n/a" %>
 	            </td>
 	            <% if (@datec1 && @datec2) %>
-	               <td class=" <%= "empty" if !@ppd1[x[0]] %>">
-	                <% if ((@ppd2[x[0]] && @ppd2[x[0]] >= 0) && (@ppd1[x[0]] && @ppd1[x[0]] > 0))%>
-	                        <span class="responsechange <%= ("positive") if @avgchg[x[0]] > 0 %> <%= ("negative") if @avgchg[x[0]] < 0 %>">
-                                (<%= number_to_percentage(@avgchg[x[0]], :precision => 1) %>)</span>
+	               <td class=" <%= "empty" if !@ppd1[item] %>">
+	                <% if ((@ppd2[item] && @ppd2[item] >= 0) && (@ppd1[item] && @ppd1[item] > 0))%>
+	                        <span class="responsechange <%= ("positive") if @avgchg[item] > 0 %> <%= ("negative") if @avgchg[item] < 0 %>">
+                                (<%= number_to_percentage(@avgchg[item], :precision => 1) %>)</span>
     	            <% else %>
     	                n/a
     	            <% end %>
@@ -127,14 +126,14 @@
 	            
 	            
 	            <% if (@datec1 && @datec2)%>
-                    <td class="dategroup <%= ' zero' if !@nos2[x[0]] %>">
-		                <%= (@nos2[x[0]] && @nos2[x[0]] >0 ) ? @nos2[x[0]] : "0"%>
+                    <td class="dategroup <%= ' zero' if !@nos2[item] %>">
+		                <%= (@nos2[item] && @nos2[item] >0 ) ? @nos2[item] : "0"%>
 		            </td>
-		            <td class="dategroup <%= ' zero' if !@nostopn2[x[0]] %>">
-		                <%=  (@nostopn2[x[0]] && @nostopn2[x[0]]) ? @nostopn2[x[0]] : "0"%>
+		            <td class="dategroup <%= ' zero' if !@nostopn2[item] %>">
+		                <%=  (@nostopn2[item] && @nostopn2[item]) ? @nostopn2[item] : "0"%>
 		            </td>
-		            <td class="dategroup <%= "empty" if !@ppd2[x[0]] %>" >
-		                <%=  (@ppd2[x[0]] && @ppd2[x[0]] >= 0) ? ("%.2f"  % @ppd2[x[0]] ): "n/a" %>
+		            <td class="dategroup <%= "empty" if !@ppd2[item] %>" >
+		                <%=  (@ppd2[item] && @ppd2[item] >= 0) ? ("%.2f"  % @ppd2[item] ): "n/a" %>
 		            </td>
                 <% end%>
 			 </tr>

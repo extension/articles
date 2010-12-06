@@ -63,75 +63,14 @@ class Aae::ReportsController < ApplicationController
     @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})
     @handling_averages = User.aae_handling_average({:group_by_id => true, :limit_to_handler_ids => @userlist.map(&:id),:submitted_question_filter => @filteroptions.merge({:notrejected => true})})
   end
-    
-
-     def state_activity
-         @typelist = [];  @open={}; @resolved={}; @answered={}; @rejected={}; @no_expertise={} ; openquestions={}
-             @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
-          	 @latest_date = Date.today
-          	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
-
-          @typelist  = Location.find(:all, :order => "entrytype, name")
-          @rept = Aaereport.new({:name => "ActivityGroup", :filters => {:g => 'state', :dateinterval => @dateinterval}})
-          openquestions = (@rept.NewQuestion({},[]))[0] 
- 
-          reslvd = (@rept.ResolvedQuestion({},[]))[0]
-          answed = (@rept.ResolvedQuestion({ :status_state => SubmittedQuestion::STATUS_RESOLVED},[]))[0]
-          rejectd = (@rept.ResolvedQuestion({ :status_state => SubmittedQuestion::STATUS_REJECTED},[]))[0]
-          noexp = (@rept.ResolvedQuestion({:status_state => SubmittedQuestion::STATUS_NO_ANSWER},[]))[0]
-            stuv = nil
-             @typelist.each do |st|
-                stuv = st.id
-                @open[st.name]= openquestions[stuv]
-                @resolved[st.name] = reslvd[stuv]
-                @answered[st.name] = answed[stuv]
-                @rejected[st.name] = rejectd[stuv]
-                @no_expertise[st.name] = noexp[stuv]
-              end
-      end
-      
-      
   
-    def activity_by_state
-      # thoughts..
-      # what does it mean if someone selects state and tags? a subdivision of states with category entries? or vice versa? How do we allow them to do the vice-versa?
-      # obviously these are more complicated summary reports.  Or, could start with state, tags and then allow, on the
-      # display screen under where they choose the date, to select 1 of something else that may exist (ie, communities), which would result in one entry on the next page for the combination
-  
-       state_activity
-  
-       	if(params[:sortorder] and params[:sortorder]=='d')
-     			@sortorder = 'desc'
-     		else
-     			@sortorder = 'asc'
-     		end
-
-     		if(params[:orderby] and ['open','resolved','answered','rejected','no_expertise'].include?(params[:orderby]))
-     			@orderby = params[:orderby]
-     		else 
-     			@orderby = 'state'
-     		end
-        @typelist = transform_typelist(@typelist)
-       	# now sort it, if the orderby is 'state', don't bother, it's already sorted from the mysql query
-     		if(@orderby != 'state')
-     		  column = instance_variable_get("@" + @orderby).find_all { |k,v| k!= "ZZ"}   #turn into sortable array
-     			@typelist = ((@sortorder == 'asc') ? column.sort{|a,b| ((a[1]) ? a[1] : 0) <=> ((b[1]) ? b[1] : 0) } : 
-     			                         column.sort{|a,b| ((b[1]) ? b[1] : 0) <=> ((a[1]) ? a[1] : 0)})
-     		end
-     end
-
-     def transform_typelist(typl)
-         nar = []; typl.map { |nm| nar << [nm.name] } 
-         nar
-     end 
-       
   def activity_by_tag
     @filteredparams = ParamsFilter.new([{:showempty => {:datatype => :boolean, :default => true}}],params)
 
     @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
   	@latest_date = Date.today
     @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
-    @categories = Category.find(:all, :order => 'name')
+    @categories = Category.root_categories.all(:order => 'name')
 
     @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
     @latest_date = Date.today
@@ -143,23 +82,29 @@ class Aae::ReportsController < ApplicationController
     @rejected_by_category = SubmittedQuestion.by_dateinterval(@dateinterval).rejected.count(:include => :categories, :group => 'categories.id')
     @noanswer_by_category = SubmittedQuestion.by_dateinterval(@dateinterval).not_answered.count(:include => :categories, :group => 'categories.id')
   end
-             
-       def siftna(sa)
-          #sift the n/a to the bottom
-           tmparray = Array.new; zeroarray=Array.new
-           k = sa.size; i = 0
-           while i < k do
-             if sa[i][1]   # let us not forget that zero could be a legitimate percent change 
-               tmparray << sa[i]
-             else
-               zeroarray << sa[i]
-             end
-             i = i + 1
-           end
-           tmparray + zeroarray
-        end
-   
-       
+
+  
+  def activity_by_state
+    @filteredparams = ParamsFilter.new([{:showempty => {:datatype => :boolean, :default => true}}],params)
+
+    @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+    @latest_date = Date.today
+    @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})
+    @locationlist  = Location.find(:all, :order => "entrytype, name")
+
+    @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+    @latest_date = Date.today
+
+    @total_by_location = SubmittedQuestion.by_dateinterval(@dateinterval).count(:include => :location, :group => 'location_id')
+    @open_by_location = SubmittedQuestion.by_dateinterval(@dateinterval).submitted.count(:include => :categories, :group => 'location_id')
+    @resolved_by_location = SubmittedQuestion.by_dateinterval(@dateinterval).resolved.count(:include => :categories, :group => 'location_id')
+    @answered_by_location = SubmittedQuestion.by_dateinterval(@dateinterval).answered.count(:include => :categories, :group => 'location_id')
+    @rejected_by_location = SubmittedQuestion.by_dateinterval(@dateinterval).rejected.count(:include => :categories, :group => 'location_id')
+    @noanswer_by_location = SubmittedQuestion.by_dateinterval(@dateinterval).not_answered.count(:include => :categories, :group => 'location_id')
+  end
+
+
+                  
         def order_clause(order_by = "submitted_questions.question_updated_at", sort = "desc")
            if !params[:order_by_field].nil?   
              order_by = params[:order_by_field]
@@ -314,8 +259,7 @@ class Aae::ReportsController < ApplicationController
         end
 
         def state_answerers
-         @filteredparams = FilterParams.new(params) 
-         @filteredoptions = @filteredparams.findoptions 
+         @filteredparams = ParamsFilter.new([:category],params) 
           if params[:id]
             catobj = Category.find_by_id(params[:id])
             if catobj
@@ -333,7 +277,7 @@ class Aae::ReportsController < ApplicationController
           end 
           if (@catname  && @catname != "")
             @locs = ExpertiseLocation.find(:all, :order => 'entrytype, name')
-            @loccnt = ExpertiseLocation.expert_loc_userfilter_count(@filteredoptions)
+            @loccnt = ExpertiseLocation.expert_loc_userfilter_count(@filteredparams.findoptions)
             @user_list = catobj.users.find(:all, :order => "accounts.last_name")
             setup_routers_and_wranglers
             
@@ -346,46 +290,33 @@ class Aae::ReportsController < ApplicationController
         end
 
         def category_county
-            #An example using People's general techniques as much as possible
-           @filteredparams=FilterParams.new(params)
-           @filteredoptions = @filteredparams.findoptions
+             @filterparams = ParamsFilter.new([:location], params)
              @cats = Category.find(:all, :conditions => "parent_id is null", :order => "name")
              @csize = @cats.size 
-             @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{params[:location]}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
+             @cnties = ExpertiseCounty.find(:all,  :conditions => "expertise_location_id = #{@filterparams.location.id}", :order => 'countycode, name').collect { |nm| [nm.name, nm.id]}       
              @ysize = @cnties.size
-             @catcnt = Category.catuserfilter_count(@filteredoptions)
-             @cntycnt = ExpertiseCounty.expert_county_userfilter_count(@filteredoptions)
+             @catcnt = Category.catuserfilter_count(@filterparams.findoptions)
+             @cntycnt = ExpertiseCounty.expert_county_userfilter_count(@filterparams.findoptions)
              
-             @user_list = ExpertiseLocation.find_by_id(params[:location]).users.find(:all, :order => "accounts.last_name")
+             @user_list = ExpertiseLocation.find_by_id(@filterparams.location.id).users.find(:all, :order => "accounts.last_name")
              setup_routers_and_wranglers
              
-             @usize = @user_list.size ; @locid = params[:location]
-             @statename = ExpertiseLocation.find_by_id(params[:location]).name
+             @usize = @user_list.size ; @locid = @filterparams.location.id
+             @statename = ExpertiseLocation.find_by_id(@filterparams.location.id).name
              
         end
 
         def category_users
-           @filteredparams=FilterParams.new(params)
-           @filteredoptions = @filteredparams.findoptions
            getparams = ParamsFilter.new([:county, :location], params)
            @statename = nil; @county = nil; @countyid = nil; @locid = nil
-          
-     #     if params[:State]
-    #          @statename = params[:State]
-    #         @locid = ExpertiseLocation.find_by_name(@statename).id
-    #      end
-    #      if params[:County]
-    #        @county = params[:County]
-    #        @countyid= params[:county]
-    #      end
-    #      if (@statename && @county && @statename != "" && @county != "")
+
            if getparams.location && getparams.county
              @countyid = getparams.county.id ; @county = getparams.county.name
              @statename = getparams.location.name
              @locid = ExpertiseLocation.find_by_name(@statename).id
              @cats = Category.find(:all, :conditions => "parent_id is null ", :order => 'name')
              @csize = @cats.size
-             @ctycnt = Category.catuserfilter_count(@filteredoptions)
+             @ctycnt = Category.catuserfilter_count(getparams.findoptions)
              
              @user_list = ExpertiseCounty.find_by_id(@countyid).users.find(:all, :order => "accounts.last_name")
              setup_routers_and_wranglers
@@ -852,65 +783,6 @@ class Aae::ReportsController < ApplicationController
     end
 
 
-     def category_response_times
-       @typelist = []; @nof= {}; @var1={}; @var2={}; @var3={}
-       @nos1={}; @nostopn1={}; @p301 = {}; @ppd1 = {}; @avgchg = {} ; @nos2={}; @nostopn2={}; @p302 = {}; @ppd2 = {}
-       @first_set = nil; @sec_set= nil; @clear1="n"; @clear2="n"
-       @first_set = session[:left_set] if session[:left_set]
-       @sec_set = session[:right_set] if session[:right_set]
-       t= Time.now - 90*24*60*60
-       @prior90th = t.to_date
-       @repaction = 'response_times_by_category'; @pagetype=" Category"; rslts = {}
-        #set up defaults   
-        (rslts[:no_questions],rslts[:avg_responses], rslts[:avg_waiting]) = get_responses_by_category(nil, nil, true, true)
-           # deal with date data
-         (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
-           # selected dates upper
-           (rslts[:nos1_questions], rslts[:avg1_responses],rslts[:avg1_still_open])= get_responses_by_category(@date1, @date2, public1, widget1)
-              if (params[:upper])
-               session[:left_set]= "y"
-             end
-         (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
-            # selected dates lower
-          if (@datec1 && @datec2)
-            (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_category(@datec1, @datec2,  public2, widget2)
-             if (params[:lower])
-              session[:right_set]= "y"
-          end
-        end
-       @type = "Category"
-        @typelist= Category.find(:all, :conditions => "parent_id is null", :order => 'name')
-        response_times_summary(rslts)
-     end
-     
-     
-     def sort_response_times
-       	if(params[:sortorder] and params[:sortorder]=='d')
-      			@sortorder = 'desc'
-      		else
-      			@sortorder = 'asc'
-      		end
-
-      		if(params[:orderby] and [ 'nos1', 'nostopn1', 'ppd1', 'avgchg','nos2','nostopn2','ppd2'].include?(params[:orderby]))
-      			@orderby = params[:orderby]
-      		else 
-      			@orderby = 'State'
-      		end
-      	  russ = []
-         russ = transform_typelist(@typelist)
-         # now sort it...
-         
-       	if(@orderby != 'State')
-       		  column = instance_variable_get("@" + @orderby).find_all { |k,v| k!= "ZZ"}   #turn into sortable array
-        			russ= ((@sortorder == 'asc') ? column.sort{|a,b| ((a[1]) ? a[1] : 0) <=> ((b[1]) ? b[1] : 0) } : 
-        			                         column.sort{|a,b| ((b[1]) ? b[1] : 0) <=> ((a[1]) ? a[1] : 0)})
-       end
-       if @orderby=='avgchg' || @orderby[0..2]=='ppd'
-          russ = siftna(russ)
-       end
-       @typelist = russ
-    end
-
      def response_times_by_category
         if !params[:from]
           @unselected = "y" ; @unselectedc="y" 
@@ -918,8 +790,38 @@ class Aae::ReportsController < ApplicationController
         if params[:from] && params[:from][1]==""
                @sec_set = nil;  session[:right_set] = nil
         end
-        category_response_times
-        sort_response_times
+        
+        # TODO: this desperately has to be rewritten 
+        @typelist = []; @nof= {}; @var1={}; @var2={}; @var3={}
+        @nos1={}; @nostopn1={}; @p301 = {}; @ppd1 = {}; @avgchg = {} ; @nos2={}; @nostopn2={}; @p302 = {}; @ppd2 = {}
+        @first_set = nil; @sec_set= nil; @clear1="n"; @clear2="n"
+        @first_set = session[:left_set] if session[:left_set]
+        @sec_set = session[:right_set] if session[:right_set]
+        t= Time.now - 90*24*60*60
+        @prior90th = t.to_date
+        @repaction = 'response_times_by_category'; @pagetype=" Category"; rslts = {}
+         #set up defaults   
+         (rslts[:no_questions],rslts[:avg_responses], rslts[:avg_waiting]) = get_responses_by_category(nil, nil, true, true)
+            # deal with date data
+          (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
+            # selected dates upper
+            (rslts[:nos1_questions], rslts[:avg1_responses],rslts[:avg1_still_open])= get_responses_by_category(@date1, @date2, public1, widget1)
+               if (params[:upper])
+                session[:left_set]= "y"
+              end
+          (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
+             # selected dates lower
+           if (@datec1 && @datec2)
+             (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_category(@datec1, @datec2,  public2, widget2)
+              if (params[:lower])
+               session[:right_set]= "y"
+           end
+         end
+        @type = "Category"
+         @typelist = Category.find(:all, :conditions => "parent_id is null", :order => 'name')
+         response_times_summary(rslts)
+         @itemlist = @typelist.map(&:name)
+        
      end
 
      def get_responses_by_location(date1, date2, pub, wgt)
@@ -958,36 +860,7 @@ class Aae::ReportsController < ApplicationController
 
       end
 
-      def location_response_times      
-         @typelist = []; @nof= {}; @var1={}; @var2={}; @var3={}
-         @nos1={}; @nostopn1={}; @p301 = {}; @ppd1 = {}; @avgchg={};  @nos2={}; @nostopn2={}; @p302 = {}; @ppd2 = {}
-         @first_set = nil; @sec_set= nil; @clear1="n"; @clear2="n"
-         @first_set = session[:set1] if session[:set1]
-         @sec_set = session[:set2] if session[:set2]
-         t= Time.now - 90*24*60*60
-         @prior90th = t.to_date; 
-         @repaction = 'response_times_by_location' ; rslts={}
-          (rslts[:no_questions],rslts[:avg_responses],rslts[:avg_waiting]) = get_responses_by_location(nil, nil,  true, true)
-             # deal with date data
-           (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
-             # selected dates upper
-             (rslts[:nos1_questions], rslts[:avg1_responses], rslts[:avg1_still_open])= get_responses_by_location(@date1, @date2,  public1, widget1)
-              if params[:upper]
-                 session[:set1]= "y"
-               end
-           (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
-              # selected dates lower
-            if (@datec1 && @datec2)
-              (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_location(@datec1, @datec2,  public2, widget2)
-              if params[:lower]
-                session[:set2]= "y"
-              end
-            end
-         @type = "Location"; @pagetype="Responder Location"
-          @typelist= Location.find(:all,  :order => 'entrytype, name') 
-          response_times_summary(rslts)
-          
-       end
+
 
        def response_times_by_location
           if !params[:from]
@@ -996,8 +869,36 @@ class Aae::ReportsController < ApplicationController
           if params[:from] && params[:from][1]==""
              @sec_set = nil;  session[:set2] = nil
           end
-          location_response_times
-          sort_response_times
+          
+          #TODO - this desparately needs to be rewritten
+          @typelist = []; @nof= {}; @var1={}; @var2={}; @var3={}
+          @nos1={}; @nostopn1={}; @p301 = {}; @ppd1 = {}; @avgchg={};  @nos2={}; @nostopn2={}; @p302 = {}; @ppd2 = {}
+          @first_set = nil; @sec_set= nil; @clear1="n"; @clear2="n"
+          @first_set = session[:set1] if session[:set1]
+          @sec_set = session[:set2] if session[:set2]
+          t= Time.now - 90*24*60*60
+          @prior90th = t.to_date; 
+          @repaction = 'response_times_by_location' ; rslts={}
+           (rslts[:no_questions],rslts[:avg_responses],rslts[:avg_waiting]) = get_responses_by_location(nil, nil,  true, true)
+              # deal with date data
+            (@date1, @date2, public1, widget1, @nodays)=response_dates_upper(@repaction)
+              # selected dates upper
+              (rslts[:nos1_questions], rslts[:avg1_responses], rslts[:avg1_still_open])= get_responses_by_location(@date1, @date2,  public1, widget1)
+               if params[:upper]
+                  session[:set1]= "y"
+                end
+            (@datec1, @datec2, public2, widget2, @nocdays) = response_dates_lower(@repaction)
+               # selected dates lower
+             if (@datec1 && @datec2)
+               (rslts[:nos2_questions], rslts[:avg2_responses], rslts[:avg2_still_open])= get_responses_by_location(@datec1, @datec2,  public2, widget2)
+               if params[:lower]
+                 session[:set2]= "y"
+               end
+             end
+          @type = "Location"; @pagetype="Responder Location"
+           @typelist= Location.find(:all,  :order => 'entrytype, name') 
+           response_times_summary(rslts)
+          @itemlist = @typelist.map(&:name)          
        end
        
        ## end of Response Times Report   
