@@ -16,13 +16,13 @@
 <table cellspacing="0" class="stats" summary="<%= genstring %>">
 	<% even = false %> 
     <tr>
-	    <th scope="col"><%= link_to "State", { :action => params[:action], :orderby=> 'state',  :sortorder => (params[:sortorder] != "a") ? "a" : "d" , :datefrom => @dateinterval[0], :dateto => @dateinterval[1] } %></th> 
+	    <th scope="col">State</th> 
 	   
-        <th scope="col"><%= link_to "Open", { :action => params[:action], :orderby=>'open' , :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1] }%></th>
-        <th scope="col"><%= link_to "Resolved",{ :action => params[:action], :orderby=>'resolved' ,  :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1]  } %></th>
-         <th scope="col"><%= link_to "Answered",{ :action => params[:action], :orderby=>'answered' ,  :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1]  } %></th>
-          <th scope="col"><%= link_to "Rejected",{ :action => params[:action], :orderby=>'rejected' , :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1]  } %></th>
-           <th scope="col"><%= link_to "Responded to with 'No Expertise'",{ :action => params[:action], :orderby=>'no_expertise' ,  :sortorder => (params[:sortorder] != "a") ? "a" : "d",:datefrom => @dateinterval[0], :dateto=>@dateinterval[1]  } %></th>
+        <th scope="col">Open</th>
+        <th scope="col">Resolved</th>
+         <th scope="col">Answered</th>
+          <th scope="col">Rejected</th>
+           <th scope="col">Responded to with 'No Expertise'</th>
      </tr>
 
 <% if @typelist%>
