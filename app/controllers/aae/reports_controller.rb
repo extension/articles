@@ -6,23 +6,23 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Aae::ReportsController < ApplicationController
-    layout  'aae_reports_home'  
-    before_filter :login_required
-    before_filter :check_purgatory
+  layout  'aae_reports_home'  
+  before_filter :login_required
+  before_filter :check_purgatory
 
-     def index
-       @locs = Location.find(:all, :order => "entrytype, name")
-     end
+   def index
+     @locs = Location.find(:all, :order => "entrytype, name")
+   end
 
-    ##Activity Reports
-    def activity
-       @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
-     	 @latest_date = Date.today
-     	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})           
-       @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
-       @rept = Aaereport.new(:name => "Activity")
-       @cats = Category.find(:all, :order => 'name')
-    end
+  ##Activity Reports
+  def activity
+     @earliest_date = SubmittedQuestion.find_earliest_record.created_at.to_date
+   	 @latest_date = Date.today
+   	 @dateinterval = validate_datepicker({:earliest_date => @earliest_date, :default_datefrom => @earliest_date, :latest_date => @latest_date, :default_dateto => @latest_date})           
+     @new= 0; @answ = 0; @resolved=0; @rej = 0; @noexprtse=0
+     @rept = Aaereport.new(:name => "Activity")
+     @cats = Category.find(:all, :order => 'name')
+  end
     
   def handlingrate_by_community
     filteredparams = ParamsFilter.new([:community,:connectiontype,{:showall => :boolean}],params)
