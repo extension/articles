@@ -5,8 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-#include ParamExtensions
-
 module People::NumbersHelper
   
   def nilhash_number_with_delimiter(hash,key) 
