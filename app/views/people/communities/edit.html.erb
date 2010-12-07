@@ -7,71 +7,77 @@
 
 <% form_for :community, @community, :url => people_community_path(@community), :html => { :method => :put } do |community| %>
     <fieldset>
-	    <p class="wide">
-	        <label for="community_name">Community Name:<em class="required">*</em>
-		    <%= community.text_field(:name) %>
-	        </label>
-	    </p>
-	    <p>
-	        <label for="community_description">Community Description:<em class="required">*</em>
-	        <%= community.text_area(:description, {:cols => "30", :rows => "5"}) %>
-	        </label>
-	    </p>
+      <p class="wide">
+          <label for="community_name">Community Name:<em class="required">*</em>
+        <%= community.text_field(:name) %>
+          </label>
+      </p>
+      <p>
+          <label for="community_description">Community Description:<em class="required">*</em>
+          <%= community.text_area(:description, {:cols => "30", :rows => "5"}) %>
+          </label>
+      </p>
 
-		<p>
-    		<label for="community_location_id">Location:</label>
-    		<%= select(:community, :location_id, Location.displaylist.map {|loc| [loc.name,loc.id]}, :include_blank => true) %>
-    	</p>
-		
-	    <p>
-		    <label for="community_memberfilter">Community Membership Filter<em class="required">*</em><a class="tooltip-help" href="#" id="source_trigger">?</a></label>
-    			<%= select(:community, :memberfilter, Community::MEMBERFILTERS.invert, :include_blank => false) %>
-		</p>
+    <p>
+        <label for="community_location_id">Location:</label>
+        <%= select(:community, :location_id, Location.displaylist.map {|loc| [loc.name,loc.id]}, :include_blank => true) %>
+      </p>
+    
+      <p>
+        <label for="community_memberfilter">Community Membership Filter<em class="required">*</em><a class="tooltip-help" href="#" id="source_trigger">?</a></label>
+          <%= select(:community, :memberfilter, Community::MEMBERFILTERS.invert, :include_blank => false) %>
+    </p>
         <div id='source_tooltip' style="display:none;" class="tooltip">
             <p id="tooltip_hook"><strong>Open:</strong> allows anyone to become a member by clicking a "Join" button. <strong>Moderated:</strong> anyone can indicate that they want to join the community, but they have to be approved by a community leader to become members. <strong>Invitation Only:</strong> members can only be invited to join the community</p>
         </div>
 
-	 <p>
-	     <label for="community_tag_list">Provide some initial tags for this community: 
-	     <%= text_area_tag(:tag_list,@community.system_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
-	     <em>Separate tags with commas.</em>
-	     </label>
-	 </p>
-	 	
+   <p>
+       <label for="community_tag_list">Provide some initial tags for this community: 
+       <%= text_area_tag(:tag_list,@community.system_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
+       <em>Separate tags with commas.</em>
+       </label>
+   </p>
+
+  <p>
+    <label><%= check_box(:community,:connect_to_drupal) %>Connect to the eXtension Drupal CMS?</label>
+    <em>Communities can be added as groups within the eXtension Drupal CMS if you check this setting.  eXtension Communities of Practice are automatically connected regardless of this setting.</em>
+  </p>
+
+    
     </fieldset>
     
     <% if(admin_mode?)%>
-	    <fieldset>
-            <legend>Administrative Options:</legend>
-    	    <p>
-    		    <label for="community_entrytype">Community Type<em class="required">*</em></label>
-    			<%= select(:community, :entrytype, get_communitytypes_for_select, :include_blank => false) %> 
-    		</p>
-	
-		<p>
-		    <label for="community_shortname">Community Shortname:
-		    	<%= community.text_field(:shortname) %>
-        	</label>
-        	<em>Community shortnames are an additional unique identifier for the community.  The shortname can be used to link to the community in People, and it becomes the group name (and email address) for Google Apps if this community is connected to Google Apps.</em>		
-		</p>
-		
-		<%- if(!@community.is_institution?) -%>
-		<p>
-	        <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
-	         <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
-	    </p>
-	    <%- end -%>
-	    
-	     <p>
-           <label><%= check_box(:community,:connect_to_google_apps) %>Connect to Google Apps for eXtension.org?</label>
-            <em>Communities can be added as <a href="http://groups.google.com/a/extension.org">groups within Google Apps for eXtension.org</a>. This provides features for inviting group members to docs or sites, and can also provide a web-based mailing list service for all joined members of the community (separate from the lists.extension.org service).  Please review the community shortname before enabling this setting.</em>
-       </p>
-	      	    
-	    </fieldset>
-        
-	<% end %>
+      <fieldset>
+        <legend>Administrative Options:</legend>
+        <%- if(!@community.is_widget?) -%>
+          <p>
+            <label for="community_entrytype">Community Type<em class="required">*</em></label>
+            <%= select(:community, :entrytype, get_communitytypes_for_select, :include_blank => false) %> 
+          </p>
+        <%- end -%>
 
-	<p><%= submit_tag 'Update' %> or <%= link_to 'Cancel', :controller => '/people/communities', :action => :index %></p>
+        <p>
+          <label for="community_shortname">Community Shortname:
+          <%= community.text_field(:shortname) %>
+          </label>
+          <em>Community shortnames are an additional unique identifier for the community.  The shortname can be used to link to the community in People, and it becomes the group name (and email address) for Google Apps if this community is connected to Google Apps.</em>    
+        </p>
+
+        <%- if(!@community.is_institution? and !@community.is_widget?) -%>
+          <p>
+            <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
+            <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
+          </p>
+        <%- end -%>
+
+        <p>
+          <label><%= check_box(:community,:connect_to_google_apps) %>Connect to Google Apps for eXtension.org?</label>
+          <em>Communities can be added as <a href="http://groups.google.com/a/extension.org">groups within Google Apps for eXtension.org</a>. This provides features for inviting group members to docs or sites, and can also provide a web-based mailing list service for all joined members of the community (separate from the lists.extension.org service).  Please review the community shortname before enabling this setting.</em>
+        </p>
+      </fieldset>
+  <% end %>
+
+  <p><%= submit_tag 'Update' %> or <%= link_to 'Cancel', :controller => '/people/communities', :action => :index %></p>
     
  <% end %>
 
