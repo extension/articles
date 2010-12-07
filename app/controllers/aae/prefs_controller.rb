@@ -222,17 +222,6 @@ class Aae::PrefsController < ApplicationController
           user_pref = UserPreference.new(:user => @currentuser, :name => UserPreference::FILTER_WIDGET_ID, :setting => widget.id)
           user_pref.save
         end
-      elsif params[:widget_auto_assign_id] and params[:widget_auto_assign_id].strip != ''
-        widget = Widget.find(:first, :conditions => ["id = ?", params[:widget_auto_assign_id].strip])
-        role_for_widget_routing = Role.find(:first, :conditions => "name = '#{Role::WIDGET_AUTO_ROUTE}'")
-        
-        widget_route_role = UserRole.find(:first, :conditions => ["user_id = #{@currentuser.id} and widget_id = ? and role_id = #{role_for_widget_routing.id}", widget.id])
-        if widget_route_role
-          widget_route_role.destroy
-        else
-          role_to_save = UserRole.new(:user => @currentuser, :role => role_for_widget_routing, :widget => widget)
-          role_to_save.save
-        end
       end
       
       render :update do |page|
