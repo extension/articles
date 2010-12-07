@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101203202705) do
+ActiveRecord::Schema.define(:version => 20101207183522) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -284,6 +284,7 @@ ActiveRecord::Schema.define(:version => 20101203202705) do
     t.boolean  "connect_to_drupal",                     :default => false
     t.integer  "drupal_node_id"
     t.boolean  "connect_to_google_apps",                :default => false
+    t.boolean  "active",                                :default => true
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true

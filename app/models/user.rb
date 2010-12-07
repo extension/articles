@@ -43,7 +43,8 @@ class User < Account
   has_many :notifications, :dependent => :destroy
   
   has_many :widget_events
-  has_many :widgets
+  has_many :created_widgets, :class_name => "Widget", :foreign_key => "user_id"
+  
   has_many :responses
     
   belongs_to :position
@@ -184,6 +185,9 @@ class User < Account
   }
   
 
+  def assigned_widgets
+    self.communities.widgets.map(&:widget)
+  end
       
   def openid_url(claimed=false)
    peoplecontroller = 'people'

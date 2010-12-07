@@ -53,6 +53,7 @@ class Widgets::AaeController < ApplicationController
       redirect_to :action => :index
     else
       @widget_iframe_code = @widget.get_iframe_code
+      @widget_leaders = @widget.leaders
       @widget_assignees = @widget.assignees
       @non_active_assignees = @widget.non_active_assignees
     end
@@ -88,7 +89,7 @@ class Widgets::AaeController < ApplicationController
       if(@widget.enable_tags?)
         @widget.tag_myself_with_shared_tags(params[:tag_list])
       end
-      @currentuser.widgets << @widget
+      @currentuser.created_widgets << @widget
       
     else
       return render :template => '/widgets/aae/new'
