@@ -195,8 +195,8 @@ class People::CommunitiesController < ApplicationController
     # override :dateinterval and communitytype and community
     filteredparams_list = [{:dateinterval => {:default => 'all'}},{:community => {:default => @community.id}},{:connectiontype => {:default => 'joined'}},:order]
     filteredparams_list += User.filteredparameters.reject{|key| (key.to_s == 'dateinterval' or key.to_s == 'communitytype' or key.to_s == 'community')}
-    @filteredparams = ParamsFilter.new(filteredparams_list,params)    
-    @filteredparams = ParamsFilter.new(filteredparameters_list,params)
+    @filteredparams = ParamsFilter.new(filteredparams_list,params)
+    @findoptions = @filteredparams.findoptions
 
     @page_title = @community.name + ': ' + Communityconnection::TYPES[@filteredparams.connectiontype]
         # download check    
