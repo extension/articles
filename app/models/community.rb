@@ -24,6 +24,7 @@ class Community < ActiveRecord::Base
   APPROVED = 1
   USERCONTRIBUTED = 2
   INSTITUTION = 3
+  WIDGET = 4
   
 
   # labels and keys
@@ -31,6 +32,7 @@ class Community < ActiveRecord::Base
   ENTRYTYPES[APPROVED] = {:locale_key => 'approved', :allowadmincreate => true}
   ENTRYTYPES[USERCONTRIBUTED] = {:locale_key => 'user_contributed', :allowadmincreate => true}
   ENTRYTYPES[INSTITUTION] = {:locale_key => 'institution', :allowadmincreate => true}
+  ENTRYTYPES[WIDGET] = {:locale_key => 'widget', :allowadmincreate => false}
   
            
   # membership
@@ -75,6 +77,7 @@ class Community < ActiveRecord::Base
   
   # institutions
   named_scope :institutions, :conditions => {:entrytype => INSTITUTION}
+  named_scope :widgets, :conditions => {:entrytype => WIDGET}
  
   # topics for public site
   belongs_to :topic, :foreign_key => 'public_topic_id'
@@ -87,8 +90,9 @@ class Community < ActiveRecord::Base
 
   has_many :daily_numbers, :as => :datasource
   
-  has_many :email_aliases
+  has_one :email_alias, :dependent => :destroy
   has_one  :google_group
+  has_one  :widget
   
   named_scope :tagged_with_content_tag, lambda {|tagname| 
     {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::CONTENT}"}
@@ -117,9 +121,8 @@ class Community < ActiveRecord::Base
   
   named_scope :ordered_by_topic, {:include => :topic, :order => 'topics.name ASC, communities.public_name ASC'}
    
-  before_create :clean_description_and_shortname, :flag_attributes_for_approved
-  before_update :clean_description_and_shortname, :flag_attributes_for_approved
-  after_save :update_email_aliases
+  before_save :clean_description_and_shortname, :flag_attributes_for_approved
+  after_save :update_email_alias
   after_save :update_google_group
 
 
@@ -242,13 +245,23 @@ class Community < ActiveRecord::Base
       tmpshortname = self.shortname.gsub(/\W/,'').downcase
     end
     
-    increment = 1
-    original = tmpshortname
-    while(EmailAlias.mail_alias_in_use?('tmpshortname'))
-      tmpshortname = "#{original}_#{increment}"
+    increment = 0
+    checkname = tmpshortname
+    
+    while(EmailAlias.mail_alias_in_use?(checkname,self.new_record? ? nil : self) or Community.shortname_in_use?(checkname,self.new_record? ? nil : self))
       increment += 1
+      checkname = "#{tmpshortname}_#{increment}"
     end
+    self.shortname = checkname
+  end
   
+  def self.shortname_in_use?(shortname,checkcommunity = nil)
+    conditions = "shortname = '#{shortname}'"
+    if(checkcommunity)
+      conditions += " AND id <> #{checkcommunity.id}"
+    end
+    count = Community.count(:conditions => conditions)
+    return (count > 0)
   end
   
   def flag_attributes_for_approved
@@ -638,13 +651,11 @@ class Community < ActiveRecord::Base
     end
   end
   
-  def update_email_aliases
-    if(!self.email_aliases.blank?)
-      self.email_aliases.each do |ea|
-        ea.update_attribute(:alias_type, (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE))
-      end
+  def update_email_alias
+    if(!self.email_alias.blank?)
+      self.email_alias.update_attribute(:alias_type, (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE))
     else
-      EmailAlias.create(:alias_type => (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE), :community => self)
+      self.email_alias = EmailAlias.create(:alias_type => (self.connect_to_google_apps? ? EmailAlias::COMMUNITY_GOOGLEAPPS : EmailAlias::COMMUNITY_NOWHERE), :community => self)            
     end
   end
   
