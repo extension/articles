@@ -130,6 +130,10 @@ class Community < ActiveRecord::Base
     return (self.entrytype == INSTITUTION)
   end
   
+  def is_widget?
+    return (self.entrytype == WIDGET)
+  end
+  
   def viewlabel
     if(self.entrytype == INSTITUTION)
       return 'institution'
