@@ -43,7 +43,7 @@ class Widget < ActiveRecord::Base
   end
   
   def assignees
-    self.community.joined
+    self.community.joined.all(:conditions => 'aae_responder = 1')
   end
   
   def leaders
@@ -51,7 +51,7 @@ class Widget < ActiveRecord::Base
   end
   
   def non_active_assignees
-    self.assignees.reject{|u| u.aae_responder}
+    self.community.joined.all(:conditions => 'aae_responder = 0')
   end
   
   def widgeturl
