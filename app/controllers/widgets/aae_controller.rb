@@ -56,6 +56,7 @@ class Widgets::AaeController < ApplicationController
       @widget_leaders = @widget.leaders
       @widget_assignees = @widget.assignees
       @non_active_assignees = @widget.non_active_assignees
+      @widget_connection = @currentuser.connection_with_community(@widget.community)
     end
   end
   
@@ -144,6 +145,41 @@ class Widgets::AaeController < ApplicationController
       @widgets = Widget.get_all_with_assignee_count(:conditions => "widgets.name LIKE '#{params[:widget_name]}%' AND widgets.active = true")
     end
     render :partial => "widget_list", :layout => false
+  end
+  
+  def change_my_connection
+    @widget = Widget.find(params[:id])
+    # no error handling, at least until the spiders get past the auth wall
+    @community = @widget.community      
+    @ismemberchange = true
+    case params[:connectaction]
+    when 'leave'
+      @currentuser.leave_community(@community)
+    when 'join'
+      if(@community.memberfilter == Community::OPEN)
+        @currentuser.join_community(@community)
+      elsif(@community.memberfilter == Community::MODERATED)
+        @ismemberchange = false
+        @currentuser.wantstojoin_community(@community)
+      else
+        # do nothing
+      end
+    when 'accept'
+      @currentuser.accept_community_invitation(@community)
+    when 'decline'
+      @currentuser.decline_community_invitation(@community)
+    else
+      # do nothing
+    end
+      
+    @widget_connection = @currentuser.connection_with_community(@widget.community)
+    @widget_leaders = @widget.leaders
+    @widget_assignees = @widget.assignees
+    @non_active_assignees = @widget.non_active_assignees
+
+    respond_to do |format|
+      format.js
+    end
   end
   
 end

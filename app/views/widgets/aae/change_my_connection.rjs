@@ -1,0 +1,2 @@
+page.replace_html "connectiontowidget", :partial => '/widgets/aae/widget_connection'
+page.replace_html "widget_assignees", :partial => '/widgets/aae/widget_assignees'

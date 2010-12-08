@@ -1,0 +1,42 @@
+<%- if ['leader','member'].include?(@widget_connection) -%>
+
+  <h5>You current receive questions from this widget.</h5>
+  <div id="connection_options">
+    <p class="leave"><%= change_widget_connection_link('connectiontowidget',@widget,"I no longer want to receive questions from this widget",'leave',{:class => "delete"}) -%></p>
+  </div> 
+
+<%- elsif ['invited','invitedmember','invitedleader'].include?(@widget_connection) -%>
+  <p>You have been invited to receive questions from this widget.</p>
+  <p class="button2"><%= change_widget_connection_link('connectiontowidget',@widget,'Accept Invitation','accept') -%></p>
+  <p class="button2"><%= change_widget_connection_link('connectiontowidget',@widget,'Decline Invitation','decline') -%></p>
+  <br class="clearing"/>
+
+<%- elsif ['wantstojoin'].include?(@widget_connection) -%>
+
+  <h5>You have indicated a desire to receive questions from this widget.</h5>
+  <div id="connection_options">
+  <p class="leave"><%= change_widget_connection_link('connectiontowidget',@widget,'I no longer want receive questions from this widget.','leave',{:class => "delete"}) -%></p>
+  </div>
+
+<%- elsif @widget.community.memberfilter == Community::OPEN -%>
+
+  <h5>You don't receive questions from this widget (Membership is open)</h5>
+  <div id="connection_options">
+  <p><%= change_widget_connection_link('connectiontowidget',@widget,"I will receive questions from this widget",'join') -%></p>
+  </div>
+
+<%- elsif @widget.community.memberfilter == Community::MODERATED -%>
+
+  <h5>You don't receive questions from this widget (Membership is moderated)</h5>
+  <div id="connection_options">
+  <p><%= change_widget_connection_link('connectiontowidget',@widget,"I want to receive questions from this widget",'join') -%></p>
+  </div>
+		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :interest => true, :nointerest => false}}) -%>
+<%- elsif @widget.community.memberfilter == Community::INVITATIONONLY -%>
+    
+    <h5>You don't receive questions from this widget (Membership is by invitation only)</h5>
+    <p>Contact a <%= link_to('community leader', userlist_people_community_url(@widget.community.id, :connectiontype => 'leaders')) -%> to find out more about how to make a 
+connection with this widget</p>
+
+<%- end -%>
+

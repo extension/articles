@@ -7,25 +7,16 @@
 <p><%= link_to "All widgets", :controller => 'widgets/aae', :action => 'list' %> > Widget info</p>
 
 <h2><%= @widget.name %></h2>
-
-<p>Leaders: <strong><%= (@widget_leaders.count > 0) ? @widget_leaders.map{|u| link_to_user(u)}.join(', ') : 'No leaders!' %></strong></p>
-
 <p>Date Created: <strong><%= @widget.created_at %></strong></p>
 
+<div id="widget_assignees">
+	<%= render(:partial => 'widget_assignees') %>
+</div>
 
-<h4>Assignee Pool</h4>
-<% if @widget_assignees.length > 0 %>
-  <p><strong class="groupicon"><%= @widget_assignees.size %> active user<%= @widget_assignees.size > 1 ? 's' : '' %></strong> <%= @widget_assignees.size > 1 ? 'are' : 'is' %> signed up to answer questions from this widget. Sign up to receive questions <%= link_to("by joining this widget's community", people_community_url(@widget.community.id)) %>.</p>
-  <ul id="assignee_pool">
-  <% @widget_assignees.each do |user| %>
-    <li><%= link_to(user.fullname, aae_profile_url(:id => user.login), {:class => "profile"}) %></li>
-  <% end %>
-  </ul>
-<% else %>
-    <div class="askalert">
-        <p><strong class="groupicon">There are no active users signed up to receive questions from this widget.</strong> Sign up to receive questions <%= link_to("by joining this widget's community", people_community_url(@widget.community.id)) %>.</p>
-    </div>
-<% end %>
+<div id="connectiontowidget">
+	<%= render(:partial => 'widget_connection') %>
+</div>
+
 
 <% if @non_active_assignees.length > 0 %>
 <p><strong>Note:</strong> There are people who have signed up to receive questions for this widget, but have opted out of receiving AaE questions:<br />
