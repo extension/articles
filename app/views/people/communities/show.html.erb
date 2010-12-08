@@ -6,7 +6,15 @@
 <div id="community">
     <div id="primary_column" class="dashboard">
 	    
-	    <div id="titleblock" <%= @community.is_institution? ? 'class="institution"' : 'class="community"' %>>
+	    <% if @community.is_institution? 
+	      @css_class = "institution"
+      elsif @community.is_widget?
+        @css_class = "widget"
+      else 
+        @css_class = "community"
+      end %>
+	    
+	    <div id="titleblock" class="<%= @css_class %>">
 	        <h1><%= @community.name%></h1>
 	        <p><%= @community.entrytype_to_s %></p>
 	    </div>
