@@ -1,8 +1,12 @@
 class MakeCommunitiesFromWidgets < ActiveRecord::Migration
   def self.up
+    remove_column(:widgets,:community_id)
+    add_column(:communities,:widget_id,:integer)
     
     # inactive flag for communities
     add_column(:communities,:active,:boolean,:default => 1)
+    add_index(:communities,[:widget_id])
+
     execute "UPDATE communities SET active = 1"
     Community.reset_column_information
           
@@ -12,8 +16,7 @@ class MakeCommunitiesFromWidgets < ActiveRecord::Migration
     # going to be slow - but it's necessary - probably need to deploy at a low usage hour
     # go through all the widgets and create a community for each and add the assignees
     Widget.all.each do |widget|
-      widget.community = Community.create(:name => "Widget: #{widget.name}",:entrytype => Community::WIDGET, :memberfilter => Community::OPEN, :created_by => User.systemuserid, :active => widget.active)
-      widget.save
+      widget.touch # creates community
 
       assignees = widget.role_based_assignees
       if(assignees.blank?)

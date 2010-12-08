@@ -284,12 +284,14 @@ ActiveRecord::Schema.define(:version => 20101207183522) do
     t.boolean  "connect_to_drupal",                     :default => false
     t.integer  "drupal_node_id"
     t.boolean  "connect_to_google_apps",                :default => false
+    t.integer  "widget_id"
     t.boolean  "active",                                :default => true
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
   add_index "communities", ["referer_domain"], :name => "index_communities_on_referer_domain"
   add_index "communities", ["shortname"], :name => "index_communities_on_shortname", :unique => true
+  add_index "communities", ["widget_id"], :name => "index_communities_on_widget_id"
 
   create_table "communityconnections", :force => true do |t|
     t.integer  "user_id"
@@ -1044,7 +1046,6 @@ ActiveRecord::Schema.define(:version => 20101207183522) do
     t.boolean  "upload_capable", :default => false
     t.boolean  "show_location"
     t.boolean  "enable_tags"
-    t.integer  "community_id"
     t.integer  "location_id"
     t.integer  "county_id"
   end

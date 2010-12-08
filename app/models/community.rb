@@ -92,7 +92,7 @@ class Community < ActiveRecord::Base
   
   has_one :email_alias, :dependent => :destroy
   has_one  :google_group
-  has_one  :widget
+  belongs_to :widget
   
   named_scope :tagged_with_content_tag, lambda {|tagname| 
     {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::CONTENT}"}

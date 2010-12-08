@@ -22,7 +22,7 @@ class Widget < ActiveRecord::Base
   has_many :cached_tags, :as => :tagcacheable
   belongs_to :location
   belongs_to :county
-  belongs_to :community, :dependent => :destroy
+  has_one :community, :dependent => :destroy
   
   
   has_many :role_based_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = true"
