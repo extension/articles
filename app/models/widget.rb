@@ -33,6 +33,7 @@ class Widget < ActiveRecord::Base
   named_scope :inactive, :conditions => "active = false", :order => "name"
   named_scope :active, :conditions => "active = true", :order => "name"
   named_scope :byname, lambda {|widget_name| {:conditions => "name like '#{widget_name}%'", :order => "name"} }
+  after_save :update_community
   
 
   # hardcoded for layout difference
@@ -111,6 +112,16 @@ class Widget < ActiveRecord::Base
   def can_edit_attributes?(user)
     return (user.is_admin? or self.user == user or self.assignees.include?(user))
   end
-    
+  
+  def update_community
+    if(!self.community.blank?)
+      self.community.update_attributes({:active => self.active, :location => self.location})
+    else
+      self.community = Community.create(:name => "Widget: #{self.name}",:entrytype => Community::WIDGET, :memberfilter => Community::OPEN, :created_by => self.user_id, :active => self.active, :location => self.location)
+      # add creator to leadership
+      self.community.add_user_to_leadership(self.creator,User.systemuser,false)
+                 
+    end
+  end  
       
 end
