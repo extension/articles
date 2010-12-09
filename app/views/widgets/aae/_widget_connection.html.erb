@@ -35,7 +35,7 @@
 <%- elsif @widget.community.memberfilter == Community::INVITATIONONLY -%>
     
     <h5>Sign up to Answer Questions by Invitation Only</h5>
-    <p>Contact a <%= link_to('community leader', userlist_people_community_url(@widget.community.id, :connectiontype => 'leaders')) -%> to find out more about how to make a connection with this widget</p>
+    <p>Contact a <%= link_to('widget leader', userlist_people_community_url(@widget.community.id, :connectiontype => 'leaders')) -%> to find out more about how to make a connection with this widget</p>
 
 <%- end -%>
 
