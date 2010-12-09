@@ -28,7 +28,10 @@ class MakeCommunitiesFromWidgets < ActiveRecord::Migration
         # add first assignee as leader
         widget.community.add_user_to_leadership(assignees[0],User.systemuser,false)
       end
-    end  
+    end
+    
+    # force created_at for widget communities to be the widget created_at 
+    execute "UPDATE communities,widgets SET communities.created_at = widgets.created_at WHERE communities.widget_id = widgets.id"  
   end
 
   def self.down
