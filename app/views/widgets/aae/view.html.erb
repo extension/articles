@@ -1,21 +1,27 @@
 <%= render(:partial => 'aae_widget_nav') %>
 
+<p id="breadcrumb"><%= link_to "All widgets", :controller => 'widgets/aae', :action => 'list' %> > Widget info</p>
 <div id="article">
+
 
 <div class="detailpage">
 
-<p><%= link_to "All widgets", :controller => 'widgets/aae', :action => 'list' %> > Widget info</p>
+
+
+<div id="connectiontowidget">
+	<%= render(:partial => 'widget_connection') %>
+</div>
+
 
 <h2><%= @widget.name %></h2>
-<p>Date Created: <strong><%= @widget.created_at %></strong></p>
+<p class="widget_date_created">Created: <%= humane_date(@widget.created_at) %></p>
+
 
 <div id="widget_assignees">
 	<%= render(:partial => 'widget_assignees') %>
 </div>
 
-<div id="connectiontowidget">
-	<%= render(:partial => 'widget_connection') %>
-</div>
+
 
 
 <% if @non_active_assignees.length > 0 %>
