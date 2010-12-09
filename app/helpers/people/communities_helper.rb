@@ -7,6 +7,16 @@
 
 module People::CommunitiesHelper
   
+  def community_class(community)
+    if community.is_institution? 
+      "institution"
+    elsif community.is_widget?
+      "widget"
+    else 
+      "community"
+    end
+  end
+  
   def change_community_connection_link(container,community,label,connectaction,linkoptions = {})
     url = {:controller => '/people/communities', :action => :change_my_connection, :id => community.id, :connectaction => connectaction}
     if(container == 'nointerest')
