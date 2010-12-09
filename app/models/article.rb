@@ -331,7 +331,7 @@ class Article < ActiveRecord::Base
   end
   
   def convert_links
-    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0, :directfile => 0}
+    returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0, :directfile => 0, :local => 0}
     # walk through the anchor tags and pull out the links
     converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
     converted_content.css('a').each do |anchor|
@@ -382,7 +382,17 @@ class Article < ActiveRecord::Base
               newhref += "##{original_uri.fragment}"
             end
             anchor.set_attribute('href', newhref)
+            anchor.set_attribute('class', 'internal_link')
             returninfo[:internal] += 1
+          when ContentLink::LOCAL
+            newhref = link.href_url
+            # bring the fragment back if necessary
+            if(!original_uri.fragment.blank?)
+              newhref += "##{original_uri.fragment}"
+            end
+            anchor.set_attribute('href', newhref)
+            anchor.set_attribute('class', 'local_link')
+            returninfo[:local] += 1
           when ContentLink::EXTERNAL
             newhref = link.href_url
             # bring the fragment back if necessary
@@ -390,6 +400,7 @@ class Article < ActiveRecord::Base
               newhref += "##{original_uri.fragment}"
             end
             anchor.set_attribute('href', newhref)
+            anchor.set_attribute('class', 'external_link')
             returninfo[:external] += 1
           when ContentLink::MAILTO
             newhref = link.href_url
@@ -398,16 +409,19 @@ class Article < ActiveRecord::Base
               newhref += "##{original_uri.fragment}"
             end
             anchor.set_attribute('href', newhref)
+            anchor.set_attribute('class', 'mailto_link')
             returninfo[:mailto] += 1
           when ContentLink::CATEGORY
             newhref = link.href_url
             # ignore the fragment
             anchor.set_attribute('href', newhref)
+            anchor.set_attribute('class', 'category_link')
             returninfo[:category] += 1
           when ContentLink::DIRECTFILE
             newhref = link.href_url
             # ignore the fragment
             anchor.set_attribute('href', newhref)
+            anchor.set_attribute('class', 'file_link')
             returninfo[:directfile] += 1
           end
         end

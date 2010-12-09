@@ -6,6 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ContentLink < ActiveRecord::Base
+  serialize :last_check_information
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   
   belongs_to :content, :polymorphic => true # this is for published items to associate links to that published item
@@ -20,7 +21,7 @@ class ContentLink < ActiveRecord::Base
     :dependent => :destroy,
     :as => :content_link,
     :skip_duplicates => false
-  
+    
   # link types
   WANTED = 1
   INTERNAL = 2
@@ -28,6 +29,23 @@ class ContentLink < ActiveRecord::Base
   MAILTO = 4
   CATEGORY = 5
   DIRECTFILE = 6
+  LOCAL = 7
+  
+  
+  
+  # status codes
+  OK = 1
+  OK_REDIRECT = 2
+  WARNING = 3
+  BROKEN = 4
+
+  # maximum number of times a broken link reports broken before warning goes to error
+  MAX_WARNING_COUNT = 3
+  
+  # maximum number of times we'll check a broken link before giving up
+  MAX_ERROR_COUNT = 10
+  
+  named_scope :external, :conditions => {:linktype => EXTERNAL}
   
   def href_url
     default_url_options[:host] = AppConfig.get_url_host
@@ -42,6 +60,8 @@ class ContentLink < ActiveRecord::Base
     when INTERNAL
       self.content.href_url
     when EXTERNAL
+      self.original_url
+    when LOCAL
       self.original_url
     when MAILTO
       self.original_url
@@ -86,7 +106,7 @@ class ContentLink < ActiveRecord::Base
         linked_content_item.store_content # parses links and images again and saves it.
       end
     else    
-      content_link = self.new(:content => content, :original_url => CGI.unescape(original_uri.to_s), :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))
+      content_link = self.new(:content => content, :original_url => original_uri.to_s, :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))
       content_link.source_host = original_uri.host
       content_link.linktype = INTERNAL
     
@@ -140,7 +160,9 @@ class ContentLink < ActiveRecord::Base
     # create it - if host matches source_host and we want to identify this as "wanted" - then make it wanted else - call it external
     # the reason for the make_wanted_if_source_host_match parameter is I imagine we are going to have a situation with 
     # some feed provider where they want to link back to their own content - and we shouldn't necessarily force that link to be relative
-    content_link = self.new(:original_url => CGI.unescape(original_uri.to_s), :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)), :source_host => source_host)
+    content_link = self.new(:original_url => original_uri.to_s, 
+                            :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)), 
+                            :source_host => source_host)
     if(original_uri.is_a?(URI::MailTo))
       content_link.linktype = MAILTO
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
@@ -153,13 +175,16 @@ class ContentLink < ActiveRecord::Base
       else
         content_link.linktype = WANTED
       end
+    elsif(original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /\.extension\.org$/)
+      # host is extension
+      content_link.linktype = LOCAL
     else
-      content_link.linktype = EXTERNAL
+      content_link.linktype = EXTERNAL      
     end
     
     # set host and path - mainly just for aggregation purposes
     if(!original_uri.host.blank?)
-      content_link.host = original_uri.host
+      content_link.host = original_uri.host.downcase
     end
     if(!original_uri.path.blank?)
       content_link.path = CGI.unescape(original_uri.path)
@@ -167,6 +192,62 @@ class ContentLink < ActiveRecord::Base
     content_link.save
     return content_link        
   end
+  
+  
+  def check_original_url(save = true,force_error_check=false)
+    return if(!force_error_check and self.error_count >= MAX_ERROR_COUNT)
+    
+    self.last_check_at = Time.zone.now
+    result = self.class.check_url(self.original_url)
+    if(result[:responded])
+      self.last_check_response = true
+      self.last_check_information = {:response_headers => result[:response].to_hash}
+      self.last_check_code = result[:code]
+      if(result[:code] == '200')
+        self.status = OK
+        self.last_check_status = OK
+        self.error_count = 0
+      elsif(result[:code] == '301' or result[:code] == '301')
+        self.status = OK_REDIRECT
+        self.last_check_status = OK_REDIRECT
+        self.error_count = 0
+      else
+        self.error_count += 1
+        if(self.error_count >= MAX_WARNING_COUNT)
+          self.status = BROKEN
+        else
+          self.status = WARNING
+        end
+        self.last_check_status = BROKEN
+      end
+    else
+      self.last_check_response = false
+      self.last_check_information = {:error => result[:error]}
+      self.error_count += 1
+      if(self.error_count >= MAX_WARNING_COUNT)
+        self.status = BROKEN
+      else
+        self.status = WARNING
+      end
+      self.last_check_status = BROKEN
+    end
+    self.save
+  end
+      
+  
+  def self.check_url(url)
+    uri = URI.parse("#{url}")
+    begin
+      response = nil
+      Net::HTTP.start(uri.host, uri.port) { |http|
+        response = http.head(uri.path.size > 0 ? uri.path : "/")
+      }
+      {:responded => true, :code => response.code, :response => response}
+    rescue Exception => exception
+      {:responded => false, :error => exception.message}
+    end
+  end
+  
   
 end
   
