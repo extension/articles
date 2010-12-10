@@ -46,6 +46,14 @@ class ContentLink < ActiveRecord::Base
   MAX_ERROR_COUNT = 10
   
   named_scope :external, :conditions => {:linktype => EXTERNAL}
+  named_scope :checked, :conditions => ["last_check_at IS NOT NULL"]
+  named_scope :unchecked, :conditions => ["last_check_at IS NULL"]
+  named_scope :good, :conditions => {:status => OK}
+  named_scope :broken, :conditions => {:status => BROKEN}
+  named_scope :warning, :conditions => {:status => WARNING}
+  named_scope :redirected, :conditions => {:status => OK_REDIRECT}
+  
+  
   
   def href_url
     default_url_options[:host] = AppConfig.get_url_host
@@ -207,7 +215,7 @@ class ContentLink < ActiveRecord::Base
         self.status = OK
         self.last_check_status = OK
         self.error_count = 0
-      elsif(result[:code] == '301' or result[:code] == '301')
+      elsif(result[:code] == '301' or result[:code] == '302')
         self.status = OK_REDIRECT
         self.last_check_status = OK_REDIRECT
         self.error_count = 0
