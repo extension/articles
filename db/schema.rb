@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101207183522) do
+ActiveRecord::Schema.define(:version => 20101209152659) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -336,6 +336,13 @@ ActiveRecord::Schema.define(:version => 20101207183522) do
     t.text     "original_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "status"
+    t.integer  "error_count",            :default => 0
+    t.datetime "last_check_at"
+    t.integer  "last_check_status"
+    t.boolean  "last_check_response"
+    t.string   "last_check_code"
+    t.text     "last_check_information"
   end
 
   add_index "content_links", ["original_fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
