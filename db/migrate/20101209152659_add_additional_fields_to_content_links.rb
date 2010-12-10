@@ -10,5 +10,12 @@ class AddAdditionalFieldsToContentLinks < ActiveRecord::Migration
   end
 
   def self.down
+    remove_column(:content_links, :status)
+    remove_column(:content_links, :error_count)
+    remove_column(:content_links, :last_check_at)
+    remove_column(:content_links, :last_check_status)
+    remove_column(:content_links, :last_check_response)
+    remove_column(:content_links, :last_check_code)
+    remove_column(:content_links, :last_check_information)
   end
 end
