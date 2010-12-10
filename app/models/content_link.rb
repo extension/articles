@@ -4,6 +4,7 @@
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+require 'net/https'
 
 class ContentLink < ActiveRecord::Base
   serialize :last_check_information
@@ -38,6 +39,7 @@ class ContentLink < ActiveRecord::Base
   OK_REDIRECT = 2
   WARNING = 3
   BROKEN = 4
+  IGNORED = 5
 
   # maximum number of times a broken link reports broken before warning goes to error
   MAX_WARNING_COUNT = 3
@@ -228,6 +230,10 @@ class ContentLink < ActiveRecord::Base
         end
         self.last_check_status = BROKEN
       end
+    elsif(result[:ignored])
+      self.last_check_response = false
+      self.status = IGNORED
+      self.last_check_status = IGNORED
     else
       self.last_check_response = false
       self.last_check_information = {:error => result[:error]}
@@ -244,15 +250,31 @@ class ContentLink < ActiveRecord::Base
       
   
   def self.check_url(url)
-    uri = URI.parse("#{url}")
+    headers = {'User-Agent' => 'extension.org link verification'}
+    # the URL should have likely already be validated, but let's do it again for good measure
+    begin
+      check_uri = URI.parse("#{url}")
+    rescue Exception => exception
+      return {:responded => false, :error => exception.message}
+    end
+    
+    if(check_uri.scheme != 'http' and check_uri.scheme != 'https')
+      return {:responded => false, :ignored => true}
+    end
+      
+    # check it!
     begin
       response = nil
-      Net::HTTP.start(uri.host, uri.port) { |http|
-        response = http.head(uri.path.size > 0 ? uri.path : "/")
-      }
+      http_connection = Net::HTTP.new(check_uri.host, check_uri.port)
+      if(check_uri.scheme == 'https')
+        # don't verify cert?
+        http_connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        http_connection.use_ssl = true 
+      end
+      response = http_connection.head(check_uri.path.size > 0 ? check_uri.path : "/",headers)   
       {:responded => true, :code => response.code, :response => response}
     rescue Exception => exception
-      {:responded => false, :error => exception.message}
+      return {:responded => false, :error => exception.message}
     end
   end
   
