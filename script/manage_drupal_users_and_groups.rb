@@ -204,7 +204,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   end
   
   
-  sql = "INSERT INTO #{drupaldatabase}.og (etid,entity_type,label,state,created) SELECT #{mydatabase}.communities.drupal_node_id,'node',#{mydatabase}.communities.name,1,UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+  sql = "INSERT INTO #{drupaldatabase}.og (gid,etid,entity_type,label,state,created) SELECT #{mydatabase}.communities.drupal_node_id,#{mydatabase}.communities.drupal_node_id,'node',#{mydatabase}.communities.name,1,UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
   
   # execute the sql
   begin
@@ -357,7 +357,15 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   puts "field_revision_group_audience managed memberships created..."
   
   
+  ####### # finally - dump cache_field
   
+  # execute the sql
+  begin
+    result = connection.execute("TRUNCATE table #{drupaldatabase}.cache_field;")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the field_revision_group_audience creation: #{err}"
+    return false
+  end
 end
 
 
