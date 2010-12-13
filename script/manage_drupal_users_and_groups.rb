@@ -195,7 +195,16 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   
   puts "updating the og table..."
   
-  sql = "REPLACE INTO #{drupaldatabase}.og (etid,entity_type,label,state,created) SELECT #{mydatabase}.communities.drupal_node_id,'node',#{mydatabase}.communities.name,1,UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+  #  truncate first
+  begin
+    result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.og;")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the og table truncate: #{err}"
+    return false
+  end
+  
+  
+  sql = "INSERT INTO #{drupaldatabase}.og (etid,entity_type,label,state,created) SELECT #{mydatabase}.communities.drupal_node_id,'node',#{mydatabase}.communities.name,1,UNIX_TIMESTAMP() FROM #{mydatabase}.communities WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
   
   # execute the sql
   begin
@@ -206,26 +215,88 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   end
   
   puts "og table updated..."
-
-
-  ####### # delete current memberships
   
-  puts "deleting managed memberships from the og_users_roles table..."
+
+  ####### # update the field_data_group_group table
   
-  sql = "DELETE #{drupaldatabase}.og_users_roles.* FROM #{drupaldatabase}.og_users_roles,#{drupaldatabase}.og,#{mydatabase}.communities WHERE #{drupaldatabase}.og_users_roles.gid = #{drupaldatabase}.og.gid AND #{drupaldatabase}.og.etid = #{mydatabase}.communities.drupal_node_id AND #{mydatabase}.communities.connect_to_drupal = 1;"
+  
+  puts "updating the field_data_group_group table..."
+  
+  #  truncate first
+  begin
+    result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.field_data_group_group;")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the field_data_group_group table truncate: #{err}"
+    return false
+  end
+  
+  sql = "INSERT INTO #{drupaldatabase}.field_data_group_group (etid,bundle,deleted,entity_id,revision_id,language,delta,group_group_value) SELECT 1,'group',0, #{mydatabase}.communities.drupal_node_id,#{drupaldatabase}.node.vid,'und',0,1 FROM #{mydatabase}.communities, #{drupaldatabase}.node WHERE #{drupaldatabase}.node.nid = #{mydatabase}.communities.drupal_node_id and #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
   
   # execute the sql
   begin
     result = connection.execute(sql)
   rescue => err
-    $stderr.puts "ERROR: Exception raised during the og_users_roles deletion: #{err}"
+    $stderr.puts "ERROR: Exception raised during the field_data_group_group table update: #{err}"
     return false
   end
   
-  puts "og_users_roles managed memberships deleted..."
+  puts "field_data_group_group table updated..."
+
+  ####### # update the field_revision_group_group table
+  
+  
+  puts "updating the field_revision_group_group table..."
+  
+  #  truncate first
+  begin
+    result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.field_revision_group_group;")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the field_revision_group_group table truncate: #{err}"
+    return false
+  end
+
+  # duplicate of field_data_group_group
+  sql = "INSERT INTO #{drupaldatabase}.field_revision_group_group SELECT * from #{drupaldatabase}.field_data_group_group"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the field_revision_group_group table update: #{err}"
+    return false
+  end
+  
+  puts "field_revision_group_group table updated..."
 
 
-  ####### # set current memberships
+
+  ####### # delete current memberships
+    
+  #  truncate first
+  begin
+    result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.og_users_roles;")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
+    return false
+  end
+  
+  #  truncate first
+  begin
+    result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.field_data_group_audience;")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
+    return false
+  end
+  
+  #  truncate first
+  begin
+    result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.field_revision_group_audience;")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
+    return false
+  end
+  
+  ####### # set current memberships - og_users_roles
   
   puts "creating managed memberships in the og_users_roles table..."
   
@@ -244,8 +315,51 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   end
   
   puts "og_users_roles managed memberships created..."
+  
+  ####### # set current memberships - field_data_group_audience
+  
+  puts "creating managed memberships in the field_data_group_audience table..."
 
+  # etid is field_config_entity_type for 'user' == 3 - hardcoded!  
+  
+  # Note: delta is a hack! there's an primary index on etid+revision_id+deleted+delta+langague and since revision_id == the uid, this means that
+  # every user row gets an incremented delta.  Trying to query on this and insert is a hard problem(tm) (it can be done with max(delta), but you
+  # have to make a couple of passes, and I haven't figured it out yet.  So, I'm setting delta to the gid.  I don't think delta is used in the queries)
+  
+
+  sql = "INSERT INTO #{drupaldatabase}.field_data_group_audience (etid,bundle,deleted,entity_id,revision_id,language,delta,group_audience_gid,group_audience_state,group_audience_created) SELECT 3,'user',0, #{mydatabase}.communityconnections.user_id,#{mydatabase}.communityconnections.user_id,'und',#{drupaldatabase}.og.gid,#{drupaldatabase}.og.gid,1,UNIX_TIMESTAMP(#{mydatabase}.communityconnections.created_at) FROM #{drupaldatabase}.og, #{mydatabase}.communities, #{mydatabase}.communityconnections WHERE #{drupaldatabase}.og.etid = #{mydatabase}.communities.drupal_node_id AND #{mydatabase}.communities.id = #{mydatabase}.communityconnections.community_id AND #{mydatabase}.communityconnections.connectiontype IN ('leader','member') AND #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the field_data_group_audience creation: #{err}"
+    return false
+  end
+  
+  puts "field_data_group_audience managed memberships created..."
+  
+  ####### # set current memberships - field_revision_group_audience
+
+  puts "creating managed memberships in the field_revision_group_audience table..."
+
+  # duplicate of field_data_group_audience
+  sql = "INSERT INTO #{drupaldatabase}.field_revision_group_audience SELECT * from #{drupaldatabase}.field_data_group_audience"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the field_revision_group_audience creation: #{err}"
+    return false
+  end
+  
+  puts "field_revision_group_audience managed memberships created..."
+  
+  
+  
 end
+
 
 
 
