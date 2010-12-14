@@ -381,13 +381,16 @@ class User < Account
   end
   
   def email_forward
-    ea = self.email_aliases.find(:first, :conditions => "alias_type = #{EmailAlias::INDIVIDUAL_FORWARD}")
-    if(!ea)
-      ea = self.email_aliases.find(:first, :conditions => "alias_type = #{EmailAlias::INDIVIDUAL_FORWARD_CUSTOM}")
-    end
-    return ea
+    self.email_aliases.find_by_mail_alias(self.login)
   end
-     
+  
+  def switch_to_apps_email
+    forward = self.email_forward
+    if(!forward.nil?)
+      forward.update_attribute(:alias_type,EmailAlias::INDIVIDUAL_GOOGLEAPPS)
+    end
+  end
+       
   def retire
     self.retired = true
     self.retired_at = Time.now()

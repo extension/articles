@@ -18,7 +18,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 ContentLink.connection.execute('truncate table content_links;')
 Linking.connection.execute('truncate table linkings;')
 
-# primary content links
+# primary content links - these are the links for each articles
 processed_count = 1
 puts "Creating content links for each article"
 Article.all.each do |article|

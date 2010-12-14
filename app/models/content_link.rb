@@ -47,7 +47,12 @@ class ContentLink < ActiveRecord::Base
   # maximum number of times we'll check a broken link before giving up
   MAX_ERROR_COUNT = 10
   
+  named_scope :checklist, :conditions => ["linktype IN (#{EXTERNAL},#{LOCAL})"]
   named_scope :external, :conditions => {:linktype => EXTERNAL}
+  named_scope :internal, :conditions => {:linktype => INTERNAL}
+  named_scope :unpublished, :conditions => {:linktype => WANTED}
+  named_scope :local, :conditions => {:linktype => LOCAL}
+
   named_scope :checked, :conditions => ["last_check_at IS NOT NULL"]
   named_scope :unchecked, :conditions => ["last_check_at IS NULL"]
   named_scope :good, :conditions => {:status => OK}
@@ -55,7 +60,25 @@ class ContentLink < ActiveRecord::Base
   named_scope :warning, :conditions => {:status => WARNING}
   named_scope :redirected, :conditions => {:status => OK_REDIRECT}
   
+  named_scope :checked_yesterday_or_earlier, :conditions => ["DATE(last_check_at) <= ?",Date.yesterday]
+  named_scope :checked_over_one_month_ago, :conditions => ["DATE(last_check_at) <= DATE_SUB(NOW(),INTERVAL 1 MONTH)",Date.yesterday]
   
+  def status_to_s
+    case self.status
+    when OK
+      return 'OK'
+    when OK_REDIRECT
+      return 'Redirect'
+    when WARNING
+      return 'Warning'
+    when BROKEN
+      return 'Broken'
+    when IGNORED
+      return 'Ignored'
+    else
+      return 'Unknown'
+    end
+  end
   
   def href_url
     default_url_options[:host] = AppConfig.get_url_host

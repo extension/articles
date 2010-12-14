@@ -48,6 +48,8 @@ class PreviewController < ApplicationController
     @learnmore_count = Article.bucketed_as('learn more').tagged_with_content_tag(@content_tag.name).count
     @learnmore = Article.learnmore_for_content_tag({:content_tag => @content_tag})
 
+    @articles_broken_count =  Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).broken_links.count
+
     @contents_page = Article.contents_for_content_tag({:content_tag => @content_tag})
       
     @expertise_category = Category.find_by_name(@content_tag.name)
@@ -57,90 +59,71 @@ class PreviewController < ApplicationController
     end
   end
   
+  
   def articlelist
+    @filteredparameters = ParamsFilter.new([:content_tag,{:download => :string},{:articlefilter => :string}],params)
     @right_column = false
+    if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
+      # fake content tag for display purposes
+      @content_tag = Tag.new(:name => 'all')
+    else
+      @content_tag = @filteredparameters.content_tag
+    end
+      
 
-    if(!params[:download].nil? and params[:download] == 'csv')
+    if(!@filteredparameters.download.nil? and @filteredparameters.download == 'csv')
       isdownload = true
     end
+    
+    # sets @articles and @articlefilter
+    articles_list_scope = get_articles_for_listing({:content_tag => @filteredparameters.content_tag,
+                                                    :articlefilter => @filteredparameters.articlefilter})
+                                                     
+                               
+                              
+                              
+    
+    if(isdownload)
+      @articles = articles_list_scope.ordered
+      article_type = (@articlefilter.blank?) ? 'all' : @articlefilter.downcase 
+      csvfilename =  "#{article_type}_articles_for_tag_#{@content_tag.name}"
+      return article_csvlist(@articles,csvfilename,@content_tag)
+    else
+      @articles = articles_list_scope.ordered.paginate(:page => params[:page], :per_page => 100)
+    end
+        
+  end
   
-  
-    if(!@content_tag.nil?)
-      if(params[:articlefilter].nil?)
-        if(isdownload) 
-          @articles = Article.tagged_with_content_tag(@content_tag.name).ordered
-        else
-          @articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-        end
-      else
-        case params[:articlefilter]
-        when 'all'
-          @articlefilter = 'All'
-          if(isdownload) 
-            @articles = Article.tagged_with_content_tag(@content_tag.name).ordered
-          else
-            @articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-          end
-        when 'news'
-          @articlefilter = 'News'
-          if(isdownload) 
-            @articles = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered
-          else
-            @articles = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-          end
-        when 'feature'
-          @articlefilter = 'Feature'
-          if(isdownload) 
-            @articles = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).ordered
-          else
-            @articles = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-          end
-        when 'learning lessons'
-          @articlefilter = 'Learning Lesson'
-          if(isdownload) 
-            @articles = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered
-          else
-            @articles = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-          end  
-        when 'contents'
-          @articlefilter = 'Contents'
-          if(isdownload) 
-            @articles = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered
-          else
-            @articles = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-          end
-        when 'homage'
-          @articlefilter = 'Homage'
-          if(isdownload) 
-            @articles =  @articles = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered
-          else
-            @articles = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-          end
-        when 'learn more'
-          @articlefilter = 'Learn More'
-          if(isdownload) 
-            @articles = Article.bucketed_as('learn more').tagged_with_content_tag(@content_tag.name).ordered
-          else
-            @articles = Article.bucketed_as('learn more').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)         
-          end
-        else
-          @articlefilter = nil
-          if(isdownload) 
-            @articles = Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).ordered
-          else
-            @articles = Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-          end
-        end
-      end
-      
-      if(isdownload)
-        article_type = (@articlefilter.blank?) ? 'all' : @articlefilter.downcase 
-        csvfilename =  "#{article_type}_articles_for_tag_#{@content_tag.name}"
-        return article_csvlist(@articles,csvfilename,@content_tag)
-      end
+  def articlelinklist
+    @filteredparameters = ParamsFilter.new([:content_tag,{:articlefilter => :string},{:onlybroken => :boolean}],params)
+    @right_column = false
+    if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
+      # fake content tag for display purposes
+      @content_tag = Tag.new(:name => 'all')
+    else
+      @content_tag = @filteredparameters.content_tag
     end
     
-    
+    # sets @articlefilter
+    articles_list_scope = get_articles_for_listing({:content_tag => @filteredparameters.content_tag,
+                                          :articlefilter => @filteredparameters.articlefilter})
+                                          
+    sort_order = "articles.has_broken_links DESC,articles.wiki_updated_at DESC"
+    if(@filteredparameters.onlybroken)
+      @articles = articles_list_scope.broken_links.paginate(:include => :content_links, :page => params[:page], :per_page => 100, :order => sort_order)
+    else
+      @articles = articles_list_scope.paginate(:include => :content_links, :page => params[:page], :per_page => 100, :order => sort_order)
+    end
+  end
+  
+  def articlelinks
+    @article = Article.find_by_id(params[:id])
+    if(@article)
+      @external_links = @article.content_links.external
+      @local_links = @article.content_links.local
+      @internal_links = @article.content_links.internal
+      @wanted_links = @article.content_links.unpublished
+    end
   end
   
   def faqlist
@@ -268,5 +251,54 @@ class PreviewController < ApplicationController
     render(:template => 'preview/faq_csvlist', :layout => false)
   end
 
+  private
+  
+  def get_articles_for_listing(options = {})
+    paginate_list = options[:paginate_list]
+    content_tag = options[:content_tag]
+    articlefilter = options[:articlefilter]
+    
+    if(articlefilter.nil?)
+       bucket = 'notnews'
+       @articlefilter = nil
+     else
+       case articlefilter
+       when 'all'
+         @articlefilter = 'All'
+         bucket = nil
+       when 'news'
+         @articlefilter = 'News'
+         bucket = 'news'
+       when 'feature'
+         @articlefilter = 'Feature'
+         bucket = 'feature'
+       when 'learning lessons'
+         @articlefilter = 'Learning Lesson'
+         bucket = 'learning lessons'
+       when 'contents'
+         @articlefilter = 'Contents'
+         bucket = 'contents'
+       when 'homage'
+         @articlefilter = 'Homage'
+         bucket = 'homage'
+       when 'learn more'
+         @articlefilter = 'Learn More'
+         bucket = 'learn more'
+       else
+         @articlefilter = nil
+         bucket = 'notnews'
+       end # case statement
+     end # articlefilter.nil?
+     
+     # build the scope
+     articles_list_scope = Article.scoped({})
+     if(bucket)
+       articles_list_scope = articles_list_scope.bucketed_as(bucket)
+     end
+     if(content_tag)
+       articles_list_scope = articles_list_scope.tagged_with_content_tag(content_tag.name)
+     end
+     articles_list_scope
+  end
   
 end

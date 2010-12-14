@@ -186,6 +186,8 @@ ActionController::Routing::Routes.draw do |map|
   map.events_page 'events/:id', :controller => 'events', :action => 'detail'
   map.wiki_page 'pages/*title', :controller => 'articles', :action => 'page'
   map.preview_page 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
+  map.preview_articlelinks 'preview/articlelinks/:id', :controller => 'preview', :action => 'articlelinks'
+  map.preview_articlelinklist 'preview/articlelinklist/:content_tag', :controller => 'preview', :action => 'articlelinklist'
   map.preview_articlelist 'preview/articlelist/:content_tag', :controller => 'preview', :action => 'articlelist'
   map.preview_faqlist 'preview/faqlist/:content_tag', :controller => 'preview', :action => 'faqlist'
   map.preview_eventlist 'preview/eventlist/:content_tag', :controller => 'preview', :action => 'eventlist'

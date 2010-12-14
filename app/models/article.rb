@@ -25,16 +25,62 @@ class Article < ActiveRecord::Base
   before_destroy :change_primary_content_link
   
   has_content_tags
-  ordered_by :orderings => {'Newest to oldest'=> 'wiki_updated_at DESC'},
-         :default => "#{self.table_name}.wiki_updated_at DESC"
+  ordered_by :orderings => {'Newest to oldest'=> "#{self.table_name}.wiki_updated_at DESC"},
+                            :default => "#{self.table_name}.wiki_updated_at DESC"
          
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
   
+  named_scope :broken_links, :conditions => {:has_broken_links => true}
+  
   has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
   # Note: has_many :content_links - outbound links using the has_many_polymorphs for content_links
   
+  
+  def content_link_counts
+    linkcounts = {:total => 0, :external => 0,:local => 0, :wanted => 0, :internal => 0, :broken => 0, :redirected => 0, :warning => 0}
+    self.content_links.each do |cl|
+      linkcounts[:total] += 1
+      case cl.linktype
+      when ContentLink::EXTERNAL
+        linkcounts[:external] += 1
+      when ContentLink::INTERNAL
+        linkcounts[:internal] += 1
+      when ContentLink::LOCAL
+        linkcounts[:local] += 1
+      when ContentLink::WANTED
+        linkcounts[:wanted] += 1
+      end
+      
+      case cl.status
+      when ContentLink::BROKEN
+        linkcounts[:broken] += 1
+      when ContentLink::OK_REDIRECT
+        linkcounts[:redirected] += 1
+      when ContentLink::WARNING
+        linkcounts[:warning] += 1
+      end
+    end
+    return linkcounts
+  end
+  
+  # mass update, looping through them all if needed is waaaaaay too slow
+  def self.update_broken_flags
+    # set all to false
+    update_all("has_broken_links = 0")
+    
+    # get a list that have more than one broken link
+    broken_list = count('content_links.id',:joins => :content_links,:conditions => "content_links.status IN (#{ContentLink::WARNING},#{ContentLink::BROKEN}) ",:group => 'articles.id')
+    broken_ids = broken_list.keys
+    update_all("has_broken_links = 1", "id IN (#{broken_ids.join(',')})")    
+  end
+
+  def update_broken_flag
+    broken_count = self.content_links.count(:conditions => "content_links.status IN (#{ContentLink::WARNING},#{ContentLink::BROKEN}) ")
+    self.update_attribute(:has_broken_links,(broken_count > 0))
+  end
+      
   def put_in_buckets(categoryarray)
    namearray = []
    categoryarray.each do |name|

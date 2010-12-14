@@ -33,6 +33,8 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:forcecacheupdate] = {:datatype => :boolean, :default => false} 
   RECOGNIZED_PARAMETERS[:apikey] = :apikey
   RECOGNIZED_PARAMETERS[:tags] = :taglist
+  RECOGNIZED_PARAMETERS[:content_tag] = :content_tag
+
   RECOGNIZED_PARAMETERS[:content_types] = :method
   RECOGNIZED_PARAMETERS[:ipaddress] = :string 
   
@@ -204,6 +206,8 @@ class FilteredParameter
       ApiKey.find_by_keyvalue(value)
     when :taglist
        return Tag.castlist_to_array(value.gsub('|',','),true,false)
+    when :content_tag
+       return Tag.content_tags.find_by_name(value)
     else
       nil # TODO: raise invalid datatype error
     end

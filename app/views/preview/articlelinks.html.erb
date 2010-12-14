@@ -1,0 +1,117 @@
+<%- if @article.nil? %>
+   <p>Invalid article id</p>
+<%- else -%>
+  <h2>Article Information</h2>
+  <table cellspacing="0" border="1">
+      <tr>
+          <td>Internal Article ID</td>
+          <td><%= @article.id %></td>
+      </tr>
+      <tr>
+          <td>Published Title</td>
+          <td><%= link_to(@article.title, @article.id_and_link) %></td>
+      </tr>
+      <tr>
+          <td>Published At</td>
+          <td><%= humane_date(@article.wiki_created_at) %></td>
+      </tr>      
+      <tr>
+          <td>Updated At</td>
+          <td><%= humane_date(@article.wiki_updated_at) %></td>
+      </tr>
+      <%- if @article.datatype == 'WikiArticle' -%>
+      <tr>
+         <td>Preview Link</td>
+         <td><%= link_to('Preview Latest Version',preview_page_url(:title => @article.title)) %></td>
+       </tr>
+      <%- end -%>
+      <tr>
+          <td>Source</td>
+          <%- if @article.datatype == 'WikiArticle' -%>
+           <td><%= link_to('CoP Wiki Link',@article.original_url)%></td>
+          <%- else -%>
+           <td><%= link_to('Source Link',@article.original_url)%></td> <!-- unavailable for now -->
+          <%- end -%> 
+      </tr>
+  </table>
+
+  <%- if @external_links and @external_links.size > 0 -%>
+  <h2>External Links</h2>
+  <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= ContentLink::MAX_WARNING_COUNT %> checks failed.</em></p>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Link</th>
+      <th>Host</th>
+      <th>Status</th>
+      <th>Last Check At</th>
+      <th>Last Check Code</th>
+    </tr>
+
+    <% for link in @external_links %>
+      <tr id="link_row_<%= link.id %>">
+        <td><%= link_to(link.original_url, link.original_url) %></td>
+        <td><%= link.host %></td>
+        <td><%= link.status_to_s %></td>
+        <td><%= humane_date(link.last_check_at) %></td>
+        
+        <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+      </tr>
+    <% end %>
+  </table>
+  <%- end -%>
+  
+  <%- if @local_links and @local_links.size > 0 -%>
+  <h2>Local Links</h2>
+  <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= ContentLink::MAX_WARNING_COUNT %> checks failed.</em></p>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Link</th>
+      <th>Host</th>
+      <th>Status</th>
+      <th>Last Check At</th>
+      <th>Last Check Code</th>
+    </tr>
+
+    <% for link in @local_links %>
+      <tr id="link_row_<%= link.id %>">
+        <td><%= link_to(link.original_url, link.original_url) %></td>
+        <td><%= link.host %></td>
+        <td><%= link.status_to_s %></td>
+        <td><%= humane_date(link.last_check_at) %></td>
+        <td><%= link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+      </tr>
+    <% end%>
+  </table>
+  <%- end -%>
+  
+  <%- if @internal_links and @internal_links.size > 0 -%>
+  <h2>Internal Links</h2>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Article</th>
+    </tr>
+
+    <% for link in @internal_links %>
+      <tr id="link_row_<%= link.id %>">
+        <td><%= link_to(link.content.title, link.content.id_and_link) %></td>
+      </tr>
+    <% end%>
+  </table>
+  <%- end -%>
+  
+  <%- if @wanted_links and @wanted_links.size > 0 -%>
+  <h2>Internal Links</h2>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Wanted Path</th>
+    </tr>
+
+    <% for link in @wanted_links %>
+      <tr id="link_row_<%= link.id %>">
+        <td><%= link.path %></td>
+      </tr>
+    <% end%>
+  </table>
+  <%- end -%>
+
+<%- end -%>

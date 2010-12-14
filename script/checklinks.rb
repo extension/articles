@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'rubygems'
 require 'trollop'
 require 'thread'
@@ -21,11 +22,32 @@ MAX_THREADS = 5
 def queue_and_process_links
   thread_pool = []
   # put content links into a thread safe queue
+  check_count = ContentLink.checklist.count
+  
   linkqueue = Queue.new
-  ContentLink.external.all(:limit => 1000, :conditions => "last_check_at IS NULL").each do |link|
+  
+  # get all unchecked external and local links
+  ContentLink.checklist.unchecked.all.each do |link|
     linkqueue << link
   end
-
+  
+  # check all warning links from yesterday or earlier
+  ContentLink.checklist.warning.checked_yesterday_or_earlier.all.each do |link|
+    linkqueue << link
+  end
+  
+  # check all broken links from yesterday or earlier
+  # if over MAX_ERROR_COUNT, it's just going to return
+  ContentLink.checklist.broken.checked_yesterday_or_earlier.all.each do |link|
+    linkqueue << link
+  end
+  
+  # check up to total count / 29 to give us a rolling check
+  daily_check_limit = (check_count / 29)
+  ContentLink.checklist.checked_over_one_month_ago.all.each do |link|
+    linkqueue << link
+  end
+      
 
   # fill up our thread pool
   
@@ -52,9 +74,15 @@ def queue_and_process_links
   end
 end
 
+def update_article_broken_flags
+  # mass update
+  Article.update_broken_flags
+end
+
 begin
   Lockfile.new('/tmp/checklinks.lock', :retries => 0) do
     queue_and_process_links
+    update_article_broken_flags
   end
 rescue Lockfile::MaxTriesLockError => e
   puts "Another link checker is already running. Exiting."

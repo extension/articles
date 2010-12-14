@@ -6,7 +6,7 @@ class AddAdditionalFieldsToContentLinks < ActiveRecord::Migration
     add_column(:content_links, :last_check_status, :integer)
     add_column(:content_links, :last_check_response, :boolean)
     add_column(:content_links, :last_check_code, :string)
-    add_column(:content_links, :last_check_information, :text)    
+    add_column(:content_links, :last_check_information, :text)      
   end
 
   def self.down

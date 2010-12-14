@@ -159,4 +159,15 @@
       </ul>
    <%- end -%>
    </div>
+
+  <div class="section">
+     <h2>Link Audit</h2>
+     <ul>
+       <%- if @articles_broken_count > 0 -%>                
+          <li class="missing"><%= link_to(pluralize(@articles_broken_count,'article'), preview_articlelinklist_url(:content_tag => @content_tag.name)) %> have broken links</li>
+       <%- end -%>     
+       <li>Link counts for all <%= link_to(pluralize(@articles_count,'article'), preview_articlelinklist_url(:content_tag => @content_tag.name)) %></li>
+     </ul>
+  </div>
+
 </div>

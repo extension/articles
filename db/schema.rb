@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101209152659) do
+ActiveRecord::Schema.define(:version => 20101214212801) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(:version => 20101209152659) do
     t.string   "original_url"
     t.text     "original_content", :limit => 16777215
     t.boolean  "is_dpl",                               :default => false
+    t.boolean  "has_broken_links"
   end
 
   add_index "articles", ["datatype"], :name => "index_wiki_articles_on_type"
@@ -345,6 +346,7 @@ ActiveRecord::Schema.define(:version => 20101209152659) do
     t.text     "last_check_information"
   end
 
+  add_index "content_links", ["content_id", "content_type", "status", "linktype"], :name => "coreindex"
   add_index "content_links", ["original_fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
 
   create_table "counties", :force => true do |t|
