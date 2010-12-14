@@ -979,3 +979,6 @@ border-radius: 10px;}
 #time_with_tz {font-size:1.8em; margin-bottom:1em;}
 .surveylink {margin:0 0 20px; background: #e4efff url(/images/common/comment.png) 8px center no-repeat; padding: 10px 5px 10px 30px; -moz-border-radius: 8px;-webkit-border-radius: 8px; font-weight:bold; font-size:1.1em;}
 .surveylink p {margin-bottom:0;}
+
+.external_link {background: url(/images/common/external_site_black.png) right bottom no-repeat; padding-right:12px;}
+a:hover.external_link {background: url(/images/common/external_site_orange.png) right bottom no-repeat; padding-right:12px;}
