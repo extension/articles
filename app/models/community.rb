@@ -627,8 +627,8 @@ class Community < ActiveRecord::Base
     
     case datatype
     when 'published articles'
-      total = Article.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Article.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
+      total = Article.bucketed_as('notnews').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Article.bucketed_as('notnews').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
     when 'published faqs'
       total = Faq.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(faqs.heureka_published_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Faq.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(faqs.heureka_published_at) = '#{datadate.to_s(:db)}'").count      

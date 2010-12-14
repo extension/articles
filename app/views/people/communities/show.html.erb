@@ -53,10 +53,10 @@
           <ul id="publishing_totals">                    
             <li><span><%= @community.item_count_for_date(@datadate,'published events') -%></span> Events</li>
             <li><span><%= @community.item_count_for_date(@datadate,'published faqs') -%></span> FAQs</li>
-            <li><span><%= @community.item_count_for_date(@datadate,'published articles') -%></span> All Articles</li>
-            <li><span><%= @community.item_count_for_date(@datadate,'published news') -%></span> News</li>
+            <li><span><%= @community.item_count_for_date(@datadate,'published articles') -%></span> Articles</li>
             <li><span><%= @community.item_count_for_date(@datadate,'published learning lessons') -%></span> Learning Lessons</li>
             <li><span><%= @community.item_count_for_date(@datadate,'published features') -%></span> Features</li>
+            <li><span><%= @community.item_count_for_date(@datadate,'published news') -%></span> News</li>
           </ul>
           <p><small>"All Articles" includes all published pages, news, features, dpls, learning lessons, etc.</small></p>
         </div>
