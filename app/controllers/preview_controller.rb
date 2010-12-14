@@ -38,7 +38,7 @@ class PreviewController < ApplicationController
     
     @events_count = Event.tagged_with_content_tag(@content_tag.name).count
     @faqs_count = Faq.tagged_with_content_tag(@content_tag.name).count
-    @articles_count =  Article.tagged_with_content_tag(@content_tag.name).count
+    @articles_count =  Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).count
     @features_count = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).count
     @news_count = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).count
     @learning_lessons_count = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).count
@@ -74,6 +74,13 @@ class PreviewController < ApplicationController
         end
       else
         case params[:articlefilter]
+        when 'all'
+          @articlefilter = 'All'
+          if(isdownload) 
+            @articles = Article.tagged_with_content_tag(@content_tag.name).ordered
+          else
+            @articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+          end
         when 'news'
           @articlefilter = 'News'
           if(isdownload) 
@@ -119,9 +126,9 @@ class PreviewController < ApplicationController
         else
           @articlefilter = nil
           if(isdownload) 
-            @articles = Article.tagged_with_content_tag(@content_tag.name).ordered
+            @articles = Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).ordered
           else
-            @articles = Article.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
+            @articles = Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
           end
         end
       end
