@@ -14,6 +14,7 @@ end
 
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
+# dump all content links and linkings
 ContentLink.connection.execute('truncate table content_links;')
 Linking.connection.execute('truncate table linkings;')
 
