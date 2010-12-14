@@ -76,27 +76,36 @@ def retrieve_content_for_datatype(objectklass,options)
   end
 end
 
-#### Let's Go!
 
-# build options
-options = {}
-if(!@refresh_since.nil?)
-  options[:refresh_since] = parse_refresh_since(@refresh_since)
+
+begin
+  Lockfile.new('/tmp/retrieve_content.lock', :retries => 0) do
+    # build options
+    options = {}
+    if(!@refresh_since.nil?)
+      options[:refresh_since] = parse_refresh_since(@refresh_since)
+    end
+
+    case @datatype
+    when 'articles'
+      options[:feed_url] = AppConfig.configtable['content_feed_wikiarticles_no_dpls']
+      retrieve_content_for_datatype(Article,options)
+    when 'faqs'
+      retrieve_content_for_datatype(Faq,options)    
+    when 'events'
+      retrieve_content_for_datatype(Event,options)
+    when 'externals'
+      retrieve_content_from_feed_locations(options)
+    else
+      retrieve_content_for_datatype(Article,options)
+      retrieve_content_for_datatype(Faq,options)    
+      retrieve_content_for_datatype(Event,options)
+      retrieve_content_from_feed_locations(options)
+    end
+  end
+rescue Lockfile::MaxTriesLockError => e
+  puts "Another content fetcher is already running. Exiting."
 end
 
-case @datatype
-when 'articles'
-  options[:feed_url] = AppConfig.configtable['content_feed_wikiarticles_no_dpls']
-  retrieve_content_for_datatype(Article,options)
-when 'faqs'
-  retrieve_content_for_datatype(Faq,options)    
-when 'events'
-  retrieve_content_for_datatype(Event,options)
-when 'externals'
-  retrieve_content_from_feed_locations(options)
-else
-  retrieve_content_for_datatype(Article,options)
-  retrieve_content_for_datatype(Faq,options)    
-  retrieve_content_for_datatype(Event,options)
-  retrieve_content_from_feed_locations(options)
-end
+
+
