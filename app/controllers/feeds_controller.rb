@@ -182,7 +182,7 @@ class FeedsController < ApplicationController
       
     feed_meta = {:title => title, 
                  :subtitle => "eXtension published content",
-                 :updated_at => items.first.updated_at}
+                 :updated_at => items.blank? ? Time.zone.now : items.first.updated_at}
     return render :text => atom_feed_from(items, feed_meta), :content_type => Mime::ATOM
   end
       
