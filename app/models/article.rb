@@ -25,8 +25,8 @@ class Article < ActiveRecord::Base
   before_destroy :change_primary_content_link
   
   has_content_tags
-  ordered_by :orderings => {'Newest to oldest'=> "#{self.table_name}.wiki_updated_at DESC"},
-                            :default => "#{self.table_name}.wiki_updated_at DESC"
+  ordered_by :orderings => {'Newest to oldest'=> "wiki_updated_at DESC"},
+                            :default => "wiki_updated_at DESC"
          
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
