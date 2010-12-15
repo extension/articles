@@ -58,7 +58,7 @@
             <li><span><%= @community.item_count_for_date(@datadate,'published features') -%></span> Features</li>
             <li><span><%= @community.item_count_for_date(@datadate,'published news') -%></span> News</li>
           </ul>
-          <p><small>"All Articles" includes all published pages, news, features, dpls, learning lessons, etc.</small></p>
+          <p><small>"Articles" includes all published pages, features, dpls, learning lessons. It does not include "News"</small></p>
         </div>
       <%- end -%>
       <h2><%= @community.viewlabel.capitalize -%> Tags <a class="tooltip-help" href="#" id="tags_trigger">?</a></h2>
