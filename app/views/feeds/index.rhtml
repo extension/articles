@@ -6,12 +6,10 @@
     <li><a href="/feeds/faqs/" title="FAQs over Atom">Frequently Asked Questions to our experts</a></li>
     <li><a href="/feeds/events/" title="Events over Atom">Calendar Events</a></li>
     <%for community in @communities%>
-        <%if community.tags.length == 0%>
-
-        <%else%>
-		    <li><a href='/feeds/community/-/<%=community.primary_content_tag_name%>'><%=community.public_name%></a></li>
-        <%end%>
-    <%end%>
+        <%- if community.tags.length > 0 -%>
+		      <li><%= link_to(community.public_name, content_feed_url(:tags => community.primary_content_tag_name)) %></li>
+        <%- end -%>
+    <%- end -%>
 </ul>
 
 <h2 class="missionstatement">What is a feed?</h2>
