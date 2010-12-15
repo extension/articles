@@ -58,6 +58,7 @@ module People::NumbersHelper
       urlparams = {:controller => '/people/colleagues', :action => :list}
     end
     urlparams.merge!(filteredparameters.option_values_hash)
+    urlparams.merge!(options)
     # must be logged in!
     if(@currentuser.nil?)
       return "#{text}"
