@@ -117,6 +117,7 @@ class PreviewController < ApplicationController
   end
   
   def articlelinks
+    @right_column = false
     @article = Article.find_by_id(params[:id])
     if(@article)
       @external_links = @article.content_links.external
