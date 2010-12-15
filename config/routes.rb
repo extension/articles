@@ -195,9 +195,9 @@ ActionController::Routing::Routes.draw do |map|
   map.preview_home 'preview', :controller => 'preview', :action => 'index'
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
-  map.site_news ':content_tag/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'articles.wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_news ':content_tag/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
   map.site_faqs ':content_tag/faqs/:order/:page', :controller => 'faq', :action => 'index', :page => '1', :order => 'heureka_published_at DESC', :requirements => { :page => /\d+/ }
-  map.site_articles ':content_tag/articles/:order/:page', :controller => 'articles', :action => 'index', :page => '1', :order => 'articles.wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_articles ':content_tag/articles/:order/:page', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
   map.site_events ':content_tag/events/:state', :controller => 'events', :action => 'index', :state => ''
   map.site_events_month ':content_tag/events/:year/:month/:state', :controller => 'events', :action => 'index', :state => ''
   map.site_learning_lessons ':content_tag/learning_lessons/:order/:page', :controller => 'articles', :action => 'learning_lessons', :page => '1',:order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
