@@ -228,7 +228,7 @@ class FeedsController < ApplicationController
   end
   
   def make_atom_feed_id(schema_date=Time.now.year)
-    "tag:#{request.host},#{schema_date}:#{request.request_uri.split(".")[0]}"
+    "tag:#{request.host},#{schema_date}:#{CGI.escape(request.request_uri.split(".")[0])}"
   end
   
   def make_atom_entry_id(obj,schema_date=Time.now.year)
