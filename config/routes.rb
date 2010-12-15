@@ -118,7 +118,8 @@ ActionController::Routing::Routes.draw do |map|
   ### Search Stuff ###
 
   map.search 'search', :controller => 'search', :action => 'index'
-  
+  map.annotation_event_page 'search/manage_event/:id', :controller => 'search', :action => 'manage_event'
+
   ### Learn Stuff ###
   map.learn 'learn', :controller => 'learn', :action => 'index'
   map.learn_session 'learn/event/:id', :controller => :learn, :action => :event
@@ -138,9 +139,16 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'sitemap_faq', :controller => 'feeds', :action => 'sitemap_faq'
   map.connect 'sitemap_events', :controller => 'feeds', :action => 'sitemap_events'
   map.connect 'feeds', :controller => 'feeds'
-  map.connect 'feeds/:action', :controller => 'feeds', :requirements => {:action => /articles|article|faqs|events|all/}
-  map.connect 'feeds/:action/-/*content_tags', :controller => 'feeds'
-  map.connect 'feeds/:action/:type/*id', :controller => 'feeds'
+    
+  map.redirect 'feeds/articles', :controller => 'feeds', :action => 'content', :content_types => 'articles', :permanent => true  
+  map.redirect 'feeds/faqs', :controller => 'feeds', :action => 'content', :content_types => 'faqs', :permanent => true  
+  map.redirect 'feeds/events', :controller => 'feeds', :action => 'content', :content_types => 'events', :permanent => true  
+  map.redirect 'feeds/all', :controller => 'feeds', :action => 'content', :permanent => true  
+
+  map.connect 'feeds/community/-/:tags', :controller => 'feeds', :action => 'community'
+  map.content_feed 'feeds/content/:tags', :controller => 'feeds', :action => 'content'
+  map.connect 'feeds/:action', :controller => 'feeds'
+  
   ## print routes
   map.connect 'article/:id/print', :controller => 'articles', :action => 'page', :print => 1, :requirements => { :id => /\d+/ }
   map.connect 'faq/:id/print', :controller => 'faq', :action => 'detail', :print => 1
@@ -178,6 +186,8 @@ ActionController::Routing::Routes.draw do |map|
   map.events_page 'events/:id', :controller => 'events', :action => 'detail'
   map.wiki_page 'pages/*title', :controller => 'articles', :action => 'page'
   map.preview_page 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
+  map.preview_articlelinks 'preview/articlelinks/:id', :controller => 'preview', :action => 'articlelinks'
+  map.preview_articlelinklist 'preview/articlelinklist/:content_tag', :controller => 'preview', :action => 'articlelinklist'
   map.preview_articlelist 'preview/articlelist/:content_tag', :controller => 'preview', :action => 'articlelist'
   map.preview_faqlist 'preview/faqlist/:content_tag', :controller => 'preview', :action => 'faqlist'
   map.preview_eventlist 'preview/eventlist/:content_tag', :controller => 'preview', :action => 'eventlist'

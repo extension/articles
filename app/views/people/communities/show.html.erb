@@ -1,98 +1,112 @@
-<% @page_title = "#{@community.name} - Community Information" %>
-<% @selected_tab = :communities %>
+<%- @page_title = "#{@community.name} - Community Information" -%>
+<%- @selected_tab = :communities -%>
 
-<%= render(:partial => 'partial/flashmessages') %>
+<%= render(:partial => 'partial/flashmessages') -%>
 
 <div id="community">
-    <div id="primary_column" class="dashboard">
-	    
-	    <div id="titleblock" <%= @community.is_institution? ? 'class="institution"' : 'class="community"' %>>
-	        <h1><%= @community.name%></h1>
-	        <p><%= @community.entrytype_to_s %></p>
-	    </div>
-    	
-    	<% if !@community.description.nil? %>
-    	    <p id="description"><%= @community.description %> 
-    	        <% if (@am_i_leader or admin_mode?) %>
-    	            <small class="edit"><%= link_to 'edit', edit_people_community_path(@community) %></small>
-    	        <% end %>
-    	    </p>    	        
-    	<% end %>
-    	
-    	<div id="col_one">
-    	    <h2>People</h2>
-    	    <div id="connectiontocommunity">
-				<%= render(:partial => 'community_connection') %>
-			</div>
-			
-    	    <div id="communitynumbers" class="dashmodule">
-                <%= render(:partial => 'community_numbers') %>
-    	    </div>
-    	
-    	
-    	    <h2><%= @community.viewlabel.capitalize %> Mailing Lists <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', editlists_people_community_path(@community) %></small><% end %></h2>
-        	<div id="communitymailinglists" class="dashmodule">
-               	<%= render(:partial => 'community_mailinglists') %>
-        	</div>
-    	</div>
-    	
-    	
-    	<div id="col_two">
-    	    <% if @community.is_launched? %>
-    	    <h2>Publishing Totals <small>(through <%= @datadate.to_s %>)</small></h2>
-    	    <div class="dashmodule">
-    	        <ul id="publishing_totals">                    
-                    <li><span><%= @community.item_count_for_date(@datadate,'published events') %></span> Events</li>
-                    <li><span><%= @community.item_count_for_date(@datadate,'published faqs') %></span> FAQs</li>
-                    <li><span><%= @community.item_count_for_date(@datadate,'published articles') %></span> All Articles</li>
-                    <li><span><%= @community.item_count_for_date(@datadate,'published news') %></span> News</li>
-                    <li><span><%= @community.item_count_for_date(@datadate,'published learning lessons') %></span> Learning Lessons</li>
-                    <li><span><%= @community.item_count_for_date(@datadate,'published features') %></span> Features</li>
-                </ul>
-                <p><small>"All Articles" includes all published pages, news, features, dpls, learning lessons, etc.</small></p>
-    	    </div>
-    	    <% end %>
-    	    <h2><%= @community.viewlabel.capitalize %> Tags <a class="tooltip-help" href="#" id="tags_trigger">?</a></h2>
-    	    <div class="dashmodule">
-    	        <div id="sharedtaglist">
-            		<%= render(:partial => 'shared_tag_list') %>
-            		<div id='tags_tooltip' style="display:none;" class="tooltip">
-                        <p id="tooltip_hook"><strong><%= @community.viewlabel.capitalize %>  Tags</strong> These tags describe the <%= @community.viewlabel %> and can be searched on. They are set by <%= (@community.is_institution? ? 'institutional team members' : 'community leaders')%>.</p>
-                    </div>
-
-                    <script type="text/javascript">
-                        var my_tooltip = new Tooltip('tags_trigger', 'tags_tooltip')
-                    </script>
-            	</div>
-        	</div>
-        	
-        	<h2><%= @community.viewlabel.capitalize %> Information <% if (@am_i_leader or admin_mode?) %><small><%= link_to 'edit', edit_people_community_path(@community) %></small><% end %></h2>
-        	<div class="dashmodule">
-                    <p><%= link_to("Reports: Numbers and Activity", :controller => '/people/numbers', :action => :community, :id => @community.id) %></p>
-            	    <dl>
-            	        <dt>Community Type:</dt>
-            		    <dd><%= @community.entrytype_to_s %></dd>
-            		    <dt>Membership:</dt>
-            	        <dd><%= @community.memberfilter_to_s %></dd>
-            	        <dt>Created by:</dt>
-            	        <dd><%= link_to_user(@community.creator) %></dd>
-            	        <dt>Created:</dt>
-            	        <dd><%= humane_date(@community.created_at) %></dd>
-            	        
-            	    </dl>
-        	</div>
-    	</div>
-    	
-    	
+  <div id="primary_column" class="dashboard">
+    <div id="titleblock" class="<%= community_class(@community) -%>">
+      <h1><%= @community.name%></h1>
+      <p><%= @community.entrytype_to_s -%>
+        <%- if @community.is_widget? -%>
+          ( See more about this widget on the <%= link_to('widget detail page',widgets_view_aae_url(@community.widget.id)) -%>.)
+        <%- end -%>
+      </p>
     </div>
-    
-    <div id="community_sidebar">
-        
-        <div id="recent_community_activity" class="section">
-			<%= render(:partial => 'recent_activity') %>
-	    </div>
 
-	</div>
+    <%- if !@community.description.nil? -%>
+      <p id="description">
+        <%= @community.description -%> 
+        <%- if (@am_i_leader or admin_mode?) -%>
+          <p><small class="edit"><%= link_to 'edit', edit_people_community_path(@community) -%></small></p>
+        <%- end -%>
+      </p>              
+    <%- end -%>
 
+    <div id="col_one">
+      <h2>People</h2>
+      <div id="connectiontocommunity">
+        <%= render(:partial => 'community_connection') -%>
+      </div>
+
+      <div id="communitynumbers" class="dashmodule">
+      <%= render(:partial => 'community_numbers') -%>
+      </div>
+
+
+      <h2>
+        <%= @community.viewlabel.capitalize -%> Mailing Lists 
+        <%- if (@am_i_leader or admin_mode?) -%>
+          <small><%= link_to 'edit', editlists_people_community_path(@community) -%></small>
+        <%- end -%>
+      </h2>
+      <div id="communitymailinglists" class="dashmodule">
+        <%= render(:partial => 'community_mailinglists') -%>
+      </div>
+    </div>
+
+
+    <div id="col_two">
+      <%- if @community.is_launched? -%>
+        <h2>Publishing Totals <small>(through <%= @datadate.to_s -%>)</small></h2>
+        <div class="dashmodule">
+          <ul id="publishing_totals">                    
+            <li><span><%= @community.item_count_for_date(@datadate,'published events') -%></span> Events</li>
+            <li><span><%= @community.item_count_for_date(@datadate,'published faqs') -%></span> FAQs</li>
+            <li><span><%= @community.item_count_for_date(@datadate,'published articles') -%></span> Articles</li>
+            <li><span><%= @community.item_count_for_date(@datadate,'published learning lessons') -%></span> Learning Lessons</li>
+            <li><span><%= @community.item_count_for_date(@datadate,'published features') -%></span> Features</li>
+            <li><span><%= @community.item_count_for_date(@datadate,'published news') -%></span> News</li>
+          </ul>
+          <p><small>"All Articles" includes all published pages, news, features, dpls, learning lessons, etc.</small></p>
+        </div>
+      <%- end -%>
+      <h2><%= @community.viewlabel.capitalize -%> Tags <a class="tooltip-help" href="#" id="tags_trigger">?</a></h2>
+      <div class="dashmodule">
+        <div id="sharedtaglist">
+          <%= render(:partial => 'shared_tag_list') -%>
+          <div id='tags_tooltip' style="display:none;" class="tooltip">
+            <p id="tooltip_hook">
+              <strong><%= @community.viewlabel.capitalize -%>  Tags</strong> These tags describe the <%= @community.viewlabel -%> and can be searched on. They are set by <%= (@community.is_institution? ? 'institutional team members' : 'community leaders')%>.
+            </p>
+          </div>
+
+          <script type="text/javascript">
+          var my_tooltip = new Tooltip('tags_trigger', 'tags_tooltip')
+          </script>
+        </div>
+      </div>
+
+      <h2>
+        <%= @community.viewlabel.capitalize -%> Information 
+        <%- if (@am_i_leader or admin_mode?) -%>
+          <small><%= link_to 'edit', edit_people_community_path(@community) -%></small>
+        <%- end -%>
+      </h2>
+      <div class="dashmodule">
+        <p><%= link_to("Reports: Numbers and Activity", :controller => '/people/numbers', :action => :community, :id => @community.id) -%></p>
+        <dl>
+          <dt>Community Type:</dt>
+          <dd><%= @community.entrytype_to_s -%>
+          <%- if @community.is_widget? -%>
+          ( <%= link_to('more information',widgets_view_aae_url(@community.widget.id)) -%> )
+          <%- end -%>
+          </dd>
+          <dt>Membership:</dt>
+          <dd><%= @community.memberfilter_to_s -%></dd>
+          <dt>Created by:</dt>
+          <dd><%= link_to_user(@community.creator) -%></dd>
+          <dt>Created:</dt>
+          <dd><%= humane_date(@community.created_at) -%></dd>
+        </dl>
+      </div>
+    </div>
+  </div> 
+  
+  <div id="community_sidebar">
+    <div id="recent_community_activity" class="section">
+    <%= render(:partial => 'recent_activity') -%>
+    </div>
+  </div>
 </div>
 

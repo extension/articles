@@ -20,11 +20,11 @@ class ReportsController < ApplicationController
   end
   
   def publishedcontent
-    fp = FilterParams.new(params)
+    filteredparams = ParamsFilter.new([{:datadate => {:default => Date.yesterday}}],params)
     set_title("Published Content by Community")
     set_titletag("Reports - eXtension")
     @right_column = false
-    @date = fp.datadate.nil? ? Date.yesterday : fp.datadate
+    @date = filteredparams.datadate
     @published_values = DailyNumber.all_published_item_counts_for_date(@date)
   end
   

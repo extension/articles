@@ -1,7 +1,7 @@
 <h1>Published Content By Communtity</h1>
 
 <h3>Published Item Count (through <%= @date.to_s %>)</h3>
-<p><em>News, Learning Lessons, and Features are articles categorized as 'news', 'learning lessons', and 'feature' respectively</em></p>
+<p><em>Learning Lessons, and Features are articles categorized as 'learning lessons', and 'feature' respectively</em></p>
 <table cellspacing="0" summary="Item Counts"o>
     <tr>
         <th scope="col">Community</th> 
@@ -9,9 +9,9 @@
         <th scope="col">Events</th>
         <th scope="col">Faqs</th>
         <th scope="col">Articles</th>
-        <th scope="col">% News Articles</th>
         <th scope="col">% Learning Lessons</th>
         <th scope="col">% Features</th>
+        <th scope="col">News</th>
     </tr>
     
     <tr>
@@ -20,12 +20,9 @@
         <td><%= publishedcontent_number(@published_values,'Event','published events') %></td>
         <td><%= publishedcontent_number(@published_values,'Faq','published faqs') %></td>
         <td><%= publishedcontent_number(@published_values,'Article','published articles') %></td>
-        <td><%= publishedcontent_ratio(@published_values,'Article','published news','published articles') %>
-            (<%= publishedcontent_number(@published_values,'Article','published news') %>)</td>
-        <td><%= publishedcontent_ratio(@published_values,'Article','published learning lessons','published articles') %>
-            (<%= publishedcontent_number(@published_values,'Article','published learning lessons') %>)</td>
-        <td><%= publishedcontent_ratio(@published_values,'Article','published features','published articles') %>
-            (<%= publishedcontent_number(@published_values,'Article','published features') %>)</td>
+        <td><%= publishedcontent_number(@published_values,'Article','published learning lessons') %></td>
+        <td><%= publishedcontent_number(@published_values,'Article','published features') %></td>
+        <td><%= publishedcontent_number(@published_values,'Article','published news') %></td>
     </tr>
     <%- Community.launched.all(:order => 'name').each do |c|  %>
     <tr>
@@ -34,12 +31,10 @@
         <td><%= publishedcontent_number(@published_values,c,'published events') %></td>
         <td><%= publishedcontent_number(@published_values,c,'published faqs') %></td>
         <td><%= publishedcontent_number(@published_values,c,'published articles') %></td>
-        <td><%= publishedcontent_ratio(@published_values,c,'published news','published articles') %>
-            (<%= publishedcontent_number(@published_values,c,'published news') %>)</td>
-        <td><%= publishedcontent_ratio(@published_values,c,'published learning lessons','published articles') %>
-            (<%= publishedcontent_number(@published_values,c,'published learning lessons') %>)</td>
-        <td><%= publishedcontent_ratio(@published_values,c,'published features','published articles') %>
-            (<%= publishedcontent_number(@published_values,c,'published features') %>)</td>    </tr>
+        <td><%= publishedcontent_number(@published_values,c,'published learning lessons') %></td>
+        <td><%= publishedcontent_number(@published_values,c,'published features') %></td>
+        <td><%= publishedcontent_number(@published_values,c,'published news') %></td>
+    </tr>
     <%- end -%>
     
 </table>

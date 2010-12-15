@@ -70,8 +70,14 @@ class EmailAlias < ActiveRecord::Base
     return true
   end
   
-  def self.mail_alias_in_use?(mail_alias)
-    count = EmailAlias.count(:conditions => "mail_alias = '#{mail_alias}'")
+  def self.mail_alias_in_use?(mail_alias,checkobject=nil)
+    conditions = "mail_alias = '#{mail_alias}'"
+    if(checkobject)
+      if(checkobject.is_a?(Community))
+        conditions += " AND community_id <> #{checkobject.id}"
+      end
+    end
+    count = EmailAlias.count(:conditions => conditions)
     return (count > 0)
   end
     

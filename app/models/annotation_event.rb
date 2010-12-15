@@ -17,6 +17,27 @@ class AnnotationEvent < ActiveRecord::Base
     return self.annotation_id
   end
   
+  def to_atom_entry
+    Atom::Entry.new do |e|
+      e.title = Atom::Content::Html.new(self.title)
+      e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
+      e.authors << Atom::Person.new(:name => 'Contributors')
+      e.id = self.id_and_link
+      e.updated = self.wiki_updated_at
+      e.categories = self.content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
+      e.content = Atom::Content::Html.new(self.content)
+    end
+  end
+  
+  def id_and_link
+    default_url_options[:host] = AppConfig.get_url_host
+    default_url_options[:protocol] = AppConfig.get_url_protocol
+    if(default_port = AppConfig.get_url_port)
+      default_url_options[:port] = default_port
+    end
+    annotation_event_page_url(:id => self.id.to_s)
+  end
+  
   def self.log_event(opts)
     # user and login convenience column
     if(opts[:user].nil?)
@@ -32,4 +53,5 @@ class AnnotationEvent < ActiveRecord::Base
     
     AnnotationEvent.create(opts)
   end
+
 end

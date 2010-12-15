@@ -34,7 +34,7 @@
 
         	<ul class="your_comms">
         	<% @currentuser.communitiesofanyinterest.each do |community|%>
-        		<li <%= community.is_institution? ? 'class="institution"' : '' %>>
+        		<li class="<%= community_class(community) %>">
         		    <%= link_to("#{community.name}", people_community_url(community))%>
         		    <span><%= @currentuser.connection_display(community) %></span>
         		</li>

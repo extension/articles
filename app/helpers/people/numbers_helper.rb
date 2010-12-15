@@ -5,8 +5,6 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-#include ParamExtensions
-
 module People::NumbersHelper
   
   def nilhash_number_with_delimiter(hash,key) 
@@ -33,8 +31,7 @@ module People::NumbersHelper
     return link_to(linkobject.name, url_for(urlparams))
   end
     
-  def url_for_itemlist(itemlist,options,params={})
-    filteredparameters = FilterParams.new(options)
+  def url_for_itemlist(itemlist,filteredparameters,params={})  
     filter_params = filteredparameters.option_values_hash
     options = {:controller => '/people/numbers', :action => itemlist}
     options.merge!(filter_params)
@@ -47,7 +44,11 @@ module People::NumbersHelper
   end
   
   def link_to_userlist(text,options={},htmloptions={})
-    filteredparameters = FilterParams.new(options)
+    filteredparameters_list = [:community,:forcecacheupdate]
+    filteredparameters_list += Activity.filteredparameters
+    filteredparameters = ParamsFilter.new(filteredparameters_list,params)    
+    filter_params = filteredparameters.option_values_hash
+    
     community = options[:community] || nil
     bycount = (options[:bycount].nil? ? false : options[:bycount])
     if(community)
@@ -57,6 +58,7 @@ module People::NumbersHelper
       urlparams = {:controller => '/people/colleagues', :action => :list}
     end
     urlparams.merge!(filteredparameters.option_values_hash)
+    urlparams.merge!(options)
     # must be logged in!
     if(@currentuser.nil?)
       return "#{text}"

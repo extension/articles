@@ -9,7 +9,7 @@
 
 <div id="widgetcode">
         <textarea>
-<%= h('<iframe style="border:0" width="100%" src="' +  @widget.widgeturl + '" height="300px"></iframe>') %>
+<%= h(@widget.get_iframe_code) %>
 </textarea>
 </div>
 

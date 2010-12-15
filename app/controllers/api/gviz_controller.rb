@@ -15,7 +15,9 @@ class Api::GvizController < ApplicationController
   def activitytable
     error = false
     errors = []
-    filteredparams = ParamsFilter.new([:datatype,:graphtype,:tqx],params)
+    filteredparams_list = [:datatype,:graphtype,:tqx,:forcecacheupdate] # primary items
+    filteredparams_list += Activity.filteredparameters
+    filteredparams = ParamsFilter.new(filteredparams_list,params)
     datatype =  filteredparams.datatype || 'hourly'
     graphtype = filteredparams.graphtype || ((datatype == 'weekday' or datatype == 'hourly') ? 'column' : 'area') 
      
@@ -26,13 +28,13 @@ class Api::GvizController < ApplicationController
 
     comparisons = check_for_table_comparisons
     if(comparisons.blank?)
-      @findoptions = @filteredparams.findoptions
-      @activity = ActivityContainer.new({:findoptions => @findoptions, :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => @filteredparams.forcecacheupdate})
+      @findoptions = filteredparams.findoptions
+      @activity = ActivityContainer.new({:findoptions => @findoptions, :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => filteredparams.forcecacheupdate})
       @json_data_table = @activity.table
     else
       containers = []
       comparisons.each do |comparison|
-        containers << ActivityContainer.new({:findoptions => comparison, :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => @filteredparams.forcecacheupdate})
+        containers << ActivityContainer.new({:findoptions => filteredparams.findoptions.merge(comparison), :datatype => datatype, :graphtype => graphtype, :forcecacheupdate => filteredparams.forcecacheupdate})
       end
       normalize = params[:normalize].nil? ? false : (params[:normalize] == 'true')
       @json_data_table = ActivityContainer.comparisontable(containers,normalize)
@@ -52,9 +54,6 @@ class Api::GvizController < ApplicationController
   def check_for_table_comparisons
     allowed_params = ['primary','secondary','tertiary','quaternary','quinary','senary','septenary']
     comparisons = []
-    @filteredparams = FilterParams.new(params)
-    baseoptions = @filteredparams.findoptions
-    
     
     if(params[:primary_type].nil? or params[:primary_id].nil?)
       return nil
@@ -65,7 +64,7 @@ class Api::GvizController < ApplicationController
       idparam = "#{order}_id".to_sym
       if(!params[typeparam].nil? and !params[idparam].nil?)
         if(objhash = get_comparison_object(params[typeparam],params[idparam]))
-          comparisons << baseoptions.merge(objhash)
+          comparisons << objhash
         end
       end
     end    

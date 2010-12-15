@@ -43,7 +43,8 @@ class User < Account
   has_many :notifications, :dependent => :destroy
   
   has_many :widget_events
-  has_many :widgets
+  has_many :created_widgets, :class_name => "Widget", :foreign_key => "user_id"
+  
   has_many :responses
     
   belongs_to :position
@@ -184,6 +185,9 @@ class User < Account
   }
   
 
+  def assigned_widgets
+    self.communities.widgets.map(&:widget)
+  end
       
   def openid_url(claimed=false)
    peoplecontroller = 'people'
@@ -377,13 +381,16 @@ class User < Account
   end
   
   def email_forward
-    ea = self.email_aliases.find(:first, :conditions => "alias_type = #{EmailAlias::INDIVIDUAL_FORWARD}")
-    if(!ea)
-      ea = self.email_aliases.find(:first, :conditions => "alias_type = #{EmailAlias::INDIVIDUAL_FORWARD_CUSTOM}")
-    end
-    return ea
+    self.email_aliases.find_by_mail_alias(self.login)
   end
-     
+  
+  def switch_to_apps_email
+    forward = self.email_forward
+    if(!forward.nil?)
+      forward.update_attribute(:alias_type,EmailAlias::INDIVIDUAL_GOOGLEAPPS)
+    end
+  end
+       
   def retire
     self.retired = true
     self.retired_at = Time.now()
@@ -522,47 +529,7 @@ class User < Account
     UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "set new password") 
    end
   end
-  
-  # very similiar to confirm_signup, only used for bypassing email confirmation and vouching
-  # for those that have a training_invitation 
-  def training_signup?
-   # is there a training_invitation with my email in it?
-   # TODO: deal with expiration at some point
-   training_invitation = TrainingInvitation.find_by_email(self.email)     
-   return false if(training_invitation.nil?)
-   
-   # TODO: should I check if the training_invitation has already been filled,  not sure how on
-   # earth that could happen, but knowing how this goes, I'm sure it would
-   
-   now = Time.now.utc
-   self.vouched = true 
-   self.vouched_by = training_invitation.created_by
-   self.vouched_at = now
-   
-   # is there an unaccepted normal invitation with this email address in it? - then let's call it an accepted invitation
-   invitation = Invitation.find(:first, :conditions => ["email = '#{self.email}' and status = #{Invitation::PENDING}"])
-   if(!invitation.nil?)
-    invitation.accept(self,now)
-   end
-   
-   # email settings
-   self.emailconfirmed = true
-   self.email_event_at = now
-   self.account_status = User::STATUS_OK
-   
-   if(self.save)
-    UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "training signup")
-    Activity.log_activity(:user => self, :creator => self, :activitycode => Activity::SIGNUP, :appname => 'local')      
-    self.checklistemails
-    self.user_tokens.signups.delete_all
-    training_invitation.update_attributes({:user_id => self.id, :completed_at => now})
-    return true
-   else
-    return false
-   end  
-  end
-  
-  
+    
   def confirm_signup(token,dosave=true)
    now = Time.now.utc
    
@@ -1404,14 +1371,28 @@ class User < Account
    def self.top_tags_by_conditions(conditions,limit=25)
     validusers.tag_frequency(:conditions => conditions, :order => 'frequency DESC', :limit => limit)
    end
-       
+  
+   def self.filteredparameters
+     filteredparams_list = []
+     # list everything that User.filterconditions handles
+     # build_date_condition
+     filteredparams_list += [:dateinterval,:datefield]
+     # community params
+     filteredparams_list += [:community,:communitytype,:connectiontype]
+     # build_association_conditions
+     filteredparams_list += [:institution,:location,:position, :county]
+     # build_agreement_status_conditions
+     filteredparams_list += [:agreementstatus]
+     # others, socialnetwork name, announcements, allusers
+     filteredparams_list += [{:socialnetwork => :string},{:announcements => :boolean},{:allusers => :boolean}]
+     filteredparams_list
+   end     
        
    def self.filterconditions(options={})      
     joins = []
     conditions = []
 
     conditions << build_date_condition(options)
-    #conditions << build_entrytype_condition(options)
 
     if(options[:community])
       joins << :communities
@@ -1428,18 +1409,13 @@ class User < Account
     
     # agreement status?
     conditions << build_agreement_status_conditions(options)
-    
-    
+      
     # social network?
-    if(options[:socialnetwork] or options[:socialnetworks])
-      networknames = options[:socialnetworks].nil? ? options[:socialnetwork] :   options[:socialnetworks]
+    if(options[:socialnetwork])
       joins << :social_networks
-      conditions << SocialNetwork.get_filter_condition(networknames)
+      conditions << SocialNetwork.get_filter_condition(options[:socialnetwork])
     end
 
-    # agreement status?
-    conditions << build_agreement_status_conditions(options)
-    
     # announcements?
     if(!options[:announcements].nil?)
       if(options[:announcements])

@@ -14,16 +14,18 @@ class Widget < ActiveRecord::Base
   end
 
   has_many :user_roles
-  has_many :assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = true"
-  has_many :non_active_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = false"
   has_many :submitted_questions
   has_many :widget_events
   belongs_to :user
+  belongs_to :creator, :class_name => "User", :foreign_key => "user_id"
   # has_many :tags from the tags model!
   has_many :cached_tags, :as => :tagcacheable
   belongs_to :location
   belongs_to :county
+  has_one :community, :dependent => :destroy
   
+  
+  has_many :role_based_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = true"
   
   validates_presence_of :name  
   validates_uniqueness_of :name, :case_sensitive => false
@@ -31,6 +33,7 @@ class Widget < ActiveRecord::Base
   named_scope :inactive, :conditions => "active = false", :order => "name"
   named_scope :active, :conditions => "active = true", :order => "name"
   named_scope :byname, lambda {|widget_name| {:conditions => "name like '#{widget_name}%'", :order => "name"} }
+  after_save :update_community
   
 
   # hardcoded for layout difference
@@ -38,6 +41,18 @@ class Widget < ActiveRecord::Base
   
   def is_bonnie_plants_widget?
     (self.fingerprint == BONNIE_PLANTS_WIDGET)
+  end
+  
+  def assignees
+    self.community.joined.all(:conditions => 'aae_responder = 1')
+  end
+  
+  def leaders
+    self.community.leaders
+  end
+  
+  def non_active_assignees
+    self.community.joined.all(:conditions => 'aae_responder = 0')
   end
   
   def widgeturl
@@ -97,6 +112,16 @@ class Widget < ActiveRecord::Base
   def can_edit_attributes?(user)
     return (user.is_admin? or self.user == user or self.assignees.include?(user))
   end
-    
+  
+  def update_community
+    if(!self.community.blank?)
+      self.community.update_attributes({:active => self.active, :location => self.location})
+    else
+      self.community = Community.create(:name => "Widget: #{self.name}",:entrytype => Community::WIDGET, :memberfilter => Community::OPEN, :created_by => self.user_id, :active => self.active, :location => self.location)
+      # add creator to leadership
+      self.community.add_user_to_leadership(self.creator,User.systemuser,false)
+                 
+    end
+  end  
       
 end

@@ -1,0 +1,63 @@
+<%- if @content_tag.nil? %>
+   <p>Invalid content tag</p>
+<%- else -%>
+   <%- if !@articlefilter.nil? %>
+      <h1><%= @articlefilter %> Articles for Tag: <%= @content_tag.name %></h1>
+   <%- else -%>
+      <h1>All Articles for Tag: <%= @content_tag.name %></h1>
+   <%- end -%>
+
+   <div id="paginator_wrapper"> 
+   <% if @articles.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @articles.offset + 1 %>-<%= @articles.offset + @articles.length %></strong> of <strong><%= @articles.total_entries %></strong></p>
+   <% else %>
+       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+   <% end %>
+
+   <%= will_paginate @articles, :params => {:articlefilter => params[:articlefilter]} %>
+   </div>
+
+   <table cellspacing="0" border="1">
+       <tr>
+           <th>Broken Links?</th>
+           <th>Published Title</th>
+           <th>Published At</th>
+           <th>Updated At</th>
+           <th>External</th>
+           <th>Local</th>
+           <th>Internal</th>
+           <th>Unpublished</th>
+           <th>Broken</th>
+           <th>Warning</th>
+           <th>Redirect</th>
+       </tr>
+    
+       <% for article in @articles %>
+           <% content_link_counts = article.content_link_counts %>
+           <tr id="article_row_<%= article.id %>">
+              <td><%= article.has_broken_links? ? 'Yes' : 'No' %></td>
+              <td><%= link_to(article.title,preview_articlelinks_url(:id => article.id)) %></td>
+              <td><%= humane_date(article.wiki_created_at) %></td>
+              <td><%= humane_date(article.wiki_updated_at) %></td>
+              <td><%= content_link_counts[:external] %></td>
+              <td><%= content_link_counts[:local] %></td>
+              <td><%= content_link_counts[:internal] %></td>
+              <td><%= content_link_counts[:wanted] %></td>
+              <td><%= content_link_counts[:broken] %></td>
+              <td><%= content_link_counts[:warning] %></td>
+              <td><%= content_link_counts[:redirected] %></td>
+           </tr>
+       <% end%>
+   </table>
+
+
+   <div id="paginator_wrapper"> 
+   <% if @articles.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @articles.offset + 1 %>-<%= @articles.offset + @articles.length %></strong> of <strong><%= @articles.total_entries %></strong></p>
+   <% else %>
+       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+   <% end %>
+
+   <%= will_paginate @articles, :params => {:articlefilter => params[:articlefilter]} %>
+   </div>
+<%- end -%>

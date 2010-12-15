@@ -188,3 +188,12 @@ toggle_table_of_contents = function() {
 }
 
 
+$j(document).ready(function() {
+  $j(".external_link").click(function(link){
+    link.preventDefault();
+    _gaq.push(['_trackPageview','/outgoing/'+ $j(this).attr('href')]);
+    _gaq.push(['_trackEvent', 'Outbound Links', $j(this).attr('href')]);
+    setTimeout('document.location = "' + $j(this).attr('href') + '"', 100);
+  });
+});
+

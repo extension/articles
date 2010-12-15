@@ -121,7 +121,12 @@ named_scope :by_order, lambda { |*args| { :order => (args.first || 'submitted_qu
 
    
 #activity named scopes
-named_scope :date_subs, lambda { |date1, date2| { :conditions => (date1 && date2) ? [ "submitted_questions.created_at between ? and ?", date1, date2] : ""}}
+named_scope :by_dateinterval, lambda {|dateinterval|
+  conditions = SubmittedQuestion.build_date_condition({:dateinterval => dateinterval})
+  if(conditions)
+   {:conditions => conditions}
+  end
+}
 
 # updates the submitted question, creates a response and  
 # calls the function to log a new resolved submitted question event 

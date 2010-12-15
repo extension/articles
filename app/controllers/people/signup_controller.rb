@@ -174,17 +174,8 @@ class People::SignupController < ApplicationController
         signupdata.merge!({:invitation => @invitation})
       end
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "initialsignup")
-      # TODO: check training invitations   
-      if(!@currentuser.training_signup?)     
-        @currentuser.send_signup_confirmation(signupdata)
-        return redirect_to(:action => :confirmationsent)
-      else
-        if(!@currentuser.additionaldata.nil? and !@currentuser.additionaldata[:signup_institution_id].nil?)
-          @currentuser.change_profile_community(Community.find(@currentuser.additionaldata[:signup_institution_id]))
-        end       
-        Notification.create(:notifytype => Notification::WELCOME, :account => @currentuser, :send_on_create => true)
-        return redirect_to(people_welcome_url)
-      end
+      @currentuser.send_signup_confirmation(signupdata)
+      return redirect_to(:action => :confirmationsent)
     end
   end
   

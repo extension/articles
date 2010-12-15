@@ -33,6 +33,8 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:forcecacheupdate] = {:datatype => :boolean, :default => false} 
   RECOGNIZED_PARAMETERS[:apikey] = :apikey
   RECOGNIZED_PARAMETERS[:tags] = :taglist
+  RECOGNIZED_PARAMETERS[:content_tag] = :content_tag
+
   RECOGNIZED_PARAMETERS[:content_types] = :method
   RECOGNIZED_PARAMETERS[:ipaddress] = :string 
   
@@ -48,8 +50,7 @@ class FilteredParameter
   # TODO: review, some of these are used sparingly in the application and may not really belong here as "standard" parameters
   RECOGNIZED_PARAMETERS[:connectiontype] = :string
   RECOGNIZED_PARAMETERS[:communitytype] = :string # probably should be a method to filter known types
-  RECOGNIZED_PARAMETERS[:agreementstatus] = :boolean
-  RECOGNIZED_PARAMETERS[:announcements] = :boolean
+  RECOGNIZED_PARAMETERS[:agreementstatus] = :string
   RECOGNIZED_PARAMETERS[:source] = :string
   RECOGNIZED_PARAMETERS[:status] = :string
   RECOGNIZED_PARAMETERS[:legacycategory] = :category
@@ -59,7 +60,6 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:activityaddress] = :string 
   RECOGNIZED_PARAMETERS[:activity] = :activity 
   RECOGNIZED_PARAMETERS[:activitygroup] = :activitygroup 
-  RECOGNIZED_PARAMETERS[:activitydisplay] = :string 
   RECOGNIZED_PARAMETERS[:ignorecommunity] = :community
   RECOGNIZED_PARAMETERS[:communityactivity] = :string 
   # graphing/data/gviz api related
@@ -147,10 +147,14 @@ class FilteredParameter
         nil # TODO: raise invalid error
       end 
     when :date
-      begin        
-        Time.zone.parse(value).to_date 
-      rescue 
-        nil # TODO: raise invalid error
+      if(value.is_a?(Date))
+        return value
+      else
+        begin        
+          Time.zone.parse(value).to_date 
+        rescue 
+          nil # TODO: raise invalid error
+        end
       end
     when :boolean     
       self.class.value_to_boolean(value)
@@ -202,6 +206,8 @@ class FilteredParameter
       ApiKey.find_by_keyvalue(value)
     when :taglist
        return Tag.castlist_to_array(value.gsub('|',','),true,false)
+    when :content_tag
+       return Tag.content_tags.find_by_name(value)
     else
       nil # TODO: raise invalid datatype error
     end

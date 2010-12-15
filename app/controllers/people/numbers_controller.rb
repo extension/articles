@@ -14,27 +14,27 @@ class People::NumbersController < ApplicationController
   end
   
   def browsecommunities
-    @filteredparams = FilterParams.new(params)
-    @filteredparams.order=@filteredparams.order('name')
+    filteredparams_list = [{:order => {:default => 'name'}},
+                           {:communitytype => {:default => 'all'}}]
+    @filteredparams = ParamsFilter.new(filteredparams_list,params)
     @findoptions = @filteredparams.findoptions
     @filterstring = @filteredparams.filter_string
     
 
-    @displayfilter = @findoptions[:communitytype].nil? ? 'all' : @findoptions[:communitytype]
-    @activitydisplay = params[:activitydisplay].nil? ? 'communityconnection' : params[:activitydisplay]
+    @displayfilter = @filteredparams.communitytype
 
     # doesn't yet accept a filtered listing
     case @displayfilter
     when 'approved'
-      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @findoptions[:order]) 
+      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @filteredparams.order) 
     when 'usercontributed'
-      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @findoptions[:order]) 
+      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @filteredparams.order) 
     when 'institutions'
-      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, @findoptions[:order]) 
+      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, @filteredparams.order) 
     else
-      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @findoptions[:order]) 
-      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @findoptions[:order]) 
-      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, @findoptions[:order]) 
+      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @filteredparams.order) 
+      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @filteredparams.order) 
+      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, @filteredparams.order) 
     end
   end
   
@@ -67,7 +67,7 @@ class People::NumbersController < ApplicationController
   end
   
   def locations
-    @filteredparams = FilterParams.new(params)
+    @filteredparams = ParamsFilter.new(Location.userfilteredparameters,params)
     @filterstring = @filteredparams.filter_string
     @findoptions = @filteredparams.findoptions
     @locations = Location.filtered(@findoptions).displaylist
@@ -80,17 +80,19 @@ class People::NumbersController < ApplicationController
   end
   
   def positions
-    @filteredparams = FilterParams.new(params)
+    @filteredparams = ParamsFilter.new(Position.userfilteredparameters,params)    
     @findoptions = @filteredparams.findoptions
     @positions = Position.filtered(@findoptions).displaylist
     @positioncounts = Position.userfilter_count(@findoptions)
   end
   
   def summary
-    @filteredparams = FilterParams.new(params)
+    filteredparameters_list = [:community,:forcecacheupdate]
+    filteredparameters_list += Activity.filteredparameters
+    @filteredparams = ParamsFilter.new(filteredparameters_list,params)
     @filterstring = @filteredparams.filter_string
     
-    if(params[:community] and @filteredparams.community.nil?)
+    if(@filteredparams.community? and @filteredparams.community.nil?)
       flash[:error] = 'That community does not exist'  
       return(redirect_to(:action => 'index'))
     else
@@ -99,6 +101,7 @@ class People::NumbersController < ApplicationController
     
     totaloptions = baseoptions.merge({:findoptions => @filteredparams.findoptions})
     @total = NumberSummary.new(totaloptions)
+    
             
     lastmonthoptions = baseoptions.merge({:findoptions => @filteredparams.findoptions.merge({:dateinterval => 'withinlastmonth'})})
     lastmonthoptions[:summarydateinterval] = 'withinlastmonth'

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101130203200) do
+ActiveRecord::Schema.define(:version => 20101214212801) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(:version => 20101130203200) do
     t.string   "original_url"
     t.text     "original_content", :limit => 16777215
     t.boolean  "is_dpl",                               :default => false
+    t.boolean  "has_broken_links"
   end
 
   add_index "articles", ["datatype"], :name => "index_wiki_articles_on_type"
@@ -284,11 +285,14 @@ ActiveRecord::Schema.define(:version => 20101130203200) do
     t.boolean  "connect_to_drupal",                     :default => false
     t.integer  "drupal_node_id"
     t.boolean  "connect_to_google_apps",                :default => false
+    t.integer  "widget_id"
+    t.boolean  "active",                                :default => true
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
   add_index "communities", ["referer_domain"], :name => "index_communities_on_referer_domain"
   add_index "communities", ["shortname"], :name => "index_communities_on_shortname", :unique => true
+  add_index "communities", ["widget_id"], :name => "index_communities_on_widget_id"
 
   create_table "communityconnections", :force => true do |t|
     t.integer  "user_id"
@@ -333,8 +337,16 @@ ActiveRecord::Schema.define(:version => 20101130203200) do
     t.text     "original_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "status"
+    t.integer  "error_count",            :default => 0
+    t.datetime "last_check_at"
+    t.integer  "last_check_status"
+    t.boolean  "last_check_response"
+    t.string   "last_check_code"
+    t.text     "last_check_information"
   end
 
+  add_index "content_links", ["content_id", "content_type", "status", "linktype"], :name => "coreindex"
   add_index "content_links", ["original_fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
 
   create_table "counties", :force => true do |t|
@@ -956,18 +968,6 @@ ActiveRecord::Schema.define(:version => 20101130203200) do
     t.string "name"
   end
 
-  create_table "training_invitations", :force => true do |t|
-    t.string   "email",        :null => false
-    t.integer  "user_id"
-    t.integer  "created_by"
-    t.datetime "completed_at"
-    t.datetime "expires_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "training_invitations", ["email"], :name => "index_training_invitations_on_email", :unique => true
-
   create_table "update_times", :force => true do |t|
     t.integer  "datasource_id"
     t.string   "datasource_type",     :limit => 25
@@ -1055,7 +1055,6 @@ ActiveRecord::Schema.define(:version => 20101130203200) do
     t.boolean  "upload_capable", :default => false
     t.boolean  "show_location"
     t.boolean  "enable_tags"
-    t.integer  "community_id"
     t.integer  "location_id"
     t.integer  "county_id"
   end

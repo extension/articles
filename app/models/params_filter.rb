@@ -94,8 +94,22 @@ class ParamsFilter
             true
           end
         end
+      elsif(options[:default])
+        @filtered_parameters[name] = FilteredParameter.new(name,nil,options)
+        (class << self; self; end).class_eval do
+          define_method name do 
+            @filtered_parameters[name].filtered
+          end
+          
+          define_method "_#{name}" do 
+            @filtered_parameters[name]
+          end
+          
+          define_method "#{name}?" do 
+            true
+          end
+        end
       else
-        # TODO: honor items that might have a default parameter.
         (class << self; self; end).class_eval do
           define_method name do 
             nil
@@ -150,9 +164,29 @@ class ParamsFilter
   def findoptions
     findoptions = {}
     @filtered_parameters.keys.each do |param|
-      findoptions[param] = @filtered_parameters[param].unfiltered
+      findoptions[param] = @filtered_parameters[param].filtered
     end
     return findoptions
+  end
+  
+
+  def option_values_hash(filter = true)
+    returnhash = {}
+    
+    if(!filter)
+      @filtered_parameters.each do |key,value|
+        returnhash[key] = value.unfiltered
+      end
+    else
+      @filtered_parameters.each do |key,value|
+        returnvalue = value.filtered
+        if(!returnvalue.nil?)
+          returnhash[key] = returnvalue
+        end
+      end
+    end
+    
+    return returnhash
   end
 
 end

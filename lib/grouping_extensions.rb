@@ -9,6 +9,21 @@ include ConditionExtensions
 
 module GroupingExtensions
   
+  def userfilteredparameters
+    filteredparams_list = []
+    # list everything that userfilter_conditions handles
+    # build_date_condition
+    filteredparams_list += [:dateinterval,:datefield]
+    # build_entrytype_condition
+    filteredparams_list += [{:entrytype => :integer}]
+    # community params 
+    filteredparams_list += [:community,:communitytype,:connectiontype]
+    # build_association_conditions
+    filteredparams_list += [:institution,:location,:position, :county]
+    # allusers
+    filteredparams_list += [{:allusers => :boolean}]
+    filteredparams_list
+  end
   
   def build_entrytype_condition(options={})
     if(options[:entrytype])

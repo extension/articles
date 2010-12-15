@@ -141,7 +141,7 @@ class AaeEmail < ActiveRecord::Base
     elsif(mail.to.include?(ESCALATION_ADDRESS))
       logged_attributes[:destination] = ESCALATION
       logged_attributes[:reply_type] = ESCALATION_REPLY
-    elsif(mail.to.include?(NO_REPLY))
+    elsif(mail.to.include?(NOREPLY_ADDRESS))
       logged_attributes[:destination] = NOREPLY
     else
       logged_attributes[:destination] = UNKNOWN

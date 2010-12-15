@@ -168,10 +168,12 @@ legend {font-size:1.3em;font-weight:bold;}
 #titleblock {padding:0 0 0 72px; margin-bottom:1em;min-height:72px;}
 #titleblock.institution {background:transparent url(/images/people/institution-icon.png) no-repeat left top;}
 #titleblock.community {background:transparent url(/images/people/group-icon.png) no-repeat left top;}
+#titleblock.widget {background:transparent url(/images/people/widget-icon.png) no-repeat left top;}
 #titleblock p {padding-left:4px;}
 
 li.institution {background:transparent url(/images/people/institution-mini-icon.png) no-repeat left top;}
-li.institution a {padding-left:22px;}
+li.widget {background:transparent url(/images/people/widget-icon-mini.png) no-repeat left top;}
+li.institution a, li.widget a {padding-left:22px;}
 
 
 .dashmodule {border: 2px solid #ddd; margin-bottom:2.5em;padding:1.5em; -moz-border-radius: 8px;-webkit-border-radius: 8px;}
