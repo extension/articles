@@ -90,3 +90,5 @@ table td {padding:.45em;font-size:1em !important;}
 
 #preview_wrapper {display:none;}
 #app_location.preview {display:block;background:#fffbbe !important;border:1px solid #bbb; margin-bottom:2em; padding: 0 .75em;}
+
+a:link:after, a:visited:after {content: " (" attr(href) ") ";font-size: 90%;}
