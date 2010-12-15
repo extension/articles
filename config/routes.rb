@@ -145,7 +145,7 @@ ActionController::Routing::Routes.draw do |map|
   map.redirect 'feeds/events', :controller => 'feeds', :action => 'content', :content_types => 'events', :permanent => true  
   map.redirect 'feeds/all', :controller => 'feeds', :action => 'content', :permanent => true  
 
-  map.connect 'feeds/community/-/:tags', :controller => 'feeds'
+  map.connect 'feeds/community/-/:tags', :controller => 'feeds', :action => 'community'
   map.content_feed 'feeds/content/:tags', :controller => 'feeds', :action => 'content'
   map.connect 'feeds/:action', :controller => 'feeds'
   
