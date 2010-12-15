@@ -621,6 +621,9 @@ class Community < ActiveRecord::Base
   end
   
   def item_count_for_date(datadate,datatype,getvalue = 'total',update=false)
+    if(datadate.nil?)
+      datadate = Date.today
+    end
     if(!update and (dn = self.daily_numbers.find_by_datatype_and_datadate(datatype,datadate)))
       return dn.send(getvalue)
     end
