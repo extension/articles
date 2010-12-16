@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101214212801) do
+ActiveRecord::Schema.define(:version => 20101216202015) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -365,15 +365,17 @@ ActiveRecord::Schema.define(:version => 20101214212801) do
 
   create_table "daily_numbers", :force => true do |t|
     t.integer  "datasource_id"
-    t.string   "datasource_type"
+    t.string   "datasource_type", :limit => 50
     t.date     "datadate"
-    t.string   "datatype"
+    t.string   "datatype",        :limit => 50
     t.integer  "total"
     t.integer  "thatday"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "additionaldata"
   end
+
+  add_index "daily_numbers", ["datasource_id", "datasource_type", "datadate", "datatype"], :name => "dn_index"
 
   create_table "db_files", :force => true do |t|
     t.binary "data", :limit => 2147483647
