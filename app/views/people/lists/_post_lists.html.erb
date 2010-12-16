@@ -3,10 +3,14 @@
 	<th>Messages</th>
 	<th>Size</th>
 	<% listoflists.each do |list_id,messages,size| %>
+		<%- list = List.find_by_id(list_id) -%>
+		<%- if list -%>
 		<tr>
-			<td><%= link_to_mailinglist(List.find(list_id))%></td>
+			<td><%= link_to_mailinglist(list)%></td>
 			<td class="bignumber"><%= messages %></td>
 			<td><%= number_to_human_size(size) %></td>
 		</tr>
+    <% end %>
+  	
 	<% end %>
 </table>
