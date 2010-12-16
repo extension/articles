@@ -5,8 +5,15 @@
 	<% senderlist.each do |sender_id,messages,size| %>
 		<tr>
 			<% if sender_id != 0 %>
-			<td><%= link_to_user(User.find(sender_id))%></td>
-			<% else %>
+  		  <%- account = Account.find_by_id(sender_id) -%>
+  		  <%- if account and account.class == User -%>
+  			  <td><%= link_to_user(account)%></td>
+  			<% elsif account and account.class == PublicUser %>
+  			  <td><%= account.fullname %></td>
+  			<%- else -%>
+  				<td>Others</td>
+  			<% end %>
+			<%- else -%>
 				<td>Others</td>
 			<% end %>
 			<td class="bignumber"><%= messages %></td>
