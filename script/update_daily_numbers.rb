@@ -1,74 +1,72 @@
 #!/usr/bin/env ruby
-require 'getoptlong'
-### Program Options
-progopts = GetoptLong.new(
-  [ "--environment","-e", GetoptLong::OPTIONAL_ARGUMENT ],
-  [ "--refreshall","-r", GetoptLong::NO_ARGUMENT ],
-  [ "--datadate","-d", GetoptLong::OPTIONAL_ARGUMENT ]
-)
+require 'rubygems'
+require 'trollop'
+require 'thread'
 
-@environment = 'production'
-@refreshall = false
-@provided_date = nil
-progopts.each do |option, arg|
-  case option
-    when '--environment'
-      @environment = arg
-    when '--refreshall'
-      @refreshall = true
-    when '--datadate'
-      @provided_date = arg
-    else
-      puts "Unrecognized option #{opt}"
-      exit 0
-    end
+
+default_date = (Date.today - 1).to_s #Date.yesterday is rails, and rails isn't loaded yet
+
+commandline_options = Trollop::options do
+  opt(:refreshall,"Refresh all data", :short => 'a', :default => false)
+  opt(:datadate,"Date to process numbers for", :short => 'd', :default => default_date)
+  opt(:datatype,"Datatype (all, events, faqs, articles, news, learning lessions or features)", :short => 't', :default => 'all')
+  opt(:environment,"Rails environment to start", :short => 'e', :default => 'production')
 end
-### END Program Options
 
 if !ENV["RAILS_ENV"] || ENV["RAILS_ENV"] == ""
-  ENV["RAILS_ENV"] = @environment
+  ENV["RAILS_ENV"] = commandline_options[:environment]
 end
 
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-def update_all_published_numbers(datadate)
-  DailyNumber.all_item_count_for_date(Event,datadate,'published events','total',true)
-  DailyNumber.all_item_count_for_date(Faq,datadate,'published faqs','total',true)
-  DailyNumber.all_item_count_for_date(Article,datadate,'published articles','total',true)
-  DailyNumber.all_item_count_for_date(Article,datadate,'published news','total',true)
-  DailyNumber.all_item_count_for_date(Article,datadate,'published learning lessons','total',true)
-  DailyNumber.all_item_count_for_date(Article,datadate,'published features','total',true)
+KNOWN_DATATYPES = ['events','faqs','articles','news','learning lessons','features']
+
+def update_all_published_numbers(datadate,datatype = 'all')
+  if(datatype.nil? or datatype == 'all')
+    KNOWN_DATATYPES.each do |known_datatype|
+      DailyNumber.all_item_count_for_date(Article,datadate,"published #{known_datatype}",'total',true)
+    end
+  else
+    DailyNumber.all_item_count_for_date(Article,datadate,"published #{datatype}",'total',true)
+  end
 end
 
-def update_community_published_numbers(community,datadate)
-  community.item_count_for_date(datadate,'published events','total',true)
-  community.item_count_for_date(datadate,'published faqs','total',true)
-  community.item_count_for_date(datadate,'published articles','total',true)
-  community.item_count_for_date(datadate,'published news','total',true)
-  community.item_count_for_date(datadate,'published learning lessons','total',true)
-  community.item_count_for_date(datadate,'published features','total',true)
+def update_community_published_numbers(community,datadate,datatype = 'all')
+  if(datatype.nil? or datatype == 'all')
+    KNOWN_DATATYPES.each do |known_datatype|
+      community.item_count_for_date(datadate,"published #{known_datatype}",'total',true)
+    end      
+  else
+    community.item_count_for_date(datadate,"published #{datatype}",'total',true)
+  end
 end
 
-if(!@provided_date.nil?)
-  @datadate = Date.parse(@provided_date)
+if(commandline_options[:datadate])
+  @datadate = Date.parse(commandline_options[:datadate])
 else
   @datadate = Date.yesterday
 end
+
+if(!((KNOWN_DATATYPES + ['all']).include?(commandline_options[:datatype])))
+  @datatype = 'all'
+else
+  @datatype = commandline_options[:datatype]
+end
   
 @communities_list = Community.launched
-if(@refreshall)
+if(commandline_options[:refreshall])
   datadate = AppConfig.configtable['content_feed_refresh_since'].to_date
   while(datadate <= Date.yesterday) do
-    update_all_published_numbers(datadate)
+    update_all_published_numbers(datadate,@datatype)
     @communities_list.each do |c|
-      update_community_published_numbers(c,datadate)
+      update_community_published_numbers(c,datadate,@datatype)
     end
     datadate += 1.day
   end
 else
-  update_all_published_numbers(@datadate)
+  update_all_published_numbers(@datadate,@datatype)
   @communities_list.each do |c|
-    update_community_published_numbers(c,@datadate)
+    update_community_published_numbers(c,@datadate,@datatype)
   end
 end
   
