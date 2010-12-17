@@ -982,3 +982,17 @@ border-radius: 10px;}
 
 .external_link {background: url(/images/common/external_site_black.png) right bottom no-repeat; padding-right:12px;}
 a:hover.external_link {background: url(/images/common/external_site_orange.png) right bottom no-repeat; padding-right:12px;}
+
+.brokenlinks .brokencount, .brokenlinks .warningcount {background:red; font-weight:bold; font-size:1.6em;}
+.brokenlinks .brokencount.zero {color:#000;}
+.unpublishedlinks {background:yellow; font-size:1.6em; font-weight:bold;}
+.superhead {font-size:1.7em;background:#ccc;}
+.td_c {text-align:center; font-weight:bold;}
+.td_sm {font-size:1.2em; color:#666;}
+.td_b {font-weight:bold;}
+.zero {color:#ccc;font-weight:normal;}
+#linkchecker {margin:0 0 40px; background:#e5e5e5;}
+#linkchecker td {border-bottom:1px solid #fff;}
+.externallinks .warning {background:#ff9393;}
+.externallinks .broken {background:red;}
+.externallinks .redirect {background:yellow;}
