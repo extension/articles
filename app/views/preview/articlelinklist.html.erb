@@ -76,8 +76,8 @@
               <td class="td_c <%= content_link_counts[:internal] > 0 ? '' : 'zero' %>"><%= content_link_counts[:internal] %></td>
               <td class="td_c <%= content_link_counts[:local] > 0 ? '' : 'zero' %>"><%= content_link_counts[:local] %></td>              
               <td class="td_c <%= content_link_counts[:wanted] > 0 ? 'unpublishedlinks' : 'zero' %>"><%= content_link_counts[:wanted] %></td>
-              <td class="td_c warningcount <%= content_link_counts[:warning] > 0 ? '' : 'zero' %>"><%= content_link_counts[:warning] %></td>
-              <td class="td_c brokencount <%= content_link_counts[:broken] > 0 ? '' : 'zero' %>"><%= content_link_counts[:broken] %></td>
+              <td class="td_c <%= content_link_counts[:warning] > 0 ? 'warningcount' : 'zero' %>"><%= content_link_counts[:warning] %></td>
+              <td class="td_c <%= content_link_counts[:broken] > 0 ? 'brokencount' : 'zero' %>"><%= content_link_counts[:broken] %></td>
               <td class="td_c <%= content_link_counts[:redirected] > 0 ? '' : 'zero' %>"><%= content_link_counts[:redirected] %></td>
            </tr>
        <% end%>
