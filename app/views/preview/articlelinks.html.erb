@@ -48,12 +48,11 @@
     </tr>
 
     <% for link in @external_links %>
-      <tr id="link_row_<%= link.id %>">
+      <tr class="externallinks" id="link_row_<%= link.id %>">
         <td><%= link_to(link.original_url, link.original_url) %></td>
         <td><%= link.host %></td>
-        <td><%= link.status_to_s %></td>
+        <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
         <td><%= humane_date(link.last_check_at) %></td>
-        
         <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
       </tr>
     <% end %>
@@ -100,7 +99,7 @@
   <%- end -%>
   
   <%- if @wanted_links and @wanted_links.size > 0 -%>
-  <h2>Internal Links</h2>
+  <h2>Internal Links (Unpublished)</h2>
   <table cellspacing="0" border="1">
     <tr>
       <th>Wanted Path</th>
