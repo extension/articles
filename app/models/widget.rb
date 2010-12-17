@@ -47,7 +47,7 @@ class Widget < ActiveRecord::Base
   def assignees
     self.community.joined.all(:conditions => 'aae_responder = 1')
   end
-  
+    
   def leaders
     self.community.leaders
   end
@@ -77,19 +77,18 @@ class Widget < ActiveRecord::Base
   end
   
   def self.get_all_with_assignee_count(options = {})
-    join_conditions = ''
-  
-    non_responders = User.find(:all, :conditions => {:aae_responder => false})
-    join_conditions << " AND (user_roles.user_id NOT IN (#{non_responders.collect{|u| u.id}.join(',')}))" if non_responders.length > 0
-    
+    if(options[:conditions])
+      conditions = options[:conditions] + " AND accounts.aae_responder = 1"
+    else
+      conditions = "accounts.aae_responder = 1"
+    end
+
     self.find(:all, 
-              :select => 'widgets.*, COUNT(user_roles.id) AS assignee_count',
-              :joins => "LEFT JOIN user_roles on user_roles.widget_id = widgets.id AND (role_id = #{Role.widget_auto_route.id})" + join_conditions,
+              :select => 'widgets.*, COUNT(accounts.id) AS assignee_count',
+              :joins => {:community => :joined},
               :conditions => options[:conditions] ||= nil,
-              :include => :user, 
               :group => 'widgets.id',
-              :order => options[:order] ||= 'widgets.name'
-              )
+              :order => options[:order] ||= 'widgets.name')
   end
   
   def tag_myself_with_shared_tags(taglist)
