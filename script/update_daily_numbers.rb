@@ -24,10 +24,24 @@ KNOWN_DATATYPES = ['events','faqs','articles','news','learning lessons','feature
 def update_all_published_numbers(datadate,datatype = 'all')
   if(datatype.nil? or datatype == 'all')
     KNOWN_DATATYPES.each do |known_datatype|
-      DailyNumber.all_item_count_for_date(Article,datadate,"published #{known_datatype}",'total',true)
+      if(known_datatype == 'events')
+        callclass = Event
+      elsif(known_datatype == 'faqs')
+        callclass = Faq
+      else
+        callclass = Article
+      end
+      DailyNumber.all_item_count_for_date(callclass,datadate,"published #{known_datatype}",'total',true)
     end
   else
-    DailyNumber.all_item_count_for_date(Article,datadate,"published #{datatype}",'total',true)
+    if(datatype == 'events')
+      callclass = Event
+    elsif(datatype == 'faqs')
+      callclass = Faq
+    else
+      callclass = Article
+    end
+    DailyNumber.all_item_count_for_date(callclass,datadate,"published #{datatype}",'total',true)
   end
 end
 
