@@ -25,7 +25,8 @@ class Widget < ActiveRecord::Base
   has_one :community, :dependent => :destroy
   
   
-  has_many :role_based_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false AND accounts.aae_responder = true"
+  has_many :role_based_assignees, :source => :user, :through => :user_roles, :conditions => "role_id = #{Role.widget_auto_route.id} AND accounts.retired = false"
+  
   
   validates_presence_of :name  
   validates_uniqueness_of :name, :case_sensitive => false
