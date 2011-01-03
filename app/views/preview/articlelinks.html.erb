@@ -96,11 +96,17 @@
   <table cellspacing="0" border="1">
     <tr>
       <th>Article</th>
+      <th>Article ID</th>
+      <th>Published At</th>
+      <th>Updated At</th>
     </tr>
 
     <% for link in @internal_links %>
       <tr id="link_row_<%= link.id %>">
         <td><%= link_to(link.content.title, link.content.id_and_link) %></td>
+        <td><%= link_to(link.content.id,preview_articlelinks_url(:id => link.content.id)) %></td>        
+        <td><%= humane_date(link.content.wiki_created_at) %></td>
+        <td><%= humane_date(link.content.wiki_updated_at) %></td>
       </tr>
     <% end%>
   </table>
