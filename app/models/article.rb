@@ -536,7 +536,7 @@ class Article < ActiveRecord::Base
     if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
       self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
     end
-    self.convert_links # sets self.content
+    self.reprocess_links(false) # sets self.content
    end
   end
   
@@ -548,10 +548,17 @@ class Article < ActiveRecord::Base
     self.save    
   end
   
-  def reprocess_links
+  # Reprocesses the links in the given article by deleting the existing linkings 
+  # for the article and running convert_links again to parse the links in the article
+  # 
+  # @param [Boolean] save save self after processing (default: true)
+  # @return [Hash] output from convert_links with the counts of the various link types in the article
+  def reprocess_links(save = true)
     self.linkings.destroy_all
     result = self.convert_links
-    self.save
+    if(save)
+      self.save
+    end
     result
   end
   
