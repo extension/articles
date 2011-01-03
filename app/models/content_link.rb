@@ -64,6 +64,10 @@ class ContentLink < ActiveRecord::Base
   named_scope :checked_over_one_month_ago, :conditions => ["DATE(last_check_at) <= DATE_SUB(NOW(),INTERVAL 1 MONTH)",Date.yesterday]
   
   def status_to_s
+    if(self.status.blank?)
+      return 'Not yet checked'
+    end
+    
     case self.status
     when OK
       return 'OK'
