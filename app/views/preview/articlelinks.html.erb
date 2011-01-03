@@ -53,7 +53,11 @@
         <td><%= link.host %></td>
         <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
         <td><%= humane_date(link.last_check_at) %></td>
-        <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- if link.last_check_at.blank? -%>
+          <td></td>
+        <%- else -%>
+          <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- end -%>
       </tr>
     <% end %>
   </table>
@@ -77,7 +81,11 @@
         <td><%= link.host %></td>
         <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
         <td><%= humane_date(link.last_check_at) %></td>
-        <td><%= link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- if link.last_check_at.blank? -%>
+          <td></td>
+        <%- else -%>
+          <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- end -%>
       </tr>
     <% end%>
   </table>
