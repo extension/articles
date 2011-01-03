@@ -53,7 +53,11 @@
         <td><%= link.host %></td>
         <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
         <td><%= humane_date(link.last_check_at) %></td>
-        <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- if link.last_check_at.blank? -%>
+          <td></td>
+        <%- else -%>
+          <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- end -%>
       </tr>
     <% end %>
   </table>
@@ -77,7 +81,11 @@
         <td><%= link.host %></td>
         <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
         <td><%= humane_date(link.last_check_at) %></td>
-        <td><%= link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- if link.last_check_at.blank? -%>
+          <td></td>
+        <%- else -%>
+          <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- end -%>
       </tr>
     <% end%>
   </table>
@@ -88,11 +96,17 @@
   <table cellspacing="0" border="1">
     <tr>
       <th>Article</th>
+      <th>Article ID</th>
+      <th>Published At</th>
+      <th>Updated At</th>
     </tr>
 
     <% for link in @internal_links %>
       <tr id="link_row_<%= link.id %>">
         <td><%= link_to(link.content.title, link.content.id_and_link) %></td>
+        <td><%= link_to(link.content.id,preview_articlelinks_url(:id => link.content.id)) %></td>        
+        <td><%= humane_date(link.content.wiki_created_at) %></td>
+        <td><%= humane_date(link.content.wiki_updated_at) %></td>
       </tr>
     <% end%>
   </table>

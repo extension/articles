@@ -110,9 +110,9 @@ class PreviewController < ApplicationController
                                           
     sort_order = "articles.has_broken_links DESC,articles.wiki_updated_at DESC"
     if(@filteredparameters.onlybroken)
-      @articles = articles_list_scope.broken_links.paginate(:include => :content_links, :page => params[:page], :per_page => 100, :order => sort_order)
+      @articles = articles_list_scope.broken_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
     else
-      @articles = articles_list_scope.paginate(:include => :content_links, :page => params[:page], :per_page => 100, :order => sort_order)
+      @articles = articles_list_scope.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
     end
   end
   
