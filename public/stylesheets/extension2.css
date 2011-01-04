@@ -996,3 +996,4 @@ a:hover.external_link {background: url(/images/common/external_site_orange.png) 
 .checkedlinks .warning {background:#ff9393;}
 .checkedlinks .broken {background:red;}
 .checkedlinks .redirect {background:yellow;}
+td.longurls a {word-wrap: break-word;width:450px;}
