@@ -49,7 +49,7 @@
 
     <% for link in @external_links %>
       <tr class="checkedlinks" id="link_row_<%= link.id %>">
-        <td><%= link_to(link.original_url, link.original_url) %></td>
+        <td class="longurls"><%= link_to(link.original_url, link.original_url) %></td>
         <td><%= link.host %></td>
         <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
         <td><%= humane_date(link.last_check_at) %></td>
