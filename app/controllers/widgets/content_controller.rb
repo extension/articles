@@ -113,9 +113,9 @@ class Widgets::ContentController < ApplicationController
     when 'events'
       @type = 'Events'
       if content_tags
-        @contents = Event.main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity, :content_tags => content_tags, :tag_operator => @tag_operator})
+        @contents = Event.main_calendar_list({:calendar_date => Time.now.to_date, :limit => @quantity, :content_tags => content_tags, :tag_operator => @tag_operator})
       else
-        @contents = Event.main_calendar_list({:within_days => 5, :calendar_date => Time.now.to_date, :limit => @quantity})
+        @contents = Event.main_calendar_list({:calendar_date => Time.now.to_date, :limit => @quantity})
       end
     # if the type is articles and faqs or if it's anything else, default to articles and faqs
     else
