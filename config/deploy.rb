@@ -48,8 +48,13 @@ namespace :deploy do
     if(server_settings)
       setup_roles
       set :deploy_to, server_settings['deploy_dir']
-      if (branch = (ENV['BRANCH']))
-        set :branch, branch
+      if(ENV['SERVER'] == 'demo')
+        if(branch = ENV['BRANCH'])
+          set :branch, branch
+        else
+          puts "ERROR: a branch name is required when deploying to the #{ENV['SERVER']} server"
+          exit
+        end
       else
         set :branch, server_settings['branch'] 
       end
