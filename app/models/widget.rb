@@ -117,10 +117,14 @@ class Widget < ActiveRecord::Base
     if(!self.community.blank?)
       self.community.update_attributes({:active => self.active, :location => self.location})
     else
-      self.community = Community.create(:name => "Widget: #{self.name}",:entrytype => Community::WIDGET, :memberfilter => Community::OPEN, :created_by => self.user_id, :active => self.active, :location => self.location)
+      self.community = Community.create(:name => "Widget: #{self.name}",
+                                        :entrytype => Community::WIDGET, 
+                                        :memberfilter => Community::OPEN, 
+                                        :created_by => self.user_id, 
+                                        :active => self.active, 
+                                        :location => self.location)
       # add creator to leadership
-      self.community.add_user_to_leadership(self.creator,User.systemuser,false)
-                 
+      self.community.add_user_to_leadership(self.creator,User.systemuser,false)          
     end
   end  
       
