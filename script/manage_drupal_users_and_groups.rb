@@ -230,7 +230,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
     return false
   end
   
-  sql = "INSERT INTO #{drupaldatabase}.field_data_group_group (etid,bundle,deleted,entity_id,revision_id,language,delta,group_group_value) SELECT 1,'group',0, #{mydatabase}.communities.drupal_node_id,#{drupaldatabase}.node.vid,'und',0,1 FROM #{mydatabase}.communities, #{drupaldatabase}.node WHERE #{drupaldatabase}.node.nid = #{mydatabase}.communities.drupal_node_id and #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+  sql = "INSERT INTO #{drupaldatabase}.field_data_group_group (bundle,deleted,entity_id,revision_id,language,delta,group_group_value,entity_type) SELECT 'group',0, #{mydatabase}.communities.drupal_node_id,#{drupaldatabase}.node.vid,'und',0,1,'node' FROM #{mydatabase}.communities, #{drupaldatabase}.node WHERE #{drupaldatabase}.node.nid = #{mydatabase}.communities.drupal_node_id and #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
   
   # execute the sql
   begin
@@ -327,7 +327,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   # have to make a couple of passes, and I haven't figured it out yet.  So, I'm setting delta to the gid.  I don't think delta is used in the queries)
   
 
-  sql = "INSERT INTO #{drupaldatabase}.field_data_group_audience (etid,bundle,deleted,entity_id,revision_id,language,delta,group_audience_gid,group_audience_state,group_audience_created) SELECT 3,'user',0, #{mydatabase}.communityconnections.user_id,#{mydatabase}.communityconnections.user_id,'und',#{drupaldatabase}.og.gid,#{drupaldatabase}.og.gid,1,UNIX_TIMESTAMP(#{mydatabase}.communityconnections.created_at) FROM #{drupaldatabase}.og, #{mydatabase}.communities, #{mydatabase}.communityconnections WHERE #{drupaldatabase}.og.etid = #{mydatabase}.communities.drupal_node_id AND #{mydatabase}.communities.id = #{mydatabase}.communityconnections.community_id AND #{mydatabase}.communityconnections.connectiontype IN ('leader','member') AND #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+  sql = "INSERT INTO #{drupaldatabase}.field_data_group_audience (bundle,deleted,entity_id,revision_id,language,delta,group_audience_gid,group_audience_state,group_audience_created,entity_type) SELECT 'user',0, #{mydatabase}.communityconnections.user_id,#{mydatabase}.communityconnections.user_id,'und',#{drupaldatabase}.og.gid,#{drupaldatabase}.og.gid,1,UNIX_TIMESTAMP(#{mydatabase}.communityconnections.created_at),'user' FROM #{drupaldatabase}.og, #{mydatabase}.communities, #{mydatabase}.communityconnections WHERE #{drupaldatabase}.og.etid = #{mydatabase}.communities.drupal_node_id AND #{mydatabase}.communities.id = #{mydatabase}.communityconnections.community_id AND #{mydatabase}.communityconnections.connectiontype IN ('leader','member') AND #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
 
   # execute the sql
   begin
