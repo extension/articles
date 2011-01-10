@@ -93,6 +93,7 @@ class List < ActiveRecord::Base
   end
   
   def add_or_update_subscription(user)
+    self.touch
     if self.users.include?(user)
       subscription = ListSubscription.find(:first, :conditions => {:list_id => self.id, :user_id => user.id})
       if(!subscription.nil?)
@@ -114,6 +115,7 @@ class List < ActiveRecord::Base
   end
 
   def add_or_update_ownership(user)
+    self.touch
     if self.owners.include?(user)
       ownership = ListOwner.find(:first, :conditions => {:list_id => self.id, :user_id => user.id})
       if(!ownership.nil?)
