@@ -124,6 +124,7 @@ class Community < ActiveRecord::Base
   before_save :clean_description_and_shortname, :flag_attributes_for_approved
   after_save :update_email_alias
   after_save :update_google_group
+  after_save :check_widget_activation
 
 
   def is_institution?
@@ -675,6 +676,20 @@ class Community < ActiveRecord::Base
       end
     else
       # do nothing
+    end
+    return true
+  end
+  
+  #  Marks the community's widget as inactive if the community joined count is 0 
+  #  Note: before using this method for any other purpose, know that widgets have
+  #  a callback to update community attributes after_save, and if care is not
+  #  taken, this callback + the widget callback can result in an infinite loop
+  #
+  # @return [Boolean] always true since this is used as a callback
+  def check_widget_activation
+    widget = self.widget
+    if(!widget.nil? and !widget.active? and self.joined.count == 0)
+      widget.update_attribute(:active,false)
     end
     return true
   end
