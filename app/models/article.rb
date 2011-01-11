@@ -36,30 +36,41 @@ class Article < ActiveRecord::Base
   
   has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
   # Note: has_many :content_links - outbound links using the has_many_polymorphs for content_links
-  
+  has_one :content_link_stat, :foreign_key => 'content_id'
   
   def content_link_counts
     linkcounts = {:total => 0, :external => 0,:local => 0, :wanted => 0, :internal => 0, :broken => 0, :redirected => 0, :warning => 0}
-    self.content_links.each do |cl|
-      linkcounts[:total] += 1
-      case cl.linktype
-      when ContentLink::EXTERNAL
-        linkcounts[:external] += 1
-      when ContentLink::INTERNAL
-        linkcounts[:internal] += 1
-      when ContentLink::LOCAL
-        linkcounts[:local] += 1
-      when ContentLink::WANTED
-        linkcounts[:wanted] += 1
-      end
+    if(self.content_link_stat.nil? or self.updated_at > self.content_link_stat.updated_at)      
+      self.content_links.each do |cl|
+        linkcounts[:total] += 1
+        case cl.linktype
+        when ContentLink::EXTERNAL
+          linkcounts[:external] += 1
+        when ContentLink::INTERNAL
+          linkcounts[:internal] += 1
+        when ContentLink::LOCAL
+          linkcounts[:local] += 1
+        when ContentLink::WANTED
+          linkcounts[:wanted] += 1
+        end
       
-      case cl.status
-      when ContentLink::BROKEN
-        linkcounts[:broken] += 1
-      when ContentLink::OK_REDIRECT
-        linkcounts[:redirected] += 1
-      when ContentLink::WARNING
-        linkcounts[:warning] += 1
+        case cl.status
+        when ContentLink::BROKEN
+          linkcounts[:broken] += 1
+        when ContentLink::OK_REDIRECT
+          linkcounts[:redirected] += 1
+        when ContentLink::WARNING
+          linkcounts[:warning] += 1
+        end
+      end
+      if(self.content_link_stat.nil?)
+        self.create_content_link_stat(linkcounts)
+      else
+        self.content_link_stat.update_attributes(linkcounts)
+      end
+    else
+      linkcounts.keys.each do |key|
+        linkcounts[key] = self.content_link_stat.send(key)
       end
     end
     return linkcounts
