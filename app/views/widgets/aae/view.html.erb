@@ -21,9 +21,6 @@
 	<%= render(:partial => 'widget_assignees') %>
 </div>
 
-
-
-
 <% if @non_active_assignees.length > 0 %>
 <p><strong>Note:</strong> There are people who have signed up to receive questions for this widget, but have opted out of receiving AaE questions:<br />
 <% @non_active_assignees.each do |assignee| %>
