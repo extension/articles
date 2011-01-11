@@ -98,6 +98,11 @@
         <td>Rejected</td>
         <td class="bignumber"><%= number_with_delimiter(lastmonth.rejected_questions) %></td>
     </tr>
+    <%- if @filteredparams.community -%>
+      <tr>
+        <td colspan='2'><%= link_to('AaE Handling Rates for members of this community',{:controller => 'aae/reports', :action => 'handlingrate_by_community', :community => @filteredparams.community.id})%></td>
+      </tr>
+    <%- end -%>
 </table>
 
 <h2>Published Content</h2>
