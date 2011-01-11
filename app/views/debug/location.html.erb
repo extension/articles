@@ -32,6 +32,38 @@
      	  <td><%= @geoip_data[:tz] %></td>         
      	</tr>
   </table>
+  
+  <%- if !@geoname -%>
+    <h2>No GeoName data found for your IP Address!</h2>
+  <%- else -%>
+    <h3>GeoName Data</h3>
+    <table cellspacing="0">
+     	<tr>
+     	  <td scope="row" class="label">Record ID</td>   
+     	  <td><%= @geoname.id %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">Feature Name</td>   
+     	  <td><%= @geoname.feature_name %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">Map Name</td>   
+     	  <td><%= @geoname.map_name %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">County</td>   
+     	  <td><%= @geoname.county %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">State Abbreviation</td>   
+     	  <td><%= @geoname.state_abbreviation %></td>         
+     	</tr>
+     	<tr>
+     	  <td scope="row" class="label">Lat/Lon</td>   
+     	  <td><%= @geoname.lat %>/<%= @geoname.long %></td>         
+     	</tr>
+    </table>
+  <%- end -%>
 
   <%- if @geo_location -%>
     <h3>Institutional Information for this Location</h3>
