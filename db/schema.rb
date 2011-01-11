@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101217160115) do
+ActiveRecord::Schema.define(:version => 20110111202248) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -325,6 +325,22 @@ ActiveRecord::Schema.define(:version => 20101217160115) do
   end
 
   add_index "content_buckets", ["name"], :name => "index_content_buckets_on_name", :unique => true
+
+  create_table "content_link_stats", :force => true do |t|
+    t.integer  "content_id"
+    t.integer  "total"
+    t.integer  "external"
+    t.integer  "internal"
+    t.integer  "wanted"
+    t.integer  "local"
+    t.integer  "broken"
+    t.integer  "warning"
+    t.integer  "redirected"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "content_link_stats", ["content_id"], :name => "index_content_link_stats_on_content_id"
 
   create_table "content_links", :force => true do |t|
     t.integer  "linktype"
