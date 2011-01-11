@@ -175,8 +175,7 @@ class AppConfig
     @@configtable['auto_assign_incoming_questions'] = true
     @@configtable['faq_create_url'] = 'http://cop.extension.org/questions/new_from_aae'
     
-    # GEOIP data - going to target specific versions until that becomes a PITA
-    @@configtable['geoip_data_file'] = "#{RAILS_ROOT}/data/GeoIP-133_20101101/GeoIPCity.dat"
+    @@configtable['geoip_data_file'] = "#{RAILS_ROOT}/data/GeoIP/GeoIPCity.dat"
 
   end
   
