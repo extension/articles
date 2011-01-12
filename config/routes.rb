@@ -192,6 +192,7 @@ ActionController::Routing::Routes.draw do |map|
   map.preview_faqlist 'preview/faqlist/:content_tag', :controller => 'preview', :action => 'faqlist'
   map.preview_eventlist 'preview/eventlist/:content_tag', :controller => 'preview', :action => 'eventlist'
   map.preview_tag 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
+  map.preview_category 'preview/showcategory/:categorystring', :controller => 'preview', :action => 'showcategory'
   map.preview_home 'preview', :controller => 'preview', :action => 'index'
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
