@@ -658,7 +658,6 @@ class User < Account
   
   
   def checkannouncelists
-   logger.debug "=================================== Inside checkannouncelists: #{self.id} #{self.login}"
    announce = List.find_announce_list
    
    if(!announce.nil?)
