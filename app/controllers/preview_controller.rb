@@ -151,6 +151,15 @@ class PreviewController < ApplicationController
   
   def expertlist
   end
+  
+  def showcategory
+    # force applocation to be preview
+    @app_location_for_display = 'preview'
+    @right_sidebar_to_display = "empty_vessel"
+    @category_string = params[:categorystring]
+  end
+    
+    
     
   def showpage
     # force applocation to be preview

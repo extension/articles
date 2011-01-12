@@ -115,7 +115,13 @@ class PreviewArticle
         
         if(original_uri.scheme.nil?)
           if(original_uri.path =~ /^\/wiki\/(.*)/)  # does path start with '/wiki'? - then strip it out
-            newhref =  '/preview/pages/' + $1
+            # check to see if this is a Category:blah link
+            title = $1
+            if(title =~ /Category\:(.+)/)
+              newhref = "/preview/showcategory/" + $1
+            else
+              newhref =  '/preview/pages/' + title
+            end
           else
             newhref =  '/preview/pages/'+ original_uri.path
           end
