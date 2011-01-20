@@ -162,6 +162,10 @@ class PreviewController < ApplicationController
     
     
   def showpage
+    if(params[:title].blank?)
+      return(redirect_to(preview_home_url))
+    end
+    
     # force applocation to be preview
     @app_location_for_display = 'preview'
 
