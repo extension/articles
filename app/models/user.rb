@@ -184,6 +184,8 @@ class User < Account
     end
   }
   
+  named_scope :vouchlist, :conditions => ["vouched = 0 AND retired = 0 AND account_status != #{User::STATUS_SIGNUP} and emailconfirmed=1"]
+  
 
   def assigned_widgets
     self.communities.widgets.map(&:widget)
