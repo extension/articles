@@ -31,17 +31,6 @@ class MainController < ApplicationController
      recent_faqs = Faq.main_recent_list({:limit => 10})
      @recent_content = content_date_sort(recent_articles, recent_faqs, 10)
   end
-
-  def category_landing
-    set_title("Content tagged with:", @content_tag.name.titleize)
-    set_titletag("Content tagged with '#{@content_tag.name}'  - eXtension")
-    @youth = true if @content_tag.name == 'youth'
-    @right_column = true
-  end
-  
-  def cop_landing
-    
-  end
   
   def content_tag
     if(!@community.nil?) 
