@@ -396,10 +396,21 @@ class User < Account
     self.retired_at = Time.now()
     if(self.save)
      self.clear_all_list_and_community_connections
+     self.reassign_assigned_questions
      return true
     else
      return false
     end
+  end
+  
+  def reassign_assigned_questions(reassigner = User.systemuser)
+    my_assigned_questions = self.assigned_questions.submitted
+    if(!my_assigned_questions.blank?)
+      my_assigned_questions.each do |question|
+        question.assign_to_question_wrangler(reassigner)
+      end
+    end
+    return my_assigned_questions.size
   end
   
   # returns a hash of aae filter prefs
