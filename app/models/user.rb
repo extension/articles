@@ -392,10 +392,19 @@ class User < Account
       forward.update_attribute(:alias_type,EmailAlias::INDIVIDUAL_GOOGLEAPPS)
     end
   end
-       
-  def retire
+  
+  # retires the user account, will clear out list and community connections, and reroute any assigned questions  
+  #
+  # @param [User] retired_by User/Account doing the retiring
+  # @param [String] retired_reason Retiring reason     
+  def retire(retired_by = User.systemuser, retired_reason = 'unknown')
     self.retired = true
     self.retired_at = Time.now()
+    if(self.additionaldata.nil?)
+      self.additionaldata = {:retired_by => retired_by.id, :retired_reasion => retired_reason}
+    else
+      self.additionaldata = self.additionaldata.merge({:retired_by => retired_by.id, :retired_reasion => retired_reason})
+    end
     if(self.save)
      self.clear_all_list_and_community_connections
      self.reassign_assigned_questions

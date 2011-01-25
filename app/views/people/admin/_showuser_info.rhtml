@@ -19,11 +19,36 @@
 	<tr>
 		<td scope="row" class="label">Account Enabled?</td>
         <% if @showuser.retired? %>
-			<td>No (retired at: <%= humane_date(@showuser.retired_at) %>) <%= link_to "enable account", :action => 'enable', :id => @showuser.login %></td>
+			<td>No <%= link_to "enable account", :action => 'enable', :id => @showuser.login %></td>
 		<% else %>
 			<td>Yes <%= link_to "retire account", :action => 'retire', :id => @showuser.login %></td>
 		<% end %>
 	</tr>
+	
+  <%- if @showuser.retired? -%>
+    <tr>
+      <td scope="row" class="label">Retired at:</td>
+      <td><%= humane_date(@showuser.retired_at) %></td> 
+    </tr>
+    <%- if !@showuser.additionaldata.blank? -%>
+      <%- if !@showuser.additionaldata[:retired_by].blank? -%>
+        <%- retired_by = User.find_by_id(@showuser.additionaldata[:retired_by]) -%>
+        <tr>
+          <td scope="row" class="label">Retired by:</td>
+          <td><%= link_to(retired_by.fullname, :controller => 'admin',:action => 'showuser', :id => retired_by.login) %></td> 
+        </tr>
+      <%- end -%>
+      <%- if !@showuser.additionaldata[:retired_reason].blank? -%>
+        <tr>
+          <td scope="row" class="label">Retirement reason:</td>
+          <td><%= @showuser.additionaldata[:retired_reason] %></td> 
+        </tr>
+      <%- end -%>
+    <%- end -%>
+  <%- end -%>
+  
+	
+
 	
     <tr>
         <td scope="row" class="label">Account Status</td>

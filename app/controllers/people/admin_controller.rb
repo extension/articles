@@ -80,7 +80,7 @@ class People::AdminController < ApplicationController
             flash.now[:failure] = 'A reason for disabling this eXtensionID is required'      
             @showuser.errors.add("A reason for disabling this eXtensionID is required")
           else
-            if @showuser.retire
+            if @showuser.retire(@currentuser,params[:reason])
               AdminEvent.log_event(@currentuser, AdminEvent::RETIRE_ACCOUNT,{:extensionid => @showuser.login, :reason => params[:reason]})
               UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @showuser,:description => "account retired by #{@currentuser.login}")                                              
             else
