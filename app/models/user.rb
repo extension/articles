@@ -403,6 +403,10 @@ class User < Account
     end
   end
   
+  # reassigns any open assigned questions (using the submitted named_scope on the 
+  # assigned_question association) to question wranglers - calling assign_to_question_wrangler
+  #
+  # @param [User] reassigner User/Account doing the reassigning
   def reassign_assigned_questions(reassigner = User.systemuser)
     my_assigned_questions = self.assigned_questions.submitted
     if(!my_assigned_questions.blank?)
