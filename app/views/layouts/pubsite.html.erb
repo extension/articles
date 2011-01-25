@@ -57,7 +57,7 @@
     
     
     <% if !@mobile_device %>
-        <% if @sitehome == true %>
+        <% if @includejquery == true %>
         <!-- include jquery for accordion nav -->
             <%= javascript_include_tag 'jquery-ui-1.7.2.custom.min.js' %>
             <%= javascript_include_tag 'jquery.jcarousel.pack.js' %>
@@ -78,6 +78,22 @@
                     animation: 0,
                     wrap: "both"
                 });
+            });
+            
+
+            function equalHeight(group) {
+                tallest = 0;
+                group.each(function() {
+                    thisHeight = $j(this).height();
+                    if(thisHeight > tallest) {
+                        tallest = thisHeight;
+                    }
+                });
+                group.height(tallest);
+            }
+
+            $j(document).ready(function() {
+                equalHeight($j(".eqcolumn"));
             });
             </script>
         <% else %>
@@ -222,14 +238,28 @@
             <div class="grid_4" id="sitehome">
                 <%= render :partial => 'shared/rightcolumn_sitehome' %>
             </div>
+        <% elsif @cat_landing == true %>
+            <div class="grid_16 alpha omega override_960px content_page" >
+            <div class="grid_12 eqcolumn alpha omega category_tag" id="content_tag">
+                <div class="content_gutter">
+                <%= yield :layout %>
+                <br class="clearing" />
+                </div>
+            </div>
+
+            <div class="grid_4 eqcolumn" id="sitehome">
+                <%= render :partial => 'shared/rightcolumn_sitehome' %>
+            </div>
+            </div>
         <% elsif @right_column != false %>
-            <div class="grid_16 alpha omega override_960px content_page">
+            <div class="grid_16 alpha omega override_960px content_page" >
             <div class="grid_11 alpha omega override_650px" id="content_tag">
                 <div class="content_gutter">
                 <%= yield :layout %>
                 <br class="clearing" />
                 </div>
             </div>
+            
             <%= render :partial => 'shared/rightcolumn' %>
             </div>
         <% else %>
