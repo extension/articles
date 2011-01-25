@@ -401,18 +401,34 @@ class User < Account
     self.retired = true
     self.retired_at = Time.now()
     if(self.additionaldata.nil?)
-      self.additionaldata = {:retired_by => retired_by.id, :retired_reasion => retired_reason}
+      self.additionaldata = {:retired_by => retired_by.id, :retired_reason => retired_reason}
     else
-      self.additionaldata = self.additionaldata.merge({:retired_by => retired_by.id, :retired_reasion => retired_reason})
+      self.additionaldata = self.additionaldata.merge({:retired_by => retired_by.id, :retired_reason => retired_reason})
     end
     if(self.save)
-     self.clear_all_list_and_community_connections
-     self.reassign_assigned_questions
-     return true
+      AdminEvent.log_event(retired_by, AdminEvent::RETIRE_ACCOUNT,{:extensionid => self.login, :reason => retired_reason})
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "account retired by #{retired_by.login}")                                              
+      self.clear_all_list_and_community_connections
+      self.reassign_assigned_questions
+      return true
     else
-     return false
+      return false
     end
   end
+  
+  # goes through and retires all accounts that have been ignored in review for the last 14 days
+  #
+  # @param [String] retired_reason Retiring reason     
+  def self.retire_ignored_account_requests(retired_reason = 'No one vouched for the account within 14 days')
+    cutoff = Time.now.utc - 14.days
+    retirelist = self.vouchlist.all(:conditions => "email_event_at < '#{cutoff.to_s(:db)}'")
+    retirelist.each do |user|
+      user.retire(User.systemuser,retired_reason)
+    end
+    return retirelist.size
+  end
+    
+    
   
   # reassigns any open assigned questions (using the submitted named_scope on the 
   # assigned_question association) to question wranglers - calling assign_to_question_wrangler
