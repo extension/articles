@@ -16,6 +16,7 @@ class ArticlesController < ApplicationController
     
     set_title('Articles', "Don't just read. Learn.")
     if(!@content_tag.nil?)
+      set_title("All articles tagged with \"#{@content_tag.name}\"", "Don't just read. Learn.")
       set_titletag("Articles - #{@content_tag.name} - eXtension")
       articles = Article.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
     else

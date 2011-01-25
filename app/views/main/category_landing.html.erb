@@ -5,9 +5,9 @@
 
 
 <h1 class="ct_head"><%=@page_title_text%></h1>
-<h2 class="ct_subhead"><%=@header_description%></h2>
+<h2 class="ct_subhead">&#8220;<%=@header_description%>&#8221;</h2>
 
-<%if @news.length > 0 || @faqs.length > 0 || @calendar_events.length > 0 %>
+<%if @recent_articles.length > 0 || @faqs.length > 0 || @calendar_events.length > 0 %>
 <div>
   <%if (@in_this_section or @recent_articles) %>
     <%if @faqs.length > 0%>
@@ -23,7 +23,7 @@
       
         <dl class="ct_recent">
           <dt><%= link_to article.title, article.id_and_link %></dt>
-
+          <dd><%= expanded_time_print(article.wiki_updated_at)%></dd>
         </dl>
       <%end%>
       </div>

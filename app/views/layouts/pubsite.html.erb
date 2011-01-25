@@ -79,22 +79,6 @@
                     wrap: "both"
                 });
             });
-            
-
-            function equalHeight(group) {
-                tallest = 0;
-                group.each(function() {
-                    thisHeight = $j(this).height();
-                    if(thisHeight > tallest) {
-                        tallest = thisHeight;
-                    }
-                });
-                group.height(tallest);
-            }
-
-            $j(document).ready(function() {
-                equalHeight($j(".eqcolumn"));
-            });
             </script>
         <% else %>
         <!-- include prototype js for image carousel -->
@@ -240,14 +224,14 @@
             </div>
         <% elsif @cat_landing == true %>
             <div class="grid_16 alpha omega override_960px content_page" >
-            <div class="grid_12 eqcolumn alpha omega category_tag" id="content_tag">
+            <div class="grid_12 alpha omega category_tag" id="content_tag">
                 <div class="content_gutter">
                 <%= yield :layout %>
                 <br class="clearing" />
                 </div>
             </div>
 
-            <div class="grid_4 eqcolumn" id="sitehome">
+            <div class="grid_4" id="sitehome">
                 <%= render :partial => 'shared/rightcolumn_sitehome' %>
             </div>
             </div>

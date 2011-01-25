@@ -1,14 +1,21 @@
+<% if(!@community.nil?)  %>
+<%else %>
+<% @show_resource_areas = true %>
+<% @includejquery = true %>
+<% @cat_landing = true %>
+
+<% end %>
+
+
 <div class = "mission">
     <%if @page_title_text && @header_description%>
         <h2 class="missionstatement"><%=@page_title_text%></h2>
     <%end%>
 </div>
 
-<div class="sortbox">
-    <h3>Filter by category using the menu below.</h3>
+
     <%= render :partial => 'shared/selector' %>
-    <p><em>Items are sorted by most recently updated.</em></p>
-</div>
+
 
 <%= render :partial => "shared/will_paginator", :locals => { :collection => items } %>
 

@@ -328,7 +328,7 @@ ul.event_listings {padding:1em 1em .5em 3em;}
 /* Browse articles by type and category
 -----------------------------------------------------------------------------*/
 .articlelist {width: 570px; padding:0 1em 0 6em; margin:0;}
-.articlelist li {margin:0 0 1.5em;font-size:1.4em; list-style:decimal;}
+.articlelist li {margin:0 0 1.15em;font-size:1.4em; list-style:decimal;}
 .articlelist li span {display:block;color:#999;font-size:.85em;}
 
 
@@ -997,13 +997,14 @@ a:hover.external_link {background: url(/images/common/external_site_orange.png) 
 .checkedlinks .broken {background:red;}
 .checkedlinks .redirect {background:yellow;}
 td.longurls a {word-wrap: break-word;width:450px;}
-.ct_subhead {font-size:20pt !important; margin:0 !important;}
-.ct_head {font-size:13pt !important; margin: 1.5em 0 0 !important;}
+.ct_subhead {font-size:16pt !important; margin:0 !important;}
+.ct_head {font-size:12pt !important; margin: 1.5em 0 0 !important;}
 .ct_recent {clear:left;margin:0 0 1.2em; padding:0 !important;} 
 .ct_recent dt {font-size:11pt;line-height:13pt;}
+.ct_recent dd {font-size:9pt;color:#999;}
 #category_landing {outline:1px solid red;}
-#content_tag.category_tag {margin-right:0 !important; width:710px;}
+#content_tag.category_tag {margin-right:0 !important; width:730px;}
 .content_page #sitehome {margin-left:0; background:#888;}
-.content_page #sitehome.grid_4 {margin:0; background:#eee; width:250px;}
+.content_page #sitehome.grid_4 {margin:0 10px 0 0; background:#eee; width:220px;}
 .category_tag .content_gutter {padding:0 30px;}
 .category_tag .homesection h2 {font-size:13pt !important;}

@@ -15,6 +15,7 @@ class FaqController < ApplicationController
     return do_404 unless Faq.orderings.has_value?(params[:order])
     set_title('Answered Questions from Our Experts', "Frequently asked questions from our resource area experts.")
     if(!@content_tag.nil?)
+      set_title("Questions tagged with \"#{@content_tag.name}\"", "Frequently asked questions from our resource area experts.")
       set_titletag("Answered Questions from Our Experts - #{@content_tag.name} - eXtension")      
       @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
     else
