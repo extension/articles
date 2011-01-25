@@ -70,6 +70,12 @@ class MainController < ApplicationController
       @articles = Article.main_recent_list({:content_tags => [@content_tag], :limit => 8}) unless @community
       @recent_articles = Article.main_recent_list({:content_tags => [@content_tag], :limit => 3}) unless @in_this_section
     end
+  
+    if(!@community.nil?)
+      return render(:template => 'main/community_landing') 
+    else
+      return render(:template => 'main/category_landing') 
+    end
   end
   
   def search
