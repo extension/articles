@@ -1,0 +1,73 @@
+<% @resource_area_feeds = true %>
+<% @show_resource_areas = true %>
+<% @includejquery = true %>
+<% @cat_landing = true %>
+
+
+<h1 class="ct_head"><%=@page_title_text%></h1>
+<h2 class="ct_subhead"><%=@header_description%></h2>
+
+<%if @news.length > 0 || @faqs.length > 0 || @calendar_events.length > 0 %>
+<div>
+  <%if (@in_this_section or @recent_articles) %>
+    <%if @faqs.length > 0%>
+      <div class="homesection half left">
+    <% else %>
+      <div>
+    <% end %>
+    
+    <%if @articles && @articles.length > 0%>
+      <h2>Recent Articles</h2>
+      <div class="whatsnewbox">
+      <%for article in @articles%>
+      
+        <dl class="ct_recent">
+          <dt><%= link_to article.title, article.id_and_link %></dt>
+
+        </dl>
+      <%end%>
+      </div>
+      <p><%= link_to "More ...", site_articles_url(with_content_tag?) %></p>
+    <%end%>
+            
+            
+      </div>
+    <%end%>
+
+    <%if @faqs.length > 0%>
+         <div class="homesection half left">
+                <h2>Answers from our Experts</h2>
+                <div class="whatsnewbox">
+                    <%for faq in @faqs%>
+                        <dl>
+                            <dt><%= link_to truncate_at_word(faq.question,100), faq_page_url(:id => faq) %></dt>
+                        </dl>
+                    <%end%>
+                    <p><%= link_to "More ...", site_faqs_url(with_content_tag?) %></p>
+                </div>
+            </div>
+    <%end%>
+    
+    <% if @calendar_events.length > 0 %>
+    <%= render(:partial => "shared/calendar", :locals => {:month  => get_calendar_month, :calendar_events => @calendar_events, :date => @calendar_date }) %>
+    <% end %>
+</div>
+<%end%>
+
+
+
+
+<%if @recent_learning_lessons.length > 0%>
+    <div class="homesection">
+        <h2>Recent Learning Lessons</h2>
+	    <div class = "whatsnewbox">
+            <%for lesson in @recent_learning_lessons%>
+             <dl>
+               <dt><%= expanded_time_print(lesson.wiki_updated_at)%></dt>
+               <dd><%= link_to lesson.title, lesson.id_and_link %></dd>
+             </dl>
+            <%end%>
+        </div>
+        <p><%= link_to "More ...", site_learning_lessons_url(with_content_tag?) %></p>
+    </div>
+<%end%>

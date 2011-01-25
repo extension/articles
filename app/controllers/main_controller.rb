@@ -15,6 +15,7 @@ class MainController < ApplicationController
      set_titletag('eXtension - Objective. Research-based. Credible.')
      @right_column = false
      @sitehome = true
+     @includejquery = true
 		sponsorlist = Sponsor.all
      @sponsors = Hash.new
 		Sponsor::SPONSORSHIP_LEVELS.each{ |level| @sponsors[level] = Array.new}
@@ -30,9 +31,9 @@ class MainController < ApplicationController
      recent_faqs = Faq.main_recent_list({:limit => 10})
      @recent_content = content_date_sort(recent_articles, recent_faqs, 10)
   end
-
+  
   def content_tag
-    if(!@community.nil?)
+    if(!@community.nil?) 
       set_title(@community.public_name,@community.public_description)
       set_titletag("#{@community.public_name} - eXtension")
       community_content_tag_names = @community.content_tag_names
@@ -47,6 +48,7 @@ class MainController < ApplicationController
       set_title("Content tagged with:", @content_tag.name.titleize)
       set_titletag("Content tagged with '#{@content_tag.name}'  - eXtension")
       @youth = true if @content_tag.name == 'youth'
+      @right_column = true
     else
       set_title("All Content")
       set_titletag("All Content - eXtension")  
