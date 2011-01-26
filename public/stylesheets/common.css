@@ -120,6 +120,7 @@ table.hover tr:hover { background: #dbe8ff;color: #000;}
 table.hover tr.shaded:hover {background: #dbe8ff;color: #000;}
 
 table td a          {color: blue; text-decoration: none; display: block; }
+table.inlinelinks td a {display: inline; }
 table td a:link     {color: #00356e;}
 table td a:visited  {color: #00356e;}
 table td a:hover    {color: blue; text-decoration: underline;}
