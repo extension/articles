@@ -184,6 +184,8 @@ class User < Account
     end
   }
   
+  named_scope :vouchlist, :conditions => ["vouched = 0 AND retired = 0 AND account_status != #{User::STATUS_SIGNUP} and emailconfirmed=1"]
+  
 
   def assigned_widgets
     self.communities.widgets.map(&:widget)
@@ -390,16 +392,56 @@ class User < Account
       forward.update_attribute(:alias_type,EmailAlias::INDIVIDUAL_GOOGLEAPPS)
     end
   end
-       
-  def retire
+  
+  # retires the user account, will clear out list and community connections, and reroute any assigned questions  
+  #
+  # @param [User] retired_by User/Account doing the retiring
+  # @param [String] retired_reason Retiring reason     
+  def retire(retired_by = User.systemuser, retired_reason = 'unknown')
     self.retired = true
     self.retired_at = Time.now()
-    if(self.save)
-     self.clear_all_list_and_community_connections
-     return true
+    if(self.additionaldata.nil?)
+      self.additionaldata = {:retired_by => retired_by.id, :retired_reason => retired_reason}
     else
-     return false
+      self.additionaldata = self.additionaldata.merge({:retired_by => retired_by.id, :retired_reason => retired_reason})
     end
+    if(self.save)
+      AdminEvent.log_event(retired_by, AdminEvent::RETIRE_ACCOUNT,{:extensionid => self.login, :reason => retired_reason})
+      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "account retired by #{retired_by.login}")                                              
+      self.clear_all_list_and_community_connections
+      self.reassign_assigned_questions
+      return true
+    else
+      return false
+    end
+  end
+  
+  # goes through and retires all accounts that have been ignored in review for the last 14 days
+  #
+  # @param [String] retired_reason Retiring reason     
+  def self.retire_ignored_account_requests(retired_reason = 'No one vouched for the account within 14 days')
+    cutoff = Time.now.utc - 14.days
+    retirelist = self.vouchlist.all(:conditions => "email_event_at < '#{cutoff.to_s(:db)}'")
+    retirelist.each do |user|
+      user.retire(User.systemuser,retired_reason)
+    end
+    return retirelist.size
+  end
+    
+    
+  
+  # reassigns any open assigned questions (using the submitted named_scope on the 
+  # assigned_question association) to question wranglers - calling assign_to_question_wrangler
+  #
+  # @param [User] reassigner User/Account doing the reassigning
+  def reassign_assigned_questions(reassigner = User.systemuser)
+    my_assigned_questions = self.assigned_questions.submitted
+    if(!my_assigned_questions.blank?)
+      my_assigned_questions.each do |question|
+        question.assign_to_question_wrangler(reassigner)
+      end
+    end
+    return my_assigned_questions.size
   end
   
   # returns a hash of aae filter prefs

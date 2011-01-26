@@ -66,7 +66,7 @@ class People::ColleaguesController < ApplicationController
   end
   
   def vouchlist
-    @userlist = User.paginate(:all,:order => 'updated_at desc', :conditions => ["vouched = 0 AND retired = 0 AND account_status != #{User::STATUS_SIGNUP} and emailconfirmed=1"],:page => params[:page])
+    @userlist = User.vouchlist.paginate(:order => 'updated_at desc', :page => params[:page])
     @page_title = "Users pending review"
     render :template => 'people/colleagues/users'
   end
