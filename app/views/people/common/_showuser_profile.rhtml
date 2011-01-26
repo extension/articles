@@ -73,7 +73,15 @@
 	</p>
 	<p class="item">
 		<span class="vcardLabel">Announcements List:</span>
-		<span class="announcements"><%= (@currentuser.announcements) ? 'Subscribed': 'Not Subscribed' %></span>
+		<span class="announcements"><%= (showuser.announcements) ? 'Subscribed': 'Not Subscribed' %></span>
 	</p>
+	<%- if !showuser.vouched? and !showuser.additionaldata.blank? and !showuser.additionaldata[:signup_affiliation].blank? -%>
+	  <p class="item">
+	    <span class="vcardLabel">Connection with Extension:</span>
+	    <span class="information"><%= h(showuser.additionaldata[:signup_affiliation]) %></span>
+  	</p>
+  <%- end -%>
+  		
+	    
 </div>
 
