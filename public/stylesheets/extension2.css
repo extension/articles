@@ -1008,3 +1008,6 @@ td.longurls a {word-wrap: break-word;width:450px;}
 .content_page #sitehome.grid_4 {margin:0 10px 0 0; background:#eee; width:220px;}
 .category_tag .content_gutter {padding:0 30px;}
 .category_tag .homesection h2 {font-size:13pt !important;}
+.ct_nomatchingcat {margin-top:2em !important;  font-size:14pt !important;color:#DF7432; font-weight:normal;}
+
+.content_page .aae_module {padding-bottom:2em; border-bottom:1px solid #ccc;}
