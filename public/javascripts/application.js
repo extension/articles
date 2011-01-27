@@ -193,7 +193,11 @@ $j(document).ready(function() {
     link.preventDefault();
     _gaq.push(['_trackPageview','/outgoing/'+ $j(this).attr('href')]);
     _gaq.push(['_trackEvent', 'Outbound Links', $j(this).attr('href')]);
-    setTimeout('document.location = "' + $j(this).attr('href') + '"', 100);
+    if ($j(this).attr('target') == "_blank") {
+      setTimeout('window.open( $j(this).attr('href') ), 100');
+    } else {
+      setTimeout('document.location = "' + $j(this).attr('href') + '"', 100);
+    }
   });
 });
 
