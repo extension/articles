@@ -71,8 +71,12 @@ img {border: 0;}
 p.caption {padding:0;margin:0 0 1em;font-size:.95em;}
 p.caption * {color:#555 !important;}
 
-#eXlogo {position:absolute; background:url(/images/layout/extensionlogo.gif) no-repeat left top !important;text-indent:-5000px;overflow:none;padding:0;margin:0 0 10px;top:0;right:10px;}
-#eXlogo a {width:216px; height: 81px;display:block;overflow:hidden;}
+
+#eXlogo {position:absolute; overflow:none;padding:0;margin:0 0 10px;top:0;right:10px;}
+#eXlogo img {width:145px; height: 53px;}
+#eXlogo a {width:145px; height: 53px;display:block;overflow:hidden;text-decoration:none;}
+#eXlogo a span {text-indent:-5000px;}
+
 
 #print-logo {margin-bottom:24pt;display:block;float:right;}
 .logo{float:left;margin:0;padding:0;}
