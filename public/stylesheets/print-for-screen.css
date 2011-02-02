@@ -5,7 +5,7 @@
 body {font-size: small;margin:0;padding:3%;font-family: georgia, times, serif;color: #000;}
 
 /*hide all these*/
-#app_location, #skiplist, .identity, .navbar, .didyouknow, #aae_pitch, #aae_plug, #rating, .feedlink, #footer ul, .hiddenStructure, .login-options, #institution_actions, .missionstatement, #relatedresources, .related {display:none;}
+#app_location, #skiplist, .identity, .navbar, .didyouknow, #aae_pitch, #aae_plug, #rating, .feedlink, #footer ul, .hiddenStructure, .login-options, #institution_actions, .missionstatement, #relatedresources, .related, .print_and_share, #fancybox-wrap {display:none;}
 .noprint {display:none;}
 .dontprintme {display:none;}
 
@@ -71,7 +71,13 @@ img {border: 0;}
 p.caption {padding:0;margin:0 0 1em;font-size:.95em;}
 p.caption * {color:#555 !important;}
 
-#eXlogo {display:none;}
+
+#eXlogo {position:absolute; overflow:none;padding:0;margin:0 0 10px;top:0;right:10px;}
+#eXlogo img {width:145px; height: 53px;}
+#eXlogo a {width:145px; height: 53px;display:block;overflow:hidden;text-decoration:none;}
+#eXlogo a span {text-indent:-5000px;}
+
+
 #print-logo {margin-bottom:24pt;display:block;float:right;}
 .logo{float:left;margin:0;padding:0;}
 
@@ -90,5 +96,5 @@ table td {padding:.45em;font-size:1em !important;}
 
 #preview_wrapper {display:none;}
 #app_location.preview {display:block;background:#fffbbe !important;border:1px solid #bbb; margin-bottom:2em; padding: 0 .75em;}
-
+.logo a:link:after, .logo a:visited:after, #eXlogo a:link:after, #eXlogo a:visited:after {content: "";}
 a:link:after, a:visited:after {content: " (" attr(href) ") ";font-size: 90%;}
