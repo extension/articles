@@ -11,7 +11,7 @@ require 'getoptlong'
 ### Program Options
 progopts = GetoptLong.new(
   [ "--environment","-e", GetoptLong::OPTIONAL_ARGUMENT ],
-  [ "--forceupdate","-f", GetoptLong::OPTIONAL_ARGUMENT]
+  [ "--forceupdate","-f", GetoptLong::NO_ARGUMENT]
 )
 
 @environment = 'production'
