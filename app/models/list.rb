@@ -594,8 +594,8 @@ class List < ActiveRecord::Base
     return default_configuration
   end
   
-  def create_or_update_mailman_list
-    if(!self.update_mailman?)
+  def create_or_update_mailman_list(forceupdate=false)
+    if(!self.update_mailman? and !forceupdate)
       return true
     end
     if(!self.has_mailman_list?)
