@@ -229,23 +229,7 @@ class Article < ActiveRecord::Base
     end
    end
   end
-  
-  def self.homage_for_content_tag(options = {},forcecacheupdate=false)
-   # OPTIMIZE: keep an eye on this caching
-   cache_key = self.get_cache_key(this_method,options)
-   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-    Article.bucketed_as('homage').tagged_with_content_tag(options[:content_tag].name).ordered.first
-   end
-  end
-  
-  def self.learnmore_for_content_tag(options = {},forcecacheupdate=false)
-   # OPTIMIZE: keep an eye on this caching
-   cache_key = self.get_cache_key(this_method,options)
-   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-    Article.bucketed_as('learn more').tagged_with_content_tag(options[:content_tag].name).ordered.first
-   end
-  end
-  
+      
   def self.contents_for_content_tag(options = {},forcecacheupdate=false)
    # OPTIMIZE: keep an eye on this caching
    cache_key = self.get_cache_key(this_method,options)
@@ -310,7 +294,16 @@ class Article < ActiveRecord::Base
       article.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)
       article.put_in_buckets(entry.categories.map(&:term))    
     end
-
+    
+    # check for homage replacement    
+    if(entry.categories.map(&:term).include?('homage'))
+      content_tags = article.tags.content_tags
+      content_tags.each do |content_tag|
+        if(community = content_tag.content_community)
+          community.update_attribute(:homage_id,article.id)
+        end
+      end
+    end
     returndata << article
     return returndata
   end

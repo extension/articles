@@ -38,7 +38,6 @@ class MainController < ApplicationController
       set_titletag("#{@community.public_name} - eXtension")
       community_content_tag_names = @community.content_tag_names
       @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
-      @homage = Article.homage_for_content_tag({:content_tag => @content_tag})
       @in_this_section = Article.contents_for_content_tag({:content_tag => @content_tag})
       @community_highlights = Article.main_feature_list({:content_tag => @content_tag, :limit => 8})
       @youth = true if @topic and @topic.name == 'Youth'

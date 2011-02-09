@@ -113,25 +113,14 @@
       <%- if @homage_count > 1 -%>
          <li class="missing"><%= link_to("<span>#{@homage_count}</span> Published Articles categorized as \"homage\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'homage')) %> <span>(G)</span>
              <br />
-         (<%= link_to("#{@homage.title} is currently chosen for the homage view", @homage.id_and_link) %>)
+         (<%= link_to("#{@community.homage.title} is currently chosen for the homage view", @community.homage.id_and_link) %>)
          </li>
       <%- elsif @homage_count == 1 -%>                
-         <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "homage"', @homage.id_and_link) %> <span>(G)</span></li>
+         <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "homage"', @community.homage.id_and_link) %> <span>(G)</span></li>
       <%- else -%>
          <li class="missing">No Published Article categorized as "homage" <span>(G)</span></li>
       <%- end -%>
       
-      <!-- Learn More -->
-      <%- if @learnmore_count > 1 -%>
-         <li class="missing"><%= link_to("<span>#{@learnmore_count}</span> Published Articles categorized as \"learn more\"", preview_articlelist_url(:content_tag => @content_tag.name, :articlefilter => 'learn more')) %> <span>(G)</span>
-             <br />
-         (<%= link_to("#{@learnmore.title} is currently chosen for the learn more view", @learnmore.id_and_link) %>)
-         </li>
-      <%- elsif @learnmore_count == 1 -%>                
-         <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "learn more"', @learnmore.id_and_link) %> <span>(G)</span></li>
-      <%- else -%>
-         <li class="missing">No Published Article categorized as "learn more" <span>(G)</span></li>
-      <%- end -%>
    </ul>
    </div>
    

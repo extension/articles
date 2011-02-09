@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110125222439) do
+ActiveRecord::Schema.define(:version => 20110207202548) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -287,6 +287,8 @@ ActiveRecord::Schema.define(:version => 20110125222439) do
     t.boolean  "connect_to_google_apps",                :default => false
     t.integer  "widget_id"
     t.boolean  "active",                                :default => true
+    t.string   "homage_name"
+    t.integer  "homage_id"
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true

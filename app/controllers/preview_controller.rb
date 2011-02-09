@@ -44,9 +44,7 @@ class PreviewController < ApplicationController
     @learning_lessons_count = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).count
     @contents_count = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).count
     @homage_count = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).count
-    @homage = Article.homage_for_content_tag({:content_tag => @content_tag})
-    @learnmore_count = Article.bucketed_as('learn more').tagged_with_content_tag(@content_tag.name).count
-    @learnmore = Article.learnmore_for_content_tag({:content_tag => @content_tag})
+    @homage = @community.homage
 
     @articles_broken_count =  Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).broken_links.count
 
@@ -230,7 +228,6 @@ class PreviewController < ApplicationController
         end
 
         @community = use_content_tag.content_community
-        @homage = Article.homage_for_content_tag({:content_tag => use_content_tag}) if @community
         @in_this_section = Article.contents_for_content_tag({:content_tag => use_content_tag})  if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
       end
