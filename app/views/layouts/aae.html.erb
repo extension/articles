@@ -88,8 +88,10 @@
                 
                 <div id="aae_search">
                     <p>
-                       <%= text_field_tag "q", params[:q], :class => "medium" %>
-                       <%= submit_tag "Search" %>
+                       <% form_tag({:controller => 'aae/search', :action => :general_search}, {:method => 'get'}) do %>
+                         <%= text_field_tag "q", params[:q], :class => "medium" %>
+                         <%= submit_tag "Search" %>
+                       <% end %>
                     </p>
                 </div>
             
