@@ -83,6 +83,7 @@ class Community < ActiveRecord::Base
   belongs_to :topic, :foreign_key => 'public_topic_id'
   belongs_to :location
   belongs_to :logo
+  belongs_to :homage, :class_name => "Article", :foreign_key => "homage_id"
   
   
   has_many :cached_tags, :as => :tagcacheable
