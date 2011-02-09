@@ -1,13 +1,9 @@
 <% @page_title = "Ask an Expert Search" %>
 
 <div id="search_for_answer">
-<span>Search again</span>
-<% form_tag(aae_answer_search_url, {:method => 'get'}) do %>
-<p align="right">
-  <strong>Search AaE</strong>
-  <%= text_field_tag "q", params[:q], :size => 24 %>
-  <%= submit_tag "Search" %>
-</p>
+<% form_tag({:controller => 'aae/search', :action => :general_search}, {:method => 'get'}) do %>
+   <%= text_field_tag "q", params[:q], :class => "medium" %>
+   <%= submit_tag "Search" %>
 <% end %>
 
 <% if @aae_search_results.empty? %>
@@ -15,13 +11,14 @@
 <% else %>
     <h2>Search Results</h2>
     
-    <table summary="Faq and AaE Search Results" class="hover" cellspacing="0">
+    <%= will_paginate @aae_search_results %>
+    
+    <table summary="AaE Search Results" class="hover" cellspacing="0">
 
         <tr>
             <th scope="col">Status</th>
             <th scope="col">Question</th>
             <th scope="col">ID</th>
-
             <th scope="col">Last Updated</th>
         </tr>
 
@@ -38,10 +35,10 @@
                 <%= question.status %>
             </td>
             <td>
-                <%= link_to strip_tags(question.displaytitle), aae_answer_url(:id => question.id, :squid => @submitted_question.id, :q => params[:q], :faq_search => params[:faq_search], :aae_search => params[:aae_search]) %>
+                <%= link_to strip_tags(question.displaytitle), aae_question_url(:id => question.foreignid) %>
             </td> 
             <td>
-                <%= question.id %>    
+                <%= question.foreignid %>    
             </td>
 
 
@@ -60,5 +57,5 @@
         %>
     <% end %>
     </table>
-    
+    <%= will_paginate @aae_search_results %>
 <% end %>
