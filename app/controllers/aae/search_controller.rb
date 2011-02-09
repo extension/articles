@@ -47,6 +47,23 @@ class Aae::SearchController < ApplicationController
     render :layout => false
   end
   
+  def general_search
+    if params[:q] and params[:q].strip != ''
+       # if someone put in a number (id) to search on
+        if params[:q] =~ /^[0-9]+$/
+          @aae_search_results = SearchQuestion.aae_questions.find_all_by_foreignid(params[:q])
+          return
+        end
+        
+        formatted_search_terms = format_full_text_search_terms(params[:q])
+        @aae_search_results = SearchQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).aae_questions.all(:order => 'match_score desc').paginate(:page => params[:page])        
+    else
+      flash[:failure] = "You must enter valid text into the search field." 
+      request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
+      return
+    end      
+  end
+  
   def answers
     setup_aae_search_params
     if params[:squid] and @submitted_question = SubmittedQuestion.find_by_id(params[:squid])    

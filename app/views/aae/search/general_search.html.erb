@@ -1,0 +1,64 @@
+<% @page_title = "Ask an Expert Search" %>
+
+<div id="search_for_answer">
+<span>Search again</span>
+<% form_tag(aae_answer_search_url, {:method => 'get'}) do %>
+<p align="right">
+  <strong>Search AaE</strong>
+  <%= text_field_tag "q", params[:q], :size => 24 %>
+  <%= submit_tag "Search" %>
+</p>
+<% end %>
+
+<% if @aae_search_results.empty? %>
+    <h2 class="note"><strong>Your search did not match any questions</strong></h2>
+<% else %>
+    <h2>Search Results</h2>
+    
+    <table summary="Faq and AaE Search Results" class="hover" cellspacing="0">
+
+        <tr>
+            <th scope="col">Status</th>
+            <th scope="col">Question</th>
+            <th scope="col">ID</th>
+
+            <th scope="col">Last Updated</th>
+        </tr>
+
+
+
+    <%  
+        even = true 
+        @aae_search_results.each do |question|
+    %>   
+
+
+        <tr <%= ' class="shaded"' if even %>>
+            <td>
+                <%= question.status %>
+            </td>
+            <td>
+                <%= link_to strip_tags(question.displaytitle), aae_answer_url(:id => question.id, :squid => @submitted_question.id, :q => params[:q], :faq_search => params[:faq_search], :aae_search => params[:aae_search]) %>
+            </td> 
+            <td>
+                <%= question.id %>    
+            </td>
+
+
+            <td>
+                <%= time_ago_in_words(question.updated_at) %> ago
+            </td>
+
+        </tr>
+
+        <% 
+           if even
+             even = false
+           else
+             even = true
+           end 
+        %>
+    <% end %>
+    </table>
+    
+<% end %>
