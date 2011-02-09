@@ -45,6 +45,8 @@
     <% if !@mobile_device %>
         <%= render(:partial => 'aae/partial/global_nav_banner') %>
     <% end %>
+    
+    
     <div id="pageContainer">
         <div id="masthead">
             <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
@@ -76,12 +78,24 @@
                         <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
                         <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
                         <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
+                        
+                        <% if @currentuser.is_admin? %>
+                    		<li id="admintoggle"><strong>Admin</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></li>
+                    	<% end %>
                     <%- end -%>
                 </ul>
+                
+                
+                <div id="aae_search">
+                    <p>
+                       <% form_tag({:controller => 'aae/search', :action => :general_search}, {:method => 'get'}) do %>
+                         <%= text_field_tag "q", params[:q], :class => "medium" %>
+                         <%= submit_tag "Search" %>
+                       <% end %>
+                    </p>
+                </div>
             
-                <% if @currentuser.is_admin? %>
-            		<p id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></p>
-            	<% end %>
+                
             <% end %>
             
             
