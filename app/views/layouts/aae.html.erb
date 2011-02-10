@@ -86,7 +86,7 @@
                 </ul>
                 
                 
-                <div id="aae_search">
+                <div id="aae_search_box">
                     <p>
                        <% form_tag({:controller => 'aae/search', :action => :general_search}, {:method => 'get'}) do %>
                          <%= text_field_tag "q", params[:q], :class => "medium" %>

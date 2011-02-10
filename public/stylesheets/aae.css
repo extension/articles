@@ -422,8 +422,8 @@ ul#aaelinks li.selected a {
 ul#aaelinks li#spam_review a {background:none;border:0; color:#999 !important; font-size:1em;}
 ul#aaelinks li#spam_review a:hover {background:none;border:0; color:#333 !important;}
 
-#aae_search {position:absolute; bottom:8px; right:1em;}
-#aae_search p {margin:0;padding:0; font-size:1.2em;}
+#aae_search_box {position:absolute; bottom:8px; right:1em;}
+#aae_search_box p {margin:0;padding:0; font-size:1.2em;}
 .medium {width:10em;}
 
 #total_incoming {color:#555;font-size:1.3em;}
