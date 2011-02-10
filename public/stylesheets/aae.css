@@ -195,28 +195,20 @@ input.submit[class] {  /* IE ignores [class] */
 }
 #userinfo li a {text-decoration:none;}
 #userinfo li a:hover {text-decoration:underline;}
-#admintoggle {position:absolute; bottom:0; right:1em; 
+#admintoggle {
     background:#dcdcdc; 
-    padding:.25em .5em; margin:0;
-    border-radius: 8px 8px 0 0;
-    -moz-border-radius: 8px 8px 0 0;
-    -webkit-border-radius: 5px 5px 0 0;
-    box-shadow: 1px 0 2px #555;
-    -moz-box-shadow: 1px 0 2px #555;
-    -webkit-box-shadow: 1px 0 2px #555;
-    z-index: 2 !important;
+    padding:.25em 0 .25em .5em !important;
+    margin:0 0 0 10px !important;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
 }
 #admintoggle strong {color:#666; text-shadow: 1px 1px 1px #fff;}
 #admintoggle strong.off {color:#888; text-shadow: none;}
-#admintoggle strong.on {background:#0efd14;color:#1a0291; text-shadow: none;
-    padding-left:.5em;
-    padding-right:.5em;
-    border-top:1px solid #888;
-    border-left:1px solid #aaa;
-    border-bottom:1px solid #eee;
-    border-right:1px solid #eee;
+#admintoggle strong.on {background:#fff;color:red; text-shadow: none;
+    padding:0 .25em;
     }
-
+#admintoggle a {display:inline; padding-right:5px;}
 
 #search {position: absolute;right: 10px;bottom: 10px;}
 #search p {padding:0;margin:0;}
@@ -426,9 +418,13 @@ ul#aaelinks li.selected a {
     padding-top:7px;
 }
 
-ul#aaelinks li#spam_review {float:right;}
+
 ul#aaelinks li#spam_review a {background:none;border:0; color:#999 !important; font-size:1em;}
 ul#aaelinks li#spam_review a:hover {background:none;border:0; color:#333 !important;}
+
+#aae_search_box {position:absolute; bottom:8px; right:1em;}
+#aae_search_box p {margin:0;padding:0; font-size:1.2em;}
+.medium {width:10em;}
 
 #total_incoming {color:#555;font-size:1.3em;}
 #total_incoming span {display:block;}
