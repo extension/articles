@@ -34,8 +34,6 @@ Rails::Initializer.run do |config|
   config.gem 'geoip', :source => 'http://systems.extension.org/rubygems/'
   # required for email parsing
   config.gem 'mail'
-  # requred for newrelic performance analysis
-  config.gem "newrelic_rpm"
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 
