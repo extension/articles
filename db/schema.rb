@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110207202548) do
+ActiveRecord::Schema.define(:version => 20110214202810) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -799,6 +799,35 @@ ActiveRecord::Schema.define(:version => 20110207202548) do
     t.datetime "created_at",                :null => false
   end
 
+  create_table "pages", :force => true do |t|
+    t.string   "datatype"
+    t.text     "title"
+    t.text     "content",             :limit => 2147483647
+    t.text     "original_content",    :limit => 2147483647
+    t.datetime "source_published_at"
+    t.datetime "source_updated_at"
+    t.text     "source_url"
+    t.boolean  "is_dpl",                                    :default => false
+    t.text     "reference_pages"
+    t.integer  "migrated_id"
+    t.boolean  "has_broken_links"
+    t.text     "coverage"
+    t.text     "state_abbreviations"
+    t.date     "event_date"
+    t.time     "event_time"
+    t.datetime "event_start"
+    t.string   "event_time_zone"
+    t.text     "event_location"
+    t.integer  "event_duration"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "pages", ["datatype", "migrated_id"], :name => "index_pages_on_datatype_and_migrated_id"
+  add_index "pages", ["event_date"], :name => "index_pages_on_event_date"
+  add_index "pages", ["source_published_at", "source_updated_at"], :name => "index_pages_on_source_published_at_and_source_updated_at"
+  add_index "pages", ["title"], :name => "index_pages_on_title", :length => {"title"=>"255"}
+
   create_table "positions", :force => true do |t|
     t.integer  "entrytype",  :default => 0, :null => false
     t.string   "name",                      :null => false
@@ -964,15 +993,17 @@ ActiveRecord::Schema.define(:version => 20110207202548) do
   add_index "submitted_questions", ["widget_name"], :name => "index_submitted_questions_on_widget_name"
 
   create_table "taggings", :force => true do |t|
-    t.integer  "tag_id",                                     :null => false
-    t.integer  "taggable_id",                                :null => false
-    t.string   "taggable_type", :limit => 32
-    t.string   "tag_display",                                :null => false
-    t.integer  "owner_id",                                   :null => false
-    t.integer  "weight",                      :default => 1, :null => false
-    t.datetime "created_at",                                 :null => false
+    t.integer  "tag_id",                                         :null => false
+    t.integer  "taggable_id",                                    :null => false
+    t.string   "taggable_type",     :limit => 32
+    t.string   "tag_display",                                    :null => false
+    t.integer  "owner_id",                                       :null => false
+    t.integer  "weight",                          :default => 1, :null => false
+    t.datetime "created_at",                                     :null => false
     t.datetime "updated_at"
     t.integer  "tagging_kind"
+    t.string   "old_taggable_type"
+    t.integer  "old_taggable_id"
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagging_kind", "owner_id"], :name => "taggingindex", :unique => true
