@@ -802,12 +802,13 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
   create_table "pages", :force => true do |t|
     t.string   "datatype"
     t.text     "title"
-    t.text     "content",             :limit => 2147483647
-    t.text     "original_content",    :limit => 2147483647
+    t.text     "content",                :limit => 2147483647
+    t.text     "original_content",       :limit => 2147483647
     t.datetime "source_published_at"
     t.datetime "source_updated_at"
     t.text     "source_url"
-    t.boolean  "is_dpl",                                    :default => false
+    t.string   "source_url_fingerprint"
+    t.boolean  "is_dpl",                                       :default => false
     t.text     "reference_pages"
     t.integer  "migrated_id"
     t.boolean  "has_broken_links"
@@ -823,9 +824,11 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
     t.datetime "updated_at"
   end
 
-  add_index "pages", ["datatype", "migrated_id"], :name => "index_pages_on_datatype_and_migrated_id"
+  add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
   add_index "pages", ["event_date"], :name => "index_pages_on_event_date"
+  add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
   add_index "pages", ["source_published_at", "source_updated_at"], :name => "index_pages_on_source_published_at_and_source_updated_at"
+  add_index "pages", ["source_url_fingerprint"], :name => "index_pages_on_source_url_fingerprint", :unique => true
   add_index "pages", ["title"], :name => "index_pages_on_title", :length => {"title"=>"255"}
 
   create_table "positions", :force => true do |t|

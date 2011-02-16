@@ -7,7 +7,8 @@ class MergeContent < ActiveRecord::Migration
       t.text     "original_content", :limit => 16777215
       t.datetime "source_published_at"
       t.datetime "source_updated_at"
-      t.text   "source_url"
+      t.text     "source_url"
+      t.string   "source_url_fingerprint"
       t.boolean  "is_dpl",                               :default => false
       t.text     "reference_pages"
       t.integer  "migrated_id"
@@ -24,24 +25,27 @@ class MergeContent < ActiveRecord::Migration
       t.datetime "updated_at"  
     end
 
-    add_index "pages", ["datatype","migrated_id"] 
+    add_index "pages", ["datatype"]
+    add_index "pages", ["migrated_id"]
     add_index "pages", ["title"], :length => {"title"=>"255"}
     add_index "pages", ["source_published_at", "source_updated_at"]
     add_index "pages", ["event_date"]
+    add_index "pages", ["source_url_fingerprint"], :unique => true
+    
     
     # articles        
-    article_query = "INSERT INTO pages (id,datatype,title,content,original_content,source_published_at,source_updated_at,source_url,is_dpl,has_broken_links,created_at,updated_at)"
-    article_query += " SELECT id,'Article',title,content,original_content,wiki_created_at,wiki_updated_at,original_url,is_dpl,has_broken_links,created_at,updated_at  FROM articles"
+    article_query = "INSERT INTO pages (id,datatype,title,content,original_content,source_published_at,source_updated_at,source_url,source_url_fingerprint,is_dpl,has_broken_links,created_at,updated_at)"
+    article_query += " SELECT id,'Article',title,content,original_content,wiki_created_at,wiki_updated_at,original_url,SHA1(original_url),is_dpl,has_broken_links,created_at,updated_at  FROM articles"
     execute article_query
     
     # faqs
-    faq_query = "INSERT INTO pages (datatype,title,content,original_content,source_published_at,source_updated_at,source_url,reference_pages,migrated_id,created_at,updated_at)"
-    faq_query += " SELECT 'Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/publish/show/',id),reference_questions,id,created_at,updated_at FROM faqs"
+    faq_query = "INSERT INTO pages (datatype,title,content,original_content,source_published_at,source_updated_at,source_url,source_url_fingerprint,reference_pages,migrated_id,created_at,updated_at)"
+    faq_query += " SELECT 'Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/publish/show/',id),SHA1(CONCAT('http://cop.extension.org/publish/show/',id)),reference_questions,id,created_at,updated_at FROM faqs"
     execute faq_query
 
     # events
-    event_query = "INSERT INTO pages (datatype,title,content,original_content,source_published_at,source_updated_at,source_url,migrated_id,created_at,updated_at,coverage,state_abbreviations,event_date,event_time,event_start,event_time_zone,event_location,event_duration)"
-    event_query += " SELECT 'Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),id,created_at,updated_at,coverage,state_abbreviations,date,time,start,time_zone,location,duration FROM events"
+    event_query = "INSERT INTO pages (datatype,title,content,original_content,source_published_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,created_at,updated_at,coverage,state_abbreviations,event_date,event_time,event_start,event_time_zone,event_location,event_duration)"
+    event_query += " SELECT 'Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,created_at,updated_at,coverage,state_abbreviations,date,time,start,time_zone,location,duration FROM events"
     execute event_query
     
     # taggings, have to drop the index temporarily
