@@ -51,7 +51,7 @@ class Aae::SearchController < ApplicationController
     if params[:q] and params[:q].strip != ''
        # if someone put in a number (id) to search on
         if params[:q] =~ /^[0-9]+$/
-          @aae_search_results = SearchQuestion.aae_questions.find_all_by_foreignid(params[:q])
+          @aae_search_results = SearchQuestion.aae_questions.find_all_by_foreignid(params[:q]).paginate(:page => params[:page]) 
           return
         end
         
