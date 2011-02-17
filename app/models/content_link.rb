@@ -16,12 +16,7 @@ class ContentLink < ActiveRecord::Base
   validates_presence_of :original_fingerprint, :linktype
   
   # this is the association for items that link to this item
-  has_many_polymorphs :contentitems, 
-    :from => [:articles], 
-    :through => :linkings, 
-    :dependent => :destroy,
-    :as => :content_link,
-    :skip_duplicates => false
+  has_many :pages, :through => :linkings
     
   # link types
   WANTED = 1
@@ -117,8 +112,8 @@ class ContentLink < ActiveRecord::Base
   def change_to_wanted  
     if(self.linktype == INTERNAL)
       self.update_attribute(:linktype,WANTED)
-      self.contentitems.each do |linked_content_item|
-        linked_content_item.store_content # parses links and images again and saves it.
+      self.pages.each do |linked_page|
+        linked_page.store_content # parses links and images again and saves it.
       end
     end
   end
@@ -139,8 +134,8 @@ class ContentLink < ActiveRecord::Base
       # this was a wanted link - we need to update the link now - and kick off the process of updating everything
       # that links to this piece of content.
       content_link.update_attributes(:content => content, :linktype => INTERNAL)
-      content_link.contentitems.each do |linked_content_item|
-        linked_content_item.store_content # parses links and images again and saves it.
+      content_link.pages.each do |linked_page|
+        linked_page.store_content # parses links and images again and saves it.
       end
     else    
       content_link = self.new(:content => content, :original_url => original_uri.to_s, :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))

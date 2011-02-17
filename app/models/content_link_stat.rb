@@ -6,7 +6,6 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ContentLinkStat < ActiveRecord::Base
-  belongs_to :content, :class_name => "Article", :foreign_key => "content_id"
-  
+  belongs_to :page
   
 end
