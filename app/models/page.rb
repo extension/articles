@@ -1,5 +1,5 @@
 # === COPYRIGHT:
-# Copyright (c) 2005-2009 North Carolina State University
+# Copyright (c) 2005-2011 North Carolina State University
 # Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 # BSD(-compatible)
@@ -18,26 +18,51 @@ class Page < ActiveRecord::Base
   # has_many :cached_tags, :as => :tagcacheable
   
    
-  before_create :store_original_url
+  before_create :store_source_url
   after_create :store_content
-  after_create :store_new_url, :create_primary_content_link
+  after_create :set_url_title, :create_primary_content_link
   before_update :check_content
   before_destroy :change_primary_content_link
   
   has_content_tags
-  ordered_by :orderings => {'Newest to oldest'=> "wiki_updated_at DESC"},
-                            :default => "wiki_updated_at DESC"
+  ordered_by :orderings => {'Newest to oldest'=> "source_updated_at DESC"},
+                            :default => "source_updated_at DESC"
          
+  has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
+  has_many :linkings
+  has_many :content_links, :through => :linkings
+  has_many :bucketings
+  has_many :content_buckets, :through => :bucketings
+  has_one :content_link_stat
+
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
   
   named_scope :broken_links, :conditions => {:has_broken_links => true}
+
+  named_scope :articles, :conditions => {:datatype => 'Article'}
+  named_scope :news, :conditions => {:datatype => 'News'}
+  named_scope :faqs, :conditions => {:datatype => 'faqs'}
+  named_scope :events, :conditions => {:datatype => 'events'}
   
-  has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
-  # Note: has_many :content_links - outbound links using the has_many_polymorphs for content_links
-  has_one :content_link_stat, :foreign_key => 'content_id'
+
+  # returns a class::method::options string to use as a memcache key
+  #
+  # @param [String] method_name name of the method (or other string) to associate this cache with
+  # @param [Hash] optionshash Hash of options, turned into a sha1 so we can have option-specific keys   
+  # @return [String] string to use as a memcache key
+  def self.get_cache_key(method_name,optionshash={})
+   optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
+   cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
+   return cache_key
+  end
   
+  
+  # returns the number of links associated with this page, if updated_at > the content_link_stat for this page
+  # it counts and updates the content_link_stat
+  #
+  # @return [Hash] keyed hash of the link counts for this page
   def content_link_counts
     linkcounts = {:total => 0, :external => 0,:local => 0, :wanted => 0, :internal => 0, :broken => 0, :redirected => 0, :warning => 0}
     if(self.content_link_stat.nil? or self.updated_at > self.content_link_stat.updated_at)      
@@ -76,22 +101,26 @@ class Page < ActiveRecord::Base
     return linkcounts
   end
   
-  # mass update, looping through them all if needed is waaaaaay too slow
+  # mass update of the has_broken_links flag, looping through them all if needed is waaaaaay too slow
   def self.update_broken_flags
     # set all to false
     update_all("has_broken_links = 0")
     
     # get a list that have more than one broken link
-    broken_list = count('content_links.id',:joins => :content_links,:conditions => "content_links.status IN (#{ContentLink::WARNING},#{ContentLink::BROKEN}) ",:group => 'articles.id')
+    broken_list = count('content_links.id',:joins => :content_links,:conditions => "content_links.status IN (#{ContentLink::WARNING},#{ContentLink::BROKEN}) ",:group => "#{self.table_name}.id")
     broken_ids = broken_list.keys
     update_all("has_broken_links = 1", "id IN (#{broken_ids.join(',')})")    
   end
 
+  # update broken flag for this page 
   def update_broken_flag
     broken_count = self.content_links.count(:conditions => "content_links.status IN (#{ContentLink::WARNING},#{ContentLink::BROKEN}) ")
     self.update_attribute(:has_broken_links,(broken_count > 0))
   end
-      
+  
+  # given an array of categories, places the page into matching content buckets
+  # 
+  # @param [Array] categoryarray array of categories to match against bucket names    
   def put_in_buckets(categoryarray)
    namearray = []
    categoryarray.each do |name|
@@ -111,6 +140,12 @@ class Page < ActiveRecord::Base
    self.content_buckets = buckets
   end
   
+  
+  # return an array of the content tag names for this page, filtering out the blacklist
+  # returns it from memcache or from an association call to the db
+  # 
+  # @return [Array] array of content tag names 
+  # @param [Boolean] forcecacheupdate force caching update  
   def content_tag_names(forcecacheupdate = false)
    # OPTIMIZE: keep an eye on this caching
    cache_key = self.class.get_cache_key(this_method,{})
@@ -119,20 +154,16 @@ class Page < ActiveRecord::Base
    end
   end
   
-  def self.get_cache_key(method_name,optionshash={})
-   optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
-   cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
-   return cache_key
-  end
+
   
   def self.main_news_list(options = {},forcecacheupdate=false)
    # OPTIMIZE: keep an eye on this caching
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
     if(options[:content_tag].nil?)
-      Article.bucketed_as('news').ordered.limit(options[:limit]).find(:all)
+      self.bucketed_as('news').ordered.limit(options[:limit]).find(:all)
     else
-      Article.bucketed_as('news').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).find(:all)
+      self.bucketed_as('news').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).find(:all)
     end
    end
   end
@@ -142,9 +173,9 @@ class Page < ActiveRecord::Base
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
     if(options[:content_tag].nil?)
-      Article.bucketed_as('feature').ordered.limit(options[:limit]).all 
+      self.bucketed_as('feature').ordered.limit(options[:limit]).all 
     else
-      Article.bucketed_as('feature').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
+      self.bucketed_as('feature').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
     end
    end
   end
@@ -172,15 +203,15 @@ class Page < ActiveRecord::Base
       # get articles and their communities - joining them up by content tags
       # we have to do this group concat here because a given article may belong
       # to more than one community
-      articlelist = Article.find(:all, 
-                   :select => "articles.*, GROUP_CONCAT(communities.id) as community_ids_string", 
+      articlelist = self.find(:all, 
+                   :select => "#{self.table_name}.*, GROUP_CONCAT(communities.id) as community_ids_string", 
                    :joins => [:content_buckets, {:tags => :communities}], 
-                   :conditions => "DATE(articles.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
-                   :group => "articles.id",
-                   :order => "articles.wiki_updated_at DESC")
+                   :conditions => "DATE(#{self.table_name}.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
+                   :group => "#{self.table_name}.id",
+                   :order => "#{self.table_name}.wiki_updated_at DESC")
                    
       articlelist.each do |article|
-        community_ids = article.community_ids_string.split(',')
+        community_ids = self.community_ids_string.split(',')
         
         if community_ids.length > 0
           # if we have already processed an article from the tags applied to this article, go to the next one
@@ -207,12 +238,12 @@ class Page < ActiveRecord::Base
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
     if(options[:content_tags].nil? or options[:content_tags].empty?)
-      Article.ordered.limit(options[:limit]).all 
+      self.ordered.limit(options[:limit]).all 
     else
       if options[:tag_operator] and options[:tag_operator] == 'and'
-        Article.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
+        self.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
       else
-        Article.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
+        self.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
       end
     end
    end
@@ -223,9 +254,9 @@ class Page < ActiveRecord::Base
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
     if(options[:content_tag].nil?)
-      Article.bucketed_as('learning lessons').ordered.limit(options[:limit]).all 
+      self.bucketed_as('learning lessons').ordered.limit(options[:limit]).all 
     else
-      Article.bucketed_as('learning lessons').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
+      self.bucketed_as('learning lessons').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
     end
    end
   end
@@ -234,7 +265,7 @@ class Page < ActiveRecord::Base
    # OPTIMIZE: keep an eye on this caching
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-    Article.bucketed_as('contents').tagged_with_content_tag(options[:content_tag].name).ordered.first
+    self.bucketed_as('contents').tagged_with_content_tag(options[:content_tag].name).ordered.first
    end
   end
    
@@ -242,65 +273,65 @@ class Page < ActiveRecord::Base
     if(datatype == 'WikiArticle')
       article = find_by_title(entry.title) || self.new
     else
-      article = find_by_original_url(entry.links[0].href) || self.new
+      article = find_by_source_url(entry.links[0].href) || self.new
     end
 
-    article.datatype = datatype
+    self.datatype = datatype
 
     if entry.updated.nil?
       updated = Time.now.utc
     else
       updated = entry.updated
     end
-    article.wiki_updated_at = updated
+    self.wiki_updated_at = updated
 
     if entry.published.nil?
       pubdate = updated
     else
       pubdate = entry.published
     end
-    article.wiki_created_at = pubdate
+    self.wiki_created_at = pubdate
 
     if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
-      returndata = [article.wiki_updated_at, 'deleted', nil]
-      article.destroy
+      returndata = [self.wiki_updated_at, 'deleted', nil]
+      self.destroy
       return returndata
     end
 
-    article.title = entry.title
-    article.url = entry.links[0].href if article.url.blank?
-    article.author = entry.authors[0].name
-    article.original_content = entry.content.to_s
+    self.title = entry.title
+    self.url = entry.links[0].href if self.url.blank?
+    self.author = entry.authors[0].name
+    self.original_content = entry.content.to_s
 
     # flag as dpl
     if !entry.categories.blank? and entry.categories.map(&:term).include?('dpl')
-      article.is_dpl = true
+      self.is_dpl = true
     end
  
-    if(article.new_record?)
-      returndata = [article.wiki_updated_at, 'added']
-      article.save
-    elsif(article.original_content_changed?)
-      returndata = [article.wiki_updated_at, 'updated']
-      article.save
+    if(self.new_record?)
+      returndata = [self.wiki_updated_at, 'added']
+      self.save
+    elsif(self.original_content_changed?)
+      returndata = [self.wiki_updated_at, 'updated']
+      self.save
     else
       # content didn't change, don't save the article - most useful for dpl's
-      returndata = [article.wiki_updated_at, 'nochange']
+      returndata = [self.wiki_updated_at, 'nochange']
     end
 
     # handle categories - which will include updating categories/tags
     # even if the content didn't change
     if(!entry.categories.blank?)
-      article.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)
-      article.put_in_buckets(entry.categories.map(&:term))    
+      self.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)
+      self.put_in_buckets(entry.categories.map(&:term))    
     end
     
     # check for homage replacement    
     if(entry.categories.map(&:term).include?('homage'))
-      content_tags = article.tags.content_tags
+      content_tags = self.tags.content_tags
       content_tags.each do |content_tag|
         if(community = content_tag.content_community)
-          community.update_attribute(:homage_id,article.id)
+          community.update_attribute(:homage_id,self.id)
         end
       end
     end
@@ -373,11 +404,11 @@ class Page < ActiveRecord::Base
   def source_host
     # make sure the URL is valid format
     begin
-      original_uri = URI.parse(self.original_url)
+      source_uri = URI.parse(self.source_url)
     rescue
       return nil
     end
-    return original_uri.host
+    return source_uri.host
   end
   
   def convert_links
@@ -509,12 +540,7 @@ class Page < ActiveRecord::Base
     self.content = converted_content.to_html
     returninfo
   end
-  
-
-  def store_original_url
-   self.original_url = self.url if !self.url.blank? and self.original_url.blank?
-  end
-  
+    
   def store_new_url
    if(!self.datatype.nil? and (self.datatype == 'ExternalArticle' or self.datatype == 'WikiArticle'))
     self.url = id_and_link
