@@ -3,6 +3,7 @@ class MergeContent < ActiveRecord::Migration
     create_table "pages", :force => true do |t|
       t.string   "datatype"
       t.text     "title"
+      t.string   "url_title", :limit => 101
       t.text     "content",          :limit => 16777215
       t.text     "original_content", :limit => 16777215
       t.datetime "source_published_at"
@@ -38,6 +39,11 @@ class MergeContent < ActiveRecord::Migration
     article_query += " SELECT id,'Article',title,content,original_content,wiki_created_at,wiki_updated_at,original_url,SHA1(original_url),is_dpl,has_broken_links,created_at,updated_at  FROM articles"
     execute article_query
     
+    # turn news into a datatype
+    # get the id for the news bucket
+    news_bucket = ContentBucket.find_by_name('news')
+    execute "UPDATE pages,bucketings SET pages.datatype = 'News' WHERE bucketings.bucketable_id = pages.id AND bucketings.bucketable_type = 'Article' AND bucketings.content_bucket_id = #{news_bucket.id}"
+    
     # faqs
     faq_query = "INSERT INTO pages (datatype,title,content,original_content,source_published_at,source_updated_at,source_url,source_url_fingerprint,reference_pages,migrated_id,created_at,updated_at)"
     faq_query += " SELECT 'Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/publish/show/',id),SHA1(CONCAT('http://cop.extension.org/publish/show/',id)),reference_questions,id,created_at,updated_at FROM faqs"
@@ -47,6 +53,8 @@ class MergeContent < ActiveRecord::Migration
     event_query = "INSERT INTO pages (datatype,title,content,original_content,source_published_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,created_at,updated_at,coverage,state_abbreviations,event_date,event_time,event_start,event_time_zone,event_location,event_duration)"
     event_query += " SELECT 'Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,created_at,updated_at,coverage,state_abbreviations,date,time,start,time_zone,location,duration FROM events"
     execute event_query
+    
+    
     
     # taggings, have to drop the index temporarily
     remove_index(:taggings,  :name => "taggingindex")
@@ -71,6 +79,18 @@ class MergeContent < ActiveRecord::Migration
     # change all taggable_types to 'Page'
     execute "UPDATE taggings SET taggable_type = 'Page' WHERE taggable_type IN ('Article','Faq','Event')"
     add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagging_kind", "owner_id"], :name => "taggingindex", :unique => true
+    
+    # bucketings
+    remove_column(:bucketings, :bucketable_type)
+    rename_column(:bucketings, :bucketable_id, :page_id)
+    
+    # linkings
+    remove_column(:linkings, :contentitem_type)
+    rename_column(:linkings, :contentitem_id, :page_id)
+    
+    # content_link_stat
+    rename_column(:content_link_stats, :content_id, :page_id)
+    
     
   end
 

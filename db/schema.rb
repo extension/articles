@@ -210,14 +210,13 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
   add_index "articles", ["wiki_created_at", "wiki_updated_at"], :name => "index_articles_on_wiki_created_at_and_wiki_updated_at"
 
   create_table "bucketings", :force => true do |t|
-    t.integer  "bucketable_id",     :null => false
-    t.string   "bucketable_type",   :null => false
+    t.integer  "page_id",           :null => false
     t.integer  "content_bucket_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "bucketings", ["bucketable_id", "bucketable_type", "content_bucket_id"], :name => "bucketingindex", :unique => true
+  add_index "bucketings", ["page_id", "content_bucket_id"], :name => "bucketingindex", :unique => true
 
   create_table "cached_tags", :force => true do |t|
     t.integer  "tagcacheable_id"
@@ -329,7 +328,7 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
   add_index "content_buckets", ["name"], :name => "index_content_buckets_on_name", :unique => true
 
   create_table "content_link_stats", :force => true do |t|
-    t.integer  "content_id"
+    t.integer  "page_id"
     t.integer  "total"
     t.integer  "external"
     t.integer  "internal"
@@ -342,7 +341,7 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
     t.datetime "updated_at"
   end
 
-  add_index "content_link_stats", ["content_id"], :name => "index_content_link_stats_on_content_id"
+  add_index "content_link_stats", ["page_id"], :name => "index_content_link_stats_on_content_id"
 
   create_table "content_links", :force => true do |t|
     t.integer  "linktype"
@@ -649,13 +648,12 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
 
   create_table "linkings", :force => true do |t|
     t.integer  "content_link_id"
-    t.integer  "contentitem_id"
-    t.string   "contentitem_type"
+    t.integer  "page_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "linkings", ["content_link_id", "contentitem_id", "contentitem_type"], :name => "recordsignature", :unique => true
+  add_index "linkings", ["content_link_id", "page_id"], :name => "recordsignature", :unique => true
 
   create_table "list_owners", :force => true do |t|
     t.string   "email",          :limit => 96
@@ -802,6 +800,7 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
   create_table "pages", :force => true do |t|
     t.string   "datatype"
     t.text     "title"
+    t.string   "url_title",              :limit => 101
     t.text     "content",                :limit => 2147483647
     t.text     "original_content",       :limit => 2147483647
     t.datetime "source_published_at"
