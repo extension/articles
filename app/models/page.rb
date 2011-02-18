@@ -11,8 +11,8 @@ class Page < ActiveRecord::Base
   include TaggingScopes
   
   extend DataImportContent   # utility functions for importing content
-  # constants for tracking delete/updates/adds
 
+  URL_TITLE_LENGTH = 100
   
   # currently, no need to cache, we don't fulltext search article tags
   # has_many :cached_tags, :as => :tagcacheable
@@ -155,15 +155,22 @@ class Page < ActiveRecord::Base
   end
   
 
-  
+  # return a collection of the most recent news articles for the specified limit/content tag
+  # will check memcache first
+  # 
+  # @return [Array<Page>] array/collection of matching pages
+  # @param [Hash] options query options
+  # @option options [Integer] :limit query limit
+  # @option opts [ContentTag] :content_tag ContentTag to search for
+  # @param [Boolean] forcecacheupdate force caching update
   def self.main_news_list(options = {},forcecacheupdate=false)
    # OPTIMIZE: keep an eye on this caching
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
     if(options[:content_tag].nil?)
-      self.bucketed_as('news').ordered.limit(options[:limit]).find(:all)
+      self.news.ordered.limit(options[:limit]).find(:all)
     else
-      self.bucketed_as('news').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).find(:all)
+      self.news.tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).find(:all)
     end
    end
   end
@@ -183,6 +190,11 @@ class Page < ActiveRecord::Base
   # get featured articles that are diverse across communities (ie. make sure only one article per community is returned up to limit # of articles).
   # created so that the homepage has featured articles across diverse areas so if multiple articles are published from a community at once, only one 
   # is chosen from that community for the home page.
+  #
+  # @param [Hash] options query options
+  # @option options [Integer] :limit query limit
+  # @option opts [ContentTag] :content_tag ContentTag to search for
+  # @param [Boolean] forcecacheupdate force caching update
   def self.diverse_feature_list(options = {}, forcecacheupdate=false)
     # OPTIMIZE: keep an eye on this caching
     cache_key = self.get_cache_key(this_method,options)
@@ -194,8 +206,6 @@ class Page < ActiveRecord::Base
       launched_communitylist = Community.launched.all(:order => 'name')
       launched_community_ids = launched_communitylist.map(&:id).join(',')
       
-      
-
       # limit to last AppConfig.configtable['recent_feature_limit'] days so we aren't pulling the full list every single time
       # converting to a date to take advantage of mysql query caching for the day
       only_since = Time.zone.now.to_date - AppConfig.configtable['recent_feature_limit'].day
@@ -203,14 +213,14 @@ class Page < ActiveRecord::Base
       # get articles and their communities - joining them up by content tags
       # we have to do this group concat here because a given article may belong
       # to more than one community
-      articlelist = self.find(:all, 
+      pagelist = self.find(:all, 
                    :select => "#{self.table_name}.*, GROUP_CONCAT(communities.id) as community_ids_string", 
                    :joins => [:content_buckets, {:tags => :communities}], 
-                   :conditions => "DATE(#{self.table_name}.wiki_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
+                   :conditions => "DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
                    :group => "#{self.table_name}.id",
-                   :order => "#{self.table_name}.wiki_updated_at DESC")
+                   :order => "#{self.table_name}.source_updated_at DESC")
                    
-      articlelist.each do |article|
+      pagelist.each do |page|
         community_ids = self.community_ids_string.split(',')
         
         if community_ids.length > 0
@@ -218,17 +228,17 @@ class Page < ActiveRecord::Base
           if (community_ids & communities_represented) != []
             next
           else
-            articles_to_return << article
+            pages_to_return << page
             communities_represented.concat(community_ids)
           end
         else
           next
         end
         # end of are there associated communities
-        break if articles_to_return.length == options[:limit]
+        break if pages_to_return.length == options[:limit]
       end
       # end of article loop
-      articles_to_return
+      pages_to_return
     end
     # end of cache block
   end
@@ -283,7 +293,7 @@ class Page < ActiveRecord::Base
     else
       updated = entry.updated
     end
-    self.wiki_updated_at = updated
+    self.source_updated_at = updated
 
     if entry.published.nil?
       pubdate = updated
@@ -293,7 +303,7 @@ class Page < ActiveRecord::Base
     self.wiki_created_at = pubdate
 
     if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
-      returndata = [self.wiki_updated_at, 'deleted', nil]
+      returndata = [self.source_updated_at, 'deleted', nil]
       self.destroy
       return returndata
     end
@@ -309,14 +319,14 @@ class Page < ActiveRecord::Base
     end
  
     if(self.new_record?)
-      returndata = [self.wiki_updated_at, 'added']
+      returndata = [self.source_updated_at, 'added']
       self.save
     elsif(self.original_content_changed?)
-      returndata = [self.wiki_updated_at, 'updated']
+      returndata = [self.source_updated_at, 'updated']
       self.save
     else
       # content didn't change, don't save the article - most useful for dpl's
-      returndata = [self.wiki_updated_at, 'nochange']
+      returndata = [self.source_updated_at, 'nochange']
     end
 
     # handle categories - which will include updating categories/tags
@@ -339,18 +349,36 @@ class Page < ActiveRecord::Base
     return returndata
   end
   
+  def set_url_title
+    self.update_attribute(:url_title,get_url_title)
+  end
+  
+  def get_url_title
+    # make an initial downcased copy - don't want to modify name as a side effect
+    tmp_url_title = self.title.downcase
+    # get rid of anything that's not a "word", not whitespace, not : and not - 
+    tmp_url_title.gsub!(/[^\w\s:-]/,'')
+    # reduce whitespace/multiple spaces to a single space
+    tmp_url_title.gsub!(/\s+/,' ')
+    # convert spaces and underscores to dashes
+    tmp_url_title.gsub!(/[ _]/,'-')
+    # remove leading and trailing whitespace
+    tmp_url_title.strip!
+    # truncate
+    tmp_url_title.truncate(URL_TITLE_LENGTH,{:omission => '', :avoid_orphans => true})
+  end
+  
+  
   def id_and_link(only_path = false)
-   default_url_options[:host] = AppConfig.get_url_host
-   default_url_options[:protocol] = AppConfig.get_url_protocol
-   if(default_port = AppConfig.get_url_port)
+    if(self.url_title.blank?)
+      self.set_url_title
+    end
+    default_url_options[:host] = AppConfig.get_url_host
+    default_url_options[:protocol] = AppConfig.get_url_protocol
+    if(default_port = AppConfig.get_url_port)
     default_url_options[:port] = default_port
-   end
-   
-   if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
-    article_page_url(:id => self.id, :only_path => only_path)
-   else
-    wiki_page_url(:title => self.title_url, :only_path => only_path)
-   end
+    end
+    page_url(:id => self.id, :title => self.url_title, :only_path => only_path)
   end
   
   # called by ContentLink#href_url to return an href to this article
@@ -364,7 +392,7 @@ class Page < ActiveRecord::Base
       e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
       e.authors << Atom::Person.new(:name => 'Contributors')
       e.id = self.id_and_link
-      e.updated = self.wiki_updated_at
+      e.updated = self.source_updated_at
       e.categories = self.content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
       e.content = Atom::Content::Html.new(self.content)
     end
@@ -376,13 +404,8 @@ class Page < ActiveRecord::Base
    self.find_by_title(real_title)
   end
 
-  def title_url
-   unescaped = URI.unescape(self.title)
-   unescaped.gsub(/\s/, '_') if unescaped
-  end
-  
   def published_at
-   wiki_updated_at
+   source_updated_at
   end
   
   def representative_field
@@ -590,6 +613,25 @@ class Page < ActiveRecord::Base
       self.save
     end
     result
+  end
+  
+  # override of standard reference_questions getter, that will sanity check reference questions list.
+  # returns an array of valid reference questions
+  def reference_pages
+    returnarray = []
+    if(reflist = read_attribute(:reference_pages))
+      refpage_id_array = reflist.split(',')
+      refpage_id_array.each do |refpage|
+        if(page = Page.find_by_source_id(refpage))
+          returnarray << page
+        end
+      end
+    end
+    if(returnarray.blank?)
+      return nil
+    else
+      return returnarray    
+    end
   end
   
 end
