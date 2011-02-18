@@ -181,10 +181,13 @@ ActionController::Routing::Routes.draw do |map|
   map.logo  'logo/:file.:format', :controller => 'logo', :action => :display
   map.reports 'reports', :controller => :reports
   map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
+  map.pageid 'pages/:id', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
+  map.page 'pages/:id/:title', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
   map.article_page 'article/:id', :controller => 'articles', :action => 'page', :requirements => { :id => /\d+/ }
-  map.faq_page 'faq/:id', :controller => 'faq', :action => 'detail'
   map.events_page 'events/:id', :controller => 'events', :action => 'detail'
+  map.faq_page 'faq/:id', :controller => 'faq', :action => 'detail'
   map.wiki_page 'pages/*title', :controller => 'articles', :action => 'page'
+
   map.preview_page 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
   map.preview_articlelinks 'preview/articlelinks/:id', :controller => 'preview', :action => 'articlelinks'
   map.preview_articlelinklist 'preview/articlelinklist/:content_tag', :controller => 'preview', :action => 'articlelinklist'
