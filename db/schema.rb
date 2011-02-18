@@ -803,8 +803,10 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
     t.string   "url_title",              :limit => 101
     t.text     "content",                :limit => 2147483647
     t.text     "original_content",       :limit => 2147483647
-    t.datetime "source_published_at"
+    t.datetime "source_created_at"
     t.datetime "source_updated_at"
+    t.string   "source"
+    t.string   "source_id"
     t.text     "source_url"
     t.string   "source_url_fingerprint"
     t.boolean  "is_dpl",                                       :default => false
@@ -826,7 +828,7 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
   add_index "pages", ["event_date"], :name => "index_pages_on_event_date"
   add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
-  add_index "pages", ["source_published_at", "source_updated_at"], :name => "index_pages_on_source_published_at_and_source_updated_at"
+  add_index "pages", ["source_created_at", "source_updated_at"], :name => "index_pages_on_source_created_at_and_source_updated_at"
   add_index "pages", ["source_url_fingerprint"], :name => "index_pages_on_source_url_fingerprint", :unique => true
   add_index "pages", ["title"], :name => "index_pages_on_title", :length => {"title"=>"255"}
 

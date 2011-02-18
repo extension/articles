@@ -6,8 +6,10 @@ class MergeContent < ActiveRecord::Migration
       t.string   "url_title", :limit => 101
       t.text     "content",          :limit => 16777215
       t.text     "original_content", :limit => 16777215
-      t.datetime "source_published_at"
+      t.datetime "source_created_at"
       t.datetime "source_updated_at"
+      t.string   "source"
+      t.string   "source_id"
       t.text     "source_url"
       t.string   "source_url_fingerprint"
       t.boolean  "is_dpl",                               :default => false
@@ -29,15 +31,23 @@ class MergeContent < ActiveRecord::Migration
     add_index "pages", ["datatype"]
     add_index "pages", ["migrated_id"]
     add_index "pages", ["title"], :length => {"title"=>"255"}
-    add_index "pages", ["source_published_at", "source_updated_at"]
+    add_index "pages", ["source_created_at", "source_updated_at"]
     add_index "pages", ["event_date"]
     add_index "pages", ["source_url_fingerprint"], :unique => true
     
     
     # articles        
-    article_query = "INSERT INTO pages (id,datatype,title,content,original_content,source_published_at,source_updated_at,source_url,source_url_fingerprint,is_dpl,has_broken_links,created_at,updated_at)"
+    article_query = "INSERT INTO pages (id,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,is_dpl,has_broken_links,created_at,updated_at)"
     article_query += " SELECT id,'Article',title,content,original_content,wiki_created_at,wiki_updated_at,original_url,SHA1(original_url),is_dpl,has_broken_links,created_at,updated_at  FROM articles"
     execute article_query
+    
+    # get a "source id" for articles
+    execute "UPDATE pages SET source = 'copwiki', source_id = REPLACE(source_url,'http://cop.extension.org/wiki/','') WHERE source_url LIKE 'http://cop.extension.org/wiki/%'"
+    execute "UPDATE pages SET source = 'eorganic', source_id = REPLACE(source_url,'http://eorganic.info/node/','') WHERE source_url LIKE 'http://eorganic.info/node/%'"
+    execute "UPDATE pages SET source = 'eorganic', source_id = REPLACE(source_url,'http://eorganic.info/taxonomy/term/','') WHERE source_url LIKE 'http://eorganic.info/taxonomy/term/%'"
+    execute "UPDATE pages SET source = 'pbgworks', source_id = REPLACE(source_url,'http://pbgworks.org/node/','') WHERE source_url LIKE 'http://pbgworks.org/node/%'"
+    execute "UPDATE pages SET source = 'pbgworks', source_id = REPLACE(source_url,'http://pbgworks.org/menu/','') WHERE source_url LIKE 'http://pbgworks.org/menu/%'"
+    
     
     # turn news into a datatype
     # get the id for the news bucket
@@ -45,13 +55,13 @@ class MergeContent < ActiveRecord::Migration
     execute "UPDATE pages,bucketings SET pages.datatype = 'News' WHERE bucketings.bucketable_id = pages.id AND bucketings.bucketable_type = 'Article' AND bucketings.content_bucket_id = #{news_bucket.id}"
     
     # faqs
-    faq_query = "INSERT INTO pages (datatype,title,content,original_content,source_published_at,source_updated_at,source_url,source_url_fingerprint,reference_pages,migrated_id,created_at,updated_at)"
-    faq_query += " SELECT 'Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/publish/show/',id),SHA1(CONCAT('http://cop.extension.org/publish/show/',id)),reference_questions,id,created_at,updated_at FROM faqs"
+    faq_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,reference_pages,migrated_id,source_id,created_at,updated_at)"
+    faq_query += " SELECT 'faq','Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/publish/show/',id),SHA1(CONCAT('http://cop.extension.org/publish/show/',id)),reference_questions,id,id,created_at,updated_at FROM faqs"
     execute faq_query
 
     # events
-    event_query = "INSERT INTO pages (datatype,title,content,original_content,source_published_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,created_at,updated_at,coverage,state_abbreviations,event_date,event_time,event_start,event_time_zone,event_location,event_duration)"
-    event_query += " SELECT 'Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,created_at,updated_at,coverage,state_abbreviations,date,time,start,time_zone,location,duration FROM events"
+    event_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,source_id,created_at,updated_at,coverage,state_abbreviations,event_date,event_time,event_start,event_time_zone,event_location,event_duration)"
+    event_query += " SELECT 'events','Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,id,created_at,updated_at,coverage,state_abbreviations,date,time,start,time_zone,location,duration FROM events"
     execute event_query
     
     
