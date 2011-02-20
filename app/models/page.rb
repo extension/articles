@@ -6,12 +6,16 @@
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 require 'uri'
+require 'timeout'
+require 'open-uri'
+require 'rexml/document'
+require 'net/http'
+
 class Page < ActiveRecord::Base
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   include TaggingScopes
   
-  extend DataImportContent   # utility functions for importing content
-
+  
   URL_TITLE_LENGTH = 100
   
   # currently, no need to cache, we don't fulltext search article tags
@@ -393,6 +397,64 @@ class Page < ActiveRecord::Base
     return returndata
   end
   
+  def self.faq_create_or_update_from_atom_entry(entry,datatype = "ignored")
+    if(!(faqid = self.parse_id_from_atom_link(entry.id)))
+      returndata = [Time.now.etc, 'error', nil]
+      return returndata
+    end
+    
+    faq = self.find_by_id(faqid) || self.new
+    if(faq.new_record?)
+      # force id
+      faq.id = faqid
+    end
+    
+    if entry.updated.nil?
+      updated_time = Time.now.utc
+    else
+      updated_time = entry.updated
+    end    
+    faq.heureka_published_at = updated_time
+    
+    if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
+      returndata = [updated_time, 'deleted', nil]
+      faq.destroy
+      return returndata
+    end
+    
+    faq.question = entry.title
+    faq.answer = entry.content.to_s
+    
+    question_refs_array = []
+    if(!entry.links.blank?)
+      entry.links.each do |link|
+        if(link.rel == 'related')
+          href = link.href
+          if(id = self.parse_id_from_atom_link(href))
+            question_refs_array << id
+          end
+        end
+      end
+    end
+    
+    if(!question_refs_array.blank?)
+      faq.reference_questions = question_refs_array.join(',')
+    end
+          
+  
+    if(faq.new_record?)
+      returndata = [faq.heureka_published_at, 'added']
+    else
+      returndata = [faq.heureka_published_at, 'updated']
+    end  
+    faq.save
+    if(!entry.categories.blank?)
+      faq.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)
+    end
+    returndata << faq
+    return returndata
+  end
+  
   def set_url_title
     self.update_attribute(:url_title,get_url_title)
   end
@@ -676,6 +738,148 @@ class Page < ActiveRecord::Base
     else
       return returnarray    
     end
+  end
+  
+  def self.content_cache_expiry
+    if(!AppConfig.configtable['cache-expiry'][self.name].nil?)
+      AppConfig.configtable['cache-expiry'][self.name]
+    else
+      15.minutes
+    end
+  end
+  
+  # returns a block of content read from a file or a URL, does not parse
+  def self.fetch_url_content(feed_url)
+    urlcontent = ''
+    # figure out if this is a file url or a regular url and behave accordingly
+    fetch_uri = URI.parse(feed_url)
+    if(fetch_uri.scheme.nil?)
+      raise ContentRetrievalError, "Fetch URL Content:  Invalid URL: #{feed_url}"
+    elsif(fetch_uri.scheme == 'file')
+      if File.exists?(fetch_uri.path)
+        File.open(loadfromfile) { |f|  urlcontent = f.read }          
+      else
+        raise ContentRetrievalError, "Fetch URL Content:  Invalid file #{fetch_uri.path}"        
+      end
+    elsif(fetch_uri.scheme == 'http' or fetch_uri.scheme == 'https')  
+      # TODO: need to set If-Modified-Since
+      http = Net::HTTP.new(fetch_uri.host, fetch_uri.port) 
+      http.read_timeout = 300
+      response = fetch_uri.query.nil? ? http.get(fetch_uri.path) : http.get(fetch_uri.path + "?" + fetch_uri.query)
+      case response
+      # TODO: handle redirection?
+      when Net::HTTPSuccess
+        urlcontent = response.body
+      else
+        raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{feed_url} failed: #{response.code}/#{response.message}"          
+      end    
+    else # unsupported URL scheme
+      raise ContentRetrievalError, "Fetch URL Content:  Unsupported scheme #{feed_url}"          
+    end
+    
+    return urlcontent
+  end
+  
+  
+  def self.build_feed_url(feed_url,refresh_since,xmlschematime=true)
+    fetch_uri = URI.parse(feed_url)
+    if(fetch_uri.scheme.nil?)
+      raise ContentRetrievalError, "Build Feed URL:  Invalid URL: #{feed_url}"
+    elsif(refresh_since.nil?)
+      return "#{feed_url}"
+    elsif(fetch_uri.scheme == 'file')
+      return "#{feed_url}"
+    else
+      if(xmlschematime)
+        return "#{feed_url}#{refresh_since.xmlschema}"
+      else
+        return "#{feed_url}/#{refresh_since.year}/#{refresh_since.month}/#{refresh_since.day}/#{refresh_since.hour}/#{refresh_since.min}/#{refresh_since.sec}"
+      end
+    end
+  end
+  
+  
+  def self.retrieve_content(options = {})
+     current_time = Time.now.utc
+     have_refresh_since = (!options[:refresh_since].nil?)
+     refresh_without_time = (options[:refresh_without_time].nil? ? false : options[:refresh_without_time])
+     update_retrieve_time = (options[:update_retrieve_time].nil? ? true : options[:update_retrieve_time])
+     
+     case self.name
+     when 'Event'
+       feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_events'] : options[:feed_url])
+       usexmlschematime = true
+     when 'Faq'
+       feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_faqs'] : options[:feed_url])
+       usexmlschematime = true
+     when 'Article'
+       datatype = (options[:datatype].nil? ? 'WikiArticle' : options[:datatype])
+       feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_wikiarticles'] : options[:feed_url])
+       usexmlschematime = true
+     else
+       raise ContentRetrievalError, "Retrieve Content: Unknown object type for content retrieval (#{self.name})"
+     end  
+    
+     if(update_retrieve_time)
+       updatetime = UpdateTime.find_or_create(self,'content')
+     end
+     
+     if(refresh_without_time)
+       # build URL without a time
+       refresh_since = AppConfig.configtable['epoch_time'] # so we have a date for comparisons below
+       fetch_url = self.build_feed_url(feed_url,nil)
+     elsif(have_refresh_since)
+       refresh_since = options[:refresh_since]
+       fetch_url = self.build_feed_url(feed_url,refresh_since,usexmlschematime)
+     elsif(update_retrieve_time)
+       refresh_since = (updatetime.last_datasourced_at.nil? ? AppConfig.configtable['content_feed_refresh_since'] : updatetime.last_datasourced_at)           
+       fetch_url = self.build_feed_url(feed_url,refresh_since,usexmlschematime)
+     else
+       raise ContentRetrievalError, "Retrieve Content: Invalid options. (no knowledge of what last update time to use).  (#{self.name} objects from #{feed_url})."
+     end
+    
+    # will raise errors on failure
+    xmlcontent = self.fetch_url_content(fetch_url)
+
+    # create new objects from the atom entries
+    added_items = 0
+    updated_items = 0
+    deleted_items = 0
+    error_items = 0
+    nochange_items = 0
+    last_updated_item_time = refresh_since
+    
+
+    atom_entries =  Atom::Feed.load_feed(xmlcontent).entries
+    if(!atom_entries.blank?)
+      atom_entries.each do |entry|
+        (object_update_time, object_op, object) = self.create_or_update_from_atom_entry(entry,datatype)
+        # get smart about the last updated time
+        if(object_update_time > last_updated_item_time )
+          last_updated_item_time = object_update_time
+        end
+      
+        case object_op
+        when 'deleted'
+          deleted_items += 1
+        when 'updated'
+          updated_items += 1
+        when 'added'
+          added_items += 1
+        when 'error'
+          error_items += 1
+        when 'nochange'
+          nochange_items += 1
+        end
+      end
+    
+      if(update_retrieve_time)
+        # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
+        updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_items, :added => added_items, :updated => updated_items, :notchanged => nochange_items, :errors => error_items}})        
+      end
+    end
+    
+    return {:added => added_items, :deleted => deleted_items, :errors => error_items, :updated => updated_items, :notchanged => nochange_items, :last_updated_item_time => last_updated_item_time}
   end
   
 end
