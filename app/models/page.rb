@@ -43,8 +43,18 @@ class Page < ActiveRecord::Base
 
   named_scope :articles, :conditions => {:datatype => 'Article'}
   named_scope :news, :conditions => {:datatype => 'News'}
-  named_scope :faqs, :conditions => {:datatype => 'faqs'}
-  named_scope :events, :conditions => {:datatype => 'events'}
+  named_scope :faqs, :conditions => {:datatype => 'Faq'}
+  named_scope :events, :conditions => {:datatype => 'Event'}
+  named_scape :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
+  
+  named_scope :by_datatype, lambda{|datatype|
+   if(datatype.is_a?(Array))
+     datatypes_list = datatype.map{|d| "'#{d}'"}.join(',')
+     {:conditions => "datatype IN (#{datatypes_list})"}
+   else
+     {:conditions => "datatype = '#{datatype}'"}
+   end
+  }
   
 
   # returns a class::method::options string to use as a memcache key
@@ -180,9 +190,9 @@ class Page < ActiveRecord::Base
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
     if(options[:content_tag].nil?)
-      self.bucketed_as('feature').ordered.limit(options[:limit]).all 
+      self.newsicles.bucketed_as('feature').ordered.limit(options[:limit]).all 
     else
-      self.bucketed_as('feature').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
+      self.newsicles.bucketed_as('feature').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
     end
    end
   end
@@ -213,12 +223,14 @@ class Page < ActiveRecord::Base
       # get articles and their communities - joining them up by content tags
       # we have to do this group concat here because a given article may belong
       # to more than one community
-      pagelist = self.find(:all, 
-                   :select => "#{self.table_name}.*, GROUP_CONCAT(communities.id) as community_ids_string", 
-                   :joins => [:content_buckets, {:tags => :communities}], 
-                   :conditions => "DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
-                   :group => "#{self.table_name}.id",
-                   :order => "#{self.table_name}.source_updated_at DESC")
+      pagelist = self.find(
+        :all, 
+        :select => "#{self.table_name}.*, GROUP_CONCAT(communities.id) as community_ids_string", 
+        :joins => [:content_buckets, {:tags => :communities}], 
+        :conditions => "(datatype = 'Article' or datatype = 'News') AND DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
+        :group => "#{self.table_name}.id",
+        :order => "#{self.table_name}.source_updated_at DESC"
+      )
                    
       pagelist.each do |page|
         community_ids = self.community_ids_string.split(',')
@@ -248,12 +260,44 @@ class Page < ActiveRecord::Base
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
     if(options[:content_tags].nil? or options[:content_tags].empty?)
-      self.ordered.limit(options[:limit]).all 
+      self.by_datatype(['Article','News']).ordered.limit(options[:limit]).all 
     else
       if options[:tag_operator] and options[:tag_operator] == 'and'
-        self.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
+        self.by_datatype(['Article','News']).tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
       else
-        self.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
+        self.by_datatype(['Article','News']).tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
+      end
+    end
+   end
+  end
+  
+  def self.main_recent_faq_list(options = {},forcecacheupdate=false)
+   # OPTIMIZE: keep an eye on this caching
+   cache_key = self.get_cache_key(this_method,options)
+   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+    if(options[:content_tags].nil? or options[:content_tags].empty?)
+      self.faqs.ordered.limit(options[:limit]).all 
+    else
+      if options[:tag_operator] and options[:tag_operator] == 'and'
+        self.faqs.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
+      else
+        self.faqs.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
+      end
+    end
+   end
+  end
+  
+  def self.main_recent_event_list(options = {},forcecacheupdate=false)
+   # OPTIMIZE: keep an eye on this caching
+   cache_key = self.get_cache_key(this_method,options)
+   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+    if(options[:content_tags].nil? or options[:content_tags].empty?)
+      self.events.ordered.limit(options[:limit]).all 
+    else
+      if options[:tag_operator] and options[:tag_operator] == 'and'
+        self.events.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
+      else
+        self.events.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
       end
     end
    end
@@ -264,9 +308,9 @@ class Page < ActiveRecord::Base
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
     if(options[:content_tag].nil?)
-      self.bucketed_as('learning lessons').ordered.limit(options[:limit]).all 
+      self.articles.bucketed_as('learning lessons').ordered.limit(options[:limit]).all 
     else
-      self.bucketed_as('learning lessons').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
+      self.articles.bucketed_as('learning lessons').tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).all 
     end
    end
   end
@@ -275,7 +319,7 @@ class Page < ActiveRecord::Base
    # OPTIMIZE: keep an eye on this caching
    cache_key = self.get_cache_key(this_method,options)
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-    self.bucketed_as('contents').tagged_with_content_tag(options[:content_tag].name).ordered.first
+    self.articles.bucketed_as('contents').tagged_with_content_tag(options[:content_tag].name).ordered.first
    end
   end
    

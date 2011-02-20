@@ -33,17 +33,17 @@ class Api::DataController < ApplicationController
        return render :text => returnhash.to_json
      end
      
-     article = Article.find_by_original_url(find_url)
-     if(!article)
-        returnhash = {:success => false, :errormessage => 'Unable to find an article corresponding to the given URL'}
+     page = Page.find_by_original_url(find_url)
+     if(!page)
+        returnhash = {:success => false, :errormessage => 'Unable to find an page corresponding to the given URL'}
         return render :text => returnhash.to_json
      end
      
      returnhash = {}
-     returnhash[:title] = article.title
-     returnhash[:link] = article.id_and_link
-     returnhash[:created] = article.wiki_created_at
-     returnhash[:updated] = article.wiki_updated_at
+     returnhash[:title] = page.title
+     returnhash[:link] = page.id_and_link
+     returnhash[:created] = page.source_created_at
+     returnhash[:updated] = page.source_updated_at
      return render :text => returnhash.to_json    
   end
 
