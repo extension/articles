@@ -85,6 +85,7 @@ namespace :deploy do
     ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
     ln -nfs #{shared_path}/config/robots.txt #{release_path}/public/robots.txt &&
     ln -nfs #{shared_path}/config/appconfig.yml #{release_path}/config/appconfig.yml &&
+    ln -nfs #{shared_path}/config/newrelic.yml #{release_path}/config/newrelic.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki &&   

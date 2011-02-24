@@ -8,6 +8,7 @@
 /config/micodaloco.yml
 /config/appconfig.yml
 /config/devserver.yml
+/config/newrelic.yml
 
 # /log/
 /log/*.log

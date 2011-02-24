@@ -1,8 +1,8 @@
-<% if @community && @community.is_launched? %>
+<%- if @community and @community.public_name -%>
     <div id="homage">
-        <p>This resource area was created by the: <span><%= @community.homage ? link_to(@community.homage_name, @community.homage.id_and_link) : link_to_public_community(@community) %> community</span></p>
+        <p>This resource area was created by the: <span><%= @community.homage ? link_to(@community.homage_name ? @community.homage_name : @community.public_name, @community.homage.id_and_link) : link_to_public_community(@community) %> community</span></p>
     </div>
     <div class = "homagepic">
         <%= render_inline_logo({:logo => @community.logo})%>
     </div>  
-<% end %>
+<%- end -%>
