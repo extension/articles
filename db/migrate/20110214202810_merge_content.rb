@@ -1,5 +1,5 @@
 class MergeContent < ActiveRecord::Migration
-  def self.up
+  def self.up    
     create_table "pages", :force => true do |t|
       t.string   "datatype"
       t.text     "title"
@@ -10,6 +10,7 @@ class MergeContent < ActiveRecord::Migration
       t.datetime "source_updated_at"
       t.string   "source"
       t.string   "source_id"
+      t.string   "source_revision"
       t.text     "source_url"
       t.string   "source_url_fingerprint"
       t.boolean  "is_dpl",                               :default => false
@@ -18,8 +19,6 @@ class MergeContent < ActiveRecord::Migration
       t.boolean  "has_broken_links"
       t.text     "coverage"
       t.text     "state_abbreviations"
-      t.date     "event_date"
-      t.time     "event_time"
       t.datetime "event_start"
       t.string   "event_time_zone"
       t.text     "event_location"
@@ -60,8 +59,8 @@ class MergeContent < ActiveRecord::Migration
     execute faq_query
 
     # events
-    event_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,source_id,created_at,updated_at,coverage,state_abbreviations,event_date,event_time,event_start,event_time_zone,event_location,event_duration)"
-    event_query += " SELECT 'events','Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,id,created_at,updated_at,coverage,state_abbreviations,date,time,start,time_zone,location,duration FROM events"
+    event_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,source_id,created_at,updated_at,coverage,state_abbreviations,event_start,event_time_zone,event_location,event_duration)"
+    event_query += " SELECT 'events','Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,id,created_at,updated_at,coverage,state_abbreviations,start,time_zone,location,duration FROM events"
     execute event_query
     
     
