@@ -106,26 +106,26 @@ class Widgets::ContentController < ApplicationController
     when 'articles'
       @type = 'Articles'
       if content_tags
-        @contents = Article.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
+        @contents = Page.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
       else
-        @contents = Article.main_recent_list(:limit => @quantity)
+        @contents = Page.main_recent_list(:limit => @quantity)
       end
     when 'events'
       @type = 'Events'
       if content_tags
-        @contents = Event.main_calendar_list({:calendar_date => Time.now.to_date, :limit => @quantity, :content_tags => content_tags, :tag_operator => @tag_operator})
+        @contents = Page.main_recent_event_list({:calendar_date => Time.now.to_date, :limit => @quantity, :content_tags => content_tags, :tag_operator => @tag_operator})
       else
-        @contents = Event.main_calendar_list({:calendar_date => Time.now.to_date, :limit => @quantity})
+        @contents = Page.main_recent_event_list({:calendar_date => Time.now.to_date, :limit => @quantity})
       end
     # if the type is articles and faqs or if it's anything else, default to articles and faqs
     else
       @type = 'Articles and FAQs'
       if content_tags
         faqs = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
-        articles = Article.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
+        articles = Page.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
       else
         faqs = Faq.main_recent_list(:limit => @quantity)
-        articles = Article.main_recent_list(:limit => @quantity)
+        articles = Page.main_recent_list(:limit => @quantity)
       end
       @contents = content_date_sort(articles, faqs, @quantity)
     end

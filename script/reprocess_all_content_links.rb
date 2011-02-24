@@ -21,7 +21,7 @@ Linking.connection.execute('truncate table linkings;')
 # primary content links - these are the links for each articles
 processed_count = 1
 puts "Creating content links for each article"
-Article.all.each do |article|
+Page.all.each do |article|
   puts "Processing Article: #{article.id} ##{processed_count}"
   article.create_primary_content_link
   processed_count += 1
@@ -29,7 +29,7 @@ end
 
 processed_count = 1
 puts "Processing in-article links"
-Article.all.each do |article|
+Page.all.each do |article|
   puts "Processing Article: #{article.id} ##{processed_count}"
   links = article.convert_links
   article.save

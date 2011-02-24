@@ -29,7 +29,7 @@ class FeedsController < ApplicationController
   end
   
   def sitemap_pages
-    @article_links = Article.find(:all).collect{ |article| article.id_and_link }
+    @article_links = Page.find(:all).collect{ |article| article.id_and_link }
     headers["Content-Type"] = "application/xml"    
     render :layout => false
   end
@@ -135,17 +135,17 @@ class FeedsController < ApplicationController
           end
        when 'articles'
           if(alltags)
-             items += Article.main_recent_list(:limit => limit)
+             items += Page.main_recent_list(:limit => limit)
           else
-             items += Article.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
+             items += Page.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
           end
        when 'events'
           # AppConfig.configtable['events_within_days'] should probably be a parameter
           # but we'll save that for another day
           if(alltags)
-             items += Event.main_calendar_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit})
+             items += Page.main_recent_event_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit})
           else
-             items += Event.main_calendar_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit, :content_tags => content_tags, :tag_operator => tag_operator})
+             items += Page.main_recent_event_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit, :content_tags => content_tags, :tag_operator => tag_operator})
           end 
        end
     end

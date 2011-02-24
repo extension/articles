@@ -12,16 +12,16 @@ class ArticlesController < ApplicationController
   
   def index
     # validate order
-    return do_404 unless Article.orderings.has_value?(params[:order])
+    return do_404 unless Page.orderings.has_value?(params[:order])
     
     set_title('Articles', "Don't just read. Learn.")
     if(!@content_tag.nil?)
       set_title("All articles tagged with \"#{@content_tag.name}\"", "Don't just read. Learn.")
       set_titletag("Articles - #{@content_tag.name} - eXtension")
-      articles = Article.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      articles = Page.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
     else
       set_titletag("Articles - all - eXtension")
-      articles = Article.ordered(params[:order]).paginate(:page => params[:page])
+      articles = Page.ordered(params[:order]).paginate(:page => params[:page])
     end
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true
@@ -68,10 +68,10 @@ class ArticlesController < ApplicationController
         title_to_lookup = title_to_lookup.gsub(/\/print(\/)?$/, '')
       end
 
-      @article = Article.find_by_title_url(title_to_lookup)
+      @article = Page.find_by_title_url(title_to_lookup)
     else
       # using find_by to avoid exception
-      @article = Article.find_by_id(params[:id])      
+      @article = Page.find_by_id(params[:id])      
     end
     
     if @article
@@ -114,7 +114,7 @@ class ArticlesController < ApplicationController
         end
       
         @community = use_content_tag.content_community
-        @in_this_section = Article.contents_for_content_tag({:content_tag => use_content_tag})  if @community
+        @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag})  if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
       end
     end
@@ -138,14 +138,14 @@ class ArticlesController < ApplicationController
   
   def news
     # validate order
-    return do_404 unless Article.orderings.has_value?(params[:order])
+    return do_404 unless Page.orderings.has_value?(params[:order])
     set_title('News', "Check out the news from the land grant university in your area.")
     if(!@content_tag.nil?)
       set_titletag("News - #{@content_tag.name} - eXtension")
-      articles = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      articles = Page.bucketed_as('news').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
     else
       set_titletag("News - all - eXtension")
-      articles = Article.bucketed_as('news').ordered(params[:order]).paginate(:page => params[:page])
+      articles = Page.bucketed_as('news').ordered(params[:order]).paginate(:page => params[:page])
     end    
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true
@@ -153,15 +153,15 @@ class ArticlesController < ApplicationController
  
   def learning_lessons
     # validate order
-    return do_404 unless Article.orderings.has_value?(params[:order])
+    return do_404 unless Page.orderings.has_value?(params[:order])
     set_title('Learning Lessons', "Don't just read. Learn.")
     set_titletag('Learning Lessons - eXtension')
     if(!@content_tag.nil?)
       set_titletag("Learning Lessons - #{@content_tag.name} - eXtension")
-      articles = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      articles = Page.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
     else
       set_titletag("Learning Lessons - all - eXtension")
-      articles = Article.bucketed_as('learning lessons').ordered(params[:order]).paginate(:page => params[:page])
+      articles = Page.bucketed_as('learning lessons').ordered(params[:order]).paginate(:page => params[:page])
     end    
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => articles, :klass => Article }, :layout => true

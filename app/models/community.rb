@@ -83,7 +83,7 @@ class Community < ActiveRecord::Base
   belongs_to :topic, :foreign_key => 'public_topic_id'
   belongs_to :location
   belongs_to :logo
-  belongs_to :homage, :class_name => "Page", :foreign_key => "homage_id"
+  belongs_to :homage, :class_name => "Article", :foreign_key => "homage_id"
   
   
   has_many :cached_tags, :as => :tagcacheable
@@ -632,8 +632,8 @@ class Community < ActiveRecord::Base
     
     case datatype
     when 'published articles'
-      total = Article.bucketed_as('notnews').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Article.bucketed_as('notnews').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
+      total = Page.bucketed_as('notnews').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('notnews').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
     when 'published faqs'
       total = Faq.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(faqs.heureka_published_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Faq.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(faqs.heureka_published_at) = '#{datadate.to_s(:db)}'").count      
@@ -641,14 +641,14 @@ class Community < ActiveRecord::Base
       total = Event.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(events.xcal_updated_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Event.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(events.xcal_updated_at) = '#{datadate.to_s(:db)}'").count      
     when 'published news'
-      total = Article.bucketed_as('news').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Article.bucketed_as('news').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      total = Page.bucketed_as('news').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('news').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
     when 'published features'
-      total = Article.bucketed_as('feature').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Article.bucketed_as('feature').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      total = Page.bucketed_as('feature').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('feature').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
     when 'published learning lessons'
-      total = Article.bucketed_as('learning lessons').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Article.bucketed_as('learning lessons').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      total = Page.bucketed_as('learning lessons').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('learning lessons').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
     else
       return nil
     end

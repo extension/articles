@@ -290,21 +290,31 @@ class Page < ActiveRecord::Base
     end
    end
   end
-  
+    
+  # helper method for main page items
   def self.main_recent_event_list(options = {},forcecacheupdate=false)
-   # OPTIMIZE: keep an eye on this caching
-   cache_key = self.get_cache_key(this_method,options)
-   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-    if(options[:content_tags].nil? or options[:content_tags].empty?)
-      self.events.ordered.limit(options[:limit]).all 
-    else
-      if options[:tag_operator] and options[:tag_operator] == 'and'
-        self.events.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
+    cache_key = self.get_cache_key(this_method,options)
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+      if(!options[:within_days].nil?)
+        findoptions = {:conditions => ['start >= ? AND start < ?', options[:calendar_date], options[:calendar_date] + options[:within_days]]}
       else
-        self.events.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
+        findoptions = {:conditions => ['start >= ?', options[:calendar_date]]}
+      end
+      
+      if(!options[:limit].nil?)
+        findoptions.merge!({:limit => options[:limit]})
+      end
+      
+      if(options[:content_tags].nil? or options[:content_tags].empty?)
+        self.events.ordered.all(findoptions)
+      else
+        if options[:tag_operator] and options[:tag_operator] == 'and'
+          self.events.tagged_with_all(options[:content_tags]).ordered.all(findoptions)
+        else
+          self.events.tagged_with_any_content_tags(options[:content_tags]).ordered.all(findoptions)
+        end
       end
     end
-   end
   end
   
   def self.main_lessons_list(options = {},forcecacheupdate=false)
@@ -326,13 +336,47 @@ class Page < ActiveRecord::Base
     self.articles.bucketed_as('contents').tagged_with_content_tag(options[:content_tag].name).ordered.first
    end
   end
-   
-  def self.create_or_update_from_atom_entry(entry,datatype = 'WikiArticle')
-    if(datatype == 'WikiArticle')
-      article = find_by_title(entry.title) || self.new
+  
+  # the current FAQ feed uses an URL for the id at some point, it probably should move to something like:
+  # http://diveintomark.org/archives/2004/05/28/howto-atom-id  
+  def self.parse_id_from_atom_link(idurl)
+    parsedurl = URI.parse(idurl)
+    if(idlist = parsedurl.path.scan(/\d+/))
+      id = idlist[0]
+      return id
     else
-      article = find_by_source_url(entry.links[0].href) || self.new
+      return nil
     end
+  end
+  
+   
+  def self.create_or_update_from_atom_entry(entry,source)
+    # parse entry.id 
+    # case source
+    # when 'copwiki'
+    # 
+    # if(source == 'cop')
+    # 
+    # 
+    # 
+    # if(datatype == 'WikiArticle')
+    #   article = find_by_title(entry.title) || self.new
+    # else
+    #   article = find_by_source_url(entry.links[0].href) || self.new
+    # end
+    # 
+    # if(!(faqid = self.parse_id_from_atom_link(entry.id)))
+    #   returndata = [Time.now.etc, 'error', nil]
+    #   return returndata
+    # end
+    # 
+    # faq = self.find_by_id(faqid) || self.new
+    # if(faq.new_record?)
+    #   # force id
+    #   faq.id = faqid
+    # end
+
+
 
     self.datatype = datatype
 

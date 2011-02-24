@@ -38,17 +38,17 @@ class PreviewController < ApplicationController
     
     @events_count = Event.tagged_with_content_tag(@content_tag.name).count
     @faqs_count = Faq.tagged_with_content_tag(@content_tag.name).count
-    @articles_count =  Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).count
-    @features_count = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).count
-    @news_count = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).count
-    @learning_lessons_count = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).count
-    @contents_count = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).count
-    @homage_count = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).count
+    @articles_count =  Page.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).count
+    @features_count = Page.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).count
+    @news_count = Page.bucketed_as('news').tagged_with_content_tag(@content_tag.name).count
+    @learning_lessons_count = Page.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).count
+    @contents_count = Page.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).count
+    @homage_count = Page.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).count
     @homage = @community.homage
 
-    @articles_broken_count =  Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).broken_links.count
+    @articles_broken_count =  Page.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).broken_links.count
 
-    @contents_page = Article.contents_for_content_tag({:content_tag => @content_tag})
+    @contents_page = Page.contents_for_content_tag({:content_tag => @content_tag})
       
     @expertise_category = Category.find_by_name(@content_tag.name)
     if(@expertise_category)
@@ -116,7 +116,7 @@ class PreviewController < ApplicationController
   
   def articlelinks
     @right_column = false
-    @article = Article.find_by_id(params[:id])
+    @article = Page.find_by_id(params[:id])
     if(@article)
       @external_links = @article.content_links.external
       @local_links = @article.content_links.local
@@ -179,7 +179,7 @@ class PreviewController < ApplicationController
     end
 
     begin 
-      @article =  PreviewArticle.new_from_extensionwiki_page(title_to_lookup)
+      @article =  PreviewPage.new_from_extensionwiki_page(title_to_lookup)
     rescue ContentRetrievalError => exception
       @missing = title_to_lookup
       @missing_message = "Preview Page Retrieval failed, reason:<br/> #{exception.message}"
@@ -228,7 +228,7 @@ class PreviewController < ApplicationController
         end
 
         @community = use_content_tag.content_community
-        @in_this_section = Article.contents_for_content_tag({:content_tag => use_content_tag})  if @community
+        @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag})  if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
       end
     end
@@ -302,7 +302,7 @@ class PreviewController < ApplicationController
      end # articlefilter.nil?
      
      # build the scope
-     articles_list_scope = Article.scoped({})
+     articles_list_scope = Page.scoped({})
      if(bucket)
        articles_list_scope = articles_list_scope.bucketed_as(bucket)
      end

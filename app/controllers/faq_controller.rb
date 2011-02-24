@@ -62,7 +62,7 @@ class FaqController < ApplicationController
         end
       
         @community = use_content_tag.content_community
-        @in_this_section = Article.contents_for_content_tag({:content_tag => use_content_tag}) if @community
+        @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag}) if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
       end
     end    

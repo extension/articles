@@ -76,7 +76,7 @@ end
 
 def update_article_broken_flags
   # mass update
-  Article.update_broken_flags
+  Page.update_broken_flags
 end
 
 begin
