@@ -807,6 +807,7 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
     t.datetime "source_updated_at"
     t.string   "source"
     t.string   "source_id"
+    t.string   "source_revision"
     t.text     "source_url"
     t.string   "source_url_fingerprint"
     t.boolean  "is_dpl",                                       :default => false
@@ -815,10 +816,8 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
     t.boolean  "has_broken_links"
     t.text     "coverage"
     t.text     "state_abbreviations"
-    t.date     "event_date"
-    t.time     "event_time"
     t.datetime "event_start"
-    t.string   "event_time_zone"
+    t.string   "time_zone"
     t.text     "event_location"
     t.integer  "event_duration"
     t.datetime "created_at"
@@ -826,7 +825,7 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
-  add_index "pages", ["event_date"], :name => "index_pages_on_event_date"
+  add_index "pages", ["event_start"], :name => "index_pages_on_event_start"
   add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
   add_index "pages", ["source_created_at", "source_updated_at"], :name => "index_pages_on_source_created_at_and_source_updated_at"
   add_index "pages", ["source_url_fingerprint"], :name => "index_pages_on_source_url_fingerprint", :unique => true

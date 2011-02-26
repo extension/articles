@@ -20,7 +20,7 @@ class MergeContent < ActiveRecord::Migration
       t.text     "coverage"
       t.text     "state_abbreviations"
       t.datetime "event_start"
-      t.string   "event_time_zone"
+      t.string   "time_zone"
       t.text     "event_location"
       t.integer  "event_duration"
       t.datetime "created_at"
@@ -31,7 +31,7 @@ class MergeContent < ActiveRecord::Migration
     add_index "pages", ["migrated_id"]
     add_index "pages", ["title"], :length => {"title"=>"255"}
     add_index "pages", ["source_created_at", "source_updated_at"]
-    add_index "pages", ["event_date"]
+    add_index "pages", ["event_start"]
     add_index "pages", ["source_url_fingerprint"], :unique => true
     
     
@@ -59,7 +59,7 @@ class MergeContent < ActiveRecord::Migration
     execute faq_query
 
     # events
-    event_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,source_id,created_at,updated_at,coverage,state_abbreviations,event_start,event_time_zone,event_location,event_duration)"
+    event_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,source_id,created_at,updated_at,coverage,state_abbreviations,event_start,time_zone,event_location,event_duration)"
     event_query += " SELECT 'events','Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,id,created_at,updated_at,coverage,state_abbreviations,start,time_zone,location,duration FROM events"
     execute event_query
     
