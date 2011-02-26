@@ -157,9 +157,9 @@ ActionController::Routing::Routes.draw do |map|
   
   ### pubsite redirect routes
   map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
-  map.redirect 'news', :controller => 'articles', :action => 'news', :content_tag => 'all', :permanent => true  
-  map.redirect 'faqs', :controller => 'faq', :action => 'index', :content_tag => 'all', :permanent => true
-  map.redirect 'articles', :controller => 'articles', :action => 'index', :content_tag => 'all', :permanent => true
+  map.redirect 'news', :controller => 'pages', :action => 'news', :content_tag => 'all', :permanent => true  
+  map.redirect 'faqs', :controller => 'pages', :action => 'faqs', :content_tag => 'all', :permanent => true
+  map.redirect 'articles', :controller => 'pages', :action => 'articles', :content_tag => 'all', :permanent => true
   map.redirect 'expert/ask_an_expert', :controller => 'ask', :action => 'index', :permanent => true
   
   
@@ -199,12 +199,12 @@ ActionController::Routing::Routes.draw do |map|
   map.preview_home 'preview', :controller => 'preview', :action => 'index'
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
-  map.site_news ':content_tag/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_faqs ':content_tag/faqs/:order/:page', :controller => 'faq', :action => 'index', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_articles ':content_tag/articles/:order/:page', :controller => 'articles', :action => 'index', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_news ':content_tag/news/:order/:page', :controller => 'pages', :action => 'news', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_faqs ':content_tag/faqs/:order/:page', :controller => 'pages', :action => 'faqs', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_articles ':content_tag/articles/:order/:page', :controller => 'pages', :action => 'articles', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
   map.site_events ':content_tag/events/:state', :controller => 'events', :action => 'index', :state => ''
   map.site_events_month ':content_tag/events/:year/:month/:state', :controller => 'events', :action => 'index', :state => ''
-  map.site_learning_lessons ':content_tag/learning_lessons/:order/:page', :controller => 'articles', :action => 'learning_lessons', :page => '1',:order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_learning_lessons ':content_tag/learning_lessons/:order/:page', :controller => 'pages', :action => 'learning_lessons', :page => '1',:order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
   map.site_index ':content_tag', :controller => 'main', :action => 'content_tag'
   
   ### catch?  I'm not sure that these are ever actually touched because of the :content_tag routes above
