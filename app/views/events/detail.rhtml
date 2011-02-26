@@ -43,10 +43,10 @@
     <% if !@event.time_zone.blank? %>
     <p>
     <label for="user_time_zone">Time zone:</label>
-    <%= select_tag('event_time_zone', time_zone_options_for_select(@selected_time_zone, ActiveSupport::TimeZone.us_zones)) %>
+    <%= select_tag('time_zone', time_zone_options_for_select(@selected_time_zone, ActiveSupport::TimeZone.us_zones)) %>
     </p>
     
-    <%= observe_field(:event_time_zone,
+    <%= observe_field(:time_zone,
                       :url       => { :action => :update_time_zone, :id => @event.id },
                       :with      => "'new_time_zone='+escape(value)") %>
     <% end %>
