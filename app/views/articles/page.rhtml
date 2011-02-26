@@ -18,7 +18,7 @@
       
       
       <p class="caption">
-          Last Updated: <%= micro_time_print(@article.wiki_updated_at, 'updated') %>
+          Last Updated: <%= micro_time_print(@article.source_updated_at, 'updated') %>
         <% if false # this attr will not exist til wiki feed updated %>
          Published: <%= micro_time_print(@article.wiki_created_at, 'published') %>
         <% end %>

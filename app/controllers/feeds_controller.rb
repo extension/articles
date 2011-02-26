@@ -129,9 +129,9 @@ class FeedsController < ApplicationController
        case content_type
        when 'faqs'
           if(alltags)
-             items += Faq.main_recent_list(:limit => limit)
+             items += Page.main_recent_faq_list(:limit => limit)
           else
-             items += Faq.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
+             items += Page.main_recent_faq_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
           end
        when 'articles'
           if(alltags)
@@ -158,9 +158,9 @@ class FeedsController < ApplicationController
        items.each do |content|
           case content.class.name 
           when 'Article'
-             merged[content.wiki_updated_at] = content
+             merged[content.source_updated_at] = content
           when 'Faq'
-             merged[content.heureka_published_at] = content
+             merged[content.source_updated_at] = content
           when 'Event'
              merged[content.xcal_updated_at] = content
           end

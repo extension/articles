@@ -28,7 +28,7 @@ class MainController < ApplicationController
      @calendar_events = Page.main_recent_event_list({:within_days => 5, :calendar_date => @calendar_date, :limit => 6})
 
      recent_articles = Page.main_recent_list({:limit => 10})
-     recent_faqs = Faq.main_recent_list({:limit => 10})
+     recent_faqs = Page.main_recent_faq_list({:limit => 10})
      @recent_content = content_date_sort(recent_articles, recent_faqs, 10)
   end
   
@@ -58,13 +58,13 @@ class MainController < ApplicationController
     if(@content_tag.nil?)
       @news = Page.main_news_list({:limit => 3})
       @recent_learning_lessons = Page.main_lessons_list({:limit => 3})
-      @faqs = Faq.main_recent_list({:limit => 3})
+      @faqs = Page.main_recent_faq_list({:limit => 3})
       @calendar_events = Page.main_recent_event_list({:within_days => 3, :calendar_date => @calendar_date})
       @articles = Page.ordered(Page.orderings['Newest to oldest']).limit(3)
     else
       @news = Page.main_news_list({:content_tag => @content_tag, :limit => 3})
       @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
-      @faqs = Faq.main_recent_list({:content_tags => [@content_tag], :limit => 3})
+      @faqs = Page.main_recent_faq_list({:content_tags => [@content_tag], :limit => 3})
       @calendar_events =  Page.main_recent_event_list({:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag]})
       @articles = Page.main_recent_list({:content_tags => [@content_tag], :limit => 8}) unless @community
       @recent_articles = Page.main_recent_list({:content_tags => [@content_tag], :limit => 3}) unless @in_this_section

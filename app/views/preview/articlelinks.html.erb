@@ -17,7 +17,7 @@
       </tr>      
       <tr>
           <td>Updated At</td>
-          <td><%= humane_date(@article.wiki_updated_at) %></td>
+          <td><%= humane_date(@article.source_updated_at) %></td>
       </tr>
       <%- if @article.datatype == 'WikiArticle' -%>
       <tr>
@@ -106,7 +106,7 @@
         <td><%= link_to(link.content.title, link.content.id_and_link) %></td>
         <td><%= link_to(link.content.id,preview_articlelinks_url(:id => link.content.id)) %></td>        
         <td><%= humane_date(link.content.wiki_created_at) %></td>
-        <td><%= humane_date(link.content.wiki_updated_at) %></td>
+        <td><%= humane_date(link.content.source_updated_at) %></td>
       </tr>
     <% end%>
   </table>

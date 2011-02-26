@@ -11,14 +11,14 @@ module Extension
       # either from a given parameter or from its default ordering:
       #
       #   class News < ActiveRecord::Base
-      #     ordered_by :orderings => {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'heureka_published_at DESC'},
-      #                :default => "heureka_published_at DESC"
+      #     ordered_by :orderings => {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'source_updated_at DESC'},
+      #                :default => "source_updated_at DESC"
       #   end
       #
-      #   News.ordered #=> all news items ordered by "heureka_published_at DESC"
+      #   News.ordered #=> all news items ordered by "source_updated_at DESC"
       #   News.ordered('average_ranking ASC') #=> all news items ordered by "average_ranking ASC"
-      #   News.orderings #=> {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'heureka_published_at DESC'}
-      #   News.default_ordering #=> "heureka_published_at DESC"
+      #   News.orderings #=> {'Most Useful' => 'average_ranking DESC','Newest to oldest'=> 'source_updated_at DESC'}
+      #   News.default_ordering #=> "source_updated_at DESC"
       #
       def ordered_by(opts = {})
         

@@ -2,5 +2,5 @@ FAQs for Tag <%= @content_tag.name %>
 
 Title,Link,Source Link,Published
 <%- for faq in @faqs -%>
-"<%= faq.title %>","<%= faq_page_url(faq) %>",<%= "http://cop.extension.org/publish/show/#{faq.id}"%>,<%= faq.heureka_published_at %>
+"<%= faq.title %>","<%= faq_page_url(faq) %>",<%= "http://cop.extension.org/publish/show/#{faq.id}"%>,<%= faq.source_updated_at %>
 <%- end -%>

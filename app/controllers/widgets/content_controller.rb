@@ -99,9 +99,9 @@ class Widgets::ContentController < ApplicationController
     when 'faqs'
       @type = 'FAQs'
       if content_tags
-        @contents = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
+        @contents = Page.main_recent_faq_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
       else
-        @contents = Faq.main_recent_list(:limit => @quantity)
+        @contents = Page.main_recent_faq_list(:limit => @quantity)
       end
     when 'articles'
       @type = 'Articles'
@@ -121,10 +121,10 @@ class Widgets::ContentController < ApplicationController
     else
       @type = 'Articles and FAQs'
       if content_tags
-        faqs = Faq.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
+        faqs = Page.main_recent_faq_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
         articles = Page.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
       else
-        faqs = Faq.main_recent_list(:limit => @quantity)
+        faqs = Page.main_recent_faq_list(:limit => @quantity)
         articles = Page.main_recent_list(:limit => @quantity)
       end
       @contents = content_date_sort(articles, faqs, @quantity)

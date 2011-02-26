@@ -128,10 +128,8 @@ class AppConfig
     @@configtable['cache-expiry']['Institution'] = 1.hour
     @@configtable['cache-expiry']['Community'] = 1.hour
 
-    @@configtable['cache-expiry']['Article'] = 1.hour
-    @@configtable['cache-expiry']['Faq'] = 1.hour
-    @@configtable['cache-expiry']['Event'] = 1.hour    
-    
+    @@configtable['cache-expiry']['Page'] = 1.hour
+
     # defaults for date ranges for reports
     @@configtable['default_datefield'] = 'created_at'
     @@configtable['default_dateinterval'] = 'withinlastmonth'

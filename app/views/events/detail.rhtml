@@ -32,9 +32,9 @@
           <%= event_time.strftime("%Z") %>
           <% end %>
       <%- else -%>
-        <abbr class="dtstart" title="<%= @event.start.utc.to_date.strftime("%Y%m%d") %>"><%= @event.start.utc.to_date.strftime("%B %d, %Y") %></abbr>
+        <abbr class="dtstart" title="<%= @event.event_start.utc.to_date.strftime("%Y%m%d") %>"><%= @event.event_start.utc.to_date.strftime("%B %d, %Y") %></abbr>
         <%- if @event.duration > 1 %>
-        – <abbr class="dtend" title="<%= (@event.start.utc.to_date + (@event.duration).day).strftime("%Y%m%d") %>"><%= (@event.start.to_date + (@event.duration).day).strftime("%B %d, %Y") %></abbr>
+        – <abbr class="dtend" title="<%= (@event.event_start.utc.to_date + (@event.duration).day).strftime("%Y%m%d") %>"><%= (@event.event_start.to_date + (@event.duration).day).strftime("%B %d, %Y") %></abbr>
         <%- end -%>
       <%- end -%>
       </strong>

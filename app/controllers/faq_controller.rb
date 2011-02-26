@@ -30,8 +30,8 @@ class FaqController < ApplicationController
     @right_sidebar_to_display = 'faq_navigation'
     @faq = Faq.find_by_id(params[:id])
     if @faq
-      set_title("#{@faq.question}", "Frequently asked questions from our resource area experts.")
-      set_titletag("#{@faq.question} - eXtension")
+      set_title("#{@faq.title}", "Frequently asked questions from our resource area experts.")
+      set_titletag("#{@faq.title} - eXtension")
       @published_content = true
     else 
       @missing = "FAQ #{params[:id]}"

@@ -18,7 +18,7 @@
         <h1>In the News...</h1>
         <%for news in @news%>
             <dl>
-                <dt class="dates"><%= expanded_time_print(news.wiki_updated_at)%></dt>
+                <dt class="dates"><%= expanded_time_print(news.source_updated_at)%></dt>
                 <dd><%= link_to news.title, news.id_and_link %></dd>
             </dl>
         <%end%>

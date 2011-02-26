@@ -48,8 +48,8 @@ class DailyNumber < ActiveRecord::Base
       total = Page.bucketed_as('notnews').all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Page.bucketed_as('notnews').all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
     when 'published faqs'
-      total = Faq.all(:conditions => "DATE(faqs.heureka_published_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Faq.all(:conditions => "DATE(faqs.heureka_published_at) = '#{datadate.to_s(:db)}'").count      
+      total = Faq.all(:conditions => "DATE(faqs.source_updated_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Faq.all(:conditions => "DATE(faqs.source_updated_at) = '#{datadate.to_s(:db)}'").count      
     when 'published events'
       total = Event.all(:conditions => "DATE(events.xcal_updated_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Event.all(:conditions => "DATE(events.xcal_updated_at) = '#{datadate.to_s(:db)}'").count      
@@ -89,8 +89,8 @@ class DailyNumber < ActiveRecord::Base
       total = Page.bucketed_as('notnews').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Page.bucketed_as('notnews').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
     when 'published faqs'
-      total = Faq.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(faqs.heureka_published_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Faq.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(faqs.heureka_published_at) = '#{datadate.to_s(:db)}'").count      
+      total = Faq.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(faqs.source_updated_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Faq.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(faqs.source_updated_at) = '#{datadate.to_s(:db)}'").count      
     when 'published events'
       total = Event.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(events.xcal_updated_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Event.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(events.xcal_updated_at) = '#{datadate.to_s(:db)}'").count      

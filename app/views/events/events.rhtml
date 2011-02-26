@@ -32,7 +32,7 @@
     <% event_time = format_event_time(event) %>
     <%= event_time.strftime("%m.%d.%y") %>
     
-    <% if !event.time_zone.blank? %>
+    <% if !event.event_time_zone.blank? %>
       at <%= event_time.strftime('%I:%M %p %Z') %> 
     <% end %>
     </dd>

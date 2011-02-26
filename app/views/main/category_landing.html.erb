@@ -17,7 +17,7 @@
       <%for article in @articles%>
         <dl class="ct_recent">
           <dt><%= link_to article.title, article.id_and_link %></dt>
-          <dd><%= expanded_time_print(article.wiki_updated_at)%></dd>
+          <dd><%= expanded_time_print(article.source_updated_at)%></dd>
         </dl>
       <%end%>
     </div>
@@ -31,8 +31,8 @@
     <div class="whatsnewbox">
       <%for faq in @faqs%>
         <dl class="ct_recent">
-          <dt><%= link_to truncate_at_word(faq.question,100), faq_page_url(:id => faq) %></dt>
-          <dd><%= expanded_time_print(faq.heureka_published_at)%></dd>
+          <dt><%= link_to truncate_at_word(faq.title,100), faq_page_url(:id => faq) %></dt>
+          <dd><%= expanded_time_print(faq.source_updated_at)%></dd>
         </dl>
       <%end%>      
     </div>
@@ -51,7 +51,7 @@
             <%for lesson in @recent_learning_lessons%>
              <dl class="ct_recent">
                <dt><%= link_to lesson.title, lesson.id_and_link %></dt>
-               <dd><%= expanded_time_print(lesson.wiki_updated_at)%></dd>
+               <dd><%= expanded_time_print(lesson.source_updated_at)%></dd>
              </dl>
             <%end%>
         </div>

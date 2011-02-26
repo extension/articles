@@ -31,7 +31,7 @@
            <tr id="article_row_<%= article.id %>">
               <td><%= link_to(article.title, article.id_and_link) %></td>
               <td><%= humane_date(article.wiki_created_at) %></td>
-              <td><%= humane_date(article.wiki_updated_at) %></td>
+              <td><%= humane_date(article.source_updated_at) %></td>
               <%- if article.datatype == 'WikiArticle' -%>
                  <td><%= link_to('Preview Latest Version',preview_page_url(:title => article.title)) %></td>
               <%- else -%>

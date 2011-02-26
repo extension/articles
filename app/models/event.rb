@@ -214,7 +214,7 @@ class Event < ActiveRecord::Base
     start_date.upto(end_date) {|date|
       events_for_day = []
       for event in events
-        events_for_day.push(event) if event.date == date
+        events_for_day.push(event) if event.event_start.to_date == date
       end
       block.call(date,events_for_day)
     }

@@ -60,8 +60,8 @@ class ApplicationController < ActionController::Base
   def content_date_sort(articles, faqs, limit)
 		merged = Hash.new
 		retarray = Array.new
-		articles.each{ |article| merged[article.wiki_updated_at] = article }
-		faqs.each{ |faq| merged[faq.heureka_published_at] = faq }
+		articles.each{ |article| merged[article.source_updated_at] = article }
+		faqs.each{ |faq| merged[faq.source_updated_at] = faq }
 		tstamps = merged.keys.sort.reverse # sort by updated, descending
 		tstamps.each{ |key| retarray << merged[key] }
 		return retarray.slice(0,limit)

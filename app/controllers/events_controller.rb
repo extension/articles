@@ -66,7 +66,7 @@ class EventsController < ApplicationController
   def update_time_zone
     if request.post? and !params[:new_time_zone].blank? and !params[:id].blank? and event = Event.find_by_id(params[:id])
       # we need to do a timezone conversion here, take the time from the event and convert to the desired time zone
-      time_obj = event.start.in_time_zone(params[:new_time_zone])
+      time_obj = event.event_start.in_time_zone(params[:new_time_zone])
       render :update do |page|
         page.replace_html :time_with_tz, :partial => 'event_time', :locals => {:event_time => time_obj}
         page.visual_effect :highlight, :time_with_tz 

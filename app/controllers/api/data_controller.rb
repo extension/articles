@@ -219,9 +219,9 @@ class Api::DataController < ApplicationController
          case content_type
          when 'faqs'
             if(alltags)
-               items += Faq.main_recent_list(:limit => limit)
+               items += Page.main_recent_faq_list(:limit => limit)
             else
-               items += Faq.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
+               items += Page.main_recent_faq_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
             end
          when 'articles'
             if(alltags)
@@ -248,9 +248,9 @@ class Api::DataController < ApplicationController
          items.each do |content|
             case content.class.name 
             when 'Article'
-               merged[content.wiki_updated_at] = content
+               merged[content.source_updated_at] = content
             when 'Faq'
-               merged[content.heureka_published_at] = content
+               merged[content.source_updated_at] = content
             when 'Event'
                merged[content.xcal_updated_at] = content
             end
@@ -268,11 +268,11 @@ class Api::DataController < ApplicationController
          case item.class.name 
          when 'Article'
             entry['published'] = item.wiki_created_at.xmlschema
-            entry['updated'] = item.wiki_updated_at.xmlschema
+            entry['updated'] = item.source_updated_at.xmlschema
             entry['content_type'] = 'article'
          when 'Faq'
-            entry['published'] = item.heureka_published_at.xmlschema
-            entry['updated'] = item.heureka_published_at.xmlschema
+            entry['published'] = item.source_updated_at.xmlschema
+            entry['updated'] = item.source_updated_at.xmlschema
             entry['content_type'] = 'faq'            
          when 'Event'
             entry['published'] = item.xcal_updated_at.xmlschema

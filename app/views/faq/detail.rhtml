@@ -19,8 +19,8 @@
 
 <div>
     <div class = "headline left">
-        <h1 class="title"><%= @faq.question %></h1>
-        <p class="caption">Last Updated: <%= micro_time_print(@faq.heureka_published_at , 'updated') %></p>
+        <h1 class="title"><%= @faq.title %></h1>
+        <p class="caption">Last Updated: <%= micro_time_print(@faq.source_updated_at , 'updated') %></p>
     </div>
     <br class="clearing" />
 </div>

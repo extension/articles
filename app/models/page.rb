@@ -49,7 +49,7 @@ class Page < ActiveRecord::Base
   named_scope :news, :conditions => {:datatype => 'News'}
   named_scope :faqs, :conditions => {:datatype => 'Faq'}
   named_scope :events, :conditions => {:datatype => 'Event'}
-  named_scape :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
+  named_scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
   
   named_scope :by_datatype, lambda{|datatype|
    if(datatype.is_a?(Array))
@@ -214,7 +214,7 @@ class Page < ActiveRecord::Base
     cache_key = self.get_cache_key(this_method,options)
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
       communities_represented = []
-      articles_to_return = []
+      pages_to_return = []
       
       # get a list of launched communities
       launched_communitylist = Community.launched.all(:order => 'name')
@@ -237,7 +237,7 @@ class Page < ActiveRecord::Base
       )
                    
       pagelist.each do |page|
-        community_ids = self.community_ids_string.split(',')
+        community_ids = page.community_ids_string.split(',')
         
         if community_ids.length > 0
           # if we have already processed an article from the tags applied to this article, go to the next one
@@ -296,9 +296,9 @@ class Page < ActiveRecord::Base
     cache_key = self.get_cache_key(this_method,options)
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
       if(!options[:within_days].nil?)
-        findoptions = {:conditions => ['start >= ? AND start < ?', options[:calendar_date], options[:calendar_date] + options[:within_days]]}
+        findoptions = {:conditions => ['event_start >= ? AND event_start < ?', options[:calendar_date], options[:calendar_date] + options[:within_days]]}
       else
-        findoptions = {:conditions => ['start >= ?', options[:calendar_date]]}
+        findoptions = {:conditions => ['event_start >= ?', options[:calendar_date]]}
       end
       
       if(!options[:limit].nil?)
@@ -458,7 +458,7 @@ class Page < ActiveRecord::Base
     else
       updated_time = entry.updated
     end    
-    faq.heureka_published_at = updated_time
+    faq.source_updated_at = updated_time
     
     if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
       returndata = [updated_time, 'deleted', nil]
@@ -466,7 +466,7 @@ class Page < ActiveRecord::Base
       return returndata
     end
     
-    faq.question = entry.title
+    faq.title = entry.title
     faq.answer = entry.content.to_s
     
     question_refs_array = []
@@ -487,9 +487,9 @@ class Page < ActiveRecord::Base
           
   
     if(faq.new_record?)
-      returndata = [faq.heureka_published_at, 'added']
+      returndata = [faq.source_updated_at, 'added']
     else
-      returndata = [faq.heureka_published_at, 'updated']
+      returndata = [faq.source_updated_at, 'updated']
     end  
     faq.save
     if(!entry.categories.blank?)

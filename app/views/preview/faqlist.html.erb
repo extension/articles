@@ -25,7 +25,7 @@
        <% for faq in @faqs %>
            <tr id="faq_row_<%= faq.id %>">
               <td><%= link_to(faq.title, faq_page_url(faq)) %></td>
-              <td><%= humane_date(faq.heureka_published_at) %></td>
+              <td><%= humane_date(faq.source_updated_at) %></td>
            </tr>
        <% end%>
    </table>

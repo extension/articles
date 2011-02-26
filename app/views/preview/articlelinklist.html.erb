@@ -71,7 +71,7 @@
            <tr id="article_row_<%= article.id %>" <%= article.has_broken_links? ? 'class="brokenlinks"' : '' %>>
               <td><%= link_to(article.title,preview_articlelinks_url(:id => article.id)) %></td>
               <td class="td_sm"><%= humane_date(article.wiki_created_at) %></td>
-              <td class="td_sm"><%= humane_date(article.wiki_updated_at) %></td>
+              <td class="td_sm"><%= humane_date(article.source_updated_at) %></td>
               <td class="td_c <%= content_link_counts[:external] > 0 ? '' : 'zero' %>"><%= content_link_counts[:external] %></td>
               <td class="td_c <%= content_link_counts[:internal] > 0 ? '' : 'zero' %>"><%= content_link_counts[:internal] %></td>
               <td class="td_c <%= content_link_counts[:local] > 0 ? '' : 'zero' %>"><%= content_link_counts[:local] %></td>              
