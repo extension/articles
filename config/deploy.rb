@@ -89,7 +89,9 @@ namespace :deploy do
     rm -rf #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki &&   
-    ln -nfs #{shared_path}/data #{release_path}/data
+    ln -nfs #{shared_path}/data #{release_path}/data &&
+    rm -rf #{release_path}/public/sitemaps &&
+    ln -nfs #{shared_path}/sitemaps #{release_path}/public/sitemaps
     CMD
   end
   
