@@ -16,7 +16,7 @@
                 <dl>
                     <dt><%= highlight.title %></dt>
                     <dd class="img"><%=first_image highlight.content%></dd>
-                    <dd><%= truncate_at_word(get_title(highlight.content), 160) %> <span class="read"><span>></span>Read</span></dd>
+                    <dd><%= get_title(highlight.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read</span></dd>                    
                 </dl>
             </div>
             <% end %>

@@ -156,7 +156,6 @@ class Community < ActiveRecord::Base
     self.cached_content_tags(force_cache_update).join(Tag::JOINER)
   end  
   
-  
   # this will silently strip out content tags in use by other communities
   # it's up to the controller level to deal with the warnings on this
   def content_tag_names=(taglist)
@@ -905,6 +904,5 @@ class Community < ActiveRecord::Base
       return nil
     end
   end   
-  
-        
+    
 end

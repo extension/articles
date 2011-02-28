@@ -45,11 +45,13 @@ class Page < ActiveRecord::Base
   
   named_scope :broken_links, :conditions => {:has_broken_links => true}
 
+  named_scope :indexed, :conditions => {:indexed => true}
   named_scope :articles, :conditions => {:datatype => 'Article'}
   named_scope :news, :conditions => {:datatype => 'News'}
   named_scope :faqs, :conditions => {:datatype => 'Faq'}
   named_scope :events, :conditions => {:datatype => 'Event'}
   named_scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
+  
   
   named_scope :by_datatype, lambda{|datatype|
    if(datatype.is_a?(Array))
@@ -544,6 +546,93 @@ class Page < ActiveRecord::Base
     return returndata
   end
   
+  def self.event_or_update_from_atom_entry(entry,datatype = "ignored")
+    vevent = hCalendar.find(:first => {:text => entry.content.to_s})
+    item = self.find_by_id(vevent.uid) || self.new
+    
+    # hcalendar attributes:
+    #   Required:
+    #     * dtstart (ISO date)
+    #     * summary 
+    # 
+    #   Optional:
+    #     * location
+    #     * url
+    #     * dtend (ISO date), duration (ISO date duration)
+    #     * rdate, rrule
+    #     * category, description
+    #     * uid
+    #     * geo (latitude, longitude)
+    #
+    # mofo properties:
+    #   global
+    #     :tags
+    #   vevent
+    #     :class, :description, :dtend, :dtstamp, :dtstart,
+    #     :duration, :status, :summary, :uid, :last_modified, 
+    #     :url => :url, :location => [ HCard, Adr, Geo, String ]
+    
+    
+    item.id = vevent.uid
+    
+    item.title = vevent.summary
+    item.description = CGI.unescapeHTML(vevent.description)
+    
+    if entry.updated.nil?
+      updated = Time.now.utc
+    else
+      updated = entry.updated
+    end
+    item.xcal_updated_at = updated
+  
+    item.start = vevent.dtstart
+    item.date = item.start.strftime('%Y-%m-%d')
+    item.time = item.start.strftime('%H:%M:%S')
+    
+    if vevent.properties.include?("dtend")
+      duration = (vevent.dtend - vevent.dtstart) / (24 * 60 * 60) # result in days
+      item.duration = duration.to_int
+    end
+        
+    loco = vevent.location.split('|')
+    item.location = loco[0]
+    item.coverage = loco[1]
+    item.state_abbreviations = loco[2]
+        
+    if vevent.properties.include?('status')
+      if vevent.status == 'CANCELLED'
+        returndata = [item.xcal_updated_at, 'deleted', nil]
+        item.destroy
+        return returndata
+      end
+    end
+    
+    if(item.new_record?)
+      returndata = [item.xcal_updated_at, 'added']
+    else
+      returndata = [item.xcal_updated_at, 'updated']
+    end
+    
+    # process timezone
+    if (!entry.categories.blank?)
+      if tz_category = entry.categories.detect{|cat| cat.label == "time_zone"}
+        item.time_zone = tz_category.term
+        # remove timezone category so other categories can be parsed out as tags
+        # entry.categories.delete(tz_category) is not working for this, so explicitly find the category
+        entry.categories.delete_if{|cat| cat.label == "time_zone"}
+      end
+    end
+    
+    item.save!
+    
+    if(!entry.categories.blank?)
+      item.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)      
+    end
+    
+    returndata << item
+    return returndata
+  end
+  
   def set_url_title
     my_url_title = make_url_title
     self.update_attribute(:url_title,make_url_title)
@@ -576,13 +665,10 @@ class Page < ActiveRecord::Base
   
   
   def id_and_link(only_path = false)
-    if(self.url_title.blank?)
-      self.set_url_title
-    end
     default_url_options[:host] = AppConfig.get_url_host
     default_url_options[:protocol] = AppConfig.get_url_protocol
     if(default_port = AppConfig.get_url_port)
-    default_url_options[:port] = default_port
+      default_url_options[:port] = default_port
     end
     page_url(:id => self.id, :title => self.url_title, :only_path => only_path)
   end

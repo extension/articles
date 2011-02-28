@@ -170,16 +170,6 @@ module ApplicationHelper
     
     return result
   end
-    
-  def truncate_at_word(text, length = 30, truncate_string = '...' )
-    if text.nil? then return end
-    l = length - truncate_string.length
-    return text if text.length < length
-    removed = text[0,l] 
-    last_index = removed.rindex(' ')
-    return removed unless last_index
-    return removed[0, last_index]+truncate_string
-  end
   
   def get_title(html_content)
     return "" unless html_content
