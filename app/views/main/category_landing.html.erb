@@ -31,7 +31,7 @@
     <div class="whatsnewbox">
       <%for faq in @faqs%>
         <dl class="ct_recent">
-          <dt><%= link_to(faq.title.truncate(100,{:omission => '...', :avoid_orphans => true}), page_url(:id => faq.id, :title => faq.url_title) %></dt>
+          <dt><%= link_to(faq.title.truncate(100,{:omission => '...', :avoid_orphans => true}), page_url(:id => faq.id, :title => faq.url_title)) %></dt>
           <dd><%= expanded_time_print(faq.source_updated_at)%></dd>
         </dl>
       <%end%>      
