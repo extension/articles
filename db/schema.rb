@@ -799,6 +799,7 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
 
   create_table "pages", :force => true do |t|
     t.string   "datatype"
+    t.boolean  "indexed",                                      :default => true
     t.text     "title"
     t.string   "url_title",              :limit => 101
     t.text     "content",                :limit => 2147483647

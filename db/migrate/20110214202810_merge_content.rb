@@ -2,6 +2,7 @@ class MergeContent < ActiveRecord::Migration
   def self.up    
     create_table "pages", :force => true do |t|
       t.string   "datatype"
+      t.boolean  "indexed", :default => true
       t.text     "title"
       t.string   "url_title", :limit => 101
       t.text     "content",          :limit => 16777215
@@ -48,10 +49,14 @@ class MergeContent < ActiveRecord::Migration
     execute "UPDATE pages SET source = 'pbgworks', source_id = REPLACE(source_url,'http://pbgworks.org/menu/','') WHERE source_url LIKE 'http://pbgworks.org/menu/%'"
     
     
-    # turn news into a datatype
+    # turn news into a datatype and set index false
     # get the id for the news bucket
     news_bucket = ContentBucket.find_by_name('news')
-    execute "UPDATE pages,bucketings SET pages.datatype = 'News' WHERE bucketings.bucketable_id = pages.id AND bucketings.bucketable_type = 'Article' AND bucketings.content_bucket_id = #{news_bucket.id}"
+    execute "UPDATE pages,bucketings SET pages.datatype = 'News', pages.indexed = 0 WHERE bucketings.bucketable_id = pages.id AND bucketings.bucketable_type = 'Article' AND bucketings.content_bucket_id = #{news_bucket.id}"
+    # set indexed to true for originalnews
+    originalnews_bucket = ContentBucket.find_by_name('originalnews')
+    execute "UPDATE pages,bucketings SET pages.indexed = 1 WHERE bucketings.bucketable_id = pages.id AND bucketings.bucketable_type = 'Article' AND bucketings.content_bucket_id = #{originalnews_bucket.id}"
+    
     
     # faqs
     faq_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,reference_pages,migrated_id,source_id,created_at,updated_at)"
