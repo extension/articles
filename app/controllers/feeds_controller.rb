@@ -7,7 +7,6 @@
 
 class FeedsController < ApplicationController
   skip_before_filter :personalize_location_and_institution, :except => :index
-  
   layout 'pubsite'
   
   def index
@@ -16,36 +15,7 @@ class FeedsController < ApplicationController
     set_titletag('eXtension - Feeds')
     @communities = Community.launched.all(:order => 'public_name')
   end
-
-  def sitemap_index
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-  
-  def sitemap_communities
-    @communities = Community.launched.all(:order => 'public_name')
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-  
-  def sitemap_pages
-    @article_links = Page.find(:all).collect{ |article| article.id_and_link }
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-
-  def sitemap_faq
-    @faq_ids = Faq.find(:all).collect{ |faq| faq.id }
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-  
-  def sitemap_events
-    @event_ids = Event.find(:all).collect{ |event| event.id }
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-       
+ 
   def community
     return redirect_to(content_feed_url(:tags => params[:tags]), :status => 301)
   end

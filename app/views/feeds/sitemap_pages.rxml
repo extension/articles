@@ -1,9 +1,0 @@
-xml.instruct!
-
-xml.urlset "xmlns" => "http://www.google.com/schemas/sitemap/0.84" do
-
-  @article_links.each do |link|
-    xml.url { xml.loc link }
-  end
-
-end
