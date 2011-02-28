@@ -133,11 +133,6 @@ ActionController::Routing::Routes.draw do |map|
   #################################################################
   ### pubsite routes ###
   map.connect 'main/:action', :controller => 'main'
-  map.connect 'sitemap_index', :controller => 'feeds', :action => 'sitemap_index'
-  map.connect 'sitemap_communities', :controller => 'feeds', :action => 'sitemap_communities'
-  map.connect 'sitemap_pages', :controller => 'feeds', :action => 'sitemap_pages'
-  map.connect 'sitemap_faq', :controller => 'feeds', :action => 'sitemap_faq'
-  map.connect 'sitemap_events', :controller => 'feeds', :action => 'sitemap_events'
   map.connect 'feeds', :controller => 'feeds'
     
   map.redirect 'feeds/articles', :controller => 'feeds', :action => 'content', :content_types => 'articles', :permanent => true  
