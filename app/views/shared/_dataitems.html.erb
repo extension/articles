@@ -22,12 +22,12 @@
 
 <% index_start = (items.current_page - 1) * items.per_page + 1 %>
 <ol class="articlelist" start="<%= index_start %>;">
-<% items.each_with_index do |item, i| %>
+<%- items.each do |item| -%>
     <li>
-        <%= link_to_page item %>
-        <span class="published">Published: <%= expanded_time_print(item.published_at)%></span>
+        <%= link_to(item.title,page_url(:id => item.id, :title => item.url_title)) -%>
+        <span class="published">Updated: <%= expanded_time_print(item.source_updated_at)%></span>
     </li>
-<% end %>
+<%- end -%>
 </ol>
 
 <%if items.length == 0 %>

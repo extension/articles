@@ -50,14 +50,6 @@ module DataHelper
     end
   end
   
-  def link_to_page(result)
-    params[:controller]
-    value = result.send(result.representative_field)
-    page = result.page
-    url = self.send(result.page+'_page_url', {result.representative_field.to_sym => value })
-    
-    link_to result.title, url
-  end
   
   def month_select(date, link_to_current = false, content_tag = nil, state = nil)
     url_params = {}

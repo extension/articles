@@ -60,6 +60,26 @@ class Page < ActiveRecord::Base
    end
   }
   
+  # Get all events in a given month, this month if no month is given
+  named_scope :monthly, lambda { |*date|
+    
+    # Default to this month if not date is given
+    date = date.flatten.first ? date.flatten.first : Date.today    
+    {:conditions => ['datatype = ? AND (event_start >= ? AND event_start <= ?)', 'event',date.to_time.beginning_of_month, date.to_time.end_of_month] }
+  }
+  
+  # Get all events starting after (and including) the given date
+  named_scope :after, lambda { |date| { :conditions => ['datatype = ? AND event_start >= ?', 'event',date] } }
+  
+  # Get all events within x number of days from the given date
+  named_scope :within, lambda { |interval, date| { :conditions => ['datatype = ? AND (event_start >= ? AND event_start < ?)', 'event', date, date + interval] } }
+  
+  named_scope :in_states, lambda { |*states| 
+    states = states.flatten.compact.uniq.reject { |s| s.blank? }
+    return {} if states.empty?
+    conditions = states.collect { |s| sanitize_sql_array(["state_abbreviations like ?", "%#{s.to_s.upcase}%"]) }.join(' AND ')
+    {:conditions => "#{conditions} OR (state_abbreviations = '' and coverage = 'National')"}
+  }
 
   # returns a class::method::options string to use as a memcache key
   #
@@ -70,6 +90,31 @@ class Page < ActiveRecord::Base
    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
    cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
    return cache_key
+  end
+  
+  # syntactic sugar - returns true if the datatype is an article
+  def is_article?
+    (self.datatype == 'Article')
+  end
+  
+  # syntactic sugar - returns true if the datatype is news
+  def is_news?
+    (self.datatype == 'News')
+  end
+  
+  # syntactic sugar - returns true if the datatype is news or an article
+  def is_newsicle?
+    (self.datatype == 'News' or self.datatype == 'Article')
+  end
+  
+  # syntactic sugar - returns true if the datatype is a faq
+  def is_faq?
+    (self.datatype == 'Faq')
+  end
+  
+  # syntactic sugar - returns true if the datatype is an event
+  def is_event?
+    (self.datatype == 'Event')
   end
   
   
@@ -500,14 +545,25 @@ class Page < ActiveRecord::Base
   end
   
   def set_url_title
-    self.update_attribute(:url_title,get_url_title)
+    my_url_title = make_url_title
+    self.update_attribute(:url_title,make_url_title)
+    my_url_title
   end
   
-  def get_url_title
+  # override
+  def url_title
+    if(my_url_title = read_attribute(:url_title))
+      my_url_title
+    else
+      self.set_url_title
+    end
+  end
+  
+  def make_url_title
     # make an initial downcased copy - don't want to modify name as a side effect
     tmp_url_title = self.title.downcase
     # get rid of anything that's not a "word", not whitespace, not : and not - 
-    tmp_url_title.gsub!(/[^\w\s:-]/,'')
+    tmp_url_title.gsub!(/[^\w\s]/,'')
     # reduce whitespace/multiple spaces to a single space
     tmp_url_title.gsub!(/\s+/,' ')
     # convert spaces and underscores to dashes
@@ -926,4 +982,72 @@ class Page < ActiveRecord::Base
     return {:added => added_items, :deleted => deleted_items, :errors => error_items, :updated => updated_items, :notchanged => nochange_items, :last_updated_item_time => last_updated_item_time}
   end
   
+  
+  def has_map?
+    (!event_location.blank?) and !(event_location.downcase.match(/web based|http|www|\.com|online/))
+  end
+  
+  def local_to?(state)
+    (state_abbreviations.include?(state) or (event_location and event_location.include?(state)))
+  end
+    
+  def states
+    clean_abbreviations.collect { | abbrev | Location.find_by_abbreviation(abbrev).name }
+  end
+
+  def state_names
+    states.join(', ')
+  end
+
+  def state_abbreviations=(new_value)
+    self.clean_abbreviations(new_value).join(' ')
+  end
+
+  def validate_state_abbreviations
+    self.clean_abbreviations.each do | abbrev |
+      errors.add(:state_abbreviations, "'#{abbrev}' is not a valid State abbreviation")  unless State[abbrev]
+    end
+  end
+
+  def sort_states
+    self.state_abbreviations = clean_abbreviations.sort.join(' ')
+  end
+  
+  # override timezone writer/reader
+  # use convert=false when you need a timezone string that mysql can handle
+  def time_zone(convert=true)
+    tzinfo_time_zone_string = read_attribute(:time_zone)
+
+    if(convert)
+      reverse_mappings = ActiveSupport::TimeZone::MAPPING.invert
+      if(reverse_mappings[tzinfo_time_zone_string])
+        reverse_mappings[tzinfo_time_zone_string]
+      else
+        nil
+      end
+    else
+      tzinfo_time_zone_string
+    end
+  end
+
+  def time_zone=(time_zone_string)
+    mappings = ActiveSupport::TimeZone::MAPPING
+    reverse_mappings = ActiveSupport::TimeZone::MAPPING.invert
+    if(mappings[time_zone_string])
+      write_attribute(:time_zone, mappings[time_zone_string])
+    elsif(reverse_mappings[time_zone_string])
+      write_attribute(:time_zone, time_zone_string)
+    else
+      write_attribute(:time_zone, nil)
+    end
+  end
+
+  private
+  
+  def clean_abbreviations(abbreviations_string = self.state_abbreviations)
+    return [] unless abbreviations_string
+    abbreviations_string.split(/ |;|,/).compact.delete_if { | each | each.blank? }.collect { | each | each.upcase }.uniq
+  end
+  
+
 end

@@ -35,7 +35,7 @@
                 <ul class="event_listings">
             <%end%>
             <li><% htmlClass = @personal[:state] && ! (event.local_to? @personal[:state]) ? 'gray' : '' %>
-            <%= link_to event.title, events_page_url(:id => event), {:class => htmlClass} %></li>
+            <%= link_to event.title, page_url(:id => event, :title => event.url_title), {:class => htmlClass} %></li>
             <%last_date = event.event_start.to_date %>
         <% end %>
         <%= '</ul>' if last_date%>

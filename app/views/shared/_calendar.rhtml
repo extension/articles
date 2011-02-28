@@ -18,7 +18,7 @@
 	        <ul class="event_listings">
         <% end %>
         <li><% htmlClass = @personal[:state] && ! (event.local_to? @personal[:state]) ? 'gray' : '' %>
-        <%= link_to event.title, events_page_url(:id => event), {:class => htmlClass} %></li>
+        <%= link_to event.title, page_url(:id => event.id, :title => event.url_title), {:class => htmlClass} %></li>
         <% previous_event_date = date_string %>
     <% end %>
     <%= '</ul>' if previous_event_date %>

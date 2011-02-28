@@ -149,11 +149,7 @@ ActionController::Routing::Routes.draw do |map|
   map.content_feed 'feeds/content/:tags', :controller => 'feeds', :action => 'content'
   map.connect 'feeds/:action', :controller => 'feeds'
   
-  ## print routes
-  map.connect 'article/:id/print', :controller => 'articles', :action => 'page', :print => 1, :requirements => { :id => /\d+/ }
-  map.connect 'faq/:id/print', :controller => 'faq', :action => 'detail', :print => 1
-  map.connect 'events/:id/print', :controller => 'events', :action => 'detail', :print => 1
-  
+
   
   ### pubsite redirect routes
   map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
@@ -175,19 +171,28 @@ ActionController::Routing::Routes.draw do |map|
   
   ### connect up "data" to the api/data controller
   map.connect 'data/:action', :controller => 'api/data'
+  
+  ### current routes for specific content
+  map.connect 'pages/update_time_zone/:id', :controller => 'pages', :action => 'update_time_zone', :requirements => { :id => /\d+/ }
+  map.print_pageid 'pages/:id/print', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
+  map.pageid 'pages/:id', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
+  map.print_page 'pages/:id/:title/print', :controller => 'pages', :action => 'show', :print => 1
+  map.page 'pages/:id/:title', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
 
+  ### old routes for specific content
+  map.connect 'article/:id/print', :controller => 'pages', :action => 'redirect_article', :print => 1, :requirements => { :id => /\d+/ }
+  map.connect 'article/:id', :controller => 'articles', :action => 'redirect_article', :requirements => { :id => /\d+/ }
+  map.connect 'events/:id/print', :controller => 'pages', :action => 'redirect_event', :print => 1
+  map.connect 'events/:id', :controller => 'pages', :action => 'redirect_event'
+  map.connect 'faq/:id/print', :controller => 'pages', :action => 'redirect_faq', :print => 1
+  map.connect 'faq/:id', :controller => 'pages', :action => 'redirect_faq'  
+  map.connect 'pages/*title', :controller => 'pages', :action => 'redirect_article'
 
-  ### pubsite named routes  
+  # more named routes
   map.logo  'logo/:file.:format', :controller => 'logo', :action => :display
   map.reports 'reports', :controller => :reports
   map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
-  map.pageid 'pages/:id', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
-  map.page 'pages/:id/:title', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
-  map.article_page 'article/:id', :controller => 'articles', :action => 'page', :requirements => { :id => /\d+/ }
-  map.events_page 'events/:id', :controller => 'events', :action => 'detail'
-  map.faq_page 'faq/:id', :controller => 'faq', :action => 'detail'
-  map.wiki_page 'pages/*title', :controller => 'articles', :action => 'page'
-
+  
   map.preview_page 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
   map.preview_articlelinks 'preview/articlelinks/:id', :controller => 'preview', :action => 'articlelinks'
   map.preview_articlelinklist 'preview/articlelinklist/:content_tag', :controller => 'preview', :action => 'articlelinklist'
@@ -202,8 +207,8 @@ ActionController::Routing::Routes.draw do |map|
   map.site_news ':content_tag/news/:order/:page', :controller => 'pages', :action => 'news', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
   map.site_faqs ':content_tag/faqs/:order/:page', :controller => 'pages', :action => 'faqs', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
   map.site_articles ':content_tag/articles/:order/:page', :controller => 'pages', :action => 'articles', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_events ':content_tag/events/:state', :controller => 'events', :action => 'index', :state => ''
-  map.site_events_month ':content_tag/events/:year/:month/:state', :controller => 'events', :action => 'index', :state => ''
+  map.site_events ':content_tag/events/:state', :controller => 'pages', :action => 'events', :state => ''
+  map.site_events_month ':content_tag/events/:year/:month/:state', :controller => 'pages', :action => 'events', :state => ''
   map.site_learning_lessons ':content_tag/learning_lessons/:order/:page', :controller => 'pages', :action => 'learning_lessons', :page => '1',:order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
   map.site_index ':content_tag', :controller => 'main', :action => 'content_tag'
   

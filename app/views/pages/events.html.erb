@@ -20,13 +20,13 @@
   <p class="months"><span>Month</span>: <%=month_select(get_calendar_month, false, @content_tag, params[:state])%></p>
 </div>
 
-<%if @results.length == 0%>
+<%if @eventslist.length == 0%>
     <h2>There are no events scheduled at this time.</h2>
 <%end%>
 
-<% for event in @results %>
+<% for event in @eventslist %>
 <dl class="events">
-    <dt><%= link_to event.title, events_page_url(:id => event) %></dt>
+    <dt><%= link_to event.title, page_url(:id => event.id, :title => event.url_title) %></dt>
     <dd>
     
     <% event_time = format_event_time(event) %>
@@ -45,8 +45,7 @@
     </dd>
     <dd>
         <span class="location">Location:</span>
-        <%= event.location %>
+        <%= event.event_location %>
     </dd>
 </dl>
 <% end %>
-
