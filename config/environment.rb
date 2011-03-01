@@ -34,6 +34,7 @@ Rails::Initializer.run do |config|
   config.gem 'geoip', :source => 'http://systems.extension.org/rubygems/'
   # required for email parsing
   config.gem 'mail'
+  config.gem 'fake_arel'
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 
