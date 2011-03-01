@@ -215,27 +215,72 @@ class Page < ActiveRecord::Base
    end
   end
   
-
   # return a collection of the most recent news articles for the specified limit/content tag
   # will check memcache first
   # 
   # @return [Array<Page>] array/collection of matching pages
   # @param [Hash] options query options
   # @option options [Integer] :limit query limit
-  # @option opts [ContentTag] :content_tag ContentTag to search for
+  # @option options [String] :content_tags string of content tags to search for (it could also an array or anything Tag.castlist_to_array takes)
+  # @option options [Array] :datatypes array of datatypes to search for ['Article','Event','Faq','News] accepted
+  # @option options [Date] :calendar_date for Events filtering
+  # @option options [Integer] :within_days for Events filtering
+  # @option options [String] :tag_operator 'and' or 'or' matching for content tags
   # @param [Boolean] forcecacheupdate force caching update
-  def self.main_news_list(options = {},forcecacheupdate=false)
-   # OPTIMIZE: keep an eye on this caching
-   cache_key = self.get_cache_key(this_method,options)
-   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-    if(options[:content_tag].nil?)
-      self.news.ordered.limit(options[:limit]).find(:all)
-    else
-      self.news.tagged_with_content_tag(options[:content_tag].name).ordered.limit(options[:limit]).find(:all)
+  def self.recent_content(options = {},forcecacheupdate=false)
+    cache_key = self.get_cache_key(this_method,options)
+    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+      if(options[:datatypes].nil? or options[:datatypes] = 'all')
+      datatypes = ['Article','Faq','News','Event']
+      elsif(options[:datatypes].is_a?(Array))
+      datatypes = options[:datatypes]
+      else
+      datatypes = [options[:datatypes]]
+      end
+      datatype_conditions = []
+      datatypes.each do |dt|
+        case dt
+        when 'Article'
+          datatype_conditions << "(datatype = 'Article')"
+        when 'Faq'
+          datatype_conditions << "(datatype = 'Faq')"
+        when 'News'
+          datatype_conditions << "(datatype = 'News')"
+        when 'Event'
+          calendar_date = options[:calendar_date] || Date.today
+          if(!options[:within_days].nil?)
+            datatype_conditions << "(datatype = 'Event' and (event_start >= '#{calendar_date.to_s(:db)}' and event_start < '#{(calendar_date + options[:within_days]).to_s(:db)}'))"
+          else
+            datatype_conditions << "(datatype = 'Event' and event_start >= '#{calendar_date.to_s(:db)}')"
+          end
+        end
+      end
+      
+      
+      # build the scope
+      recent_content_scope = Page.scoped({})
+      # datatypes
+      if(!datatype_conditions.blank?)
+        recent_content_scope = recent_content_scope.where(datatype_conditions.join(' OR '))
+      end
+      # content tags
+      if(!options[:content_tags].nil?)
+        if(options[:tag_operator] and options[:tag_operator] == 'and')
+          recent_content_scope = recent_content_scope.tagged_with_all_content_tags(options[:content_tags])
+        else
+          recent_content_scope = recent_content_scope.tagged_with_any_content_tags(options[:content_tags])
+        end
+      end
+      # limit?
+      if(options[:limit])
+        recent_content_scope = recent_content_scope.limit(options[:limit])
+      end
+      # ordering
+      recent_content_scope = recent_content_scope.ordered
+      recent_content_scope.all
     end
-   end
   end
-  
+
   def self.main_feature_list(options = {},forcecacheupdate=false)
    # OPTIMIZE: keep an eye on this caching
    cache_key = self.get_cache_key(this_method,options)
@@ -305,64 +350,7 @@ class Page < ActiveRecord::Base
     end
     # end of cache block
   end
-  
-  def self.main_recent_list(options = {},forcecacheupdate=false)
-   # OPTIMIZE: keep an eye on this caching
-   cache_key = self.get_cache_key(this_method,options)
-   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-    if(options[:content_tags].nil? or options[:content_tags].empty?)
-      self.by_datatype(['Article','News']).ordered.limit(options[:limit]).all 
-    else
-      if options[:tag_operator] and options[:tag_operator] == 'and'
-        self.by_datatype(['Article','News']).tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
-      else
-        self.by_datatype(['Article','News']).tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
-      end
-    end
-   end
-  end
-  
-  def self.main_recent_faq_list(options = {},forcecacheupdate=false)
-   # OPTIMIZE: keep an eye on this caching
-   cache_key = self.get_cache_key(this_method,options)
-   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-    if(options[:content_tags].nil? or options[:content_tags].empty?)
-      self.faqs.ordered.limit(options[:limit]).all 
-    else
-      if options[:tag_operator] and options[:tag_operator] == 'and'
-        self.faqs.tagged_with_all(options[:content_tags]).ordered.limit(options[:limit]).all
-      else
-        self.faqs.tagged_with_any_content_tags(options[:content_tags]).ordered.limit(options[:limit]).all
-      end
-    end
-   end
-  end
     
-  # helper method for main page items
-  def self.main_recent_event_list(options = {},forcecacheupdate=false)
-    cache_key = self.get_cache_key(this_method,options)
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-      if(!options[:within_days].nil?)
-        findoptions = {:conditions => ['event_start >= ? AND event_start < ?', options[:calendar_date], options[:calendar_date] + options[:within_days]]}
-      else
-        findoptions = {:conditions => ['event_start >= ?', options[:calendar_date]]}
-      end
-      
-      if(!options[:limit].nil?)
-        findoptions.merge!({:limit => options[:limit]})
-      end
-      
-      if(options[:content_tags].nil? or options[:content_tags].empty?)
-        self.events.ordered.all(findoptions)
-      else
-        if options[:tag_operator] and options[:tag_operator] == 'and'
-          self.events.tagged_with_all(options[:content_tags]).ordered.all(findoptions)
-        else
-          self.events.tagged_with_any_content_tags(options[:content_tags]).ordered.all(findoptions)
-        end
-      end
-    end
-  end
   
   def self.main_lessons_list(options = {},forcecacheupdate=false)
    # OPTIMIZE: keep an eye on this caching
@@ -636,7 +624,6 @@ class Page < ActiveRecord::Base
   def set_url_title
     my_url_title = make_url_title
     self.update_attribute(:url_title,make_url_title)
-    my_url_title
   end
   
   # override
@@ -644,7 +631,7 @@ class Page < ActiveRecord::Base
     if(my_url_title = read_attribute(:url_title))
       my_url_title
     else
-      self.set_url_title
+      make_url_title
     end
   end
   

@@ -214,71 +214,32 @@ class Api::DataController < ApplicationController
          alltags = (content_tags.include?('all'))
       end
       
-      items = []      
+      datatypes = []
       filteredparams.content_types.each do |content_type|
-         case content_type
-         when 'faqs'
-            if(alltags)
-               items += Page.main_recent_faq_list(:limit => limit)
-            else
-               items += Page.main_recent_faq_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
-            end
-         when 'articles'
-            if(alltags)
-               items += Page.main_recent_list(:limit => limit)
-            else
-               items += Page.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
-            end
-         when 'events'
-            # AppConfig.configtable['events_within_days'] should probably be a parameter
-            # but we'll save that for another day
-            if(alltags)
-               items += Page.main_recent_event_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit})
-            else
-               items += Page.main_recent_event_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit, :content_tags => content_tags, :tag_operator => tag_operator})
-            end 
-         end
+        case content_type
+        when 'faqs'
+          datatypes << 'Faq'
+        when 'articles'
+          datatypes << 'Article'
+        when 'events'
+          datatypes << 'Event'
+        when 'news'
+          datatypes << 'News'
+        end
       end
       
-      if(filteredparams.content_types.size > 1)
-         # need to combine items - not using content_date_sort, because I don't want to modify
-         # that at this time
-         merged = {}
-         tmparray = []
-         items.each do |content|
-            case content.class.name 
-            when 'Article'
-               merged[content.source_updated_at] = content
-            when 'Faq'
-               merged[content.source_updated_at] = content
-            when 'Event'
-               merged[content.xcal_updated_at] = content
-            end
-         end
-         tstamps = merged.keys.sort.reverse # sort by updated, descending
-    		tstamps.each{ |key| tmparray << merged[key] }
-    		@returnitems = tmparray.slice(0,limit)
+      if(alltags)
+         @returnitems = Page.recent_content(:datatypes => datatypes, :limit => limit)
       else
-       	@returnitems = items
+         @returnitems = Page.recent_content(:datatypes => datatypes, :content_tags => content_tags, :limit => limit, :tag_operator => tag_operator, :within_days => AppConfig.configtable['events_within_days'])
       end
-            
+                  
       @returnitems.each do |item|
          entry = {}
          entry['id'] = item.id_and_link
-         case item.class.name 
-         when 'Article'
-            entry['published'] = item.wiki_created_at.xmlschema
-            entry['updated'] = item.source_updated_at.xmlschema
-            entry['content_type'] = 'article'
-         when 'Faq'
-            entry['published'] = item.source_updated_at.xmlschema
-            entry['updated'] = item.source_updated_at.xmlschema
-            entry['content_type'] = 'faq'            
-         when 'Event'
-            entry['published'] = item.xcal_updated_at.xmlschema
-            entry['updated'] = item.xcal_updated_at.xmlschema
-            entry['content_type'] = 'event'
-         end
+         entry['published'] = item.source_created_at.xmlschema
+         entry['updated'] = item.source_updated_at.xmlschema
+         entry['content_type'] = item.datatype.downcase         
          # TODO? categories
          entry['title'] = item.title
          entry['href'] = item.id_and_link

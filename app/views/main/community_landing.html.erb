@@ -30,7 +30,7 @@
 
 <%if @news.length > 0 || @faqs.length > 0 || @calendar_events.length > 0 %>
 <div style = "margin-top: 30px; padding-bottom: 20px">
-    <%if (@in_this_section or @recent_articles) %>
+    <%if (@in_this_section or @recent_newsicles) %>
         <%if @faqs.length > 0%>
             <div class="homesection half left">
         <% else %>
@@ -44,7 +44,7 @@
             <% else %>
                <h2>Recent Articles</h2>
                <div class="whatsnewbox">
-                  <%for article in @recent_articles %>
+                  <%for article in @recent_newsicles %>
         		       <dl>
         		         <dt><%= expanded_time_print(article.source_updated_at)%></dt>
                      <dd><%= link_to article.title, article.id_and_link %></dd>
@@ -77,11 +77,11 @@
 </div>
 <%end%>
 
-<%if @articles && @articles.length > 0%>
+<%if @newsicles && @newsicles.length > 0%>
     <div class="homesection">
         <h2>Recent Articles</h2>
         <div class = "whatsnewbox">
-            <%for article in @articles%>
+            <%for article in @newsicles%>
   		       <dl>
   		         <dt><%= expanded_time_print(article.source_updated_at)%></dt>
                <dd><%= link_to article.title, article.id_and_link %></dd>

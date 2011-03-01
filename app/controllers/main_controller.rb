@@ -25,12 +25,9 @@ class MainController < ApplicationController
      @community_highlights = Page.diverse_feature_list({:limit => 6})
 
      @calendar_date = get_calendar_date
-     @calendar_events = Page.main_recent_event_list({:within_days => 5, :calendar_date => @calendar_date, :limit => 6})
-
-     recent_articles = Page.main_recent_list({:limit => 10})
-     recent_faqs = Page.main_recent_faq_list({:limit => 10})
-     @recent_content = content_date_sort(recent_articles, recent_faqs, 10)
-  end
+     @calendar_events = Page.recent_content({:datatypes => ['Event'], :within_days => 5, :calendar_date => @calendar_date, :limit => 6})
+     @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
+   end
   
   def content_tag
     if(!@community.nil?) 
@@ -56,18 +53,18 @@ class MainController < ApplicationController
     @calendar_date = get_calendar_date
     
     if(@content_tag.nil?)
-      @news = Page.main_news_list({:limit => 3})
+      @news = Page.recent_content({:datatypes => ['News'], :limit => 3})
       @recent_learning_lessons = Page.main_lessons_list({:limit => 3})
-      @faqs = Page.main_recent_faq_list({:limit => 3})
-      @calendar_events = Page.main_recent_event_list({:within_days => 3, :calendar_date => @calendar_date})
+      @faqs = Page.recent_content({:datatypes => ['Faq'], :limit => 3})
+      @calendar_events = Page.recent_content({:datatypes => ['Event'],:within_days => 3, :calendar_date => @calendar_date})
       @articles = Page.ordered(Page.orderings['Newest to oldest']).limit(3)
     else
-      @news = Page.main_news_list({:content_tag => @content_tag, :limit => 3})
+      @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
       @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
-      @faqs = Page.main_recent_faq_list({:content_tags => [@content_tag], :limit => 3})
-      @calendar_events =  Page.main_recent_event_list({:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag]})
-      @articles = Page.main_recent_list({:content_tags => [@content_tag], :limit => 8}) unless @community
-      @recent_articles = Page.main_recent_list({:content_tags => [@content_tag], :limit => 3}) unless @in_this_section
+      @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
+      @calendar_events =  Page.recent_content({:datatypes => ['Event'],:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag]})
+      @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
+      @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
     end
   
     if(!@community.nil?)

@@ -10,11 +10,11 @@
   <h2 class="ct_subhead">&#8220;<%=@header_description%>&#8221;</h2>
 <% end %>
 
-<%if @articles && @articles.length > 0%>
+<%if @newsicles && @newsicles.length > 0%>
   <div class="<%= @faqs.length > 0 ? 'homesection half left' : '' %>" >
     <h2>Recent Articles</h2>
     <div class="whatsnewbox">
-      <%for article in @articles%>
+      <%for article in @newsicles%>
         <dl class="ct_recent">
           <dt><%= link_to article.title, article.id_and_link %></dt>
           <dd><%= expanded_time_print(article.source_updated_at)%></dd>

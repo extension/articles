@@ -10,16 +10,7 @@
 <% end %>
 
 <% @contents.each do |content| %>
-<% if content.class.name == "Faq" %>
-<li><a href=<%= url_for :controller => '/faq', :action => :detail, :id => content.id, :only_path => false %>> <%= content.question %>
-<% elsif content.class.name == "Article" %>
-<li><a href=<%= url_for :controller => '/articles', :action => :page, :id => content.id, :only_path => false %>> <%= content.title %>
-<% elsif content.class.name == "Event" %>
-<li><a href=<%= url_for :controller => '/events', :action => :detail, :id => content.id, :only_path => false %>> <%= content.title %>
-<% else %>
-<% next %>
-<% end %>
-</a></li>
+  <li><a href=<%= page_url(:id => content.id, :title => content.url_title) %>> <%= content.title %></a></li>
 <% end %>
 </ul>
 

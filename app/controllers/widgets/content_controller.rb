@@ -7,16 +7,16 @@
 
 class Widgets::ContentController < ApplicationController
   # default amount of data items
-  DEFAULT_QUANTITY = 3
+  DEFAULT_LIMIT = 3
   # default width of the widget
   DEFAULT_WIDTH = 300
   
   # page with content widget builder
   def index
     @launched_categories = Category.root_categories.show_to_public.all(:order => 'name')
-    @default_quantity = DEFAULT_QUANTITY
-    @default_width = DEFAULT_WIDTH
-    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => @default_quantity, :width => @default_width, :type => 'articles_faqs'}\"></script>"  
+    @limit = DEFAULT_LIMIT
+    @width = DEFAULT_WIDTH
+    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :limit => DEFAULT_LIMIT, :width => DEFAULT_WIDTH, :content_types => 'articles,news,faqs'}\"></script>"  
     render :layout => 'widgetshome'
   end
   
@@ -27,7 +27,7 @@ class Widgets::ContentController < ApplicationController
     # handle parameters and querying data for the widget
     setup_contents
     (!@content_tags or @content_tags == 'All') ? tags_to_filter = nil : tags_to_filter = @content_tags 
-    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => tags_to_filter, :quantity => @quantity, :width => @width, :type => @content_type, :tag_operator => @tag_operator}\"></script>"
+    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => @content_tags.join(@taglist_seperator), :quantity => @limit, :width => @width, :content_types => @content_types.join(',')}\"></script>"
     render :layout => false
   end
   
@@ -40,22 +40,12 @@ class Widgets::ContentController < ApplicationController
       page << "document.write('#{escape_javascript(AppConfig.content_widget_styles)}');"
       page << "document.write('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension Latest #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>');"
       page << "document.write('<h3>There are currently no content items at this time.</h3>')" if @contents.length == 0
-        
-      @contents.each do |content| 
-        case content.class.name 
-        when "Faq" 
-          page << "document.write('<li><a href=#{url_for :controller => '/faq', :action => :detail, :id => content.id, :only_path => false}>');"
-          page << "document.write('#{escape_javascript(content.question)}');"  
-        when "Article"
-          page << "document.write('<li><a href=#{url_for :controller => '/articles', :action => :page, :id => content.id, :only_path => false}>');"
-          page << "document.write('#{escape_javascript(content.title)}');"  
-        when "Event"
-          page << "document.write('<li><a href=#{url_for :controller => '/events', :action => :detail, :id => content.id, :only_path => false}>');"
-
-          page << "document.write('#{escape_javascript(content.title)}');" 
-        else
-          next
-        end
+      
+      ActiveRecord::Base.logger.debug(@contents.inspect)
+      
+      @contents.each do |content|
+        page << "document.write('<li><a href=#{page_url(:id => content.id, :title => content.url_title)}>');"
+        page << "document.write('#{escape_javascript(content.title)}');" 
         page << "document.write('</a></li>');"
       end
       page << "document.write('</ul>');" 
@@ -73,61 +63,79 @@ class Widgets::ContentController < ApplicationController
   # setup from parameters, set instance variables and query db for widget data
   # some duplicated code in here, may have to revisit this
   def setup_contents
-    params[:tags].blank? ? (content_tags = nil) : (content_tags = params[:tags])  
+    filteredparams = ParamsFilter.new([:apikey,:content_types,:limit,:quantity,:tags,:width],params)
     
-    # if width is blank or zero or width.to_i is zero (possible non-integer), then default
-    params[:width].blank? ? @width = DEFAULT_WIDTH : @width = params[:width].to_i
-    @width = DEFAULT_WIDTH if @width == 0
-    
-    # if quantity is blank or zero or quantity.to_i is zero (possible non-integer), then default
-    params[:quantity].blank? ? @quantity = DEFAULT_QUANTITY : @quantity = params[:quantity].to_i
-    @quantity = DEFAULT_QUANTITY if @quantity == 0
-    
-    params[:type].blank? ? @content_type = "faqs_articles" : @content_type = params[:type]
-    
-    if content_tags.nil?
-      @content_tags = 'All'
-      @tag_operator = nil
-    else
-      tags_to_query = Tag.castlist_to_array(content_tags,false,false) 
-      @content_tags = tags_to_query.join(', ')
-      # operator to instruct whether to pull content tagged with ALL the tags or ANY of the tags
-      params[:tag_operator].blank? ? @tag_operator = "or" : @tag_operator = params[:tag_operator] 
+    @width = filteredparams.width || DEFAULT_WIDTH
+    @limit = filteredparams.limit || DEFAULT_LIMIT
+    # legacy, check for quantity parameter
+    if(!filteredparams.quantity.blank?)
+      @limit = filteredparams.quantity
     end
     
-    case @content_type
-    when 'faqs'
-      @type = 'FAQs'
-      if content_tags
-        @contents = Page.main_recent_faq_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
+    # legacy type param check
+    if(!params[:type].blank?)
+      case params[:type]
+      when 'faqs'
+        @content_types = ['faqs']
+      when 'articles'
+        @content_types = ['articles']
+      when 'events'
+        @content_types = ['articles']
       else
-        @contents = Page.main_recent_faq_list(:limit => @quantity)
+        @content_types = ['articles','news','faqs']
       end
-    when 'articles'
-      @type = 'Articles'
-      if content_tags
-        @contents = Page.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
-      else
-        @contents = Page.main_recent_list(:limit => @quantity)
-      end
-    when 'events'
-      @type = 'Events'
-      if content_tags
-        @contents = Page.main_recent_event_list({:calendar_date => Time.now.to_date, :limit => @quantity, :content_tags => content_tags, :tag_operator => @tag_operator})
-      else
-        @contents = Page.main_recent_event_list({:calendar_date => Time.now.to_date, :limit => @quantity})
-      end
-    # if the type is articles and faqs or if it's anything else, default to articles and faqs
+    elsif(filteredparams.content_types)
+      @content_types = filteredparams.content_types
     else
-      @type = 'Articles and FAQs'
-      if content_tags
-        faqs = Page.main_recent_faq_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
-        articles = Page.main_recent_list(:content_tags => content_tags, :limit => @quantity, :tag_operator => @tag_operator)
-      else
-        faqs = Page.main_recent_faq_list(:limit => @quantity)
-        articles = Page.main_recent_list(:limit => @quantity)
+      @content_types = ['articles','news','faqs','events']
+    end
+    
+    
+    # empty tags? - presume "all"
+    if(filteredparams.tags.blank? or filteredparams.tags.include?('all'))
+       alltags = true
+       @content_tags = ['all']
+       tag_operator = 'and'
+    else
+       # legacy
+       if(params[:tag_operator])
+         if(params[:tag_operator] == 'or')
+           tag_operator = 'or'
+         else
+           tag_operator = 'and'
+         end
+       else           
+         tag_operator = filteredparams._tags.taglist_operator      
+       end
+       @content_tags = filteredparams.tags
+       alltags = (@content_tags.include?('all'))
+    end
+    
+    if(tag_operator == 'or')
+      @taglist_seperator = '|'
+    else
+      @taglist_seperator = ','
+    end
+      
+    
+    datatypes = []
+    @content_types.each do |content_type|
+      case content_type
+      when 'faqs'
+        datatypes << 'Faq'
+      when 'articles'
+        datatypes << 'Article'
+      when 'events'
+        datatypes << 'Event'
+      when 'news'
+        datatypes << 'News'
       end
-      @contents = content_date_sort(articles, faqs, @quantity)
+    end
+    
+    if(alltags)
+       @contents = Page.recent_content(:datatypes => datatypes, :limit => @limit)
+    else
+       @contents = Page.recent_content(:datatypes => datatypes, :content_tags => @content_tags, :limit => @limit, :tag_operator => tag_operator, :within_days => AppConfig.configtable['events_within_days'])
     end
   end
 
