@@ -647,3 +647,15 @@ ul.simplelist {line-height:2em;}
 
 .mailing_lists li span {width:50%;display:block;float:left; overflow:hidden;white-space: nowrap; position:relative;margin-right:10px;}
 .mailing_lists li span em {background: url(/images/common/transparent-white-fade.png) right 0 no-repeat;position:absolute;right:0;top:0; width:15px;height:3em;}
+
+#awaynotice {background:#e87d1d;
+   z-index:10;
+   position:relative;}
+#awaynotice #container {
+   margin: 0 auto;
+   min-width: 840px;
+   width: 75%;}
+#container p {padding:8px 20px; margin:0; line-height:1em; font-size:1.3em;}
+#container p a {color:#333; padding:5px;}
+#notice {float:left;  color:#333;}
+#actions {float:left; }
