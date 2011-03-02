@@ -62,7 +62,12 @@
   <td>Show location menu?</td>
   <td><%= @widget.show_location? ? 'Yes' : 'No' %></td>
   </tr>
-
+  
+  <tr>
+  <td>Incoming Group Notifications?</td>
+  <td><%= @widget.group_notify? ? 'Yes' : 'No' %></td>
+  </tr>
+  
   <tr>
   <td>Widget Key:</td>
   <td><%= @widget.fingerprint %></td>

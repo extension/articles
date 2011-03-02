@@ -58,6 +58,14 @@
          <em>Note: if enabled, any provided location will override the default location for this widget.</em>
          </label>
       </p>
+      
+      <p>
+         <label>
+         <%= check_box(:widget,:group_notify, {:class => "checkbox"}) %> Enable notifications to all assignees of incoming questions
+         </label>
+      </p>
+      
+      
                 
       <p><%= submit_tag "Update Widget" %> or <%= link_to("cancel",widgets_view_aae_url(:id => @widget.id))%></p>
     </fieldset>

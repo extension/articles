@@ -441,7 +441,36 @@ class NotificationMailer < ActionMailer::Base
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :notification => notification, :resolved_at => submitted_question.resolved_at, :reject_message => reject_message, :submitted_question => submitted_question, :urls => urls }
    end
-
+   
+   def aae_widget_broadcast(notification)
+     submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
+     # make sure this was from a widget
+     if !(submission_widget = submitted_question.widget)
+       return
+     end
+    
+     assignee = submitted_question.assignee
+     widget_assignees = submission_widget.assignees
+    
+     if (widget_assignees.length == 0) or (widget_assignees.length == 1 and widget_assignees[0].login == assignee.login)
+        return
+     end
+    
+     widget_name = submission_widget.name
+     assignee_name = assignee.fullname
+     assigned_at = @sent_on
+     respond_by = assigned_at + (AppConfig.configtable['aae_escalation_delta']).hours
+     
+     self.base_email(notification.notifytype_to_s)
+     @subject = "[eXtension Question:#{submitted_question.id}] Incoming question submitted to the #{submission_widget.name} widget."
+     # get the widget assignees minus the current question assignee for the broadcast email
+     @recipients = (submission_widget.assignees).map(&:email).join(',')
+     urls = Hash.new
+     urls['question'] = aae_question_url(:id => submitted_question.id)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
+     @body = {:isdemo => @isdemo, :submitted_question => submitted_question, :assigned_at => assigned_at, :respond_by => respond_by, :urls => urls, :assignee_name => assignee_name, :widget_name => widget_name}
+   end
+ 
    def aae_public_response(notification)
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      signature = notification.additionaldata[:signature]
