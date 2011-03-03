@@ -442,6 +442,8 @@ class NotificationMailer < ActionMailer::Base
      @body           = {:isdemo => @isdemo, :notification => notification, :resolved_at => submitted_question.resolved_at, :reject_message => reject_message, :submitted_question => submitted_question, :urls => urls }
    end
    
+   # send the email to the widget assignees that a new incoming question has came in and include the assignees name in it.
+   # this is only sent if the widget is configured to send global incoming notifications
    def aae_widget_broadcast(notification)
      submitted_question = SubmittedQuestion.find(notification.additionaldata[:submitted_question_id])
      # make sure this was from a widget
@@ -451,9 +453,18 @@ class NotificationMailer < ActionMailer::Base
     
      assignee = submitted_question.assignee
      widget_assignees = submission_widget.assignees
-    
-     if (widget_assignees.length == 0) or (widget_assignees.length == 1 and widget_assignees[0].login == assignee.login)
-        return
+     
+     # if no assignees exist for the widget, no need to send
+     if widget_assignees.length == 0
+       return
+     end
+     
+     # we don't want to send the assignee another copy of the incoming email (b/c they've already received the incoming assignment email)
+     recipient_list = widget_assignees.delete_if{|each| each.login == assignee.login}
+     
+     # if no recipients are left after the assignee has been filtered out, do not send an email
+     if (recipient_list.length == 0) 
+       return
      end
     
      widget_name = submission_widget.name
@@ -463,8 +474,7 @@ class NotificationMailer < ActionMailer::Base
      
      self.base_email(notification.notifytype_to_s)
      @subject = "[eXtension Question:#{submitted_question.id}] Incoming question submitted to the #{submission_widget.name} widget."
-     # get the widget assignees minus the current question assignee for the broadcast email
-     @recipients = (submission_widget.assignees).map(&:email).join(',')
+     @recipients = recipient_list.map(&:email).join(',')
      urls = Hash.new
      urls['question'] = aae_question_url(:id => submitted_question.id)
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)

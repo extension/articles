@@ -38,7 +38,7 @@ before_create :generate_fingerprint, :clean_question_and_answer, :set_last_opene
 before_update :clean_question_and_answer
 
 after_save :assign_parent_categories
-after_create :auto_assign_by_preference, :notify_submitter, :send_community_notifications
+after_create :auto_assign_by_preference, :notify_submitter, :send_global_widget_notifications
 
 has_rakismet :author => proc { "#{self.submitter_firstname} #{self.submitter_lastname}" },
              :author_email => :submitter_email,
@@ -382,8 +382,13 @@ end
 # creates an incoming question notification for the whole widget community if:
 # the question is from a widget
 # the preference has been turned on to send a copy of incoming emails to the whole community on submit
-def send_community_notifications
-  if self.widget and self.widget.group_notify == true and self.widget.assignees.length > 1
+# the assignee list is greater than one
+def send_global_widget_notifications
+  if !(parent_widget = self.widget)  
+    return
+  end
+  
+  if parent_widget.group_notify == true and parent_widget.assignees.length > 1
     Notification.create(:notifytype => Notification::AAE_WIDGET_BROADCAST, :account => User.systemuser, :created_by => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
   end
 end
