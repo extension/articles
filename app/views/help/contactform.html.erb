@@ -5,52 +5,16 @@
 
 <div id="contact_col_one">
     <h3>Have a question about this application?</h3>
-    
-    <ul>
-        <li>We use a third party support forum called <em>Get Satisfaction</em>.</li>
-        <li>We really like their features... but please make sure you are logged-in on their site before you post a question or comment.</li>
-        <li>You can create a Get Satisfaction account using your eXtension OpenID. (See "Create a Get Satisfaction account" instructions on this page.)</li>
-        <li>Search below (it's really fast!). There are also support forums you can browse for issues related to the <a href="http://getsatisfaction.com/extension/products/extension_faq_system">Ask an Expert and FAQ Apps</a> and the <a href="http://getsatisfaction.com/extension/products/extension_people">People App</a>.</li>
-    </ul>
+    <p>We use an Ask an Expert widget to handle questions.</p>
+
+    <iframe style='border:0' width='100%' src='http://www.extension.org/widget/tracking/7ae729bf767d0b3165ddb2b345491f89533a7b7b' height='400px'></iframe>
   
-  <div id="gsfn_search_widget">
-      <div class="gsfn_content">
-        <form id="gsfn_search_form" action="http://getsatisfaction.com/extension" method="get" accept-charset="utf-8" onsubmit="gsfn_search(this); return false;">
-          <div>
-            <input type="hidden" name="limit" value="10" />
-            <input type="hidden" name="style" value="" />
-            <input type="hidden" name="utm_medium" value="widget_search" />
-            <input type="hidden" name="utm_source" value="widget_extension" />
-            <input type="hidden" name="callback" value="gsfnResultsCallback" />
-            <input type="hidden" name="format" value="widget" />
-            <label for="gsfn_search_query" class="gsfn_label">Ask a question, share an idea, report a problem ...</label>
-            <input type="text" name="query" value="" id="gsfn_search_query" maxlength="120" />
-            <input type="submit" id="continue" value="Continue" />
-          </div>
-        </form>
-        <div id="gsfn_search_results" style="height: auto;"></div>
-      </div>
-      <div class="powered_by"><a href="http://getsatisfaction.com/"><img alt="Favicon" src="http://www.getsatisfaction.com/favicon.gif" style="vertical-align: middle;" /></a> <a href="http://getsatisfaction.com/">Get Satisfaction support network</a></div>
-    </div>
-    <script src="http://getsatisfaction.com/extension/widgets/javascripts/0aa3521/widgets.js" type="text/javascript"></script>
-<br />
-<br />
-<br />
+  
   <h3>Want to know more about eXtension?</h3>
   <p>Visit <a href="http://about.extension.org">About eXtension</a>.  There you'll find links to various eXtension resources where you can learn more about the benefits of eXtension, discover how to get involved with your colleagues already participating,  or get started with the eXtension sites and services.</p>
   <h3>Need a direct contact?</h3>
   <p>See our <a href="http://create.extension.org/node/2124">Contacts for eXtension Services and Support</a></p>
   
 </div>
-<div id="contact_col_two">
-    <h4>Create a Get Satisfaction account</h4>
-    <ul>
-        <% if @currentuser %>
-        <li>Copy your OpenID: <strong><%= @currentuser.openid_url(true) %></strong></li>
-        <% end %>
-        <li>Visit the <a href="http://getsatisfaction.com/session/new">Get Satisfaction login page</a> and paste your OpenID in the OpenID field</li>
-        <li>Confirm your OpenID on the eXtension People site</li>
-        <li>Finish creating your account at Get Satisfaction without having to make up another password to remember.</li>
-    </ul>
-</div>
+
 </div>
