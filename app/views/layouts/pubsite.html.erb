@@ -229,6 +229,7 @@
                 <%= render :partial => 'shared/rightcolumn_sitehome' %>
             </div>
         <% elsif @cat_landing == true %>
+            <!-- content: cat_landing -->
             <div class="grid_16 alpha omega override_960px content_page" >
             <div class="grid_12 alpha omega category_tag" id="content_tag">
                 <div class="content_gutter">
@@ -242,6 +243,7 @@
             </div>
             </div>
         <% elsif @right_column != false %>
+            <!-- content: right column -->
             <div class="grid_16 alpha omega override_960px content_page" >
             <div class="grid_11 alpha omega override_650px" id="content_tag">
                 <div class="content_gutter">
@@ -253,6 +255,7 @@
             <%= render :partial => 'shared/rightcolumn' %>
             </div>
         <% else %>
+            <!-- content: no right column -->
             <div class="grid_16 alpha omega override_960px content_page">
             <div class="grid_16" id="content_tag">
                 <div class="content_gutter">
