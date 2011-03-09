@@ -25,7 +25,7 @@ class MainController < ApplicationController
      @community_highlights = Page.diverse_feature_list({:limit => 6})
 
      @calendar_date = get_calendar_date
-     @calendar_events = Page.recent_content({:datatypes => ['Event'], :within_days => 5, :calendar_date => @calendar_date, :limit => 6})
+     @calendar_events = Page.recent_content({:datatypes => ['Event'], :within_days => 5, :calendar_date => @calendar_date, :limit => 6, :order => 'Newest Events By Date'})
      @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
    end
   
