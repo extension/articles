@@ -452,7 +452,7 @@ class NotificationMailer < ActionMailer::Base
      end
     
      assignee = submitted_question.assignee
-     widget_assignees = submission_widget.assignees
+     widget_assignees = submission_widget.all_assignees
      
      # if no assignees exist for the widget, no need to send
      if widget_assignees.length == 0

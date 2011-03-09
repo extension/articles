@@ -388,7 +388,7 @@ def send_global_widget_notifications
     return
   end
   
-  if parent_widget.group_notify == true and parent_widget.assignees.length > 1
+  if parent_widget.group_notify == true and parent_widget.all_assignees.length > 1
     Notification.create(:notifytype => Notification::AAE_WIDGET_BROADCAST, :account => User.systemuser, :created_by => User.systemuser, :additionaldata => {:submitted_question_id => self.id})
   end
 end
