@@ -121,10 +121,14 @@ class PagesController < ApplicationController
       (@selected_time_zone = (!@currentuser.nil? and @currentuser.has_time_zone?) ? @currentuser.time_zone : @page.time_zone) if @page.time_zone
     end
     
+    # set canonical_link
+    @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
+    
     # redirect check
     if(!params[:title] or params[:title] != @page.url_title)
-      redirect_to(page_url(:id => @page.id, :title => @page.url_title),:status => :moved_permanently)
+      redirect_to(@canonical_link,:status => :moved_permanently)
     end
+    
 
     # get the tags on this article that correspond to community content tags
     @page_content_tags = @page.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact

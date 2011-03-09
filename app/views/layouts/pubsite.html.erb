@@ -10,6 +10,10 @@
 	   <meta name="robots" content="noindex,follow" /> 
 	<% end %>
 	
+	<%- if @canonical_link -%>
+	  <link rel="canonical" href="<%= @canonical_link %>"/>
+	<%- end -%>
+	
 	<title><%= @title_tag %></title>
 	<% if @mobile_device %>
         <meta name = "viewport" content = "width = device-width, user-scalable = yes">
