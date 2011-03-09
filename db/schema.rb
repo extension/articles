@@ -345,8 +345,7 @@ ActiveRecord::Schema.define(:version => 20110223210420) do
 
   create_table "content_links", :force => true do |t|
     t.integer  "linktype"
-    t.integer  "content_id"
-    t.string   "content_type"
+    t.integer  "page_id"
     t.string   "host"
     t.string   "source_host"
     t.string   "path"
@@ -363,8 +362,8 @@ ActiveRecord::Schema.define(:version => 20110223210420) do
     t.text     "last_check_information"
   end
 
-  add_index "content_links", ["content_id", "content_type", "status", "linktype"], :name => "coreindex"
   add_index "content_links", ["original_fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
+  add_index "content_links", ["page_id", "status", "linktype"], :name => "coreindex"
 
   create_table "counties", :force => true do |t|
     t.integer "fipsid",                    :default => 0,  :null => false

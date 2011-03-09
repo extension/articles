@@ -10,7 +10,7 @@ class ContentLink < ActiveRecord::Base
   serialize :last_check_information
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   
-  belongs_to :content, :polymorphic => true # this is for published items to associate links to that published item
+  belongs_to :page
   has_many :linkings
   
   validates_presence_of :original_fingerprint, :linktype

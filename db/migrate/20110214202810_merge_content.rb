@@ -105,6 +105,9 @@ class MergeContent < ActiveRecord::Migration
     # content_link_stat
     rename_column(:content_link_stats, :content_id, :page_id)
     
+    # content_links
+    remove_column(:content_links, :content_type)
+    rename_column(:content_links, :content_id, :page_id)
     
   end
 
