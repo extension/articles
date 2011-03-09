@@ -1112,6 +1112,7 @@ ActiveRecord::Schema.define(:version => 20110214202810) do
     t.boolean  "enable_tags"
     t.integer  "location_id"
     t.integer  "county_id"
+    t.boolean  "group_notify",   :default => false
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true

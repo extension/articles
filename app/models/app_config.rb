@@ -77,7 +77,7 @@ class AppConfig
     @@configtable['learn_site'] = 'http://learn.extension.org/'
     @@configtable['cop_site'] = 'http://cop.extension.org/wiki'
     @@configtable['collaborate_site'] = 'http://collaborate.extension.org/wiki/'
-    @@configtable['about_site'] = 'http://about.extension.org/wiki'
+    @@configtable['create_site'] = 'http://create.extension.org/'
     @@configtable['about_blog'] = 'http://about.extension.org/'
     @@configtable['help_wiki'] = 'http://docs.extension.org/wiki/' 
     @@configtable['public_site'] = 'http://www.extension.org'

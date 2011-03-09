@@ -47,6 +47,11 @@ class Widget < ActiveRecord::Base
   def assignees
     self.community.joined.all(:conditions => 'aae_responder = 1')
   end
+  
+  # include those who opted out of receiving questions
+  def all_assignees
+    self.community.joined.all
+  end
     
   def leaders
     self.community.leaders
