@@ -230,12 +230,12 @@ class Page < ActiveRecord::Base
   def self.recent_content(options = {},forcecacheupdate=false)
     cache_key = self.get_cache_key(this_method,options)
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-      if(options[:datatypes].nil? or options[:datatypes] = 'all')
-      datatypes = ['Article','Faq','News','Event']
+      if(options[:datatypes].nil? or options[:datatypes] == 'all')
+        datatypes = ['Article','Faq','News','Event']
       elsif(options[:datatypes].is_a?(Array))
-      datatypes = options[:datatypes]
+        datatypes = options[:datatypes]
       else
-      datatypes = [options[:datatypes]]
+        datatypes = [options[:datatypes]]
       end
       datatype_conditions = []
       datatypes.each do |dt|
