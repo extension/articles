@@ -17,6 +17,7 @@ class AppConfig
     @@configtable.clear
     @@configtable['app_location'] = "localdev"
     @@configtable['load_query_trace'] = false
+    @@configtable['load_rails_footnotes'] = false
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
     @@configtable['sudoers'] = Hash.new
     
