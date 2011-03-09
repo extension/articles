@@ -1,3 +1,10 @@
+# === COPYRIGHT:
+#  Copyright (c) 2005-2011 North Carolina State University
+#  Developed with funding for the National eXtension Initiative.
+# === LICENSE:
+#  BSD(-compatible)
+#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+
 module Extension
   module Ordered
     
@@ -26,12 +33,15 @@ module Extension
         opts = {:orderings => {}, :default => 'id ASC'}.merge(opts)
         
         # Add named scope
-        named_scope :ordered, lambda { |*ordervals|
-          if(ordervals.length > 0)
-            order = ordervals[0]
-          end
+        named_scope :ordered, lambda { |providedorder|
           # expecting an order param of "column[,columns] direction"
-          if(!order.blank?)
+          if(!providedorder.blank?)
+            if(self.orderings.keys.include?(providedorder))
+              order = self.orderings[providedorder]
+            else
+              order = providedorder
+            end
+              
             (columnstring,sortorder) = order.split(' ')
             # make sure direction is valid
             if(!sortorder.blank? and ['d','descending','desc'].include?(sortorder.downcase))
