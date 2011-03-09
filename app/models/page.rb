@@ -29,7 +29,7 @@ class Page < ActiveRecord::Base
   before_destroy :change_primary_content_link
   
   has_content_tags
-  ordered_by :orderings => {'Newest to oldest'=> "source_updated_at DESC"},
+  ordered_by :orderings => {'Newest Events By Date' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
                             :default => "source_updated_at DESC"
          
   has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
@@ -276,7 +276,11 @@ class Page < ActiveRecord::Base
         recent_content_scope = recent_content_scope.limit(options[:limit])
       end
       # ordering
-      recent_content_scope = recent_content_scope.ordered
+      if(options[:order])
+        recent_content_scope = recent_content_scope.ordered(options[:order])
+      else
+        recent_content_scope = recent_content_scope.ordered
+      end
       recent_content_scope.all
     end
   end
