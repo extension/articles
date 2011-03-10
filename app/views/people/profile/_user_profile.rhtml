@@ -51,7 +51,13 @@
 			<%- if !@currentuser.primary_institution.nil? -%>
 			    <%= link_to('view/edit', people_community_url(@currentuser.primary_institution), :class => 'help') %>
 			<% else %>
-			    Set your primary institution on its community page. <%= link_to "Search for your institution", :controller => '/people/communities' %> and check the "This is my primary institution" box.
+			    <div class="primarydirs"><strong>Set your primary institution on its community page</strong>
+			      <ul><li>1) <%= link_to "Search for your institution", :controller => '/people/communities' %></li>
+			        <li>2) Join </li>
+			        <li>3) Check the "This is my primary institution" box "This is my primary institution" box</li>
+			        </ul>
+			    </div>
+			        
 			<%- end -%>
 			</span>
 		</p>

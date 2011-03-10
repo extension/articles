@@ -647,3 +647,7 @@ ul.simplelist {line-height:2em;}
 
 .mailing_lists li span {width:50%;display:block;float:left; overflow:hidden;white-space: nowrap; position:relative;margin-right:10px;}
 .mailing_lists li span em {background: url(/images/common/transparent-white-fade.png) right 0 no-repeat;position:absolute;right:0;top:0; width:15px;height:3em;}
+
+.primarydirs {display:block; width:75%; background:#d5e7f5; padding:20px; margin:10px 0;}
+.primarydirs ul {padding:0 !important; margin:10px !important;}
+.primarydirs li {font-size:1.1em;}
