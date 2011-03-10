@@ -154,7 +154,7 @@ class Link < ActiveRecord::Base
     return this_link
   end
   
-  # this is meant to be called when parsing a piece of content for items it links to itself.
+  # this is meant to be called when parsing a piece of content for items it links out to from its content.
   def self.find_or_create_by_linked_url(linked_url,source_host,make_wanted_if_source_host_match = true)
     # make sure the URL is valid format
     begin
@@ -187,8 +187,13 @@ class Link < ActiveRecord::Base
 
     if(this_link = self.find_by_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
       return this_link
+    elsif(!original_uri.host.blank? and (original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /www\.extension\.org$/))
+      # this is a www link, see if we can find a page for what it links to
+      if(page = Page.find_by_alt_reference(original_uri.path))
+        return page.primary_link
+      end
     end
-    
+      
     # create it - if host matches source_host and we want to identify this as "wanted" - then make it wanted else - call it external
     # the reason for the make_wanted_if_source_host_match parameter is I imagine we are going to have a situation with 
     # some feed provider where they want to link back to their own content - and we shouldn't necessarily force that link to be relative

@@ -686,6 +686,37 @@ class Page < ActiveRecord::Base
    real_title = url.gsub(/_/, ' ')
    self.find_by_title(real_title)
   end
+  
+  def self.find_by_alt_reference(providedreference)
+    # dup reference
+    reference = providedreference.dup
+    # dump any print param
+    if reference =~ /\/print(\/)?$/
+      reference.gsub!(/\/print(\/)?$/, '')
+    end
+    
+    if(reference =~ %r{/pages/(\d+)})
+      # is this a /pages/id reference?
+      self.find_by_id($1)
+    elsif(reference =~ %r{/faq/(\d+)})
+      # is this a /faq/id reference?
+      self.faqs.find_by_source_id($1)
+    elsif(reference =~ %r{/event/(\d+)})
+      # is this an /event/id reference?
+      self.events.find_by_source_id($1)
+    elsif(reference =~ %r{/article/(\d+)})
+      # is this an /article/id reference?
+      self.articles.find_by_source_id($1)
+    elsif(reference =~ %r{/pages/(.+)})
+      # is this a /pages/Title reference?  
+      self.find_by_title_url($1) 
+    elsif(reference =~ %r{/wiki/(.+)})
+      # is this a /wiki/Title reference? (no idea how, but we get them)
+      self.find_by_title_url($1) 
+    else
+      nil
+    end
+  end
 
   def published_at
    source_updated_at
