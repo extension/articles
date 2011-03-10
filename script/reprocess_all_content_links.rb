@@ -65,11 +65,16 @@ class LinkManager < Thor
 
 
 
-  desc "test", "test things"
+  desc "counts", "show link counts"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
-  def test
+  def counts
     load_rails(options[:environment])
-    puts "Page count #{Page.count}"
+    puts "Total link count #{Link.count}"
+    puts "Link counts by type:"
+    linkcounts = Link.count_by_linktype
+    linkcounts.each do |linktype,count|
+      puts "\t#{linktype} => #{count}"
+    end
   end
   
   desc "links", "Recreate links table (also recreates linkings)"

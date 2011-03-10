@@ -305,6 +305,37 @@ class Link < ActiveRecord::Base
     end
   end
   
+  def self.linktype_to_description(linktype)
+    case linktype
+    when WANTED
+      'wanted'
+    when INTERNAL
+      'internal'
+    when EXTERNAL
+      'external'
+    when MAILTO
+      'mailto'
+    when CATEGORY
+      'category'
+    when DIRECTFILE
+      'directfile'
+    when LOCAL
+      'local'
+    else
+      'unknown'
+    end
+  end
+  
+  def self.count_by_linktype
+    returnhash = {}
+    linkcounts = Link.count(:group => :linktype)
+    linkcounts.each do |linktype,count|
+      returnhash[self.linktype_to_description(linktype)] = count
+    end
+    returnhash
+  end
+
+  
   
 end
   
