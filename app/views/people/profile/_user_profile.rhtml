@@ -50,6 +50,8 @@
 			<span class="organization-name"><%= @currentuser.primary_institution_name('&nbsp;') %>
 			<%- if !@currentuser.primary_institution.nil? -%>
 			    <%= link_to('view/edit', people_community_url(@currentuser.primary_institution), :class => 'help') %>
+			<% else %>
+			    Set your primary institution on its community page. <%= link_to "Search for your institution", :controller => '/people/communities' %> and check the "This is my primary institution" box.
 			<%- end -%>
 			</span>
 		</p>
