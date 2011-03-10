@@ -327,44 +327,6 @@ ActiveRecord::Schema.define(:version => 20110223210420) do
 
   add_index "content_buckets", ["name"], :name => "index_content_buckets_on_name", :unique => true
 
-  create_table "content_link_stats", :force => true do |t|
-    t.integer  "page_id"
-    t.integer  "total"
-    t.integer  "external"
-    t.integer  "internal"
-    t.integer  "wanted"
-    t.integer  "local"
-    t.integer  "broken"
-    t.integer  "warning"
-    t.integer  "redirected"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "content_link_stats", ["page_id"], :name => "index_content_link_stats_on_content_id"
-
-  create_table "content_links", :force => true do |t|
-    t.integer  "linktype"
-    t.integer  "page_id"
-    t.string   "host"
-    t.string   "source_host"
-    t.string   "path"
-    t.string   "original_fingerprint"
-    t.text     "original_url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "status"
-    t.integer  "error_count",            :default => 0
-    t.datetime "last_check_at"
-    t.integer  "last_check_status"
-    t.boolean  "last_check_response"
-    t.string   "last_check_code"
-    t.text     "last_check_information"
-  end
-
-  add_index "content_links", ["original_fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
-  add_index "content_links", ["page_id", "status", "linktype"], :name => "coreindex"
-
   create_table "counties", :force => true do |t|
     t.integer "fipsid",                    :default => 0,  :null => false
     t.integer "location_id",               :default => 0,  :null => false
@@ -645,14 +607,52 @@ ActiveRecord::Schema.define(:version => 20110223210420) do
 
   add_index "learn_sessions", ["session_start", "session_end"], :name => "index_learn_sessions_on_session_start_and_session_end"
 
+  create_table "link_stats", :force => true do |t|
+    t.integer  "page_id"
+    t.integer  "total"
+    t.integer  "external"
+    t.integer  "internal"
+    t.integer  "wanted"
+    t.integer  "local"
+    t.integer  "broken"
+    t.integer  "warning"
+    t.integer  "redirected"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "link_stats", ["page_id"], :name => "index_content_link_stats_on_content_id"
+
   create_table "linkings", :force => true do |t|
-    t.integer  "content_link_id"
+    t.integer  "link_id"
     t.integer  "page_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "linkings", ["content_link_id", "page_id"], :name => "recordsignature", :unique => true
+  add_index "linkings", ["link_id", "page_id"], :name => "recordsignature", :unique => true
+
+  create_table "links", :force => true do |t|
+    t.integer  "linktype"
+    t.integer  "page_id"
+    t.string   "host"
+    t.string   "source_host"
+    t.string   "path"
+    t.string   "fingerprint"
+    t.text     "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "status"
+    t.integer  "error_count",            :default => 0
+    t.datetime "last_check_at"
+    t.integer  "last_check_status"
+    t.boolean  "last_check_response"
+    t.string   "last_check_code"
+    t.text     "last_check_information"
+  end
+
+  add_index "links", ["fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
+  add_index "links", ["page_id", "status", "linktype"], :name => "coreindex"
 
   create_table "list_owners", :force => true do |t|
     t.string   "email",          :limit => 96

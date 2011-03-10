@@ -6,17 +6,17 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'net/https'
 
-class ContentLink < ActiveRecord::Base
+class Link < ActiveRecord::Base
   serialize :last_check_information
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   
   belongs_to :page
   has_many :linkings
   
-  validates_presence_of :original_fingerprint, :linktype
+  validates_presence_of :fingerprint, :linktype
   
   # this is the association for items that link to this item
-  has_many :pages, :through => :linkings
+  has_many :linkedpages, :through => :linkings, :source => :page
     
   # link types
   WANTED = 1
@@ -90,13 +90,13 @@ class ContentLink < ActiveRecord::Base
     when WANTED
       return ''
     when INTERNAL
-      self.content.href_url
+      self.page.href_url
     when EXTERNAL
-      self.original_url
+      self.url
     when LOCAL
-      self.original_url
+      self.url
     when MAILTO
-      self.original_url
+      self.url
     when CATEGORY
       if(self.path =~ /^\/wiki\/Category\:(.+)/)
         content_tag = $1.gsub(/_/, ' ')
@@ -112,46 +112,46 @@ class ContentLink < ActiveRecord::Base
   def change_to_wanted  
     if(self.linktype == INTERNAL)
       self.update_attribute(:linktype,WANTED)
-      self.pages.each do |linked_page|
+      self.linkedpages.each do |linked_page|
         linked_page.store_content # parses links and images again and saves it.
       end
     end
   end
   
-  def self.create_from_content(content)
-    if(content.original_url.blank?)
+  def self.create_from_page(page)
+    if(page.source_url.blank?)
       return nil
     end
 
     # make sure the URL is valid format
     begin
-      original_uri = URI.parse(content.original_url)
+      original_uri = URI.parse(page.source_url)
     rescue
       return nil
     end
     
-    if(content_link = self.find_by_original_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
+    if(this_link = self.find_by_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
       # this was a wanted link - we need to update the link now - and kick off the process of updating everything
-      # that links to this piece of content.
-      content_link.update_attributes(:content => content, :linktype => INTERNAL)
-      content_link.pages.each do |linked_page|
+      # that links to this page
+      this_link.update_attributes(:page => page, :linktype => INTERNAL)
+      this_link.linkedpages.each do |linked_page|
         linked_page.store_content # parses links and images again and saves it.
       end
     else    
-      content_link = self.new(:content => content, :original_url => original_uri.to_s, :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))
-      content_link.source_host = original_uri.host
-      content_link.linktype = INTERNAL
+      this_link = self.new(:page => page, :url => original_uri.to_s, :fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))
+      this_link.source_host = original_uri.host
+      this_link.linktype = INTERNAL
     
       # set host and path - mainly just for aggregation purposes
       if(!original_uri.host.blank?)
-        content_link.host = original_uri.host
+        this_link.host = original_uri.host
       end
       if(!original_uri.path.blank?)
-        content_link.path = CGI.unescape(original_uri.path)
+        this_link.path = CGI.unescape(original_uri.path)
       end
-      content_link.save
+      this_link.save
     end
-    return content_link
+    return this_link
   end
   
   # this is meant to be called when parsing a piece of content for items it links to itself.
@@ -185,52 +185,52 @@ class ContentLink < ActiveRecord::Base
     
     # we'll keep the path around - but we might should drop them for CoP wiki sourced articles
 
-    if(content_link = self.find_by_original_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
-      return content_link
+    if(this_link = self.find_by_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
+      return this_link
     end
     
     # create it - if host matches source_host and we want to identify this as "wanted" - then make it wanted else - call it external
     # the reason for the make_wanted_if_source_host_match parameter is I imagine we are going to have a situation with 
     # some feed provider where they want to link back to their own content - and we shouldn't necessarily force that link to be relative
-    content_link = self.new(:original_url => original_uri.to_s, 
-                            :original_fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)), 
+    this_link = self.new(:url => original_uri.to_s, 
+                            :fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)), 
                             :source_host => source_host)
     if(original_uri.is_a?(URI::MailTo))
-      content_link.linktype = MAILTO
+      this_link.linktype = MAILTO
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
       if(original_uri.path =~ /^\/wiki\/Category:.*/)
-        content_link.linktype = CATEGORY
+        this_link.linktype = CATEGORY
       elsif(original_uri.path =~ /^\/mediawiki\/.*/)
-        content_link.linktype = DIRECTFILE
+        this_link.linktype = DIRECTFILE
       elsif(original_uri.path =~ /^\/learninglessons\/.*/)
-        content_link.linktype = DIRECTFILE
+        this_link.linktype = DIRECTFILE
       else
-        content_link.linktype = WANTED
+        this_link.linktype = WANTED
       end
     elsif(original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /\.extension\.org$/)
       # host is extension
-      content_link.linktype = LOCAL
+      this_link.linktype = LOCAL
     else
-      content_link.linktype = EXTERNAL      
+      this_link.linktype = EXTERNAL      
     end
     
     # set host and path - mainly just for aggregation purposes
     if(!original_uri.host.blank?)
-      content_link.host = original_uri.host.downcase
+      this_link.host = original_uri.host.downcase
     end
     if(!original_uri.path.blank?)
-      content_link.path = CGI.unescape(original_uri.path)
+      this_link.path = CGI.unescape(original_uri.path)
     end
-    content_link.save
-    return content_link        
+    this_link.save
+    return this_link        
   end
   
   
-  def check_original_url(save = true,force_error_check=false)
+  def check_url(save = true,force_error_check=false)
     return if(!force_error_check and self.error_count >= MAX_ERROR_COUNT)
     
     self.last_check_at = Time.zone.now
-    result = self.class.check_url(self.original_url)
+    result = self.class.check_url(self.url)
     if(result[:responded])
       self.last_check_response = true
       self.last_check_information = {:response_headers => result[:response].to_hash}

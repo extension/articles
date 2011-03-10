@@ -24,20 +24,20 @@ class Page < ActiveRecord::Base
    
   before_create :store_source_url
   after_create :store_content
-  after_create :set_url_title, :create_primary_content_link
+  after_create :set_url_title, :create_primary_link
   before_update :check_content
-  before_destroy :change_primary_content_link
+  before_destroy :change_primary_link
   
   has_content_tags
   ordered_by :orderings => {'Newest Events By Date' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
                             :default => "source_updated_at DESC"
          
-  has_one :primary_content_link, :class_name => "ContentLink", :as => :content  # this is the link for this article
+  has_one :primary_link, :class_name => "Link"
   has_many :linkings
-  has_many :content_links, :through => :linkings
+  has_many :links, :through => :linkings
   has_many :bucketings
   has_many :content_buckets, :through => :bucketings
-  has_one :content_link_stat
+  has_one :link_stat
 
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
@@ -120,43 +120,43 @@ class Page < ActiveRecord::Base
   end
   
   
-  # returns the number of links associated with this page, if updated_at > the content_link_stat for this page
-  # it counts and updates the content_link_stat
+  # returns the number of links associated with this page, if updated_at > the link_stat for this page
+  # it counts and updates the link_stat
   #
   # @return [Hash] keyed hash of the link counts for this page
-  def content_link_counts
+  def link_counts
     linkcounts = {:total => 0, :external => 0,:local => 0, :wanted => 0, :internal => 0, :broken => 0, :redirected => 0, :warning => 0}
-    if(self.content_link_stat.nil? or self.updated_at > self.content_link_stat.updated_at)      
-      self.content_links.each do |cl|
+    if(self.link_stat.nil? or self.updated_at > self.link_stat.updated_at)      
+      self.links.each do |cl|
         linkcounts[:total] += 1
         case cl.linktype
-        when ContentLink::EXTERNAL
+        when Link::EXTERNAL
           linkcounts[:external] += 1
-        when ContentLink::INTERNAL
+        when Link::INTERNAL
           linkcounts[:internal] += 1
-        when ContentLink::LOCAL
+        when Link::LOCAL
           linkcounts[:local] += 1
-        when ContentLink::WANTED
+        when Link::WANTED
           linkcounts[:wanted] += 1
         end
       
         case cl.status
-        when ContentLink::BROKEN
+        when Link::BROKEN
           linkcounts[:broken] += 1
-        when ContentLink::OK_REDIRECT
+        when Link::OK_REDIRECT
           linkcounts[:redirected] += 1
-        when ContentLink::WARNING
+        when Link::WARNING
           linkcounts[:warning] += 1
         end
       end
-      if(self.content_link_stat.nil?)
-        self.create_content_link_stat(linkcounts)
+      if(self.link_stat.nil?)
+        self.create_link_stat(linkcounts)
       else
-        self.content_link_stat.update_attributes(linkcounts)
+        self.link_stat.update_attributes(linkcounts)
       end
     else
       linkcounts.keys.each do |key|
-        linkcounts[key] = self.content_link_stat.send(key)
+        linkcounts[key] = self.link_stat.send(key)
       end
     end
     return linkcounts
@@ -168,14 +168,14 @@ class Page < ActiveRecord::Base
     update_all("has_broken_links = 0")
     
     # get a list that have more than one broken link
-    broken_list = count('content_links.id',:joins => :content_links,:conditions => "content_links.status IN (#{ContentLink::WARNING},#{ContentLink::BROKEN}) ",:group => "#{self.table_name}.id")
+    broken_list = count('links.id',:joins => :links,:conditions => "links.status IN (#{Link::WARNING},#{Link::BROKEN}) ",:group => "#{self.table_name}.id")
     broken_ids = broken_list.keys
     update_all("has_broken_links = 1", "id IN (#{broken_ids.join(',')})")    
   end
 
   # update broken flag for this page 
   def update_broken_flag
-    broken_count = self.content_links.count(:conditions => "content_links.status IN (#{ContentLink::WARNING},#{ContentLink::BROKEN}) ")
+    broken_count = self.links.count(:conditions => "links.status IN (#{Link::WARNING},#{Link::BROKEN}) ")
     self.update_attribute(:has_broken_links,(broken_count > 0))
   end
   
@@ -664,7 +664,7 @@ class Page < ActiveRecord::Base
     page_url(:id => self.id, :title => self.url_title, :only_path => only_path)
   end
   
-  # called by ContentLink#href_url to return an href to this article
+  # called by Link#href_url to return an href to this article
   def href_url
     self.id_and_link(true)
   end
@@ -735,8 +735,8 @@ class Page < ActiveRecord::Base
           next
         end
         
-        # find/create a ContentLink for this link
-        link = ContentLink.find_or_create_by_linked_url(original_uri.to_s,self.source_host)
+        # find/create a Link for this link
+        link = Link.find_or_create_by_linked_url(original_uri.to_s,self.source_host)
         if(link.blank?)
           # pull out the children from the anchor and place them
           # up next to the anchor, and then remove the anchor
@@ -750,11 +750,11 @@ class Page < ActiveRecord::Base
             returninfo[:ignored] += 1
           end
         else
-          if(!self.content_links.include?(link))
-            self.content_links << link
+          if(!self.links.include?(link))
+            self.links << link
           end
           case link.linktype
-          when ContentLink::WANTED
+          when Link::WANTED
             # pull out the children from the anchor and place them
             # up next to the anchor, and then remove the anchor
             anchor.children.reverse.each do |child_node|
@@ -762,7 +762,7 @@ class Page < ActiveRecord::Base
             end
             anchor.remove
             returninfo[:wanted] += 1
-          when ContentLink::INTERNAL
+          when Link::INTERNAL
             newhref = link.href_url
             # bring the fragment back if necessary
             if(!original_uri.fragment.blank?)
@@ -771,7 +771,7 @@ class Page < ActiveRecord::Base
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'internal_link')
             returninfo[:internal] += 1
-          when ContentLink::LOCAL
+          when Link::LOCAL
             newhref = link.href_url
             # bring the fragment back if necessary
             if(!original_uri.fragment.blank?)
@@ -780,7 +780,7 @@ class Page < ActiveRecord::Base
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'local_link')
             returninfo[:local] += 1
-          when ContentLink::EXTERNAL
+          when Link::EXTERNAL
             newhref = link.href_url
             # bring the fragment back if necessary
             if(!original_uri.fragment.blank?)
@@ -789,7 +789,7 @@ class Page < ActiveRecord::Base
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'external_link')
             returninfo[:external] += 1
-          when ContentLink::MAILTO
+          when Link::MAILTO
             newhref = link.href_url
             # bring the fragment back if necessary
             if(!original_uri.fragment.blank?)
@@ -798,13 +798,13 @@ class Page < ActiveRecord::Base
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'mailto_link')
             returninfo[:mailto] += 1
-          when ContentLink::CATEGORY
+          when Link::CATEGORY
             newhref = link.href_url
             # ignore the fragment
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'category_link')
             returninfo[:category] += 1
-          when ContentLink::DIRECTFILE
+          when Link::DIRECTFILE
             newhref = link.href_url
             # ignore the fragment
             anchor.set_attribute('href', newhref)
@@ -856,14 +856,14 @@ class Page < ActiveRecord::Base
    end
   end
   
-  def create_primary_content_link
-    ContentLink.create_from_content(self)
+  def create_primary_link
+    Link.create_from_page(self)
   end
   
-  def change_primary_content_link
+  def change_primary_link
     # update items that might link to this article
-    if(!self.primary_content_link.nil?)
-      self.primary_content_link.change_to_wanted
+    if(!self.primary_link.nil?)
+      self.primary_link.change_to_wanted
     end
   end
   

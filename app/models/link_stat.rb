@@ -5,7 +5,7 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class ContentLinkStat < ActiveRecord::Base
+class LinkState < ActiveRecord::Base
   belongs_to :page
   
 end

@@ -8,19 +8,25 @@
 class Api::DataController < ApplicationController
   
   def articlelink
-     filteredparams = ParamsFilter.new([{:original_url => :string},:apikey],params)
+     filteredparams = ParamsFilter.new([{:source_url => :string},{:original_url => :string},:apikey],params)
      apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
      ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
     
-     if(filteredparams.original_url.nil?)
-       returnhash = {:success => false, :errormessage => 'Not a valid original url'}
+     if(filteredparams.original_url.nil? and filteredparams.source_url.nil? )
+       returnhash = {:success => false, :errormessage => 'Not a valid source url'}
        return render :text => returnhash.to_json
      end
      
+     if(filteredparams.original_url)
+       source_url = filteredparams.original_url
+     elsif(filteredparams.source_url)
+       source_url = filteredparams.source_url
+     end
+     
      begin 
-       parsed_uri = URI.parse(URI.unescape(filteredparams.original_url))
+       parsed_uri = URI.parse(URI.unescape(source_url))
      rescue
-       returnhash = {:success => false, :errormessage => 'Not a valid original url'}
+       returnhash = {:success => false, :errormessage => 'Not a valid source url'}
        return render :text => returnhash.to_json
      end
      
@@ -33,7 +39,7 @@ class Api::DataController < ApplicationController
        return render :text => returnhash.to_json
      end
      
-     page = Page.find_by_original_url(find_url)
+     page = Page.find_by_source_url(find_url)
      if(!page)
         returnhash = {:success => false, :errormessage => 'Unable to find an page corresponding to the given URL'}
         return render :text => returnhash.to_json

@@ -38,9 +38,9 @@
                  <td>&nbsp;</td>
               <%- end -%>
               <%- if article.datatype == 'WikiArticle' -%>
-               <td><%= link_to('CoP Wiki Link',article.original_url)%></td>
+               <td><%= link_to('CoP Wiki Link',article.source_url)%></td>
               <%- else -%>
-               <td><%= link_to('Source Link',article.original_url)%></td> <!-- unavailable for now -->
+               <td><%= link_to('Source Link',article.source_url)%></td> <!-- unavailable for now -->
               <%- end -%>
            </tr>
        <% end%>

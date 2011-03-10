@@ -67,18 +67,18 @@
        </tr>
     
        <% for article in @articles %>
-           <% content_link_counts = article.content_link_counts %>
+           <% link_counts = article.link_counts %>
            <tr id="article_row_<%= article.id %>" <%= article.has_broken_links? ? 'class="brokenlinks"' : '' %>>
               <td><%= link_to(article.title,preview_articlelinks_url(:id => article.id)) %></td>
               <td class="td_sm"><%= humane_date(article.wiki_created_at) %></td>
               <td class="td_sm"><%= humane_date(article.source_updated_at) %></td>
-              <td class="td_c <%= content_link_counts[:external] > 0 ? '' : 'zero' %>"><%= content_link_counts[:external] %></td>
-              <td class="td_c <%= content_link_counts[:internal] > 0 ? '' : 'zero' %>"><%= content_link_counts[:internal] %></td>
-              <td class="td_c <%= content_link_counts[:local] > 0 ? '' : 'zero' %>"><%= content_link_counts[:local] %></td>              
-              <td class="td_c <%= content_link_counts[:wanted] > 0 ? 'unpublishedlinks' : 'zero' %>"><%= content_link_counts[:wanted] %></td>
-              <td class="td_c <%= content_link_counts[:warning] > 0 ? 'warningcount' : 'zero' %>"><%= content_link_counts[:warning] %></td>
-              <td class="td_c <%= content_link_counts[:broken] > 0 ? 'brokencount' : 'zero' %>"><%= content_link_counts[:broken] %></td>
-              <td class="td_c <%= content_link_counts[:redirected] > 0 ? '' : 'zero' %>"><%= content_link_counts[:redirected] %></td>
+              <td class="td_c <%= link_counts[:external] > 0 ? '' : 'zero' %>"><%= link_counts[:external] %></td>
+              <td class="td_c <%= link_counts[:internal] > 0 ? '' : 'zero' %>"><%= link_counts[:internal] %></td>
+              <td class="td_c <%= link_counts[:local] > 0 ? '' : 'zero' %>"><%= link_counts[:local] %></td>              
+              <td class="td_c <%= link_counts[:wanted] > 0 ? 'unpublishedlinks' : 'zero' %>"><%= link_counts[:wanted] %></td>
+              <td class="td_c <%= link_counts[:warning] > 0 ? 'warningcount' : 'zero' %>"><%= link_counts[:warning] %></td>
+              <td class="td_c <%= link_counts[:broken] > 0 ? 'brokencount' : 'zero' %>"><%= link_counts[:broken] %></td>
+              <td class="td_c <%= link_counts[:redirected] > 0 ? '' : 'zero' %>"><%= link_counts[:redirected] %></td>
            </tr>
        <% end%>
    </table>

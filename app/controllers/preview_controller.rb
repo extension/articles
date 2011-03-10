@@ -118,10 +118,10 @@ class PreviewController < ApplicationController
     @right_column = false
     @article = Page.find_by_id(params[:id])
     if(@article)
-      @external_links = @article.content_links.external
-      @local_links = @article.content_links.local
-      @internal_links = @article.content_links.internal
-      @wanted_links = @article.content_links.unpublished
+      @external_links = @article.links.external
+      @local_links = @article.links.local
+      @internal_links = @article.links.internal
+      @wanted_links = @article.links.unpublished
     end
   end
   
