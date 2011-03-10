@@ -726,12 +726,12 @@ class Page < ActiveRecord::Base
     elsif(reference =~ %r{/faq/(\d+)})
       # is this a /faq/id reference?
       self.faqs.find_by_source_id($1)
-    elsif(reference =~ %r{/event/(\d+)})
-      # is this an /event/id reference?
+    elsif(reference =~ %r{/events/(\d+)})
+      # is this an /events/id reference?
       self.events.find_by_source_id($1)
     elsif(reference =~ %r{/article/(\d+)})
       # is this an /article/id reference?
-      self.articles.find_by_source_id($1)
+      self.articles.find_by_id($1)
     elsif(reference =~ %r{/pages/(.+)})
       # is this a /pages/Title reference?  
       self.find_by_title_url($1) 
