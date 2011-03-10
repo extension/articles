@@ -45,8 +45,8 @@ class DailyNumber < ActiveRecord::Base
     
     case datatype
     when 'published articles'
-      total = Page.bucketed_as('notnews').all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.bucketed_as('notnews').all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
+      total = Page.bucketed_as('notnews').all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('notnews').all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count
     when 'published faqs'
       total = Faq.all(:conditions => "DATE(faqs.source_updated_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Faq.all(:conditions => "DATE(faqs.source_updated_at) = '#{datadate.to_s(:db)}'").count      
@@ -54,14 +54,14 @@ class DailyNumber < ActiveRecord::Base
       total = Event.all(:conditions => "DATE(events.xcal_updated_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Event.all(:conditions => "DATE(events.xcal_updated_at) = '#{datadate.to_s(:db)}'").count      
     when 'published news'
-      total = Page.bucketed_as('news').all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.bucketed_as('news').all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      total = Page.bucketed_as('news').all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('news').all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
     when 'published features'
-      total = Page.bucketed_as('feature').all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.bucketed_as('feature').all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      total = Page.bucketed_as('feature').all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('feature').all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
     when 'published learning lessons'
-      total = Page.bucketed_as('learning lessons').all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.bucketed_as('learning lessons').all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
+      total = Page.bucketed_as('learning lessons').all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('learning lessons').all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count
     when 'accounts'
       total = User.all(:conditions => "DATE(accounts.created_at) <= '#{datadate.to_s(:db)}'").count
       thatday = User.all(:conditions => "DATE(accounts.created_at) = '#{datadate.to_s(:db)}'").count
@@ -86,8 +86,8 @@ class DailyNumber < ActiveRecord::Base
     
     case datatype
     when 'published articles'
-      total = Page.bucketed_as('notnews').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.bucketed_as('notnews').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count
+      total = Page.bucketed_as('notnews').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('notnews').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count
     when 'published faqs'
       total = Faq.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(faqs.source_updated_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Faq.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(faqs.source_updated_at) = '#{datadate.to_s(:db)}'").count      
@@ -95,14 +95,14 @@ class DailyNumber < ActiveRecord::Base
       total = Event.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(events.xcal_updated_at) <= '#{datadate.to_s(:db)}'").count
       thatday = Event.tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(events.xcal_updated_at) = '#{datadate.to_s(:db)}'").count      
     when 'published news'
-      total = Page.bucketed_as('news').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.bucketed_as('news').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      total = Page.bucketed_as('news').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('news').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
     when 'published features'
-      total = Page.bucketed_as('feature').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.bucketed_as('feature').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      total = Page.bucketed_as('feature').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('feature').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
     when 'published learning lessons'
-      total = Page.bucketed_as('learning lessons').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.bucketed_as('learning lessons').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(articles.wiki_created_at) = '#{datadate.to_s(:db)}'").count      
+      total = Page.bucketed_as('learning lessons').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = Page.bucketed_as('learning lessons').tagged_with_any_content_tags(community.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
     else
       return nil
     end

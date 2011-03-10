@@ -119,7 +119,6 @@ class Page < ActiveRecord::Base
     (self.datatype == 'Event')
   end
   
-  
   # returns the number of links associated with this page, if updated_at > the link_stat for this page
   # it counts and updates the link_stat
   #
@@ -236,32 +235,14 @@ class Page < ActiveRecord::Base
         datatypes = options[:datatypes]
       else
         datatypes = [options[:datatypes]]
-      end
-      datatype_conditions = []
-      datatypes.each do |dt|
-        case dt
-        when 'Article'
-          datatype_conditions << "(datatype = 'Article')"
-        when 'Faq'
-          datatype_conditions << "(datatype = 'Faq')"
-        when 'News'
-          datatype_conditions << "(datatype = 'News')"
-        when 'Event'
-          calendar_date = options[:calendar_date] || Date.today
-          if(!options[:within_days].nil?)
-            datatype_conditions << "(datatype = 'Event' and (event_start >= '#{calendar_date.to_s(:db)}' and event_start < '#{(calendar_date + options[:within_days]).to_s(:db)}'))"
-          else
-            datatype_conditions << "(datatype = 'Event' and event_start >= '#{calendar_date.to_s(:db)}')"
-          end
-        end
-      end
-      
+      end    
       
       # build the scope
       recent_content_scope = Page.scoped({})
       # datatypes
+      datatype_conditions = self.class.datatype_conditions(datatypes)
       if(!datatype_conditions.blank?)
-        recent_content_scope = recent_content_scope.where(datatype_conditions.join(' OR '))
+        recent_content_scope = recent_content_scope.where(datatype_conditions)
       end
       # content tags
       if(!options[:content_tags].nil?)
@@ -284,6 +265,50 @@ class Page < ActiveRecord::Base
       recent_content_scope.all
     end
   end
+
+  def self.datatype_conditions(datatypes,options = {})
+    datatype_conditions = []
+    datatypes.each do |dt|
+      case dt
+      when 'Article'
+        datatype_conditions << "(datatype = 'Article')"
+      when 'Faq'
+        datatype_conditions << "(datatype = 'Faq')"
+      when 'News'
+        datatype_conditions << "(datatype = 'News')"
+      when 'Event'
+        calendar_date = options[:calendar_date] || Date.today
+        if(options[:allevents])
+          datatype_conditions << "(datatype = 'Event')"
+        elsif(!options[:within_days].nil?)
+          datatype_conditions << "(datatype = 'Event' and (event_start >= '#{calendar_date.to_s(:db)}' and event_start < '#{(calendar_date + options[:within_days]).to_s(:db)}'))"
+        else
+          datatype_conditions << "(datatype = 'Event' and event_start >= '#{calendar_date.to_s(:db)}')"
+        end
+      end
+    end
+    
+    datatype_conditions.join(' OR ')
+  end
+  
+  def self.content_type_conditions(content_types,options = {})
+    datatypes = []
+    content_types.each do |content_type|
+      case content_type
+      when 'faqs'
+        datatypes << 'Faq'
+      when 'articles'
+        datatypes << 'Article'
+      when 'events'
+        datatypes << 'Event'
+      when 'news'
+        datatypes << 'News'
+      end
+    end
+    self.datatype_conditions(datatypes)
+  end
+  
+  
 
   def self.main_feature_list(options = {},forcecacheupdate=false)
    # OPTIMIZE: keep an eye on this caching
@@ -431,7 +456,7 @@ class Page < ActiveRecord::Base
     else
       pubdate = entry.published
     end
-    self.wiki_created_at = pubdate
+    self.source_created_at = pubdate
 
     if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
       returndata = [self.source_updated_at, 'deleted', nil]

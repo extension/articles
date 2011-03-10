@@ -189,11 +189,9 @@ ActionController::Routing::Routes.draw do |map|
   map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
   
   map.preview_page 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
-  map.preview_articlelinks 'preview/articlelinks/:id', :controller => 'preview', :action => 'articlelinks'
-  map.preview_articlelinklist 'preview/articlelinklist/:content_tag', :controller => 'preview', :action => 'articlelinklist'
-  map.preview_articlelist 'preview/articlelist/:content_tag', :controller => 'preview', :action => 'articlelist'
-  map.preview_faqlist 'preview/faqlist/:content_tag', :controller => 'preview', :action => 'faqlist'
-  map.preview_eventlist 'preview/eventlist/:content_tag', :controller => 'preview', :action => 'eventlist'
+  map.preview_pagelinks 'preview/pagelinks/:id', :controller => 'preview', :action => 'pagelinks'
+  map.preview_pagelinklist 'preview/pagelinklist/:content_tag', :controller => 'preview', :action => 'pagelinklist'
+  map.preview_pagelist 'preview/pagelist/:content_tag', :controller => 'preview', :action => 'pagelist'
   map.preview_tag 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
   map.preview_category 'preview/showcategory/:categorystring', :controller => 'preview', :action => 'showcategory'
   map.preview_home 'preview', :controller => 'preview', :action => 'index'

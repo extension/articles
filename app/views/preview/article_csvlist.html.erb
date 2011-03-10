@@ -1,6 +1,0 @@
-Articles for Tag <%= @content_tag.name %>
-
-Title,Link,Source Link,Created,Updated
-<%- for article in @articles -%>
-"<%= article.title %>","<%= article.id_and_link %>","<%= article.source_url %>",<%= article.wiki_created_at %>,<%= article.source_updated_at %>
-<%- end -%>

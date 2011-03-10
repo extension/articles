@@ -8,13 +8,13 @@
    <%- end -%>
 
    <div id="paginator_wrapper"> 
-   <% if @articles.length > 0 %>
-       <p class="display_results">Displaying <strong><%= @articles.offset + 1 %>-<%= @articles.offset + @articles.length %></strong> of <strong><%= @articles.total_entries %></strong></p>
+   <% if @pages.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @pages.offset + 1 %>-<%= @pages.offset + @pages.length %></strong> of <strong><%= @pages.total_entries %></strong></p>
    <% else %>
        <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
    <% end %>
 
-   <%= will_paginate @articles, :params => {:articlefilter => params[:articlefilter]} %>
+   <%= will_paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
    </div>
 
 <table cellspacing="0" id="linkchecker">
@@ -66,12 +66,12 @@
            <th>Redirect</th>
        </tr>
     
-       <% for article in @articles %>
-           <% link_counts = article.link_counts %>
-           <tr id="article_row_<%= article.id %>" <%= article.has_broken_links? ? 'class="brokenlinks"' : '' %>>
-              <td><%= link_to(article.title,preview_articlelinks_url(:id => article.id)) %></td>
-              <td class="td_sm"><%= humane_date(article.wiki_created_at) %></td>
-              <td class="td_sm"><%= humane_date(article.source_updated_at) %></td>
+       <% for page in @pages %>
+           <% link_counts = page.link_counts %>
+           <tr id="article_row_<%= page.id %>" <%= page.has_broken_links? ? 'class="brokenlinks"' : '' %>>
+              <td><%= link_to(page.title,preview_pagelinks_url(:id => page.id)) %></td>
+              <td class="td_sm"><%= humane_date(page.source_created_at) %></td>
+              <td class="td_sm"><%= humane_date(page.source_updated_at) %></td>
               <td class="td_c <%= link_counts[:external] > 0 ? '' : 'zero' %>"><%= link_counts[:external] %></td>
               <td class="td_c <%= link_counts[:internal] > 0 ? '' : 'zero' %>"><%= link_counts[:internal] %></td>
               <td class="td_c <%= link_counts[:local] > 0 ? '' : 'zero' %>"><%= link_counts[:local] %></td>              
@@ -85,12 +85,12 @@
 
 
    <div id="paginator_wrapper"> 
-   <% if @articles.length > 0 %>
-       <p class="display_results">Displaying <strong><%= @articles.offset + 1 %>-<%= @articles.offset + @articles.length %></strong> of <strong><%= @articles.total_entries %></strong></p>
+   <% if @pages.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @pages.offset + 1 %>-<%= @pages.offset + @pages.length %></strong> of <strong><%= @pages.total_entries %></strong></p>
    <% else %>
        <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
    <% end %>
 
-   <%= will_paginate @articles, :params => {:articlefilter => params[:articlefilter]} %>
+   <%= will_paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
    </div>
 <%- end -%>
