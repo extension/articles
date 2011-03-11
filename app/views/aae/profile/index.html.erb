@@ -124,10 +124,21 @@
        <% if @user.is_question_wrangler? %>
          <li class="qw">Belongs to the <strong>Question Wrangler Community</strong></li>
        <% end %>
-       <% @user.user_roles.each do |ur| %>
+       <% @user_roles.each do |ur| %>
          <li><%= ur %></li>
        <% end %>
     </ul>
+    
+    <h2>AaE Widget Memberships</h2>
+    <% if @widget_memberships.length == 0 %>
+      <p>There are no AaE widget memberships at this time.</p>
+    <% else %>
+      <ul id="profile_roles">
+        <% @widget_memberships.each do |widget_membership| %>
+          <li><%= link_to widget_membership.name, :controller => 'widgets/aae', :action => :view, :id => widget_membership.widget_id %></li>
+        <% end %>
+      </ul>
+    <% end %>
     
     <% if @myid == @user.id %>
       <p class="cog"><%= link_to "Update your widget preferences", :controller => 'aae/prefs', :action => 'widget_preferences'  %></p>
