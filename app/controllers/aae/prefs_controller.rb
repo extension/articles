@@ -260,7 +260,7 @@ class Aae::PrefsController < ApplicationController
   
   # when the 'do not assign me anything' box is checked, not only is the flag set to 
   # disable any assignment to this person, but also their auto-route preference is removed
-  def toggle_no_assign
+  def toggle_vacation
     if request.post?
       # if they checked the box
       if params[:check_box_value] == "1"
@@ -298,6 +298,17 @@ class Aae::PrefsController < ApplicationController
     else
       do_404
       return
+    end
+  end
+  
+  def turn_off_vacation
+    if request.post?
+      if !@currentuser.aae_responder
+        @currentuser.update_attributes(:aae_responder => true, :vacated_aae_at => nil)
+        render :update do |page|
+          page.reload
+        end
+      end
     end
   end
   

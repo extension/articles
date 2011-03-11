@@ -1,0 +1,18 @@
+<% if(!@currentuser.nil?) %>  
+  <% if @currentuser.aae_responder == false %>
+  <div id="awaynotice">
+    <div id="container">
+      <p id="notice"><strong>Your eXtension AaE status is set to "Vacation Status"</strong> </p>
+      <p id="actions">
+        <%= link_to_remote("Turn off your AaE vacation status", 
+                           :url => {:controller => 'aae/prefs', :action => :turn_off_vacation}, 
+                           :loading => "Element.show('loading_vacation_off')") %> 
+        <%= link_to "View settings", :controller => '/aae/prefs' %> 
+        <span id="loading_vacation_off" class="float-spinner" style="display:none">Saving...</span>
+      </p>
+      <br class="clearing"/>
+    </div>	
+  </div>
+  <% end %>
+<% end %>
+

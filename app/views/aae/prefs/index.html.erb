@@ -24,7 +24,7 @@
             </label>
         </p>
         
-        <%= observe_field :no_assign, :url => { :action => :toggle_no_assign },
+        <%= observe_field :no_assign, :url => { :action => :toggle_vacation },
               :with => 'check_box_value',
               :loading => "Element.show('loading_no_assign')",
               :complete => "Element.hide('loading_no_assign')"
