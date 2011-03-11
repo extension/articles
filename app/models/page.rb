@@ -94,11 +94,15 @@ class Page < ActiveRecord::Base
    return cache_key
   end
   
+  def is_copwiki_article?
+    (self.datatype == 'Article' and self.source = 'copwiki')
+  end
+  
   # syntactic sugar - returns true if the datatype is an article
   def is_article?
     (self.datatype == 'Article')
   end
-  
+    
   # syntactic sugar - returns true if the datatype is news
   def is_news?
     (self.datatype == 'News')
@@ -240,7 +244,7 @@ class Page < ActiveRecord::Base
       # build the scope
       recent_content_scope = Page.scoped({})
       # datatypes
-      datatype_conditions = self.class.datatype_conditions(datatypes)
+      datatype_conditions = self.datatype_conditions(datatypes)
       if(!datatype_conditions.blank?)
         recent_content_scope = recent_content_scope.where(datatype_conditions)
       end
@@ -871,7 +875,7 @@ class Page < ActiveRecord::Base
       end
     end
     
-    if(self.datatype == 'WikiArticle')    
+    if(self.is_copwiki_article?)    
       wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wikiarticles'])
       host_to_make_relative = wikisource_uri.host
       convert_image_count = 0
@@ -904,12 +908,8 @@ class Page < ActiveRecord::Base
   end
     
   def store_new_url
-   if(!self.datatype.nil? and (self.datatype == 'ExternalArticle' or self.datatype == 'WikiArticle'))
     self.url = id_and_link
     self.save
-   else
-    return true
-   end
   end
   
   def create_primary_link

@@ -19,7 +19,7 @@
           <td>Updated At</td>
           <td><%= humane_date(@page.source_updated_at) %></td>
       </tr>
-      <%- if @page.datatype == 'WikiArticle' -%>
+      <%- if false -%>
       <tr>
          <td>Preview Link</td>
          <td><%= link_to('Preview Latest Version',preview_page_url(:title => @page.title)) %></td>
@@ -27,11 +27,7 @@
       <%- end -%>
       <tr>
           <td>Source</td>
-          <%- if @page.datatype == 'WikiArticle' -%>
-           <td><%= link_to('CoP Wiki Link',@page.source_url)%></td>
-          <%- else -%>
-           <td><%= link_to('Source Link',@page.source_url)%></td> <!-- unavailable for now -->
-          <%- end -%> 
+          <td><%= link_to('Source Link',@page.source_url)%></td>
       </tr>
   </table>
 
