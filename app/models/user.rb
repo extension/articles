@@ -64,8 +64,6 @@ class User < Account
   has_many :communityconnections, :dependent => :destroy
   has_many :communities, :through => :communityconnections, :select => "communityconnections.connectiontype as connectiontype, communityconnections.sendnotifications as sendnotifications, communities.*", :order => "communities.name"
   
-  has_many :widget_communities, :through => :communityconnections, :source => :community, :conditions => "communities.widget_id IS NOT NULL", :order => "communities.name"
-  
   has_many :list_subscriptions, :dependent => :destroy
   has_many :lists, :through => :list_subscriptions
   has_many :subscribedlists, :through => :list_subscriptions, :source => :list, :conditions => "list_subscriptions.optout = 0"
