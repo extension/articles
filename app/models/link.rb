@@ -231,7 +231,10 @@ class Link < ActiveRecord::Base
   end
   
   
-  def check_url(save = true,force_error_check=false)
+  def check_url(options = {})
+    save = (!options[:save].nil? ? options[:save] : true)
+    force_error_check = (!options[:force_error_check].nil? ? options[:force_error_check] : false)
+    make_head_request = (!options[:make_head_request].nil? ? options[:make_head_request] : true)
     return if(!force_error_check and self.error_count >= MAX_ERROR_COUNT)
     
     self.last_check_at = Time.zone.now
@@ -276,7 +279,7 @@ class Link < ActiveRecord::Base
   end
       
   
-  def self.check_url(url)
+  def self.check_url(url,make_head_request=true)
     headers = {'User-Agent' => 'extension.org link verification'}
     # the URL should have likely already be validated, but let's do it again for good measure
     begin
@@ -298,7 +301,16 @@ class Link < ActiveRecord::Base
         http_connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
         http_connection.use_ssl = true 
       end
-      response = http_connection.head(check_uri.path.size > 0 ? check_uri.path : "/",headers)   
+      request_path = !check_uri.path.blank? ? check_uri.path : "/"
+      if(!check_uri.query.blank?)
+        request_path += "?" + check_uri.query
+      end
+        
+      if(make_head_request)
+        response = http_connection.head(request_path,headers)   
+      else
+        response = http_connection.get(request_path,headers)   
+      end
       {:responded => true, :code => response.code, :response => response}
     rescue Exception => exception
       return {:responded => false, :error => exception.message}
@@ -338,5 +350,7 @@ class Link < ActiveRecord::Base
   
   
 end
+  
+
   
   
