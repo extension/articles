@@ -20,8 +20,6 @@ class UserRole < ActiveRecord::Base
     case role.name
     when Role::AUTO_ROUTE
       return 'Receive Auto-Routed Questions'
-    when Role::WIDGET_AUTO_ROUTE    
-      return role.name + " (<a href='/widgets/aae/view/#{self.widget.id}'>#{self.widget.name} widget</a>)"
     else
       return role.name
     end  
