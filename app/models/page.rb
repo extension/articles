@@ -94,8 +94,8 @@ class Page < ActiveRecord::Base
    return cache_key
   end
   
-  def is_copwiki_article?
-    (self.datatype == 'Article' and self.source = 'copwiki')
+  def is_copwiki_or_create?
+    (self.datatype == 'Article' and (self.source == 'copwiki' or self.source == 'create'))
   end
   
   # syntactic sugar - returns true if the datatype is an article
@@ -875,9 +875,9 @@ class Page < ActiveRecord::Base
       end
     end
     
-    if(self.is_copwiki_article?)    
-      wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wikiarticles'])
-      host_to_make_relative = wikisource_uri.host
+    if(self.is_copwiki_or_create?)
+      contentsource_uri = URI.parse(self.source_url)    
+      host_to_make_relative = contentsource_uri.host
       convert_image_count = 0
       # if we are running in the "production" app location - then we need to rewrite image references that
       # refer to the host of the feed to reference a relative URL

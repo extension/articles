@@ -67,7 +67,7 @@ class LinkManager < Thor
 
   desc "counts", "show link counts"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
-  def counts
+  def linkcounts
     load_rails(options[:environment])
     puts "Total link count #{Link.count}"
     puts "Link counts by type:"
