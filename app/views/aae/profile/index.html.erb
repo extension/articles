@@ -135,7 +135,7 @@
     <% else %>
       <ul id="profile_roles">
         <% @widget_memberships.each do |widget_membership| %>
-          <li><%= link_to widget_membership.name, :controller => 'widgets/aae', :action => :view, :id => widget_membership.id %></li>
+          <li><%= link_to widget_membership.name, :controller => 'widgets/aae', :action => :view, :id => widget_membership.widget_id %></li>
         <% end %>
       </ul>
     <% end %>
