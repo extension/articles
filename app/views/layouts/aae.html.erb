@@ -46,6 +46,12 @@
         <%= render(:partial => 'aae/partial/global_nav_banner') %>
     <% end %>
     
+    <% @on_vacation = true %>
+	<% if @on_vacation %>
+	<div id="awaynotice">
+		<%= render(:partial => 'people/partial/awaynotice', :locals => {:adminmode => admin_mode?}) %>
+	</div>
+	<% end %>
     
     <div id="pageContainer">
         <div id="masthead">

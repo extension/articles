@@ -16,11 +16,11 @@
 <h2>General Preferences</h2>
 
 <div id="aae_pref_section">
-    <fieldset id="no_assign_fieldset">
-        <p> 
-            <label><%= check_box_tag "no_assign", "1", !@currentuser.aae_responder %> Don't assign me questions 
+    <fieldset id="no_assign_fieldset">  
+        <p>
+            <label><%= check_box_tag "no_assign", "1", !@currentuser.aae_responder %> Mark me as away (Vacation status)
                 <span id="loading_no_assign" class="float-spinner" style="display:none">Saving...</span>
-                <em>Checking this option means questions can not be assigned to you.</em>
+                <em>When your "vacation status" is turned on, AaE questions can not be assigned to you.</em>
             </label>
         </p>
         

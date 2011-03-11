@@ -4,15 +4,7 @@
         <td scope="row" class="label">eXtensionID:</td>
         <td><%= @currentuser.login%></td>
     </tr>
-    
-    <tr>
-      <td>Away Status:</td>
-      <td>
-        <p><input type="radio" name="awaystatus" value=""> Away status on</p>
-        <p><input type="radio" name="awaystatus" value=""> Away status off</p>
-        <p>When your "away status" is turned on, it removes you from Ask an Expert assignments (both auto-routed and manual assignments)</p>
-      </td>
-    </tr>
+
     <tr>
         <td scope="row" class="label">Account created date:</td>
         <td><%= humane_date(@currentuser.created_at) %></td>
