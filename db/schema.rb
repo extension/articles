@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110207202548) do
+ActiveRecord::Schema.define(:version => 20110310203627) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(:version => 20110207202548) do
     t.boolean  "is_question_wrangler",                   :default => false
     t.string   "base_login_string"
     t.integer  "login_increment"
+    t.datetime "vacated_aae_at"
   end
 
   add_index "accounts", ["email"], :name => "email", :unique => true
@@ -1077,6 +1078,7 @@ ActiveRecord::Schema.define(:version => 20110207202548) do
     t.boolean  "enable_tags"
     t.integer  "location_id"
     t.integer  "county_id"
+    t.boolean  "group_notify",   :default => false
   end
 
   add_index "widgets", ["fingerprint"], :name => "index_widgets_on_fingerprint", :unique => true

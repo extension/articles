@@ -31,7 +31,7 @@
 	</div>
 	<% end %>
 	
-	<% @on_vacation = true%>
+	<% @on_vacation = true %>
 	<% if @on_vacation %>
 	<div id="awaynotice">
 		<%= render(:partial => 'people/partial/awaynotice', :locals => {:adminmode => admin_mode?}) %>

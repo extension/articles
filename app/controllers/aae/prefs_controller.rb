@@ -265,7 +265,7 @@ class Aae::PrefsController < ApplicationController
       # if they checked the box
       if params[:check_box_value] == "1"
         if @currentuser.aae_responder
-          @currentuser.update_attribute(:aae_responder, false)
+          @currentuser.update_attributes(:aae_responder => false, :vacated_aae_at => Time.now)
           # take away their auto-route preference
           if role_to_delete = @currentuser.aae_auto_route_role
             role_to_delete.destroy
@@ -274,7 +274,7 @@ class Aae::PrefsController < ApplicationController
       # if they unchecked the box
       else
         if !@currentuser.aae_responder
-          @currentuser.update_attribute(:aae_responder, true)
+          @currentuser.update_attributes(:aae_responder => true, :vacated_aae_at => nil)
         end
       end
       render :update do |page|
