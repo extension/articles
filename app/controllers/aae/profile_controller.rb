@@ -26,7 +26,7 @@ class Aae::ProfileController < ApplicationController
       return
     end
     
-    @widget_communities = @user.widget_communities
+    @widget_memberships = @user.communities.widgets
     # ignore the widget auto route roll as it's no longer a roll, it's a community membership
     @user_roles = @user.user_roles.delete_if{|ur| ur.widget_id != nil}
     
