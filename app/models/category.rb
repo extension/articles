@@ -15,7 +15,7 @@ class Category < ActiveRecord::Base
   has_many :expertise_events
   
   validates_presence_of :name
-  validates_uniqueness_of :name, :scope => :parent_id, :if => Proc.new { |cat| !cat.parent }
+  validates_uniqueness_of :name, :case_sensitive => false, :scope => :parent_id, :if => Proc.new { |cat| !cat.parent }
   
   UNASSIGNED = "uncategorized"
   ALL = "all"

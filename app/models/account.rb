@@ -32,7 +32,13 @@ class Account < ActiveRecord::Base
     # remove any leading * to avoid borking mysql
     # remove any '\' characters because it's WAAAAY too close to the return key
     # strip '+' characters because it's causing a repitition search error
-    sanitizedsearchterm = searchterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').strip
+    # strip parens '()' to keep it from messing up mysql query
+    sanitizedsearchterm = searchterm.gsub(/\\/,'').gsub(/^\*/,'$').gsub(/\+/,'').gsub(/\(/,'').gsub(/\)/,'').strip
+    
+    if sanitizedsearchterm == ''
+      return nil
+    end
+    
     # in the format wordone wordtwo?
     words = sanitizedsearchterm.split(%r{\s*,\s*|\s+})
     if(words.length > 1)

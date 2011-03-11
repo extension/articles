@@ -17,19 +17,22 @@ class Aae::ProfileController < ApplicationController
       return
     end
 
-  
     @myid = @currentuser.id
     @user = User.find(:first, :conditions => ["login = ?", params[:id]])
-
+  
     if @user.nil?
       flash[:failure] = "eXtension ID does not exist.";
       redirect_to incoming_url
       return
     end
     
-     @dateinterval = [Date.today.months_ago(6), Date.today]
-     @users_assigned_questions_last_6_months= @user.ever_assigned_questions(:dateinterval => @dateinterval).count
-     @questions=@user.open_questions
+    @widget_communities = @user.widget_communities
+    # ignore the widget auto route roll as it's no longer a roll, it's a community membership
+    @user_roles = @user.user_roles.delete_if{|ur| ur.widget_id != nil}
+    
+    @dateinterval = [Date.today.months_ago(6), Date.today]
+    @users_assigned_questions_last_6_months= @user.ever_assigned_questions(:dateinterval => @dateinterval).count
+    @questions=@user.open_questions
 
     location_only = @user.user_preferences.find_by_name(UserPreference::AAE_LOCATION_ONLY)
     county_only = @user.user_preferences.find_by_name(UserPreference::AAE_COUNTY_ONLY)
