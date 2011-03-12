@@ -805,6 +805,7 @@ ActiveRecord::Schema.define(:version => 20110312160921) do
     t.string   "demo_page_uri"
     t.boolean  "active",                     :default => true
     t.boolean  "retrieve_with_time",         :default => true
+    t.string   "default_datatype"
     t.text     "default_request_options"
     t.datetime "latest_source_time"
     t.datetime "last_requested_at"

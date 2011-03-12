@@ -11,6 +11,7 @@ class CreatePageSources < ActiveRecord::Migration
       t.string   "demo_page_uri"
       t.boolean  "active",             :default => true
       t.boolean  "retrieve_with_time", :default => true
+      t.string   "default_datatype"
       t.text     "default_request_options"
       t.datetime "latest_source_time"
       t.datetime "last_requested_at"
@@ -29,19 +30,20 @@ class CreatePageSources < ActiveRecord::Migration
                       :page_uri_column => 'title',
                       :demo_uri => 'http://cop.demo.extension.org/wiki/Special:Feeds',
                       :demo_page_uri => 'http://cop.demo.extension.org/wiki/Special:Feeds/%s',
-                      :default_request_options => {'unpublished' => 1, 'published' => 1, 'dpls' => 1})
+                      :default_request_options => {'unpublished' => 1, 'published' => 1, 'dpls' => 1},
+                      :default_datatype => 'Article')
                       
     # faq
-    PageSource.create(:name => 'copfaq', :uri => 'http://cop.extension.org/feeds/faqs', :demo_uri => 'http://cop.demo.extension.org/feeds/faqs')
+    PageSource.create(:name => 'copfaq', :uri => 'http://cop.extension.org/feeds/faqs', :demo_uri => 'http://cop.demo.extension.org/feeds/faqs',:default_datatype => 'Faq')
     
     # events
-    PageSource.create(:name => 'copevents', :uri => 'http://cop.extension.org/feeds/events',:demo_uri => 'http://cop.demo.extension.org/feeds/events')
+    PageSource.create(:name => 'copevents', :uri => 'http://cop.extension.org/feeds/events',:demo_uri => 'http://cop.demo.extension.org/feeds/events',:default_datatype => 'Event')
     
     # eorganic
-    PageSource.create(:name => 'eorganic', :uri => 'http://eorganic.info/extension/feed',:retrieve_with_time => false)
+    PageSource.create(:name => 'eorganic', :uri => 'http://eorganic.info/extension/feed',:retrieve_with_time => false,:default_datatype => 'Article')
     
     # pbgworks
-    PageSource.create(:name => 'pbgworks', :uri => 'http://pbgworks.org/extension/feed',:retrieve_with_time => false)
+    PageSource.create(:name => 'pbgworks', :uri => 'http://pbgworks.org/extension/feed',:retrieve_with_time => false,:default_datatype => 'Article')
     
     # create?
     # TODO
@@ -52,6 +54,9 @@ class CreatePageSources < ActiveRecord::Migration
     execute "UPDATE page_sources,update_times SET page_sources.latest_source_time = update_times.last_datasourced_at WHERE page_sources.name = 'copevents' AND update_times.datasource_type = 'Event' and update_times.datatype = 'content'"
     execute "UPDATE page_sources,update_times SET page_sources.latest_source_time = update_times.last_datasourced_at WHERE page_sources.name = 'eorganic' AND update_times.datasource_id = 1 AND update_times.datasource_type = 'FeedLocation' and update_times.datatype = 'articles'"
     execute "UPDATE page_sources,update_times SET page_sources.latest_source_time = update_times.last_datasourced_at WHERE page_sources.name = 'pbgworks' AND update_times.datasource_id = 2 AND update_times.datasource_type = 'FeedLocation' and update_times.datatype = 'articles'"
+    
+    # set pages page_source
+    execute "UPDATE pages,page_sources SET pages.page_source_id = page_sources.id WHERE pages.source = page_sources.name"
   end
 
   def self.down
