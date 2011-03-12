@@ -5,12 +5,6 @@
 # BSD(-compatible)
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-require 'uri'
-require 'timeout'
-require 'open-uri'
-require 'rexml/document'
-require 'net/http'
-
 class Page < ActiveRecord::Base
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   include TaggingScopes
@@ -38,6 +32,7 @@ class Page < ActiveRecord::Base
   has_many :bucketings
   has_many :content_buckets, :through => :bucketings
   has_one :link_stat
+  belongs_to :page_source
 
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
@@ -405,20 +400,28 @@ class Page < ActiveRecord::Base
    end
   end
   
-  # the current FAQ feed uses an URL for the id at some point, it probably should move to something like:
-  # http://diveintomark.org/archives/2004/05/28/howto-atom-id  
-  def self.parse_id_from_atom_link(idurl)
-    parsedurl = URI.parse(idurl)
-    if(idlist = parsedurl.path.scan(/\d+/))
-      id = idlist[0]
-      return id
-    else
+  def self.parse_id_from_atom_entryid(idurl,source)
+    begin
+      parsedurl = URI.parse(idurl)
+    rescue
       return nil
     end
+    
+    case source
+    when 'copwiki'
+    else
+      if(idlist = parsedurl.path.scan(/\d+/))
+        id = idlist[0]
+        return id
+      else
+        return nil
+      end
+    end
+
   end
   
    
-  def self.create_or_update_from_atom_entry(entry,source)
+  def self.create_or_update_from_atom_entry(entry,page_source)
     # parse entry.id 
     # case source
     # when 'copwiki'
@@ -747,26 +750,7 @@ class Page < ActiveRecord::Base
     end
   end
 
-  def published_at
-   source_updated_at
-  end
-  
-  def representative_field
-   if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
-    'id'
-   else
-    'title'
-   end
-  end
-  
-  def page
-   if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
-    'article'
-   else
-    'wiki'
-   end
-  end
-  
+
   def source_host
     # make sure the URL is valid format
     begin
@@ -876,8 +860,6 @@ class Page < ActiveRecord::Base
     end
     
     if(self.is_copwiki_or_create?)
-      contentsource_uri = URI.parse(self.source_url)    
-      host_to_make_relative = contentsource_uri.host
       convert_image_count = 0
       # if we are running in the "production" app location - then we need to rewrite image references that
       # refer to the host of the feed to reference a relative URL
@@ -891,7 +873,7 @@ class Page < ActiveRecord::Base
               next
             end
 
-            if((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
+            if((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == self.source_host)
               # make relative
               newsrc = original_uri.path
               image.set_attribute('src',newsrc)
@@ -980,141 +962,6 @@ class Page < ActiveRecord::Base
       15.minutes
     end
   end
-  
-  # returns a block of content read from a file or a URL, does not parse
-  def self.fetch_url_content(feed_url)
-    urlcontent = ''
-    # figure out if this is a file url or a regular url and behave accordingly
-    fetch_uri = URI.parse(feed_url)
-    if(fetch_uri.scheme.nil?)
-      raise ContentRetrievalError, "Fetch URL Content:  Invalid URL: #{feed_url}"
-    elsif(fetch_uri.scheme == 'file')
-      if File.exists?(fetch_uri.path)
-        File.open(loadfromfile) { |f|  urlcontent = f.read }          
-      else
-        raise ContentRetrievalError, "Fetch URL Content:  Invalid file #{fetch_uri.path}"        
-      end
-    elsif(fetch_uri.scheme == 'http' or fetch_uri.scheme == 'https')  
-      # TODO: need to set If-Modified-Since
-      http = Net::HTTP.new(fetch_uri.host, fetch_uri.port) 
-      http.read_timeout = 300
-      response = fetch_uri.query.nil? ? http.get(fetch_uri.path) : http.get(fetch_uri.path + "?" + fetch_uri.query)
-      case response
-      # TODO: handle redirection?
-      when Net::HTTPSuccess
-        urlcontent = response.body
-      else
-        raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{feed_url} failed: #{response.code}/#{response.message}"          
-      end    
-    else # unsupported URL scheme
-      raise ContentRetrievalError, "Fetch URL Content:  Unsupported scheme #{feed_url}"          
-    end
-    
-    return urlcontent
-  end
-  
-  
-  def self.build_feed_url(feed_url,refresh_since,xmlschematime=true)
-    fetch_uri = URI.parse(feed_url)
-    if(fetch_uri.scheme.nil?)
-      raise ContentRetrievalError, "Build Feed URL:  Invalid URL: #{feed_url}"
-    elsif(refresh_since.nil?)
-      return "#{feed_url}"
-    elsif(fetch_uri.scheme == 'file')
-      return "#{feed_url}"
-    else
-      if(xmlschematime)
-        return "#{feed_url}#{refresh_since.xmlschema}"
-      else
-        return "#{feed_url}/#{refresh_since.year}/#{refresh_since.month}/#{refresh_since.day}/#{refresh_since.hour}/#{refresh_since.min}/#{refresh_since.sec}"
-      end
-    end
-  end
-  
-  
-  def self.retrieve_content(options = {})
-     current_time = Time.now.utc
-     have_refresh_since = (!options[:refresh_since].nil?)
-     refresh_without_time = (options[:refresh_without_time].nil? ? false : options[:refresh_without_time])
-     update_retrieve_time = (options[:update_retrieve_time].nil? ? true : options[:update_retrieve_time])
-     
-     case self.name
-     when 'Event'
-       feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_events'] : options[:feed_url])
-       usexmlschematime = true
-     when 'Faq'
-       feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_faqs'] : options[:feed_url])
-       usexmlschematime = true
-     when 'Article'
-       datatype = (options[:datatype].nil? ? 'WikiArticle' : options[:datatype])
-       feed_url = (options[:feed_url].nil? ? AppConfig.configtable['content_feed_wikiarticles'] : options[:feed_url])
-       usexmlschematime = true
-     else
-       raise ContentRetrievalError, "Retrieve Content: Unknown object type for content retrieval (#{self.name})"
-     end  
-    
-     if(update_retrieve_time)
-       updatetime = UpdateTime.find_or_create(self,'content')
-     end
-     
-     if(refresh_without_time)
-       # build URL without a time
-       refresh_since = AppConfig.configtable['epoch_time'] # so we have a date for comparisons below
-       fetch_url = self.build_feed_url(feed_url,nil)
-     elsif(have_refresh_since)
-       refresh_since = options[:refresh_since]
-       fetch_url = self.build_feed_url(feed_url,refresh_since,usexmlschematime)
-     elsif(update_retrieve_time)
-       refresh_since = (updatetime.last_datasourced_at.nil? ? AppConfig.configtable['content_feed_refresh_since'] : updatetime.last_datasourced_at)           
-       fetch_url = self.build_feed_url(feed_url,refresh_since,usexmlschematime)
-     else
-       raise ContentRetrievalError, "Retrieve Content: Invalid options. (no knowledge of what last update time to use).  (#{self.name} objects from #{feed_url})."
-     end
-    
-    # will raise errors on failure
-    xmlcontent = self.fetch_url_content(fetch_url)
-
-    # create new objects from the atom entries
-    added_items = 0
-    updated_items = 0
-    deleted_items = 0
-    error_items = 0
-    nochange_items = 0
-    last_updated_item_time = refresh_since
-    
-
-    atom_entries =  Atom::Feed.load_feed(xmlcontent).entries
-    if(!atom_entries.blank?)
-      atom_entries.each do |entry|
-        (object_update_time, object_op, object) = self.create_or_update_from_atom_entry(entry,datatype)
-        # get smart about the last updated time
-        if(object_update_time > last_updated_item_time )
-          last_updated_item_time = object_update_time
-        end
-      
-        case object_op
-        when 'deleted'
-          deleted_items += 1
-        when 'updated'
-          updated_items += 1
-        when 'added'
-          added_items += 1
-        when 'error'
-          error_items += 1
-        when 'nochange'
-          nochange_items += 1
-        end
-      end
-    
-      if(update_retrieve_time)
-        # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
-        updatetime.update_attributes({:last_datasourced_at => last_updated_item_time + 1,:additionaldata => {:deleted => deleted_items, :added => added_items, :updated => updated_items, :notchanged => nochange_items, :errors => error_items}})        
-      end
-    end
-    
-    return {:added => added_items, :deleted => deleted_items, :errors => error_items, :updated => updated_items, :notchanged => nochange_items, :last_updated_item_time => last_updated_item_time}
-  end
-  
   
   def has_map?
     (!event_location.blank?) and !(event_location.downcase.match(/web based|http|www|\.com|online/))
