@@ -60,12 +60,12 @@ class MergeContent < ActiveRecord::Migration
     
     # faqs
     faq_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,reference_pages,migrated_id,source_id,created_at,updated_at)"
-    faq_query += " SELECT 'faq','Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/publish/show/',id),SHA1(CONCAT('http://cop.extension.org/publish/show/',id)),reference_questions,id,id,created_at,updated_at FROM faqs"
+    faq_query += " SELECT 'copfaq','Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/publish/show/',id),SHA1(CONCAT('http://cop.extension.org/publish/show/',id)),reference_questions,id,id,created_at,updated_at FROM faqs"
     execute faq_query
 
     # events
     event_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,source_id,created_at,updated_at,coverage,state_abbreviations,event_start,time_zone,event_location,event_duration)"
-    event_query += " SELECT 'events','Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,id,created_at,updated_at,coverage,state_abbreviations,start,time_zone,location,duration FROM events"
+    event_query += " SELECT 'copevents','Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,id,created_at,updated_at,coverage,state_abbreviations,start,time_zone,location,duration FROM events"
     execute event_query
     
     

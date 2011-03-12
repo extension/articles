@@ -29,7 +29,7 @@
       <%- if(!@page.reference_pages.blank?) -%>
         <%= render(:partial => 'reference_pages') %>
       <%- end -%>
-      <%= simple_format @page.content %>
+      <%= simple_format(@page.content) %>
   <%- elsif -%>
     <div id="article">
       <%= @page.content %>
