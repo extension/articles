@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110223210420) do
+ActiveRecord::Schema.define(:version => 20110312160921) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -796,6 +796,24 @@ ActiveRecord::Schema.define(:version => 20110223210420) do
     t.datetime "created_at",                :null => false
   end
 
+  create_table "page_sources", :force => true do |t|
+    t.string   "name"
+    t.string   "uri",                                          :null => false
+    t.string   "page_uri"
+    t.string   "page_uri_column"
+    t.string   "demo_uri"
+    t.string   "demo_page_uri"
+    t.boolean  "active",                     :default => true
+    t.boolean  "retrieve_with_time",         :default => true
+    t.text     "default_request_options"
+    t.datetime "latest_source_time"
+    t.datetime "last_requested_at"
+    t.boolean  "last_requested_success"
+    t.text     "last_requested_information"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "pages", :force => true do |t|
     t.string   "datatype"
     t.boolean  "indexed",                                      :default => true
@@ -822,6 +840,7 @@ ActiveRecord::Schema.define(:version => 20110223210420) do
     t.integer  "event_duration"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "page_source_id"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
@@ -1010,6 +1029,7 @@ ActiveRecord::Schema.define(:version => 20110223210420) do
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagging_kind", "owner_id"], :name => "taggingindex", :unique => true
+  add_index "taggings", ["taggable_id", "taggable_type", "tagging_kind"], :name => "idandtype"
 
   create_table "tags", :force => true do |t|
     t.string   "name",       :null => false
