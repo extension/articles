@@ -449,7 +449,7 @@ class Page < ActiveRecord::Base
 
     # check for delete
     if(!entry_category_terms.blank? and entry_category_terms.include?('delete'))
-      returndata = [page.source_updated_at, 'deleted', nil]
+      returndata = [page.source_updated_at, 'deleted', page.source_url]
       page.destroy
       return returndata
     end
@@ -501,7 +501,7 @@ class Page < ActiveRecord::Base
 
       if event_data.properties.include?('status')
         if event_data.status == 'CANCELLED'
-          returndata = [page.source_updated_at, 'deleted', nil]
+          returndata = [page.source_updated_at, 'deleted', page.source_url]
           page.destroy
           return returndata
         end

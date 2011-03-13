@@ -74,36 +74,52 @@ class PageSource < ActiveRecord::Base
     
 
     # create new objects from the atom entries
-    added_items = 0
-    updated_items = 0
-    deleted_items = 0
-    error_items = 0
-    nochange_items = 0
+    item_counts = {:adds => 0, :deletes => 0, :errors => 0, :updates => 0, :nochange => 0}
+    item_ids = {:adds => [], :deletes => [], :errors => [], :updates => [], :nochange => []}
     last_updated_item_time = self.latest_source_time  
 
     if(!atom_entries.blank?)
       atom_entries.each do |entry|
-        (object_update_time, object_op, object) = Page.create_or_update_from_atom_entry(entry,self)
-        # get smart about the last updated time
-        if(object_update_time > last_updated_item_time )
-          last_updated_item_time = object_update_time
-        end
-      
-        case object_op
-        when 'deleted'
-          deleted_items += 1
-        when 'updated'
-          updated_items += 1
-        when 'added'
-          added_items += 1
-        when 'error'
-          error_items += 1
-        when 'nochange'
-          nochange_items += 1
-        end
+        begin
+          (object_update_time, object_op, object) = Page.create_or_update_from_atom_entry(entry,self)
+          
+          # get smart about the last updated time
+          if(object_update_time > last_updated_item_time )
+            last_updated_item_time = object_update_time
+          end
+          
+          case object_op
+          when 'deleted'
+            item_counts[:deletes] += 1
+            # for deletes "object" is actually the source_url for the page
+            item_ids[:deletes] << object
+          when 'updated'
+            item_counts[:updates] += 1
+            item_ids[:updates] << object.id
+          when 'added'
+            item_counts[:adds] += 1
+            item_ids[:adds] << object.id
+          when 'error'
+            item_counts[:errors] += 1
+            # for errors "object" is actually an error message for the page
+            # or it will be if we ever return errors from create_or_update_from_atom_entry
+            item_ids[:errors] << object
+          when 'nochange'
+            item_counts[:nochange] += 1
+            item_ids[:nochange] << object.id
+          end
+        rescue Exception => e
+          item_counts[:errors] += 1
+          if(entry.id)
+            message = "#{entry.id}:#{e.message}"
+          else
+            message = e.message
+          end
+          item_ids[:errors] << message
+        end # exception handling for create_or_update_from_atom_entry
       end
     
-      update_options = {:last_requested_at => Time.now.utc, :last_requested_success => true, :last_requested_information => {:deleted => deleted_items, :added => added_items, :updated => updated_items, :notchanged => nochange_items, :errors => error_items}}
+      update_options = {:last_requested_at => Time.now.utc, :last_requested_success => true, :last_requested_information => {:item_counts => item_counts, :item_ids => item_ids}}
       
       if(update_retrieve_time)
         # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
@@ -114,12 +130,10 @@ class PageSource < ActiveRecord::Base
     end
     
     self.update_attributes(update_options)
-    return {:added => added_items, :deleted => deleted_items, :errors => error_items, :updated => updated_items, :notchanged => nochange_items, :last_updated_item_time => last_updated_item_time}
+    return {:item_counts => item_counts, :item_ids => item_ids, :last_updated_item_time => last_updated_item_time}
   end
   
   
-  
-
   def self.atom_feed(fetch_url)
     xmlcontent = self.fetch_url_content(fetch_url)
     Atom::Feed.load_feed(xmlcontent)
