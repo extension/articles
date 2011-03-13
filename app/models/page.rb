@@ -419,241 +419,150 @@ class Page < ActiveRecord::Base
     end
 
   end
-  
-   
+     
   def self.create_or_update_from_atom_entry(entry,page_source)
-    # parse entry.id 
-    # case source
-    # when 'copwiki'
-    # 
-    # if(source == 'cop')
-    # 
-    # 
-    # 
-    # if(datatype == 'WikiArticle')
-    #   article = find_by_title(entry.title) || self.new
-    # else
-    #   article = find_by_source_url(entry.links[0].href) || self.new
-    # end
-    # 
-    # if(!(faqid = self.parse_id_from_atom_link(entry.id)))
-    #   returndata = [Time.now.etc, 'error', nil]
-    #   return returndata
-    # end
-    # 
-    # faq = self.find_by_id(faqid) || self.new
-    # if(faq.new_record?)
-    #   # force id
-    #   faq.id = faqid
-    # end
-
-
-
-    self.datatype = datatype
-
-    if entry.updated.nil?
-      updated = Time.now.utc
+    current_time = Time.now.utc
+    provided_source_url = entry.links[0].href
+    page = self.find_by_source_url(provided_source_url) || self.new
+    # updated
+    page.source_updated_at = (entry.updated.nil? ? current_time : entry.updated)
+    # published (set to updated if no published and updated available)
+    if(entry.published.nil?)
+      if(entry.updated.nil?)
+        page.source_created_at = current_time
+      else
+        page.source_created_at = entry.updated
+      end
     else
-      updated = entry.updated
-    end
-    self.source_updated_at = updated
-
-    if entry.published.nil?
-      pubdate = updated
-    else
-      pubdate = entry.published
-    end
-    self.source_created_at = pubdate
-
-    if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
-      returndata = [self.source_updated_at, 'deleted', nil]
-      self.destroy
-      return returndata
-    end
-
-    self.title = entry.title
-    self.url = entry.links[0].href if self.url.blank?
-    self.author = entry.authors[0].name
-    self.original_content = entry.content.to_s
-
-    # flag as dpl
-    if !entry.categories.blank? and entry.categories.map(&:term).include?('dpl')
-      self.is_dpl = true
-    end
- 
-    if(self.new_record?)
-      returndata = [self.source_updated_at, 'added']
-      self.save
-    elsif(self.original_content_changed?)
-      returndata = [self.source_updated_at, 'updated']
-      self.save
-    else
-      # content didn't change, don't save the article - most useful for dpl's
-      returndata = [self.source_updated_at, 'nochange']
-    end
-
-    # handle categories - which will include updating categories/tags
-    # even if the content didn't change
-    if(!entry.categories.blank?)
-      self.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)
-      self.put_in_buckets(entry.categories.map(&:term))    
+      page.source_created_at = entry.published
     end
     
-    # check for homage replacement    
-    if(entry.categories.map(&:term).include?('homage'))
-      content_tags = self.tags.content_tags
-      content_tags.each do |content_tag|
-        if(community = content_tag.content_community)
-          community.update_attribute(:homage_id,self.id)
+    # category processing
+    entry_category_terms = []
+    if(!entry.categories.blank?)
+      entry_category_terms = entry.categories.map(&:term)
+    end
+
+    # check for delete
+    if(!entry_category_terms.blank? and entry_category_terms.include?('delete'))
+      returndata = [page.source_updated_at, 'deleted', nil]
+      page.destroy
+      return returndata
+    end
+      
+    # check for datatype
+    if(!entry_category_terms.blank?)
+      # news overrides article => overrides faq => overrides event
+      if(entry_category_terms.include('news'))
+        page.datatype = 'News'
+      elsif(entry_category_terms.include('article'))
+        page.datatype = 'Article'
+      elsif(entry_category_terms.include('faq'))
+        page.datatype = 'Faq'
+      elsif(entry_category_terms.include('event'))
+        page.datatype = 'Event'
+      else
+        page.datatype = page_source.default_datatype
+      end
+    else
+      page.datatype = page_source.default_datatype
+    end
+    
+    # flag as dpl
+    if(!entry_category_terms.blank? and entry_category_terms.include?('dpl'))
+      page.is_dpl = true
+    end
+    
+    page.source_id = entry.id
+    page.source_url = provided_source_url if self.source_url.blank?
+    
+    if(page.datatype == 'Event')
+      event_data = hCalendar.find(:first => {:text => entry.content.to_s})
+      page.title = event_data.summary
+      page.content = CGI.unescapeHTML(event_data.description)
+      page.event_start = event_data.dtstart
+
+      if event_data.properties.include?("dtend")
+        duration = (event_data.dtend - event_data.dtstart) / (24 * 60 * 60) # result in days
+        page.event_duration = duration.to_i
+      end
+
+      location = event_data.location.split('|')
+      page.event_location = location[0]
+      page.coverage = location[1]
+      page.state_abbreviations = location[2]
+
+      if event_data.properties.include?('status')
+        if event_data.status == 'CANCELLED'
+          returndata = [page.source_updated_at, 'deleted', nil]
+          page.destroy
+          return returndata
         end
       end
-    end
-    returndata << article
-    return returndata
-  end
-  
-  def self.faq_create_or_update_from_atom_entry(entry,datatype = "ignored")
-    if(!(faqid = self.parse_id_from_atom_link(entry.id)))
-      returndata = [Time.now.etc, 'error', nil]
-      return returndata
-    end
-    
-    faq = self.find_by_id(faqid) || self.new
-    if(faq.new_record?)
-      # force id
-      faq.id = faqid
-    end
-    
-    if entry.updated.nil?
-      updated_time = Time.now.utc
     else
-      updated_time = entry.updated
-    end    
-    faq.source_updated_at = updated_time
-    
-    if !entry.categories.blank? and entry.categories.map(&:term).include?('delete')
-      returndata = [updated_time, 'deleted', nil]
-      faq.destroy
-      return returndata
+      page.title = entry.title
+      page.original_content = entry.content.to_s
     end
     
-    faq.title = entry.title
-    faq.answer = entry.content.to_s
-    
-    question_refs_array = []
+    # reference_pages
+    reference_pages_array = []
     if(!entry.links.blank?)
+      reference_pages_array = []
       entry.links.each do |link|
         if(link.rel == 'related')
-          href = link.href
-          if(id = self.parse_id_from_atom_link(href))
-            question_refs_array << id
-          end
+          reference_pages_array << link.href
         end
       end
-    end
-    
-    if(!question_refs_array.blank?)
-      faq.reference_questions = question_refs_array.join(',')
-    end
-          
-  
-    if(faq.new_record?)
-      returndata = [faq.source_updated_at, 'added']
-    else
-      returndata = [faq.source_updated_at, 'updated']
-    end  
-    faq.save
-    if(!entry.categories.blank?)
-      faq.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)
-    end
-    returndata << faq
-    return returndata
-  end
-  
-  def self.event_or_update_from_atom_entry(entry,datatype = "ignored")
-    vevent = hCalendar.find(:first => {:text => entry.content.to_s})
-    item = self.find_by_id(vevent.uid) || self.new
-    
-    # hcalendar attributes:
-    #   Required:
-    #     * dtstart (ISO date)
-    #     * summary 
-    # 
-    #   Optional:
-    #     * location
-    #     * url
-    #     * dtend (ISO date), duration (ISO date duration)
-    #     * rdate, rrule
-    #     * category, description
-    #     * uid
-    #     * geo (latitude, longitude)
-    #
-    # mofo properties:
-    #   global
-    #     :tags
-    #   vevent
-    #     :class, :description, :dtend, :dtstamp, :dtstart,
-    #     :duration, :status, :summary, :uid, :last_modified, 
-    #     :url => :url, :location => [ HCard, Adr, Geo, String ]
-    
-    
-    item.id = vevent.uid
-    
-    item.title = vevent.summary
-    item.description = CGI.unescapeHTML(vevent.description)
-    
-    if entry.updated.nil?
-      updated = Time.now.utc
-    else
-      updated = entry.updated
-    end
-    item.xcal_updated_at = updated
-  
-    item.start = vevent.dtstart
-    item.date = item.start.strftime('%Y-%m-%d')
-    item.time = item.start.strftime('%H:%M:%S')
-    
-    if vevent.properties.include?("dtend")
-      duration = (vevent.dtend - vevent.dtstart) / (24 * 60 * 60) # result in days
-      item.duration = duration.to_int
-    end
-        
-    loco = vevent.location.split('|')
-    item.location = loco[0]
-    item.coverage = loco[1]
-    item.state_abbreviations = loco[2]
-        
-    if vevent.properties.include?('status')
-      if vevent.status == 'CANCELLED'
-        returndata = [item.xcal_updated_at, 'deleted', nil]
-        item.destroy
-        return returndata
-      end
-    end
-    
-    if(item.new_record?)
-      returndata = [item.xcal_updated_at, 'added']
-    else
-      returndata = [item.xcal_updated_at, 'updated']
+      page.reference_pages = reference_pages_array.join(',')
     end
     
     # process timezone
     if (!entry.categories.blank?)
-      if tz_category = entry.categories.detect{|cat| cat.label == "time_zone"}
-        item.time_zone = tz_category.term
+      if(tz_category = entry.categories.detect{|category| category.label == "time_zone"})
+        page.time_zone = tz_category.term
         # remove timezone category so other categories can be parsed out as tags
         # entry.categories.delete(tz_category) is not working for this, so explicitly find the category
-        entry.categories.delete_if{|cat| cat.label == "time_zone"}
+        entry.categories.delete_if{|category| category.label == "time_zone"}
+      
+        # reset entry_category_terms if we deleted a time zone
+        entry_category_terms = []
+        if(!entry.categories.blank?)
+          entry_category_terms = entry.categories.map(&:term)
+        end
       end
     end
+
+    if(page.new_record?)
+      returndata = [page.source_updated_at, 'added']
+      page.save
+    elsif(page.original_content_changed?)
+      returndata = [page.source_updated_at, 'updated']
+      page.save
+    else
+      # content didn't change, don't save the article - most useful for dpl's
+      returndata = [page.source_updated_at, 'nochange']
+    end
+  
+
+    # handle categories - which will include updating categories/tags
+    # even if the content didn't change
+    if(!entry_category_terms.blank?)
+      page.replace_tags(entry_category_terms,User.systemuserid,Tagging::CONTENT)
+      page.put_in_buckets(entry_category_terms)    
     
-    item.save!
+      # check for homage replacement    
+      if(entry_category_terms.include?('homage'))
+        content_tags = page.tags.content_tags
+        content_tags.each do |content_tag|
+          if(community = content_tag.content_community)
+            community.update_attribute(:homage_id,page.id)
+          end
+        end
+      end
     
-    if(!entry.categories.blank?)
-      item.replace_tags(entry.categories.map(&:term),User.systemuserid,Tagging::CONTENT)      
     end
     
-    returndata << item
+    returndata << page
     return returndata
   end
   
@@ -941,9 +850,9 @@ class Page < ActiveRecord::Base
   def reference_pages
     returnarray = []
     if(reflist = read_attribute(:reference_pages))
-      refpage_id_array = reflist.split(',')
-      refpage_id_array.each do |refpage|
-        if(page = Page.find_by_source_id(refpage))
+      refpage_url_array = reflist.split(',')
+      refpage_url_array.each do |refpage|
+        if(page = Page.find_by_source_url(refpage))
           returnarray << page
         end
       end
