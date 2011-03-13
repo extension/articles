@@ -453,13 +453,13 @@ class Page < ActiveRecord::Base
     # check for datatype
     if(!entry_category_terms.blank?)
       # news overrides article => overrides faq => overrides event
-      if(entry_category_terms.include('news'))
+      if(entry_category_terms.include?('news'))
         page.datatype = 'News'
-      elsif(entry_category_terms.include('article'))
+      elsif(entry_category_terms.include?('article'))
         page.datatype = 'Article'
-      elsif(entry_category_terms.include('faq'))
+      elsif(entry_category_terms.include?('faq'))
         page.datatype = 'Faq'
-      elsif(entry_category_terms.include('event'))
+      elsif(entry_category_terms.include?('event'))
         page.datatype = 'Event'
       else
         page.datatype = page_source.default_datatype
