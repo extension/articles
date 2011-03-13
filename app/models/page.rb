@@ -16,9 +16,8 @@ class Page < ActiveRecord::Base
   # has_many :cached_tags, :as => :tagcacheable
   
    
-  before_create :store_source_url
-  after_create :store_content
-  after_create :set_url_title, :create_primary_link
+  after_create :store_content, :create_primary_link
+  before_save  :set_url_title
   before_update :check_content
   before_destroy :change_primary_link
   
@@ -424,6 +423,9 @@ class Page < ActiveRecord::Base
     current_time = Time.now.utc
     provided_source_url = entry.links[0].href
     page = self.find_by_source_url(provided_source_url) || self.new
+    page.source = page_source.name
+    page.page_source = page_source
+    
     # updated
     page.source_updated_at = (entry.updated.nil? ? current_time : entry.updated)
     # published (set to updated if no published and updated available)
@@ -474,7 +476,10 @@ class Page < ActiveRecord::Base
     end
     
     page.source_id = entry.id
-    page.source_url = provided_source_url if self.source_url.blank?
+    if(page.source_url.blank?)
+      page.source_url = provided_source_url 
+      page.source_url_fingerprint = Digest::SHA1.hexdigest(provided_source_url)
+    end
     
     if(page.datatype == 'Event')
       event_data = hCalendar.find(:first => {:text => entry.content.to_s})
@@ -503,7 +508,7 @@ class Page < ActiveRecord::Base
       page.title = entry.title
       page.original_content = entry.content.to_s
     end
-    
+
     # reference_pages
     reference_pages_array = []
     if(!entry.links.blank?)
@@ -567,8 +572,7 @@ class Page < ActiveRecord::Base
   end
   
   def set_url_title
-    my_url_title = make_url_title
-    self.update_attribute(:url_title,make_url_title)
+    self.url_title = make_url_title
   end
   
   # override
@@ -816,17 +820,11 @@ class Page < ActiveRecord::Base
   
   def check_content
    if self.original_content_changed?
-    if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
-      self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
-    end
-    self.reprocess_links(false) # sets self.content
+    self.reprocess_links # sets self.content
    end
   end
   
   def store_content #ac    
-    if(!self.datatype.nil? and self.datatype == 'ExternalArticle')
-      self.original_content = self.original_content.gsub(/<!\[CDATA\[/, '').gsub(/\]\]>/, '')
-    end
     self.convert_links # sets self.content
     self.save    
   end
@@ -836,12 +834,9 @@ class Page < ActiveRecord::Base
   # 
   # @param [Boolean] save save self after processing (default: true)
   # @return [Hash] output from convert_links with the counts of the various link types in the article
-  def reprocess_links(save = true)
+  def reprocess_links
     self.linkings.destroy_all
     result = self.convert_links
-    if(save)
-      self.save
-    end
     result
   end
   
