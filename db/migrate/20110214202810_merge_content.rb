@@ -138,6 +138,9 @@ class MergeContent < ActiveRecord::Migration
     end
     # drop reference faqs
     remove_column(:pages, :old_reference_faqs)
+    
+    # reset broken_links flags
+    execute "UPDATE pages SET has_broken_links = 0"
   
     # remove old tables
     drop_table(:articles)
