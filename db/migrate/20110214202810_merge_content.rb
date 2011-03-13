@@ -5,7 +5,7 @@ class MergeContent < ActiveRecord::Migration
       t.boolean  "indexed", :default => true
       t.text     "title"
       t.string   "url_title", :limit => 101
-      t.text     "content",          :limit => 16777215
+      t.text     "content", :limit => 16777215
       t.text     "original_content", :limit => 16777215
       t.datetime "source_created_at"
       t.datetime "source_updated_at"
@@ -13,10 +13,10 @@ class MergeContent < ActiveRecord::Migration
       t.text     "source_id"
       t.text     "source_url"
       t.string   "source_url_fingerprint"
-      t.boolean  "is_dpl",                               :default => false
+      t.boolean  "is_dpl", :default => false
       t.text     "reference_pages"
       t.integer  "migrated_id"
-      t.boolean  "has_broken_links"
+      t.boolean  "has_broken_links", :default => false
       t.text     "coverage"
       t.text     "state_abbreviations"
       t.datetime "event_start"
@@ -42,11 +42,11 @@ class MergeContent < ActiveRecord::Migration
     execute article_query
     
     # get a "source id" for articles
-    execute "UPDATE pages SET source = 'copwiki', source_id = REPLACE(source_url,'http://cop.extension.org/wiki/','') WHERE source_url LIKE 'http://cop.extension.org/wiki/%'"
-    execute "UPDATE pages SET source = 'eorganic', source_id = REPLACE(source_url,'http://eorganic.info/node/','') WHERE source_url LIKE 'http://eorganic.info/node/%'"
-    execute "UPDATE pages SET source = 'eorganic', source_id = REPLACE(source_url,'http://eorganic.info/taxonomy/term/','') WHERE source_url LIKE 'http://eorganic.info/taxonomy/term/%'"
-    execute "UPDATE pages SET source = 'pbgworks', source_id = REPLACE(source_url,'http://pbgworks.org/node/','') WHERE source_url LIKE 'http://pbgworks.org/node/%'"
-    execute "UPDATE pages SET source = 'pbgworks', source_id = REPLACE(source_url,'http://pbgworks.org/menu/','') WHERE source_url LIKE 'http://pbgworks.org/menu/%'"
+    execute "UPDATE pages SET source = 'copwiki', source_id = source_url WHERE source_url LIKE 'http://cop.extension.org/wiki/%'"
+    execute "UPDATE pages SET source = 'eorganic', source_id = source_url WHERE source_url LIKE 'http://eorganic.info/node/%'"
+    execute "UPDATE pages SET source = 'eorganic', source_id = source_url WHERE source_url LIKE 'http://eorganic.info/taxonomy/term/%'"
+    execute "UPDATE pages SET source = 'pbgworks', source_id = source_url WHERE source_url LIKE 'http://pbgworks.org/node/%'"
+    execute "UPDATE pages SET source = 'pbgworks', source_id = source_url WHERE source_url LIKE 'http://pbgworks.org/menu/%'"
     
     
     # turn news into a datatype and set index false
@@ -60,12 +60,12 @@ class MergeContent < ActiveRecord::Migration
     
     # faqs
     faq_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,old_reference_faqs,migrated_id,source_id,created_at,updated_at)"
-    faq_query += " SELECT 'copfaq','Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/publish/show/',id),SHA1(CONCAT('http://cop.extension.org/publish/show/',id)),reference_questions,id,id,created_at,updated_at FROM faqs"
+    faq_query += " SELECT 'copfaq','Faq',question,answer,answer,heureka_published_at,heureka_published_at,CONCAT('http://cop.extension.org/questions/show/',id),SHA1(CONCAT('http://cop.extension.org/questions/show/',id)),reference_questions,id,CONCAT('http://cop.extension.org/questions/show/',id),created_at,updated_at FROM faqs"
     execute faq_query
 
     # events
     event_query = "INSERT INTO pages (source,datatype,title,content,original_content,source_created_at,source_updated_at,source_url,source_url_fingerprint,migrated_id,source_id,created_at,updated_at,coverage,state_abbreviations,event_start,time_zone,event_location,event_duration)"
-    event_query += " SELECT 'copevents','Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,id,created_at,updated_at,coverage,state_abbreviations,start,time_zone,location,duration FROM events"
+    event_query += " SELECT 'copevents','Event',title,description,description,xcal_updated_at,xcal_updated_at,CONCAT('http://cop.extension.org/events/',id),SHA1(CONCAT('http://cop.extension.org/events/',id)),id,CONCAT('http://cop.extension.org/events/',id),created_at,updated_at,coverage,state_abbreviations,start,time_zone,location,duration FROM events"
     execute event_query
     
     
@@ -127,7 +127,7 @@ class MergeContent < ActiveRecord::Migration
           new_references = []
           references.each do |ref|
             if(!ref.blank? and ref.to_i > 0)
-              new_references << "http://cop.extension.org/publish/show/#{ref}"
+              new_references << "http://cop.extension.org/questions/show/#{ref}"
             end
           end
           if(!new_references.blank?)
