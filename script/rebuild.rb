@@ -5,7 +5,7 @@ require 'net/http'
 require 'uri'
 
 
-class LinkManager < Thor
+class Rebuild < Thor
   include Thor::Actions
   
   # these are not the tasks that you seek
@@ -96,4 +96,4 @@ class LinkManager < Thor
   
 end
 
-LinkManager.start
+Rebuild.start
