@@ -773,7 +773,7 @@ ActiveRecord::Schema.define(:version => 20110312160921) do
     t.boolean  "is_dpl",                                       :default => false
     t.text     "reference_pages"
     t.integer  "migrated_id"
-    t.boolean  "has_broken_links"
+    t.boolean  "has_broken_links",                             :default => false
     t.text     "coverage"
     t.text     "state_abbreviations"
     t.datetime "event_start"
@@ -971,6 +971,7 @@ ActiveRecord::Schema.define(:version => 20110312160921) do
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagging_kind", "owner_id"], :name => "taggingindex", :unique => true
+  add_index "taggings", ["taggable_id", "taggable_type", "tagging_kind"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_tagging_kind"
 
   create_table "tags", :force => true do |t|
     t.string   "name",       :null => false
