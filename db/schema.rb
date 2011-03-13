@@ -187,28 +187,6 @@ ActiveRecord::Schema.define(:version => 20110312160921) do
   add_index "api_keys", ["keyvalue"], :name => "index_api_keys_on_keyvalue", :unique => true
   add_index "api_keys", ["user_id", "name"], :name => "index_api_keys_on_user_id_and_name", :unique => true
 
-  create_table "articles", :force => true do |t|
-    t.text     "title"
-    t.string   "url"
-    t.text     "author"
-    t.text     "content",          :limit => 16777215
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "wiki_created_at"
-    t.datetime "wiki_updated_at"
-    t.string   "datatype"
-    t.string   "original_url"
-    t.text     "original_content", :limit => 16777215
-    t.boolean  "is_dpl",                               :default => false
-    t.boolean  "has_broken_links"
-  end
-
-  add_index "articles", ["datatype"], :name => "index_wiki_articles_on_type"
-  add_index "articles", ["original_url"], :name => "index_wiki_articles_on_original_url", :unique => true
-  add_index "articles", ["title"], :name => "index_wiki_articles_on_title", :length => {"title"=>"255"}
-  add_index "articles", ["url"], :name => "index_wiki_articles_on_url", :unique => true
-  add_index "articles", ["wiki_created_at", "wiki_updated_at"], :name => "index_articles_on_wiki_created_at_and_wiki_updated_at"
-
   create_table "bucketings", :force => true do |t|
     t.integer  "page_id",           :null => false
     t.integer  "content_bucket_id", :null => false
@@ -384,26 +362,6 @@ ActiveRecord::Schema.define(:version => 20110312160921) do
   add_index "email_aliases", ["destination"], :name => "destination_ndx"
   add_index "email_aliases", ["mail_alias"], :name => "alias_ndx"
 
-  create_table "events", :force => true do |t|
-    t.text     "title"
-    t.text     "description"
-    t.date     "date"
-    t.time     "time"
-    t.text     "location"
-    t.text     "coverage"
-    t.text     "state_abbreviations"
-    t.datetime "updated_at"
-    t.datetime "created_at"
-    t.datetime "xcal_updated_at"
-    t.datetime "start"
-    t.integer  "duration"
-    t.boolean  "deleted"
-    t.string   "time_zone"
-  end
-
-  add_index "events", ["date"], :name => "index_events_on_date"
-  add_index "events", ["xcal_updated_at"], :name => "index_events_on_xcal_updated_at"
-
   create_table "expertise_areas", :force => true do |t|
     t.integer  "category_id", :null => false
     t.integer  "user_id",     :null => false
@@ -455,22 +413,6 @@ ActiveRecord::Schema.define(:version => 20110312160921) do
   end
 
   add_index "expertise_locations_users", ["user_id", "expertise_location_id"], :name => "fk_locations_users", :unique => true
-
-  create_table "faqs", :force => true do |t|
-    t.text     "question"
-    t.text     "answer"
-    t.text     "categories"
-    t.text     "states"
-    t.text     "hardiness_zones"
-    t.datetime "heureka_published_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "status"
-    t.text     "age_ranges"
-    t.text     "reference_questions"
-  end
-
-  add_index "faqs", ["heureka_published_at"], :name => "index_faqs_on_heureka_published_at"
 
   create_table "feed_locations", :force => true do |t|
     t.text     "uri",                                   :null => false
@@ -825,8 +767,7 @@ ActiveRecord::Schema.define(:version => 20110312160921) do
     t.datetime "source_created_at"
     t.datetime "source_updated_at"
     t.string   "source"
-    t.string   "source_id"
-    t.string   "source_revision"
+    t.text     "source_id"
     t.text     "source_url"
     t.string   "source_url_fingerprint"
     t.boolean  "is_dpl",                                       :default => false
@@ -1030,7 +971,6 @@ ActiveRecord::Schema.define(:version => 20110312160921) do
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagging_kind", "owner_id"], :name => "taggingindex", :unique => true
-  add_index "taggings", ["taggable_id", "taggable_type", "tagging_kind"], :name => "idandtype"
 
   create_table "tags", :force => true do |t|
     t.string   "name",       :null => false
