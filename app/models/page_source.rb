@@ -18,6 +18,7 @@ class PageSource < ActiveRecord::Base
   
   cattr_accessor :atom_feed
   
+  named_scope :active, :conditions => {:active => true}
   
   def feed_url(options = {})
     use_demo_uri = options[:demofeed].blank? ? false : options[:demofeed]
@@ -31,10 +32,18 @@ class PageSource < ActiveRecord::Base
     end
     
     if(self.retrieve_with_time)
-      if(request_options.blank?)
-        request_options = {'updated-min' => (self.latest_source_time ? self.latest_source_time.xmlschema : AppConfig.configtable['epoch_time'].xmlschema)}
+      if(options[:refresh_since] and options[:refresh_since] != 'default')
+        updated_time = options[:refresh_since]
+      elsif(self.latest_source_time)
+        updated_time = self.latest_source_time
       else
-        request_options.merge!({'updated-min' => (self.latest_source_time ? self.latest_source_time.xmlschema : AppConfig.configtable['epoch_time'].xmlschema)})
+        updated_time AppConfig.configtable['epoch_time']
+      end
+      
+      if(request_options.blank?)
+        request_options = {'updated-min' => updated_time.xmlschema}
+      else
+        request_options.merge!({'updated-min' => updated_time.xmlschema})
       end
     end
     
