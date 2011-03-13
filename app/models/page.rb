@@ -4,7 +4,7 @@
 # === LICENSE:
 # BSD(-compatible)
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
-
+require 'mofo'
 class Page < ActiveRecord::Base
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   include TaggingScopes
@@ -425,6 +425,8 @@ class Page < ActiveRecord::Base
     page = self.find_by_source_url(provided_source_url) || self.new
     page.source = page_source.name
     page.page_source = page_source
+    # set or reset broken links flag
+    page.has_broken_links = false
     
     # updated
     page.source_updated_at = (entry.updated.nil? ? current_time : entry.updated)
@@ -536,6 +538,7 @@ class Page < ActiveRecord::Base
         end
       end
     end
+    
 
     if(page.new_record?)
       returndata = [page.source_updated_at, 'added']
@@ -926,8 +929,6 @@ class Page < ActiveRecord::Base
     end
   end
 
-  private
-  
   def clean_abbreviations(abbreviations_string = self.state_abbreviations)
     return [] unless abbreviations_string
     abbreviations_string.split(/ |;|,/).compact.delete_if { | each | each.blank? }.collect { | each | each.upcase }.uniq
