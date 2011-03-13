@@ -32,7 +32,7 @@ class PageSource < ActiveRecord::Base
     
     if(self.retrieve_with_time)
       if(request_options.blank?)
-        request_options = options[:request_options]
+        request_options = {'updated-min' => (self.latest_source_time ? self.latest_source_time.xmlschema : AppConfig.configtable['epoch_time'].xmlschema)}
       else
         request_options.merge!({'updated-min' => (self.latest_source_time ? self.latest_source_time.xmlschema : AppConfig.configtable['epoch_time'].xmlschema)})
       end
