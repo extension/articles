@@ -234,11 +234,18 @@ class Link < ActiveRecord::Base
   def check_url(options = {})
     save = (!options[:save].nil? ? options[:save] : true)
     force_error_check = (!options[:force_error_check].nil? ? options[:force_error_check] : false)
-    make_head_request = (!options[:make_head_request].nil? ? options[:make_head_request] : true)
+    make_get_request = (!options[:make_get_request].nil? ? options[:make_get_request] : false)
+    check_again_with_get = (!options[:check_again_with_get].nil? ? options[:check_again_with_get] : true)
+    
     return if(!force_error_check and self.error_count >= MAX_ERROR_COUNT)
     
     self.last_check_at = Time.zone.now
-    result = self.class.check_url(self.url)
+    result = self.class.check_url(self.url,make_get_request)
+    # make get request if responded, and response code was '404' and we didn't initially make a get request
+    if(result[:responded] and result[:code] =='404' and !make_get_request and check_again_with_get)
+      result = self.class.check_url(self.url,true)
+    end
+      
     if(result[:responded])
       self.last_check_response = true
       self.last_check_information = {:response_headers => result[:response].to_hash}
@@ -276,10 +283,15 @@ class Link < ActiveRecord::Base
       self.last_check_status = BROKEN
     end
     self.save
+    return result
+  end
+  
+  def reset_status
+    self.update_attributes(:status => nil, :error_count => 0, :last_check_at => nil, :last_check_status => nil, :last_check_response => nil, :last_check_code => nil, :last_check_information => nil)
   end
       
   
-  def self.check_url(url,make_head_request=true)
+  def self.check_url(url,make_get_request=false)
     headers = {'User-Agent' => 'extension.org link verification'}
     # the URL should have likely already be validated, but let's do it again for good measure
     begin
@@ -306,7 +318,7 @@ class Link < ActiveRecord::Base
         request_path += "?" + check_uri.query
       end
         
-      if(make_head_request)
+      if(!make_get_request)
         response = http_connection.head(request_path,headers)   
       else
         response = http_connection.get(request_path,headers)   
