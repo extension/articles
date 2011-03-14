@@ -247,7 +247,7 @@ class Link < ActiveRecord::Base
         self.status = OK
         self.last_check_status = OK
         self.error_count = 0
-      elsif(result[:code] == '301' or result[:code] == '302' or result[:code] == '303')
+      elsif(result[:code] == '301' or result[:code] == '302' or result[:code] == '303' or result[:code] == '307')
         self.status = OK_REDIRECT
         self.last_check_status = OK_REDIRECT
         self.error_count = 0
