@@ -242,7 +242,7 @@ class Link < ActiveRecord::Base
     self.last_check_at = Time.zone.now
     result = self.class.check_url(self.url,make_get_request)
     # make get request if responded, and response code was '404' and we didn't initially make a get request
-    if(result[:responded] and result[:code] =='404' and !make_get_request and check_again_with_get)
+    if(result[:responded] and !make_get_request and check_again_with_get and (result[:code] =='404' or result[:code] =='405'))
       result = self.class.check_url(self.url,true)
     end
       
