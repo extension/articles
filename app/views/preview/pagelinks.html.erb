@@ -100,7 +100,7 @@
     <% for link in @internal_links %>
       <tr id="link_row_<%= link.id %>">
         <td><%= link_to(link.page.title, link.page.id_and_link) %></td>
-        <td><%= link_to(link.page.id,preview_articlelinks_url(:id => link.page.id)) %></td>        
+        <td><%= link_to(link.page.id,preview_pagelinks_url(:id => link.page.id)) %></td>        
         <td><%= humane_date(link.page.source_created_at) %></td>
         <td><%= humane_date(link.page.source_updated_at) %></td>
       </tr>
