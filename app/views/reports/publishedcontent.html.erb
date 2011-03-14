@@ -17,12 +17,12 @@
     <tr>
         <td>Totals</td>
         <td>(all)</td>
-        <td><%= publishedcontent_number(@published_values,'Event','published events') %></td>
-        <td><%= publishedcontent_number(@published_values,'Faq','published faqs') %></td>
-        <td><%= publishedcontent_number(@published_values,'Article','published articles') %></td>
-        <td><%= publishedcontent_number(@published_values,'Article','published learning lessons') %></td>
-        <td><%= publishedcontent_number(@published_values,'Article','published features') %></td>
-        <td><%= publishedcontent_number(@published_values,'Article','published news') %></td>
+        <td><%= publishedcontent_number(@published_values,'Page','published events') %></td>
+        <td><%= publishedcontent_number(@published_values,'Page','published faqs') %></td>
+        <td><%= publishedcontent_number(@published_values,'Page','published articles') %></td>
+        <td><%= publishedcontent_number(@published_values,'Page','published learning lessons') %></td>
+        <td><%= publishedcontent_number(@published_values,'Page','published features') %></td>
+        <td><%= publishedcontent_number(@published_values,'Page','published news') %></td>
     </tr>
     <%- Community.launched.all(:order => 'name').each do |c|  %>
     <tr>
