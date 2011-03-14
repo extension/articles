@@ -135,7 +135,7 @@ class PageSource < ActiveRecord::Base
         update_options.merge!({:latest_source_time => last_updated_item_time + 1})     
       end
     else
-      update_options = {:last_requested_at => Time.now.utc, :last_requested_success => false, :last_requested_information => {:errormessage => 'Empty feed'}}
+      update_options = {:last_requested_at => Time.now.utc, :last_requested_success => true, :last_requested_information => {:note => 'Empty feed'}}
     end
     
     self.update_attributes(update_options)
