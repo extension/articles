@@ -171,8 +171,8 @@
      <ul>
         <li><%= link_to(pluralize(@articles_count,'article'), preview_pagelinklist_url(:content_tag => @content_tag.name,:content_types => 'articles')) %></li>
         <li><%= link_to(pluralize(@faqs_count,'faq'), preview_pagelinklist_url(:content_tag => @content_tag.name,:content_types => 'faqs')) %></li>
-        <li><%= link_to(pluralize(@events_count,'event'), preview_pagelinklist_url(:content_tag => @content_tag.name,:content_types => 'events',:onlybroken => true)) %></li>
-        <li><%= link_to(pluralize(@news_count,'news'), preview_pagelinklist_url(:content_tag => @content_tag.name,:content_types => 'news',:onlybroken => true)) %></li>
+        <li><%= link_to(pluralize(@events_count,'event'), preview_pagelinklist_url(:content_tag => @content_tag.name,:content_types => 'events')) %></li>
+        <li><%= link_to(pluralize(@news_count,'news'), preview_pagelinklist_url(:content_tag => @content_tag.name,:content_types => 'news')) %></li>
      </ul>
      
   </div>

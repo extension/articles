@@ -303,7 +303,7 @@ class Page < ActiveRecord::Base
         datatypes << 'News'
       end
     end
-    self.datatype_conditions(datatypes)
+    self.datatype_conditions(datatypes,options)
   end
   
   
