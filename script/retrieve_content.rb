@@ -131,7 +131,7 @@ class RetrieveContent < Thor
         end
       end
     rescue Lockfile::MaxTriesLockError => e
-      puts "Another content update is already running. Exiting."
+      $stderr.puts "Another content fetcher is already running. Exiting."
     ensure
       lockfile.unlock
     end
