@@ -64,7 +64,7 @@ class FeedsController < ApplicationController
     filteredparameters_list = [:max_results,
                                {:limit => {:default => AppConfig.configtable['default_feed_content_limit']}},
                                :tags,
-                               {:content_types => {:default => 'articles,faqs,events'}}]
+                               {:content_types => {:default => 'articles,news,faqs,events'}}]
     filteredparams = ParamsFilter.new(filteredparameters_list,params)
     
     
