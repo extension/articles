@@ -116,6 +116,7 @@ class RetrieveContent < Thor
   method_option :sources,:default => 'active', :aliases => "-s", :desc => "Comma delimited list of sources to request (run the 'sources' command to show available sources).  Also 'active' or 'all'."
   def update
     load_rails(options[:environment])
+    errors = []
     lockfile = Lockfile.new('/tmp/retrieve_content.lock', :retries => 0)
     begin
       lockfile.lock do    
@@ -128,12 +129,18 @@ class RetrieveContent < Thor
           result = page_source.retrieve_content(source_options)
           puts "Results:"
           puts "#{result.inspect}"
+          if(!page_source.last_requested_success?)
+            errors << page_source.name
+          end
         end
       end
     rescue Lockfile::MaxTriesLockError => e
       $stderr.puts "Another content fetcher is already running. Exiting."
-    ensure
-      lockfile.unlock
+    end
+    
+    if(!errors.blank?)
+      $stderr.puts "There were errors with the following page sources:  #{errors.join(',')}"
+      $stderr.puts "Please run retrieve_content sourceinfo --last to get more information"
     end
   end
   
