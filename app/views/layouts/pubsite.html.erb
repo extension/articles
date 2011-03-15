@@ -5,11 +5,13 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <% if !@openidmeta.nil? %><%= @openidmeta %><% end %>
-    
-	<% if(!@published_content or params[:print]) %>
-	   <meta name="robots" content="noindex,follow" /> 
-	<% end %>
-	
+  
+  <%- if(@list_content) -%>
+  	  <meta name="robots" content="noindex,nofollow" /> 
+	<%- elsif(!@published_content or params[:print]) -%>
+	    <meta name="robots" content="noindex,follow" /> 
+  <%- end -%>  
+  
 	<%- if @canonical_link -%>
 	  <link rel="canonical" href="<%= @canonical_link %>"/>
 	<%- end -%>

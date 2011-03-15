@@ -6,15 +6,9 @@ function showAndHide(toShow,toHide) {
 	toHide.hide();
 }
 
-update_category = function(category) {
-   var url_split = window.document.URL.toString().split("/");
-	url_split[3]= category.replace(/ /g, '+');
-   if ( url_split.length > 6 && url_split[4] != 'events') {
-      url_split.splice(6);
-   }
-	
-	window.location.href = url_split.join('/');
-} 
+go_category = function(gocategory) {
+  window.location.href = gocategory;
+}
 
 update_state = function(state) {
    var url_split = window.document.URL.toString().split("/");

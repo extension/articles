@@ -168,6 +168,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'data/:action', :controller => 'api/data'
   
   ### current routes for specific content
+  map.pagelist 'pages/list', :controller => 'pages', :action => 'list'
   map.connect 'pages/update_time_zone/:id', :controller => 'pages', :action => 'update_time_zone', :requirements => { :id => /\d+/ }
   map.print_pageid 'pages/:id/print', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
   map.pageid 'pages/:id', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
@@ -197,12 +198,11 @@ ActionController::Routing::Routes.draw do |map|
   map.preview_home 'preview', :controller => 'preview', :action => 'index'
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
-  map.site_news ':content_tag/news/:order/:page', :controller => 'pages', :action => 'news', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_faqs ':content_tag/faqs/:order/:page', :controller => 'pages', :action => 'faqs', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_articles ':content_tag/articles/:order/:page', :controller => 'pages', :action => 'articles', :page => '1', :order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_events ':content_tag/events/:state', :controller => 'pages', :action => 'events', :state => ''
-  map.site_events_month ':content_tag/events/:year/:month/:state', :controller => 'pages', :action => 'events', :state => ''
-  map.site_learning_lessons ':content_tag/learning_lessons/:order/:page', :controller => 'pages', :action => 'learning_lessons', :page => '1',:order => 'source_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_news ':content_tag/news', :controller => 'pages', :action => 'news'
+  map.site_faqs ':content_tag/faqs', :controller => 'pages', :action => 'faqs'
+  map.site_articles ':content_tag/articles', :controller => 'pages', :action => 'articles'
+  map.site_events ':content_tag/events', :controller => 'pages', :action => 'events'
+  map.site_learning_lessons ':content_tag/learning_lessons', :controller => 'pages', :action => 'learning_lessons'
   map.site_index ':content_tag', :controller => 'main', :action => 'content_tag'
   
   ### catch?  I'm not sure that these are ever actually touched because of the :content_tag routes above

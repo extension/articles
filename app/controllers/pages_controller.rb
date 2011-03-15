@@ -188,73 +188,172 @@ class PagesController < ApplicationController
     end
     
   end
+  
+  def list
+    @list_content = true # don't index this page
+
+    @filteredparameters = ParamsFilter.new([:tags,{:content_types => {:default => 'articles,news,faqs,events'}},{:articlefilter => :string},:order],params)
+    if(!@filteredparameters.order.nil?)
+      # validate order
+      return do_404 unless Page.orderings.has_value?(@filteredparameters.order)
+      @order = @filteredparameters.order
+    end
+   
+    # empty tags? - presume "all"
+    if(@filteredparameters.tags.nil?)
+       alltags = true
+       content_tags = ['all']
+    else
+       taglist_operator = @filteredparameters._tags.taglist_operator     
+       alltags = (@filteredparameters.tags.include?('all'))
+       if(alltags)
+         content_tags = ['all']
+       else 
+         content_tags = @filteredparameters.tags
+       end
+    end
     
+    pagelist_scope = Page.scoped({})
+    if(!alltags)   
+      if(taglist_operator and taglist_operator == 'and')
+        pagelist_scope = pagelist_scope.tagged_with_all_content_tags(content_tags)
+      else
+        pagelist_scope = pagelist_scope.tagged_with_any_content_tags(content_tags)
+      end
+    end
+   
+    if(@filteredparameters.content_types)
+      content_type_conditions = Page.content_type_conditions(@filteredparameters.content_types,{:allevents => true})
+      if(!content_type_conditions.blank?)
+         pagelist_scope = pagelist_scope.where(content_type_conditions)
+      end
+    end
+   
+     if(!@filteredparameters.articlefilter.nil?)
+      case @filteredparameters.articlefilter
+      when 'all'
+        @articlefilter = 'All'
+      when 'feature'
+        @articlefilter = 'Feature'
+        bucket = 'feature'
+      when 'learning lessons'
+        @articlefilter = 'Learning Lesson'
+        bucket = 'learning lessons'
+      when 'contents'
+        @articlefilter = 'Contents'
+        bucket = 'contents'
+      when 'homage'
+        @articlefilter = 'Homage'
+        bucket = 'homage'
+      end # case statement
+      if(!bucket.nil?)
+        pagelist_scope = pagelist_scope.bucketed_as(bucket)
+      end
+    end # @articlefilter.nil?
+   
+   
+    titletypes = @filteredparameters.content_types.map{|type| type.capitalize}.join(', ')
+    if(!alltags)
+      tagstring = content_tags.join(" #{taglist_operator} ")
+      @page_title_text = "#{titletypes} tagged with #{tagstring}"
+      @title_tag = "#{titletypes} - #{tagstring} - eXtension"
+    else
+      @page_title_text = titletypes
+      @title_tag = "#{titletypes} - all - eXtension"
+    end 
+    @header_description = "Don't just read. Learn."
+   
+    if(@order)
+      pagelist_scope = pagelist_scope.ordered(@order)
+    else
+      pagelist_scope = pagelist_scope.ordered
+    end
+    @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100)
+    @youth = true if @topic and @topic.name == 'Youth'
+   
+  end 
+  
+ 
   def articles
+    @list_content = true # don't index this page
+    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
     # validate order
-    return do_404 unless Page.orderings.has_value?(params[:order])
+    return do_404 unless Page.orderings.has_value?(order)
     
     set_title('Articles', "Don't just read. Learn.")
     if(!@content_tag.nil?)
       set_title("All articles tagged with \"#{@content_tag.name}\"", "Don't just read. Learn.")
       set_titletag("Articles - #{@content_tag.name} - eXtension")
-      pages = Page.articles.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      pages = Page.articles.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
       set_titletag("Articles - all - eXtension")
-      pages = Page.articles.ordered(params[:order]).paginate(:page => params[:page])
+      pages = Page.articles.ordered(order).paginate(:page => params[:page])
     end
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => pages }, :layout => true
   end
   
   def news
+    @list_content = true # don't index this page
+    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
     # validate order
-    return do_404 unless Page.orderings.has_value?(params[:order])
+    return do_404 unless Page.orderings.has_value?(order)
+    
     set_title('News', "Check out the news from the land grant university in your area.")
     if(!@content_tag.nil?)
+      set_title("All news tagged with \"#{@content_tag.name}\"", "Don't just read. Learn.")
       set_titletag("News - #{@content_tag.name} - eXtension")
-      pages = Page.news.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      pages = Page.news.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
       set_titletag("News - all - eXtension")
-      pages = Page.news.ordered(params[:order]).paginate(:page => params[:page])
+      pages = Page.news.ordered(order).paginate(:page => params[:page])
     end    
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => pages }, :layout => true
   end
   
   def learning_lessons
+    @list_content = true # don't index this page
+    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
     # validate order
-    return do_404 unless Page.orderings.has_value?(params[:order])
+    return do_404 unless Page.orderings.has_value?(order)
+    
     set_title('Learning Lessons', "Don't just read. Learn.")
     set_titletag('Learning Lessons - eXtension')
     if(!@content_tag.nil?)
       set_titletag("Learning Lessons - #{@content_tag.name} - eXtension")
-      pages = Page.articles.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      pages = Page.articles.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
       set_titletag("Learning Lessons - all - eXtension")
-      pages = Page.articles.bucketed_as('learning lessons').ordered(params[:order]).paginate(:page => params[:page])
+      pages = Page.articles.bucketed_as('learning lessons').ordered(order).paginate(:page => params[:page])
     end    
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => pages }, :layout => true
   end
   
   def faqs
-    # validate ordering
-    return do_404 unless Page.orderings.has_value?(params[:order])
+    @list_content = true # don't index this page
+    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
+    # validate order
+    return do_404 unless Page.orderings.has_value?(order)
+    
     set_title('Answered Questions from Our Experts', "Frequently asked questions from our resource area experts.")
     if(!@content_tag.nil?)
       set_title("Questions tagged with \"#{@content_tag.name}\"", "Frequently asked questions from our resource area experts.")
       set_titletag("Answered Questions from Our Experts - #{@content_tag.name} - eXtension")      
-      pages = Page.faqs.tagged_with_content_tag(@content_tag.name).ordered(params[:order]).paginate(:page => params[:page])
+      pages = Page.faqs.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
       set_titletag('Answered Questions from Our Experts - all - eXtension')
-      pages = Page.faqs.ordered(params[:order]).paginate(:page => params[:page])
+      pages = Page.faqs.ordered(order).paginate(:page => params[:page])
     end  
     @youth = true if @topic and @topic.name == 'Youth'
     render :partial => 'shared/dataitems', :locals => { :items => pages }, :layout => true
   end
   
   
-  def events    
+  def events
+    @list_content = true # don't index this page
+        
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
     if(!@content_tag.nil?)
       set_titletag("eXtension - #{@content_tag.name} - Calendar of Events")

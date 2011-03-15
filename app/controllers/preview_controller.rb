@@ -96,9 +96,6 @@ class PreviewController < ApplicationController
      case @filteredparameters.articlefilter
      when 'all'
        @articlefilter = 'All'
-     when 'news'
-       @articlefilter = 'News'
-       bucket = 'news'
      when 'feature'
        @articlefilter = 'Feature'
        bucket = 'feature'

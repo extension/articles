@@ -11,7 +11,9 @@ module DataHelper
   # this is crazy, either limit the communities to a single content tag, or find all the content for all the content tags for that community, period.
   def community_select(selected_community)
     communities = Community.launched.ordered("public_name ASC")
-    txt = "<select name='community' onchange='update_category(this.value)'>"
+    txt = "<select name='community'"
+    txt += " onchange='go_category(\"/\" + this.value + \"/#{params[:action]}\")'"
+    txt += ">"
     txt += '<option value="all"'
     txt += ' selected="selected"' unless selected_community
     txt += '>All</option>'
