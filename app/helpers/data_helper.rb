@@ -64,7 +64,7 @@ module DataHelper
     
     if Time.now.year < date.year
       url_params.update({:month => 12, :year => date.year-1})
-      txt = link_to((date.year-1).to_s, site_events_month_url(url_params))
+      txt = link_to((date.year-1).to_s, site_events_url(url_params))
     else
       txt = ''
     end
@@ -76,13 +76,13 @@ module DataHelper
         txt += '<strong>'+month_name+'</strong>'
       else
         url_params.update({:month => month_number, :year => date.year})
-        txt += link_to(month_name, site_events_month_url(url_params))
+        txt += link_to(month_name, site_events_url(url_params))
       end
       
     end
     
     url_params.update({:month => 1, :year => date.year+1})
-    txt += link_to((date.year+1).to_s, site_events_month_url(url_params))
+    txt += link_to((date.year+1).to_s, site_events_url(url_params))
     txt
   end
     
