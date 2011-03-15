@@ -11,6 +11,8 @@ class MainController < ApplicationController
   layout 'pubsite'
   
   def index
+     @published_content = true  # index the main page
+    
      set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
      set_titletag('eXtension - Objective. Research-based. Credible.')
      @right_column = false
@@ -33,6 +35,8 @@ class MainController < ApplicationController
   end
   
   def content_tag
+    @published_content = true  # index CoP landing pages
+    
     if(!@community.nil?) 
       set_title(@community.public_name,@community.public_description)
       set_titletag("#{@community.public_name} - eXtension")
