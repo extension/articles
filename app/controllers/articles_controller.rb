@@ -11,6 +11,7 @@ class ArticlesController < ApplicationController
   layout 'pubsite'
   
   def index
+    @list_content = true # noindex, nofollow
     # validate order
     return do_404 unless Article.orderings.has_value?(params[:order])
     

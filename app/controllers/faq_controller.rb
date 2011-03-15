@@ -11,6 +11,7 @@ class FaqController < ApplicationController
   layout 'pubsite'
   
   def index
+    @list_content = true # noindex, nofollow
     # validate ordering
     return do_404 unless Faq.orderings.has_value?(params[:order])
     set_title('Answered Questions from Our Experts', "Frequently asked questions from our resource area experts.")

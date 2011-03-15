@@ -12,7 +12,8 @@ class EventsController < ApplicationController
   
   layout 'pubsite'
   
-  def index    
+  def index
+    @list_content = true # noindex, nofollow    
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
     if(!@content_tag.nil?)
       set_titletag("eXtension - #{@content_tag.name} - Calendar of Events")
