@@ -25,7 +25,7 @@ class MainController < ApplicationController
      @community_highlights = Page.diverse_feature_list({:limit => 6})
 
      @calendar_date = get_calendar_date
-     @calendar_events = Page.recent_content({:datatypes => ['Event'], :within_days => 5, :calendar_date => @calendar_date, :limit => 6, :order => 'Newest Events By Date'})
+     @calendar_events = Page.recent_content({:datatypes => ['Event'], :within_days => 5, :calendar_date => @calendar_date, :limit => 6, :order => 'event_start ASC'})
      @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
    end
   
@@ -62,7 +62,7 @@ class MainController < ApplicationController
       @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
       @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
       @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
-      @calendar_events =  Page.recent_content({:datatypes => ['Event'],:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag]})
+      @calendar_events =  Page.recent_content({:datatypes => ['Event'],:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag], :order => 'event_start ASC'})
       @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
       @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
     end

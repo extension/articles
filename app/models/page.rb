@@ -22,7 +22,7 @@ class Page < ActiveRecord::Base
   before_destroy :change_primary_link
   
   has_content_tags
-  ordered_by :orderings => {'Newest Events By Date' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
+  ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest'=> "source_updated_at DESC"},
                             :default => "source_updated_at DESC"
          
   has_one :primary_link, :class_name => "Link"
