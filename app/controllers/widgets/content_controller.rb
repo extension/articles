@@ -28,7 +28,22 @@ class Widgets::ContentController < ApplicationController
     setup_contents
     (!@content_tags or @content_tags == 'All') ? tags_to_filter = nil : tags_to_filter = @content_tags 
     @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => @content_tags.join(@taglist_seperator), :quantity => @limit, :width => @width, :content_types => @content_types.join(',')}\"></script>"
-    @morelinkparams = @filteredparams.option_values_hash.map{|key,value| value.is_a?(Array) ? "#{key}=#{value.join(',')}" : "#{key}=#{value}"}.join('&')
+    
+    morelinkparams_array = []
+    @filteredparams.option_values_hash.each do |keysym,value|
+      key = keysym.to_s
+      # ignore quantity and limit
+      if(key != 'quantity' and key != 'limit')
+        if(key == 'tags')
+          morelinkparams_array << "#{key}=#{value.join(@taglist_seperator)}"
+        elsif(value.is_a?(Array))
+          morelinkparams_array << "#{key}=#{value.join(',')}"
+        else
+          morelinkparams_array << "#{key}=#{value}"
+        end
+      end
+    end
+    @morelinkparams = morelinkparams_array.join('&')
     
     render :layout => false
   end
@@ -50,9 +65,23 @@ class Widgets::ContentController < ApplicationController
         page << "document.write('#{escape_javascript(content.title)}');" 
         page << "document.write('</a></li>');"
       end
-      morelinkparams = @filteredparams.option_values_hash.map{|key,value| value.is_a?(Array) ? "#{key}=#{value.join(',')}" : "#{key}=#{value}"}.join('&')
-      if(!morelinkparams.blank?)
-        morelink = "http://#{request.host_with_port}/pages/list?#{morelinkparams}"
+      morelinkparams_array = []
+      @filteredparams.option_values_hash.each do |keysym,value|
+        key = keysym.to_s
+        # ignore quantity and limit
+        if(key != 'quantity' and key != 'limit')
+          if(key == 'tags')
+            morelinkparams_array << "#{key}=#{value.join(@taglist_seperator)}"
+          elsif(value.is_a?(Array))
+            morelinkparams_array << "#{key}=#{value.join(',')}"
+          else
+            morelinkparams_array << "#{key}=#{value}"
+          end
+        end
+      end
+      @morelinkparams = morelinkparams_array.join('&')      
+      if(!@morelinkparams.blank?)
+        morelink = "http://#{request.host_with_port}/pages/list?#{@morelinkparams}"
       else
         morelink = "http://#{request.host_with_port}/pages/list"
       end
