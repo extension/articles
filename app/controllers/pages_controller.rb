@@ -275,6 +275,7 @@ class PagesController < ApplicationController
   
  
   def articles
+    @show_selector = true
     @list_content = true # don't index this page
     order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
     # validate order
@@ -284,16 +285,17 @@ class PagesController < ApplicationController
     if(!@content_tag.nil?)
       set_title("All articles tagged with \"#{@content_tag.name}\"", "Don't just read. Learn.")
       set_titletag("Articles - #{@content_tag.name} - eXtension")
-      pages = Page.articles.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
+      @pages = Page.articles.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
       set_titletag("Articles - all - eXtension")
-      pages = Page.articles.ordered(order).paginate(:page => params[:page])
+      @pages = Page.articles.ordered(order).paginate(:page => params[:page])
     end
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'shared/dataitems', :locals => { :items => pages }, :layout => true
+    render(:template => 'pages/list')
   end
   
   def news
+    @show_selector = true
     @list_content = true # don't index this page
     order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
     # validate order
@@ -303,16 +305,17 @@ class PagesController < ApplicationController
     if(!@content_tag.nil?)
       set_title("All news tagged with \"#{@content_tag.name}\"", "Don't just read. Learn.")
       set_titletag("News - #{@content_tag.name} - eXtension")
-      pages = Page.news.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
+      @pages = Page.news.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
       set_titletag("News - all - eXtension")
-      pages = Page.news.ordered(order).paginate(:page => params[:page])
+      @pages = Page.news.ordered(order).paginate(:page => params[:page])
     end    
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'shared/dataitems', :locals => { :items => pages }, :layout => true
+    render(:template => 'pages/list')
   end
   
   def learning_lessons
+    @show_selector = true
     @list_content = true # don't index this page
     order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
     # validate order
@@ -322,16 +325,17 @@ class PagesController < ApplicationController
     set_titletag('Learning Lessons - eXtension')
     if(!@content_tag.nil?)
       set_titletag("Learning Lessons - #{@content_tag.name} - eXtension")
-      pages = Page.articles.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
+      @pages = Page.articles.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
       set_titletag("Learning Lessons - all - eXtension")
-      pages = Page.articles.bucketed_as('learning lessons').ordered(order).paginate(:page => params[:page])
+      @pages = Page.articles.bucketed_as('learning lessons').ordered(order).paginate(:page => params[:page])
     end    
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'shared/dataitems', :locals => { :items => pages }, :layout => true
+    render(:template => 'pages/list')
   end
   
   def faqs
+    @show_selector = true
     @list_content = true # don't index this page
     order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
     # validate order
@@ -341,17 +345,18 @@ class PagesController < ApplicationController
     if(!@content_tag.nil?)
       set_title("Questions tagged with \"#{@content_tag.name}\"", "Frequently asked questions from our resource area experts.")
       set_titletag("Answered Questions from Our Experts - #{@content_tag.name} - eXtension")      
-      pages = Page.faqs.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
+      @pages = Page.faqs.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
       set_titletag('Answered Questions from Our Experts - all - eXtension')
-      pages = Page.faqs.ordered(order).paginate(:page => params[:page])
+      @pages = Page.faqs.ordered(order).paginate(:page => params[:page])
     end  
     @youth = true if @topic and @topic.name == 'Youth'
-    render :partial => 'shared/dataitems', :locals => { :items => pages }, :layout => true
+    render(:template => 'pages/list')
   end
   
   
   def events
+    @show_selector = true
     @list_content = true # don't index this page
         
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
