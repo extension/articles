@@ -9,10 +9,26 @@ module DataHelper
 
   # TODO:  this is stupid.  a) there's probably a better to get the primary_content_tags and B) if a community has more than one content tag, the news won't be picked up
   # this is crazy, either limit the communities to a single content tag, or find all the content for all the content tags for that community, period.
-  def community_select(selected_community)
+  def community_select(selected_community,is_events=false)
+    make_a_link_params = []
+    if(params[:event_state])
+      make_a_link_params << "event_state=#{params[:event_state]}"
+    end
+    
+    if(params[:year] and params[:month])
+      make_a_link_params << "year=#{params[:year]}"
+      make_a_link_params << "month=#{params[:month]}"
+    end
+    
+    if(!make_a_link_params.blank?)
+      make_a_link = "\"/\" + this.value + \"/#{params[:action]}?#{make_a_link_params.join('&')}\""
+    else
+      make_a_link = "\"/\" + this.value + \"/#{params[:action]}\""
+    end
+    
     communities = Community.launched.ordered("public_name ASC")
     txt = "<select name='community'"
-    txt += " onchange='go_category(\"/\" + this.value + \"/#{params[:action]}\")'"
+    txt += " onchange='go_category(#{make_a_link})'"
     txt += ">"
     txt += '<option value="all"'
     txt += ' selected="selected"' unless selected_community
@@ -87,7 +103,15 @@ module DataHelper
   end
     
   def state_select(name, params)
-    select(name, :state, Location.displaylist.collect{|l| [l.name, l.abbreviation]}.unshift(['All', '']), {:selected => params[:state]},{ :onchange => 'update_state(this.value)'})
+    if(@content_tag)
+      make_a_link = "\"/#{@content_tag.name}/events?event_state=\" + this.value"
+    else
+      make_a_link = "\"/all/events?event_state=\" + this.value"
+    end
+    if(params[:year] and params[:month])
+      make_a_link += " + \"&year=#{params[:year]}&month=#{params[:month]}\""
+    end
+    select(name, :event_state, Location.displaylist.collect{|l| [l.name, l.abbreviation]}.unshift(['All', '']), {:selected => params[:event_state]},{ :onchange => 'go_state(' + make_a_link + ')'})
   end
   
   def first_image(content)
