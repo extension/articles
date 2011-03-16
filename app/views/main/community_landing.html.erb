@@ -72,8 +72,9 @@
             </div>
     <%end%>
     
-    <%= render(:partial => "shared/calendar", :locals => {:month  => get_calendar_month, :calendar_events => @calendar_events, :date => @calendar_date }) %>
-    
+    <%- if !@calendar_events.blank? -%>
+      <%= render(:partial => "shared/calendar", :locals => {:month  => get_calendar_month, :calendar_events => @calendar_events, :date => @calendar_date }) %>
+    <%- end -%>
 </div>
 <%end%>
 
