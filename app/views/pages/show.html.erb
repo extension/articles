@@ -29,7 +29,11 @@
       <%- if(!@page.reference_pages.blank?) -%>
         <%= render(:partial => 'reference_pages') %>
       <%- end -%>
-      <%= simple_format(@page.content) %>
+      <%- if(@page.source == 'copfaq') -%>
+        <%= simple_format(@page.content) %>
+      <%- else -%>
+        <%= @page.content %>
+      <%- end -%>
   <%- elsif -%>
     <div id="article">
       <%= @page.content %>
