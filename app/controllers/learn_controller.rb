@@ -159,7 +159,7 @@ class LearnController < ApplicationController
           @learn_session.tag_with_and_cache(params[:tags], User.systemuserid, Tagging::SHARED)
         end
         
-        flash[:success] = "Learning lesson saved successfully!<br />Thank you for your submission!"
+        flash[:success] = "Learn session posted.<br />Thank you for your submission!"
         redirect_to :action => :event, :id => @learn_session.id
       end
     # GET request for initial form display

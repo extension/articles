@@ -49,7 +49,8 @@
  
  <fieldset>
  <p>
-    <%= learn_form.label :location, 'Location (ie. http://connect.iastate.edu/learn)' %>
+
+    <%= learn_form.label :location, 'Location (e.g., http://connect.extension.iastate.edu/learn)' %>
     <%= learn_form.text_field :location, :class => "xxl" %>
  </p>
  
@@ -64,7 +65,7 @@
  
  <fieldset>
    <p>
-     <%= learn_form.label :tags, 'Tags (comma separated -- eg. tools, information technology, widgets)' %>
+     <%= learn_form.label :tags, 'Tags (comma separated -- e.g., tools, information technology, widgets)' %>
      <%= text_field_tag :tags, get_tags_for_learn_session, :class => "xxl" %>
    </p>
  </fieldset>

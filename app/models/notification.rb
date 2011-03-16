@@ -63,7 +63,7 @@ class Notification < ActiveRecord::Base
   AAE_VACATION_RESPONSE = 1007 # received a vacation response to an assigned question
   AAE_EXPERT_COMMENT = 1008 # an expert posted a comment
   AAE_EXPERT_NOREPLY = 1009 # an expert replied to the no-reply address
-
+  AAE_WIDGET_BROADCAST = 1010 # broadcast email sent to all widget assignees 
     
   ##########################################
   #  Ask an Expert Notifications - Public
@@ -120,7 +120,8 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[AAE_EXPERT_COMMENT] = ['aae_expert_comment']   
   MAILERMETHODS[AAE_EXPERT_NOREPLY] = ['aae_expert_noreply']   
   MAILERMETHODS[AAE_PUBLIC_NOREPLY] = ['aae_public_noreply']   
-  MAILERMETHODS[AAE_PUBLIC_NOQUESTION] = ['aae_public_noquestion']   
+  MAILERMETHODS[AAE_PUBLIC_NOQUESTION] = ['aae_public_noquestion'] 
+  MAILERMETHODS[AAE_WIDGET_BROADCAST] = ['aae_widget_broadcast']   
 
   MAILERMETHODS[LEARN_UPCOMING_SESSION] = ['learn_upcoming_session']   
 
