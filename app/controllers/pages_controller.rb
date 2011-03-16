@@ -131,7 +131,7 @@ class PagesController < ApplicationController
     
 
     # get the tags on this article that correspond to community content tags
-    @page_content_tags = @page.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
+    @page_content_tags = @page.content_tags
     @page_content_tag_names = @page_content_tags.map(&:name)
     @page_bucket_names = @page.content_buckets.map(&:name)
         
@@ -183,8 +183,8 @@ class PagesController < ApplicationController
     end
 
     if @community_content_tags and @community_content_tags.length > 0
-      flash.now[:googleanalytics] = request.request_uri + "?" + @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.join('+').gsub(' ','_') 
-      flash.now[:googleanalyticsresourcearea] = @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| community.primary_content_tag_name }.first.gsub(' ','_')
+      flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page.community_content_tags.collect(&:name).join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
+      flash.now[:googleanalyticsresourcearea] = @page.community_content_tags.first.name.gsub(' ','_')
     end
     
   end

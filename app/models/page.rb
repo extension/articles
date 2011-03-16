@@ -198,19 +198,38 @@ class Page < ActiveRecord::Base
    self.content_buckets = buckets
   end
   
-  
-  # return an array of the content tag names for this page, filtering out the blacklist
+  # return an array of the content tags for this page, filtering out the blacklist
   # returns it from memcache or from an association call to the db
   # 
   # @return [Array] array of content tag names 
   # @param [Boolean] forcecacheupdate force caching update  
-  def content_tag_names(forcecacheupdate = false)
+  def content_tags(forcecacheupdate = false)
    # OPTIMIZE: keep an eye on this caching
    cache_key = self.class.get_cache_key(this_method,{})
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.class.content_cache_expiry) do
-     self.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact.map{|t| t.name}
+     self.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
    end
   end
+  
+  # return an array of the content tag names for this page, filtering out the blacklist
+  # returns it from memcache or from an association call to the db (via self.content_tags)
+  # 
+  # @return [Array] array of content tag names 
+  # @param [Boolean] forcecacheupdate force caching update  
+  def content_tag_names(forcecacheupdate = false)
+    self.content_tags(forcecacheupdate).map{|t| t.name}
+  end
+  
+  
+  # return an array of the content tag names for this page, filtering out the blacklist and compared to the community content tags
+  # returns it from memcache or from an association call to the db (via self.content_tags)
+  # 
+  # @return [Array] array of content tag names 
+  # @param [Boolean] forcecacheupdate force caching update  
+  def community_content_tags(forcecacheupdate = false)
+    self.content_tags(forcecacheupdate) & Tag.community_content_tags
+  end
+  
   
   # return a collection of the most recent news articles for the specified limit/content tag
   # will check memcache first
@@ -599,13 +618,17 @@ class Page < ActiveRecord::Base
   end
   
   
-  def id_and_link(only_path = false)
+  def id_and_link(only_path = false, params = {})
     default_url_options[:host] = AppConfig.get_url_host
     default_url_options[:protocol] = AppConfig.get_url_protocol
     if(default_port = AppConfig.get_url_port)
       default_url_options[:port] = default_port
     end
-    page_url(:id => self.id, :title => self.url_title, :only_path => only_path)
+    page_params = {:id => self.id, :title => self.url_title, :only_path => only_path}
+    if(params)
+      page_params.merge!(params)
+    end
+    page_url(page_params) 
   end
   
   # called by Link#href_url to return an href to this article
