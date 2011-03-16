@@ -5,15 +5,19 @@
 <div id="content_widget" style="width:<%= @width %>px"><h3><img src="http://<%= request.host_with_port %>/images/common/extension_icon_40x40.png" /> <span>eXtension Latest <%= @type %>: <%= @content_tags %></span>
   <br class="clearing" /></h3>
 <ul>
-<% if @contents.length == 0 %>
+<%- if @contents.length == 0 -%>
 <li>There are currently no content items at this time.</li> 
-<% end %>
-
-<% @contents.each do |content| %>
-  <li><a href=<%= page_url(:id => content.id, :title => content.url_title) %>> <%= content.title %></a></li>
-<% end %>
+<%- else -%>
+  <% @contents.each do |content| %>
+    <li><a href=<%= page_url(:id => content.id, :title => content.url_title) %>> <%= content.title %></a></li>
+  <%- end -%>
+  <%- if(!@morelinkparams.blank?) -%>
+    <li><a href="<%= "http://#{request.host_with_port}/pages/list?#{@morelinkparams}" %>">More...</a></li>
+  <%- else -%>
+  <li><a href="<%= "http://#{request.host_with_port}/pages/list" %>">More...</a></li>
+  <%- end -%>
+<%- end -%>
 </ul>
-
 <p><a href="http://<%= request.host_with_port %>/widgets/content">Create your own eXtension widget</a></p></div>
 
 

@@ -28,6 +28,8 @@ class Widgets::ContentController < ApplicationController
     setup_contents
     (!@content_tags or @content_tags == 'All') ? tags_to_filter = nil : tags_to_filter = @content_tags 
     @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => @content_tags.join(@taglist_seperator), :quantity => @limit, :width => @width, :content_types => @content_types.join(',')}\"></script>"
+    @morelinkparams = @filteredparams.option_values_hash.map{|key,value| value.is_a?(Array) ? "#{key}=#{value.join(',')}" : "#{key}=#{value}"}.join('&')
+    
     render :layout => false
   end
   
@@ -48,6 +50,13 @@ class Widgets::ContentController < ApplicationController
         page << "document.write('#{escape_javascript(content.title)}');" 
         page << "document.write('</a></li>');"
       end
+      morelinkparams = @filteredparams.option_values_hash.map{|key,value| value.is_a?(Array) ? "#{key}=#{value.join(',')}" : "#{key}=#{value}"}.join('&')
+      if(!morelinkparams.blank?)
+        morelink = "http://#{request.host_with_port}/pages/list?#{morelinkparams}"
+      else
+        morelink = "http://#{request.host_with_port}/pages/list"
+      end
+      page << "document.write('<li><a href=\"#{morelink}\">More...</a></li>');" 
       page << "document.write('</ul>');" 
       page << "document.write('<p><a href=\"http://#{request.host_with_port}/widgets/content\">Create your own eXtension widget</a></p></div>');" 
     end
@@ -63,13 +72,13 @@ class Widgets::ContentController < ApplicationController
   # setup from parameters, set instance variables and query db for widget data
   # some duplicated code in here, may have to revisit this
   def setup_contents
-    filteredparams = ParamsFilter.new([:apikey,:content_types,:limit,:quantity,:tags,:width],params)
+    @filteredparams = ParamsFilter.new([:apikey,:content_types,:limit,:quantity,:tags,:width],params)
     
-    @width = filteredparams.width || DEFAULT_WIDTH
-    @limit = filteredparams.limit || DEFAULT_LIMIT
+    @width = @filteredparams.width || DEFAULT_WIDTH
+    @limit = @filteredparams.limit || DEFAULT_LIMIT
     # legacy, check for quantity parameter
-    if(!filteredparams.quantity.blank?)
-      @limit = filteredparams.quantity
+    if(!@filteredparams.quantity.blank?)
+      @limit = @filteredparams.quantity
     end
     
     # legacy type param check
@@ -84,15 +93,15 @@ class Widgets::ContentController < ApplicationController
       else
         @content_types = ['articles','news','faqs']
       end
-    elsif(filteredparams.content_types)
-      @content_types = filteredparams.content_types
+    elsif(@filteredparams.content_types)
+      @content_types = @filteredparams.content_types
     else
       @content_types = ['articles','news','faqs','events']
     end
     
     
     # empty tags? - presume "all"
-    if(filteredparams.tags.blank? or filteredparams.tags.include?('all'))
+    if(@filteredparams.tags.blank? or @filteredparams.tags.include?('all'))
        alltags = true
        @content_tags = ['all']
        tag_operator = 'and'
@@ -105,9 +114,9 @@ class Widgets::ContentController < ApplicationController
            tag_operator = 'and'
          end
        else           
-         tag_operator = filteredparams._tags.taglist_operator      
+         tag_operator = @filteredparams._tags.taglist_operator      
        end
-       @content_tags = filteredparams.tags
+       @content_tags = @filteredparams.tags
        alltags = (@content_tags.include?('all'))
     end
     
