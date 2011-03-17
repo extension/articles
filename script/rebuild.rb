@@ -45,6 +45,7 @@ class Rebuild < Thor
           puts "Processing Page: #{page.id} (#{page.datatype}) ##{page_count}"
         end
         links = page.convert_links
+        page.set_sizes
         page.save
         if(verbose)
           puts "Links: #{links.inspect}"
@@ -65,15 +66,37 @@ class Rebuild < Thor
 
 
 
-  desc "counts", "show link counts"
+  desc "total_linkcounts", "show total link counts"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
-  def linkcounts
+  def total_linkcounts
     load_rails(options[:environment])
     puts "Total link count #{Link.count}"
     puts "Link counts by type:"
     linkcounts = Link.count_by_linktype
     linkcounts.each do |linktype,count|
       puts "\t#{linktype} => #{count}"
+    end
+  end
+  
+  desc "touch_pages", "Touch pages will rebuild url titles"
+  method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
+  method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
+  def touch_pages
+    load_rails(options[:environment])
+    Page.all.each do |page|
+      page.touch # set_url_title runs before save
+      puts "Processed Page #{page.id} #{page.url_title}" if (options[:verbose])
+    end
+  end
+  
+  desc "link_stats", "Rebuild link stats"
+  method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
+  method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
+  def link_stats
+    load_rails(options[:environment])
+    Page.all.each do |page|
+      counts = page.link_counts(true)
+      puts "Processed Page #{page.id} #{counts.inspect}" if (options[:verbose])
     end
   end
   

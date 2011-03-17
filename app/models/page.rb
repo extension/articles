@@ -12,8 +12,6 @@ class Page < ActiveRecord::Base
   
   URL_TITLE_LENGTH = 100
   
-  # currently, no need to cache, we don't fulltext search article tags
-  # has_many :cached_tags, :as => :tagcacheable
   
    
   after_create :store_content, :create_primary_link
@@ -33,6 +31,8 @@ class Page < ActiveRecord::Base
   has_one :link_stat
   belongs_to :page_source
   has_many :analytics
+  has_many :cached_tags, :as => :tagcacheable
+  
 
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
@@ -89,6 +89,12 @@ class Page < ActiveRecord::Base
    return cache_key
   end
   
+  def get_cache_key(method_name,optionshash={})
+    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
+    cache_key = "#{self.id}::#{method_name}::#{optionshashval}"
+    return cache_key
+  end
+  
   def is_copwiki_or_create?
     (self.datatype == 'Article' and (self.source == 'copwiki' or self.source == 'create'))
   end
@@ -122,9 +128,9 @@ class Page < ActiveRecord::Base
   # it counts and updates the link_stat
   #
   # @return [Hash] keyed hash of the link counts for this page
-  def link_counts
+  def link_counts(force_update = false)
     linkcounts = {:total => 0, :external => 0,:local => 0, :wanted => 0, :internal => 0, :broken => 0, :redirected => 0, :warning => 0}
-    if(self.link_stat.nil? or self.updated_at > self.link_stat.updated_at)      
+    if(self.link_stat.nil? or force_update or self.updated_at > self.link_stat.updated_at)      
       self.links.each do |cl|
         linkcounts[:total] += 1
         case cl.linktype
@@ -206,7 +212,7 @@ class Page < ActiveRecord::Base
   # @param [Boolean] forcecacheupdate force caching update  
   def content_tags(forcecacheupdate = false)
    # OPTIMIZE: keep an eye on this caching
-   cache_key = self.class.get_cache_key(this_method,{})
+   cache_key = self.get_cache_key(this_method,{})
    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.class.content_cache_expiry) do
      self.tags.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
    end
@@ -221,6 +227,15 @@ class Page < ActiveRecord::Base
     self.content_tags(forcecacheupdate).map{|t| t.name}
   end
   
+  def cached_content_tag_names
+    if(self.cached_tags.content.nil?)
+      cached_tag = CachedTag.create_or_update(self,User.systemuserid,Tagging::CONTENT)
+    else
+      cached_tag = self.cached_tags.content[0]
+    end
+    cached_tag_list = cached_tag.fulltextlist.split(Tag::JOINER)
+    cached_tag_list.reject{|tagname| Tag::CONTENTBLACKLIST.include?(tagname) }.compact
+  end
   
   # return an array of the content tag names for this page, filtering out the blacklist and compared to the community content tags
   # returns it from memcache or from an association call to the db (via self.content_tags)
@@ -231,7 +246,11 @@ class Page < ActiveRecord::Base
     self.content_tags(forcecacheupdate) & Tag.community_content_tags
   end
   
-  
+  def community_content_tag_names
+    global_community_content_tag_names = Tag.community_content_tags.map(&:name) 
+    self.cached_content_tag_names & global_community_content_tag_names
+  end
+    
   # return a collection of the most recent news articles for the specified limit/content tag
   # will check memcache first
   # 
@@ -571,7 +590,7 @@ class Page < ActiveRecord::Base
     # handle categories - which will include updating categories/tags
     # even if the content didn't change
     if(!entry_category_terms.blank?)
-      page.replace_tags(entry_category_terms,User.systemuserid,Tagging::CONTENT)
+      page.replace_tags_with_and_cache(entry_category_terms,User.systemuserid,Tagging::CONTENT)
       page.put_in_buckets(entry_category_terms)    
     
       # check for homage replacement    
@@ -591,7 +610,7 @@ class Page < ActiveRecord::Base
   end
   
   def set_url_title
-    self.url_title = make_url_title
+    self.url_title = self.make_url_title
   end
   
   # override
@@ -846,11 +865,13 @@ class Page < ActiveRecord::Base
   def check_content
    if self.original_content_changed?
     self.reprocess_links # sets self.content
+    self.set_sizes
    end
   end
   
   def store_content #ac    
     self.convert_links # sets self.content
+    self.set_sizes
     self.save    
   end
   
@@ -958,19 +979,20 @@ class Page < ActiveRecord::Base
   
   
   def diff_analytics_entrances(minuend_label,subtrahend_label,returnpercentage=true)
-    minuend_analytic = self.analytics.first(:conditions => {:label => minuend_label})
-    subtrahend_analytic = self.analytics.first(:conditions => {:label => subtrahend_label})
-    if(minuend_analytic)
-      if(subtrahend_analytic)
-        difference = minuend_analytic.entrances - subtrahend_analytic.entrances
-        percentage = difference/subtrahend_analytic.entrances.to_f
+    minuend = self.analytics.where({:datalabel => minuend_label}).sum(:entrances)
+    subtrahend = self.analytics.where({:datalabel => subtrahend_label}).sum(:entrances)
+    
+    if(minuend > 0)
+      if(subtrahend > 0)
+        difference = minuend - subtrahend
+        percentage = difference/subtrahend.to_f
       else
-        difference = minuend_analytic.entrances
+        difference = minuend
         percentage = nil
       end
     else
-      if(subtrahend_analytic)
-        difference = 0 - subtrahend_analytic.entrances
+      if(subtrahend > 0)
+        difference = 0 - subtrahend
         percentage = -1
       else
         difference = nil
@@ -982,6 +1004,27 @@ class Page < ActiveRecord::Base
     else
       difference
     end
+  end
+  
+  def analytics_entrances(datalabel)
+    self.analytics.where({:datalabel => datalabel}).sum(:entrances)
+  end
+    
+  
+  def content_to_s
+    nokogiri_doc = Nokogiri::HTML::DocumentFragment.parse(self.content)
+    nokogiri_doc.css('script').each { |node| node.remove }
+    nokogiri_doc.css('link').each { |node| node.remove }
+    nokogiri_doc.text.squeeze(" ").squeeze("\n")
+  end
+  
+  def set_sizes
+    (self.content_length,self.content_words) = self.content_sizes
+  end
+    
+  def content_sizes
+    text = self.content_to_s
+    [text.size,text.scan(/[\w-]+/).size]
   end
     
 

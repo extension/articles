@@ -7,6 +7,9 @@
 class Analytic < ActiveRecord::Base
   belongs_to :page
   
+  before_create :set_page_id
+  before_create :set_recordsignature
+  
   def set_page_id
     if(self.analytics_url =~ %r{^/pages/(\d+)\/})
       @page = Page.find_by_id($1)
@@ -24,8 +27,13 @@ class Analytic < ActiveRecord::Base
     end
     
     if(@page)
-      self.update_attribute(:page,@page)
+      self.page = @page
     end
+  end
+  
+  
+  def set_recordsignature
+    self.analytics_url_hash = self.class.recordsignature(self.datalabel,self.analytics_url)
   end
   
   def mogrify_analytics_url
@@ -39,8 +47,6 @@ class Analytic < ActiveRecord::Base
         (request_uri,blah) = ga_url.split(%r{(.+)\?})[1,2]
       end
       title_to_lookup = CGI.unescape(request_uri)
-      # finding doublequoted strings, probably from the export
-      title_to_lookup.gsub!('""','"')
       if title_to_lookup =~ /\/print(\/)?$/
         title_to_lookup.gsub!(/\/print(\/)?$/, '')
       end
@@ -49,5 +55,14 @@ class Analytic < ActiveRecord::Base
       return nil
     end
   end
+  
+  def self.recordsignature(datalabel,url)
+    Digest::SHA1.hexdigest(datalabel + ":" + url)
+  end
+  
+  def self.find_by_recordsignature(datalabel,url)
+    self.first(:conditions => {:analytics_url_hash => self.recordsignature(datalabel,url)})
+  end
+    
   
 end
