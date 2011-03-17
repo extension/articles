@@ -32,6 +32,7 @@ class Page < ActiveRecord::Base
   has_many :content_buckets, :through => :bucketings
   has_one :link_stat
   belongs_to :page_source
+  has_many :analytics
 
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
@@ -953,5 +954,33 @@ class Page < ActiveRecord::Base
     abbreviations_string.split(/ |;|,/).compact.delete_if { | each | each.blank? }.collect { | each | each.upcase }.uniq
   end
   
+  
+  def diff_analytics_entrances(minuend_label,subtrahend_label,returnpercentage=true)
+    minuend_analytic = self.analytics.first(:conditions => {:label => minuend_label})
+    subtrahend_analytic = self.analytics.first(:conditions => {:label => subtrahend_label})
+    if(minuend_analytic)
+      if(subtrahend_analytic)
+        difference = minuend_analytic.entrances - subtrahend_analytic.entrances
+        percentage = difference/subtrahend_analytic.entrances.to_f
+      else
+        difference = minuend_analytic.entrances
+        percentage = nil
+      end
+    else
+      if(subtrahend_analytic)
+        difference = 0 - subtrahend_analytic.entrances
+        percentage = -1
+      else
+        difference = nil
+        percentage = nil
+      end
+    end
+    if(returnpercentage)
+      [difference,percentage]
+    else
+      difference
+    end
+  end
+    
 
 end

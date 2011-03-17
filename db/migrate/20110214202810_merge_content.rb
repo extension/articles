@@ -6,6 +6,8 @@ class MergeContent < ActiveRecord::Migration
       t.text     "title"
       t.string   "url_title", :limit => 101
       t.text     "content", :limit => 16777215
+      t.integer  "content_length"
+      t.integer  "content_words"
       t.text     "original_content", :limit => 16777215
       t.datetime "source_created_at"
       t.datetime "source_updated_at"

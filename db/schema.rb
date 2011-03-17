@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110314150013) do
+ActiveRecord::Schema.define(:version => 20110317005507) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -144,6 +144,17 @@ ActiveRecord::Schema.define(:version => 20110314150013) do
     t.string   "ip",         :limit => 20
     t.text     "data"
     t.datetime "created_at"
+  end
+
+  create_table "analytics", :force => true do |t|
+    t.integer  "page_id"
+    t.string   "label"
+    t.text     "analytics_url"
+    t.integer  "entrances"
+    t.integer  "bounces"
+    t.float    "bouncerate"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "annotation_events", :force => true do |t|
