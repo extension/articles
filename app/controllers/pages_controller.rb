@@ -110,7 +110,7 @@ class PagesController < ApplicationController
       return
     end
     
-    @page = Page.find_by_id(params[:id])
+    @page = Page.includes(:cached_tags).find_by_id(params[:id])
     if @page
       @published_content = true
     else
@@ -131,11 +131,10 @@ class PagesController < ApplicationController
     
 
     # get the tags on this article that correspond to community content tags
-    @page_content_tags = @page.content_tags
-    @page_content_tag_names = @page_content_tags.map(&:name)
+    @page_content_tag_names = @page.cached_content_tag_names
     @page_bucket_names = @page.content_buckets.map(&:name)
         
-    if(!@page_content_tags.blank?)
+    if(!@page_content_tag_names.blank?)
       # is this article tagged with youth?
       @youth = true if @page_bucket_names.include?('youth')
       
@@ -146,19 +145,20 @@ class PagesController < ApplicationController
       @published_content = false if @page_bucket_names.include?('noindex')
       
       # get the tags on this article that are content tags on communities
-      @community_content_tags = (Tag.community_content_tags & @page_content_tags)
+      @community_content_tag_names = @page.community_content_tag_names
     
-      if(!@community_content_tags.blank?)
-        @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
+      if(!@community_content_tag_names.blank?)
+        @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tag_names).prioritized
         # loop through the list, and see if one of these matches my @community already
         # if so, use that, else, just use the first in the list
-        use_content_tag = @community_content_tags.rand
-        @community_content_tags.each do |community_content_tag|
-          if(community_content_tag.content_community == @community)
-            use_content_tag = community_content_tag
+        use_content_tag_name = @community_content_tag_names.rand
+        @community_content_tag_names.each do |community_content_tag_name|
+          if(@community.content_tag_names.include?(community_content_tag_name))
+            use_content_tag_name = community_content_tag_name
           end
         end
       
+        use_content_tag = Tag.find_by_name(use_content_tag_name)
         @community = use_content_tag.content_community
         @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag})  if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
@@ -182,9 +182,9 @@ class PagesController < ApplicationController
       set_titletag("#{@page.title} - eXtension")
     end
 
-    if @community_content_tags and @community_content_tags.length > 0
-      flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page.community_content_tags.collect(&:name).join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
-      flash.now[:googleanalyticsresourcearea] = @page.community_content_tags.first.name.gsub(' ','_')
+    if(!@community_content_tag_names.blank?)
+      flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @community_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
+      flash.now[:googleanalyticsresourcearea] = @community_content_tag_names[0].gsub(' ','_')
     end
     
   end
