@@ -2197,7 +2197,6 @@ class User < Account
   protected
   
   def check_status
-   logger.debug "Account Status = #{self.account_status}"
    if (!self.retired? and self.account_status != STATUS_SIGNUP)
     if (!self.emailconfirmed?)
       self.account_status = STATUS_CONFIRMEMAIL if (account_status != STATUS_INVALIDEMAIL and account_status != STATUS_INVALIDEMAIL_FROM_SIGNUP)
@@ -2210,9 +2209,7 @@ class User < Account
     else
       self.account_status = STATUS_CONTRIBUTOR
     end
-   end
-   logger.debug "Account End Status = #{self.account_status}"
-    
+   end  
   end
     
   def convert_phonenumber

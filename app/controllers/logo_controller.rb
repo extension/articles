@@ -32,10 +32,7 @@ class LogoController < ApplicationController
                                   :disposition => 'inline') }
         end
       end
-    rescue Exception => err
-      logger.debug(err.message)
-      logger.debug(err.backtrace)
-    
+    rescue Exception => err  
       file = "#{RAILS_ROOT}/public/images/loading.gif"
       data = File.new(file, 'r').read
       send_data(data, :filename => "unknown.gif", :type => "image/gif", :disposition => 'inline')
