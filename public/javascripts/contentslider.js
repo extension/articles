@@ -1,3 +1,11 @@
+/***********************************************
+  * Featured Content Slider
+  * copyright Dynamic Drive DHTML code library (www.dynamicdrive.com)
+  * This notice MUST stay intact for legal use
+  * Visit Dynamic Drive at http://www.dynamicdrive.com/
+  * for this script and 100s more
+  ***********************************************/
+
 //** Featured Content Slider script- © Dynamic Drive DHTML code library (http://www.dynamicdrive.com)
 //** Last updated: Feb 28th- 07- Added ability to customize pagination links' text
 
