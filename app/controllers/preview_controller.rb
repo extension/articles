@@ -200,7 +200,7 @@ class PreviewController < ApplicationController
     end
 
     begin 
-      @article =  PreviewPage.new_from_extensionwiki_page(title_to_lookup)
+      @article =  PreviewPage.new_from_source('copwiki',title_to_lookup)
     rescue ContentRetrievalError => exception
       @missing = title_to_lookup
       @missing_message = "Preview Page Retrieval failed, reason:<br/> #{exception.message}"

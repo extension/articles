@@ -7,25 +7,25 @@
 
 # a convenience class for parsing an atom feed into items useful for Article-like display
 
-class PreviewArticle
+class PreviewPage
   
-  attr_accessor :atom_url, :atom_url_content, :atom_source
+  attr_accessor :atom_url, :atom_url_content, :atom_source, :page_source
   attr_accessor :title, :original_content, :updated_at, :published_at, :url, :author, :is_dpl
   attr_accessor :content_buckets, :content_tags
   
-  # ATOM SOURCES
-  UNKNOWN = 0
-  EXTENSIONORG_WIKI = 1
-  OTHER_SOURCE = 2
-  
-  def self.new_from_extensionwiki_page(pagetitle)
-    article = PreviewArticle.new
-    article.atom_url = AppConfig.configtable['content_feed_wiki_previewpage'] + CGI::escape(pagetitle)
-    article.atom_source = EXTENSIONORG_WIKI
-    article.parse_atom_content
-    return article
+  def self.new_from_source(source,source_id,is_demo=false)
+    page_source = PageSource.find_by_name(source)
+    return nil if(page_source.blank?)
+    base_page_feed_url = (is_demo ? page_source.demo_page_uri : page_source.page_uri)
+    return nil if(base_page_feed_url.blank?)
+    page = PreviewPage.new
+    page.page_source = page_source
+    page.atom_url  = format(base_page_feed_url,CGI::escape(source_id))
+    page.atom_source = page_source.name
+    page.parse_atom_content
+    return page
   end
-
+  
   #
   # parses original_content with Nokogiri
   #
@@ -43,7 +43,7 @@ class PreviewArticle
     end
 
     case self.atom_source
-    when EXTENSIONORG_WIKI
+    when 'copwiki'
       self.convert_wiki_links
       return @converted_content.to_html
     else
@@ -90,7 +90,7 @@ class PreviewArticle
       return 0
     end
     
-    wikisource_uri = URI.parse(AppConfig.configtable['content_feed_wiki_previewpage'])
+    wikisource_uri = URI.parse(self.atom_url)
     host_to_make_relative = wikisource_uri.host
           
     if(@converted_content.nil?)
