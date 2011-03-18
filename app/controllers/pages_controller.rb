@@ -153,7 +153,7 @@ class PagesController < ApplicationController
         # if so, use that, else, just use the first in the list
         use_content_tag_name = @community_content_tag_names.rand
         @community_content_tag_names.each do |community_content_tag_name|
-          if(@community.content_tag_names.include?(community_content_tag_name))
+          if(@community and @community.content_tag_names.include?(community_content_tag_name))
             use_content_tag_name = community_content_tag_name
           end
         end
