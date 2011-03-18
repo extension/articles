@@ -228,7 +228,7 @@ class Page < ActiveRecord::Base
   end
   
   def cached_content_tag_names
-    if(self.cached_tags.content.nil?)
+    if(self.cached_tags.content.blank?)
       cached_tag = CachedTag.create_or_update(self,User.systemuserid,Tagging::CONTENT)
     else
       cached_tag = self.cached_tags.content[0]
@@ -721,7 +721,7 @@ class Page < ActiveRecord::Base
   def convert_links
     returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0, :directfile => 0, :local => 0}
     # walk through the anchor tags and pull out the links
-    converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
+    converted_content = Nokogiri::HTML::DocumentFragment.parse(original_content)
     converted_content.css('a').each do |anchor|
       if(anchor['href'])
         if(anchor['href'] =~ /^\#/) # in-page anchor, don't change      

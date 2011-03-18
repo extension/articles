@@ -19,12 +19,6 @@
           <td>Updated At</td>
           <td><%= humane_date(@page.source_updated_at) %></td>
       </tr>
-      <%- if false -%>
-      <tr>
-         <td>Preview Link</td>
-         <td><%= link_to('Preview Latest Version',preview_page_url(:title => @page.title)) %></td>
-       </tr>
-      <%- end -%>
       <tr>
           <td>Source</td>
           <td><%= link_to('Source Link',@page.source_url)%></td>
