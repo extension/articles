@@ -276,6 +276,7 @@ class Page < ActiveRecord::Base
       
       # build the scope
       recent_content_scope = Page.scoped({})
+      recent_content_scope = recent_content_scope
       # datatypes
       datatype_conditions = self.datatype_conditions(datatypes)
       if(!datatype_conditions.blank?)
@@ -665,7 +666,7 @@ class Page < ActiveRecord::Base
       e.authors << Atom::Person.new(:name => 'Contributors')
       e.id = self.id_and_link
       e.updated = self.source_updated_at
-      e.categories = self.content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
+      e.categories = self.cached_content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
       e.content = Atom::Content::Html.new(self.content)
     end
   end
