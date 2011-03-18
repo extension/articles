@@ -2,6 +2,8 @@
 <% @selected_tab = :home %>
 
 <div id="welcome">
+  <div id="welcome_one">
+  
 	<h1>Hi <%= @currentuser.first_name %>, Welcome Back!</h1>
 	<%= render(:partial => 'partial/flashmessages') %>
 	<p>This is the eXtensionID account directory and management application.  Your eXtensionID allows access to the eXtension collaborative workspace.</p>
@@ -27,4 +29,12 @@
 	<%= render(:partial => 'active_message') %>
 
 	<% end %>
+	</div>
+	<div id="welcome_two">
+	  <h3>Search for Colleagues</h3>
+    <%= render(:partial => 'people/colleagues/find_user_form') %>
+    
+    <h3>Search for Communities and Institutions</h3>
+    <%= render(:partial => 'people/communities/find_community_form') %>
+	</div>
 </div>

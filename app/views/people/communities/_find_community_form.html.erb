@@ -1,7 +1,7 @@
-<% form_tag({:action=> "findcommunity"}, {:id=>"comm_search"}) do %>
+<% form_tag({:controller => "communities", :action=> "findcommunity"}, {:id=>"comm_search"}) do %>
 <fieldset >
     <p>
-        <label for="q">Find a Community</label>
+        <label for="q">Find a Community or Institution</label>
         <input type="text" name="q" id="q" />
         <%= submit_tag('Search') %>
     </p>

@@ -269,7 +269,7 @@ ul#nav {float:left;margin:2em 0 2em;padding:0;}
 form{clear:left;}
 .clear {clear:both;}
 #breadcrumbs {}
-#welcome {float:left;/*border:1px solid red;*/width:60%;}
+#welcome {float:left; padding:20px;}
 /*#welcome p {width:45em;}*/
 #welcome ul {list-style-type:disc;}
 #welcome li {line-height:1.2em;margin-bottom:1em;}
@@ -651,3 +651,9 @@ ul.simplelist {line-height:2em;}
 .primarydirs {display:block; width:75%; background:#d5e7f5; padding:20px; margin:10px 0; font-size:14px !important;}
 .primarydirs ul {padding:0 !important; margin:10px !important;}
 .primarydirs li {font-size:1em !important;}
+
+#welcome_one {width:52%; float:left;}
+#welcome_two {width:45%; float:right; padding-top:20px;}
+#welcome_two h3 {padding:0; margin:0;}
+#welcome_two form {margin-bottom:30px;}
+#welcome_two fieldset {padding:5px 10px;}
