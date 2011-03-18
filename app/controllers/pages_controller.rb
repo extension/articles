@@ -162,6 +162,15 @@ class PagesController < ApplicationController
         @community = use_content_tag.content_community
         @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag})  if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
+        
+        @page_communities = []
+        @community_content_tag_names.each do |tagname|
+          if(tag = Tag.find_by_name(tagname))
+            if(community = tag.content_community)
+              @page_communities << community
+            end
+          end
+        end
       end
     end
     
@@ -186,6 +195,8 @@ class PagesController < ApplicationController
       flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @community_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
       flash.now[:googleanalyticsresourcearea] = @community_content_tag_names[0].gsub(' ','_')
     end
+    
+    
     
   end
   

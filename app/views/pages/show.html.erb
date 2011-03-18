@@ -1,7 +1,11 @@
 <% @in_this_resource_area = true %>
 <% @resource_area_feeds = true %>
 
-<%= render(:partial => 'shared/created_by',  :locals => { :community_tags => @community_content_tags }) if @community_content_tags%>
+<%- if(!@page_communities.blank?) -%>
+  <p id="relatedresources">
+    <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
+  </p>
+<%- end -%>
 
 <div class="pageextras">
   <% if not @youth %>

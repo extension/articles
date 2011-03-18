@@ -243,11 +243,11 @@ class Page < ActiveRecord::Base
   # @return [Array] array of content tag names 
   # @param [Boolean] forcecacheupdate force caching update  
   def community_content_tags(forcecacheupdate = false)
-    self.content_tags(forcecacheupdate) & Tag.community_content_tags
+    self.content_tags(forcecacheupdate) & Tag.community_content_tags({:launchedonly => true})   
   end
   
   def community_content_tag_names
-    global_community_content_tag_names = Tag.community_content_tags.map(&:name) 
+    global_community_content_tag_names = Tag.community_content_tags({:launchedonly => true}).map(&:name)
     self.cached_content_tag_names & global_community_content_tag_names
   end
     
