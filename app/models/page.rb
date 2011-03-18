@@ -228,7 +228,7 @@ class Page < ActiveRecord::Base
   end
   
   def cached_content_tag_names
-    if(self.cached_tags.content.nil?)
+    if(self.cached_tags.content.blank?)
       cached_tag = CachedTag.create_or_update(self,User.systemuserid,Tagging::CONTENT)
     else
       cached_tag = self.cached_tags.content[0]
