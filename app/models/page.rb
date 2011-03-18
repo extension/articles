@@ -720,12 +720,6 @@ class Page < ActiveRecord::Base
   
   def convert_links
     returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0, :directfile => 0, :local => 0}
-    # hack for invalid markup e.g. the "grapes faq hack"
-    if(self.original_content =~ %r{<a([^<]+?)/>})
-      original_content = self.original_content.gsub(%r{<a([^<]+?)/>},"<a#{$1}>")
-    else
-      original_content = self.original_content
-    end
     # walk through the anchor tags and pull out the links
     converted_content = Nokogiri::HTML::DocumentFragment.parse(original_content)
     converted_content.css('a').each do |anchor|
