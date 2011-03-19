@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110317200508) do
+ActiveRecord::Schema.define(:version => 20110319163256) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -224,6 +224,8 @@ ActiveRecord::Schema.define(:version => 20110317200508) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "cached_tags", ["tagcacheable_id", "tagcacheable_type", "owner_id", "tagging_kind"], :name => "signature"
 
   create_table "categories", :force => true do |t|
     t.string   "name"
