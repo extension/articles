@@ -177,7 +177,7 @@ ActionController::Routing::Routes.draw do |map|
 
   ### old routes for specific content
   map.connect 'article/:id/print', :controller => 'pages', :action => 'redirect_article', :print => 1, :requirements => { :id => /\d+/ }
-  map.connect 'article/:id', :controller => 'articles', :action => 'redirect_article', :requirements => { :id => /\d+/ }
+  map.connect 'article/:id', :controller => 'pages', :action => 'redirect_article', :requirements => { :id => /\d+/ }
   map.connect 'events/:id/print', :controller => 'pages', :action => 'redirect_event', :print => 1
   map.connect 'events/:id', :controller => 'pages', :action => 'redirect_event'
   map.connect 'faq/:id/print', :controller => 'pages', :action => 'redirect_faq', :print => 1
