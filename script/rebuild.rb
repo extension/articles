@@ -196,7 +196,7 @@ class Rebuild < Thor
         @pages.each do |page|
           sitemap_pages.puts('<url>')
           sitemap_pages.puts("<loc>http://www.extension.org/pages/#{page.id}/#{page.url_title}</loc>")
-          sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</loc>")      
+          sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</lastmod>")      
           sitemap_pages.puts('</url>')
         end
         sitemap_pages.puts('</urlset>')
@@ -210,7 +210,7 @@ class Rebuild < Thor
           splits[i-1].each do |page|
             sitemap_pages.puts('<url>')
             sitemap_pages.puts("<loc>http://www.extension.org/pages/#{page.id}/#{page.url_title}</loc>")
-            sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</loc>")      
+            sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</lastmod>")      
             sitemap_pages.puts('</url>')
           end
           sitemap_pages.puts('</urlset>')
