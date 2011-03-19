@@ -202,7 +202,6 @@ ActionController::Routing::Routes.draw do |map|
   map.site_faqs ':content_tag/faqs', :controller => 'pages', :action => 'faqs'
   map.site_articles ':content_tag/articles', :controller => 'pages', :action => 'articles'
   map.site_events ':content_tag/events', :controller => 'pages', :action => 'events'
-  map.site_events ':content_tag/events/*blah', :controller => 'pages', :action => 'events'
   map.site_learning_lessons ':content_tag/learning_lessons', :controller => 'pages', :action => 'learning_lessons'
   map.site_index ':content_tag', :controller => 'main', :action => 'content_tag'
   
