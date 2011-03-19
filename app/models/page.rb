@@ -289,7 +289,10 @@ class Page < ActiveRecord::Base
         else
           recent_content_scope = recent_content_scope.tagged_with_any_content_tags(options[:content_tags])
         end
+      elsif(!options[:content_tag].nil?)
+        recent_content_scope = recent_content_scope.tagged_with_content_tag(options[:content_tag])
       end
+      
       # limit?
       if(options[:limit])
         recent_content_scope = recent_content_scope.limit(options[:limit])
