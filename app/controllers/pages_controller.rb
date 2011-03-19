@@ -139,10 +139,7 @@ class PagesController < ApplicationController
       @youth = true if @page_bucket_names.include?('youth')
       
       # news check to set the meta tags for noindex
-      @published_content = false if (@page_bucket_names.include?('news') and !@page_bucket_names.include?('originalnews'))
-      
-      # noindex check to set the meta tags for noindex
-      @published_content = false if @page_bucket_names.include?('noindex')
+      @published_content = false if (!@page.indexed?)
       
       # get the tags on this article that are content tags on communities
       @community_content_tag_names = @page.community_content_tag_names

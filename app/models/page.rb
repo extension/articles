@@ -493,7 +493,7 @@ class Page < ActiveRecord::Base
     # check for datatype
     if(!entry_category_terms.blank?)
       # news overrides article => overrides faq => overrides event
-      if(entry_category_terms.include?('news'))
+      if(entry_category_terms.include?('news') or entry_category_terms.include?('originalnews') )
         page.datatype = 'News'
       elsif(entry_category_terms.include?('article'))
         page.datatype = 'Article'
@@ -513,6 +513,16 @@ class Page < ActiveRecord::Base
       page.is_dpl = true
     end
     
+    # set noindex if news
+    if(page.datatype == 'News' and !entry_category_terms.include?('originalnews'))
+      page.indexed = false
+    end
+    
+    # set noindex if noindex
+    if(entry_category_terms.include?('noindex'))
+      page.indexed = false
+    end
+      
     page.source_id = entry.id
     if(page.source_url.blank?)
       page.source_url = provided_source_url 
