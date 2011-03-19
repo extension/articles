@@ -11,7 +11,11 @@
     <% previous_event_date = nil %>
     <% @calendar_events.each do |event| %>
         <% event_time = format_event_time(event) %>
-        <% date_string = event_time.strftime("%B") + ' ' + event_time.strftime("%d") %>
+        <%- if(event.time_zone.blank?)%>
+          <%- date_string = event_time.utc.strftime("%B") + ' ' + event_time.utc.strftime("%d") -%>
+        <%- else -%>
+          <%- date_string = event_time.strftime("%B") + ' ' + event_time.strftime("%d") -%>
+        <%- end -%>
         <% if date_string != previous_event_date %>
   	        <%= '</ul>' if previous_event_date %>
             <h3><%= date_string %></h3>
