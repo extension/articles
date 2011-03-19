@@ -157,17 +157,17 @@ class Rebuild < Thor
       sitemap_index.puts('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
       # communities
       sitemap_index.puts('<sitemap>')
-      sitemap_index.puts('<loc>http://www.extension.org/sitemap_communities.xml</loc>')
+      sitemap_index.puts('<loc>http://www.extension.org/sitemaps/sitemap_communities.xml</loc>')
       sitemap_index.puts('</sitemap>')
       # pages
       if(index_pages_count == 1)
         sitemap_index.puts('<sitemap>')
-        sitemap_index.puts('<loc>http://www.extension.org/sitemap_pages.xml</loc>')
+        sitemap_index.puts('<loc>http://www.extension.org/sitemaps/sitemap_pages.xml</loc>')
         sitemap_index.puts('</sitemap>')
       else
         for i in (1..index_pages_count)
           sitemap_index.puts('<sitemap>')
-          sitemap_index.puts("<loc>http://www.extension.org/sitemap_pages_#{i}.xml</loc>")
+          sitemap_index.puts("<loc>http://www.extension.org/sitemaps/sitemap_pages_#{i}.xml</loc>")
           sitemap_index.puts('</sitemap>')
         end
       end
