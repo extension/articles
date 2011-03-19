@@ -20,22 +20,28 @@ class PagesController < ApplicationController
     
     # get the title out, find it, and redirect  
     if params[:title]
-      title_to_lookup = CGI.unescape(request.request_uri.gsub('/pages/', ''))
+      raw_title_to_lookup = CGI.unescape(request.request_uri.gsub('/pages/', ''))
       # comes in double-escaped from apache to handle the infamous '?'
-      title_to_lookup = CGI.unescape(title_to_lookup)
+      raw_title_to_lookup = CGI.unescape(raw_title_to_lookup)
       # why is this?
-      title_to_lookup = title_to_lookup.gsub('??.html', '?')
+      raw_title_to_lookup.gsub!('??.html', '?')
       
       # special handling for mediawiki-like "Categoy:bob" - style titles
-      if title_to_lookup =~ /Category\:(.+)/
+      if raw_title_to_lookup =~ /Category\:(.+)/
         content_tag = $1.gsub(/_/, ' ')
         redirect_to content_tag_index_url(:content_tag => content_tag), :status=>301
         return
       end
       
-      if title_to_lookup =~ /\/print(\/)?$/
+      if raw_title_to_lookup =~ /\/print(\/)?$/
         print = true
-        title_to_lookup.gsub!(/\/print(\/)?$/, '')
+        raw_title_to_lookup.gsub!(/\/print(\/)?$/, '')
+      end
+      
+      # try and handle googlebot urls that have the page params on the end for redirection (new urls automatically handled)
+      (title_to_lookup,blah) = raw_title_to_lookup.split(%r{(.+)\?})[1,2]
+      if(!title_to_lookup)
+        title_to_lookup = raw_title_to_lookup
       end
       
       @page = Page.find_by_title_url(title_to_lookup)       
