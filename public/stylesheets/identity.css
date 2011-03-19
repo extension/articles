@@ -84,7 +84,7 @@ li#homenav {margin:0 0 0 1em;}
 #primaryNav li.selected {background:#71a8e0;font-weight:bold;border-right:#3478be 1px solid;border-left:#fff 1px solid;}
 #primaryNav li a {text-decoration:none;}
 #primaryNav li.selected a {color:#fff;}
-#content {padding:0 0 2em 2em;}
+#content {padding:0 2em 2em 2em;}
 #primaryNav li#admin {background:#ebc1c2;margin-left:10px;border-right:#ea9b9d 1px solid;}
 #primaryNav li#admin.selected {background:#994344;border-right:#651719 1px solid;border-left:none;}
 #primaryNav li#admin a {color:#700706;}
@@ -270,7 +270,6 @@ form{clear:left;}
 .clear {clear:both;}
 #breadcrumbs {}
 #welcome {float:left; padding:20px;}
-/*#welcome p {width:45em;}*/
 #welcome ul {list-style-type:disc;}
 #welcome li {line-height:1.2em;margin-bottom:1em;}
 #welcome_sidebar {float:right;width:30%;background:#f1f2f3 url(/images/people/welcome-sidebar.png) no-repeat left top;border-right:#cccfd0 solid 1px;border-bottom:#cccfd0 solid 1px;}
@@ -342,16 +341,17 @@ h3 a {font-size:.8em;margin-left:1em;}
 	padding: 2px 6px 2px 26px;
 	border-top: 1px solid #333;
 	border-bottom: 1px solid #333;
-	margin-bottom: 1em; }
+	margin-bottom: 2em; }
 .feedback_banner h6 {padding:0;margin:0;}
 .feedback_banner p {margin: .25em 0 .5em;}
 .feedback_banner h3 {border:none;color:inherit;margin:.2em 0 .6em;}
 .feedback_banner ul {margin:.2em 2em 1em !important;}
 .feedback_banner li {margin:0 0 .55em;list-style:disc;}
 .warning {
-	color: #666;
+	color: #444;
 	border-color: #E0BC12;
 	background: #FFF6CB url(/images/common/warning.gif) 4px 3px no-repeat; }
+.warning h6 {color:#000;}
 .success {
 	color: #006420;
 	border-color: #67d846;
@@ -648,7 +648,10 @@ ul.simplelist {line-height:2em;}
 .mailing_lists li span {width:50%;display:block;float:left; overflow:hidden;white-space: nowrap; position:relative;margin-right:10px;}
 .mailing_lists li span em {background: url(/images/common/transparent-white-fade.png) right 0 no-repeat;position:absolute;right:0;top:0; width:15px;height:3em;}
 
-.primarydirs {display:block; width:75%; background:#d5e7f5; padding:20px; margin:10px 0; font-size:14px !important;}
+.missing {color:red; background: url(/images/people/exclamation.png) no-repeat left 50%;padding-left:20px;}
+.vcardLabel.missing {width:160px !important;}
+.primarydirs {display:block; width:400px; float:right; background:#eee; padding:20px; margin:10px 0; font-size:14px !important;}
+.primarydirs strong {color:red;}
 .primarydirs ul {padding:0 !important; margin:10px !important;}
 .primarydirs li {font-size:1em !important;}
 
@@ -657,3 +660,4 @@ ul.simplelist {line-height:2em;}
 #welcome_two h3 {padding:0; margin:0;}
 #welcome_two form {margin-bottom:30px;}
 #welcome_two fieldset {padding:5px 10px;}
+.secure {background: url(/images/people/icon_padlock.gif) no-repeat right 50%;padding-right:20px;}
