@@ -61,6 +61,9 @@ Rails::Initializer.run do |config|
   config.cache_store = :mem_cache_store, 'localhost', {:namespace => 'pubsite'}
 end
 
+# enable Garbage Collection 
+GC.enable_stats if defined?(GC) && GC.respond_to?(:enable_stats)
+
 # require for tagging
 # commented out for now
 # TODO: figure out why this has to be in environment.rb
