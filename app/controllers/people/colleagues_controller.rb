@@ -10,7 +10,7 @@ class People::ColleaguesController < ApplicationController
   layout 'people'  
   before_filter :login_required
   before_filter :check_purgatory
-  ssl_allowed
+  ssl_allowed :finduser
   
   def communityinterest
     # convenience method to do redirection to new communities controller

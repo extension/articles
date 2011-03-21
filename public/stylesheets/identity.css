@@ -226,6 +226,10 @@ ul#comm_population {margin:0;padding:0;}
 #listhome_sidebar h4 {font-weight:normal;padding:1.45em 1.4em 1.2em;margin:0;color:#111;}
 
 
+#colleague_search {background:none;border:0;padding:0;}
+#colleague_search p input {display:inline;}
+#colleague_search p label {color:#333;font-weight:normal;margin:0 0 .2em;}
+
 #comm_search {background:none;border:0;padding:0;}
 #comm_search p input {display:inline;}
 #comm_search p label {color:#333;font-weight:normal;margin:0 0 .2em;}
