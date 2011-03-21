@@ -69,7 +69,7 @@
        <% for page in @pages %>
            <% link_counts = page.link_counts %>
            <tr id="article_row_<%= page.id %>" <%= page.has_broken_links? ? 'class="brokenlinks"' : '' %>>
-              <td><%= link_to(page.title,preview_pagelinks_url(:id => page.id)) %></td>
+              <td><%= link_to(page.title,preview_pageinfo_url(:id => page.id)) %></td>
               <td class="td_sm"><%= humane_date(page.source_created_at) %></td>
               <td class="td_sm"><%= humane_date(page.source_updated_at) %></td>
               <td class="td_c <%= link_counts[:external] > 0 ? '' : 'zero' %>"><%= link_counts[:external] %></td>
