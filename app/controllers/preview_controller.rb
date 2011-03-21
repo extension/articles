@@ -156,18 +156,7 @@ class PreviewController < ApplicationController
       @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
     end
   end
-  
-  def pagelinks
-    @right_column = false
-    @page = Page.find_by_id(params[:id])
-    if(@page)
-      @external_links = @page.links.external
-      @local_links = @page.links.local
-      @internal_links = @page.links.internal
-      @wanted_links = @page.links.unpublished
-    end
-  end
-  
+    
   def pageinfo
     @right_column = false
     @page = Page.find_by_id(params[:id])
