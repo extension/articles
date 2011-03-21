@@ -190,12 +190,14 @@ ActionController::Routing::Routes.draw do |map|
   map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
   
   map.preview_page 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
-  map.preview_pageinfo 'preview/pageinfo/:id', :controller => 'preview', :action => 'pageinfo'
-  map.preview_pagelinklist 'preview/pagelinklist/:content_tag', :controller => 'preview', :action => 'pagelinklist'
-  map.preview_pagelist 'preview/pagelist/:content_tag', :controller => 'preview', :action => 'pagelist'
   map.preview_tag 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
   map.preview_category 'preview/showcategory/:categorystring', :controller => 'preview', :action => 'showcategory'
   map.preview_home 'preview', :controller => 'preview', :action => 'index'
+
+  map.pageinfo_pagelinklist 'pageinfo/pagelinklist/:content_tag', :controller => 'pageinfo', :action => 'pagelinklist'
+  map.pageinfo_pagelist 'pageinfo/pagelist/:content_tag', :controller => 'pageinfo', :action => 'pagelist'
+  map.pageinfo_page 'pageinfo/:id', :controller => 'pageinfo', :action => 'show'
+
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
   map.site_news ':content_tag/news', :controller => 'pages', :action => 'news'
