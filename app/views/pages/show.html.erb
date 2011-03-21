@@ -7,6 +7,8 @@
   </p>
 <%- end -%>
 
+  <p id="pagelinks">View publishing information about this page.<br />This notice only displays for users signed in with their eXtensionID.</p>
+
 <div class="pageextras">
   <% if not @youth %>
     <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', ask_form_url %></p>
@@ -23,6 +25,8 @@
   <p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
 </div>
 <br class="clearing" />
+
+
 
 <div id="content_css_reset">
   <%- if @page.is_event? -%>

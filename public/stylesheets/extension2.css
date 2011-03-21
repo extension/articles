@@ -1012,3 +1012,8 @@ td.longurls a {word-wrap: break-word;width:450px;}
 .ct_nomatchingcat {margin-top:2em !important;  font-size:14pt !important;color:#DF7432; font-weight:normal;}
 
 .content_page .aae_module {padding-bottom:2em; border-bottom:1px solid #ccc;}
+#pagelinks {padding:.4em .8em .4em 35px; margin:.5em 30px 2em; background: #dbf1ff url(/images/common/page.png) 10px 50% no-repeat; color:#2659b7;}
+#pagelinks {border:1px solid #c1cee5;}
+#pagelinks a {color:#2659b7;}
+#pagelinks a:link {color:#2659b7;}
+#pagelinks a:hover {color:#000;}
