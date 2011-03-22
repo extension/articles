@@ -912,7 +912,9 @@ class Page < ActiveRecord::Base
     if(reflist = read_attribute(:reference_pages))
       refpage_url_array = reflist.split(',')
       refpage_fingerprints = refpage_url_array.map{|url| "'#{Digest::SHA1.hexdigest(url)}'"}
-      returnarray = Page.all(:conditions => "source_url_fingerprint IN (#{refpage_fingerprints.join(',')})")
+      if(!refpage_fingerprints.blank?)
+        returnarray = Page.all(:conditions => "source_url_fingerprint IN (#{refpage_fingerprints.join(',')})")
+      end
     end
     if(returnarray.blank?)
       return nil
