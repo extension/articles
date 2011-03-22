@@ -20,7 +20,7 @@ class Page < ActiveRecord::Base
   before_destroy :change_primary_link
   
   has_content_tags
-  ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest'=> "source_updated_at DESC"},
+  ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest events' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
                             :default => "source_updated_at DESC"
          
   has_one :primary_link, :class_name => "Link"
@@ -327,9 +327,9 @@ class Page < ActiveRecord::Base
         if(options[:allevents])
           datatype_conditions << "(datatype = 'Event')"
         elsif(!options[:within_days].nil?)
-          datatype_conditions << "(datatype = 'Event' and (event_start >= '#{calendar_date.to_s(:db)}' and event_start < '#{(calendar_date + options[:within_days]).to_s(:db)}'))"
+          datatype_conditions << "(datatype = 'Event' and (DATE(event_start) >= '#{calendar_date.to_s(:db)}' and DATE(event_start) < '#{(calendar_date + options[:within_days]).to_s(:db)}'))"
         else
-          datatype_conditions << "(datatype = 'Event' and event_start >= '#{calendar_date.to_s(:db)}')"
+          datatype_conditions << "(datatype = 'Event' and DATE(event_start) >= '#{calendar_date.to_s(:db)}')"
         end
       end
     end
