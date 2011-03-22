@@ -376,10 +376,10 @@ class PagesController < ApplicationController
     set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
     if(!@content_tag.nil?)
       set_titletag("eXtension - #{@content_tag.name} - Calendar of Events")
-      @eventslist  =  Page.events.monthly(get_calendar_month).ordered.in_states(params[:event_state]).tagged_with_content_tag(@content_tag.name)      
+      @eventslist  =  Page.events.monthly(get_calendar_month).ordered('Events Default').in_states(params[:event_state]).tagged_with_content_tag(@content_tag.name)      
     else
       set_titletag('eXtension - all - Calendar of Events')
-      @eventslist  =  Page.events.monthly(get_calendar_month).ordered.in_states(params[:event_state]).all
+      @eventslist  =  Page.events.monthly(get_calendar_month).ordered('Events Default').in_states(params[:event_state]).all
     end    
     @youth = true if @topic and @topic.name == 'Youth'
     render :action => 'events'    
