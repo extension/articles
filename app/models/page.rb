@@ -327,9 +327,9 @@ class Page < ActiveRecord::Base
         if(options[:allevents])
           datatype_conditions << "(datatype = 'Event')"
         elsif(!options[:within_days].nil?)
-          datatype_conditions << "(datatype = 'Event' and (DATE(event_start) >= '#{calendar_date.to_s(:db)}' and DATE(event_start) < '#{(calendar_date + options[:within_days]).to_s(:db)}'))"
+          datatype_conditions << "(datatype = 'Event' and (event_start >= '#{calendar_date.to_s(:db)}' and event_start < '#{(calendar_date + options[:within_days]).to_s(:db)}'))"
         else
-          datatype_conditions << "(datatype = 'Event' and DATE(event_start) >= '#{calendar_date.to_s(:db)}')"
+          datatype_conditions << "(datatype = 'Event' and event_start >= '#{calendar_date.to_s(:db)}')"
         end
       end
     end
