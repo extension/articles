@@ -33,11 +33,11 @@
     <dd>
     
     <% event_time = format_event_time(event) %>
-    <%= event_time.strftime("%m.%d.%y") %>
-    
     <% if !event.time_zone.blank? %>
-      at <%= event_time.strftime('%I:%M %p %Z') %> 
-    <% end %>
+      <%= event_time.strftime("%m.%d.%y") %> at <%= event_time.strftime('%I:%M %p %Z') %> 
+    <% else %>
+      <%= event_time.utc.strftime("%m.%d.%y") %>
+    <%- end -%>
     </dd>
     <dd>
         <span class="community">Community:</span>
