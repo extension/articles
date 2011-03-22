@@ -50,16 +50,6 @@ module ApplicationHelper
     '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'
   end
   
-  def with_content_tag?
-    if(params[:controller] == 'main' and params[:action] == 'index')
-      return {:content_tag => 'all'}
-    elsif(!@content_tag.nil?)
-      return {:content_tag => @content_tag.name}
-    else
-      return {:content_tag => 'all'}
-    end
-  end
-  
   def get_filtered_aae_incoming_count
     return SubmittedQuestion.submitted.filtered(@currentuser.aae_filter_prefs).count
   end

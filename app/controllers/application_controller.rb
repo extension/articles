@@ -39,6 +39,7 @@ class ApplicationController < ActionController::Base
   helper_method :get_location_options
   helper_method :get_county_options
   helper_method :get_calendar_month
+  helper_method :with_content_tag?
   
   def set_app_location
     @app_location_for_display = AppConfig.configtable['app_location']
@@ -504,6 +505,16 @@ class ApplicationController < ActionController::Base
   
   def go_back
     request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
+  end
+  
+  def with_content_tag?
+    if(params[:controller] == 'main' and params[:action] == 'index')
+      return {:content_tag => 'all'}
+    elsif(!@content_tag.nil?)
+      return {:content_tag => @content_tag.name}
+    else
+      return {:content_tag => 'all'}
+    end
   end
   
 end

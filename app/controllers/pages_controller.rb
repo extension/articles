@@ -68,7 +68,7 @@ class PagesController < ApplicationController
   def redirect_faq
     # folks chop off the page name and expect the url to give them something
     if (!params[:id])
-      redirect_to site_articles_url(with_content_tag?), :status=>301
+      redirect_to site_faqs_url(with_content_tag?), :status=>301
       return
     end
     if(params[:print])
@@ -89,7 +89,7 @@ class PagesController < ApplicationController
   def redirect_event
     # folks chop off the page name and expect the url to give them something
     if (!params[:id])
-      redirect_to site_articles_url(with_content_tag?), :status=>301
+      redirect_to site_events_url(with_content_tag?), :status=>301
       return
     end
     if(params[:print])
