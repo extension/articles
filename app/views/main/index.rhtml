@@ -37,7 +37,7 @@
           <%- end -%>
           <% if date_string != last_date %>
                 <%= '</ul>' if last_date%>
-                <h3 class="event_header"><span class="calendar_day"><%= event_time.utc.strftime("%B")  %></span><span><%= event_time.utc.strftime("%d")%></span></h3>
+                <h3 class="event_header"><span class="calendar_day"><%= event_time.utc.strftime("%d")  %></span><span><%= event_time.utc.strftime("%B")%></span></h3>
                 <ul class="event_listings">
             <%end%>
             <li><% htmlClass = @personal[:state] && ! (event.local_to? @personal[:state]) ? 'gray' : '' %>
