@@ -540,7 +540,7 @@ class Page < ActiveRecord::Base
     if(page.datatype == 'Event')
       event_data = hCalendar.find(:first => {:text => entry.content.to_s})
       page.title = event_data.summary
-      page.content = CGI.unescapeHTML(event_data.description)
+      page.original_content = CGI.unescapeHTML(event_data.description)
       page.event_start = event_data.dtstart
 
       if event_data.properties.include?("dtend")
