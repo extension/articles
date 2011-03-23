@@ -198,6 +198,10 @@ ActionController::Routing::Routes.draw do |map|
   map.pageinfo_pagelist 'pageinfo/pagelist/:content_tag', :controller => 'pageinfo', :action => 'pagelist'
   map.pageinfo_page 'pageinfo/:id', :controller => 'pageinfo', :action => 'show'
 
+  # legacy routes to 410
+  map.connect ':content_tag/events/:state', :controller => 'main', :action => 'do_410'
+  map.connect ':content_tag/events/:year/:month/:state', :controller => 'main', :action => 'do_410'
+  
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
   map.site_news ':content_tag/news', :controller => 'pages', :action => 'news'

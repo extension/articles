@@ -132,6 +132,12 @@ class ApplicationController < ActionController::Base
     @page_title_text = 'Status 404 - Page Not Found'
     render :template => "/shared/404", :status => "404"
   end
+  
+  def do_410
+    personalize_location_and_institution if not @personal
+    @page_title_text = 'Status 410 - Page Removed'
+    render :template => "/shared/410", :status => "410"
+  end
     
   private
   
