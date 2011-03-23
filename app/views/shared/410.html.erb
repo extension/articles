@@ -1,5 +1,19 @@
-<h1>Page Removed</h1>
+<% @show_resource_areas = true %>
+<% @includejquery = true %>
+<% @cat_landing = true %>
 
-<p>The requested page or list has been removed from our server.</p>
-
-<p>Visit the <a style="text-decoration: underline;" href="/">eXtension home page</a>.</p>
+  <!-- This file lives in views/shared/404.rhtml -->
+  
+  
+  
+<div id="page404">
+  <h1>Page Removed</h1>
+  
+  <p>The requested page or list has been removed from our server.</p>
+  
+  <p>You could try searching for another page or browsing one of our Resource Areas.</p>
+  
+  <p><%= render(:partial => 'shared/search') %></p>
+  
+  <p id="photoattribution"><a href="http://creativecommons.org/licenses/by-sa/2.0/deed.en">CC</a> photo attribution: <a href="http://www.flickr.com/photos/mahalie/571097015/">http://www.flickr.com/photos/mahalie/571097015/</a>
+</div>
