@@ -74,15 +74,11 @@ def queue_and_process_links
   end
 end
 
-def update_article_broken_flags
-  # mass update
-  Page.update_broken_flags
-end
-
 begin
   Lockfile.new('/tmp/checklinks.lock', :retries => 0) do
     queue_and_process_links
-    update_article_broken_flags
+    Page.update_broken_flags
+    LinkStat.update_counts
   end
 rescue Lockfile::MaxTriesLockError => e
   puts "Another link checker is already running. Exiting."
