@@ -115,15 +115,11 @@ class Rebuild < Thor
     end
   end
   
-  desc "link_stats", "Rebuild link stats"
+  desc "link_stats", "Rebuild link stats (doesn't show progress)"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
-  method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
   def link_stats
     load_rails(options[:environment])
-    Page.all.each do |page|
-      counts = page.link_counts(true)
-      puts "Processed Page #{page.id} #{counts.inspect}" if (options[:verbose])
-    end
+    LinkStat.update_counts
   end
   
   desc "links", "Recreate links table (also recreates linkings)"
