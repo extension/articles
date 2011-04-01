@@ -644,7 +644,7 @@ class Page < ActiveRecord::Base
     # make an initial downcased copy - don't want to modify name as a side effect
     tmp_url_title = self.title.downcase
     # get rid of anything that's not a "word", not whitespace, not : and not - 
-    tmp_url_title.gsub!(/[^\sa-zA-Z:-]/,'')
+    tmp_url_title.gsub!(/[^\s0-9a-zA-Z:-]/,'')
     # reduce whitespace/multiple spaces to a single space
     tmp_url_title.gsub!(/\s+/,' ')
     # remove leading and trailing whitespace
