@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110319163256) do
+ActiveRecord::Schema.define(:version => 20110329213509) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -145,23 +145,6 @@ ActiveRecord::Schema.define(:version => 20110319163256) do
     t.text     "data"
     t.datetime "created_at"
   end
-
-  create_table "analytics", :force => true do |t|
-    t.integer  "page_id"
-    t.string   "datalabel"
-    t.date     "start_date"
-    t.date     "end_date"
-    t.text     "analytics_url"
-    t.string   "analytics_url_hash"
-    t.integer  "entrances"
-    t.integer  "bounces"
-    t.float    "bouncerate"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "analytics", ["analytics_url_hash"], :name => "recordsignature", :unique => true
-  add_index "analytics", ["page_id"], :name => "page_id_ndx"
 
   create_table "annotation_events", :force => true do |t|
     t.integer  "user_id"
@@ -778,23 +761,23 @@ ActiveRecord::Schema.define(:version => 20110319163256) do
 
   create_table "pages", :force => true do |t|
     t.string   "datatype"
-    t.boolean  "indexed",                                           :default => true
+    t.boolean  "indexed",                                      :default => true
     t.text     "title"
-    t.string   "url_title",                   :limit => 101
-    t.text     "content",                     :limit => 2147483647
+    t.string   "url_title",              :limit => 101
+    t.text     "content",                :limit => 2147483647
     t.integer  "content_length"
     t.integer  "content_words"
-    t.text     "original_content",            :limit => 2147483647
+    t.text     "original_content",       :limit => 2147483647
     t.datetime "source_created_at"
     t.datetime "source_updated_at"
     t.string   "source"
     t.text     "source_id"
     t.text     "source_url"
     t.string   "source_url_fingerprint"
-    t.boolean  "is_dpl",                                            :default => false
+    t.boolean  "is_dpl",                                       :default => false
     t.text     "reference_pages"
     t.integer  "migrated_id"
-    t.boolean  "has_broken_links",                                  :default => false
+    t.boolean  "has_broken_links",                             :default => false
     t.text     "coverage"
     t.text     "state_abbreviations"
     t.datetime "event_start"
@@ -804,7 +787,6 @@ ActiveRecord::Schema.define(:version => 20110319163256) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "page_source_id"
-    t.text     "community_content_tag_names"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"

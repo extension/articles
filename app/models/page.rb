@@ -30,7 +30,6 @@ class Page < ActiveRecord::Base
   has_many :content_buckets, :through => :bucketings
   has_one :link_stat
   belongs_to :page_source
-  has_many :analytics
   has_many :cached_tags, :as => :tagcacheable
   
 
@@ -645,7 +644,7 @@ class Page < ActiveRecord::Base
     # make an initial downcased copy - don't want to modify name as a side effect
     tmp_url_title = self.title.downcase
     # get rid of anything that's not a "word", not whitespace, not : and not - 
-    tmp_url_title.gsub!(/[^\sa-zA-Z:-]/,'')
+    tmp_url_title.gsub!(/[^\s0-9a-zA-Z:-]/,'')
     # reduce whitespace/multiple spaces to a single space
     tmp_url_title.gsub!(/\s+/,' ')
     # remove leading and trailing whitespace
@@ -994,41 +993,7 @@ class Page < ActiveRecord::Base
     return [] unless abbreviations_string
     abbreviations_string.split(/ |;|,/).compact.delete_if { | each | each.blank? }.collect { | each | each.upcase }.uniq
   end
-  
-  
-  def diff_analytics_entrances(minuend_label,subtrahend_label,returnpercentage=true)
-    minuend = self.analytics.where({:datalabel => minuend_label}).sum(:entrances)
-    subtrahend = self.analytics.where({:datalabel => subtrahend_label}).sum(:entrances)
     
-    if(minuend > 0)
-      if(subtrahend > 0)
-        difference = minuend - subtrahend
-        percentage = difference/subtrahend.to_f
-      else
-        difference = minuend
-        percentage = nil
-      end
-    else
-      if(subtrahend > 0)
-        difference = 0 - subtrahend
-        percentage = -1
-      else
-        difference = nil
-        percentage = nil
-      end
-    end
-    if(returnpercentage)
-      [difference,percentage]
-    else
-      difference
-    end
-  end
-  
-  def analytics_entrances(datalabel)
-    self.analytics.where({:datalabel => datalabel}).sum(:entrances)
-  end
-    
-  
   def content_to_s
     nokogiri_doc = Nokogiri::HTML::DocumentFragment.parse(self.content)
     nokogiri_doc.css('script').each { |node| node.remove }
