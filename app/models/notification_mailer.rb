@@ -606,6 +606,22 @@ class NotificationMailer < ActionMailer::Base
      urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
      @body           = {:isdemo => @isdemo, :submitted_questions_list => submitted_questions_list, :sincehours => sincehours, :urls => urls }
    end
+   
+   ### NOTE: not based on a notification
+   ### Right now, we're doing this at 2 and 4 week anniversaries of AaE vacation
+   def aae_away_reminder(aae_expert)
+     # base parameters for the email
+     self.base_email('aae_internal')
+     
+     @subject = @subjectlabel + 'Ask an Expert Away Status Reminder'
+     @recipients = aae_expert.email
+     
+     urls = Hash.new
+     urls['aae_prefs'] = url_for(:controller => 'aae/prefs', :action => :index)
+     urls['contactus'] = url_for(:controller => 'aae/help', :action => :index)
+     
+     @body = {:isdemo => @isdemo, :expert => aae_expert, :away_date => aae_expert.vacated_aae_at, :urls => urls}
+   end
   
    # -----------------------------------
    #  learn session

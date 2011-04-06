@@ -274,7 +274,7 @@ class Aae::PrefsController < ApplicationController
       # if they unchecked the box
       else
         if !@currentuser.aae_responder
-          @currentuser.update_attributes(:aae_responder => true, :vacated_aae_at => nil)
+          @currentuser.update_attributes(:aae_responder => true, :vacated_aae_at => nil, :first_aae_away_reminder => false, :second_aae_away_reminder => false)
         end
       end
       render :update do |page|
@@ -304,7 +304,7 @@ class Aae::PrefsController < ApplicationController
   def turn_off_vacation
     if request.post?
       if !@currentuser.aae_responder
-        @currentuser.update_attributes(:aae_responder => true, :vacated_aae_at => nil)
+        @currentuser.update_attributes(:aae_responder => true, :vacated_aae_at => nil, :first_aae_away_reminder => false, :second_aae_away_reminder => false)
         render :update do |page|
           page.reload
         end

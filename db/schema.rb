@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110223210420) do
+ActiveRecord::Schema.define(:version => 20110317163847) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -70,6 +70,8 @@ ActiveRecord::Schema.define(:version => 20110223210420) do
     t.string   "base_login_string"
     t.integer  "login_increment"
     t.datetime "vacated_aae_at"
+    t.boolean  "first_aae_away_reminder",                :default => false
+    t.boolean  "second_aae_away_reminder",               :default => false
   end
 
   add_index "accounts", ["email"], :name => "email", :unique => true
