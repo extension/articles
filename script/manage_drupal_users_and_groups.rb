@@ -284,7 +284,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   
   #  truncate first
   begin
-    result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.field_data_group_audience;")
+    result = connection.execute("DELETE FROM  #{drupaldatabase}.field_data_group_audience WHERE #{drupaldatabase}.field_data_group_audience.entity_type = 'user';")
   rescue => err
     $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
     return false
@@ -292,7 +292,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   
   #  truncate first
   begin
-    result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.field_revision_group_audience;")
+    result = connection.execute("DELETE FROM  #{drupaldatabase}.field_revision_group_audience WHERE #{drupaldatabase}.field_revision_group_audience.entity_type = 'user';")
   rescue => err
     $stderr.puts "ERROR: Exception raised during the og table update: #{err}"
     return false
@@ -346,7 +346,7 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   puts "creating managed memberships in the field_revision_group_audience table..."
 
   # duplicate of field_data_group_audience
-  sql = "INSERT INTO #{drupaldatabase}.field_revision_group_audience SELECT * from #{drupaldatabase}.field_data_group_audience"
+  sql = "INSERT INTO #{drupaldatabase}.field_revision_group_audience SELECT * from #{drupaldatabase}.field_data_group_audience where entity_type = 'user'"
 
   # execute the sql
   begin

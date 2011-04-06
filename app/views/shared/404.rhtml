@@ -1,12 +1,28 @@
-<h1>We're sorry - Page not found</h1>
+<% @show_resource_areas = true %>
+<% @includejquery = true %>
+<% @cat_landing = true %>
 
-<% if @missing %>
-<p>The requested page <strong><%= @missing %></strong> was not found on our server.</p>
-<% end %>
-
-<p>The site address may have been typed incorrectly or the page may have been removed for some reason.</p>
-<%- if !@missing_message.nil? -%>
-   <p><strong>Additional Information:</strong></p>
-   <p><%= @missing_message %></p> 
-<%- end -%>
-<p>Visit the <a style="text-decoration: underline;" href="/">eXtension home page</a>.</p>
+  <!-- This file lives in views/shared/404.rhtml -->
+  
+  
+  
+<div id="page404">
+  <h1>We're sorry - Page not found</h1>
+  
+  <% if @missing %>
+    <p>The requested page <strong><%= @missing %></strong> was not found on our server.</p>
+  <% end %>
+  
+  <p>The page address may have been typed incorrectly or the page may have been removed.</p>
+  
+  <%- if !@missing_message.nil? -%>
+     <p><strong>Additional Information:</strong></p>
+     <p><%= @missing_message %></p> 
+  <%- end -%>
+  
+  <p>You could try searching for your page or browsing one of our Resource Areas.</p>
+  
+  <p><%= render(:partial => 'shared/search') %></p>
+  
+  <p id="photoattribution"><a href="http://creativecommons.org/licenses/by-sa/2.0/deed.en">CC</a> photo attribution: <a href="http://www.flickr.com/photos/mahalie/571097015/">http://www.flickr.com/photos/mahalie/571097015/</a>
+</div>

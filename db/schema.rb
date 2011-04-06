@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110317163847) do
+ActiveRecord::Schema.define(:version => 20110329213509) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -190,37 +190,14 @@ ActiveRecord::Schema.define(:version => 20110317163847) do
   add_index "api_keys", ["keyvalue"], :name => "index_api_keys_on_keyvalue", :unique => true
   add_index "api_keys", ["user_id", "name"], :name => "index_api_keys_on_user_id_and_name", :unique => true
 
-  create_table "articles", :force => true do |t|
-    t.text     "title"
-    t.string   "url"
-    t.text     "author"
-    t.text     "content",          :limit => 16777215
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "wiki_created_at"
-    t.datetime "wiki_updated_at"
-    t.string   "datatype"
-    t.string   "original_url"
-    t.text     "original_content", :limit => 16777215
-    t.boolean  "is_dpl",                               :default => false
-    t.boolean  "has_broken_links"
-  end
-
-  add_index "articles", ["datatype"], :name => "index_wiki_articles_on_type"
-  add_index "articles", ["original_url"], :name => "index_wiki_articles_on_original_url", :unique => true
-  add_index "articles", ["title"], :name => "index_wiki_articles_on_title", :length => {"title"=>"255"}
-  add_index "articles", ["url"], :name => "index_wiki_articles_on_url", :unique => true
-  add_index "articles", ["wiki_created_at", "wiki_updated_at"], :name => "index_articles_on_wiki_created_at_and_wiki_updated_at"
-
   create_table "bucketings", :force => true do |t|
-    t.integer  "bucketable_id",     :null => false
-    t.string   "bucketable_type",   :null => false
+    t.integer  "page_id",           :null => false
     t.integer  "content_bucket_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "bucketings", ["bucketable_id", "bucketable_type", "content_bucket_id"], :name => "bucketingindex", :unique => true
+  add_index "bucketings", ["page_id", "content_bucket_id"], :name => "bucketingindex", :unique => true
 
   create_table "cached_tags", :force => true do |t|
     t.integer  "tagcacheable_id"
@@ -233,6 +210,8 @@ ActiveRecord::Schema.define(:version => 20110317163847) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "cached_tags", ["tagcacheable_id", "tagcacheable_type", "owner_id", "tagging_kind"], :name => "signature"
 
   create_table "categories", :force => true do |t|
     t.string   "name"
@@ -331,45 +310,6 @@ ActiveRecord::Schema.define(:version => 20110317163847) do
 
   add_index "content_buckets", ["name"], :name => "index_content_buckets_on_name", :unique => true
 
-  create_table "content_link_stats", :force => true do |t|
-    t.integer  "content_id"
-    t.integer  "total"
-    t.integer  "external"
-    t.integer  "internal"
-    t.integer  "wanted"
-    t.integer  "local"
-    t.integer  "broken"
-    t.integer  "warning"
-    t.integer  "redirected"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "content_link_stats", ["content_id"], :name => "index_content_link_stats_on_content_id"
-
-  create_table "content_links", :force => true do |t|
-    t.integer  "linktype"
-    t.integer  "content_id"
-    t.string   "content_type"
-    t.string   "host"
-    t.string   "source_host"
-    t.string   "path"
-    t.string   "original_fingerprint"
-    t.text     "original_url"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "status"
-    t.integer  "error_count",            :default => 0
-    t.datetime "last_check_at"
-    t.integer  "last_check_status"
-    t.boolean  "last_check_response"
-    t.string   "last_check_code"
-    t.text     "last_check_information"
-  end
-
-  add_index "content_links", ["content_id", "content_type", "status", "linktype"], :name => "coreindex"
-  add_index "content_links", ["original_fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
-
   create_table "counties", :force => true do |t|
     t.integer "fipsid",                    :default => 0,  :null => false
     t.integer "location_id",               :default => 0,  :null => false
@@ -427,26 +367,6 @@ ActiveRecord::Schema.define(:version => 20110317163847) do
   add_index "email_aliases", ["destination"], :name => "destination_ndx"
   add_index "email_aliases", ["mail_alias"], :name => "alias_ndx"
 
-  create_table "events", :force => true do |t|
-    t.text     "title"
-    t.text     "description"
-    t.date     "date"
-    t.time     "time"
-    t.text     "location"
-    t.text     "coverage"
-    t.text     "state_abbreviations"
-    t.datetime "updated_at"
-    t.datetime "created_at"
-    t.datetime "xcal_updated_at"
-    t.datetime "start"
-    t.integer  "duration"
-    t.boolean  "deleted"
-    t.string   "time_zone"
-  end
-
-  add_index "events", ["date"], :name => "index_events_on_date"
-  add_index "events", ["xcal_updated_at"], :name => "index_events_on_xcal_updated_at"
-
   create_table "expertise_areas", :force => true do |t|
     t.integer  "category_id", :null => false
     t.integer  "user_id",     :null => false
@@ -498,22 +418,6 @@ ActiveRecord::Schema.define(:version => 20110317163847) do
   end
 
   add_index "expertise_locations_users", ["user_id", "expertise_location_id"], :name => "fk_locations_users", :unique => true
-
-  create_table "faqs", :force => true do |t|
-    t.text     "question"
-    t.text     "answer"
-    t.text     "categories"
-    t.text     "states"
-    t.text     "hardiness_zones"
-    t.datetime "heureka_published_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "status"
-    t.text     "age_ranges"
-    t.text     "reference_questions"
-  end
-
-  add_index "faqs", ["heureka_published_at"], :name => "index_faqs_on_heureka_published_at"
 
   create_table "feed_locations", :force => true do |t|
     t.text     "uri",                                   :null => false
@@ -650,15 +554,52 @@ ActiveRecord::Schema.define(:version => 20110317163847) do
 
   add_index "learn_sessions", ["session_start", "session_end"], :name => "index_learn_sessions_on_session_start_and_session_end"
 
-  create_table "linkings", :force => true do |t|
-    t.integer  "content_link_id"
-    t.integer  "contentitem_id"
-    t.string   "contentitem_type"
+  create_table "link_stats", :force => true do |t|
+    t.integer  "page_id"
+    t.integer  "total"
+    t.integer  "external"
+    t.integer  "internal"
+    t.integer  "wanted"
+    t.integer  "local"
+    t.integer  "broken"
+    t.integer  "warning"
+    t.integer  "redirected"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "linkings", ["content_link_id", "contentitem_id", "contentitem_type"], :name => "recordsignature", :unique => true
+  add_index "link_stats", ["page_id"], :name => "index_content_link_stats_on_content_id"
+
+  create_table "linkings", :force => true do |t|
+    t.integer  "link_id"
+    t.integer  "page_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "linkings", ["link_id", "page_id"], :name => "recordsignature", :unique => true
+
+  create_table "links", :force => true do |t|
+    t.integer  "linktype"
+    t.integer  "page_id"
+    t.string   "host"
+    t.string   "source_host"
+    t.string   "path"
+    t.string   "fingerprint"
+    t.text     "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "status"
+    t.integer  "error_count",            :default => 0
+    t.datetime "last_check_at"
+    t.integer  "last_check_status"
+    t.boolean  "last_check_response"
+    t.string   "last_check_code"
+    t.text     "last_check_information"
+  end
+
+  add_index "links", ["fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
+  add_index "links", ["page_id", "status", "linktype"], :name => "coreindex"
 
   create_table "list_owners", :force => true do |t|
     t.string   "email",          :limit => 96
@@ -801,6 +742,62 @@ ActiveRecord::Schema.define(:version => 20110317163847) do
     t.string   "trust_root",                :null => false
     t.datetime "created_at",                :null => false
   end
+
+  create_table "page_sources", :force => true do |t|
+    t.string   "name"
+    t.string   "uri",                                          :null => false
+    t.string   "page_uri"
+    t.string   "page_uri_column"
+    t.string   "demo_uri"
+    t.string   "demo_page_uri"
+    t.boolean  "active",                     :default => true
+    t.boolean  "retrieve_with_time",         :default => true
+    t.string   "default_datatype"
+    t.text     "default_request_options"
+    t.datetime "latest_source_time"
+    t.datetime "last_requested_at"
+    t.boolean  "last_requested_success"
+    t.text     "last_requested_information"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pages", :force => true do |t|
+    t.string   "datatype"
+    t.boolean  "indexed",                                      :default => true
+    t.text     "title"
+    t.string   "url_title",              :limit => 101
+    t.text     "content",                :limit => 2147483647
+    t.integer  "content_length"
+    t.integer  "content_words"
+    t.text     "original_content",       :limit => 2147483647
+    t.datetime "source_created_at"
+    t.datetime "source_updated_at"
+    t.string   "source"
+    t.text     "source_id"
+    t.text     "source_url"
+    t.string   "source_url_fingerprint"
+    t.boolean  "is_dpl",                                       :default => false
+    t.text     "reference_pages"
+    t.integer  "migrated_id"
+    t.boolean  "has_broken_links",                             :default => false
+    t.text     "coverage"
+    t.text     "state_abbreviations"
+    t.datetime "event_start"
+    t.string   "time_zone"
+    t.text     "event_location"
+    t.integer  "event_duration"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "page_source_id"
+  end
+
+  add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
+  add_index "pages", ["event_start"], :name => "index_pages_on_event_start"
+  add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
+  add_index "pages", ["source_created_at", "source_updated_at"], :name => "index_pages_on_source_created_at_and_source_updated_at"
+  add_index "pages", ["source_url_fingerprint"], :name => "index_pages_on_source_url_fingerprint", :unique => true
+  add_index "pages", ["title"], :name => "index_pages_on_title", :length => {"title"=>"255"}
 
   create_table "positions", :force => true do |t|
     t.integer  "entrytype",  :default => 0, :null => false
@@ -967,18 +964,21 @@ ActiveRecord::Schema.define(:version => 20110317163847) do
   add_index "submitted_questions", ["widget_name"], :name => "index_submitted_questions_on_widget_name"
 
   create_table "taggings", :force => true do |t|
-    t.integer  "tag_id",                                     :null => false
-    t.integer  "taggable_id",                                :null => false
-    t.string   "taggable_type", :limit => 32
-    t.string   "tag_display",                                :null => false
-    t.integer  "owner_id",                                   :null => false
-    t.integer  "weight",                      :default => 1, :null => false
-    t.datetime "created_at",                                 :null => false
+    t.integer  "tag_id",                                         :null => false
+    t.integer  "taggable_id",                                    :null => false
+    t.string   "taggable_type",     :limit => 32
+    t.string   "tag_display",                                    :null => false
+    t.integer  "owner_id",                                       :null => false
+    t.integer  "weight",                          :default => 1, :null => false
+    t.datetime "created_at",                                     :null => false
     t.datetime "updated_at"
     t.integer  "tagging_kind"
+    t.string   "old_taggable_type"
+    t.integer  "old_taggable_id"
   end
 
   add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagging_kind", "owner_id"], :name => "taggingindex", :unique => true
+  add_index "taggings", ["taggable_id", "taggable_type", "tagging_kind"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_tagging_kind"
 
   create_table "tags", :force => true do |t|
     t.string   "name",       :null => false

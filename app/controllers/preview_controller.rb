@@ -36,19 +36,24 @@ class PreviewController < ApplicationController
       # TODO: sponsor list?
     end
     
-    @events_count = Event.tagged_with_content_tag(@content_tag.name).count
-    @faqs_count = Faq.tagged_with_content_tag(@content_tag.name).count
-    @articles_count =  Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).count
-    @features_count = Article.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).count
-    @news_count = Article.bucketed_as('news').tagged_with_content_tag(@content_tag.name).count
-    @learning_lessons_count = Article.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).count
-    @contents_count = Article.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).count
-    @homage_count = Article.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).count
+    @all_content_count = Page.tagged_with_content_tag(@content_tag.name).count
+    @events_count = Page.events.tagged_with_content_tag(@content_tag.name).count
+    @faqs_count = Page.faqs.tagged_with_content_tag(@content_tag.name).count
+    @articles_count =  Page.articles.tagged_with_content_tag(@content_tag.name).count
+    @features_count = Page.newsicles.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).count
+    @news_count = Page.news.tagged_with_content_tag(@content_tag.name).count
+    @learning_lessons_count = Page.articles.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).count
+    @contents_count = Page.articles.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).count
+    @homage_count = Page.articles.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).count
     @homage = @community.homage
 
-    @articles_broken_count =  Article.bucketed_as('notnews').tagged_with_content_tag(@content_tag.name).broken_links.count
+    @articles_broken_count =  Page.articles.tagged_with_content_tag(@content_tag.name).broken_links.count
+    @faqs_broken_count =  Page.faqs.tagged_with_content_tag(@content_tag.name).broken_links.count
+    @events_broken_count =  Page.events.tagged_with_content_tag(@content_tag.name).broken_links.count
+    @news_broken_count =  Page.news.tagged_with_content_tag(@content_tag.name).broken_links.count
+    @all_broken_count = Page.tagged_with_content_tag(@content_tag.name).broken_links.count
 
-    @contents_page = Article.contents_for_content_tag({:content_tag => @content_tag})
+    @contents_page = Page.contents_for_content_tag({:content_tag => @content_tag})
       
     @expertise_category = Category.find_by_name(@content_tag.name)
     if(@expertise_category)
@@ -56,97 +61,7 @@ class PreviewController < ApplicationController
       @aae_autorouting_count = User.experts_by_category(@expertise_category.id).auto_routers.count
     end
   end
-  
-  
-  def articlelist
-    @filteredparameters = ParamsFilter.new([:content_tag,{:download => :string},{:articlefilter => :string}],params)
-    @right_column = false
-    if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
-      # fake content tag for display purposes
-      @content_tag = Tag.new(:name => 'all')
-    else
-      @content_tag = @filteredparameters.content_tag
-    end
-      
-
-    if(!@filteredparameters.download.nil? and @filteredparameters.download == 'csv')
-      isdownload = true
-    end
-    
-    # sets @articles and @articlefilter
-    articles_list_scope = get_articles_for_listing({:content_tag => @filteredparameters.content_tag,
-                                                    :articlefilter => @filteredparameters.articlefilter})
-                                                     
-                               
-                              
-                              
-    
-    if(isdownload)
-      @articles = articles_list_scope.ordered
-      article_type = (@articlefilter.blank?) ? 'all' : @articlefilter.downcase 
-      csvfilename =  "#{article_type}_articles_for_tag_#{@content_tag.name}"
-      return article_csvlist(@articles,csvfilename,@content_tag)
-    else
-      @articles = articles_list_scope.ordered.paginate(:page => params[:page], :per_page => 100)
-    end
         
-  end
-  
-  def articlelinklist
-    @filteredparameters = ParamsFilter.new([:content_tag,{:articlefilter => :string},{:onlybroken => :boolean}],params)
-    @right_column = false
-    if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
-      # fake content tag for display purposes
-      @content_tag = Tag.new(:name => 'all')
-    else
-      @content_tag = @filteredparameters.content_tag
-    end
-    
-    # sets @articlefilter
-    articles_list_scope = get_articles_for_listing({:content_tag => @filteredparameters.content_tag,
-                                          :articlefilter => @filteredparameters.articlefilter})
-                                          
-    sort_order = "articles.has_broken_links DESC,articles.wiki_updated_at DESC"
-    if(@filteredparameters.onlybroken)
-      @articles = articles_list_scope.broken_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
-    else
-      @articles = articles_list_scope.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
-    end
-  end
-  
-  def articlelinks
-    @right_column = false
-    @article = Article.find_by_id(params[:id])
-    if(@article)
-      @external_links = @article.content_links.external
-      @local_links = @article.content_links.local
-      @internal_links = @article.content_links.internal
-      @wanted_links = @article.content_links.unpublished
-    end
-  end
-  
-  def faqlist
-    @right_column = false
-    if(!@content_tag.nil?)
-      if(!params[:download].nil? and params[:download] == 'csv')
-        @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered
-        csvfilename =  "faqs_for_tag_#{@content_tag.name}"
-        return faq_csvlist(@faqs,csvfilename,@content_tag)
-      else
-        @faqs = Faq.tagged_with_content_tag(@content_tag.name).ordered.paginate(:page => params[:page], :per_page => 100)
-      end
-    end
-  end
-  
-  def eventlist
-    @right_column = false
-    if(!@content_tag.nil?)
-      @events = Event.tagged_with_content_tag(@content_tag.name).paginate(:page => params[:page], :per_page => 100, :order => 'xcal_updated_at DESC')
-    end
-  end
-  
-  
-  
   def expertlist
   end
   
@@ -179,7 +94,7 @@ class PreviewController < ApplicationController
     end
 
     begin 
-      @article =  PreviewArticle.new_from_extensionwiki_page(title_to_lookup)
+      @article =  PreviewPage.new_from_source('copwiki',title_to_lookup)
     rescue ContentRetrievalError => exception
       @missing = title_to_lookup
       @missing_message = "Preview Page Retrieval failed, reason:<br/> #{exception.message}"
@@ -228,7 +143,7 @@ class PreviewController < ApplicationController
         end
 
         @community = use_content_tag.content_community
-        @in_this_section = Article.contents_for_content_tag({:content_tag => use_content_tag})  if @community
+        @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag})  if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
       end
     end
@@ -246,70 +161,8 @@ class PreviewController < ApplicationController
 
   end
   
-  def article_csvlist(articlelist,filename,content_tag)
-    @articles = articlelist
-    @content_tag = content_tag
-    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
-    response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
-    render(:template => 'preview/article_csvlist', :layout => false)
-  end
   
-  def faq_csvlist(faqlist,filename,content_tag)
-    @faqs = faqlist
-    @content_tag = content_tag
-    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
-    response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
-    render(:template => 'preview/faq_csvlist', :layout => false)
-  end
+  
 
-  private
-  
-  def get_articles_for_listing(options = {})
-    paginate_list = options[:paginate_list]
-    content_tag = options[:content_tag]
-    articlefilter = options[:articlefilter]
-    
-    if(articlefilter.nil?)
-       bucket = 'notnews'
-       @articlefilter = nil
-     else
-       case articlefilter
-       when 'all'
-         @articlefilter = 'All'
-         bucket = nil
-       when 'news'
-         @articlefilter = 'News'
-         bucket = 'news'
-       when 'feature'
-         @articlefilter = 'Feature'
-         bucket = 'feature'
-       when 'learning lessons'
-         @articlefilter = 'Learning Lesson'
-         bucket = 'learning lessons'
-       when 'contents'
-         @articlefilter = 'Contents'
-         bucket = 'contents'
-       when 'homage'
-         @articlefilter = 'Homage'
-         bucket = 'homage'
-       when 'learn more'
-         @articlefilter = 'Learn More'
-         bucket = 'learn more'
-       else
-         @articlefilter = nil
-         bucket = 'notnews'
-       end # case statement
-     end # articlefilter.nil?
-     
-     # build the scope
-     articles_list_scope = Article.scoped({})
-     if(bucket)
-       articles_list_scope = articles_list_scope.bucketed_as(bucket)
-     end
-     if(content_tag)
-       articles_list_scope = articles_list_scope.tagged_with_content_tag(content_tag.name)
-     end
-     articles_list_scope
-  end
   
 end

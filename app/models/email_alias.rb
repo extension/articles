@@ -36,9 +36,7 @@ class EmailAlias < ActiveRecord::Base
       # set alias to eXtensionID string?
       self.disabled = !(self.user.is_validuser?)
         
-      if([INDIVIDUAL_FORWARD,INDIVIDUAL_FORWARD_CUSTOM,INDIVIDUAL_GOOGLEAPPS].include?(self.alias_type))
-        logger.debug "setting alias!"
-            
+      if([INDIVIDUAL_FORWARD,INDIVIDUAL_FORWARD_CUSTOM,INDIVIDUAL_GOOGLEAPPS].include?(self.alias_type))          
         self.mail_alias = self.user.login
       end
     

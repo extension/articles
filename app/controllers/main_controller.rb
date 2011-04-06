@@ -11,6 +11,8 @@ class MainController < ApplicationController
   layout 'pubsite'
   
   def index
+     @published_content = true  # index the main page
+    
      set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
      set_titletag('eXtension - Objective. Research-based. Credible.')
      @right_column = false
@@ -22,24 +24,23 @@ class MainController < ApplicationController
 		sponsorlist.each{ |sponsor| @sponsors[sponsor.level] << sponsor if sponsor.level}
      
      # get diverse list of articles across different communities
-     @community_highlights = Article.diverse_feature_list({:limit => 6})
+     @community_highlights = Page.diverse_feature_list({:limit => 6})
 
      @calendar_date = get_calendar_date
-     @calendar_events = Event.main_calendar_list({:within_days => 5, :calendar_date => @calendar_date, :limit => 6})
-
-     recent_articles = Article.main_recent_list({:limit => 10})
-     recent_faqs = Faq.main_recent_list({:limit => 10})
-     @recent_content = content_date_sort(recent_articles, recent_faqs, 10)
-  end
+     @calendar_events = Page.recent_content({:datatypes => ['Event'], :within_days => 5, :calendar_date => @calendar_date, :limit => 6, :order => 'event_start ASC'})
+     @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
+   end
   
   def content_tag
+    @published_content = true  # index CoP landing pages
+    
     if(!@community.nil?) 
       set_title(@community.public_name,@community.public_description)
       set_titletag("#{@community.public_name} - eXtension")
       community_content_tag_names = @community.content_tag_names
       @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
-      @in_this_section = Article.contents_for_content_tag({:content_tag => @content_tag})
-      @community_highlights = Article.main_feature_list({:content_tag => @content_tag, :limit => 8})
+      @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
+      @community_highlights = Page.main_feature_list({:content_tag => @content_tag, :limit => 8})
       @youth = true if @topic and @topic.name == 'Youth'
       flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
       flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
@@ -56,18 +57,18 @@ class MainController < ApplicationController
     @calendar_date = get_calendar_date
     
     if(@content_tag.nil?)
-      @news = Article.main_news_list({:limit => 3})
-      @recent_learning_lessons = Article.main_lessons_list({:limit => 3})
-      @faqs = Faq.main_recent_list({:limit => 3})
-      @calendar_events = Event.main_calendar_list({:within_days => 3, :calendar_date => @calendar_date})
-      @articles = Article.ordered(Article.orderings['Newest to oldest']).limit(3)
+      @news = Page.recent_content({:datatypes => ['News'], :limit => 3})
+      @recent_learning_lessons = Page.main_lessons_list({:limit => 3})
+      @faqs = Page.recent_content({:datatypes => ['Faq'], :limit => 3})
+      @calendar_events = Page.recent_content({:datatypes => ['Event'],:within_days => 3, :calendar_date => @calendar_date})
+      @articles = Page.ordered(Page.orderings['Newest to oldest']).limit(3)
     else
-      @news = Article.main_news_list({:content_tag => @content_tag, :limit => 3})
-      @recent_learning_lessons = Article.main_lessons_list({:content_tag => @content_tag, :limit => 3})
-      @faqs = Faq.main_recent_list({:content_tags => [@content_tag], :limit => 3})
-      @calendar_events =  Event.main_calendar_list({:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag]})
-      @articles = Article.main_recent_list({:content_tags => [@content_tag], :limit => 8}) unless @community
-      @recent_articles = Article.main_recent_list({:content_tags => [@content_tag], :limit => 3}) unless @in_this_section
+      @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
+      @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
+      @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
+      @calendar_events =  Page.recent_content({:datatypes => ['Event'],:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag], :order => 'event_start ASC'})
+      @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
+      @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
     end
   
     if(!@community.nil?)
@@ -87,7 +88,7 @@ class MainController < ApplicationController
     @right_column = false
     set_title('About', "Read about our origins and what we have to offer online.")
     set_titletag('About eXtension - Our origins and what we have to offer')
-    @article = Article.find_by_title_url("eXtension_About")
+    @article = Page.find_by_title_url("eXtension_About")
     render :partial => "shared/article", :locals => {:article => @article}, :layout => true
   end
   
@@ -95,7 +96,7 @@ class MainController < ApplicationController
     @right_column = false
     set_title('Contact Us', "Your comments and questions are very important to us. Your quality feedback makes a tremendous impact on improving our site.")
     set_titletag('eXtension - Contact Us')
-    @article = Article.find_by_title_url("eXtension_Contact_Us")
+    @article = Page.find_by_title_url("eXtension_Contact_Us")
     @article_class = "contactus"
     render :partial => "shared/article", :locals => {:article => @article}, :layout => true
   end 
@@ -104,7 +105,7 @@ class MainController < ApplicationController
     @right_column = false
     set_title('Privacy Policy', "We have developed this privacy statement in order to demonstrate our commitment to safeguarding the privacy of those who use the eXtension web site.")
     set_titletag('eXtension - Privacy Policy')
-    @article = Article.find_by_title_url("eXtension_Privacy_Policy")
+    @article = Page.find_by_title_url("eXtension_Privacy_Policy")
     render :partial => "shared/article", :locals => {:article => @article}, :layout => true
   end
   
@@ -112,7 +113,7 @@ class MainController < ApplicationController
     @right_column = false
     set_title('Terms of Use', "Please read terms of use before using this site.")
     set_titletag('eXtension - Terms of Use')
-    @article = Article.find_by_title_url("eXtension_Terms_of_Use")
+    @article = Page.find_by_title_url("eXtension_Terms_of_Use")
     render :partial => "shared/article", :locals => {:article => @article}, :layout => true
   end
   
@@ -120,7 +121,7 @@ class MainController < ApplicationController
     @right_column = false
     set_title('Legal Disclaimer', "Please read the disclaimer before using this site.")
     set_titletag('eXtension - Legal Disclaimer')
-    @article = Article.find_by_title_url("eXtension_Disclaimer")
+    @article = Page.find_by_title_url("eXtension_Disclaimer")
     render :partial => "shared/article", :locals => {:article => @article}, :layout => true
   end
 
@@ -128,7 +129,7 @@ class MainController < ApplicationController
     @right_column = false
     set_title('Partners', "Without our partners, eXtension would not be possible.")
     set_titletag('eXtension - Partners')
-    @article = Article.find_by_title_url("eXtension_Partners")
+    @article = Page.find_by_title_url("eXtension_Partners")
     render :partial => "shared/article", :locals => {:article => @article}, :layout => true
   end
 
@@ -137,13 +138,13 @@ class MainController < ApplicationController
     set_title('Resource Areas', ' eXtension content is organized around resource areas. See which areas might make a connection with you.')
     set_titletag('eXtension - Resource Areas')
     @communities = Community.launched.ordered_by_topic
-    @article = Article.find_by_title_url("eXtension_Resource_Areas")
+    @article = Page.find_by_title_url("eXtension_Resource_Areas")
   end
 
   def sponsors
     set_title('Our Sponsors')
     set_titletag('eXtension - Our Sponsors')
-    @article = Article.find_by_title_url("eXtension_Sponsors")
+    @article = Page.find_by_title_url("eXtension_Sponsors")
     render :partial => "shared/article", :locals => {:article => @article}, :layout => true
   end
     

@@ -1,0 +1,55 @@
+<%- if @content_tag.nil? %>
+   <p>Invalid content tag</p>
+<%- else -%>
+   <%- if !@articlefilter.nil? %>
+      <h1><%= @articlefilter %> Articles for Tag: <%= @content_tag.name %></h1>
+   <%- else -%>
+      <h1>All Articles for Tag: <%= @content_tag.name %></h1>
+   <%- end -%>
+
+   <div id="paginator_wrapper"> 
+   <% if @pages.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @pages.offset + 1 %>-<%= @pages.offset + @pages.length %></strong> of <strong><%= @pages.total_entries %></strong></p>
+   <% else %>
+       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+   <% end %>
+
+   <%= will_paginate @pages, :params => {:articlefilter => params[:articlefilter]} %>
+   </div>
+
+   <p id="csv"><%= link_to('Download a list of these articles (csv)',:action => 'pagelist', :content_types => params[:content_types], :articlefilter => params[:articlefilter], :download => 'csv') %> </p>
+   <table cellspacing="0" border="1">
+       <tr>
+           <th>Page ID</th>
+           <th>Page Type</th>
+           <th>Published Title</th>
+           <th>Published At</th>
+           <th>Updated At</th>
+           <th>Source</th> 
+           <th>Page Info</th> 
+       </tr>
+    
+       <% for page in @pages %>
+           <tr id="article_row_<%= page.id %>">
+              <td><%= page.id %></td>
+              <td><%= page.datatype %></td>
+              <td><%= link_to(page.title, page.id_and_link) %></td>
+              <td><%= humane_date(page.source_created_at) %></td>
+              <td><%= humane_date(page.source_updated_at) %></td>
+              <td><%= link_to('Source Link',page.source_url)%></td> 
+              <td><%= link_to('details',pageinfo_page_url(:id => page.id))%></td> 
+           </tr>
+       <% end%>
+   </table>
+
+
+   <div id="paginator_wrapper"> 
+   <% if @pages.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @pages.offset + 1 %>-<%= @pages.offset + @pages.length %></strong> of <strong><%= @pages.total_entries %></strong></p>
+   <% else %>
+       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+   <% end %>
+
+   <%= will_paginate @pages, :params => {:articlefilter => params[:articlefilter]} %>
+   </div>
+<%- end -%>

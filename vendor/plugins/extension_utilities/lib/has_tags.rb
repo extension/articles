@@ -15,6 +15,9 @@ module Extension
 
         # any content tag scope
         add_any_content_tag_scope(opts)
+        
+        # all content tag scope
+        add_all_content_tag_scope(opts)
       end
       
       # no options currently
@@ -54,8 +57,16 @@ module Extension
         named_scope :tagged_with_any_content_tags, lambda {|tagliststring|
           includelist = Tag.castlist_to_array(tagliststring)
           includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})) AND (taggings.tagging_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}')"
-          {:include => {:taggings => :tag}, :conditions => includeconditions}
+          {:joins => {:taggings => :tag}, :conditions => includeconditions}
         }
+      end
+        
+      def add_all_content_tag_scope(opts={})    
+        named_scope :tagged_with_all_content_tags, lambda{|tagliststring|
+          includelist = Tag.castlist_to_array(tagliststring)
+          includeconditions = "(tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')}) AND (taggings.tagging_kind = #{Tagging::CONTENT}) AND (taggings.taggable_type = '#{self.name}'))"
+          {:joins => {:taggings => :tag}, :conditions => includeconditions, :group => "#{self.table_name}.id", :having => "COUNT(#{self.table_name}.id) = #{includelist.size}"}
+        }  
       end
       
       

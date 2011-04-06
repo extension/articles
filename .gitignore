@@ -16,6 +16,7 @@
 
 # /public/
 /public/system
+/public/sitemaps/*.xml
 
 # /db/
 /db/schema.rb

@@ -1,7 +1,7 @@
 <h1>Reports</h1>
 
 <h3>Published Item Count</h3>
-
+<p><a href="/reports/publishedcontent">Published content by resource area tag</a></p>
 <table cellspacing="0" summary="Item Counts"o>
     <tr>
         <th scope="col">Item</th> 
@@ -9,19 +9,23 @@
     </tr>
     <tr>
         <td>Articles</td>
-        <td><%= Article.all.count %></td>
+        <td><%= Page.articles.count %></td>
     </tr>
         <td>Faqs</td>
-        <td><%= Faq.all.count %></td>
+        <td><%= Page.faqs.count %></td>
     <tr>
     </tr>
         <td>Events</td>
-       <td><%= Event.all.count %></td>
+       <td><%= Page.events.count %></td>
     <tr>
+      </tr>
+          <td>News</td>
+         <td><%= Page.news.count %></td>
+      <tr>
 </table>
-<h3><%= link_to "Numbers (People Report)", :controller => "people/numbers", :action => "index"%></h3>
 
-
-<h3><%= link_to "Ask an Expert Reports (requires login)", :controller => "aae/reports", :action => "index" %></h3>
-
-
+<h3>Additional Reports</h3>
+<ul>
+<li><%= link_to "Numbers (People Report)", :controller => "people/numbers", :action => "index"%></li>
+<li><%= link_to "Ask an Expert Reports (requires login)", :controller => "aae/reports", :action => "index" %></li>
+</ul>

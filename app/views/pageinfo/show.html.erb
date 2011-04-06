@@ -1,0 +1,140 @@
+<%- if @page.nil? %>
+   <p>Invalid article id</p>
+<%- else -%>
+  <h2>Article Information</h2>
+  <table cellspacing="0" border="1">
+      <tr>
+          <td>Internal Page ID</td>
+          <td><%= @page.id %></td>
+      </tr>
+      <tr>
+          <td>Page Type</td>
+          <td><%= @page.datatype %></td>
+      </tr>
+      <tr>
+          <td>Indexed?</td>
+          <td><%= @page.indexed? ? 'Yes' : 'No' %></td>
+      </tr>
+      <tr>
+          <td>Length</td>
+          <td><%= number_to_human_size(@page.content_length) %></td>
+      </tr>
+      <tr>
+          <td>Words</td>
+          <td><%= number_with_delimiter(@page.content_words) %></td>
+      </tr>
+      <tr>
+          <td>Published Title</td>
+          <td><%= link_to(@page.title, @page.id_and_link) %></td>
+      </tr>
+      <tr>
+          <td>Source</td>
+          <td><%= @page.page_source.name %></td>
+      </tr>
+      <tr>
+          <td>Source URL</td>
+          <td><%= link_to('Source Link',@page.source_url)%></td>
+      </tr>
+      <tr>
+          <td>Source Published At</td>
+          <td><%= humane_date(@page.source_created_at) %></td>
+      </tr>      
+      <tr>
+          <td>Source Updated At</td>
+          <td><%= humane_date(@page.source_updated_at) %></td>
+      </tr>
+  </table>
+
+  <%- if @external_links and @external_links.size > 0 -%>
+  <h2>External Links</h2>
+  <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Link</th>
+      <th>Host</th>
+      <th>Status</th>
+      <th>Last Check At</th>
+      <th>Last Check Code</th>
+    </tr>
+
+    <% for link in @external_links %>
+      <tr class="checkedlinks" id="link_row_<%= link.id %>">
+        <td class="longurls"><%= link_to(link.url, link.url) %></td>
+        <td><%= link.host %></td>
+        <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
+        <td><%= humane_date(link.last_check_at) %></td>
+        <%- if link.last_check_at.blank? -%>
+          <td></td>
+        <%- else -%>
+          <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- end -%>
+      </tr>
+    <% end %>
+  </table>
+  <%- end -%>
+  
+  <%- if @local_links and @local_links.size > 0 -%>
+  <h2>Local Links</h2>
+  <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Link</th>
+      <th>Host</th>
+      <th>Status</th>
+      <th>Last Check At</th>
+      <th>Last Check Code</th>
+    </tr>
+
+    <% for link in @local_links %>
+      <tr id="link_row_<%= link.id %>" class="checkedlinks">
+        <td><%= link_to(link.url, link.url) %></td>
+        <td><%= link.host %></td>
+        <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
+        <td><%= humane_date(link.last_check_at) %></td>
+        <%- if link.last_check_at.blank? -%>
+          <td></td>
+        <%- else -%>
+          <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- end -%>
+      </tr>
+    <% end%>
+  </table>
+  <%- end -%>
+  
+  <%- if @internal_links and @internal_links.size > 0 -%>
+  <h2>Internal Links</h2>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Article</th>
+      <th>Article ID</th>
+      <th>Published At</th>
+      <th>Updated At</th>
+    </tr>
+
+    <% for link in @internal_links %>
+      <tr id="link_row_<%= link.id %>">
+        <td><%= link_to(link.page.title, link.page.id_and_link) %></td>
+        <td><%= link_to(link.page.id,pageinfo_page_url(:id => link.page.id)) %></td>        
+        <td><%= humane_date(link.page.source_created_at) %></td>
+        <td><%= humane_date(link.page.source_updated_at) %></td>
+      </tr>
+    <% end%>
+  </table>
+  <%- end -%>
+  
+  <%- if @wanted_links and @wanted_links.size > 0 -%>
+  <h2>Internal Links (Unpublished)</h2>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Wanted Path</th>
+    </tr>
+
+    <% for link in @wanted_links %>
+      <tr id="link_row_<%= link.id %>">
+        <td><%= link.path %></td>
+      </tr>
+    <% end%>
+  </table>
+  <%- end -%>
+
+<%- end -%>

@@ -11,8 +11,6 @@ class NumberSummary
   #attr_reader :total,:new,:active,:applications,:locations,:positions,:agreements,:institutions,:communities, :communityconnection, :findoptions
   
   def initialize(options = {})
-    ActiveRecord::Base.logger.debug(options.inspect)
-    
     @data = {}
     @internalfindoptions = options[:findoptions].nil? ? {} : options[:findoptions]
     if(@internalfindoptions[:dateinterval].nil?)

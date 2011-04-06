@@ -22,29 +22,29 @@ MAX_THREADS = 5
 def queue_and_process_links
   thread_pool = []
   # put content links into a thread safe queue
-  check_count = ContentLink.checklist.count
+  check_count = Link.checklist.count
   
   linkqueue = Queue.new
   
   # get all unchecked external and local links
-  ContentLink.checklist.unchecked.all.each do |link|
+  Link.checklist.unchecked.all.each do |link|
     linkqueue << link
   end
   
   # check all warning links from yesterday or earlier
-  ContentLink.checklist.warning.checked_yesterday_or_earlier.all.each do |link|
+  Link.checklist.warning.checked_yesterday_or_earlier.all.each do |link|
     linkqueue << link
   end
   
   # check all broken links from yesterday or earlier
   # if over MAX_ERROR_COUNT, it's just going to return
-  ContentLink.checklist.broken.checked_yesterday_or_earlier.all.each do |link|
+  Link.checklist.broken.checked_yesterday_or_earlier.all.each do |link|
     linkqueue << link
   end
   
   # check up to total count / 29 to give us a rolling check
   daily_check_limit = (check_count / 29)
-  ContentLink.checklist.checked_over_one_month_ago.all.each do |link|
+  Link.checklist.checked_over_one_month_ago.all.each do |link|
     linkqueue << link
   end
       
@@ -59,9 +59,9 @@ def queue_and_process_links
         sleep(0.1) # if a thread goes idle, sleep for a moment so it doesn't stay on the cpu
         if linkqueue.length > 0            
           link = linkqueue.pop          
-          link.check_original_url
+          link.check_url
           if(@verbose)
-            puts "Processed #{link.original_url} Response: #{link.last_check_response? ? link.last_check_code : 'no response'}"
+            puts "Processed #{link.url} Response: #{link.last_check_response? ? link.last_check_code : 'no response'}"
           end
         end
       end  
@@ -74,15 +74,11 @@ def queue_and_process_links
   end
 end
 
-def update_article_broken_flags
-  # mass update
-  Article.update_broken_flags
-end
-
 begin
   Lockfile.new('/tmp/checklinks.lock', :retries => 0) do
     queue_and_process_links
-    update_article_broken_flags
+    Page.update_broken_flags
+    LinkStat.update_counts
   end
 rescue Lockfile::MaxTriesLockError => e
   puts "Another link checker is already running. Exiting."

@@ -1,0 +1,70 @@
+<% @in_this_resource_area = true %>
+<% @resource_area_feeds = true %>
+
+<%- if(!@page_communities.blank?) -%>
+  <p id="relatedresources">
+    <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
+  </p>
+<%- end -%>
+
+<div class="pageextras">
+  <% if not @youth %>
+    <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', ask_form_url %></p>
+  <% end %>
+  <%- if(!params[:print]) -%>
+    <p class="print_and_share"><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %>
+      <%= render(:partial => 'addtoany') %>
+    </p>
+  <%- end -%>
+</div>
+
+<div class = "headline left">
+  <h1 class="title"><%= @page.title %></h1>
+  <p class="caption">Last Updated: <%= micro_time_print(@page.source_updated_at, 'updated') %></p>
+  <p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
+</div>
+<br class="clearing" />
+
+
+
+<div id="content_css_reset">
+  <%- if @page.is_event? -%>
+    <div id="article" class = 'event'>
+      <%= render(:partial => 'event') %>
+  <%- elsif @page.is_faq? -%>
+    <div id="article" class = 'faq'>
+      <%- if(!@page.reference_pages.blank?) -%>
+        <%= render(:partial => 'reference_pages') %>
+      <%- end -%>
+      <%- if(@page.source == 'copfaq') -%>
+        <%= simple_format(@page.content) %>
+      <%- else -%>
+        <%= @page.content %>
+      <%- end -%>
+  <%- elsif -%>
+    <div id="article">
+      <%= @page.content %>
+  <%- end -%>
+  
+      <%- if @page_content_tag_names -%>
+        <p class="caption publictags">Browse related <%= @page.datatype.pluralize %> by tag: 
+          <%= @page_content_tag_names.collect{|tag| link_to tag, site_index_url(tag)}.join(', ') %>    
+        </p>
+      <%- end -%>
+    </div>
+</div>
+<br class="clearing" />
+
+<%- if @page.is_event? and @page.has_map? -%>
+  <%= render(:partial => 'maps_scripts') %>
+<%- end -%>
+<% if not @youth %>
+  <div id="aae_plug">
+    <h4>Have a specific question? <%= link_to 'Try asking one of our Experts', ask_form_url %></h4>
+    <p>Unlike most other resources on the web, we have experts from Universities around the country ready to answer your questions.</p>
+  </div>
+<% end %>
+
+<%- if @currentuser -%>
+  <p id="pagelinks"><%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %><br />This notice only displays for users signed in with their eXtensionID.</p>
+<%- end -%>

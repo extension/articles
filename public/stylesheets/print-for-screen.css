@@ -5,7 +5,7 @@
 body {font-size: small;margin:0;padding:3%;font-family: georgia, times, serif;color: #000;}
 
 /*hide all these*/
-#app_location, #skiplist, .identity, .navbar, .didyouknow, #aae_pitch, #aae_plug, #rating, .feedlink, #footer ul, .hiddenStructure, .login-options, #institution_actions, .missionstatement, #relatedresources, .related, .print_and_share, #fancybox-wrap {display:none;}
+#app_location, #skiplist, .identity, .navbar, .didyouknow, #aae_pitch, #aae_plug, #rating, .feedlink, #footer ul, .hiddenStructure, .login-options, #institution_actions, .missionstatement, #relatedresources, .related, .print_and_share, #fancybox-wrap, #pagelinks {display:none;}
 .noprint {display:none;}
 .dontprintme {display:none;}
 

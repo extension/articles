@@ -1,0 +1,43 @@
+<%- if(@community.nil?) -%>
+  <% @show_resource_areas = true %>
+  <% @includejquery = true %>
+  <% @cat_landing = true %>
+<%- end -%>
+
+<div class = "mission">
+  <%- if @page_title_text && @header_description -%>
+    <h2 class="missionstatement"><%=@page_title_text%></h2>
+  <%- end -%>
+</div>
+
+<%- if(@show_selector) -%>
+  <%- form_tag do -%>
+      <fieldset class="resource_selector">
+          <p>
+              <%=community_select(@community)%> <%= link_to 'Show All', {:content_tag => 'all'} %> 
+          </p>
+      </fieldset>
+  <%- end -%>
+<%- end -%>
+
+<%- if(@pages.blank?)-%>
+  <h2>There are currently no matches for this resource area.</h2>
+<%- else -%>
+  <div class = "pagelinks">
+    <%= will_paginate(@pages,:params => {:content_types => params[:content_types], :tags => params[:tags], :articlefilter => params[:articlefilter]}) %>
+  </div>
+  <%- index_start = (@pages.current_page - 1) * @pages.per_page + 1 -%>
+  <ol class="articlelist" start="<%= index_start %>;">
+  <%- @pages.each do |page| -%>
+  <li>
+    <%= link_to(page.title,page_url(:id => page.id, :title => page.url_title)) -%>
+    <span class="published">Updated: <%= expanded_time_print(page.source_updated_at)%></span>
+  </li>
+  <%- end -%>
+  </ol>
+  <div class = "pagelinks">
+    <%= will_paginate(@pages,:params => {:content_types => params[:content_types], :tags => params[:tags], :articlefilter => params[:articlefilter]}) %>
+  </div>
+<%- end -%>
+
+<p class="askanexpert">Didn't find what you were looking for? <%= link_to 'Try asking one of our Experts', ask_form_url %>.</p>

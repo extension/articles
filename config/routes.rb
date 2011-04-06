@@ -133,11 +133,6 @@ ActionController::Routing::Routes.draw do |map|
   #################################################################
   ### pubsite routes ###
   map.connect 'main/:action', :controller => 'main'
-  map.connect 'sitemap_index', :controller => 'feeds', :action => 'sitemap_index'
-  map.connect 'sitemap_communities', :controller => 'feeds', :action => 'sitemap_communities'
-  map.connect 'sitemap_pages', :controller => 'feeds', :action => 'sitemap_pages'
-  map.connect 'sitemap_faq', :controller => 'feeds', :action => 'sitemap_faq'
-  map.connect 'sitemap_events', :controller => 'feeds', :action => 'sitemap_events'
   map.connect 'feeds', :controller => 'feeds'
     
   map.redirect 'feeds/articles', :controller => 'feeds', :action => 'content', :content_types => 'articles', :permanent => true  
@@ -149,17 +144,13 @@ ActionController::Routing::Routes.draw do |map|
   map.content_feed 'feeds/content/:tags', :controller => 'feeds', :action => 'content'
   map.connect 'feeds/:action', :controller => 'feeds'
   
-  ## print routes
-  map.connect 'article/:id/print', :controller => 'articles', :action => 'page', :print => 1, :requirements => { :id => /\d+/ }
-  map.connect 'faq/:id/print', :controller => 'faq', :action => 'detail', :print => 1
-  map.connect 'events/:id/print', :controller => 'events', :action => 'detail', :print => 1
-  
+
   
   ### pubsite redirect routes
   map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
-  map.redirect 'news', :controller => 'articles', :action => 'news', :content_tag => 'all', :permanent => true  
-  map.redirect 'faqs', :controller => 'faq', :action => 'index', :content_tag => 'all', :permanent => true
-  map.redirect 'articles', :controller => 'articles', :action => 'index', :content_tag => 'all', :permanent => true
+  map.redirect 'news', :controller => 'pages', :action => 'news', :content_tag => 'all', :permanent => true  
+  map.redirect 'faqs', :controller => 'pages', :action => 'faqs', :content_tag => 'all', :permanent => true
+  map.redirect 'articles', :controller => 'pages', :action => 'articles', :content_tag => 'all', :permanent => true
   map.redirect 'expert/ask_an_expert', :controller => 'ask', :action => 'index', :permanent => true
   
   
@@ -175,33 +166,51 @@ ActionController::Routing::Routes.draw do |map|
   
   ### connect up "data" to the api/data controller
   map.connect 'data/:action', :controller => 'api/data'
+  
+  ### current routes for specific content
+  map.pagelist 'pages/list', :controller => 'pages', :action => 'list'
+  map.connect 'pages/update_time_zone/:id', :controller => 'pages', :action => 'update_time_zone', :requirements => { :id => /\d+/ }
+  map.print_pageid 'pages/:id/print', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
+  map.pageid 'pages/:id', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
+  map.print_page 'pages/:id/:title/print', :controller => 'pages', :action => 'show', :print => 1
+  map.page 'pages/:id/:title', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
 
+  ### old routes for specific content
+  map.connect 'article/:id/print', :controller => 'pages', :action => 'redirect_article', :print => 1, :requirements => { :id => /\d+/ }
+  map.connect 'article/:id', :controller => 'pages', :action => 'redirect_article', :requirements => { :id => /\d+/ }
+  map.connect 'events/:id/print', :controller => 'pages', :action => 'redirect_event', :print => 1
+  map.connect 'events/:id', :controller => 'pages', :action => 'redirect_event'
+  map.connect 'faq/:id/print', :controller => 'pages', :action => 'redirect_faq', :print => 1
+  map.connect 'faq/:id', :controller => 'pages', :action => 'redirect_faq'  
+  map.connect 'pages/*title', :controller => 'pages', :action => 'redirect_article'
 
-  ### pubsite named routes  
+  # more named routes
   map.logo  'logo/:file.:format', :controller => 'logo', :action => :display
   map.reports 'reports', :controller => :reports
   map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
-  map.article_page 'article/:id', :controller => 'articles', :action => 'page', :requirements => { :id => /\d+/ }
-  map.faq_page 'faq/:id', :controller => 'faq', :action => 'detail'
-  map.events_page 'events/:id', :controller => 'events', :action => 'detail'
-  map.wiki_page 'pages/*title', :controller => 'articles', :action => 'page'
+  
   map.preview_page 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
-  map.preview_articlelinks 'preview/articlelinks/:id', :controller => 'preview', :action => 'articlelinks'
-  map.preview_articlelinklist 'preview/articlelinklist/:content_tag', :controller => 'preview', :action => 'articlelinklist'
-  map.preview_articlelist 'preview/articlelist/:content_tag', :controller => 'preview', :action => 'articlelist'
-  map.preview_faqlist 'preview/faqlist/:content_tag', :controller => 'preview', :action => 'faqlist'
-  map.preview_eventlist 'preview/eventlist/:content_tag', :controller => 'preview', :action => 'eventlist'
   map.preview_tag 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
   map.preview_category 'preview/showcategory/:categorystring', :controller => 'preview', :action => 'showcategory'
   map.preview_home 'preview', :controller => 'preview', :action => 'index'
+
+  map.pageinfo_pagelinklist 'pageinfo/pagelinklist/:content_tag', :controller => 'pageinfo', :action => 'pagelinklist'
+  map.pageinfo_pagelist 'pageinfo/pagelist/:content_tag', :controller => 'pageinfo', :action => 'pagelist'
+  map.pageinfo_page 'pageinfo/:id', :controller => 'pageinfo', :action => 'show'
+
+  # legacy routes to 410
+  map.connect ':content_tag/events/:state', :controller => 'main', :action => 'do_410'
+  map.connect ':content_tag/events/:year/:month/:state', :controller => 'main', :action => 'do_410'
+  
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
-  map.site_news ':content_tag/news/:order/:page', :controller => 'articles', :action => 'news', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_faqs ':content_tag/faqs/:order/:page', :controller => 'faq', :action => 'index', :page => '1', :order => 'heureka_published_at DESC', :requirements => { :page => /\d+/ }
-  map.site_articles ':content_tag/articles/:order/:page', :controller => 'articles', :action => 'index', :page => '1', :order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
-  map.site_events ':content_tag/events/:state', :controller => 'events', :action => 'index', :state => ''
-  map.site_events_month ':content_tag/events/:year/:month/:state', :controller => 'events', :action => 'index', :state => ''
-  map.site_learning_lessons ':content_tag/learning_lessons/:order/:page', :controller => 'articles', :action => 'learning_lessons', :page => '1',:order => 'wiki_updated_at DESC', :requirements => { :page => /\d+/ }
+  map.site_news ':content_tag/news', :controller => 'pages', :action => 'news'
+  map.site_faqs ':content_tag/faqs', :controller => 'pages', :action => 'faqs'
+  map.site_articles ':content_tag/articles', :controller => 'pages', :action => 'articles'
+  map.site_events ':content_tag/events', :controller => 'pages', :action => 'events'
+  map.site_learning_lessons ':content_tag/learning_lessons', :controller => 'pages', :action => 'learning_lessons'
+
+  map.short_pageid ':id', :controller => 'pages', :action => 'show',  :requirements => { :id => /\d+/ }
   map.site_index ':content_tag', :controller => 'main', :action => 'content_tag'
   
   ### catch?  I'm not sure that these are ever actually touched because of the :content_tag routes above

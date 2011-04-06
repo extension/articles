@@ -1,0 +1,6 @@
+Pages for Tag <%= @content_tag.name %>
+
+ID,Type,Title,Link,Source Link,Created,Updated
+<%- for page in @pages -%>
+<%= page.id %>,"<%= page.datatype %>","<%= page.title %>","<%= page.id_and_link %>","<%= page.source_url %>",<%= page.source_created_at %>,<%= page.source_updated_at %>
+<%- end -%>

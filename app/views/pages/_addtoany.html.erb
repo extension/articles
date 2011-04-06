@@ -1,0 +1,16 @@
+<a class="a2a_dd" href="http://www.addtoany.com/share_save">
+    <img src="http://static.addtoany.com/buttons/share_save_106_16.gif" border="0" alt="Share/Bookmark"/>
+</a>
+<script type="text/javascript">
+var a2a_config = a2a_config || {};
+a2a_config.linkname=document.title;
+a2a_config.track_links='custom';
+<%- if(AppConfig.configtable['app_location'] == 'production') -%>
+a2a_config.track_links_key='http://extension.org/<%= @page.id %>';
+<%- else -%>
+a2a_config.track_links_key='<%= short_pageid_url(:id => @page.id) %>';
+<%- end -%>
+a2a_config.onclick=1;
+</script>
+<script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+

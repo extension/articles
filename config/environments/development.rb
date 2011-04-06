@@ -17,7 +17,9 @@ config.action_controller.perform_caching             = true
 config.action_mailer.raise_delivery_errors = false
 config.active_record.colorize_logging = false
 # development gems
-config.gem 'rails-footnotes', :version => '~>3.6', :lib => "rails-footnotes"
+if(AppConfig.configtable['load_rails_footnotes'])
+  config.gem 'rails-footnotes', :version => '~>3.6', :lib => "rails-footnotes"
+end
 
 # email settings
 config.action_mailer.delivery_method = :smtp

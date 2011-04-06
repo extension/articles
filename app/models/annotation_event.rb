@@ -23,7 +23,7 @@ class AnnotationEvent < ActiveRecord::Base
       e.links << Atom::Link.new(:type => "text/html", :rel => "alternate", :href => self.id_and_link)
       e.authors << Atom::Person.new(:name => 'Contributors')
       e.id = self.id_and_link
-      e.updated = self.wiki_updated_at
+      e.updated = self.source_updated_at
       e.categories = self.content_tag_names.map{|name| Atom::Category.new({:term => name, :scheme => url_for(:controller => 'main', :action => 'index')})}
       e.content = Atom::Content::Html.new(self.content)
     end

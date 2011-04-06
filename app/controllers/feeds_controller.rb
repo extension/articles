@@ -7,7 +7,6 @@
 
 class FeedsController < ApplicationController
   skip_before_filter :personalize_location_and_institution, :except => :index
-  
   layout 'pubsite'
   
   def index
@@ -16,36 +15,7 @@ class FeedsController < ApplicationController
     set_titletag('eXtension - Feeds')
     @communities = Community.launched.all(:order => 'public_name')
   end
-
-  def sitemap_index
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-  
-  def sitemap_communities
-    @communities = Community.launched.all(:order => 'public_name')
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-  
-  def sitemap_pages
-    @article_links = Article.find(:all).collect{ |article| article.id_and_link }
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-
-  def sitemap_faq
-    @faq_ids = Faq.find(:all).collect{ |faq| faq.id }
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-  
-  def sitemap_events
-    @event_ids = Event.find(:all).collect{ |event| event.id }
-    headers["Content-Type"] = "application/xml"    
-    render :layout => false
-  end
-       
+ 
   def community
     return redirect_to(content_feed_url(:tags => params[:tags]), :status => 301)
   end
@@ -94,7 +64,7 @@ class FeedsController < ApplicationController
     filteredparameters_list = [:max_results,
                                {:limit => {:default => AppConfig.configtable['default_feed_content_limit']}},
                                :tags,
-                               {:content_types => {:default => 'articles,faqs,events'}}]
+                               {:content_types => {:default => 'articles,news,faqs,events'}}]
     filteredparams = ParamsFilter.new(filteredparameters_list,params)
     
     
@@ -124,54 +94,26 @@ class FeedsController < ApplicationController
        end
     end
     
-    items = []      
+    datatypes = []
     filteredparams.content_types.each do |content_type|
-       case content_type
-       when 'faqs'
-          if(alltags)
-             items += Faq.main_recent_list(:limit => limit)
-          else
-             items += Faq.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
-          end
-       when 'articles'
-          if(alltags)
-             items += Article.main_recent_list(:limit => limit)
-          else
-             items += Article.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
-          end
-       when 'events'
-          # AppConfig.configtable['events_within_days'] should probably be a parameter
-          # but we'll save that for another day
-          if(alltags)
-             items += Event.main_calendar_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit})
-          else
-             items += Event.main_calendar_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit, :content_tags => content_tags, :tag_operator => tag_operator})
-          end 
-       end
+      case content_type
+      when 'faqs'
+        datatypes << 'Faq'
+      when 'articles'
+        datatypes << 'Article'
+      when 'events'
+        datatypes << 'Event'
+      when 'news'
+        datatypes << 'News'
+      end
     end
     
-    if(filteredparams.content_types.size > 1)
-       # need to combine items - not using content_date_sort, because I don't want to modify
-       # that at this time
-       merged = {}
-       tmparray = []
-       items.each do |content|
-          case content.class.name 
-          when 'Article'
-             merged[content.wiki_updated_at] = content
-          when 'Faq'
-             merged[content.heureka_published_at] = content
-          when 'Event'
-             merged[content.xcal_updated_at] = content
-          end
-       end
-       tstamps = merged.keys.sort.reverse # sort by updated, descending
-  		tstamps.each{ |key| tmparray << merged[key] }
-  		@returnitems = tmparray.slice(0,limit)
+    if(alltags)
+       @returnitems = Page.recent_content(:datatypes => datatypes, :limit => limit)
     else
-     	@returnitems = items
+       @returnitems = Page.recent_content(:datatypes => datatypes, :content_tags => content_tags, :limit => limit, :tag_operator => tag_operator, :within_days => AppConfig.configtable['events_within_days'])
     end
-          
+              
     title = "eXtension #{filteredparams.content_types.map{|name| name.capitalize}.join(',')}"
     if(alltags)
       title += "- All"

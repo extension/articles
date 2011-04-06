@@ -8,19 +8,25 @@
 class Api::DataController < ApplicationController
   
   def articlelink
-     filteredparams = ParamsFilter.new([{:original_url => :string},:apikey],params)
+     filteredparams = ParamsFilter.new([{:source_url => :string},{:original_url => :string},:apikey],params)
      apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
      ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
     
-     if(filteredparams.original_url.nil?)
-       returnhash = {:success => false, :errormessage => 'Not a valid original url'}
+     if(filteredparams.original_url.nil? and filteredparams.source_url.nil? )
+       returnhash = {:success => false, :errormessage => 'Not a valid source url'}
        return render :text => returnhash.to_json
      end
      
+     if(filteredparams.original_url)
+       source_url = filteredparams.original_url
+     elsif(filteredparams.source_url)
+       source_url = filteredparams.source_url
+     end
+     
      begin 
-       parsed_uri = URI.parse(URI.unescape(filteredparams.original_url))
+       parsed_uri = URI.parse(URI.unescape(source_url))
      rescue
-       returnhash = {:success => false, :errormessage => 'Not a valid original url'}
+       returnhash = {:success => false, :errormessage => 'Not a valid source url'}
        return render :text => returnhash.to_json
      end
      
@@ -33,17 +39,17 @@ class Api::DataController < ApplicationController
        return render :text => returnhash.to_json
      end
      
-     article = Article.find_by_original_url(find_url)
-     if(!article)
-        returnhash = {:success => false, :errormessage => 'Unable to find an article corresponding to the given URL'}
+     page = Page.find_by_source_url(find_url)
+     if(!page)
+        returnhash = {:success => false, :errormessage => 'Unable to find an page corresponding to the given URL'}
         return render :text => returnhash.to_json
      end
      
      returnhash = {}
-     returnhash[:title] = article.title
-     returnhash[:link] = article.id_and_link
-     returnhash[:created] = article.wiki_created_at
-     returnhash[:updated] = article.wiki_updated_at
+     returnhash[:title] = page.title
+     returnhash[:link] = page.id_and_link
+     returnhash[:created] = page.source_created_at
+     returnhash[:updated] = page.source_updated_at
      return render :text => returnhash.to_json    
   end
 
@@ -214,71 +220,32 @@ class Api::DataController < ApplicationController
          alltags = (content_tags.include?('all'))
       end
       
-      items = []      
+      datatypes = []
       filteredparams.content_types.each do |content_type|
-         case content_type
-         when 'faqs'
-            if(alltags)
-               items += Faq.main_recent_list(:limit => limit)
-            else
-               items += Faq.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
-            end
-         when 'articles'
-            if(alltags)
-               items += Article.main_recent_list(:limit => limit)
-            else
-               items += Article.main_recent_list(:content_tags => content_tags, :limit => limit, :tag_operator => tag_operator)
-            end
-         when 'events'
-            # AppConfig.configtable['events_within_days'] should probably be a parameter
-            # but we'll save that for another day
-            if(alltags)
-               items += Event.main_calendar_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit})
-            else
-               items += Event.main_calendar_list({:within_days => AppConfig.configtable['events_within_days'], :calendar_date => Date.today, :limit => limit, :content_tags => content_tags, :tag_operator => tag_operator})
-            end 
-         end
+        case content_type
+        when 'faqs'
+          datatypes << 'Faq'
+        when 'articles'
+          datatypes << 'Article'
+        when 'events'
+          datatypes << 'Event'
+        when 'news'
+          datatypes << 'News'
+        end
       end
       
-      if(filteredparams.content_types.size > 1)
-         # need to combine items - not using content_date_sort, because I don't want to modify
-         # that at this time
-         merged = {}
-         tmparray = []
-         items.each do |content|
-            case content.class.name 
-            when 'Article'
-               merged[content.wiki_updated_at] = content
-            when 'Faq'
-               merged[content.heureka_published_at] = content
-            when 'Event'
-               merged[content.xcal_updated_at] = content
-            end
-         end
-         tstamps = merged.keys.sort.reverse # sort by updated, descending
-    		tstamps.each{ |key| tmparray << merged[key] }
-    		@returnitems = tmparray.slice(0,limit)
+      if(alltags)
+         @returnitems = Page.recent_content(:datatypes => datatypes, :limit => limit)
       else
-       	@returnitems = items
+         @returnitems = Page.recent_content(:datatypes => datatypes, :content_tags => content_tags, :limit => limit, :tag_operator => tag_operator, :within_days => AppConfig.configtable['events_within_days'])
       end
-            
+                  
       @returnitems.each do |item|
          entry = {}
          entry['id'] = item.id_and_link
-         case item.class.name 
-         when 'Article'
-            entry['published'] = item.wiki_created_at.xmlschema
-            entry['updated'] = item.wiki_updated_at.xmlschema
-            entry['content_type'] = 'article'
-         when 'Faq'
-            entry['published'] = item.heureka_published_at.xmlschema
-            entry['updated'] = item.heureka_published_at.xmlschema
-            entry['content_type'] = 'faq'            
-         when 'Event'
-            entry['published'] = item.xcal_updated_at.xmlschema
-            entry['updated'] = item.xcal_updated_at.xmlschema
-            entry['content_type'] = 'event'
-         end
+         entry['published'] = item.source_created_at.xmlschema
+         entry['updated'] = item.source_updated_at.xmlschema
+         entry['content_type'] = item.datatype.downcase         
          # TODO? categories
          entry['title'] = item.title
          entry['href'] = item.id_and_link

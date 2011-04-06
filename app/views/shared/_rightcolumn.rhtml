@@ -1,8 +1,6 @@
 <%if @community %>
 <div class="grid_5" id="rightcolumn">
 
-<a name="top" id="top"></a>
-
 <div id="sidebar" class="rightcolumn">
     <%= render :partial => 'shared/homage' %>
     
@@ -18,7 +16,7 @@
         <h1>In the News...</h1>
         <%for news in @news%>
             <dl>
-                <dt class="dates"><%= expanded_time_print(news.wiki_updated_at)%></dt>
+                <dt class="dates"><%= expanded_time_print(news.source_updated_at)%></dt>
                 <dd><%= link_to news.title, news.id_and_link %></dd>
             </dl>
         <%end%>
@@ -31,7 +29,7 @@
         <h1><span class="feed">Resource Area Feeds</span></h1>
         <ul>
            <% tag_name = @community.primary_content_tag_name %>
-            <li><a href='/feeds/community/-/<%=tag_name%>'>Track all new content</a></li>
+            <li><%= link_to('Track all new content', content_feed_url(:tags => tag_name)) %></li>  		      
          </ul>
          <%if File.exists?( File.join('app','views', 'newsletter_registration_forms','_'+tag_name+'.rhtml' )) %>
             <h1>Resource Area Newsletter</h1>
@@ -61,8 +59,6 @@
 
 <% else %>
 
-
-<a name="top" id="top"></a>
 
 <div id="sidebar" class="rightcolumn">
     

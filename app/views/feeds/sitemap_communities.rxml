@@ -1,9 +1,0 @@
-xml.instruct!
-
-xml.urlset "xmlns" => "http://www.google.com/schemas/sitemap/0.84" do
-
-  @communities.each do |community|
-    xml.url { xml.loc site_index_url(:content_tag => community.primary_content_tag_name) }
-  end
-
-end

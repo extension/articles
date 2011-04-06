@@ -46,18 +46,21 @@
 	</p>
 	<div class="org">
 		<p class="item">
-			<span class="vcardLabel">Primary Institution:</span>
-			<span class="organization-name"><%= @currentuser.primary_institution_name('&nbsp;') %>
+			
 			<%- if !@currentuser.primary_institution.nil? -%>
+			    <span class="vcardLabel">Primary Institution:</span>
+    			<span class="organization-name"><%= @currentuser.primary_institution_name('&nbsp;') %>
 			    <%= link_to('view/edit', people_community_url(@currentuser.primary_institution), :class => 'help') %>
 			<% else %>
-			    <div class="primarydirs"><strong>Set your primary institution on its community page</strong>
+			    <span class="vcardLabel missing">Primary Institution:</span>
+    			<span class="organization-name"><%= @currentuser.primary_institution_name('&nbsp;') %>
+			    <div class="primarydirs"><strong>Your primary institution is missing. Set it by joining that institution's community:</strong>
 			      <ul><li>1) <%= link_to "Search for your institution", :controller => '/people/communities' %></li>
 			        <li>2) Join </li>
-			        <li>3) Check the "This is my primary institution" box "This is my primary institution" box</li>
+			        <li>3) Check the "This is my primary institution" box</li>
 			        </ul>
 			    </div>
-			        
+			    <br class="clearing" />
 			<%- end -%>
 			</span>
 		</p>

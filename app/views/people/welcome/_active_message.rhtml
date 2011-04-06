@@ -1,28 +1,12 @@
-<h2>Now that your eXtension account is active, you may want to:</h2>
-
+<h2>Exploring eXtension</h2>
 <ul>
-    <li>
-		<%= link_to('View', :controller => '/people/profile', :action => :me) %> or <%= link_to('edit', :controller => '/people/profile', :action => :edit) %> your profile 
-	</li>
-	<li>
-		<%= link_to("Browse, join, and create communities", :controller => '/people/communities', :action => :index) %>
-	</li>
-    <li>
-		<%= link_to('Find colleagues', :controller => '/people/colleagues', :action => :index) %> that have an eXtensionID
-	</li>
-	<li>
-		Explore our publishing tools (login required)
-		<ul>
-		    <li><%= link_to('eXtension Communities of Practice','http://cop.extension.org') %></li> 
-		    <li><%= link_to('Frequently Asked Questions','http://faq.extension.org') %></li>
-		    <li><%= link_to('Extension Events','http://calendar.extension.org') %></li>
-		</ul>
-	</li>
-	<li>
-		Learn more about eXtension via our <%= link_to('About eXtension Blog','http://about.extension.org') %> and 
-		<%= link_to('About eXtension Wiki','http://about.extension.org/wiki') %> sites
-	</li>
-	<li>
-		Visit our <%= link_to('Public Site','http://www.extension.org') %> produced and reviewed by our Communities of Practice working in our publishing tools
-	</li>
+    <li><%= link_to('eXtension Communities of Practice','http://cop.extension.org', {:class => "secure", :title => "eXtension Communities of Practice - Requires eXtensionID"}) %></li>
+    <li><%= link_to('Ask an Expert','http://aae.extension.org/', {:class => "secure", :title => "Ask an Expert - Requires eXtensionID"}) %></li>
+    <li><%= link_to('FAQ App','http://cop.extension.org/faq', {:class => "secure", :title => "FAQ App - Requires eXtensionID"}) %></li>
+    <li><%= link_to('Events App','http://cop.extension.org/events/', {:class => "secure", :title => "Events App - Requires eXtensionID"}) %></li>
+    <li><%= link_to('Widgets','http://www.extension.org/widgets') %></li>
+    <li><%= link_to('One Search','http://www.extension.org/search') %></li>
+    <li><%= link_to('Learn (Professional Development Opportunities)','http://www.extension.org/learn') %></li>
+	  <li>Learn more about eXtension via at <%= link_to('About eXtension','http://about.extension.org') %> and <%= link_to('eXtension Create','http://create.extension.org/') %>.</li>
+    <li>The <%= link_to('eXtension Public Site','http://www.extension.org') %> produced by our Communities of Practice working in our publishing tools</li>
 </ul>

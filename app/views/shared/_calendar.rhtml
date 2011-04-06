@@ -11,14 +11,18 @@
     <% previous_event_date = nil %>
     <% @calendar_events.each do |event| %>
         <% event_time = format_event_time(event) %>
-        <% date_string = event_time.strftime("%B") + ' ' + event_time.strftime("%d") %>
+        <%- if(event.time_zone.blank?)%>
+          <%- date_string = event_time.utc.strftime("%B") + ' ' + event_time.utc.strftime("%d") -%>
+        <%- else -%>
+          <%- date_string = event_time.strftime("%B") + ' ' + event_time.strftime("%d") -%>
+        <%- end -%>
         <% if date_string != previous_event_date %>
   	        <%= '</ul>' if previous_event_date %>
             <h3><%= date_string %></h3>
 	        <ul class="event_listings">
         <% end %>
         <li><% htmlClass = @personal[:state] && ! (event.local_to? @personal[:state]) ? 'gray' : '' %>
-        <%= link_to event.title, events_page_url(:id => event), {:class => htmlClass} %></li>
+        <%= link_to event.title, page_url(:id => event.id, :title => event.url_title), {:class => htmlClass} %></li>
         <% previous_event_date = date_string %>
     <% end %>
     <%= '</ul>' if previous_event_date %>

@@ -1,0 +1,96 @@
+<%- if @content_tag.nil? %>
+   <p>Invalid content tag</p>
+<%- else -%>
+   <%- if !@articlefilter.nil? %>
+      <h1><%= @articlefilter %> Articles for Tag: <%= @content_tag.name %></h1>
+   <%- else -%>
+      <h1>All Articles for Tag: <%= @content_tag.name %></h1>
+   <%- end -%>
+
+   <div id="paginator_wrapper"> 
+   <% if @pages.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @pages.offset + 1 %>-<%= @pages.offset + @pages.length %></strong> of <strong><%= @pages.total_entries %></strong></p>
+   <% else %>
+       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+   <% end %>
+
+   <%= will_paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
+   </div>
+
+<table cellspacing="0" id="linkchecker">
+  <tr>
+    <td class="td_b">External</td>
+    <td>links to external (non extension.org) sites.</td>
+  </tr>
+  <tr>
+    <td class="td_b">Article</td>
+    <td>links to articles on the public site.</td>
+  </tr>
+  <tr>
+    <td class="td_b">eXtension</td>
+    <td>links to non-article pieces of content (FAQs, Events) or links to other extension sites (about.extension.org, campus.extension.org)</td>
+  </tr>
+  <tr>
+    <td class="td_b">Unpublished</td>
+    <td>links that are not "hotlinked" because the destination article is not published. Publish the destination article to fix.</td>
+  </tr>
+  <tr>
+    <td class="td_b">Warning</td>
+    <td>links where an error code was received for the last check. The cause could be temporary or permanent so links are not counted as "broken" until three checks fail.</td>
+  </tr>
+  <tr>
+    <td class="td_b">Broken</td>
+    <td>links that failed the last three checks.</td>
+  </tr>
+  <tr>
+    <td class="td_b">Redirect</td>
+    <td>links redirect to another page. The link is good, but direct links are better in case the redirect is discontinued.</td>
+  </tr>
+</table>
+</ul>
+   <table cellspacing="0">
+     <tr>
+       <th colspan="3"></th>
+       <th colspan="7" class="superhead">Link Checker</th>
+      </tr>
+       <tr>
+           <th>Published Title</th>
+           <th>Published</th>
+           <th>Updated</th>
+           <th>External</th>
+           <th>Article</th>
+           <th>eXtension</th>
+           <th>Unpublished</th>
+           <th>Warning</th>
+           <th>Broken</th>
+           <th>Redirect</th>
+       </tr>
+    
+       <% for page in @pages %>
+           <% link_counts = page.link_counts %>
+           <tr id="article_row_<%= page.id %>" <%= page.has_broken_links? ? 'class="brokenlinks"' : '' %>>
+              <td><%= link_to(page.title,pageinfo_page_url(:id => page.id)) %></td>
+              <td class="td_sm"><%= humane_date(page.source_created_at) %></td>
+              <td class="td_sm"><%= humane_date(page.source_updated_at) %></td>
+              <td class="td_c <%= link_counts[:external] > 0 ? '' : 'zero' %>"><%= link_counts[:external] %></td>
+              <td class="td_c <%= link_counts[:internal] > 0 ? '' : 'zero' %>"><%= link_counts[:internal] %></td>
+              <td class="td_c <%= link_counts[:local] > 0 ? '' : 'zero' %>"><%= link_counts[:local] %></td>              
+              <td class="td_c <%= link_counts[:wanted] > 0 ? 'unpublishedlinks' : 'zero' %>"><%= link_counts[:wanted] %></td>
+              <td class="td_c <%= link_counts[:warning] > 0 ? 'warningcount' : 'zero' %>"><%= link_counts[:warning] %></td>
+              <td class="td_c <%= link_counts[:broken] > 0 ? 'brokencount' : 'zero' %>"><%= link_counts[:broken] %></td>
+              <td class="td_c <%= link_counts[:redirected] > 0 ? '' : 'zero' %>"><%= link_counts[:redirected] %></td>
+           </tr>
+       <% end%>
+   </table>
+
+
+   <div id="paginator_wrapper"> 
+   <% if @pages.length > 0 %>
+       <p class="display_results">Displaying <strong><%= @pages.offset + 1 %>-<%= @pages.offset + @pages.length %></strong> of <strong><%= @pages.total_entries %></strong></p>
+   <% else %>
+       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+   <% end %>
+
+   <%= will_paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
+   </div>
+<%- end -%>

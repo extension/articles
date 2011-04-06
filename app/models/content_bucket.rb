@@ -7,20 +7,7 @@
 
 class ContentBucket < ActiveRecord::Base
   
-  # Set up the polymorphic relationship.
-  has_many_polymorphs :bucketables, 
-    :from => [:articles], 
-    :through => :bucketings, 
-    :dependent => :destroy,
-    :as => :content_bucket,
-    :skip_duplicates => false, 
-    :parent_extend => proc {
-      # Defined on the taggable models, not on Tag itself. Return the tagnames associated with this record as a string.
-      def to_s
-        self.map(&:name).sort.join(Tag::JOINER)
-      end
-    }
-    
+  has_many :pages, :through => :bucketings
 
   SPLITTER = Regexp.new(/\s*,\s*/)
   JOINER = ", " 

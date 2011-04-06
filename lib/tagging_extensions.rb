@@ -170,7 +170,6 @@ class ActiveRecord::Base #:nodoc:
     end
      
     def my_top_tags_displaylist(options={})
-      logger.debug "=================================== Inside my_top_tags_displaylist: #{self.attributes.inspect}"
       my_top_tags(options).map(&:name).join(Tag::JOINER)
     end
     

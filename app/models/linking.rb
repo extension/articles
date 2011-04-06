@@ -6,9 +6,9 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 
-# join class for content <=> content_links
+# join class for content <=> links
 
 class Linking < ActiveRecord::Base
-  belongs_to :content_link, :foreign_key => "content_link_id", :class_name => "ContentLink"  
-  belongs_to :contentitem, :polymorphic => true
+  belongs_to :link
+  belongs_to :page
 end

@@ -1,4 +1,4 @@
-<% @title_tag = "Ask an Expert Question - #{truncate_at_word(@submitted_question.asked_question, 80)}"%>
+<% @title_tag = "Ask an Expert Question - #{@submitted_question.asked_question.truncate(80,{:omission => '', :avoid_orphans => true})}"%>
 
 <div id="public_aae">
     <h1>Your Question</h1>

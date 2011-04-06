@@ -9,9 +9,27 @@ module DataHelper
 
   # TODO:  this is stupid.  a) there's probably a better to get the primary_content_tags and B) if a community has more than one content tag, the news won't be picked up
   # this is crazy, either limit the communities to a single content tag, or find all the content for all the content tags for that community, period.
-  def community_select(selected_community)
+  def community_select(selected_community,is_events=false)
+    make_a_link_params = []
+    if(params[:event_state])
+      make_a_link_params << "event_state=#{params[:event_state]}"
+    end
+    
+    if(params[:year] and params[:month])
+      make_a_link_params << "year=#{params[:year]}"
+      make_a_link_params << "month=#{params[:month]}"
+    end
+    
+    if(!make_a_link_params.blank?)
+      make_a_link = "\"/\" + this.value + \"/#{params[:action]}?#{make_a_link_params.join('&')}\""
+    else
+      make_a_link = "\"/\" + this.value + \"/#{params[:action]}\""
+    end
+    
     communities = Community.launched.ordered("public_name ASC")
-    txt = "<select name='community' onchange='update_category(this.value)'>"
+    txt = "<select name='community'"
+    txt += " onchange='go_category(#{make_a_link})'"
+    txt += ">"
     txt += '<option value="all"'
     txt += ' selected="selected"' unless selected_community
     txt += '>All</option>'
@@ -50,14 +68,6 @@ module DataHelper
     end
   end
   
-  def link_to_page(result)
-    params[:controller]
-    value = result.send(result.representative_field)
-    page = result.page
-    url = self.send(result.page+'_page_url', {result.representative_field.to_sym => value })
-    
-    link_to result.title, url
-  end
   
   def month_select(date, link_to_current = false, content_tag = nil, state = nil)
     url_params = {}
@@ -70,7 +80,7 @@ module DataHelper
     
     if Time.now.year < date.year
       url_params.update({:month => 12, :year => date.year-1})
-      txt = link_to((date.year-1).to_s, site_events_month_url(url_params))
+      txt = link_to((date.year-1).to_s, site_events_url(url_params))
     else
       txt = ''
     end
@@ -82,18 +92,26 @@ module DataHelper
         txt += '<strong>'+month_name+'</strong>'
       else
         url_params.update({:month => month_number, :year => date.year})
-        txt += link_to(month_name, site_events_month_url(url_params))
+        txt += link_to(month_name, site_events_url(url_params))
       end
       
     end
     
     url_params.update({:month => 1, :year => date.year+1})
-    txt += link_to((date.year+1).to_s, site_events_month_url(url_params))
+    txt += link_to((date.year+1).to_s, site_events_url(url_params))
     txt
   end
     
   def state_select(name, params)
-    select(name, :state, Location.displaylist.collect{|l| [l.name, l.abbreviation]}.unshift(['All', '']), {:selected => params[:state]},{ :onchange => 'update_state(this.value)'})
+    if(@content_tag)
+      make_a_link = "\"/#{@content_tag.name}/events?event_state=\" + this.value"
+    else
+      make_a_link = "\"/all/events?event_state=\" + this.value"
+    end
+    if(params[:year] and params[:month])
+      make_a_link += " + \"&year=#{params[:year]}&month=#{params[:month]}\""
+    end
+    select(name, :event_state, Location.displaylist.collect{|l| [l.name, l.abbreviation]}.unshift(['All', '']), {:selected => params[:event_state]},{ :onchange => 'go_state(' + make_a_link + ')'})
   end
   
   def first_image(content)

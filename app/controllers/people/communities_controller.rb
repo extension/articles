@@ -9,7 +9,7 @@ class People::CommunitiesController < ApplicationController
   layout 'people'
   before_filter :login_required
   before_filter :check_purgatory
-   
+  ssl_allowed :findcommunity 
 
   # GET /communities
   def index

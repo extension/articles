@@ -34,6 +34,7 @@ Rails::Initializer.run do |config|
   config.gem 'geoip', :source => 'http://systems.extension.org/rubygems/'
   # required for email parsing
   config.gem 'mail'
+  config.gem 'fake_arel'
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 
@@ -59,6 +60,9 @@ Rails::Initializer.run do |config|
   # cache configuration
   config.cache_store = :mem_cache_store, 'localhost', {:namespace => 'pubsite'}
 end
+
+# enable Garbage Collection 
+GC.enable_stats if defined?(GC) && GC.respond_to?(:enable_stats)
 
 # require for tagging
 # commented out for now

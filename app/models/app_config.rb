@@ -17,6 +17,7 @@ class AppConfig
     @@configtable.clear
     @@configtable['app_location'] = "localdev"
     @@configtable['load_query_trace'] = false
+    @@configtable['load_rails_footnotes'] = false
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
     @@configtable['sudoers'] = Hash.new
     
@@ -40,13 +41,7 @@ class AppConfig
     
     # content feeds and times
     @@configtable['epoch_time'] = Time.parse('1970-01-01 00:00:00 UTC')    
-    @@configtable['content_feed_refresh_since'] = Time.parse('2005-11-01 00:00:00 UTC')
-    
-    @@configtable['content_feed_events'] = 'http://cop.extension.org/feeds/events?updated-min='
-    @@configtable['content_feed_faqs'] = 'http://cop.extension.org/feeds/faqs?updated-min='
-    @@configtable['content_feed_wikiarticles_no_dpls'] = 'http://cop.extension.org/wiki/Special:Feeds/?unpublished=1&published=1&updated-min='
-    @@configtable['content_feed_wikiarticles'] = 'http://cop.extension.org/wiki/Special:Feeds/?unpublished=1&published=1&dpls=1&updated-min='
-    @@configtable['content_feed_wiki_previewpage'] = 'http://cop.extension.org/wiki/Special:Feeds/' # + page name
+    @@configtable['content_feed_refresh_since'] = Time.parse('2005-11-01 00:00:00 UTC')    
     @@configtable['extensionorg_copwiki_host'] = 'cop.extension.org'
     @@configtable['extensionorg_demowiki_host'] = 'cop.demo.extension.org'
         
@@ -128,10 +123,8 @@ class AppConfig
     @@configtable['cache-expiry']['Institution'] = 1.hour
     @@configtable['cache-expiry']['Community'] = 1.hour
 
-    @@configtable['cache-expiry']['Article'] = 1.hour
-    @@configtable['cache-expiry']['Faq'] = 1.hour
-    @@configtable['cache-expiry']['Event'] = 1.hour    
-    
+    @@configtable['cache-expiry']['Page'] = 1.hour
+
     # defaults for date ranges for reports
     @@configtable['default_datefield'] = 'created_at'
     @@configtable['default_dateinterval'] = 'withinlastmonth'

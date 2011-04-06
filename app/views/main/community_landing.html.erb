@@ -13,7 +13,7 @@
                     <dl>
                         <dt><%= link_to highlight.title, highlight.id_and_link %></dt>
                         <dd class="img"><%=first_image highlight.content%></dd>
-                        <dd><%= truncate_at_word(get_title(highlight.content), 160) %></dd>
+                        <dd><%= get_title(highlight.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></dd>
                         <dd class="more"><%= link_to "More...", highlight.id_and_link %></dd>
                     </dl>
                 </div>
@@ -30,7 +30,7 @@
 
 <%if @news.length > 0 || @faqs.length > 0 || @calendar_events.length > 0 %>
 <div style = "margin-top: 30px; padding-bottom: 20px">
-    <%if (@in_this_section or @recent_articles) %>
+    <%if (@in_this_section or @recent_newsicles) %>
         <%if @faqs.length > 0%>
             <div class="homesection half left">
         <% else %>
@@ -44,9 +44,9 @@
             <% else %>
                <h2>Recent Articles</h2>
                <div class="whatsnewbox">
-                  <%for article in @recent_articles %>
+                  <%for article in @recent_newsicles %>
         		       <dl>
-        		         <dt><%= expanded_time_print(article.wiki_updated_at)%></dt>
+        		         <dt><%= expanded_time_print(article.source_updated_at)%></dt>
                      <dd><%= link_to article.title, article.id_and_link %></dd>
                    </dl>
                   <%end%>
@@ -63,8 +63,8 @@
                 <div class="whatsnewbox">
                     <%for faq in @faqs%>
                         <dl>
-                            <dt><%= expanded_time_print(faq.heureka_published_at)%></dt>
-                            <dd><%= link_to truncate_at_word(faq.question,100), faq_page_url(:id => faq) %></dd>
+                            <dt><%= expanded_time_print(faq.source_updated_at)%></dt>
+                            <dd><%= link_to(faq.title.truncate(100,{:omission => '...', :avoid_orphans => true}), page_url(:id => faq.id, :title => faq.url_title)) %></dd>                            
                         </dl>
                     <%end%>
                     <p><%= link_to "More ...", site_faqs_url(with_content_tag?) %></p>
@@ -72,18 +72,19 @@
             </div>
     <%end%>
     
-    <%= render(:partial => "shared/calendar", :locals => {:month  => get_calendar_month, :calendar_events => @calendar_events, :date => @calendar_date }) %>
-    
+    <%- if !@calendar_events.blank? -%>
+      <%= render(:partial => "shared/calendar", :locals => {:month  => get_calendar_month, :calendar_events => @calendar_events, :date => @calendar_date }) %>
+    <%- end -%>
 </div>
 <%end%>
 
-<%if @articles && @articles.length > 0%>
+<%if @newsicles && @newsicles.length > 0%>
     <div class="homesection">
         <h2>Recent Articles</h2>
         <div class = "whatsnewbox">
-            <%for article in @articles%>
+            <%for article in @newsicles%>
   		       <dl>
-  		         <dt><%= expanded_time_print(article.wiki_updated_at)%></dt>
+  		         <dt><%= expanded_time_print(article.source_updated_at)%></dt>
                <dd><%= link_to article.title, article.id_and_link %></dd>
              </dl>
             <%end%>
@@ -99,7 +100,7 @@
 	    <div class = "whatsnewbox">
             <%for lesson in @recent_learning_lessons%>
              <dl>
-               <dt><%= expanded_time_print(lesson.wiki_updated_at)%></dt>
+               <dt><%= expanded_time_print(lesson.source_updated_at)%></dt>
                <dd><%= link_to lesson.title, lesson.id_and_link %></dd>
              </dl>
             <%end%>

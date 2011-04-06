@@ -29,7 +29,7 @@ class Tag < ActiveRecord::Base
   
   # Set up the polymorphic relationship.
   has_many_polymorphs :taggables, 
-    :from => [:accounts, :communities, :articles, :faqs, :events, :submitted_questions, :sponsors, :learn_sessions, :widgets], 
+    :from => [:accounts, :communities, :pages, :submitted_questions, :sponsors, :learn_sessions, :widgets], 
     :through => :taggings, 
     :dependent => :destroy,
     :as => :tag,
@@ -71,9 +71,7 @@ class Tag < ActiveRecord::Base
     return cache_key
   end
   
-  def self.community_content_tags(options = {},forcecacheupdate=false)
-    logger.debug "=================================== Inside Tag.community_content_tags: #{options.inspect}"
-    
+  def self.community_content_tags(options = {},forcecacheupdate=false)    
     # OPTIMIZE: Review this caching
     cache_key = self.get_cache_key(this_method,options)
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do

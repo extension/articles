@@ -15,7 +15,7 @@
 
 		<p>If you know <%= @showuser.first_name%> and can verify that <%= @showuser.first_name%> is affiliated with Cooperative Extension or working with you and others in your Communities of Practice or in Cooperative Extension in general, you can vouch for <%= @showuser.first_name%>'s eXtensionID.</p>
 		
-		<% form_tag({:action=> "vouch"}, {:id => "comm_search"}) do %>
+		<% form_tag({:action=> "vouch"}, {:id => "colleague_search"}) do %>
 		    <fieldset>
 		        <p>
 		            <label for="reason">Please briefly describe how you know <%= @showuser.first_name%>: </label>

@@ -10,7 +10,6 @@ class ApiKeyEvent < ActiveRecord::Base
   serialize :additionaldata
 
   def self.log_event(requestaction,api_key,additionaldata = nil)
-    logger.debug("#{additionaldata.inspect}")
     options = {:requestaction => requestaction, :api_key => api_key, :ipaddr => AppConfig.configtable['request_ip_address'], :additionaldata => additionaldata}
     return self.create(options)
   end

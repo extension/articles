@@ -50,16 +50,6 @@ module ApplicationHelper
     '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'
   end
   
-  def with_content_tag?
-    if(params[:controller] == 'main' and params[:action] == 'index')
-      return {:content_tag => 'all'}
-    elsif(!@content_tag.nil?)
-      return {:content_tag => @content_tag.name}
-    else
-      return {:content_tag => 'all'}
-    end
-  end
-  
   def get_filtered_aae_incoming_count
     return SubmittedQuestion.submitted.filtered(@currentuser.aae_filter_prefs).count
   end
@@ -109,14 +99,14 @@ module ApplicationHelper
     if !event.time_zone.blank?
       # if user has not selected a timezone to have things displayed in...
       if (@currentuser.nil? or !@currentuser.has_time_zone?)
-        return event.start.in_time_zone(event.time_zone) 
+        return event.event_start.in_time_zone(event.time_zone) 
         # if the user has selected a timezone in people, the time will auto-display correctly in their preferred tz
         # if the user did not select a tz in people, it will just display in it's own tz
       else
-        return event.start
+        return event.event_start
       end
     else
-      return event.start
+      return event.event_start
     end
   end
   
@@ -169,16 +159,6 @@ module ApplicationHelper
     end
     
     return result
-  end
-    
-  def truncate_at_word(text, length = 30, truncate_string = '...' )
-    if text.nil? then return end
-    l = length - truncate_string.length
-    return text if text.length < length
-    removed = text[0,l] 
-    last_index = removed.rindex(' ')
-    return removed unless last_index
-    return removed[0, last_index]+truncate_string
   end
   
   def get_title(html_content)

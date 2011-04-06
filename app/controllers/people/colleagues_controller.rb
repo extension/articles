@@ -10,6 +10,7 @@ class People::ColleaguesController < ApplicationController
   layout 'people'  
   before_filter :login_required
   before_filter :check_purgatory
+  ssl_allowed :finduser
   
   def communityinterest
     # convenience method to do redirection to new communities controller
@@ -192,9 +193,7 @@ class People::ColleaguesController < ApplicationController
     else
       @userlist = User.filtered(@findoptions).ordered(@filteredparams.order).paginate(:all, :page => params[:page])
       if((@userlist.length) > 0)        
-        urloptions = @filteredparams.option_values_hash({:validate_wanted_parameters => false})
-        ActiveRecord::Base::logger.debug "options = #{urloptions.inspect}"    
-        
+        urloptions = @filteredparams.option_values_hash({:validate_wanted_parameters => false})        
         urloptions.merge!({:controller => '/people/colleagues', :action => :list, :download => 'csv'})
         @csvreporturl = CGI.escapeHTML(url_for(urloptions))
       end
