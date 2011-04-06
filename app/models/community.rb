@@ -72,8 +72,8 @@ class Community < ActiveRecord::Base
   has_many :activities
 
 
-  has_many :communitylistconnections, :dependent => :destroy
-  has_many :lists, :through => :communitylistconnections
+  has_many :communitylistconnections, :dependent => :destroy  
+  has_many :lists, :through => :communitylistconnections, :select => "communitylistconnections.connectiontype as listconnectiontype, lists.*", :order => "lists.name"
   
   # institutions
   named_scope :institutions, :conditions => {:entrytype => INSTITUTION}
@@ -381,8 +381,7 @@ class Community < ActiveRecord::Base
     end
     
     # now update the lists
-    self.update_lists
-  
+    self.touch_lists
   end
   
   def mass_invite(userlist,connector,asleader,notify=true)
@@ -532,80 +531,18 @@ class Community < ActiveRecord::Base
     
     return self.joined.find(:all, :conditions => ["#{findconditions}"])
   end
-  
-  
-  def update_lists_with_user(user,operation,connectiontype)  
-    (adds,removes)= self.listconnectionchecks(connectiontype,operation)
-    return if (adds.empty? and removes.empty?)
     
-    
-    return if(communitylistconnections.empty?)
-    communitylistconnections.each do |listconnection|
-      if(adds.include?(listconnection.connectiontype))
-        listconnection.list.add_or_update_subscription(user)
-        if(connectiontype == 'leader')
-          listconnection.list.add_or_update_ownership(user)
-        end
-      end
-      
-      if(removes.include?(listconnection.connectiontype))
-        listconnection.list.remove_subscription(user)
-        if(connectiontype == 'leader' or connectiontype == 'all')
-          listconnection.list.remove_ownership(user)
-        end
-      end
-    end      
-  end
-  
-  def update_lists()
-    returnstats = {}
-    return returnstats if(communitylistconnections.empty?)
-    communitylistconnections.each do |listconnection|
-      returnstats[listconnection.list] = self.update_list(listconnection.connectiontype,listconnection)
+  def touch_lists
+    self.lists.each do |l|
+      l.touch
     end
-    return returnstats
-  end
-  
-  def update_list(connectiontype,suppliedconnection = nil)
-    # special block if this is called by itself
-    if(suppliedconnection.nil?)
-      listconnection = Communitylistconnection.find_by_connectiontype_and_community_id(connectiontype,self.id)
-    else
-      listconnection = suppliedconnection
-    end
-    return {:subscriptions => 'none', :owners => 'none'} if(listconnection.nil?)
-    
-    substats = listconnection.list.update_subscriptions(userlist_by_connectiontype(listconnection.connectiontype))
-    if(!self.leaders.empty? and connectiontype != 'listowners')
-      ownerstats = listconnection.list.update_owners(self.leaders)
-    end
-    return {:subscriptions => substats, :owners => ownerstats.nil? ? 'none' : ownerstats}
   end
   
   def create_or_connect_to_list(listoptions,updatelist = true)
     connectiontype = listoptions.delete(:connectiontype)
     list = List.find_or_createnewlist(listoptions)
-        
-    if(!list.nil?)
-      listconnection = Communitylistconnection.find_by_list_id_and_community_id(list.id,self.id)
-      if(listconnection.nil?)
-        listconnection = Communitylistconnection.create(:list => list, :community => self, :connectiontype => connectiontype)
-        adminevent = AdminEvent.log_data_event(AdminEvent::CONNECT_LIST, {:listname => list.name, :communityname => self.name, :connectiontype => connectiontype})
-      else
-        listconnection.update_attribute(:connectiontype,connectiontype)
-      end
-
-      if(updatelist)
-        managedoptions = {}
-        managedoptions[:dropforeignsubscriptions] = listoptions[:dropforeignsubscriptions].nil? ? false : listoptions[:dropforeignsubscriptions]
-        managedoptions[:dropunconnected] = listoptions[:dropunconnected].nil? ? false : listoptions[:dropunconnected]
-        list.makemanaged(managedoptions)
-        update_list(connectiontype)
-      end
-    end
-    
+    self.lists << list
     return list
-
   end
     
   def drop_nonjoined_taggings

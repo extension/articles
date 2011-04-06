@@ -197,8 +197,5 @@ module People::CommunitiesHelper
     returntext
   end
   
-  def list_stat_line(hash)
-    "<span class='bignumber'>#{hash[:messages]}</span> messages sent by <span class='bignumber'>#{hash[:senders]}</span> senders (total size: #{number_to_human_size(hash[:totalsize])})"
-  end
 end
 

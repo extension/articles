@@ -3,24 +3,19 @@
 
 <%= render(:partial => 'navtabs', :locals => { :selected => 'lists' }) %>
 <h1>My Lists</h1>
-<% if (!@currentuser.subscribedlists.blank?) 
-	communitycount = 0 %>
-	<table cellspacing="0" class="general_table" summary="My Lists">
-		<tr>
-	        <th>Name</th>
-			<th>Subscribers</th>
-	        <th>Posts (this month)</th>
-	    </tr>
-	    <% @currentuser.subscribedlists.each do |list| 
-		communitycount += 1
-	%>
-    	<tr id="list_row_<%= list.id %>">
-			<td><%= link_to("#{list.name}", people_list_url(list))%></td>
-			<td><%= list_subscriber_count(list) %></td>
-			<td><%= list.get_posting_stats('lastmonth')[:messages] %></td>
-		</tr>
-	<% end %>
-</table>
+<%- if (!@currentuser.lists.blank?) -%>
+  <table cellspacing="0" class="general_table" summary="My Lists">
+    <tr>
+      <th>Name</th>
+      <th>Subscribers</th>
+    </tr>
+    <%- @currentuser.lists.each do |list| -%>
+      <tr id="list_row_<%= list.id %>">
+        <td><%= link_to("#{list.name}", people_list_url(list))%></td>
+        <td><%= list.subscriber_count %></td>
+      </tr>
+    <%- end -%>
+  </table>
 <% else %>
-	<p>You are not yet subscribed to any lists.  eXtension mailing lists are associated with communities. <%= link_to("Find a community", {:controller => '/people/communities', :action => :index})%>.</p>
+  <p>You are not yet subscribed to any lists.  eXtension mailing lists are associated with communities. <%= link_to("Find a community", {:controller => '/people/communities', :action => :index})%>.</p>
 <% end %>
