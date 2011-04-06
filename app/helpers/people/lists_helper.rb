@@ -8,13 +8,13 @@
 module People::ListsHelper
 
   
-  def link_to_people_community_connection(community, communityconnection, linktext=nil, displayna = true)
+  def link_to_people_community_connection(community, connectiontype, linktext=nil, displayna = true)
     if(community.nil?)
       return displayna ? "N/A" : "&nbsp;"
     elsif(!linktext.blank?)
-      "<a href='#{userlist_people_community_url(community.id, :connectiontype => communityconnection.connectiontype)}'>#{linktext}</a>"
+      "<a href='#{userlist_people_community_url(community.id, :connectiontype => connectiontype)}'>#{linktext}</a>"
     else
-      "<a href='#{userlist_people_community_url(community.id, :connectiontype => communityconnection.connectiontype)}'>#{communityconnection.connectiontype.capitalize}</a>"
+      "<a href='#{userlist_people_community_url(community.id, :connectiontype => connectiontype)}'>#{connectiontype.capitalize}</a>"
     end
   end
 

@@ -22,7 +22,7 @@
       <tr id="listrow_<%= list.id %>">
         <td><%= list.name %></td>
         <td><%= link_to_people_community(list.community,false) %></td>
-        <td><%= link_to_people_community_connection(list.community, list.communityconnection,'',false) %></td>
+        <td><%= link_to_people_community_connection(list.community, list.connectiontype,'',false) %></td>
         <td><%= list.subscriber_count %></td>            
       </tr>
     <% end%>

@@ -289,17 +289,6 @@ ActiveRecord::Schema.define(:version => 20110406180027) do
   add_index "communityconnections", ["connectiontype"], :name => "index_communityconnections_on_connectiontype"
   add_index "communityconnections", ["user_id", "community_id"], :name => "user_community", :unique => true
 
-  create_table "communitylistconnections", :force => true do |t|
-    t.integer  "list_id"
-    t.integer  "community_id"
-    t.string   "connectiontype"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "communitylistconnections", ["connectiontype"], :name => "index_communitylistconnections_on_connectiontype"
-  add_index "communitylistconnections", ["list_id", "community_id"], :name => "list_community", :unique => true
-
   create_table "content_buckets", :force => true do |t|
     t.string   "name",       :null => false
     t.datetime "created_at", :null => false
@@ -608,6 +597,8 @@ ActiveRecord::Schema.define(:version => 20110406180027) do
     t.datetime "updated_at"
     t.string   "password"
     t.datetime "last_mailman_update"
+    t.integer  "community_id"
+    t.string   "connectiontype"
   end
 
   create_table "locations", :force => true do |t|

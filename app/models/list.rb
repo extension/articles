@@ -7,6 +7,7 @@
 
 class List < ActiveRecord::Base
   
+  
   # MAILMAN TYPES
   MAILMAN_TRUE = 1
   MAILMAN_FALSE = 0
@@ -20,9 +21,8 @@ class List < ActiveRecord::Base
   MAILMAN_ACCEPT = 0
   MAILMAN_HOLD = 1
 
-  has_many :communitylistconnections, :dependent => :destroy
-  has_one    :community, :through => :communitylistconnections
-  
+  belongs_to :community
+    
   validates_length_of :name, :maximum=>50
   
   named_scope :managed, {:conditions => ["managed = 1 and deleted = 0"]}
@@ -42,8 +42,8 @@ class List < ActiveRecord::Base
   def subscriber_count
     if(self.is_announce_list?)
       User.where(:announcements => true).list_eligible.count
-    elsif(connection = self.communityconnection)
-      case connection.connectiontype
+    else
+      case connectiontype
       when 'leaders'
         self.community.leaders.list_eligible.count
       when 'joined'
@@ -53,16 +53,14 @@ class List < ActiveRecord::Base
       else
         0
       end
-    else
-      0
     end
   end
 
   def list_subscriptions
     if(self.is_announce_list?)
       User.where(:announcements => true).list_eligible.map(&:email)
-    elsif(connection = self.communityconnection)
-      case connection.connectiontype
+    else
+      case connectiontype
       when 'leaders'
         self.community.leaders.list_eligible.map(&:email)
       when 'joined'
@@ -72,35 +70,9 @@ class List < ActiveRecord::Base
       else
         []
       end
-    else
-      []
     end
   end
-  
-  def communityconnection
-    if(self.community.nil?)
-      nil
-    else
-      Communitylistconnection.find_by_list_id_and_community_id(self.id, self.community.id)
-    end
-  end
-  
-  def communityconnection_to_s(tolower=false)
-    connection = self.communityconnection
-    if(connection.nil?)
-      return ''
-    end
-    
-    returnlabel = connection.connectiontype
-    
-    if(tolower)
-      returnlabel.downcase
-    else
-      returnlabel.capitalize
-    end
-  end    
-  
-      
+        
   def self.per_page
     25
   end

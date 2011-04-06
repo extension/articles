@@ -5,7 +5,7 @@
 	<% @community.lists.each do |mailinglist| %>
 		<li>
 		    <span class="mailto"><%= mail_to("#{mailinglist.name}@lists.extension.org", mailinglist.name) %><em></em></span>
-		    <%= mailinglist.communityconnection_to_s %>
+		    <%= mailinglist.connectiontype %>
 		</li>
 	<% end %>
 </ul>

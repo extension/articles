@@ -11,7 +11,11 @@
     </tr>
     <%- @currentuser.lists.each do |list| -%>
       <tr id="list_row_<%= list.id %>">
-        <td><%= link_to("#{list.name}", people_list_url(list))%></td>
+        <%- if list.community.nil? -%>
+          <td><%= list.name %></td>
+        <%- else -%>
+          <td><%= link_to("#{list.name}", people_community_url(list.community.id))%></td>
+        <%- end -%>
         <td><%= list.subscriber_count %></td>
       </tr>
     <%- end -%>

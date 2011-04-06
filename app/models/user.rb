@@ -99,11 +99,6 @@ class User < Account
   has_many :api_key_events, :through => :api_keys
   has_one  :directory_item_cache
   
-  #has_many :listmemberships, :dependent => :destroy
-  #has_many :listownerships, :dependent => :destroy
-  #has_many :lists, :through => :listmemberships, :source => :list
-  #has_many :ownedlists, :through => :listownerships, :source => :list
-  
   # has_many :invitations
   
   has_many :learn_connections
@@ -645,19 +640,21 @@ class User < Account
   
   def lists
     list_of_lists = []
-    if(self.announcements?)
-      list_of_lists << List.find_announce_list
-    end
-    self.communities.each do |community|
-      case community.connectiontype
-      when 'member'
-        list_of_lists += community.lists.where("communitylistconnections.connectiontype = 'joined'")
-      when 'leader'
-        list_of_lists += community.lists.where("communitylistconnections.connectiontype IN ('joined','leaders','interested')")
-      when 'wantstojoin'
-        list_of_lists += community.lists.where("communitylistconnections.connectiontype = 'interested'")
-      when 'interest'
-        list_of_lists += community.lists.where("communitylistconnections.connectiontype = 'interested'")
+    if(self.is_validuser? and self.emailconfirmed?)    
+      if(self.announcements?)
+        list_of_lists << List.find_announce_list
+      end
+      self.communities.each do |community|
+        case community.connectiontype
+        when 'member'
+          list_of_lists += community.lists.where("connectiontype = 'joined'")
+        when 'leader'
+          list_of_lists += community.lists.where("connectiontype IN ('joined','leaders','interested')")
+        when 'wantstojoin'
+          list_of_lists += community.lists.where("connectiontype = 'interested'")
+        when 'interest'
+          list_of_lists += community.lists.where("connectiontype = 'interested'")
+        end
       end
     end
     list_of_lists.compact

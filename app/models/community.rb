@@ -71,9 +71,7 @@ class Community < ActiveRecord::Base
 
   has_many :activities
 
-
-  has_many :communitylistconnections, :dependent => :destroy  
-  has_many :lists, :through => :communitylistconnections, :select => "communitylistconnections.connectiontype as listconnectiontype, lists.*", :order => "lists.name"
+  has_many :lists, :order => "lists.name"
   
   # institutions
   named_scope :institutions, :conditions => {:entrytype => INSTITUTION}
@@ -456,62 +454,7 @@ class Community < ActiveRecord::Base
       return []
     end
   end
-  
-  def listconnectionchecks(connectiontype,operation)
-    case connectiontype
-    when 'all'
-      if(operation == 'add')
-        adds = ['leaders','joined','interested']
-        removes = []
-      elsif(operation == 'remove')
-        adds = []
-        removes = ['leaders','joined','interested']
-      end      
-    when 'leader'
-      if(operation == 'add')
-        adds = ['leaders','joined','interested']
-        removes = []
-      elsif(operation == 'remove')
-        adds = []
-        removes = ['leaders','interested']
-      end
-    when 'member'
-      if(operation == 'add')
-        adds = ['joined']
-        removes = ['leaders','interested']
-      elsif(operation == 'remove')
-        adds = []
-        removes = ['joined']
-      end
-    when 'wantstojoin'
-      if(operation == 'add')
-        adds = ['interested']
-        removes = ['leaders','joined']
-      elsif(operation == 'remove')
-        adds = []
-        removes = ['interested']
-      end
-    when 'interest'
-      if(operation == 'add')
-        adds = ['interested']
-        removes = ['leaders','joined']
-      elsif(operation == 'remove')
-        adds = []
-        removes = ['interested']
-      end
-    when 'nointerest'
-      if(operation == 'add')
-        adds = []
-        removes = ['leaders','joined','interested']
-      end
-    else
-      adds = []
-      removes = []
-    end
     
-    return [adds,removes]
-  end
-  
   def recent_community_activity(limit=7)
     Activity.filtered(:community => self, :communityactivity => 'all').find(:all, :limit => limit, :order => 'activities.created_at DESC')
   end
@@ -538,11 +481,9 @@ class Community < ActiveRecord::Base
     end
   end
   
-  def create_or_connect_to_list(listoptions,updatelist = true)
-    connectiontype = listoptions.delete(:connectiontype)
-    list = List.find_or_createnewlist(listoptions)
-    self.lists << list
-    return list
+  def create_or_connect_to_list(listoptions)
+    listoptions[:community_id] = self.id
+    List.find_or_createnewlist(listoptions)
   end
     
   def drop_nonjoined_taggings
@@ -553,11 +494,7 @@ class Community < ActiveRecord::Base
       end
     end
   end
-  
-  def listconnection(connectiontype)
-    Communitylistconnection.find_by_connectiontype_and_community_id(connectiontype,self.id)
-  end
-  
+    
   def item_count_for_date(datadate,datatype,getvalue = 'total',update=false)
     if(datadate.nil?)
       datadate = Date.today

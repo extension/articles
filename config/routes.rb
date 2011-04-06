@@ -29,9 +29,11 @@ ActionController::Routing::Routes.draw do |map|
     people.apikey 'profile/apikey/:id', :controller => :profile, :action => :apikey
     people.new_apikey 'profile/new_apikey', :controller => :profile, :action => :new_apikey
     people.edit_apikey 'profile/edit_apikey/:id', :controller => :profile, :action => :edit_apikey
-    
-    
-    people.resources :lists, :collection => {:showpost => :get, :all => :get, :managed => :get, :nonmanaged => :get, :postactivity => :get, :postinghelp => :get, :about => :get}, :member => { :posts => :get, :subscriptionlist => :get , :ownerlist => :get, }
+    people.connect 'lists/postinghelp', :controller => :lists, :action => :postinghelp
+    people.connect 'lists/about', :controller => :lists, :action => :about
+    people.connect 'lists/:id', :controller => :lists, :action => :show, :requirements => { :id => /\d+/ }  
+    people.connect 'lists', :controller => :lists, :action => :index
+
     people.resources :communities, :collection => { :downloadlists => :get,  :filter => :get, :newest => :get, :mine => :get, :browse => :get, :tags => :get, :findcommunity => :get},
                               :member => {:userlist => :get, :invite => :any, :change_my_connection => :post, :modify_user_connection => :post, :xhrfinduser => :post, :editlists => :any }
     people.resources :invitations,  :collection => {:mine => :get}
