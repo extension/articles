@@ -89,9 +89,10 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 /*#event_time .edit {float:right;}*/
 
-p.no_recording_available {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
-p.recording_available {background: transparent url(/images/common/television.png) left 50% no-repeat; padding-left:24px; font-size:1.4em;}
-span.no_recording_available {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat; padding-left:24px; display:block;}
+p.no_recording_available {background: transparent url(/images/learn/play_button_grey.png) left 50% no-repeat; padding-left:45px; font-size:1.4em; height:42px;}
+p.recording_available {background: transparent url(/images/learn/play_button.png) left 50% no-repeat; padding-left:45px; font-size:1.6em; height:42px;}
+p.recording_available.mini {background: transparent url(/images/learn/play_button_mini.png) left 50% no-repeat; padding-left:25px; font-size:1.45em; line-height:1em; height:1.3em;}
+span.no_recording_available {background: transparent url(/images/learn/play_button_grey_mini.png) left 50% no-repeat; padding-left:24px; display:block;}
 span.recording_available {background: transparent url(/images/common/television.png) left 50% no-repeat; padding-left:24px; display:block;}
 
 #event_time .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; width:64px; display:block; text-align:center; height:64px;padding-top:0;float:right;}
@@ -206,8 +207,8 @@ body:before {
 #recent_sessions {padding:0 20px; width:260px !important}
 #recent_sessions dt, #recent_sessions dd {padding-left:22px;} 
 #recent_sessions dd {color:#999;}
-.no_recording_available dt {background: transparent url(/images/common/television_grayed_out3.png) left 50% no-repeat;}
-.recording_available dt {background: transparent url(/images/common/television.png) left 50% no-repeat;}
+.no_recording_available dt {background: transparent url(/images/learn/play_button_grey_mini.png) left 50% no-repeat;}
+.recording_available dt {background: transparent url(/images/learn/play_button_mini.png) left 50% no-repeat;}
 
 
 
