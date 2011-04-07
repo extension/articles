@@ -93,7 +93,7 @@ p.no_recording_available {background: transparent url(/images/learn/play_button_
 p.recording_available {background: transparent url(/images/learn/play_button.png) left 50% no-repeat; padding-left:45px; font-size:1.6em; height:42px;}
 p.recording_available.mini {background: transparent url(/images/learn/play_button_mini.png) left 50% no-repeat; padding-left:25px; font-size:1.45em; line-height:1em; height:1.3em;}
 span.no_recording_available {background: transparent url(/images/learn/play_button_grey_mini.png) left 50% no-repeat; padding-left:24px; display:block;}
-span.recording_available {background: transparent url(/images/common/television.png) left 50% no-repeat; padding-left:24px; display:block;}
+span.recording_available {background: transparent url(/images/learn/play_button_mini.png) left 50% no-repeat; padding-left:24px; display:block;}
 
 #event_time .calendarblock {background: transparent url(/images/learn/calendar_64.png) right top  no-repeat; width:64px; display:block; text-align:center; height:64px;padding-top:0;float:right;}
 #event_time .calendarblock .month {display:block; height:20px; line-height:25px;font-size:.7em; text-transform:uppercase; font-weight:bold;}
