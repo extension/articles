@@ -286,6 +286,7 @@ class Aae::PrefsController < ApplicationController
           page.select('#auto_assign_options input').all('allInputs') do |value, index|
             value.disable
           end
+          page['awaynotice'].toggle
         # re-enable the auto assign fields if they have unchecked the box to not get routed anything
         else
           page.replace_html :auto_assign_warning, ""
@@ -293,6 +294,7 @@ class Aae::PrefsController < ApplicationController
           page.select('#auto_assign_options input').all('allInputs') do |value, index|
             value.enable
           end
+          page['awaynotice'].toggle
         end
       end
     else
