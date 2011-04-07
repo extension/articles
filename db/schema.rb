@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110329213509) do
+ActiveRecord::Schema.define(:version => 20110406180027) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -288,17 +288,6 @@ ActiveRecord::Schema.define(:version => 20110329213509) do
 
   add_index "communityconnections", ["connectiontype"], :name => "index_communityconnections_on_connectiontype"
   add_index "communityconnections", ["user_id", "community_id"], :name => "user_community", :unique => true
-
-  create_table "communitylistconnections", :force => true do |t|
-    t.integer  "list_id"
-    t.integer  "community_id"
-    t.string   "connectiontype"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "communitylistconnections", ["connectiontype"], :name => "index_communitylistconnections_on_connectiontype"
-  add_index "communitylistconnections", ["list_id", "community_id"], :name => "list_community", :unique => true
 
   create_table "content_buckets", :force => true do |t|
     t.string   "name",       :null => false
@@ -598,61 +587,18 @@ ActiveRecord::Schema.define(:version => 20110329213509) do
   add_index "links", ["fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
   add_index "links", ["page_id", "status", "linktype"], :name => "coreindex"
 
-  create_table "list_owners", :force => true do |t|
-    t.string   "email",          :limit => 96
-    t.integer  "list_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "moderator",                    :default => false
-    t.boolean  "emailconfirmed",               :default => true
-    t.integer  "user_id",                      :default => 0
-    t.boolean  "ineligible",                   :default => false
-  end
-
-  add_index "list_owners", ["list_id", "email", "user_id"], :name => "list_email_user", :unique => true
-
-  create_table "list_posts", :force => true do |t|
-    t.datetime "posted_at"
-    t.integer  "list_id",                   :default => 0
-    t.string   "listname",    :limit => 50
-    t.integer  "user_id",                   :default => 0
-    t.string   "senderemail", :limit => 96
-    t.integer  "size",                      :default => 0
-    t.string   "messageid"
-    t.string   "status"
-    t.datetime "created_at"
-  end
-
-  add_index "list_posts", ["posted_at", "listname", "senderemail", "messageid"], :name => "unique_email", :unique => true, :length => {"listname"=>nil, "messageid"=>"128", "senderemail"=>nil, "posted_at"=>nil}
-
-  create_table "list_subscriptions", :force => true do |t|
-    t.string   "email",          :limit => 96
-    t.integer  "list_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "listpassword"
-    t.boolean  "digest",                       :default => false
-    t.boolean  "suspended",                    :default => false
-    t.boolean  "ineligible",                   :default => false
-    t.integer  "user_id",                      :default => 0
-    t.boolean  "emailconfirmed",               :default => true
-    t.boolean  "optout",                       :default => false
-  end
-
-  add_index "list_subscriptions", ["list_id", "email", "user_id"], :name => "unique_subscription", :unique => true
-
   create_table "lists", :force => true do |t|
-    t.string   "name",                     :limit => 50
-    t.boolean  "deleted",                                :default => false
-    t.boolean  "managed",                                :default => false
-    t.boolean  "advertised",                             :default => true
-    t.boolean  "private_archive",                        :default => true
+    t.string   "name",                :limit => 50
+    t.boolean  "deleted",                           :default => false
+    t.boolean  "managed",                           :default => false
+    t.boolean  "advertised",                        :default => true
+    t.boolean  "private_archive",                   :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "dropforeignsubscriptions",               :default => false
     t.string   "password"
-    t.boolean  "dropunconnected",                        :default => true
     t.datetime "last_mailman_update"
+    t.integer  "community_id"
+    t.string   "connectiontype"
   end
 
   create_table "locations", :force => true do |t|

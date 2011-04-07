@@ -1,32 +1,33 @@
-<% @page_title = "Mailing Lists" %>
+<% @page_title = "Lists - All eXtension Mailing Lists" %>
 <% @selected_tab = :lists %>
+<h1>All eXtension Mailing Lists</h1>
+<div id="paginator_wrapper">
+<% if @listoflists.length > 0 %>
+    <p class="display_results">Displaying <strong><%= @listoflists.offset + 1 %>-<%= @listoflists.offset + @listoflists.length %></strong> of <strong><%= @listoflists.total_entries %></strong></p>
+<% else %>
+    <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+<% end %>
+<%= will_paginate @listoflists %>
+</div>
 
+<table cellspacing="0" border="1">
+    <tr>
+        <th>Name</th>
+        <th>Community Connection:</th>
+        <th>Community Connection Type</th>
+        <th>Subscribers</th>
+    </tr>
     
-  	
-  	<div id="listhome">
-		<% if @currentuser.listownerships.count > 0 %>
-			<div class="listsdisplay">
-				<h3>Lists that you are an owner for</h3>
-				<%= render(:partial => 'listsconnection', :locals => {:listoflists => @currentuser.listownerships}) %>
-			</div>
-		<% end %>
-				
-		<div class="listsdisplay">
-			<h3>Lists that you are subscribed to</h3>
-			<% if @currentuser.subscribedlists.count > 0 %>
-				<%= render(:partial => 'listsconnection', :locals => {:listoflists => @currentuser.subscribedlists}) %>
-			<% else %>
-				<p> You are not currently subscribed to any mailing lists </p>
-			<% end %>
-    	</div>
+    <% @listoflists.each do |list| %>
+      <tr id="listrow_<%= list.id %>">
+        <td><%= list.name %></td>
+        <td><%= link_to_people_community(list.community,false) %></td>
+        <td><%= link_to_people_community_connection(list.community, list.connectiontype,'',false) %></td>
+        <td><%= list.subscriber_count %></td>            
+      </tr>
+    <% end%>
+</table>
 
-		<% if @currentuser.nonsubscribedlists.count > 0 %>
-		<div class="listsdisplay">
-			<h3>Lists that you are connected to, but not subscribed to</h3>
-			<%= render(:partial => 'listsconnection', :locals => {:listoflists => @currentuser.nonsubscribedlists}) %>
-    	</div>
-		<% end %>
-    </div>
-	<!-- <div id="listhome_sidebar">
-        <h4>eXtension Mailing List Statistics</h4>
-    </div> -->
+<div id="paginator_wrapper">
+<%= will_paginate @listoflists %>
+</div>

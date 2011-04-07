@@ -75,13 +75,6 @@ module DataImportActivity
       else
         return false
       end
-    when ActivityApplication::FILE
-      case activityapplication.shortname
-      when 'lists'
-      
-      else
-        return false
-      end
     else # application type
       # do nothing
       return false

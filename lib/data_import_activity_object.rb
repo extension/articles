@@ -62,19 +62,6 @@ module DataImportActivityObject
         # do nothing
         return false
       end
-    when ActivityApplication::FILE
-      case activityapplication.shortname
-      when 'lists'
-        sourcefile = activityapplication.activitysource
-        result = ListPost.import_list_posts_from_file(sourcefile,last_activitysource_at)
-        if(result)
-          return Time.now.utc
-        else
-          return false
-        end
-      else
-        return false
-      end
     else
       # do nothing
       return false

@@ -4,8 +4,8 @@
 <ul class="mailing_lists">
 	<% @community.lists.each do |mailinglist| %>
 		<li>
-		    <span class="mailto"><%= link_to(mailinglist.name, people_list_url(mailinglist), :title => mailinglist.name) %><em></em></span>
-		    <%= mailinglist.communityconnection_to_s %>
+		    <span class="mailto"><%= mail_to("#{mailinglist.name}@lists.extension.org", mailinglist.name) %><em></em></span>
+		    <%= mailinglist.connectiontype %>
 		</li>
 	<% end %>
 </ul>

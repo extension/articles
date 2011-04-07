@@ -79,7 +79,6 @@ class People::AccountController < ApplicationController
           @currentuser.emailconfirmed = true
           @currentuser.email_event_at = now
           @currentuser.save
-          @currentuser.checklistemails
           UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "email confirmed")              
           flash[:success] = "Email address confirmed."
           @token.destroy

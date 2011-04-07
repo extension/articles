@@ -1,6 +1,0 @@
-<% @selected_tab = :lists %>
-<% @activity_text = listpost_activity_to_s(@listpost,opts={:wantstitle => true, :listview => true}) %>
-<h1><%= @activity_text[:title]%></h1>
-<p><%= @activity_text[:body]%></p>
-<p>Message size: <%= number_to_human_size(@listpost.size) %></p>
-<p>Occurred at: <%= @listpost.posted_at %></p>

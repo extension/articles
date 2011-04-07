@@ -28,6 +28,8 @@ class Account < ActiveRecord::Base
   
   has_many :submitted_questions, :foreign_key => 'submitter_id'
   
+
+  
   named_scope :patternsearch, lambda {|searchterm|
     # remove any leading * to avoid borking mysql
     # remove any '\' characters because it's WAAAAY too close to the return key

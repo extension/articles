@@ -146,10 +146,6 @@ class People::ProfileController < ApplicationController
         log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')
         # update public attributes
         @currentuser.update_public_attributes   
-        if announcechange
-          @currentuser.reload
-          @currentuser.checkannouncelists
-        end
         
         # custom alias?
         if(params[:email_forward])

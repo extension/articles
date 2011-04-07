@@ -276,7 +276,7 @@ class People::CommunitiesController < ApplicationController
           if(@listname =~ /^[a-zA-Z0-9-]+$/)
             existinglist = List.find_by_name(@listname)
             if(existinglist.nil?)
-              @community.create_or_connect_to_list({:connectiontype => @listtype, :name => @listname, :dropforeignsubscriptions => true, :dropunconnected => true})
+              @community.create_or_connect_to_list({:connectiontype => @listtype, :name => @listname})
               @list_form_value = ''
               log_user_activity(:activitycode => Activity::COMMUNITY_CREATED_LIST,:user => @currentuser,:community => @community,:appname => 'local')   
             else

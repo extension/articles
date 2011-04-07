@@ -59,17 +59,9 @@ class User < Account
   has_many :social_networks, :dependent => :destroy
   has_many :user_emails, :dependent => :destroy
 
-  has_many :list_subscriptions, :dependent => :destroy
-  
   has_many :communityconnections, :dependent => :destroy
   has_many :communities, :through => :communityconnections, :select => "communityconnections.connectiontype as connectiontype, communityconnections.sendnotifications as sendnotifications, communities.*", :order => "communities.name"
-  
-  has_many :list_subscriptions, :dependent => :destroy
-  has_many :lists, :through => :list_subscriptions
-  has_many :subscribedlists, :through => :list_subscriptions, :source => :list, :conditions => "list_subscriptions.optout = 0"
-  has_many :nonsubscribedlists, :through => :list_subscriptions, :source => :list, :conditions => "list_subscriptions.optout = 1"
-  
-  
+    
   has_many :list_owners, :dependent => :destroy
   has_many :listownerships, :through => :list_owners, :source => :list
   
@@ -107,11 +99,6 @@ class User < Account
   has_many :api_key_events, :through => :api_keys
   has_one  :directory_item_cache
   
-  #has_many :listmemberships, :dependent => :destroy
-  #has_many :listownerships, :dependent => :destroy
-  #has_many :lists, :through => :listmemberships, :source => :list
-  #has_many :ownedlists, :through => :listownerships, :source => :list
-  
   # has_many :invitations
   
   has_many :learn_connections
@@ -122,6 +109,7 @@ class User < Account
   after_save :update_chataccount
   after_save :update_google_account
   after_save :update_email_aliases
+  after_save :touch_lists
   
   before_validation :convert_phonenumber
   before_save :check_status, :generate_feedkey
@@ -185,6 +173,7 @@ class User < Account
   }
   
   named_scope :vouchlist, :conditions => ["vouched = 0 AND retired = 0 AND account_status != #{User::STATUS_SIGNUP} and emailconfirmed=1"]
+  named_scope :list_eligible, :conditions => {:emailconfirmed => true, :retired => false, :vouched => true}
   
 
   def assigned_widgets
@@ -408,7 +397,7 @@ class User < Account
     if(self.save)
       AdminEvent.log_event(retired_by, AdminEvent::RETIRE_ACCOUNT,{:extensionid => self.login, :reason => retired_reason})
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "account retired by #{retired_by.login}")                                              
-      self.clear_all_list_and_community_connections
+      self.clear_all_community_connections
       self.reassign_assigned_questions
       return true
     else
@@ -484,28 +473,14 @@ class User < Account
   end
   
    
-  def clear_all_list_and_community_connections
+  def clear_all_community_connections
    # WARNING WARNING DANGER WILL ROBINSON
-   # log for recovery if we need to...
-   mylists = {}
-   self.lists.map{|list| mylists[list.name] = list.id}
-   mylistownerships = {}
-   self.listownerships.map{|list| mylistownerships[list.name] = list.id}
    mycommunities = {}
-   self.communities.map{|community| mycommunities[community.name] = community.id}
-        
-   # drop all ListSubscriptions
-   droppedsubscriptionscount = ListSubscription.drop_subscriptions(self)
-   if(droppedsubscriptionscount > 0)
-    AdminEvent.log_data_event(AdminEvent::REMOVE_SUBSCRIPTION, {:userlogin => self.login, :listcount => droppedsubscriptionscount, :lists => mylists})
+   self.communities.each do |community| 
+     mycommunities[community.name] = community.id
+     community.touch # update community timestamp so lists will update next run
    end
-   
-   # drop all ListOwnerships
-   droppedownershipscount = ListOwner.drop_ownerships(self)
-   if(droppedownershipscount > 0)
-    AdminEvent.log_data_event(AdminEvent::REMOVE_OWNERSHIP, {:userlogin => self.login, :listcount => droppedownershipscount, :lists => mylistownerships})
-   end
-   
+
    # drop all CommunityConnections
    droppedcommunitiescount = Communityconnection.drop_connections(self)
    if(droppedcommunitiescount > 0)
@@ -520,7 +495,6 @@ class User < Account
     self.retired = false
     self.retired_at = nil
     if(self.save)
-     self.updatelistemails
      return true
     else
      return false
@@ -532,7 +506,6 @@ class User < Account
    self.vouched_by = voucher.id
    self.vouched_at = Time.now.utc
    if(self.save)
-    self.updatelistemails
     if(!self.additionaldata.nil? and !self.additionaldata[:signup_institution_id].nil?)
       self.change_profile_community(Community.find(self.additionaldata[:signup_institution_id]))
     end
@@ -562,7 +535,6 @@ class User < Account
    self.password_confirmation = password_confirmation
    if(self.save)      
     self.user_tokens.resetpassword.delete_all
-    self.checklistemails
     if(didsignup)
       self.user_tokens.signups.delete_all
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "signup")
@@ -619,7 +591,6 @@ class User < Account
     if(self.save)
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "signup")
       Activity.log_activity(:user => self, :creator => self, :activitycode => Activity::SIGNUP, :appname => 'local')      
-      self.checklistemails
       self.user_tokens.signups.delete_all
       return true
     else
@@ -666,52 +637,35 @@ class User < Account
     return false
    end
   end
-   
-  def checklistemails(oldmail = nil)
-   # this will handle all list subscriptions, not just those that are associated currently
-   if(!oldmail.nil?)
-    listsubs = ListSubscription.find(:all, :conditions => ["email = ?",oldemail])
-   else
-    # do this instead to force association with self
-    listsubs = ListSubscription.find(:all, :conditions => ["email = ?",self.email])
-   end
-   
-   if(!listsubs.blank?)
-    listsubs.each do |listsub|
-      listsub.update_attributes({:email => self.email, :user_id => self.id, :emailconfirmed => self.emailconfirmed})
-      AdminEvent.log_data_event(AdminEvent::UPDATE_SUBSCRIPTION, {:listname => listsub.list.name, :userlogin => self.login, :email => self.email, :emailconfirmed => self.emailconfirmed })
+  
+  def lists
+    list_of_lists = []
+    if(self.is_validuser? and self.emailconfirmed?)    
+      if(self.announcements?)
+        list_of_lists << List.find_announce_list
+      end
+      self.communities.each do |community|
+        case community.connectiontype
+        when 'member'
+          list_of_lists += community.lists.where("connectiontype = 'joined'")
+        when 'leader'
+          list_of_lists += community.lists.where("connectiontype IN ('joined','leaders','interested')")
+        when 'wantstojoin'
+          list_of_lists += community.lists.where("connectiontype = 'interested'")
+        when 'interest'
+          list_of_lists += community.lists.where("connectiontype = 'interested'")
+        end
+      end
     end
-   else
-    # add to announce lists
-    self.checkannouncelists
-   end
+    list_of_lists.compact
   end
   
-  def updatelistemails
-   if(!self.lists.blank?)
-    self.lists.each do |list|
-      list.add_or_update_subscription(self)
+  def touch_lists
+    self.lists.each do |l|
+      l.touch
     end
-   else
-    # add to announce lists
-    self.checkannouncelists
-   end
-  end
-  
-  
-  def checkannouncelists
-   announce = List.find_announce_list
+  end  
    
-   if(!announce.nil?)
-    announce.add_or_update_subscription(self)
-   end
-   
-   return true
-  end
-  
-  def ineligible_for_listsubscription?
-   return (self.retired? or !self.vouched?)
-  end
 
   def modify_or_create_connection_to_community(community,options = {})
    operation = options[:operation]
@@ -812,7 +766,7 @@ class User < Account
     if(!options[:no_list_update])
       operation = options[:operation]
       connectiontype = options[:connectiontype]
-      community.update_lists_with_user(self,operation,connectiontype)
+      community.touch_lists
     end
    end
   end
@@ -1193,49 +1147,11 @@ class User < Account
       LearnConnection.create(:learn_session_id => learn_session.id, :user_id => self.id, :connectiontype => connectiontype, :email => self.email)
     end
   end
-        
-    
- 
+         
   def is_sudoer?
    return AppConfig.configtable['sudoers'][self.login.downcase]
   end
  
-  def get_subscription_to_list(list)
-   if(list.nil?)
-    nil
-   else
-    ListSubscription.find_by_user_id_and_list_id(self.id,list.id)
-   end
-  end
-  
-  def get_ownership_for_list(list)
-   if(list.nil?)
-    nil
-   else
-    ListOwner.find_by_user_id_and_list_id(self.id,list.id)
-   end
-  end
-  
-  def update_notification_for_list(list,notification)
-   listsub = self.get_subscription_to_list(list)    
-   if(!listsub.nil?)
-    # update my announcements flag for the announce list
-    if(list.is_announce_list?)
-      self.update_attribute(:announcements,notification)
-    end
-    listsub.update_attribute(:optout,!notification)
-   end
-   return listsub
-  end
-  
-  def update_moderation_for_list(list,moderation)
-   listownership = self.get_ownership_for_list(list)    
-   if(!listownership.nil?)
-    listownership.update_attribute(:moderator,moderation)
-   end
-   return listownership
-  end
-  
   def fix_email(newemailaddress,adminuser)
    now = Time.now.utc
    
@@ -1254,7 +1170,6 @@ class User < Account
    
    if(self.account_status != STATUS_CONFIRMEMAIL or self.emailconfirmed != false)
     self.update_attributes(:account_status => STATUS_CONFIRMEMAIL,:email_event_at => now, :emailconfirmed => false)
-    self.updatelistemails
    end
    token = UserToken.create(:user=>self,:tokentype=>UserToken::EMAIL, :tokendata => {:email => self.email, :oldemail => old_email_address})
    Notification.create(:notifytype => Notification::CONFIRM_EMAIL_CHANGE, :account => self, :send_on_create => true, :additionaldata => {:token_id => token.id})   
@@ -1264,7 +1179,6 @@ class User < Account
   def resend_signup_confirmation(options={})
    if(self.account_status != STATUS_SIGNUP)
     self.update_attribute(:account_status,STATUS_SIGNUP)
-    self.updatelistemails
    end
    
    # try to find an existing token
@@ -1311,7 +1225,6 @@ class User < Account
    # update attributes
    if(self.account_status != STATUS_CONFIRMEMAIL or self.emailconfirmed != false)
     self.update_attributes(:account_status => STATUS_CONFIRMEMAIL,:email_event_at => Time.now.utc, :emailconfirmed => false)
-    self.updatelistemails
    end
   
    # create token
@@ -1326,7 +1239,6 @@ class User < Account
    # update attributes
    if(self.account_status != STATUS_CONFIRMEMAIL or self.emailconfirmed != false)
     self.update_attributes(:account_status => STATUS_CONFIRMEMAIL,:email_event_at => Time.now.utc, :emailconfirmed => false)
-    self.updatelistemails
    end
    
    # create token
