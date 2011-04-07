@@ -260,12 +260,12 @@ class Aae::PrefsController < ApplicationController
   
   # when the 'do not assign me anything' box is checked, not only is the flag set to 
   # disable any assignment to this person, but also their auto-route preference is removed
-  def toggle_no_assign
+  def toggle_vacation
     if request.post?
       # if they checked the box
       if params[:check_box_value] == "1"
         if @currentuser.aae_responder
-          @currentuser.update_attribute(:aae_responder, false)
+          @currentuser.update_attributes(:aae_responder => false, :vacated_aae_at => Time.now)
           # take away their auto-route preference
           if role_to_delete = @currentuser.aae_auto_route_role
             role_to_delete.destroy
@@ -274,7 +274,7 @@ class Aae::PrefsController < ApplicationController
       # if they unchecked the box
       else
         if !@currentuser.aae_responder
-          @currentuser.update_attribute(:aae_responder, true)
+          @currentuser.update_attributes(:aae_responder => true, :vacated_aae_at => nil, :first_aae_away_reminder => false, :second_aae_away_reminder => false)
         end
       end
       render :update do |page|
@@ -286,6 +286,7 @@ class Aae::PrefsController < ApplicationController
           page.select('#auto_assign_options input').all('allInputs') do |value, index|
             value.disable
           end
+          page['awaynotice'].toggle
         # re-enable the auto assign fields if they have unchecked the box to not get routed anything
         else
           page.replace_html :auto_assign_warning, ""
@@ -293,11 +294,23 @@ class Aae::PrefsController < ApplicationController
           page.select('#auto_assign_options input').all('allInputs') do |value, index|
             value.enable
           end
+          page['awaynotice'].toggle
         end
       end
     else
       do_404
       return
+    end
+  end
+  
+  def turn_off_vacation
+    if request.post?
+      if !@currentuser.aae_responder
+        @currentuser.update_attributes(:aae_responder => true, :vacated_aae_at => nil, :first_aae_away_reminder => false, :second_aae_away_reminder => false)
+        render :update do |page|
+          page.reload
+        end
+      end
     end
   end
   

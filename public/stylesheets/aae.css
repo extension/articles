@@ -1586,3 +1586,14 @@ a.nodec:hover {text-decoration:underline;}
 .comment_icon p {margin-bottom:2px; }
 .comment_alert {background: transparent url(/images/common/comment.png) 0 5px no-repeat; padding: 2px 5px 2px 20px !important; color:#000 !important;}
 .widget_directions strong {background:#fffdc3;padding:.15em 1em;}
+
+#awaynotice {background:#e87d1d;
+   z-index:10;
+   position:relative;}
+#awaynotice #container {
+   margin: 0 auto;
+   width: 1000px;}
+#container p {padding:8px 20px; margin:0; line-height:1em; font-size:1.3em;}
+#container p a {color:#333; padding:5px;}
+#notice {float:left;  color:#333;}
+#actions {float:left; }

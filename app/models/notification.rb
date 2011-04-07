@@ -121,7 +121,7 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[AAE_EXPERT_NOREPLY] = ['aae_expert_noreply']   
   MAILERMETHODS[AAE_PUBLIC_NOREPLY] = ['aae_public_noreply']   
   MAILERMETHODS[AAE_PUBLIC_NOQUESTION] = ['aae_public_noquestion'] 
-  MAILERMETHODS[AAE_WIDGET_BROADCAST] = ['aae_widget_broadcast']   
+  MAILERMETHODS[AAE_WIDGET_BROADCAST] = ['aae_widget_broadcast']  
 
   MAILERMETHODS[LEARN_UPCOMING_SESSION] = ['learn_upcoming_session']   
 

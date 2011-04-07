@@ -69,6 +69,9 @@ ActiveRecord::Schema.define(:version => 20110406180027) do
     t.boolean  "is_question_wrangler",                   :default => false
     t.string   "base_login_string"
     t.integer  "login_increment"
+    t.datetime "vacated_aae_at"
+    t.boolean  "first_aae_away_reminder",                :default => false
+    t.boolean  "second_aae_away_reminder",               :default => false
   end
 
   add_index "accounts", ["email"], :name => "email", :unique => true
