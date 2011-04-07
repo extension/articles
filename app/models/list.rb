@@ -252,7 +252,7 @@ class List < ActiveRecord::Base
     else
       default_configuration["generic_nonmember_action"] = MAILMAN_ACCEPT
     end
-    owners = "'#{AppConfig.configtable['default-list-owner']}'"
+    owners = ["'#{AppConfig.configtable['default-list-owner']}'"]
     default_configuration["owner"] = "[#{owners.uniq.join(",")}]"
     return default_configuration
   end
