@@ -21,7 +21,14 @@ class PageSource < ActiveRecord::Base
   named_scope :active, :conditions => {:active => true}
   
   def feed_url(options = {})
-    use_demo_uri = options[:demofeed].blank? ? false : options[:demofeed]
+    if(!options[:demofeed].blank?)
+      use_demo_uri = options[:demofeed]
+    elsif(AppConfig.configtable['sourcefilter'] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name]['demofeed'])
+      use_demo_uri = AppConfig.configtable['sourcefilter'][self.name]['demofeed']
+    else
+      use_demo_uri = false
+    end
+    
     request_options = self.default_request_options
     if(options[:request_options])
       if(request_options.blank?)
@@ -37,7 +44,7 @@ class PageSource < ActiveRecord::Base
       elsif(self.latest_source_time)
         updated_time = self.latest_source_time
       else
-        updated_time AppConfig.configtable['epoch_time']
+        updated_time = AppConfig.configtable['epoch_time']
       end
       
       if(request_options.blank?)
@@ -47,8 +54,15 @@ class PageSource < ActiveRecord::Base
       end
     end
     
-    if(use_demo_uri)
-      feed_url = self.demo_uri
+    # check config for override for dev mode
+    if(AppConfig.configtable['sourcefilter'] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name]['uri'])
+      feed_url = AppConfig.configtable['sourcefilter'][self.name]['uri']
+    elsif(use_demo_uri)
+      if(self.demo_uri.blank?)
+        feed_url = 'error://no-demo-uri-for-this-source'  # will fail parsing as invalid URI
+      else
+        feed_url = self.demo_uri
+      end
     else
       feed_url = self.uri
     end
@@ -93,7 +107,9 @@ class PageSource < ActiveRecord::Base
           (object_update_time, object_op, object) = Page.create_or_update_from_atom_entry(entry,self)
           
           # get smart about the last updated time
-          if(object_update_time > last_updated_item_time )
+          if(last_updated_item_time.nil?)
+            last_updated_item_time = object_update_time
+          elsif(object_update_time > last_updated_item_time )
             last_updated_item_time = object_update_time
           end
           
