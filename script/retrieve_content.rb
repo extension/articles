@@ -69,16 +69,21 @@ class RetrieveContent < Thor
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :refresh_since,:default => 'default', :aliases => "-t", :desc => "Refresh since provided time (parseable time or 'lastday','lastweek','lastmonth','default')"
   method_option :sources,:default => 'active', :aliases => "-s", :desc => "Comma delimited list of sources to request (run the 'sources' command to show available sources).  Also 'active' or 'all'."
-  method_option :last,:default => 'false', :aliases => "-l", :desc => "Show last request result"
-
+  method_option :last,:default => false, :aliases => "-l", :desc => "Show last request result"
+  method_option :demofeed,:default => false, :aliases => "-d", :desc => "Use demo feed"
   def sourceinfo
     load_rails(options[:environment])
     source_options = {}
     source_options[:refresh_since] = get_refresh_since(options)
+    if(options[:demofeed])
+      source_options[:demofeed] = true
+    end
     sources = get_page_sources(options)
     sources.each do |page_source|
       puts "\n'#{page_source.name}'"
-      puts "Latest source time at last update: #{page_source.latest_source_time.strftime("%B %e, %Y, %l:%M %p %Z")}"
+      if(!page_source.latest_source_time.blank?)
+        puts "Latest source time at last update: #{page_source.latest_source_time.strftime("%B %e, %Y, %l:%M %p %Z")}"
+      end
       puts "Source url: #{page_source.feed_url(source_options)}"
       puts "Active: #{(page_source.active? ? 'true' : 'false')}"
       if(options[:last])
@@ -97,10 +102,14 @@ class RetrieveContent < Thor
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :refresh_since,:default => 'default', :aliases => "-t", :desc => "Refresh since provided time (parseable time or 'lastday','lastweek','lastmonth','default')"
   method_option :sources,:default => 'active', :aliases => "-s", :desc => "Comma delimited list of sources to request (run the 'sources' command to show available sources).  Also 'active' or 'all'."
+  method_option :demofeed,:default => false, :aliases => "-d", :desc => "Use demo feed"
   def request
     load_rails(options[:environment])
     source_options = {}
     source_options[:refresh_since] = get_refresh_since(options)
+    if(options[:demofeed])
+      source_options[:demofeed] = true
+    end
     sources = get_page_sources(options)
     sources.each do |page_source|
       puts "\n'#{page_source.name}'"
@@ -114,6 +123,7 @@ class RetrieveContent < Thor
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :refresh_since,:default => 'default', :aliases => "-t", :desc => "Refresh since provided time (parseable time or 'lastday','lastweek','lastmonth','default')"
   method_option :sources,:default => 'active', :aliases => "-s", :desc => "Comma delimited list of sources to request (run the 'sources' command to show available sources).  Also 'active' or 'all'."
+  method_option :demofeed,:default => false, :aliases => "-d", :desc => "Use demo feed"
   def update
     load_rails(options[:environment])
     errors = []
@@ -122,6 +132,9 @@ class RetrieveContent < Thor
       lockfile.lock do    
         source_options = {}
         source_options[:refresh_since] = get_refresh_since(options)
+        if(options[:demofeed])
+          source_options[:demofeed] = true
+        end
         sources = get_page_sources(options)
         sources.each do |page_source|
           puts "\n'#{page_source.name}'"
