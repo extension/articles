@@ -53,7 +53,72 @@ def update_from_darmok_users(connection,drupaldatabase,mydatabase)
 
   puts "finished user table replacement."
   
-  
+  # first names
+  puts "starting user first name data table replacement..."
+  sql = "INSERT INTO #{drupaldatabase}.field_data_field_first_name (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_first_name_value, field_first_name_format)"
+  sql +=  " SELECT 'user', 'user', 0, #{mydatabase}.accounts.id, #{mydatabase}.accounts.id, 'und', 0, #{mydatabase}.accounts.first_name, NULL"
+  sql +=  " FROM #{mydatabase}.accounts"
+  sql +=  " WHERE #{mydatabase}.accounts.type = 'User'"
+  sql +=  " ON DUPLICATE KEY UPDATE field_first_name_value=#{mydatabase}.accounts.first_name"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal users first name table: #{err}"
+    return false
+  end
+  puts "finished user first name data table replacement."
+
+  puts "starting user first name revisions table replacement..."
+  sql = "INSERT INTO #{drupaldatabase}.field_revision_field_first_name (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_first_name_value, field_first_name_format)"
+  sql +=  " SELECT 'user', 'user', 0, #{mydatabase}.accounts.id, #{mydatabase}.accounts.id, 'und', 0, #{mydatabase}.accounts.first_name, NULL"
+  sql +=  " FROM #{mydatabase}.accounts"
+  sql +=  " WHERE #{mydatabase}.accounts.type = 'User'"
+  sql +=  " ON DUPLICATE KEY UPDATE field_first_name_value=#{mydatabase}.accounts.first_name"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal users first name revisions table: #{err}"
+    return false
+  end
+  puts "finished user first name revisions table replacement."
+
+  # last names
+  puts "starting user last name data table replacement..."
+  sql = "INSERT INTO #{drupaldatabase}.field_data_field_last_name (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_last_name_value, field_last_name_format)"
+  sql +=  " SELECT 'user', 'user', 0, #{mydatabase}.accounts.id, #{mydatabase}.accounts.id, 'und', 0, #{mydatabase}.accounts.last_name, NULL"
+  sql +=  " FROM #{mydatabase}.accounts"
+  sql +=  " WHERE #{mydatabase}.accounts.type = 'User'"
+  sql +=  " ON DUPLICATE KEY UPDATE field_last_name_value=#{mydatabase}.accounts.last_name"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal users last name table: #{err}"
+    return false
+  end
+  puts "finished user last name data table replacement."
+
+  puts "starting user last name revisions table replacement..."
+  sql = "INSERT INTO #{drupaldatabase}.field_revision_field_last_name (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_last_name_value, field_last_name_format)"
+  sql +=  " SELECT 'user', 'user', 0, #{mydatabase}.accounts.id, #{mydatabase}.accounts.id, 'und', 0, #{mydatabase}.accounts.last_name, NULL"
+  sql +=  " FROM #{mydatabase}.accounts"
+  sql +=  " WHERE #{mydatabase}.accounts.type = 'User'"
+  sql +=  " ON DUPLICATE KEY UPDATE field_last_name_value=#{mydatabase}.accounts.last_name"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal users last name revisions table: #{err}"
+    return false
+  end
+  puts "finished user last name revisions table replacement."
+    
   puts "starting authmap table replacement..."
   
   sql = "REPLACE INTO #{drupaldatabase}.authmap (aid,uid,authname,module) SELECT uid,uid,CONCAT('https://people.extension.org/',name), 'openid' FROM #{drupaldatabase}.users;"
