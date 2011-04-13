@@ -102,7 +102,7 @@ class RetrieveContent < Thor
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :refresh_since,:default => 'default', :aliases => "-t", :desc => "Refresh since provided time (parseable time or 'lastday','lastweek','lastmonth','default')"
   method_option :sources,:default => 'active', :aliases => "-s", :desc => "Comma delimited list of sources to request (run the 'sources' command to show available sources).  Also 'active' or 'all'."
-  method_option :demofeed,:default => 'false', :aliases => "-d", :desc => "Use demo feed"
+  method_option :demofeed,:default => false, :aliases => "-d", :desc => "Use demo feed"
   def request
     load_rails(options[:environment])
     source_options = {}
@@ -123,7 +123,7 @@ class RetrieveContent < Thor
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :refresh_since,:default => 'default', :aliases => "-t", :desc => "Refresh since provided time (parseable time or 'lastday','lastweek','lastmonth','default')"
   method_option :sources,:default => 'active', :aliases => "-s", :desc => "Comma delimited list of sources to request (run the 'sources' command to show available sources).  Also 'active' or 'all'."
-  method_option :demofeed,:default => 'false', :aliases => "-d", :desc => "Use demo feed"
+  method_option :demofeed,:default => false, :aliases => "-d", :desc => "Use demo feed"
   def update
     load_rails(options[:environment])
     errors = []
