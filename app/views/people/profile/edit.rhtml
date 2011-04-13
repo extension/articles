@@ -20,6 +20,8 @@
 	</fieldset>
 	</div>
 	<%= render(:partial => 'profile_fields', :locals => {:user => @currentuser, :signup => false}) %>
+	<%= render(:partial => 'profile_position', :locals => { :positionslist => Position.geteditlist}) %>
+  
 	<%- if !@user.email_forward.blank? and @user.email_forward.alias_type == EmailAlias::INDIVIDUAL_FORWARD_CUSTOM -%>
 	<div class="form_section">
   <h3>Email Forwarding</h3>
@@ -31,7 +33,5 @@
   	</div>
   </div>
   <%- end -%>
-	
-    <p><%= submit_tag 'Save' %> or <%= link_to 'Cancel', :controller => '/people/profile', :action => :me %> </p>
-
+  <p><%= submit_tag 'Save' %> or <%= link_to 'Cancel', :controller => '/people/profile', :action => :me %> </p>
 <% end %>
