@@ -25,6 +25,7 @@ gem 'hpricot'
 # image submission and other image handling
 gem 'imagesize', :require => "image_size"
 gem 'paperclip'
+gem 'rmagick'
 # date picking
 gem 'calendar_date_select'
 # CSE management
@@ -40,7 +41,9 @@ gem 'fake_arel'
 gem 'mofo'
 # performance
 gem 'newrelic_rpm'
-
+# widget related
+gem 'rest-client'
+gem 'json_pure'
 
 # Deploy with Capistrano
 gem 'capistrano'
