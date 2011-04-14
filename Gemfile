@@ -38,7 +38,8 @@ gem 'mail'
 gem 'fake_arel'
 # microformats
 gem 'mofo'
-
+# performance
+gem 'newrelic_rpm'
 
 
 # Deploy with Capistrano
