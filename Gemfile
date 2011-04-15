@@ -13,7 +13,7 @@ gem 'ruby-openid'
 # polymorphic HMT assocations
 gem 'has_many_polymorphs'
 # atom parsing
-gem 'ratom'
+gem 'ratom', :require => 'atom'
 # extended tz management
 gem 'tzinfo'
 # ip to geo mapping
