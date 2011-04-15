@@ -847,10 +847,8 @@ border-radius: 4px;
 }
 .read  {font-weight:bold;}
 .read span {margin-right:.25em;}
-.aae_module {display:block;height:110px;width:220px;background: #fff url(/images/pubsite/gray_fade_01.png) 0 bottom no-repeat;border-top:1px solid #fff;}
-.aae_module a span {display:block;height:50px;width:220px;background: #fff url(/images/pubsite/aae_button.png) 0 0 no-repeat; text-indent:-5000px; margin-top:20px;}
-.aae_module a:hover span {background: #fff url(/images/pubsite/aae_button.png) -220px 0 no-repeat;}
-.aae_module a:hover {color:#386292;}
+.aae_module {display:block;height:160px;width:220px;background: #fff url(/images/pubsite/gray_fade_01.png) 0 bottom no-repeat;border-top:1px solid #fff;}
+.aae_module a span {display:block;height:90px;width:220px;background: #fff url(/images/pubsite/aae_button2.png) 50% 50% no-repeat; text-indent:-5000px; margin-top:20px;}
 
 
 #content_tag {text-align:left;background: url(/images/layout/headerbgnd.gif) repeat-x top left #fff;z-index:25;position:relative;}
