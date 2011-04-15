@@ -76,6 +76,7 @@ GEM
       activeresource (= 2.3.11)
       activesupport (= 2.3.11)
       rake (>= 0.8.3)
+    rails-footnotes (3.6.7)
     rake (0.8.7)
     ratom (0.6.7)
       libxml-ruby (>= 1.1.2)
@@ -120,6 +121,7 @@ DEPENDENCIES
   paperclip
   passenger
   rails (= 2.3.11)
+  rails-footnotes
   ratom
   rest-client
   rmagick

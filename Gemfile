@@ -64,4 +64,5 @@ group :development, :test do
   gem "what_methods"
   gem "net-http-spy"
   gem "devserver"
+  gem "rails-footnotes"
 end
