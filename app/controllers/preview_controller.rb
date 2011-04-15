@@ -75,26 +75,29 @@ class PreviewController < ApplicationController
     
     
   def showpage
-    if(params[:title].blank?)
+    if((params[:source].blank? or params[:source_id].blank?) and params[:title].blank?)
       return(redirect_to(preview_home_url))
     end
     
     # force applocation to be preview
     @app_location_for_display = 'preview'
-
     @right_sidebar_to_display = "empty_vessel"
-
-    # this works, but should give anyone reading this code heartburn
-    title_to_lookup = CGI.unescape(request.request_uri.gsub('/preview/pages/', ''))
-    title_to_lookup.gsub!(' ', '_')
-
-    if title_to_lookup =~ /\/print(\/)?$/
-      params[:print] = true
-      title_to_lookup = title_to_lookup.gsub(/\/print(\/)?$/, '')
+    
+    source = params[:source] || 'copwiki'
+    source_id = params[:source_id] || ''
+    
+    if(!params[:title].blank?)
+      # got here via /preview/pages/title for handling wiki titles
+      # so we can't use the title param - we have to use the request_uri because of
+      # the infamous question mark articles      
+      title_to_lookup = CGI.unescape(request.request_uri.gsub('/preview/pages/', ''))
+      title_to_lookup.gsub!(' ', '_')
+      source_id = title_to_lookup
     end
+      
 
     begin 
-      @article =  PreviewPage.new_from_source('copwiki',title_to_lookup)
+      @article =  PreviewPage.new_from_source(source,source_id)
     rescue ContentRetrievalError => exception
       @missing = title_to_lookup
       @missing_message = "Preview Page Retrieval failed, reason:<br/> #{exception.message}"

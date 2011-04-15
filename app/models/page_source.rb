@@ -16,10 +16,33 @@ class PageSource < ActiveRecord::Base
   serialize :default_request_options
   has_many :pages
   
-  cattr_accessor :atom_feed
-  
   named_scope :active, :conditions => {:active => true}
   
+  def page_feed_url(source_id,options = {})
+    if(!options[:demofeed].blank?)
+      use_demo_uri = options[:demofeed]
+    elsif(AppConfig.configtable['sourcefilter'] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name]['demofeed'])
+      use_demo_uri = AppConfig.configtable['sourcefilter'][self.name]['demofeed']
+    else
+      use_demo_uri = false
+    end
+    
+    # check config for override for dev mode
+    if(AppConfig.configtable['sourcefilter'] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name]['page_uri'])
+      feed_url = AppConfig.configtable['sourcefilter'][self.name]['page_uri']
+    elsif(use_demo_uri)
+      if(self.demo_uri.blank?)
+        feed_url = 'error://no-demo-uri-for-this-source'  # will fail parsing as invalid URI
+      else
+        feed_url = self.demo_page_uri
+      end
+    else
+      feed_url = self.page_uri
+    end
+    
+    format(feed_url,CGI::escape(source_id.to_s))
+  end
+      
   def feed_url(options = {})
     if(!options[:demofeed].blank?)
       use_demo_uri = options[:demofeed]
@@ -85,6 +108,13 @@ class PageSource < ActiveRecord::Base
     self.atom_feed(options).entries
   end
   
+  def atom_page_feed(source_id,options={})
+    @atom_page_feed = self.class.atom_feed(self.page_feed_url(source_id,options))
+  end
+  
+  def atom_page_entry(source_id,options={})
+    self.atom_page_feed(source_id,options).entries[0]
+  end
   
   def retrieve_content(options = {})
     update_retrieve_time = (options[:update_retrieve_time].nil? ? true : options[:update_retrieve_time])

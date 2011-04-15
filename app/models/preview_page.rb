@@ -9,19 +9,17 @@
 
 class PreviewPage
   
-  attr_accessor :atom_url, :atom_url_content, :atom_source, :page_source
-  attr_accessor :title, :original_content, :updated_at, :published_at, :url, :author, :is_dpl
+  attr_accessor :source, :source_id
+  attr_accessor :page_source, :title, :original_content, :updated_at, :published_at, :source_url, :author, :is_dpl
   attr_accessor :content_buckets, :content_tags
   
-  def self.new_from_source(source,source_id,is_demo=false)
+  def self.new_from_source(source,source_id)
     page_source = PageSource.find_by_name(source)
     return nil if(page_source.blank?)
-    base_page_feed_url = (is_demo ? page_source.demo_page_uri : page_source.page_uri)
-    return nil if(base_page_feed_url.blank?)
     page = PreviewPage.new
+    page.source = source
+    page.source_id = source_id.to_s
     page.page_source = page_source
-    page.atom_url  = format(base_page_feed_url,CGI::escape(source_id))
-    page.atom_source = page_source.name
     page.parse_atom_content
     return page
   end
@@ -42,13 +40,8 @@ class PreviewPage
       return ''
     end
 
-    case self.atom_source
-    when 'copwiki'
-      self.convert_wiki_links
-      return @converted_content.to_html
-    else
-      return self.original_content
-    end
+    self.convert_links
+    return @converted_content.to_html
   end
   
   #
@@ -84,14 +77,14 @@ class PreviewPage
   # converts relative hrefs and hrefs that refer to the feed source
   # to something relative to /preview/pages/
   #
-  def convert_wiki_links
+  def convert_links
     # if no content, don't bother.
     if(self.original_content.blank?)
       return 0
     end
     
-    wikisource_uri = URI.parse(self.atom_url)
-    host_to_make_relative = wikisource_uri.host
+    source_uri = URI.parse(self.source_url)
+    host_to_make_relative = source_uri.host
           
     if(@converted_content.nil?)
       @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
@@ -107,7 +100,7 @@ class PreviewPage
         begin
           original_uri = URI.parse(anchor['href'])
         rescue
-          anchor.set_attribute('href', '')
+          anchor.set_attribute('href', '#')
           anchor.set_attribute('class', 'bad_link')
           anchor.set_attribute('title', 'Bad Link, Please edit or remove it.')
           next
@@ -123,7 +116,20 @@ class PreviewPage
               newhref =  '/preview/pages/' + title
             end
           else
-            newhref =  '/preview/pages/'+ original_uri.path
+            if(self.source == 'copwiki')
+              newhref =  '/preview/pages/' + original_uri.path
+            else
+              # tease an id out of the href
+              target_id = original_uri.path.gsub(source_uri.path.gsub(self.source_id,''),'')
+              if(target_id != original_uri.path)
+                newhref = "/preview/page/#{self.source}/#{target_id}"
+              else
+                anchor.set_attribute('href', '#')
+                anchor.set_attribute('class', 'warning_link')
+                anchor.set_attribute('title', 'Relative link, unable to show in preview')
+                next               
+              end                    
+            end
           end
           # attach the fragment to the end of it if there was one
           if(!original_uri.fragment.blank?)
@@ -136,8 +142,22 @@ class PreviewPage
           if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
             newhref =  '/preview/pages/' + $1
           else
-            newhref =  '/preview/pages/'+ original_uri.path
+            if(self.source == 'copwiki')
+              newhref =  '/preview/pages/' + original_uri.path
+            else
+              # tease an id out of the href
+              target_id = original_uri.path.gsub(source_uri.path.gsub(self.source_id,''),'')
+              if(target_id != original_uri.path)
+                newhref = "/preview/page/#{self.source}/#{target_id}"
+              else
+                anchor.set_attribute('href', original_uri.to_s)
+                anchor.set_attribute('class', 'warning_link')
+                anchor.set_attribute('title', 'Unable to handle in preview')
+                next               
+              end      
+            end            
           end
+          
           # attach the fragment to the end of it if there was one
           if(!original_uri.fragment.blank?)
             newhref += "##{original_uri.fragment}"
@@ -173,17 +193,9 @@ class PreviewPage
   end
     
   def parse_atom_content()
-     # will raise errors on failure, sets self.atom_content
-     self.fetch_url_content
-
-     atom_entries =  Atom::Feed.load_feed(self.atom_url_content).entries
-     if(atom_entries.blank?)
-       raise ContentRetrievalError, "No atom entries found in feed."
-     end
-      
-     # we are just going to take the first entry
-     parsed_atom_entry = atom_entries[0]       
+    parsed_atom_entry = page_source.atom_page_entry(self.source_id)
     
+
      if parsed_atom_entry.updated.nil?
        self.updated_at = Time.now.utc
      else
@@ -197,7 +209,7 @@ class PreviewPage
      end
 
      self.title = parsed_atom_entry.title
-     self.url = parsed_atom_entry.links[0].href if self.url.blank?
+     self.source_url = parsed_atom_entry.links[0].href if self.source_url.blank?
      self.author = parsed_atom_entry.authors[0].name
      self.original_content = parsed_atom_entry.content.to_s
 
@@ -213,38 +225,6 @@ class PreviewPage
      
    end
   
-  
-   # returns a block of content read from a file or a URL, does not parse
-   def fetch_url_content
-     urlcontent = ''
-     # figure out if this is a file url or a regular url and behave accordingly
-     fetch_uri = URI.parse(self.atom_url)
-     if(fetch_uri.scheme.nil?)
-       raise ContentRetrievalError, "Fetch URL Content:  Invalid URL: #{feed_url}"
-     elsif(fetch_uri.scheme == 'file')
-       if File.exists?(fetch_uri.path)
-         File.open(loadfromfile) { |f|  urlcontent = f.read }          
-       else
-         raise ContentRetrievalError, "Fetch URL Content:  Invalid file #{fetch_uri.path}"        
-       end
-     elsif(fetch_uri.scheme == 'http' or fetch_uri.scheme == 'https')  
-       # TODO: need to set If-Modified-Since
-       http = Net::HTTP.new(fetch_uri.host, fetch_uri.port) 
-       http.read_timeout = 300
-       response = fetch_uri.query.nil? ? http.get(fetch_uri.path) : http.get(fetch_uri.path + "?" + fetch_uri.query)
-       case response
-       # TODO: handle redirection?
-       when Net::HTTPSuccess
-         self.atom_url_content  = response.body
-       else
-         raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{self.atom_url} failed: #{response.code}/#{response.message}"          
-       end    
-     else # unsupported URL scheme
-       raise ContentRetrievalError, "Fetch URL Content:  Unsupported scheme #{feed_url}"          
-     end
-
-     return self.atom_url_content 
-   end
   
      
   
