@@ -435,7 +435,49 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   end
 end
 
-
+def update_group_resource_tags(connection,drupaldatabase)
+  puts "updating group resource tags..."
+  
+  # build my insert query
+  communities = Community.public_list.all(:order => 'name')
+  insert_values = []
+  communities.each do |community|
+    next if !community.connect_to_drupal
+    next if community.drupal_node_id.blank?
+    next if community.cached_content_tags(true).blank?
+    community.cached_content_tags.each do |content_tag|
+      if(content_tag == community.primary_content_tag_name)
+        primary = 1
+      else
+        primary = 0
+      end
+      insert_values << "(#{community.drupal_node_id},#{ActiveRecord::Base.quote_value(community.name)},#{community.id},#{ActiveRecord::Base.quote_value(content_tag)},#{primary})"
+    end
+  end
+  
+  if(!insert_values.blank?)
+    insert_sql = "INSERT INTO #{drupaldatabase}.group_resource_tags (nid,community_name,community_id,resource_tag_name,is_primary_tag)"
+    insert_sql += " VALUES #{insert_values.join(',')}"
+    
+    # truncate first, insert second
+    begin
+      result = connection.execute("TRUNCATE TABLE  #{drupaldatabase}.group_resource_tags;")
+    rescue => err
+      $stderr.puts "ERROR: Exception raised during the group_resource_tags table truncate: #{err}"
+      return false
+    end
+    
+    # execute the sql
+    begin
+      result = connection.execute(insert_sql)
+    rescue => err
+      $stderr.puts "ERROR: Exception raised during the group_resource_tags insertion: #{err}"
+      return false
+    end
+  end
+  return true;
+  
+end
 
 
 
@@ -447,6 +489,8 @@ mydatabase = User.connection.instance_variable_get("@config")[:database]
 # replace/insert user accounts
 result = update_from_darmok_users(User.connection,@drupaldatabase,mydatabase)
 # new groups
-result = new_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+result = new_groups_from_darmok_communities(Community.connection,@drupaldatabase,mydatabase)
 # groups update
-result = update_groups_from_darmok_communities(User.connection,@drupaldatabase,mydatabase)
+result = update_groups_from_darmok_communities(Community.connection,@drupaldatabase,mydatabase)
+# group resource tags
+result = update_group_resource_tags(Community.connection,@drupaldatabase)
