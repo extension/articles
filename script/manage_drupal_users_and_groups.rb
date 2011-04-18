@@ -485,12 +485,12 @@ end
 # Main
 
 # my database connection 
-# mydatabase = User.connection.instance_variable_get("@config")[:database]
-# # replace/insert user accounts
-# result = update_from_darmok_users(User.connection,@drupaldatabase,mydatabase)
-# # new groups
-# result = new_groups_from_darmok_communities(Community.connection,@drupaldatabase,mydatabase)
-# # groups update
-# result = update_groups_from_darmok_communities(Community.connection,@drupaldatabase,mydatabase)
-# # group resource tags
+mydatabase = User.connection.instance_variable_get("@config")[:database]
+# replace/insert user accounts
+result = update_from_darmok_users(User.connection,@drupaldatabase,mydatabase)
+# new groups
+result = new_groups_from_darmok_communities(Community.connection,@drupaldatabase,mydatabase)
+# groups update
+result = update_groups_from_darmok_communities(Community.connection,@drupaldatabase,mydatabase)
+# group resource tags
 result = update_group_resource_tags(Community.connection,@drupaldatabase)
