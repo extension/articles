@@ -191,7 +191,11 @@ ActionController::Routing::Routes.draw do |map|
   map.reports 'reports', :controller => :reports
   map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
   
-  map.preview_page 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
+  # wiki compatibility version
+  map.preview_wikipage 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
+  # everyone else
+  map.preview_page 'preview/page/:source/:source_id', :controller => 'preview', :action => 'showpage'
+   
   map.preview_tag 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
   map.preview_category 'preview/showcategory/:categorystring', :controller => 'preview', :action => 'showcategory'
   map.preview_home 'preview', :controller => 'preview', :action => 'index'

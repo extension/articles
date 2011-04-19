@@ -1,0 +1,17 @@
+<%= render(:partial => 'notification_mailer/demo_notice') if @isdemo -%>
+
+Hello <%= @expert.fullname %>,
+This is a friendly reminder that we have not seen you in a while in the Ask an Expert application. Your account is set to NOT receive questions from the Ask an Expert application in the Ask an Expert preferences. 
+
+You have opted out of receiving questions since <%= @away_date %>
+
+You can uncheck this option and continue receiving questions by going to: <%= @urls['aae_prefs'] %> 
+
+*** PLEASE DO NOT REPLY TO THIS MESSAGE ***
+If you have questions please contact us at: 
+ 
+<%= @urls['contactus'] %>
+
+--
+eXtension Staff
+http://about.extension.org

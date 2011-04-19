@@ -1,8 +1,5 @@
 # Be sure to restart your server when you modify this file
 
-# Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '~>2.3.3' unless defined? RAILS_GEM_VERSION
-
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
@@ -15,26 +12,7 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
-  config.gem 'will_paginate', :version => '~>2.3', :lib => 'will_paginate', :source => 'http://systems.extension.org/rubygems/'
-  config.gem 'ruby-openid', :version => '~>2.1', :lib => 'openid', :source => 'http://systems.extension.org/rubygems/'
-  config.gem 'has_many_polymorphs', :version => '~>2.13', :source => 'http://systems.extension.org/rubygems/'
-  config.gem 'ratom', :version => '~>0.6', :lib => 'atom', :source => 'http://systems.extension.org/rubygems/'
-  config.gem 'hpricot', :version => '~>0.8', :source => 'http://systems.extension.org/rubygems/'
-  config.gem 'tzinfo', :version => '~>0.3', :source => 'http://systems.extension.org/rubygems/'
-  config.gem 'geokit', :version => '~>1.5', :source => 'http://systems.extension.org/rubygems/'
-  config.gem "nokogiri", :version => '~>1.4', :source => 'http://systems.extension.org/rubygems/'
-  config.gem "paperclip", :version => '~>2.3', :source => 'http://systems.extension.org/rubygems/'
-  config.gem "calendar_date_select"
-  config.gem 'gdata', :version => '~>1.1', :lib => 'gdata', :source => 'http://systems.extension.org/rubygems/'
-  # required by cron'd scripts that need to have a lock on running
-  config.gem 'lockfile', :version => '~>1.4', :lib => 'lockfile', :source => 'http://systems.extension.org/rubygems/'
-  # required by fetcher library
-  config.gem 'SystemTimer', :version => '~>1.2', :lib => 'system_timer', :source => 'http://systems.extension.org/rubygems/'
-  # required for IP branding
-  config.gem 'geoip', :source => 'http://systems.extension.org/rubygems/'
-  # required for email parsing
-  config.gem 'mail'
-  config.gem 'fake_arel'
+  # using Bundler - see GEMFILE
   
   # TODO: still need pubsite gems - http://justcode.extension.org/issues/show/521
 
