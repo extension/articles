@@ -494,6 +494,9 @@ class User < Account
   def enable
     self.retired = false
     self.retired_at = nil
+    # this is silly, but it's a quick fix that I'm sure will stick around
+    # forever so that an account won't get re-retired each day after enabling
+    self.email_event_at = Time.now.utc
     if(self.save)
      return true
     else
