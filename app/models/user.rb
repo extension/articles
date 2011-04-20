@@ -6,7 +6,8 @@
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'digest/sha1'
 class User < Account
-    
+  include ActionController::UrlWriter
+
   STATUS_CONTRIBUTOR = 0
   STATUS_REVIEW = 1
   STATUS_CONFIRMEMAIL = 2
@@ -2107,6 +2108,40 @@ class User < Account
    :conditions => ['categories.id = ? and submitted_questions.external_app_id IS NOT NULL',category.id], :group => 'accounts.id', \
    :order => 'accounts.last_name,accounts.first_name')
   end
+  
+
+  def review_request_text
+    if(self.vouched?)
+      return ''
+    end
+    
+    default_url_options[:host] = AppConfig.get_url_host
+    default_url_options[:protocol] = AppConfig.get_url_protocol
+    if(default_port = AppConfig.get_url_port)
+      default_url_options[:port] = default_port
+    end
+    text = "This is a system generated account review request on behalf of:\n"
+    text += "\n"
+    text += "#{self.fullname}\n" 
+    text += "#{self.email}\n"
+    text += "\n"
+    if (!self.additionaldata.blank? and !self.additionaldata[:signup_affiliation].blank?)
+      text += "Additional information from #{self.first_name} about their Extension involvement:\n"
+      text += "\n"
+      text += Hpricot(self.additionaldata[:signup_affiliation]).to_plain_text + "\n"
+    end
+    text += "\n"
+    text += "Please vouch for the account at:"
+    text += "\n\n"
+    text += url_for(:controller => 'people/colleagues', :action => 'showuser', :id => self.login)
+    text += "\n\n"
+    text += "Accounts not vouched within 14 days will automatically be retired. If you are a people administrator, please retire the account if it cannot be vouched for."
+    text
+  end
+    
+
+    
+    
    
   
   protected

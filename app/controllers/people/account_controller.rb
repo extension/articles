@@ -88,7 +88,6 @@ class People::AccountController < ApplicationController
             Notification.create(:notifytype => Notification::WELCOME, :account => @currentuser, :send_on_create => true)
             return redirect_to(people_welcome_url)
           else
-            Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :account => @currentuser, :send_on_create => true)        
             return redirect_to(:controller => 'account', :action => 'review')
           end  
         end

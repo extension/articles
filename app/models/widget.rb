@@ -40,6 +40,14 @@ class Widget < ActiveRecord::Base
   # hardcoded for layout difference
   BONNIE_PLANTS_WIDGET = '4856a994f92b2ebba3599de887842743109292ce'
   
+  # hardcoded for support purposes
+  SUPPORT_WIDGET = '7ae729bf767d0b3165ddb2b345491f89533a7b7b'
+  
+  def self.support_widget
+    self.find_by_fingerprint(SUPPORT_WIDGET)
+  end
+  
+  
   def is_bonnie_plants_widget?
     (self.fingerprint == BONNIE_PLANTS_WIDGET)
   end
