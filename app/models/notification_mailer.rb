@@ -337,24 +337,6 @@ class NotificationMailer < ActionMailer::Base
      @body           = {:isdemo => @isdemo, :user => notification.account, :urls => urls }  
    end
    
-   
-   # -----------------------------------
-   #  review
-   # -----------------------------------
-   
-   def review_request(notification)
-     self.base_email(notification.notifytype_to_s)      
-     reviewuser = notification.account
-     @from           = "\"#{reviewuser.first_name} #{reviewuser.last_name}\" <#{reviewuser.email}>"
-     @recipients     = AppConfig.configtable['emailsettings']['people']['review']
-     @subject        = @subjectlabel+'Account Review Request'    
-     urls = Hash.new
-     urls['reviewurl'] = url_for(:controller => 'people/colleagues', :action => 'showuser', :id => reviewuser.login)
-     urls['contactus'] = people_contact_url
-     @body           = {:isdemo => @isdemo, :reviewuser => reviewuser, :urls => urls }  
-   end
-   
-   
    # -----------------------------------
    #  passwords
    # -----------------------------------
