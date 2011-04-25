@@ -2,6 +2,18 @@
 <%= render(:partial => "partial/flashmessages") %>
 
 <h3><%= link_to "AaE ##{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %></h3>
+
+<p>
+    <strong>Submitter's Name:</strong> <%= @submitted_question.submitter_fullname %><br />
+    <% if location = @submitted_question.location %>
+      <strong>Location of Question:</strong> <%= location.name %><br />
+    <% end %>
+    <% if location and county = @submitted_question.county %>
+      <strong>County of Question:</strong> <%= county.name %><br />
+    <% end %>
+    <strong>Question Submitted At:</strong> <%= humane_date(@submitted_question.created_at) %><br />
+</p>
+
 <h1>Write a Reply</h1>
 
 <div id="response_form">
