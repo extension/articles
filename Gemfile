@@ -25,7 +25,7 @@ gem 'hpricot'
 # image submission and other image handling
 gem 'imagesize', :require => "image_size"
 gem 'paperclip'
-gem 'rmagick'
+gem 'rmagick', :require => false
 # date picking
 gem 'calendar_date_select'
 # CSE management
