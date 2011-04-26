@@ -211,7 +211,23 @@ class People::SignupController < ApplicationController
         Notification.create(:notifytype => Notification::WELCOME, :account => @currentuser, :send_on_create => true)
         return redirect_to(people_welcome_url)
       else
-        Notification.create(:notifytype => Notification::ACCOUNT_REVIEW, :account => @currentuser, :send_on_create => true)        
+        # create a support widget question
+        reviewtext = @currentuser.review_request_text
+        if(!reviewtext.blank?)
+          @submitted_question = SubmittedQuestion.new(:asked_question => reviewtext, :submitter_email => @currentuser.email)
+          @submitted_question.submitter = @currentuser
+          @submitted_question.widget = Widget.support_widget
+          @submitted_question.widget_name = Widget.support_widget.name
+          @submitted_question.user_ip = request.remote_ip
+          @submitted_question.user_agent = (request.env['HTTP_USER_AGENT']) ? request.env['HTTP_USER_AGENT'] : ''
+          @submitted_question.referrer = (request.env['HTTP_REFERER']) ? request.env['HTTP_REFERER'] : ''
+          @submitted_question.status = SubmittedQuestion::SUBMITTED_TEXT
+          @submitted_question.status_state = SubmittedQuestion::STATUS_SUBMITTED
+          @submitted_question.external_app_id = 'widget'
+          @submitted_question.location = @personal[:location] if @personal[:location]
+          @submitted_question.county = @personal[:county] if @personal[:county]
+          @submitted_question.save
+        end    
         return redirect_to(:controller => 'signup', :action => 'review')
       end
     end    

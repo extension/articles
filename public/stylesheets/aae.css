@@ -501,7 +501,6 @@ ul#aaelinks li#spam_review a:hover {background:none;border:0; color:#333 !import
     margin: 0 !important;
     padding: .35em 3em .5em 0 !important;
     font-family: Arial, Times, serif;
-/*    font-size: 1.1em;*/
     line-height: 1.5em;
 }
 .inc .inc_question {font-size: 1.1em;}
@@ -524,6 +523,7 @@ h2.inc_question {
     line-height: 1.5em;
     float: left;
     color: #053868 !important;
+    width:500px;
 }
 h2.inc_question span {
     padding: .3em .8em .3em .5em;
@@ -531,7 +531,7 @@ h2.inc_question span {
     border: 3px solid #b5ceff;
     border-bottom: none;
 }
-
+h2.inc_question p {word-wrap: break-word; font-size:1em;}
 
 p.inc_time_ago,
 p.inc_assigned,

@@ -46,7 +46,7 @@ two_week_vacators.each do |vacator|
   begin
     NotificationMailer.deliver_aae_away_reminder(vacator)
   rescue Exception => e
-    puts "Unable to deliver aae reminder email for expert #{vacator.email}, #{e.message}"
+    $stderr.puts "Unable to deliver aae reminder email for expert #{vacator.email}, #{e.message}"
     next
   end
   
@@ -57,7 +57,7 @@ four_week_vacators.each do |vacator|
   begin
     NotificationMailer.deliver_aae_away_reminder(vacator)
   rescue Exception => e
-    puts "Unable to deliver aae reminder email for expert #{vacator.email}, #{e.message}"
+    $stderr.puts "Unable to deliver aae reminder email for expert #{vacator.email}, #{e.message}"
     next
   end
   

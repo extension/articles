@@ -31,12 +31,9 @@
            <% tag_name = @community.primary_content_tag_name %>
             <li><%= link_to('Track all new content', content_feed_url(:tags => tag_name)) %></li>  		      
          </ul>
-         <%if File.exists?( File.join('app','views', 'newsletter_registration_forms','_'+tag_name+'.rhtml' )) %>
-            <h1>Resource Area Newsletter</h1>
-            <ul>			
-               <li><%= render :partial => 'newsletter_registration_forms/'+tag_name %></li>
-            </ul>   
-         <%end%>
+         <%- if tag_name == 'parenting' -%>
+           <%= render :partial => 'shared/parenting_newsletter.html' -%>
+         <%- end -%>
          </div>
     <%end%>
     

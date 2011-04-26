@@ -42,7 +42,6 @@ class Notification < ActiveRecord::Base
   RECONFIRM_SIGNUP = 503
   CONFIRM_PASSWORD = 504
   WELCOME = 505
-  ACCOUNT_REVIEW = 506
   CONFIRM_EMAIL_CHANGE = 507
   CONFIRM_SIGNUP = 508
   CONFIRM_EMAIL = 509  
@@ -105,7 +104,6 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[RECONFIRM_SIGNUP] = ['reconfirm_signup']    
   MAILERMETHODS[CONFIRM_PASSWORD] = ['confirm_password']    
   MAILERMETHODS[WELCOME] = ['welcome']    
-  MAILERMETHODS[ACCOUNT_REVIEW] = ['review_request']   
   MAILERMETHODS[CONFIRM_EMAIL_CHANGE] = ['confirm_email_change']      
   MAILERMETHODS[CONFIRM_SIGNUP] = ['confirm_signup']    
   MAILERMETHODS[AAE_ASSIGNMENT] = ['aae_assigned']  
