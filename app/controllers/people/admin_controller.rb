@@ -8,7 +8,7 @@
 class People::AdminController < ApplicationController
   layout 'people'
   before_filter :admin_required
-  before_filter :sudo_required, :only => [:adminevents,:adminusers, :makeadmin, :show_config, :reload_config]
+  before_filter :sudo_required, :only => [:adminevents,:adminusers, :show_config, :reload_config]
   before_filter :check_purgatory
    
   
@@ -29,40 +29,7 @@ class People::AdminController < ApplicationController
     findopts[:conditions] = "is_admin = 1"
     userlist(false,'admin_users',labels,findopts)
   end
-  
-  
-  def makeadmin
-    if not params[:id].nil?
-      @showuser = User.find_by_login(params[:id])
-      if @showuser
-        if request.post?
-          operation = params[:operation]
-          if(operation.nil?)
-            flash[:failure] = 'Missing operation setting'
-            return redirect_to(:action => :adminusers)
-          else
-            is_add = (operation == 'add') ? true : false
-            if(@showuser.update_attribute(:is_admin, is_add))
-              AdminEvent.log_event(@currentuser, is_add ? AdminEvent::ADD_ADMIN : AdminEvent::DELETE_ADMIN,{:extensionid => @showuser.login})
-              return redirect_to(:action => :showuser, :id => @showuser.login)
-            else
-              flash[:failure] = "Failed to perform admin #{operation} operation"
-              return redirect_to(:action => :adminusers)  
-            end 
-          end 
-        else
-          # show form
-        end
-      else
-        flash[:warning] = 'User not found.'      
-        return redirect_to(:action => :adminusers)
-      end
-    else
-      flash[:warning] = 'Missing user.'      
-      return redirect_to(:action => :adminusers)
-    end    
-  end
-  
+    
   # -----------------------------------
   # End - Sudo Actions
   # -----------------------------------

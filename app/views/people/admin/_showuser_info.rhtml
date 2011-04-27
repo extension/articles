@@ -132,9 +132,9 @@
 	<tr>
 		<td scope="row" class="label">Admin User?</td>
         <% if @showuser.is_admin? %>
-			<td>Yes <% if @currentuser.is_sudoer? %><%= link_to "remove admin", :action => 'makeadmin', :id => @showuser.login, :operation => 'remove' %><% end %></td>
+			<td>Yes</td>
 		<% else %>
-			<td>No <% if @currentuser.is_sudoer? %><%= link_to "make admin", :action => 'makeadmin', :id => @showuser.login, :operation => 'add' %><% end %></td>
+			<td>No</td>
 		<% end %>
 	</tr>
 	
