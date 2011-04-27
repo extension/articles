@@ -55,8 +55,6 @@ class User < Account
   has_and_belongs_to_many :expertise_locations
   has_and_belongs_to_many :expertise_counties
   
-  attr_reader :password_confirmation
-  
   has_many :social_networks, :dependent => :destroy
   has_many :user_emails, :dependent => :destroy
 
@@ -116,7 +114,6 @@ class User < Account
   before_save :check_status, :generate_feedkey
   
   validates_length_of :phonenumber, :is => 10, :allow_blank => true
-  validates_presence_of :password_confirmation, :on => :create
   validates_presence_of :last_name, :first_name
   
   # scopers
@@ -519,7 +516,7 @@ class User < Account
    end
   end
   
-  def set_new_password(token,password,password_confirmation)
+  def set_new_password(token,password)
    if(self.account_status == User::STATUS_SIGNUP and !token.tokendata.nil? and token.tokendata[:signuptoken_id])
     if(signuptoken = UserToken.find(token.tokendata[:signuptoken_id]))
       didsignup = self.confirm_signup(signuptoken,false)
@@ -536,7 +533,6 @@ class User < Account
    end
    
    self.password = password
-   self.password_confirmation = password_confirmation
    if(self.save)      
     self.user_tokens.resetpassword.delete_all
     if(didsignup)
@@ -2214,6 +2210,7 @@ class User < Account
     (filtered_users and filtered_users != '') ? (return "accounts.id IN (#{filtered_users})") : (return nil)
   end
   
+
 
   
 end

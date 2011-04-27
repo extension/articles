@@ -45,12 +45,6 @@
                     <span class="advice">minimum six characters</span>
                 </p>	
 
-                <p>	
-                    <label for="user_password_confirmation">Confirm Password <em class="required">*</em></label>
-                    <%= password_field "user", "password_confirmation", :class => "medsize", :value => '' %>
-                </p>
-                
-                
                 <p>
                     <label for="user_phonenumber">Preferred Phone Number:</label>
                     <%= text_field("user", "phonenumber", {:value => number_to_phone(@user.phonenumber,:area_code => true)}) %>
