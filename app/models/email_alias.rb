@@ -42,7 +42,12 @@ class EmailAlias < ActiveRecord::Base
     
       if(self.alias_type == INDIVIDUAL_FORWARD)
         if (self.user.email =~ /extension\.org$/i)
-          self.alias_type = INDIVIDUAL_FORWARD_CUSTOM
+          if(self.user.email == "#{self.user.login}@extension.org")
+            self.alias_type = INDIVIDUAL_GOOGLEAPPS
+            self.destination = "#{self.user.login}@#{AppConfig.configtable['googleapps_domain']}"
+          else
+            self.alias_type = INDIVIDUAL_FORWARD_CUSTOM
+          end
         else
           self.destination = self.user.email
         end
