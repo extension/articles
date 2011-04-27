@@ -23,7 +23,13 @@
         <p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p>
     </div>
     <% end %>
-    
+    <%- if(admin_mode?) -%>
+   	  <div id="adminnotice">
+         <div id="container">
+           <p><strong>You are logged into an admin account</strong> </p>
+         </div>	
+       </div>
+    <%- end -%>
     <div id="wrapper">
         <div id="masthead">
             <div id="header">
@@ -34,6 +40,7 @@
             <div id="logo"><%= image_tag("/images/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %></div>
             <% end %>
         </div>
+        
     
         <div id="content">
             <%= yield :layout %>

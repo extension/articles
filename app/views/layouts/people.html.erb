@@ -31,6 +31,14 @@
 	</div>
 	<% end %>
 	
+	<%- if(admin_mode?) -%>
+	  <div id="adminnotice">
+      <div id="container">
+        <p><strong>You are logged into an admin account</strong> </p>
+      </div>	
+    </div>
+ <%- end -%>
+	  
 	<%= render(:partial => 'partial/away_notice') %>
 	
 	<div id="pageContainer">
