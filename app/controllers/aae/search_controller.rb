@@ -143,7 +143,7 @@ class Aae::SearchController < ApplicationController
       return
     end
     
-    @users = User.notsystem.validusers.patternsearch(params[:login]).all(:limit => User.per_page, :include => [:expertise_locations, :open_questions, :categories])
+    @users = User.notsystem_or_admin.validusers.patternsearch(params[:login]).all(:limit => User.per_page, :include => [:expertise_locations, :open_questions, :categories])
     # gets aae question handling counts for all experts returned
     @handling_counts = User.aae_handling_event_count({:group_by_id => true, :limit_to_handler_ids => @users.map(&:id),:submitted_question_filter => {:notrejected => true}})  
     render :template => 'aae/search/assignees_by_name.js.rjs', :layout => false

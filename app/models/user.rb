@@ -118,7 +118,7 @@ class User < Account
   
   # scopers
   named_scope :validusers, :conditions => {:retired => false,:vouched => true}
-  named_scope :notsystem, :conditions => ["#{self.table_name}.id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')})"]
+  named_scope :notsystem_or_admin, :conditions => ["(#{self.table_name}.id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')}) and is_admin = 0)"]
   named_scope :unconfirmedemail, :conditions => ["emailconfirmed = ? AND account_status != ?",false,User::STATUS_SIGNUP]
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}
@@ -1476,7 +1476,7 @@ class User < Account
        sql_offset = nil   
      end
        
-     return User.notsystem.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "accounts.is_question_wrangler DESC, accounts.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
+     return User.notsystem_or_admin.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "accounts.is_question_wrangler DESC, accounts.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
    end
 
    def get_expertise

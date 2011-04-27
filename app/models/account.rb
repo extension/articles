@@ -153,7 +153,7 @@ class Account < ActiveRecord::Base
    end
    
    if(valid_only)
-     return User.notsystem.validusers.send("find_by_#{checkfield}",value)
+     return User.notsystem_or_admin.validusers.send("find_by_#{checkfield}",value)
    else
      return Account.send("find_by_#{checkfield}",value)
    end
@@ -202,7 +202,7 @@ class Account < ActiveRecord::Base
   end
    
   def set_encrypted_password
-   self.password = self.encrypt_password_string(self.password) if (!self.password.blank? && self.password_changed?)
+    self.password = self.encrypt_password_string(self.password) if (!self.password.blank? && self.password_changed?)
   end
   
 
