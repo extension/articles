@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110406180027) do
+ActiveRecord::Schema.define(:version => 20110427202454) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(:version => 20110406180027) do
     t.datetime "vacated_aae_at"
     t.boolean  "first_aae_away_reminder",                :default => false
     t.boolean  "second_aae_away_reminder",               :default => false
+    t.integer  "primary_account"
   end
 
   add_index "accounts", ["email"], :name => "email", :unique => true
@@ -148,6 +149,25 @@ ActiveRecord::Schema.define(:version => 20110406180027) do
     t.text     "data"
     t.datetime "created_at"
   end
+
+  create_table "analytics", :force => true do |t|
+    t.integer  "page_id"
+    t.string   "datalabel",          :limit => 25
+    t.string   "segment",            :limit => 25
+    t.date     "day"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.text     "analytics_url"
+    t.string   "analytics_url_hash"
+    t.integer  "pageviews"
+    t.integer  "unique_pageviews"
+    t.integer  "entrances"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "analytics", ["analytics_url_hash"], :name => "recordsignature", :unique => true
+  add_index "analytics", ["page_id", "datalabel", "segment", "day", "start_date", "end_date"], :name => "analytic_ndx"
 
   create_table "annotation_events", :force => true do |t|
     t.integer  "user_id"
@@ -736,6 +756,7 @@ ActiveRecord::Schema.define(:version => 20110406180027) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "page_source_id"
+    t.text     "cached_content_tags"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
