@@ -28,6 +28,7 @@ class Account < ActiveRecord::Base
   
   has_many :submitted_questions, :foreign_key => 'submitter_id'
   
+  belongs_to :primary_account, :class_name => 'Account'
 
   
   named_scope :patternsearch, lambda {|searchterm|
