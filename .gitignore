@@ -19,7 +19,6 @@
 /public/sitemaps/*.xml
 
 # /db/
-/db/schema.rb
 
 # /data/
 /data/*
