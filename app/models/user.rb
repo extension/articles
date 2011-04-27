@@ -2142,7 +2142,7 @@ class User < Account
     admin_user.login = "#{self.login}-admin"
     admin_user.is_admin = true
     admin_user.email = "#{admin_user.login}@extension.org"
-    admin_user.primary_account = self.id
+    admin_user.primary_account_id = self.id
     admin_user.password = ''
     admin_user.save
     admin_user

@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(:version => 20110427202454) do
     t.datetime "vacated_aae_at"
     t.boolean  "first_aae_away_reminder",                :default => false
     t.boolean  "second_aae_away_reminder",               :default => false
-    t.integer  "primary_account"
+    t.integer  "primary_account_id"
   end
 
   add_index "accounts", ["email"], :name => "email", :unique => true
