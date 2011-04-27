@@ -93,7 +93,15 @@
       <% end %>
    <% end %>
 </head>
-<body> <!-- pubsite layout -->
+<body> 
+  <%- if(admin_mode?) -%>
+ 	  <div id="adminnotice">
+       <div id="container">
+         <p><strong>You are logged into an admin account</strong> </p>
+       </div>	
+     </div>
+  <%- end -%>
+<!-- pubsite layout -->
     <div id="body_wrapper"><!-- used for preview -->
         <div id="preview_wrapper" class="<%= @app_location_for_display %>"></div>
         <% if(@app_location_for_display != 'production' and @app_location_for_display != 'shownav' )%>

@@ -76,8 +76,13 @@ class ActiveRecord::Base #:nodoc:
     end
     
     def cache_tags(ownerid,kind)
-      # TODO: possibly handle just the top tags?
-      # e.g. my_top_tags_displaylist(:order => 'weightedfrequency DESC', :minweight => 2))
+
+      # does this model have its own caching field?
+      if(self.respond_to?(:cached_tag_field) and cached_tag_field = self.cached_tag_field(ownerid,kind))
+        tagarray = self.tags_by_ownerid_and_kind(ownerid,kind)
+        fulltextlist = tagarray.map(&:name).join(Tag::JOINER)
+        self.update_attribute("#{cached_tag_field}",fulltextlist)
+      end
       
       # TODO: review this special case - communities get all tags cached for now, others get the one specified
       if(self.is_a?(Community))

@@ -66,8 +66,8 @@ class DailyNumber < ActiveRecord::Base
       total = User.all(:conditions => "DATE(accounts.created_at) <= '#{datadate.to_s(:db)}'").count
       thatday = User.all(:conditions => "DATE(accounts.created_at) = '#{datadate.to_s(:db)}'").count
     when 'valid accounts'
-      total = User.notsystem.validusers.all(:conditions => "DATE(accounts.created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = User.notsystem.validusers.all(:conditions => "DATE(accounts.created_at) = '#{datadate.to_s(:db)}'").count
+      total = User.notsystem_or_admin.validusers.all(:conditions => "DATE(accounts.created_at) <= '#{datadate.to_s(:db)}'").count
+      thatday = User.notsystem_or_admin.validusers.all(:conditions => "DATE(accounts.created_at) = '#{datadate.to_s(:db)}'").count
     else
       return nil
     end

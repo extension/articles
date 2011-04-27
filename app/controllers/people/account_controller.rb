@@ -225,7 +225,7 @@ class People::AccountController < ApplicationController
         @notoken = false
         if request.post?
           if(params[:user])
-            result = @requestuser.set_new_password(@token,params[:user][:password],params[:user][:password_confirmation])
+            result = @requestuser.set_new_password(@token,params[:user][:password])
             if(result)
               flash[:success] = "New password set. Please login with your new password."
               session[:userid] = nil

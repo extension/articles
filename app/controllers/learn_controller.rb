@@ -248,7 +248,7 @@ class LearnController < ApplicationController
       return
     end
     
-    @users = User.notsystem.validusers.patternsearch(name_str).all(:limit => User.per_page)
+    @users = User.notsystem_or_admin.validusers.patternsearch(name_str).all(:limit => User.per_page)
     render :layout => false
   end
     

@@ -35,6 +35,14 @@
     <% if !@mobile_device %>
         <%= render(:partial => 'aae/partial/global_nav_banner') %>
     <% end %>
+    <%- if(admin_mode?) -%>
+   	  <div id="adminnotice">
+         <div id="container">
+           <p><strong>You are logged into an admin account</strong> </p>
+         </div>	
+       </div>
+    <%- end -%>
+    <%= render(:partial => 'partial/away_notice') %>
     <div id="pageContainer">
         <div id="masthead">
             <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
@@ -49,9 +57,6 @@
                 <%- end -%>
             </ul>
             
-            <% if @currentuser.is_admin? %>
-        		<p id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></p>
-        	<% end %>
             <% end %>
         </div>
         
@@ -70,10 +75,6 @@
                         <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
                     <%- end -%>
                 </ul>
-
-                <% if @currentuser.is_admin? %>
-            		<p id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></p>
-            	<% end %>
 
                 <h3>Other eXtension Sites</h3>
                 <%= render(:partial => 'aae/partial/global_nav_banner') %>

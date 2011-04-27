@@ -227,13 +227,19 @@ class Page < ActiveRecord::Base
   end
   
   def cached_content_tag_names
-    if(self.cached_tags.content.blank?)
-      cached_tag = CachedTag.create_or_update(self,User.systemuserid,Tagging::CONTENT)
-    else
-      cached_tag = self.cached_tags.content[0]
+    if(self.cached_content_tags.blank?)
+      self.cache_tags(User.systemuserid,Tagging::CONTENT)
     end
-    cached_tag_list = cached_tag.fulltextlist.split(Tag::JOINER)
+    cached_tag_list = self.cached_content_tags.split(Tag::JOINER)
     cached_tag_list.reject{|tagname| Tag::CONTENTBLACKLIST.include?(tagname) }.compact
+  end
+  
+  def cached_tag_field(ownerid,kind)
+    if(ownerid == User.systemuserid and kind == Tagging::CONTENT)
+      return 'cached_content_tags'
+    else
+      return nil
+    end
   end
   
   # return an array of the content tag names for this page, filtering out the blacklist and compared to the community content tags

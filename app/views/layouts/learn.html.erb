@@ -43,6 +43,13 @@
        <% if !@mobile_device %>
            <%= render(:partial => 'learn/global_nav_banner') %>
        <% end %>
+       <%- if(admin_mode?) -%>
+      	  <div id="adminnotice">
+            <div id="container">
+              <p><strong>You are logged into an admin account</strong> </p>
+            </div>	
+          </div>
+       <%- end -%>
        
        <header id="masthead">
            <h1><%= link_to(image_tag("/images/learn/learn_logo2.png", :alt => "eXtension Learn"), learn_url) %></h1>
@@ -90,9 +97,6 @@
                 <ul id="userinfo">
                     <%- if(!@currentuser.nil?) -%>
                         <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
-                        <% if @currentuser.is_admin? %>
-                     		<li id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></li>
-                     	<% end %>
                     <%- end -%>
                 </ul>
             </nav>

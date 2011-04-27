@@ -20,6 +20,13 @@
     
 </head>
 <body>
+  <%- if(admin_mode?) -%>
+ 	  <div id="adminnotice">
+       <div id="container">
+         <p><strong>You are logged into an admin account</strong> </p>
+       </div>	
+     </div>
+  <%- end -%>
    <div id="wrapper">
 
  	  <h1 id="masthead"><%= link_to("Cooperative Extension Search", search_url) %></h1>

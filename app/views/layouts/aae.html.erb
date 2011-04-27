@@ -45,7 +45,13 @@
     <% if !@mobile_device %>
         <%= render(:partial => 'aae/partial/global_nav_banner') %>
     <% end %>
-    
+    <%- if(admin_mode?) -%>
+   	  <div id="adminnotice">
+         <div id="container">
+           <p><strong>You are logged into an admin account</strong> </p>
+         </div>	
+       </div>
+    <%- end -%>
     <%= render(:partial => 'partial/away_notice') %>
     
     <div id="pageContainer">
@@ -78,11 +84,7 @@
                         <li><%= link_to "reports", {:controller => "reports"} %></li>
                         <li><%= link_to(@currentuser.login, aae_profile_url(:id => @currentuser.login), :class => "usericon") %></li>
                         <li id="prefs"><%= link_to "preferences", :controller => 'aae/prefs', :action => 'index' %></li>
-                        <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
-                        
-                        <% if @currentuser.is_admin? %>
-                    		<li id="admintoggle"><strong>Admin</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></li>
-                    	<% end %>
+                        <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>                    
                     <%- end -%>
                 </ul>
                 
@@ -148,11 +150,7 @@
                     <li><%= link_to "sign out", :controller => 'people/account', :action => :logout %></li>
                 <%- end -%>
             </ul>
-        
-            <% if @currentuser.is_admin? %>
-        		<p id="admintoggle"><strong>Admin Mode</strong>: <span id="admin_mode_block"><%= admin_mode_text %></span></p>
-        	<% end %>
-        
+          
             <h3>Other eXtension Sites</h3>
             <%= render(:partial => 'aae/partial/global_nav_banner') %>
         <% end %>

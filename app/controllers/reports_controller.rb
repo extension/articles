@@ -17,6 +17,7 @@ class ReportsController < ApplicationController
   
   
   def graphs
+    @right_column = false
   end
   
   def publishedcontent
@@ -29,6 +30,7 @@ class ReportsController < ApplicationController
   end
   
   def activitygraph
+    @right_column = false
     datatype = params[:datatype].nil? ? 'hourly' : params[:datatype]
     if(params[:primary_type].nil?)
       @graphtype = params[:graphtype] || ((datatype == 'weekday' or datatype == 'hourly') ? 'column' : 'area')

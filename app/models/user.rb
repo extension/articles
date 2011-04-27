@@ -55,8 +55,6 @@ class User < Account
   has_and_belongs_to_many :expertise_locations
   has_and_belongs_to_many :expertise_counties
   
-  attr_reader :password_confirmation
-  
   has_many :social_networks, :dependent => :destroy
   has_many :user_emails, :dependent => :destroy
 
@@ -116,12 +114,11 @@ class User < Account
   before_save :check_status, :generate_feedkey
   
   validates_length_of :phonenumber, :is => 10, :allow_blank => true
-  validates_presence_of :password_confirmation, :on => :create
   validates_presence_of :last_name, :first_name
   
   # scopers
   named_scope :validusers, :conditions => {:retired => false,:vouched => true}
-  named_scope :notsystem, :conditions => ["#{self.table_name}.id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')})"]
+  named_scope :notsystem_or_admin, :conditions => ["(#{self.table_name}.id NOT IN (#{AppConfig.configtable['reserved_uids'].join(',')}) and is_admin = 0)"]
   named_scope :unconfirmedemail, :conditions => ["emailconfirmed = ? AND account_status != ?",false,User::STATUS_SIGNUP]
   named_scope :pendingsignups, :conditions => {:account_status => User::STATUS_SIGNUP}
   named_scope :active, :conditions => {:retired => false}
@@ -519,7 +516,7 @@ class User < Account
    end
   end
   
-  def set_new_password(token,password,password_confirmation)
+  def set_new_password(token,password)
    if(self.account_status == User::STATUS_SIGNUP and !token.tokendata.nil? and token.tokendata[:signuptoken_id])
     if(signuptoken = UserToken.find(token.tokendata[:signuptoken_id]))
       didsignup = self.confirm_signup(signuptoken,false)
@@ -536,7 +533,6 @@ class User < Account
    end
    
    self.password = password
-   self.password_confirmation = password_confirmation
    if(self.save)      
     self.user_tokens.resetpassword.delete_all
     if(didsignup)
@@ -1480,7 +1476,7 @@ class User < Account
        sql_offset = nil   
      end
        
-     return User.notsystem.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "accounts.is_question_wrangler DESC, accounts.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
+     return User.notsystem_or_admin.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "accounts.is_question_wrangler DESC, accounts.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
    end
 
    def get_expertise
@@ -2140,8 +2136,18 @@ class User < Account
   end
     
 
-    
-    
+  def create_admin_account
+    admin_user = User.new
+    admin_user.attributes = self.attributes
+    admin_user.login = "#{self.login}-admin"
+    admin_user.is_admin = true
+    admin_user.email = "#{admin_user.login}@extension.org"
+    admin_user.primary_account = self.id
+    admin_user.password = ''
+    admin_user.save
+    admin_user
+  end
+  
    
   
   protected
@@ -2204,6 +2210,7 @@ class User < Account
     (filtered_users and filtered_users != '') ? (return "accounts.id IN (#{filtered_users})") : (return nil)
   end
   
+
 
   
 end
