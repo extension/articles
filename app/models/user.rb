@@ -2140,8 +2140,18 @@ class User < Account
   end
     
 
-    
-    
+  def create_admin_account
+    admin_user = User.new
+    admin_user.attributes = self.attributes
+    admin_user.login = "#{self.login}-admin"
+    admin_user.is_admin = true
+    admin_user.email = "#{admin_user.login}@extension.org"
+    admin_user.primary_account = self.id
+    admin_user.password = ''
+    admin_user.save
+    admin_user
+  end
+  
    
   
   protected
