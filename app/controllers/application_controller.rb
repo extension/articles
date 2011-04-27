@@ -40,6 +40,8 @@ class ApplicationController < ActionController::Base
   helper_method :get_county_options
   helper_method :get_calendar_month
   helper_method :with_content_tag?
+  helper_method :admin_mode?
+
   
   def set_app_location
     @app_location_for_display = AppConfig.configtable['app_location']
@@ -222,7 +224,7 @@ class ApplicationController < ActionController::Base
   end
   
   def admin_mode?
-    if(!@currentuser.nil? && @currentuser.is_admin? && session[:adminmode] == @currentuser.id.to_s)
+    if(!@currentuser.nil? && @currentuser.is_admin?)
       return true
     else
       return false
