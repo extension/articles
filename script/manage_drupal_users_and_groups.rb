@@ -6,6 +6,7 @@ progopts = GetoptLong.new(
   [ "--environment","-e", GetoptLong::OPTIONAL_ARGUMENT ],
   [ "--drupaldatabase","-d", GetoptLong::OPTIONAL_ARGUMENT ]
 )
+ADMIN_ROLE = 3
 
 @environment = 'production'
 @drupaldatabase = 'prod_create'
@@ -52,6 +53,34 @@ def update_from_darmok_users(connection,drupaldatabase,mydatabase)
   end
 
   puts "finished user table replacement."
+  
+  # administrative privs
+  puts "### Starting replacement of drupal admin roles data from darmok admin accounts"
+  
+  # drop admin role roles first
+  begin
+    result = connection.execute("DELETE from #{drupaldatabase}.users_roles where rid = #{ADMIN_ROLE}")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal user_roles table: #{err}"
+    return false
+  end
+  
+  sql = "INSERT INTO #{drupaldatabase}.users_roles (uid,rid)"
+  sql +=  " SELECT #{drupaldatabase}.users.uid, 3"
+  sql +=  " FROM #{mydatabase}.accounts,#{drupaldatabase}.users"
+  sql +=  " WHERE #{mydatabase}.accounts.is_admin = 1"
+  sql +=  " AND #{mydatabase}.accounts.id = #{drupaldatabase}.users.uid"
+  # execute the sql
+  
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal user_roles table: #{err}"
+    return false
+  end
+
+  puts "finished roles replacement"
+  
   
   # first names
   puts "starting user first name data table replacement..."
