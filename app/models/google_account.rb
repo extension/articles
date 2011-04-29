@@ -30,7 +30,6 @@ class GoogleAccount < ActiveRecord::Base
     self.username = self.user.login.downcase
     self.given_name = self.user.first_name
     self.family_name = self.user.last_name
-    self.is_admin = self.user.is_admin?
     return true
   end
   
