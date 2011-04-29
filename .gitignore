@@ -1,7 +1,7 @@
-
 # /
 /tmp
 /mkmf.log
+.rvmrc
 
 # /config/
 /config/database.yml

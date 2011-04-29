@@ -1,2 +1,0 @@
-# Use ruby enterprise edition with the extension_production gemset
-rvm ree@extension_production
