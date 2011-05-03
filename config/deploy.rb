@@ -88,7 +88,8 @@ namespace :deploy do
     ln -nfs #{shared_path}/config/newrelic.yml #{release_path}/config/newrelic.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
-    ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki &&   
+    ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki &&
+    ln -nfs #{shared_path}/sites #{release_path}/public/sites &&   
     ln -nfs #{shared_path}/data #{release_path}/data &&
     rm -rf #{release_path}/public/sitemaps &&
     ln -nfs #{shared_path}/sitemaps #{release_path}/public/sitemaps
