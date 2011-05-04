@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110427202454) do
+ActiveRecord::Schema.define(:version => 20110504141149) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -149,25 +149,6 @@ ActiveRecord::Schema.define(:version => 20110427202454) do
     t.text     "data"
     t.datetime "created_at"
   end
-
-  create_table "analytics", :force => true do |t|
-    t.integer  "page_id"
-    t.string   "datalabel",          :limit => 25
-    t.string   "segment",            :limit => 25
-    t.date     "day"
-    t.date     "start_date"
-    t.date     "end_date"
-    t.text     "analytics_url"
-    t.string   "analytics_url_hash"
-    t.integer  "pageviews"
-    t.integer  "unique_pageviews"
-    t.integer  "entrances"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "analytics", ["analytics_url_hash"], :name => "recordsignature", :unique => true
-  add_index "analytics", ["page_id", "datalabel", "segment", "day", "start_date", "end_date"], :name => "analytic_ndx"
 
   create_table "annotation_events", :force => true do |t|
     t.integer  "user_id"
@@ -757,6 +738,7 @@ ActiveRecord::Schema.define(:version => 20110427202454) do
     t.datetime "updated_at"
     t.integer  "page_source_id"
     t.text     "cached_content_tags"
+    t.text     "old_source_url"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
