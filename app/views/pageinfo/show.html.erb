@@ -13,7 +13,18 @@
       </tr>
       <tr>
           <td>Indexed?</td>
-          <td><%= @page.indexed? ? 'Yes' : 'No' %></td>
+          <td>
+            <%- case @page.indexed -%>
+            <%- when Page::INDEXED -%>
+              Yes
+            <%- when Page::NOT_INDEXED -%>
+              No
+            <%- when Page::NOT_GOOGLE_INDEXED -%>
+              Yes, except for google search
+            <%- else -%>
+              Unknown
+            <%- end -%>
+          </td>
       </tr>
       <tr>
           <td>Length</td>

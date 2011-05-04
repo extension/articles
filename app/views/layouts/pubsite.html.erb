@@ -8,7 +8,9 @@
   	  <meta name="robots" content="noindex,nofollow" /> 
 	<%- elsif(!@published_content or params[:print]) -%>
 	    <meta name="robots" content="noindex,follow" /> 
-  <%- end -%>  
+  <%- elsif(@page and @page.indexed == Page::NOT_GOOGLE_INDEXED) -%>
+    <meta name="googlebot" content="noindex,follow" /> 
+  <%- end -%>
   
 	<%- if @canonical_link -%>
 	  <link rel="canonical" href="<%= @canonical_link %>"/>

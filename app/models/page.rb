@@ -12,6 +12,10 @@ class Page < ActiveRecord::Base
   
   URL_TITLE_LENGTH = 100
   
+  # index settings
+  NOT_INDEXED = 0
+  INDEXED = 1
+  NOT_GOOGLE_INDEXED = 2
   
    
   after_create :store_content, :create_primary_link
@@ -39,7 +43,7 @@ class Page < ActiveRecord::Base
   
   named_scope :broken_links, :conditions => {:has_broken_links => true}
 
-  named_scope :indexed, :conditions => {:indexed => true}
+  named_scope :indexed, :conditions => {:indexed => INDEXED}
   named_scope :articles, :conditions => {:datatype => 'Article'}
   named_scope :news, :conditions => {:datatype => 'News'}
   named_scope :faqs, :conditions => {:datatype => 'Faq'}
@@ -525,16 +529,27 @@ class Page < ActiveRecord::Base
     if(!entry_category_terms.blank? and entry_category_terms.include?('dpl'))
       page.is_dpl = true
     end
-    
+      
     # set noindex if news
     if(page.datatype == 'News' and !entry_category_terms.include?('originalnews'))
-      page.indexed = false
+      page.indexed = Page::NOT_INDEXED
     end
     
     # set noindex if noindex
     if(entry_category_terms.include?('noindex'))
-      page.indexed = false
+      page.indexed = Page::NOT_INDEXED
     end
+    
+    # set noindex if noindex
+    if(entry_category_terms.include?('nogoogleindex'))
+      page.indexed = Page::NOT_GOOGLE_INDEXED
+    end
+    
+    # set indexed if forceindex present
+    if(entry_category_terms.include?('forceindex'))
+      page.indexed = Page::INDEXED
+    end
+    
       
     page.source_id = entry.id
     if(page.source_url.blank?)

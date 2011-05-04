@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110504141149) do
+ActiveRecord::Schema.define(:version => 20110504195426) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -711,7 +711,7 @@ ActiveRecord::Schema.define(:version => 20110504141149) do
 
   create_table "pages", :force => true do |t|
     t.string   "datatype"
-    t.boolean  "indexed",                                      :default => true
+    t.integer  "indexed",                                      :default => 1
     t.text     "title"
     t.string   "url_title",              :limit => 101
     t.text     "content",                :limit => 2147483647
