@@ -218,24 +218,12 @@ class Aae::QuestionController < ApplicationController
       @submitted_question.add_resolution(sq_status, @currentuser, answer, @signature, contributing_question)   
       
       Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :account => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
-        
-      redirect_to :action => 'question_answered', :squid => @submitted_question.id
+      flash[:success] = "Thanks for answering this question."
+      redirect_to(aae_question_url(:id => @submitted_question.id))
     end
 
   end
-  
-  # Display the confirmation for answering a question
-  def question_answered
-    @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
     
-    if !@submitted_question
-      flash[:failure] = "Invalid question."
-      redirect_to incoming_url
-      return
-    end
-
-  end
-  
   def close_out
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
     
