@@ -13,12 +13,13 @@ end
   _gaq.push(['_setAccount', '<%= @gaprofile %>']);
   _gaq.push(['_setDomainName', '.extension.org']);
   _gaq.push(['_setCustomVar', 2, 'login', '<%= @analytics_vistor %>', 1]);
-<% if !flash[:googleanalytics].nil? %>
+<%- if !flash[:googleanalytics].nil? -%>
   _gaq.push(['_setCustomVar', 1, 'rat', '<%= flash[:googleanalyticsresourcearea] %>', 3]);
   _gaq.push(['_trackPageview', '<%= flash[:googleanalytics] %>']);
-<% else  %>
+<%- else  -%>
   _gaq.push(['_trackPageview']);
-<% end %>
+<%- end -%>
+  _gaq.push(['_trackPageLoadTime']);
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
