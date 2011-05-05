@@ -99,7 +99,7 @@ class Page < ActiveRecord::Base
   end
   
   def is_copwiki_or_create?
-    (self.datatype == 'Article' and (self.source == 'copwiki' or self.source == 'create'))
+    (self.source == 'copwiki' or self.source == 'create')
   end
   
   # syntactic sugar - returns true if the datatype is an article
@@ -506,6 +506,16 @@ class Page < ActiveRecord::Base
       page.destroy
       return returndata
     end
+    
+    # check for 'animal manure management' or 'ag energy' from the copwiki
+      # so that we can ignore dpl content and duplicate data
+      if(page_source.name == 'copwiki')
+        if(!entry_category_terms.blank? and (entry_category_terms.include?('animal manure management') or entry_category_terms.include?('ag energy')))
+          returndata = [page.source_updated_at, 'ignored', provided_source_url]
+          return returndata
+        end
+      end
+      
       
     # check for datatype
     if(!entry_category_terms.blank?)

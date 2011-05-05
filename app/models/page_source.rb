@@ -127,8 +127,8 @@ class PageSource < ActiveRecord::Base
     
 
     # create new objects from the atom entries
-    item_counts = {:adds => 0, :deletes => 0, :errors => 0, :updates => 0, :nochange => 0}
-    item_ids = {:adds => [], :deletes => [], :errors => [], :updates => [], :nochange => []}
+    item_counts = {:adds => 0, :deletes => 0, :errors => 0, :updates => 0, :nochange => 0, :ignored => 0}
+    item_ids = {:adds => [], :deletes => [], :errors => [], :updates => [], :nochange => [], :ignored => []}
     last_updated_item_time = self.latest_source_time  
 
     if(!atom_entries.blank?)
@@ -162,6 +162,10 @@ class PageSource < ActiveRecord::Base
           when 'nochange'
             item_counts[:nochange] += 1
             item_ids[:nochange] << object.id
+          when 'ignored'
+            item_counts[:ignored] += 1
+            # for ignores "object" is actually the source_url for the page
+            item_ids[:ignored] << object
           end
         rescue Exception => e
           item_counts[:errors] += 1

@@ -24,6 +24,7 @@ class Repoint < Thor
   method_option :drupal_host,:default => 'create.extension.org', :desc => "Host for drupal install"
   def update_pages
     load_rails(options[:environment])
+    create_page_source = PageSource.find_by_name('create')
     darmok_config = Page.connection.instance_variable_get("@config")
     # build my select for the url_aliases
     url_alias_select_sql = "SELECT * from #{options[:drupal_database]}.url_alias where alias LIKE '%#{options[:alias_pattern]}%'"
@@ -66,7 +67,7 @@ class Repoint < Thor
         if(match_page = Page.find_by_title_and_page_source_id(match_title,1))
           current_source = match_page.source_url          
           new_source = "http://#{options[:drupal_host]}/node/#{drupal_id}"
-          update_attributes = {:source_id => new_source, :source_url => new_source}
+          update_attributes = {:page_source => create_page_source, :source_id => new_source, :source_url => new_source, :source_url_fingerprint => Digest::SHA1.hexdigest(new_source)}
           if(match_page.old_source_url.blank?)
             # in case this gets run twice, don't overwrite the old_source_url
             update_attributes.merge!({:old_source_url => current_source})
