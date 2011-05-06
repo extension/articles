@@ -28,7 +28,7 @@ class Rebuild < Thor
         if(verbose)
           puts "Processing Page: #{page.id} ##{page_count}"
         end
-        page.create_primary_link
+        page.create_primary_links
         page_count += 1
       end
       return page_count
@@ -125,10 +125,14 @@ class Rebuild < Thor
   desc "links", "Recreate links table (also recreates linkings)"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
+  method_option :linkings,:default => true, :aliases => "-v", :desc => "Output verbose progress"
+
   def links
     load_rails(options[:environment])
     recreate_primary_links(options[:verbose])
-    recreate_linkings(options[:verbose])
+    if(options[:linkings])
+      recreate_linkings(options[:verbose])
+    end
   end
 
   desc "linkings", "Recreate linkings table"

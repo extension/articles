@@ -118,14 +118,10 @@ class Link < ActiveRecord::Base
     end
   end
   
-  def self.create_from_page(page)
-    if(page.source_url.blank?)
-      return nil
-    end
-
+  def self.create_from_source_url_and_page(source_url,page)
     # make sure the URL is valid format
     begin
-      original_uri = URI.parse(page.source_url)
+      original_uri = URI.parse(source_url)
     rescue
       return nil
     end
@@ -154,6 +150,22 @@ class Link < ActiveRecord::Base
     return this_link
   end
   
+  
+  def self.create_from_page(page)
+    if(page.source_url.blank?)
+      return nil
+    end
+    
+    returnlink = self.create_from_source_url_and_page(page.source_url,page)
+    
+    if(page.page_source and page.page_source.name == 'create' and !page.old_source_url.blank?)
+      # create a second link for the old source url
+      self.create_from_source_url_and_page(page.old_source_url,page)
+    end
+    
+    return returnlink
+  end
+  
   # this is meant to be called when parsing a piece of content for items it links out to from its content.
   def self.find_or_create_by_linked_url(linked_url,source_host,make_wanted_if_source_host_match = true)
     # make sure the URL is valid format
@@ -173,7 +185,14 @@ class Link < ActiveRecord::Base
     # is this a relative url? (no scheme/no host)- so attach the source_host and http
     # to it, to see if that matches an original URL that we have
     if(!original_uri.is_a?(URI::MailTo))
-      original_uri.host = source_host if(original_uri.host.blank?)
+      if(original_uri.host.blank?) 
+        # wiki link exception inside existing create articles that we still have
+        if(original_uri.path =~ %r{^/wiki/} and source_host == 'create.extension.org')
+          original_uri.host = 'cop.extension.org'
+        else
+          original_uri.host = source_host 
+        end
+      end
       original_uri.scheme = 'http' if(original_uri.scheme.blank?)
     end
     

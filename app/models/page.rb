@@ -18,16 +18,16 @@ class Page < ActiveRecord::Base
   NOT_GOOGLE_INDEXED = 2
   
    
-  after_create :store_content, :create_primary_link
+  after_create :store_content, :create_primary_links
   before_save  :set_url_title
   before_update :check_content
-  before_destroy :change_primary_link
+  before_destroy :change_primary_links
   
   has_content_tags
   ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest events' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
                             :default => "source_updated_at DESC"
          
-  has_one :primary_link, :class_name => "Link"
+  has_many :primary_links, :class_name => "Link"
   has_many :linkings
   has_many :links, :through => :linkings
   has_many :bucketings
@@ -900,14 +900,24 @@ class Page < ActiveRecord::Base
     self.save
   end
   
-  def create_primary_link
+  def primary_link
+    if(!self.primary_links.blank?)
+      self.primary_links.where(:source_host => self.source_host).first
+    else
+      nil
+    end
+  end
+  
+  def create_primary_links
     Link.create_from_page(self)
   end
   
-  def change_primary_link
+  def change_primary_links
     # update items that might link to this article
-    if(!self.primary_link.nil?)
-      self.primary_link.change_to_wanted
+    if(!self.primary_links.blank?)
+      self.primary_links.each do |link|
+        link.change_to_wanted
+      end
     end
   end
   
