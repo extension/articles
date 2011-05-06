@@ -107,7 +107,9 @@
     <tr>
         <th>Name</th>
         <th>eXtensionID</th>
-        <th>Email</th>
+        <%- if @currentuser -%>
+         <th>Email</th>
+         <%- end -%>
         <th>Institution</th>
         <th>Location</th>
         <th>Edits</th>
@@ -120,7 +122,10 @@
         <tr>
 			<td><%= link_to("#{showuser.fullname}", :controller => '/people/colleagues', :action => :showuser, :id => showuser.login) %></td>
             <td><%= showuser.login %></td>
-            <td><%= showuser.email %></td>            
+            <%- if @currentuser -%>
+            <td><%= showuser.email %></td>
+            <%- end -%>
+                        
 	        <td><%= showuser.primary_institution_name('<span class="na">not specified</span>') %></td>
 	        <td><%= (showuser.location.nil?) ? '<span class="na">n/a</span>': showuser.location.abbreviation %></td>
 	        <td><%= @editdata[user_id] %></td>
