@@ -231,6 +231,9 @@ class Link < ActiveRecord::Base
       else
         this_link.linktype = WANTED
       end
+    elsif(source_host == 'create.extension.org' and original_uri.path =~ %r{^/sites/default/files/.*})
+      # exemption for create and directfile links
+      this_link.linktype = DIRECTFILE
     elsif(original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /\.extension\.org$/)
       # host is extension
       this_link.linktype = LOCAL
