@@ -221,6 +221,9 @@ class Link < ActiveRecord::Base
                             :source_host => source_host)
     if(original_uri.is_a?(URI::MailTo))
       this_link.linktype = MAILTO
+    elsif(source_host == 'create.extension.org' and original_uri.path =~ %r{^/sites/default/files/.*})
+      # exemption for create and directfile links
+      this_link.linktype = DIRECTFILE
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
       if(original_uri.path =~ /^\/wiki\/Category:.*/)
         this_link.linktype = CATEGORY
@@ -231,9 +234,6 @@ class Link < ActiveRecord::Base
       else
         this_link.linktype = WANTED
       end
-    elsif(source_host == 'create.extension.org' and original_uri.path =~ %r{^/sites/default/files/.*})
-      # exemption for create and directfile links
-      this_link.linktype = DIRECTFILE
     elsif(original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /\.extension\.org$/)
       # host is extension
       this_link.linktype = LOCAL
