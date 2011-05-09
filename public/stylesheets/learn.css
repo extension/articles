@@ -1,15 +1,15 @@
-body {background:#fff;}
+body {background:#eee;}
 body, html {font-family: Helvetica, "Arial", "sans-serif";}
 
 /* firefox 3.5 not treating these elements as block elements */
 section, article, aside {display:block;}
 
-#wrapper {/*background:#f1f1f1;*/ width: 960px; margin:0 auto;
+#wrapper {background:#fff; width: 960px; margin:0 auto;
 /*-webkit-box-shadow: 0 4px 10px rgba(0,0,0,.2);
 -moz-box-shadow: 0 4px 10px rgba(0,0,0,.2);
 box-shadow: 0 4px 10px rgba(0,0,0,.2);*/
 }
-header#masthead {float:left; padding:10px;width:940px; position:relative; background: #ffa221 url(/images/learn/learn_header.png) top center no-repeat; margin-bottom:0;}
+header#masthead {float:left; padding:10px;width:940px; position:relative; background: #ffa221 url(/images/learn/learn_header4.png) top center no-repeat; margin-bottom:0;}
 #content {clear:both; }
 
 #masthead h1 a {text-decoration:none; color:#fff;}
@@ -20,7 +20,7 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 /* app banner
 -----------------------------------------------------------------------------*/
-#extensionNav {text-align: center; background: #777; padding: .15em 0 .2em; margin: 0;}
+#extensionNav {text-align: center; background: #81858b; padding: .15em 0 .2em; margin: 0;}
 #extensionNav .group {display:inline; padding:0 1em; border-right:1px solid #aaa;}
 #extensionNav .last {border:0;}
 #extensionNav .group span {display:none;}
@@ -75,11 +75,11 @@ header#masthead {float:left; padding:10px;width:940px; position:relative; backgr
 
 #event .description {font-size:1.5em;}
 
-#learn_nav {float:left; width:100%; background: #ffa221; margin-bottom:30px;}
-#learn_nav ul li {float:left; display:block; padding:4px 10px;}
+#learn_nav {float:left; width:100%; background: #f47B28; margin-bottom:30px;}
+#learn_nav ul li {float:left; display:block; padding:4px 10px; font-size:1.5em;}
 #learn_nav ul li a:link, 
-#learn_nav ul li a:visited {color:#76400a; text-decoration:none;}
-#learn_nav ul li a:hover {color:#8e0705; text-decoration:underline;}
+#learn_nav ul li a:visited {color:#fff; text-decoration:none;}
+#learn_nav ul li a:hover {color:#333; text-decoration:underline;}
 
 /* View events
 -----------------------------------------------------------------------------*/
@@ -213,6 +213,7 @@ body:before {
 
 
 aside {background:#ededed; padding:10px;}
+#home aside {padding:20px 20px 10px; margin-bottom:30px;}
 #secondary ul li {margin:0 0 10px;}
 .feed {background: transparent url(/images/people/feed-icon-16x16.gif) left 50% no-repeat; padding-left:22px;}
 .email {background: transparent url(/images/common/email.png) left 2px no-repeat; padding-left:22px;}
@@ -247,7 +248,7 @@ a:hover     {color: #0043da;}
 .upcoming_event .tags li {display:inline; padding-right:5px;}
 
 #primary h1 {margin:0 0 15px; color:#003e6d;}
-.summary_statement {margin:0 0 20px; font-size:1.6em; color:#444 !important;}
+.summary_statement {margin:0 20px 30px; font-size:1.6em; color:#444 !important;}
 
 /* Forms
 -----------------------------------------------------------------------------*/
