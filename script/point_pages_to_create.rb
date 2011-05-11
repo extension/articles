@@ -67,7 +67,7 @@ class Repoint < Thor
         if(match_page = Page.find_by_title_and_page_source_id(match_title,1))
           current_source = match_page.source_url          
           new_source = "http://#{options[:drupal_host]}/node/#{drupal_id}"
-          update_attributes = {:page_source => create_page_source, :source_id => new_source, :source_url => new_source, :source_url_fingerprint => Digest::SHA1.hexdigest(new_source)}
+          update_attributes = {:source => create_page_source.name, :page_source => create_page_source, :source_id => new_source, :source_url => new_source, :source_url_fingerprint => Digest::SHA1.hexdigest(new_source)}
           if(match_page.old_source_url.blank?)
             # in case this gets run twice, don't overwrite the old_source_url
             update_attributes.merge!({:old_source_url => current_source})
@@ -79,7 +79,7 @@ class Repoint < Thor
       
       if(found_match)
         found_count += 1
-        
+        puts "Found Match:  #{match_page.id} : #{match_page.title} (Drupal ID: #{drupal_id})"
       elsif(expected_nodes.find_index(drupal_id))
         puts "Did not find Match:  #{drupal_id} : #{source}"
         not_found_count += 1
