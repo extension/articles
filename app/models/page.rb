@@ -474,7 +474,15 @@ class Page < ActiveRecord::Base
      
   def self.create_or_update_from_atom_entry(entry,page_source)
     current_time = Time.now.utc
-    provided_source_url = entry.links[0].href
+    # copwiki atom id's include a revision number, so we have to use
+    # the link rel='alternate' which should be the only link
+    # as the source url
+    if(page_source.name == 'copwiki')
+      provided_source_url = entry.links[0].href
+    else
+      provided_source_url = entry.id
+    end
+    
     page = self.find_by_source_url(provided_source_url) || self.new
     page.source = page_source.name
     page.page_source = page_source
