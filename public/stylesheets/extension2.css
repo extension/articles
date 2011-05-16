@@ -34,7 +34,7 @@ body { text-align: center }
 
 
 #homage { width: 240px; margin-top: .5em; margin-left: 10px; color: white; background-color: black; padding: 5px;}
-#homage p {display:inline;padding:0;margin:0; line-height:1.2em;}
+#homage p {display:inline;padding:0;margin:0; line-height:1.2em; font-size:12px;}
 #homage a:link {color: #c56a12}
 #homage a:visited {color: #c56a12}
 #homage a:hover {color: #386292}
@@ -741,7 +741,7 @@ span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0 
 .branding_wrapper {width:940px;height:80px;position:relative;margin-bottom:1em;}
 
 #sitehome_main .contentdiv {float:left; padding:0; margin-bottom:20px; background:#fff;}
-#sitehome_main .contentdiv dt {float:right;width: 280px; text-align:left; font-weight:normal;line-height:1.2em;}
+#sitehome_main .contentdiv dt {float:right;width: 280px; text-align:left; font-weight:normal;line-height:1.2em; font-size: 20px;}
 #sitehome_main .contentdiv dd {float:right;width: 280px; text-align:left;}
 #sitehome_main .contentdiv .img {border:1px solid #ccc; width:160px; overflow:hidden; float:left; height:120px;}
 
