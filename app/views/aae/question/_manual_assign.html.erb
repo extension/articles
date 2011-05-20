@@ -21,8 +21,8 @@
             <% form_tag({:controller => 'aae/question', :action => :close_out}, {:method => :get}) do %>
             <%= hidden_field_tag(:squid, @submitted_question.id) %>
             <%= submit_tag 'Close Question' %>
+            <p style="display:inline;"><a class="tooltip-help" href="#" id="source_trigger">?</a></p>
             <% end %>
-            <p><a class="tooltip-help" href="#" id="source_trigger">?</a></p>
             </div>
             
             <div id='source_tooltip' style="display:none;" class="tooltip">
