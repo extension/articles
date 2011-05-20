@@ -33,6 +33,10 @@ def stringify_submitted_question_event(sq_event)
     return "Resolved by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::NO_ANSWER
     return "No answer available was sent from <strong #{qw}>#{initiated_by_full_name}</strong><span> #{humane_date(sq_event.created_at)} </span>"
+  when SubmittedQuestionEvent::CLOSED
+    close_msg = "Question Closed Out by <strong #{qw}>#{initiated_by_full_name}</strong><span> #{humane_date(sq_event.created_at)}</span>"
+    close_msg += " <span>Close Out Comments: #{sq_event.response}</span>"
+    return close_msg
   when SubmittedQuestionEvent::MARKED_SPAM
     return "Marked as spam by <strong #{qw}>#{initiated_by_full_name}</strong> <span> #{humane_date(sq_event.created_at)} </span>"
   when SubmittedQuestionEvent::MARKED_NON_SPAM

@@ -226,33 +226,56 @@ class Aae::QuestionController < ApplicationController
     
   def close_out
     @submitted_question = SubmittedQuestion.find_by_id(params[:squid])
+    @submitter_name = @submitted_question.submitter_fullname
     
-    # get the last response type, if a non-answer response was previously sent, respect the status of it in the submitted question, else 
-    # set it to resolved
-    if last_response = @submitted_question.last_response
-      resolver = last_response.initiated_by
-      if last_response.event_state == SubmittedQuestionEvent::NO_ANSWER
-        @submitted_question.update_attributes(:status => SubmittedQuestion::NO_ANSWER_TEXT, 
-                                              :status_state => SubmittedQuestion::STATUS_NO_ANSWER,
-                                              :resolved_by => resolver,
-                                              :resolved_at => last_response.created_at,
-                                              :current_response => last_response.response,
-                                              :resolver_email => resolver.email)
-      else
-        @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, 
-                                              :status_state => SubmittedQuestion::STATUS_RESOLVED,
-                                              :resolved_by => resolver,
-                                              :resolved_at => last_response.created_at,
-                                              :current_response => last_response.response,
-                                              :resolver_email => resolver.email)
+    if request.post?
+      close_out_reason = params[:close_out_reason]
+      if !@submitted_question
+        flash.now[:failure] = 'Question not found'
+        render nil
+        return
       end
-    else
-      flash[:notice] = "This question cannot be closed as it was never responded to. Please either answer it, respond with no answer, or reject it."
+      
+      if close_out_reason.blank?
+        flash.now[:failure] = 'Please document a reason for closing this question.'
+        render nil
+        return
+      end
+          
+      # get the last response type, if a non-answer response was previously sent, respect the status of it in the submitted question, else 
+      # set it to resolved
+      if last_response = @submitted_question.last_response
+        resolver = last_response.initiated_by
+        if last_response.event_state == SubmittedQuestionEvent::NO_ANSWER
+          @submitted_question.update_attributes(:status => SubmittedQuestion::NO_ANSWER_TEXT, 
+                                                :status_state => SubmittedQuestion::STATUS_NO_ANSWER,
+                                                :resolved_by => resolver,
+                                                :resolved_at => last_response.created_at,
+                                                :current_response => last_response.response,
+                                                :resolver_email => resolver.email)
+        else    
+          @submitted_question.update_attributes(:status => SubmittedQuestion::RESOLVED_TEXT, 
+                                                :status_state => SubmittedQuestion::STATUS_RESOLVED,
+                                                :resolved_by => resolver,
+                                                :resolved_at => last_response.created_at,
+                                                :current_response => last_response.response,
+                                                :resolver_email => resolver.email)
+        end
+      # else, we're closing it out with no response, which is now a status of closed
+      else           
+         @submitted_question.update_attributes(:status => SubmittedQuestion::CLOSED_TEXT, 
+                                               :status_state => SubmittedQuestion::STATUS_CLOSED, 
+                                               :current_response => close_out_reason, 
+                                               :resolved_by => @currentuser, 
+                                               :resolver_email => @currentuser.email, 
+                                               :resolved_at => Time.now.strftime("%Y-%m-%dT%H:%M:%SZ"), 
+                                               :show_publicly => false)
+      end                                    
+      
+      SubmittedQuestionEvent.log_close(@submitted_question, @currentuser, close_out_reason)                                                      
+      flash[:success] = "Question closed successfully!"
       redirect_to :action => :index, :id => @submitted_question.id
-      return
     end  
-    SubmittedQuestionEvent.log_close(@submitted_question, @currentuser)
-    redirect_to :action => :index, :id => @submitted_question.id
   end
   
   def toggle_public_view

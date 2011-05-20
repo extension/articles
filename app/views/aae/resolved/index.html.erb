@@ -2,6 +2,7 @@
 <ul id="nav">
     <li><%= link_to_unless_current "All", resolved_url(:type => 'all') %></li>
     <li><%= link_to_unless_current "Answered", resolved_url(:type => 'answered') %></li>
+    <li><%= link_to_unless_current "Closed", resolved_url(:type => 'closed') %></li>
     <li><%= link_to_unless_current "Not Answered", resolved_url(:type => 'not_answered') %></li>
     <li><%= link_to_unless_current "Rejected", resolved_url(:type => 'rejected') %></li>
 </ul>

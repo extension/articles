@@ -1,4 +1,4 @@
-<h2 class="question"><%= format_text_for_display(@submitted_question.asked_question) %></h2>
+<div class="question"><%= format_text_for_display(@submitted_question.asked_question) %></div>
 
 <% if (@submitted_question.submitter.id == session[:account_id]) or (@currentuser.email == @submitted_question.submitter_email) %>
 

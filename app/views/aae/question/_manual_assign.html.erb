@@ -16,9 +16,13 @@
             <%= (assign_date = @submitted_question.assigned_date) ? time_ago_in_words(assign_date) + ' ago' : ""%> 
         </p>
         
-        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED and !@submitted_question.last_response.nil? %>
+        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
             <div id="closebutton">
-            <%= button_to 'Close Question', :controller => 'aae/question', :action => :close_out, :squid => @submitted_question.id %> <p><a class="tooltip-help" href="#" id="source_trigger">?</a></p>
+            <% form_tag({:controller => 'aae/question', :action => :close_out}, {:method => :get}) do %>
+            <%= hidden_field_tag(:squid, @submitted_question.id) %>
+            <%= submit_tag 'Close Question' %>
+            <p style="display:inline;"><a class="tooltip-help" href="#" id="source_trigger">?</a></p>
+            <% end %>
             </div>
             
             <div id='source_tooltip' style="display:none;" class="tooltip">

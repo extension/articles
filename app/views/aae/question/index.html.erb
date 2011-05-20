@@ -184,10 +184,24 @@
         <div class="rejectedaae">
             <h3>This question was not answered</h3>
         </div>
+        <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_CLOSED %>
+          <div class="rejectedaae">
+            <h3>This question has been closed</h3>
+            <p>
+        	    <strong>Closed by: </strong> 
+        	    <% if @submitted_question.resolved_by.id == User.systemuserid %>
+        	    System
+        	    <% else %>
+        	    <%= link_to @submitted_question.resolved_by.fullname, aae_profile_url(:id => @submitted_question.resolved_by.login), :class => "profile" %>
+        	    <% end %>
+        	  </p>
+            <p><strong>Closing comment:</strong> <%= wrap_text(@submitted_question.current_response) %></p>
+            <p><strong>Date: </strong><%= humane_date(@submitted_question.resolved_at) %></p>  
+          </div>
         <% else %>
         <h3>This question has been resolved</h3>
         <% end %>
-        <% if !@submitted_question.contributing_question and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER %>
+        <% if !@submitted_question.contributing_question and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER and @submitted_question.status_state != SubmittedQuestion::STATUS_CLOSED %>
         <br/> 
 
         
@@ -203,7 +217,7 @@
            <% end %>
         
         
-        <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED%>
+        <% elsif @submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED or @submitted_question.status_state == SubmittedQuestion::STATUS_CLOSED%>
           <%= button_to 'Reactivate Question', :controller => 'aae/question', :action => :reactivate, :id => @submitted_question.id %>
         <% end %>
     <% end %>
@@ -248,7 +262,7 @@
             </div>
         </div>
     <% else %>
-        <% if (@submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED) or (@submitted_question.spam) %>
+        <% if (@submitted_question.status_state == SubmittedQuestion::STATUS_REJECTED) or (@submitted_question.spam) or (@submitted_question.status_state == SubmittedQuestion::STATUS_CLOSED) %>
         <div class="admin_option offline" >
             <p>This question is not accessible online. (You're seeing this message because you are an Admin.)</p>
         </div>

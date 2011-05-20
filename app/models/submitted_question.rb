@@ -56,6 +56,7 @@ STATUS_SUBMITTED = 1
 STATUS_RESOLVED = 2
 STATUS_NO_ANSWER = 3
 STATUS_REJECTED = 4
+STATUS_CLOSED = 5
 
 # status text (to be used when a text version of the status is needed)
 SUBMITTED_TEXT = 'submitted'
@@ -63,8 +64,9 @@ RESOLVED_TEXT = 'resolved'
 ANSWERED_TEXT = 'answered'
 NO_ANSWER_TEXT = 'not_answered'
 REJECTED_TEXT = 'rejected'
+CLOSED_TEXT = 'closed'
 
-STATUS_TO_STR = {STATUS_SUBMITTED => SUBMITTED_TEXT, STATUS_RESOLVED => RESOLVED_TEXT, STATUS_NO_ANSWER => NO_ANSWER_TEXT, STATUS_REJECTED => REJECTED_TEXT}
+STATUS_TO_STR = {STATUS_SUBMITTED => SUBMITTED_TEXT, STATUS_RESOLVED => RESOLVED_TEXT, STATUS_NO_ANSWER => NO_ANSWER_TEXT, STATUS_REJECTED => REJECTED_TEXT, STATUS_CLOSED => CLOSED_TEXT}
 
 EXPERT_DISCLAIMER = "This message for informational purposes only. " +  
                     "It is not intended to be a substitute for personalized professional advice. For specific local information, " + 
@@ -81,7 +83,7 @@ DEFAULT_SUBMITTER_NAME = "Anonymous Guest"
 
 DECLINE_ANSWER = "Thank you for your question for eXtension. The topic area in which you've made a request is not yet fully staffed by eXtension experts and therefore we cannot provide you with a timely answer. Instead, if you live in the United States, please consider contacting the Cooperative Extension office closest to you. Simply go to http://www.extension.org, drop in your zip code and choose the local office in your neighborhood. We apologize for this inconvenience but please come back to eXtension to check in as we grow and add experts."
 
-ALL_RESOLVED_STATII = [STATUS_RESOLVED, STATUS_REJECTED, STATUS_NO_ANSWER]
+ALL_RESOLVED_STATII = [STATUS_RESOLVED, STATUS_REJECTED, STATUS_NO_ANSWER, STATUS_CLOSED]
 
 AAEHOST = "http://#{AppConfig.configtable['url_options']['host']}"
 
@@ -91,6 +93,7 @@ WRANGLER_REASSIGN_COMMENT = "This question has been assigned to you because the 
 named_scope :resolved, :conditions => "submitted_questions.status_state IN (#{ALL_RESOLVED_STATII.join(',')}) AND submitted_questions.spam = FALSE"
 named_scope :answered, :conditions => "submitted_questions.status_state = #{STATUS_RESOLVED} AND submitted_questions.spam = FALSE"
 named_scope :rejected, :conditions => "submitted_questions.status_state = #{STATUS_REJECTED} AND submitted_questions.spam = FALSE"
+named_scope :closed, :conditions => "submitted_questions.status_state = #{STATUS_CLOSED} AND submitted_questions.spam = FALSE"
 named_scope :not_answered, :conditions => "submitted_questions.status_state = #{STATUS_NO_ANSWER} AND submitted_questions.spam = FALSE" 
 named_scope :submitted, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = FALSE"
 named_scope :submittedspam, :conditions => "submitted_questions.status_state = #{STATUS_SUBMITTED} AND submitted_questions.spam = TRUE"

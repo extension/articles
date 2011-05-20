@@ -1,0 +1,177 @@
+/* === COPYRIGHT:
+  Copyright (c) 2005-2009 North Carolina State University
+  Developed with funding for the National eXtension Initiative.
+ === LICENSE:
+  BSD(-compatible)
+  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+*/
+
+/* reset styles v1.0 | 20080212 */
+
+html, body, div, span, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td {margin: 0;padding: 0;border: 0;outline: 0;vertical-align: baseline;background: transparent;}
+body {line-height: 1;}
+ol, ul {list-style: none;}
+blockquote, q {quotes: none;}
+blockquote:before, blockquote:after,
+q:before, q:after {content: '';content: none;}
+
+/* remember to define focus styles! */
+:focus {outline: 0;}
+
+/* remember to highlight inserts somehow! */
+ins {text-decoration:none; background:#95ff4d;}
+del {text-decoration:line-through; color: red; background:#ffdadb;}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {border-collapse: collapse;border-spacing: 0;}
+
+/* Put it back on certain elements */
+h1, h2, h3, h4, h5, h6, p, pre, blockquote, form, fieldset, table, ol, ul, dl {
+	margin: 0 0 1em;
+}
+
+/* end reset styles */
+
+body { font:13px/1.231 sans-serif; *font-size:small; } 
+
+
+/* default text sizes
+-----------------------------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6 {margin: .5em 0 .5em 0; line-height: 140%;}
+
+sup {vertical-align:super;}
+sub {vertical-align:sub;}
+
+
+/* Server location visual indicator
+-----------------------------------------------------------------------------*/
+div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:8px;text-align:left;}
+div#app_location p {margin:0;line-height:1em;}
+div#app_location.localdev {background: #ccc;border:1px solid #888;color:#222;padding:4px;}
+div#app_location.demo {background: #ff00ff;border:1px solid #000;color:#222;}
+div#app_location.preview {background: #229ec0;}
+div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
+div#app_location.localdev a {color:#000; text-decoration:underline; padding:0 .5em;}
+div#app_location a:visited {color:#222; text-decoration:underline;}
+div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
+
+div#app_location.preview {background: #229ec0; position:absolute; top:30px; left: 25%; right: 25%; font-size:1.5em;width:50%; margin: 0 auto;color:#fff; padding:.5em;border:2px solid #fff;}
+div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5em;}
+
+.usericon {padding-left: 18px;background: transparent url(/images/common/user.gif) no-repeat left center;}
+
+.clear, .clearing {clear: both;}
+.left {float: left}
+.right {float: right;}
+.hide {display:none;}
+.nowrap {white-space: nowrap;}
+
+
+/* Tables
+-----------------------------------------------------------------------------*/
+table { 
+	width: 100%;
+	color: #000;
+	border: 1px solid #ddd;
+	margin: 0 0 1.5em;
+}
+
+table.halfwidth { 
+	width: 50%;
+}
+
+th {
+	margin: 0;
+	padding: .1em .5em;
+	text-align: left;
+	white-space: nowrap;
+	background: #eee;
+	border: 1px solid #ddd;
+	border-bottom:  1px solid #ccc;
+}
+td {
+	margin: 0;
+	padding: .3em .5em;
+	text-align: left;
+	font-weight: normal;
+	border-bottom:  1px solid #a9c9e5;
+	vertical-align:middle;
+}
+
+tr.shaded {background: #e9f1ff;}
+table.hover tr:hover { background: #dbe8ff;color: #000;}
+table.hover tr.shaded:hover {background: #dbe8ff;color: #000;}
+
+table td a          {color: blue; text-decoration: none; display: block; }
+table td a:link     {color: #00356e;}
+table td a:visited  {color: #00356e;}
+table td a:hover    {color: blue; text-decoration: underline;}
+
+table.inlinelinks td a {display: inline;  padding:2px 6px 1px; -webkit-border-radius: .5em;-moz-border-radius: .5em;border-radius: .5em; text-transform:uppercase; font-size:8pt; text-shadow: 0 1px 1px rgba(0,0,0,.5);}
+table.inlinelinks td a:link     {color: #fff; background:#8c96a9;}
+table.inlinelinks td a:visited  {color: #fff; background:#8c96a9;}
+table.inlinelinks td a:hover    {color: #fff; background:#244b92; text-decoration:none;}
+
+table caption {font-size:1.4em; line-height:2em;font-weight:bold;color: #12396e;margin: .35em 0 0 0;padding:0;caption-side:top;text-align:left;}
+
+
+
+/* Link styled as a button
+use this markup:
+<p class="button2"><a href="">Button Text</a></p>
+-----------------------------------------------------------------------------*/
+span.button {
+    display:block;
+    float:none;
+    margin-bottom: 0;
+    padding: 0 !important;
+}
+
+span.button a {
+    display:block !important;
+/*    width:100%;*/
+    float:none;
+}
+
+.button a:hover {text-decoration: underline;}
+
+.button2,
+.button {
+	list-style-type: none;
+	margin: 0 20px 0 0;
+	border-top: 1px solid #a4adcb;
+	border-bottom: 1px solid #0e1450;
+	border-right: 1px solid #3d416c;
+	border-left: 1px solid #a4adcb;
+	float: left;
+	background: #fff;
+	color: #222;
+	text-decoration: none;
+	margin-bottom: 2em;
+}
+.button2 a,
+.button a {
+	margin: 0 0 0 0;
+	padding: 2px 8px;
+	border: 1px solid #fff;
+	float: left;
+	background: #fff;
+	color: #0e1450 !important;
+	text-decoration: none;
+	background: transparent url(/images/people/button-a.png) -500px bottom repeat-x;
+}
+.button2 a:hover {
+	color: #000 !important;
+	background: transparent url(/images/people/button-a.png) 0 bottom repeat-x;
+}
+
+#csv {float:right;background: url(/images/common/page_excel.png) no-repeat left 50%;padding-left:20px;clear:right;}
+
+#adminnotice {background:#E42020;
+   z-index:10;
+   position:relative;}
+#adminnotice #container {
+   margin: 0 auto;
+   min-width: 840px;
+   width: 75%;}
+#container p {text-align: center; color:#FFF; padding:8px 20px; margin:0; line-height:1em; font-size:1.3em;}

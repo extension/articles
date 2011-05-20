@@ -279,6 +279,7 @@ class AskController < ApplicationController
   end
   
   def question_confirmation
+    @right_column = false
     flash.now[:googleanalytics] = '/ask-an-expert-search-results'
     if request.get?
       if params[:q].blank? 
