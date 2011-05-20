@@ -153,10 +153,11 @@ class SubmittedQuestionEvent < ActiveRecord::Base
       :submitter_id => submitter_id})
   end
   
-  def self.log_close(question, initiated_by)
+  def self.log_close(question, initiated_by, close_msg)
     return self.log_event({:submitted_question => question,
       :initiated_by => initiated_by,
-      :event_state => CLOSED})
+      :event_state => CLOSED,
+      :response => close_msg})
   end
   
   def self.log_no_answer(question)

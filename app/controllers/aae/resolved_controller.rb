@@ -34,6 +34,10 @@ class Aae::ResolvedController < ApplicationController
       sq_query_method = SubmittedQuestion::ANSWERED_TEXT
       @questions_status = SubmittedQuestion::ANSWERED_TEXT
       @page_title = 'Resolved/Answered Questions'
+    when 'closed'
+      sq_query_method = SubmittedQuestion::CLOSED_TEXT
+      @questions_status = SubmittedQuestion::STATUS_CLOSED
+      @page_title = 'Resolved/Closed Questions'
     when 'not_answered'
       sq_query_method = SubmittedQuestion::NO_ANSWER_TEXT
       @questions_status = SubmittedQuestion::STATUS_NO_ANSWER

@@ -137,6 +137,8 @@ class Aae::FeedsController < ApplicationController
       sq_query_method = 'resolved'
     when 'answered'
       sq_query_method = 'answered'
+    when 'closed'
+      sq_query_method = 'closed'
     when 'not_answered'
       sq_query_method = 'not_answered'
     when 'rejected'
