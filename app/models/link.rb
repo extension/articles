@@ -58,6 +58,14 @@ class Link < ActiveRecord::Base
   named_scope :checked_yesterday_or_earlier, :conditions => ["DATE(last_check_at) <= ?",Date.yesterday]
   named_scope :checked_over_one_month_ago, :conditions => ["DATE(last_check_at) <= DATE_SUB(NOW(),INTERVAL 1 MONTH)",Date.yesterday]
   
+  def self.is_create?(host)
+    (host == 'create.extension.org' or host == 'create.demo.extension.org')
+  end
+  
+  def is_create?
+    self.class.is_create?(self.host)
+  end
+    
   def status_to_s
     if(self.status.blank?)
       return 'Not yet checked'
@@ -101,8 +109,15 @@ class Link < ActiveRecord::Base
       if(self.path =~ /^\/wiki\/Category\:(.+)/)
         content_tag = $1.gsub(/_/, ' ')
         content_tag_index_url(:content_tag => content_tag)
+      elsif(self.is_create? and self.path =~ %r{^/taxonomy/term/(\d+)})
+        # special case for Create taxonomy terms
+        if(taxonomy_term = CreateTaxonomyTerm.find($1))
+          content_tag_index_url(:content_tag => taxonomy_term.name)
+        else
+          ''
+        end
       else
-        return ''
+        ''
       end
     when DIRECTFILE
       self.path
@@ -221,9 +236,12 @@ class Link < ActiveRecord::Base
                             :source_host => source_host)
     if(original_uri.is_a?(URI::MailTo))
       this_link.linktype = MAILTO
-    elsif(source_host == 'create.extension.org' and original_uri.path =~ %r{^/sites/default/files/.*})
+    elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/sites/default/files/.*})
       # exemption for create and directfile links
       this_link.linktype = DIRECTFILE
+    elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/taxonomy/term/(\d+)})
+      # exemption for create and links to taxonomy terms
+      this_link.linktype = CATEGORY
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
       if(original_uri.path =~ /^\/wiki\/Category:.*/)
         this_link.linktype = CATEGORY
