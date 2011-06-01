@@ -320,110 +320,6 @@ h3.instructions {color: #829500; font-weight:normal;}
 .warning {color: #9F0000; font-size:1.2em;}
 
 
-/* Classes and IDs originating from CoP Wiki templates
------------------------------------------------------------------------------*/
-/* .hiddenStructure is pulled over from CoP wiki templates */
-.hiddenStructure {position:absolute;left:-5000px;display:hidden;}
-
-/* Template:calloutbox */
-.calloutbox {padding:1.2em; margin:0 0 1.5em; border: 1px solid #ccc; background:#fffff2; line-height:1.1 !important;}
-.calloutbox p {padding: 0; margin: 0 0 .9em;}
-.calloutbox h2 {padding: 0; margin: 0 0 .9em; margin-top:0 !important;}
-.calloutbox li {padding: 0; margin: 0 0 .9em; margin-top:0 !important;}
-
-/* Template:multipage */
-.multipage {background: #fff0bb; padding:0 1em;margin:0;}
-.multipage .nextpage {float:right; padding:0;margin:0;}
-
-/* Template:photomontage */
-.photocontainercenter {text-align: center; background: #fff; border: 1px solid #ebebeb; padding: 10px;}
-.photocontainercenter .heading {text-align: left; font-weight: bold; font-size:1.4em;padding:0;margin:0;}
-
-/* Template:image */
-.singleimage {padding: 3px; margin: 5px; border: 1px solid #ebebeb; float:left;}
-.singleimage.right {float:right;clear:right;}
-.singleimage.center {clear:both;float:none;}
-.singleimage.center div {margin-left:auto;margin-right:auto;}
-.singleimage.center img {display:block;float:none;margin-left:auto;margin-right:auto;}
-.rightcolmodule .singleimage {float:none; border:0; padding-left:40px;}
-.rightcolmodule h1 {font-size:17px;}
-#sidebar h1 {font-size:17px;}
-
-/* Template:footer */
-#contentfooter {line-height:1.5em; margin-top:4em;border-top:1px solid #ccc;}
-
-
-/* Classes and IDs that are manipulated by javascript at load time
------------------------------------------------------------------------------*/
-#second_column_content {padding: 0; margin: 10px 0  0; width: 215px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
-#second_column_content ul {padding-left:20px;}
-.primarycolumn {width:400px !important;}
-
-
-/*this was added to allow content to be cleared below images without clearing the rightsidebar*/
-#article {float:left;line-height: 1.5em; }
-#article p, #article li {font-size:15px;}
-.content {width: 600px}
-.faq {width: 600px;margin-top:1.1em;}
-
-
-/* Resest all styles for articles imported from the wiki
------------------------------------------------------------------------------*/
-#content_css_reset {margin:0;padding:0;width:653px;}
-#content_css_reset h1,
-#content_css_reset h2,
-#content_css_reset h3,
-#content_css_reset h4,
-#content_css_reset h5,
-#content_css_reset h6 {color:#333;}
-#content_css_reset h1 {margin-bottom:.5em;}
-#content_css_reset h2 {margin:1em 0 .5em; color:#000;}
-#content_css_reset dl {margin:1em;}
-#content_css_reset table {background:#fff;}
-#content_css_reset table,
-#content_css_reset table caption {font-weight:bold;line-height:1.3em;margin-bottom:1em;}
-#content_css_reset table th,
-#content_css_reset table td,
-#content_css_reset table th {color:#222;border: 1px solid #bbb;} 
-#content_css_reset table th {background:#ededed;}
-#content_css_reset th {white-space: normal;}
-
-/* Removed overflow:auto from ul lists because it was preventing the block from flowing around floated content. the problem is that I know this was solving another issue, will have to wait and see what breaks. */
-#content_css_reset ul {padding:0 1.5em 0;margin:0 0 1em;}
-
-#content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;}
-#content_css_reset ol li {list-style:decimal;}
-
-/* this constrains the div when there images or tables that exceed the column width */
-#content_css_reset #article {width:653px;}
-
-blockquote {padding:2em 2em 1em; font-size:1.1em; background:#ebf2f8;margin:1.5em; border-left: 3px solid #b5d9f8;}
-
-#extension_articles {margin-bottom:1.5em;}
-#extension_articles h1{margin-bottom:.5em;}
-#extension_articles h2{margin-bottom:1.5em !important; width:40em; font-size:17px;}
-
-#table_of_contents {padding-right: 20px; margin-bottom: 10px; margin-top: 10px; border: solid 1px #ebebeb;width:368px;}
-#table_of_contents p {margin: 0px; padding: 3px;  margin-bottom: 5px}
-#table_of_contents ul {margin: 0 0 0 15px; padding: 0 0 1em 10px;}
-#table_of_contents h3 {padding:0 .5em;margin:.5em;}
-#table_of_contents h3 a {font-weight:normal}
-
-
-/* Wiki articles that receive special treatment via embedded classes and ID's
------------------------------------------------------------------------------*/
-/* /main/sponsors */
-.sponsor {margin:1em 0;border-top:1px solid #ddd;width:650px;float:left;padding:3em 0 2em;text-align:left;}
-.sponsor p.logo {float:right;width:320px;overflow:hidden;}
-.sponsor img {padding:20px; border:1px solid #eee;}
-.sponsor p {float:left;width:305px;clear:left;margin:0 0 1em;padding-right:10px;}
-
-/* main/contact_us */
-#article.contactus {margin-top:0;}
-#article.contactus h2 {margin:1em 0 .5em;}
-#article.contactus p {margin:0 0 1.5em;}
-
-
 
 
 
@@ -948,3 +844,109 @@ td.longurls a {word-wrap: break-word;width:450px;}
 #photoattribution a:link,
 #photoattribution a:visited, 
 #photoattribution a:hover {color:#fff !important;}
+
+
+
+
+/* Classes and IDs originating from CoP Wiki templates and presumably Drupal
+-----------------------------------------------------------------------------*/
+/* .hiddenStructure is pulled over from CoP wiki templates */
+.hiddenStructure {position:absolute;left:-5000px;display:hidden;}
+
+/* Template:calloutbox */
+.calloutbox {padding:1.2em; margin:0 0 1.5em; border: 1px solid #ccc; background:#fffff2; line-height:1.1 !important;}
+.calloutbox p {padding: 0; margin: 0 0 .9em;}
+.calloutbox h2 {padding: 0; margin: 0 0 .9em; margin-top:0 !important;}
+.calloutbox li {padding: 0; margin: 0 0 .9em; margin-top:0 !important;}
+
+/* Template:multipage */
+.multipage {background: #fff0bb; padding:0 1em;margin:0;}
+.multipage .nextpage {float:right; padding:0;margin:0;}
+
+/* Template:photomontage */
+.photocontainercenter {text-align: center; background: #fff; border: 1px solid #ebebeb; padding: 10px;}
+.photocontainercenter .heading {text-align: left; font-weight: bold; font-size:1.4em;padding:0;margin:0;}
+
+/* Template:image */
+.singleimage {padding: 3px; margin: 5px; border: 1px solid #ebebeb; float:left;}
+.singleimage.right {float:right;clear:right;}
+.singleimage.center {clear:both;float:none;}
+.singleimage.center div {margin-left:auto;margin-right:auto;}
+.singleimage.center img {display:block;float:none;margin-left:auto;margin-right:auto;}
+.rightcolmodule .singleimage {float:none; border:0; padding-left:40px;}
+.rightcolmodule h1 {font-size:17px;}
+#sidebar h1 {font-size:17px;}
+
+/* Template:footer */
+#contentfooter {line-height:1.5em; margin-top:4em;border-top:1px solid #ccc;}
+
+
+/* Classes and IDs that are manipulated by javascript at load time
+-----------------------------------------------------------------------------*/
+#second_column_content {padding: 0; margin: 10px 0  0; width: 215px; float: right; margin-left: 5px; padding-left: 5px; border-left: 1px solid #bbb;}
+#second_column_content ul {padding-left:20px;}
+.primarycolumn {width:400px !important;}
+
+
+/*this was added to allow content to be cleared below images without clearing the rightsidebar*/
+#article {float:left;line-height: 1.5em; }
+#article p, #article li {font-size:15px;}
+.content {width: 600px}
+.faq {width: 600px;margin-top:1.1em;}
+
+
+/* Resest all styles for articles imported from the wiki
+-----------------------------------------------------------------------------*/
+#content_css_reset {margin:0;padding:0;width:653px;}
+#content_css_reset h1 {font-size: 21px; color:#333;}
+#content_css_reset h2 {font-size: 19px; color:#333;}
+#content_css_reset h3 {font-size: 18px; color:#333;}
+#content_css_reset h4 {font-size: 16px; color:#333;}
+#content_css_reset h5 {font-size: 14px; color:#333;}
+#content_css_reset h6 {font-size: 14px; color:#333;}
+#content_css_reset h1 {margin-bottom:.5em;}
+#content_css_reset h2 {margin:1em 0 .5em; color:#000;}
+#content_css_reset dl {margin:1em;}
+#content_css_reset table {background:#fff;}
+#content_css_reset table,
+#content_css_reset table caption {font-weight:bold;line-height:1.3em;margin-bottom:1em;}
+#content_css_reset table th,
+#content_css_reset table td,
+#content_css_reset table th {color:#222;border: 1px solid #bbb;} 
+#content_css_reset table th {background:#ededed;}
+#content_css_reset th {white-space: normal;}
+
+/* Removed overflow:auto from ul lists because it was preventing the block from flowing around floated content. the problem is that I know this was solving another issue, will have to wait and see what breaks. */
+#content_css_reset ul {padding:0 1.5em 0;margin:0 0 1em;}
+
+#content_css_reset li {margin:0 0 .5em 1.5em; padding:0; list-style:disc;}
+#content_css_reset ol li {list-style:decimal;}
+
+/* this constrains the div when there images or tables that exceed the column width */
+#content_css_reset #article {width:653px;}
+
+blockquote {padding:2em 2em 1em; font-size:1.1em; background:#ebf2f8;margin:1.5em; border-left: 3px solid #b5d9f8;}
+
+#extension_articles {margin-bottom:1.5em;}
+#extension_articles h1{margin-bottom:.5em;}
+#extension_articles h2{margin-bottom:1.5em !important; width:40em; font-size:17px;}
+
+#table_of_contents {padding-right: 20px; margin-bottom: 10px; margin-top: 10px; border: solid 1px #ebebeb;width:368px;}
+#table_of_contents p {margin: 0px; padding: 3px;  margin-bottom: 5px}
+#table_of_contents ul {margin: 0 0 0 15px; padding: 0 0 1em 10px;}
+#table_of_contents h3 {padding:0 .5em;margin:.5em;}
+#table_of_contents h3 a {font-weight:normal}
+
+
+/* Wiki articles that receive special treatment via embedded classes and ID's
+-----------------------------------------------------------------------------*/
+/* /main/sponsors */
+.sponsor {margin:1em 0;border-top:1px solid #ddd;width:650px;float:left;padding:3em 0 2em;text-align:left;}
+.sponsor p.logo {float:right;width:320px;overflow:hidden;}
+.sponsor img {padding:20px; border:1px solid #eee;}
+.sponsor p {float:left;width:305px;clear:left;margin:0 0 1em;padding-right:10px;}
+
+/* main/contact_us */
+#article.contactus {margin-top:0;}
+#article.contactus h2 {margin:1em 0 .5em;}
+#article.contactus p {margin:0 0 1.5em;}
