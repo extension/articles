@@ -120,7 +120,7 @@ class PageinfoController < ApplicationController
     @content_tag = content_tag
     response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
     response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
-    render(:template => 'preview/page_csvlist', :layout => false)
+    render(:template => 'pageinfo/page_csvlist', :layout => false)
   end
   
 end
