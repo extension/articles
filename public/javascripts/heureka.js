@@ -20,11 +20,6 @@ function fitTextArea(textControl) {
   
 }
 
-function append_state_abbreviation(abbrev){
-	field = document.getElementById('State')
-	field.value = field.value + ' ' + abbrev
-}
-
 function importData(text1, text2) {
   text2.value = text1.value
 }

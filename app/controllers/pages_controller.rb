@@ -9,7 +9,7 @@ class PagesController < ApplicationController
   layout 'pubsite'
   before_filter :set_content_tag_and_community_and_topic
   before_filter :login_optional
-  
+  before_filter :login_required, :check_purgatory, :only => [:newevent]
   
   def redirect_article
     # folks chop off the page name and expect the url to give them something
@@ -398,6 +398,26 @@ class PagesController < ApplicationController
       return
     end
   end
-    
+  
+  def newevent
+    @event_editing = true
+    @right_column = true
+    @resource_area_tags = Tag.community_content_tags({:launchedonly => true}).map(&:name)
+    if(request.post?)
+      @event = Page.new(params[:event])
+      @event.datatype = 'Event'
+      if(@event.save)
+        @event.replace_tags_with_and_cache(params[:publish_tag_field],User.systemuserid,Tagging::CONTENT)
+        # todo logging
+        return redirect_to(page_url(:id => @event.id, :title => @event.url_title))
+      else
+        @content_tag_list = params[:publish_tag_field]
+      end
+    else
+      @event = Page.new()
+      @content_tag_list = ''
+    end
+  end
+  
   
 end

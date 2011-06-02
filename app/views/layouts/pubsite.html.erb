@@ -33,9 +33,8 @@
         	<%= stylesheet_link_tag 'fancybox/jquery.fancybox-1.3.1' %>
         	<%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
         	<%= stylesheet_link_tag 'print', :media => 'print' %>
-        	
-        	
     	<% end %>
+      
 	<% end %>
     
   <% if @youth %>
@@ -53,6 +52,13 @@
     <%= javascript_include_tag 'application' %>
     <%= javascript_include_tag 'jquery.cluetip.min' %>
     <%= javascript_include_tag 'fancybox/jquery.fancybox-1.3.1' %>
+    
+    <%- if @event_editing -%>
+    	<%= stylesheet_link_tag 'date-picker' %>
+      <%= stylesheet_link_tag 'calendar_helper' %>  
+      <%= stylesheet_link_tag 'events' %>  
+      <%= javascript_include_tag 'date-picker' %>
+    <%- end -%>
     
     <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
     

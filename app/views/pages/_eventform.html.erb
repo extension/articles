@@ -1,0 +1,150 @@
+<%= error_messages_for(:event) %>
+<div id="event_form">
+  <% form_for :event, @event, :url => newevent_url  do |f| %>
+
+  <h3>About the Event</h3>
+  <fieldset id="about_event">
+    <p>
+      <label for="event_title">Title:
+      <%= f.text_field :title %>
+      </label>
+    </p>
+
+    <p>
+      <label for="event_original_content">
+      Description: 
+      <%= f.text_area :original_content, :rows => 4 %>
+      </label>
+    </p>
+  </fieldset>
+
+  <h3>Date and Time</h3>
+    <fieldset id="event_dates">
+    <p>
+      <label for="event_date" >
+      Date: <%= date_picker_field :event, :event_date %>
+      </label>
+    </p>
+
+    <p>
+      <label for="event_event_all_day" class="singlecheckbox">
+      <%= f.check_box :event_all_day, :onclick => "accessToggle();" %> All Day Event? 
+      </label>
+    </p>
+
+    <div id="event_time" style="<%= @event.event_all_day? ? 'disable' : '' %>" >
+    <p>
+      <label for="event_time">
+      Time: <%= f.text_field :event_time %>
+      </label>
+    </p>
+
+    <p>
+      <%= f.label :time_zone, 'Time Zone' %>
+      <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)" %>
+    </p>
+    </div>
+
+    <p>	
+      <label for="event_event_duration" class="field-duration">
+      Duration:
+      <%= f.text_field :event_duration %>  
+      days
+      </label>
+    </p>
+    <br class="clearing" />
+  </fieldset>
+
+  <h3>Location</h3>
+  <fieldset id="event_locations">
+    <p>
+      <label for="event_event_location" class="field-location">
+      Geographic location or street address: <span>(Used to create a Google Maps link)</span>
+      <%= f.text_field :event_location %>
+      </label>
+    </p>
+
+    <p>
+      <label for="event_coverage" class="field-coverage">
+      Coverage: 
+      <%= f.select :coverage, [ "National", "State", "Local" ] %>
+      </label>
+    </p>
+
+    <p>
+      <label for="event_state_abbreviations" class="field-state_abbreviations">
+      States <%= f.text_field :state_abbreviations, :id => 'state_abbreviations' %> <span>(Separated by spaces.  Example: CA NC AK)</span>
+      <%= link_to_function "Show/Hide Abbreviations", "Effect.toggle('state_abbrev_help','blind', { duration: .4}); return false;" %>
+      </label>
+    </p>
+
+    <div id="state_abbrev_help" style="display:none; ">
+    <ul>
+      <% Location.states.displaylist.all.each do | location | %>
+      <li>
+        <span class="abbrev"><%= link_to location.abbreviation, "javascript:append_state_abbreviation('#{location.abbreviation}')" %></span>
+        <%= location.name %>
+      </li>
+      <% end %>
+    </ul>
+    <br style="clear: both" />
+    </div>
+  </fieldset>
+
+  <h3>Event Tags</h3>
+  <fieldset id="event_tags">
+    <div id="publish_tags">
+      <label for="publish_tag_field" >
+      Content Tags: 
+      <%= text_field_tag 'publish_tag_field', @content_tag_list ? @content_tag_list : '' %></label>  
+      <h4>Resource Areas: <small>(at least one is required for publishing)</small></h4>
+
+      <ul>
+        <% @resource_area_tags.each do |pt| %>
+        <li><%= link_to_function "#{pt}", "addTagsToList($('publish_tag_field'), '#{pt}')" %></li>
+        <% end %>
+      </ul>  
+    </div>
+  </fieldset>
+
+
+    <p>
+      <%= submit_tag "Save Event", :class => "savebutton" %>
+      or
+      <% if @event.new_record? %>
+        <%= link_to "Cancel", site_events_url(with_content_tag?) %>
+      <% else %>	
+        <%= link_to "Cancel", page_url(@event) %>
+      <% end %>
+    </p>
+  <% end %>
+</div>
+
+
+<div id='content_tags_tooltip' style="display:none;" class="tooltip">
+  <h3>Content Tags</h3>
+  <p>Content tags are used to group similar content on the Public Site. </p>
+  <p>At least one Resource Area tag is required to associate this Event with a Community of Practice.</p>
+</div>
+
+<script type="text/javascript">
+
+  if ($('event_event_all_day').checked) { 
+    $('event_time').addClassName('disabled')
+    Form.disable('event_time')
+  }
+
+  function accessToggle()
+  {
+    if ($('event_time').hasClassName("disabled"))
+    {
+      Form.enable('event_time')
+    } else {
+      Form.disable('event_time')
+      $('event_event_time').value = ""
+    }
+    
+    $('event_time').toggleClassName("disabled")
+    return
+  }
+</script>

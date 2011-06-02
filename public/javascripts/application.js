@@ -142,6 +142,11 @@ function addTagsToList(formControl, tagToAdd) {
 		formControl.value = formControl.value + separator + tagToAdd
 }
 
+function append_state_abbreviation(abbrev){
+	field = document.getElementById('state_abbreviations')
+	field.value = field.value + ' ' + abbrev
+}
+
 function processTableOfContents() {
    var toc = $("toc");
    if ( toc ) {

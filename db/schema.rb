@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110511183713) do
+ActiveRecord::Schema.define(:version => 20110602202252) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -739,6 +739,7 @@ ActiveRecord::Schema.define(:version => 20110511183713) do
     t.integer  "page_source_id"
     t.text     "cached_content_tags"
     t.text     "old_source_url"
+    t.boolean  "event_all_day"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"

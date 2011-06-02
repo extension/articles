@@ -82,10 +82,10 @@ Tooltip.prototype = {
       margin: "0px",
 	    padding: "5px",
 	    backgroundColor: "#d6d6fc",
-	    min_distance_x: 5,
-      min_distance_y: 5,
-      delta_x: 0,
-      delta_y: 0,
+	    min_distance_x: 15,
+      min_distance_y: 15,
+      delta_x: 15,
+      delta_y: 15,
       zindex: 1000
     }, arguments[2] || {});
 

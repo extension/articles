@@ -6,6 +6,8 @@
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 require 'mofo'
 class Page < ActiveRecord::Base
+  # for events
+  attr_accessor :event_time, :event_date
   include ActionController::UrlWriter # so that we can generate URLs out of the model
   include TaggingScopes
   
@@ -1057,6 +1059,14 @@ class Page < ActiveRecord::Base
   def content_sizes
     text = self.content_to_s
     [text.size,text.scan(/[\w-]+/).size]
+  end
+  
+  def event_date
+    @event_date || (self.event_start.blank? ? nil : (self.event_all_day? ? self.event_start.utc.to_date : self.start.in_time_zone(self.time_zone).to_date))
+  end
+  
+  def event_time
+    @event_time || (self.event_start.blank? ? nil : (self.event_all_day? ? nil : self.event_start.in_time_zone(self.time_zone).strftime('%I:%M %p')))
   end
     
 

@@ -171,6 +171,7 @@ ActionController::Routing::Routes.draw do |map|
   
   ### current routes for specific content
   map.pagelist 'pages/list', :controller => 'pages', :action => 'list'
+  map.newevent 'pages/newevent', :controller => 'pages', :action => 'newevent'
   map.connect 'pages/update_time_zone/:id', :controller => 'pages', :action => 'update_time_zone', :requirements => { :id => /\d+/ }
   map.print_pageid 'pages/:id/print', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
   map.pageid 'pages/:id', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
