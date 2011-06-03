@@ -14,10 +14,12 @@
    <strong>
    <%- if @page.event_duration.blank? or @page.event_duration == 0 -%>
      <% event_time = format_event_time(@page) %>
-     <abbr class="dtstart" title="<%= event_time.strftime("%Y-%m-%dT%H:%M:%S") %>"><%= event_time.strftime("%B %d, %Y at %l:%M %p") %></abbr>
-     <% if !@page.time_zone.blank? %>
-       <%= event_time.strftime("%Z") %>
-       <% end %>
+     <% if !event_time.blank? -%>
+       <abbr class="dtstart" title="<%= event_time.strftime("%Y-%m-%dT%H:%M:%S") %>"><%= event_time.strftime("%B %d, %Y at %l:%M %p") %></abbr>
+       <%- if !@page.time_zone.blank? -%>
+         <%= event_time.strftime("%Z") %>
+       <%- end -%>
+     <%- end -%>
    <%- else -%>
      <abbr class="dtstart" title="<%= @page.event_start.utc.to_date.strftime("%Y%m%d") %>"><%= @page.event_start.utc.to_date.strftime("%B %d, %Y") %></abbr>
      <%- if @page.event_duration > 1 %>

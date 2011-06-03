@@ -846,6 +846,11 @@ td.longurls a {word-wrap: break-word;width:450px;}
 #photoattribution a:hover {color:#fff !important;}
 
 
+#newevent {padding:.4em .8em .4em 35px; margin:.5em 30px 2em; background: #f47B28 10px 50% no-repeat; color:#000000;}
+#newevent {border:1px solid #c1cee5;}
+#newevent a {color:#000000;}
+#newevent a:link {color:#000000;}
+#newevent a:hover {color:#81858b;}
 
 
 /* Classes and IDs originating from CoP Wiki templates and presumably Drupal

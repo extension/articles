@@ -529,15 +529,13 @@ class Page < ActiveRecord::Base
       
     # check for datatype
     if(!entry_category_terms.blank?)
-      # news overrides article => overrides faq => overrides event
+      # news overrides article => overrides faq
       if(entry_category_terms.include?('news') or entry_category_terms.include?('originalnews') )
         page.datatype = 'News'
       elsif(entry_category_terms.include?('article'))
         page.datatype = 'Article'
       elsif(entry_category_terms.include?('faq'))
         page.datatype = 'Faq'
-      elsif(entry_category_terms.include?('event'))
-        page.datatype = 'Event'
       else
         page.datatype = page_source.default_datatype
       end
@@ -998,13 +996,7 @@ class Page < ActiveRecord::Base
   end
 
   def state_abbreviations=(new_value)
-    self.clean_abbreviations(new_value).join(' ')
-  end
-
-  def validate_state_abbreviations
-    self.clean_abbreviations.each do | abbrev |
-      errors.add(:state_abbreviations, "'#{abbrev}' is not a valid State abbreviation")  unless State[abbrev]
-    end
+    write_attribute(:state_abbreviations,self.clean_abbreviations(new_value).join(' '))
   end
 
   def sort_states
@@ -1062,7 +1054,7 @@ class Page < ActiveRecord::Base
   end
   
   def event_date
-    @event_date || (self.event_start.blank? ? nil : (self.event_all_day? ? self.event_start.utc.to_date : self.start.in_time_zone(self.time_zone).to_date))
+    @event_date || (self.event_start.blank? ? nil : (self.event_all_day? ? self.event_start.utc.to_date : self.event_start.in_time_zone(self.time_zone).to_date))
   end
   
   def event_time

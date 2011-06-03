@@ -9,7 +9,7 @@ class PagesController < ApplicationController
   layout 'pubsite'
   before_filter :set_content_tag_and_community_and_topic
   before_filter :login_optional
-  before_filter :login_required, :check_purgatory, :only => [:newevent]
+  before_filter :login_required, :check_purgatory, :only => [:new_event, :edit_event, :delete_event]
   
   def redirect_article
     # folks chop off the page name and expect the url to give them something
@@ -399,14 +399,30 @@ class PagesController < ApplicationController
     end
   end
   
-  def newevent
+  def new_event
     @event_editing = true
     @right_column = true
     @resource_area_tags = Tag.community_content_tags({:launchedonly => true}).map(&:name)
     if(request.post?)
       @event = Page.new(params[:event])
       @event.datatype = 'Event'
-      if(@event.save)
+      @event.source_updated_at = @event.source_created_at = Time.now.utc
+      @event.source_url_fingerprint = Digest::SHA1.hexdigest('local-event' + rand().to_s)
+      @event.source = 'local'
+      begin
+        Time.zone = @event.time_zone
+        if(!@event.event_all_day?)
+          @event.event_start = Time.zone.parse("#{@event.event_date} #{@event.event_time}").utc
+        else
+          @event.event_start = Time.zone.parse("#{@event.event_date} 00:00:00").utc
+        end
+        validtime = true
+      rescue
+        validtime = false
+        @event.errors.add_to_base("Invalid date and time specified")
+      end
+      
+      if(validtime and @event.save)
         @event.replace_tags_with_and_cache(params[:publish_tag_field],User.systemuserid,Tagging::CONTENT)
         # todo logging
         return redirect_to(page_url(:id => @event.id, :title => @event.url_title))
@@ -416,6 +432,64 @@ class PagesController < ApplicationController
     else
       @event = Page.new()
       @content_tag_list = ''
+    end
+  end
+  
+  
+  def edit_event
+    @event = Page.find_by_id(params[:id])
+    if(@event.nil? or @event.datatype != 'Event')
+      flash[:error] = 'Event not found.'
+      return redirect_to site_events_url(with_content_tag?)
+    end
+    @event_editing = true
+    @right_column = true
+    @resource_area_tags = Tag.community_content_tags({:launchedonly => true}).map(&:name)
+    if(request.post?)
+      @event.attributes = @event.attributes.merge(params[:event])    
+      @event.datatype = 'Event'
+      @event.source_created_at = Time.now.utc
+      @event.time_zone = nil if (params[:event][:timezone].blank? and params[:event][:event_time].blank?)
+      @event.source_url_fingerprint = Digest::SHA1.hexdigest("local-event-#{@event.id}")
+      
+      begin
+        Time.zone = @event.time_zone
+        if(!@event.event_all_day?)
+          @event.event_start = Time.zone.parse("#{@event.event_date} #{@event.event_time}").utc
+        else
+          @event.event_start = Time.zone.parse("#{@event.event_date} 00:00:00").utc
+        end
+        validtime = true
+      rescue
+        validtime = false
+        @event.errors.add_to_base("Invalid date and time specified")
+      end
+      
+      if(validtime and @event.save)
+        @event.replace_tags_with_and_cache(params[:publish_tag_field],User.systemuserid,Tagging::CONTENT)
+        # todo logging
+        return redirect_to(page_url(:id => @event.id, :title => @event.url_title))
+      else
+        @content_tag_list = params[:publish_tag_field]
+      end
+    else
+      @content_tag_list = @event.cached_content_tag_names.join(Tag::JOINER)
+    end
+  end
+  
+  def delete_event
+    @event = Page.find_by_id(params[:id])
+    if(@event.nil? or @event.datatype != 'Event')
+      flash[:error] = 'Event not found.'
+      return redirect_to site_events_url(with_content_tag?)
+    end
+    @event_editing = true
+    if(request.post?)
+      @event.destroy
+      flash[:success] = 'Event removed.'
+      return redirect_to site_events_url(with_content_tag?)
+    else
+      return redirect_to edit_event_url(:id => @event.id)
     end
   end
   

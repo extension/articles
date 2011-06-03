@@ -23,6 +23,10 @@
   <p class="months"><span>Month</span>: <%=month_select(get_calendar_month, false, @content_tag, params[:state])%></p>
 </div>
 
+<%- if @currentuser -%>
+  <p id="newevent"><strong><%= link_to('Add a new event', new_event_url) %></strong><br />This notice only displays for users signed in with their eXtensionID.</p>
+<%- end -%>
+
 <%if @eventslist.length == 0%>
     <h2>There are no events scheduled at this time.</h2>
 <%end%>
