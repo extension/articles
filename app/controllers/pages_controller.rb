@@ -424,7 +424,7 @@ class PagesController < ApplicationController
       
       if(validtime and @event.save)
         @event.replace_tags_with_and_cache(params[:publish_tag_field],User.systemuserid,Tagging::CONTENT)
-        # todo logging
+        PageUpdate.create(:page => @event, :action => 'create', :remote_addr => request.env["REMOTE_ADDR"], :user => @currentuser)
         return redirect_to(page_url(:id => @event.id, :title => @event.url_title))
       else
         @content_tag_list = params[:publish_tag_field]
@@ -467,7 +467,7 @@ class PagesController < ApplicationController
       
       if(validtime and @event.save)
         @event.replace_tags_with_and_cache(params[:publish_tag_field],User.systemuserid,Tagging::CONTENT)
-        # todo logging
+        PageUpdate.create(:page => @event, :action => 'update', :remote_addr => request.env["REMOTE_ADDR"], :user => @currentuser)
         return redirect_to(page_url(:id => @event.id, :title => @event.url_title))
       else
         @content_tag_list = params[:publish_tag_field]
@@ -485,6 +485,7 @@ class PagesController < ApplicationController
     end
     @event_editing = true
     if(request.post?)
+      PageUpdate.create(:page => @event, :action => 'destroy', :remote_addr => request.env["REMOTE_ADDR"], :user => @currentuser)
       @event.destroy
       flash[:success] = 'Event removed.'
       return redirect_to site_events_url(with_content_tag?)
