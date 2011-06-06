@@ -40,7 +40,7 @@ h1 em {color:#000;}
 
 /* app banner
 -----------------------------------------------------------------------------*/
-#extensionNav {text-align: center; background: #091f47; padding: .15em 0 .2em; margin: 0;}
+#extensionNav {text-align: center; background: #091f47; padding: .15em 0 .2em; margin: 0 auto;}
 #extensionNav .group {display:inline; padding:0 1em; border-right:1px solid #666;}
 #extensionNav .last {border:0;}
 #extensionNav .group span {display:none;}

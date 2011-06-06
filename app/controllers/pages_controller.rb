@@ -401,7 +401,7 @@ class PagesController < ApplicationController
   
   def new_event
     @event_editing = true
-    @right_column = true
+    @right_column = false
     @resource_area_tags = Tag.community_content_tags({:launchedonly => true}).map(&:name)
     if(request.post?)
       @event = Page.new(params[:event])
@@ -443,7 +443,7 @@ class PagesController < ApplicationController
       return redirect_to site_events_url(with_content_tag?)
     end
     @event_editing = true
-    @right_column = true
+    @right_column = false
     @resource_area_tags = Tag.community_content_tags({:launchedonly => true}).map(&:name)
     if(request.post?)
       @event.attributes = @event.attributes.merge(params[:event])    

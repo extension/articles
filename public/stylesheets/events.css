@@ -75,20 +75,7 @@
 	clear: left;
 }
 
-#event_form input,
-#event_form textarea,
-#event_form select {
-	display: block;
-	margin-top: 3px;
-	margin-bottom: 1em; }
-
 .savebutton { display:inline; }
-
-/* Make Firefox Forms Elements not look ugly */
-#event_form input, #event_form textarea, #event_form select {
-	padding: 2px 4px;
-	font-size: 100%;
-	color: #333;}
 
 textarea {width:98%;}
 #event_time {
@@ -192,3 +179,7 @@ h1 {font-size:1.9em; margin-bottom:1em; color:#1e5b90;}
 
 #event_title,
 #event_location {width:97%;}
+
+#errorExplanation.errorExplanation {color:red;}
+#errorExplanation.errorExplanation ul {padding:0 1.5em;}
+#errorExplanation.errorExplanation li {list-style:disc;}

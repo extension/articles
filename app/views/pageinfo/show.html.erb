@@ -2,6 +2,12 @@
    <p>Invalid article id</p>
 <%- else -%>
   <h2>Article Information</h2>
+  
+  <%- if @page.datatype == 'Event' -%>
+  <p>
+    <%= link_to('edit',edit_event_url(:id => @page.id), :class => "bigbutton blue") %>
+  </p>
+  <%- end -%>
   <table cellspacing="0" border="1">
       <tr>
           <td>Internal Page ID</td>
@@ -59,10 +65,7 @@
       <tr>
           <td>Source</td>
           <td>
-            Local 
-            <%- if @page.datatype == 'Event' -%>
-              <%= link_to('edit',edit_event_url(:id => @page.id)) %>
-            <%- end -%>
+            Local
           </td>
       </tr>
       <tr>

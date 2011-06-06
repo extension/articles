@@ -24,7 +24,8 @@
 </div>
 
 <%- if @currentuser -%>
-  <p id="newevent"><strong><%= link_to('Add a new event', new_event_url) %></strong><br />This notice only displays for users signed in with their eXtensionID.</p>
+  <p id="newevent"><%= link_to('Add a new event', new_event_url, :class => "bigbutton blue") %>
+    <span>This notice only displays for users signed in with their eXtensionID.</span></p>
 <%- end -%>
 
 <%if @eventslist.length == 0%>

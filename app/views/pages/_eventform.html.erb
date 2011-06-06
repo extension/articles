@@ -112,7 +112,7 @@
 
 
     <p>
-      <%= submit_tag "Save Event", :class => "savebutton" %>
+      <%= submit_tag "Save Event", :class => "bigbutton blue large" %>
       or
       <% if @event.new_record? %>
         <%= link_to "Cancel", site_events_url(with_content_tag?) %>
@@ -122,12 +122,14 @@
     </p>
   <% end %>
   <%- if !@event.new_record? -%>
-    <p>    
+    
     <% form_for :event, @event, :url => delete_event_url  do |f| %>
       <%= hidden_field_tag(:id, @event.id) %>
-      <%= submit_tag "Delete Event", :class => "savebutton", :confirm => "Are you sure you want to delete this event?" %>
+      <p class="deleteblock">
+      <%= submit_tag "Delete Event", :class => "bigbutton red", :confirm => "Are you sure you want to delete this event?" %>
+      </p>
     <%- end -%>
-    </p>
+    
   <%- end -%>
 </div>
 
