@@ -797,6 +797,7 @@ ActiveRecord::Schema.define(:version => 20110617171530) do
     t.string   "contributing_content_type"
   end
 
+  add_index "responses", ["contributing_content_id", "contributing_content_type"], :name => "contributing_content_ndx"
   add_index "responses", ["resolver_id"], :name => "index_responses_on_user_id"
   add_index "responses", ["submitted_question_id"], :name => "index_responses_on_submitted_question_id"
   add_index "responses", ["submitter_id"], :name => "index_responses_on_submitter_id"
@@ -855,6 +856,7 @@ ActiveRecord::Schema.define(:version => 20110617171530) do
     t.string   "contributing_content_type"
   end
 
+  add_index "submitted_question_events", ["contributing_content_id", "contributing_content_type"], :name => "contributing_content_ndx"
   add_index "submitted_question_events", ["created_at", "event_state", "previous_handling_recipient_id"], :name => "handling_idx"
   add_index "submitted_question_events", ["initiated_by_id"], :name => "initiated_by_idx"
   add_index "submitted_question_events", ["recipient_id"], :name => "subject_user_idx"
@@ -899,6 +901,7 @@ ActiveRecord::Schema.define(:version => 20110617171530) do
   end
 
   add_index "submitted_questions", ["asked_question", "current_response"], :name => "question_response_full_index"
+  add_index "submitted_questions", ["contributing_content_id", "contributing_content_type"], :name => "contributing_content_ndx"
   add_index "submitted_questions", ["contributing_content_id"], :name => "fk_qu_sq"
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"
   add_index "submitted_questions", ["created_at"], :name => "created_at_idx"
