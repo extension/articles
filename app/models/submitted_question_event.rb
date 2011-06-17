@@ -16,6 +16,7 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   belongs_to :previous_initiator,  :class_name => "User", :foreign_key => "previous_initiator_id"
   belongs_to :previous_handling_recipient, :class_name => "User", :foreign_key => "previous_handling_recipient_id"
   belongs_to :previous_handling_initiator,  :class_name => "User", :foreign_key => "previous_handling_initiator_id"
+  belongs_to :contributing_content, :polymorphic => true
   
   before_create :clean_response_and_additionaldata
   
@@ -127,13 +128,13 @@ class SubmittedQuestionEvent < ActiveRecord::Base
   end
   
   def self.log_resolution(question)
-    question.current_contributing_question ? contributing_question = question.current_contributing_question : contributing_question = nil
+    question.contributing_content ? contributing_content = question.contributing_content : contributing_content = nil
     
     return self.log_event({:submitted_question => question,
       :initiated_by => question.resolved_by,
       :event_state => RESOLVED,
       :response => question.current_response,
-      :contributing_question => contributing_question})
+      :contributing_content => contributing_content})
   end
   
   def self.log_reopen(question, recipient, initiated_by, assignment_comment)

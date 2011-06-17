@@ -18,14 +18,14 @@
 
     
     <tr <%= ' class="shaded"' if even %>>
-        <td class="<%= (question.entrytype == SearchQuestion::FAQ) ? 'FAQ' : 'AaE' %>">
-            <span><%= (question.entrytype == SearchQuestion::FAQ) ? 'FAQ' : 'AaE' %></span>
+        <td class="<%= (question.class == Page) ? 'FAQ' : 'AaE' %>">
+            <span><%= (question.class == Page) ? 'FAQ' : 'AaE' %></span>
         </td>
         <td>
-            <%= question.status %>
+            <%= (question.class == Page) ? 'Published' : question.status %>
         </td>
         <td>
-            <%= link_to strip_tags(question.displaytitle), aae_answer_url(:id => question.id, :squid => @submitted_question.id, :q => params[:q], :faq_search => params[:faq_search], :aae_search => params[:aae_search]) %>
+            <%= link_to strip_tags(question.displaytitle), aae_answer_url(:id => question.id, :squid => @submitted_question.id, :q => params[:q], :type => (question.class == Page) ? 'page' : 'aae', :search_type => params[:search_type]) %>
         </td> 
         <td>
             <%= question.id %>    

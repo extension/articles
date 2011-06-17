@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110606175134) do
+ActiveRecord::Schema.define(:version => 20110617131121) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -758,6 +758,7 @@ ActiveRecord::Schema.define(:version => 20110606175134) do
   add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
   add_index "pages", ["source_created_at", "source_updated_at"], :name => "index_pages_on_source_created_at_and_source_updated_at"
   add_index "pages", ["source_url_fingerprint"], :name => "index_pages_on_source_url_fingerprint", :unique => true
+  add_index "pages", ["title", "content"], :name => "title_content_full_index"
   add_index "pages", ["title"], :name => "index_pages_on_title", :length => {"title"=>"255"}
 
   create_table "positions", :force => true do |t|
@@ -782,17 +783,18 @@ ActiveRecord::Schema.define(:version => 20110606175134) do
   create_table "responses", :force => true do |t|
     t.integer  "resolver_id"
     t.integer  "submitter_id"
-    t.integer  "submitted_question_id",                       :null => false
-    t.text     "response",                                    :null => false
-    t.integer  "duration_since_last",                         :null => false
-    t.boolean  "sent",                     :default => false, :null => false
+    t.integer  "submitted_question_id",                        :null => false
+    t.text     "response",                                     :null => false
+    t.integer  "duration_since_last",                          :null => false
+    t.boolean  "sent",                      :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "contributing_question_id"
+    t.integer  "contributing_content_id"
     t.text     "signature"
     t.string   "user_ip"
     t.string   "user_agent"
     t.string   "referrer"
+    t.string   "contributing_content_type"
   end
 
   add_index "responses", ["resolver_id"], :name => "index_responses_on_user_id"
@@ -850,7 +852,7 @@ ActiveRecord::Schema.define(:version => 20110606175134) do
     t.integer  "recipient_id"
     t.datetime "created_at"
     t.text     "response"
-    t.integer  "contributing_question"
+    t.integer  "contributing_content_id"
     t.string   "category"
     t.integer  "event_state",                                           :null => false
     t.text     "additionaldata"
@@ -867,6 +869,7 @@ ActiveRecord::Schema.define(:version => 20110606175134) do
     t.integer  "previous_handling_recipient_id"
     t.integer  "previous_handling_initiator_id"
     t.string   "previous_category"
+    t.string   "contributing_content_type"
   end
 
   add_index "submitted_question_events", ["created_at", "event_state", "previous_handling_recipient_id"], :name => "handling_idx"
@@ -877,13 +880,13 @@ ActiveRecord::Schema.define(:version => 20110606175134) do
 
   create_table "submitted_questions", :force => true do |t|
     t.integer  "resolved_by"
-    t.integer  "current_contributing_question"
-    t.string   "status",                        :default => "",    :null => false
-    t.text     "asked_question",                                   :null => false
+    t.integer  "contributing_content_id"
+    t.string   "status",                    :default => "",    :null => false
+    t.text     "asked_question",                               :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.boolean  "duplicate",                     :default => false, :null => false
+    t.boolean  "duplicate",                 :default => false, :null => false
     t.string   "external_app_id"
     t.string   "submitter_email"
     t.datetime "resolved_at"
@@ -891,29 +894,31 @@ ActiveRecord::Schema.define(:version => 20110606175134) do
     t.datetime "question_updated_at"
     t.text     "current_response"
     t.string   "resolver_email"
-    t.string   "question_fingerprint",                             :null => false
-    t.string   "submitter_firstname",           :default => "",    :null => false
-    t.string   "submitter_lastname",            :default => "",    :null => false
+    t.string   "question_fingerprint",                         :null => false
+    t.string   "submitter_firstname",       :default => "",    :null => false
+    t.string   "submitter_lastname",        :default => "",    :null => false
     t.integer  "county_id"
     t.integer  "location_id"
-    t.boolean  "spam",                          :default => false, :null => false
-    t.string   "user_ip",                       :default => "",    :null => false
-    t.string   "user_agent",                    :default => "",    :null => false
-    t.string   "referrer",                      :default => "",    :null => false
+    t.boolean  "spam",                      :default => false, :null => false
+    t.string   "user_ip",                   :default => "",    :null => false
+    t.string   "user_agent",                :default => "",    :null => false
+    t.string   "referrer",                  :default => "",    :null => false
     t.string   "widget_name"
-    t.integer  "status_state",                                     :null => false
+    t.integer  "status_state",                                 :null => false
     t.string   "zip_code"
     t.integer  "widget_id"
-    t.integer  "submitter_id",                  :default => 0
-    t.boolean  "show_publicly",                 :default => true
+    t.integer  "submitter_id",              :default => 0
+    t.boolean  "show_publicly",             :default => true
     t.datetime "last_assigned_at"
-    t.datetime "last_opened_at",                                   :null => false
+    t.datetime "last_opened_at",                               :null => false
     t.boolean  "is_api"
+    t.string   "contributing_content_type"
   end
 
+  add_index "submitted_questions", ["asked_question", "current_response"], :name => "question_response_full_index"
+  add_index "submitted_questions", ["contributing_content_id"], :name => "fk_qu_sq"
   add_index "submitted_questions", ["county_id"], :name => "fk_sq_county"
   add_index "submitted_questions", ["created_at"], :name => "created_at_idx"
-  add_index "submitted_questions", ["current_contributing_question"], :name => "fk_qu_sq"
   add_index "submitted_questions", ["location_id"], :name => "fk_sq_location"
   add_index "submitted_questions", ["question_fingerprint"], :name => "index_submitted_questions_on_question_fingerprint"
   add_index "submitted_questions", ["resolved_at"], :name => "resolved_at_idx"

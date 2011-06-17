@@ -13,9 +13,6 @@ class SearchQuestion < ActiveRecord::Base
   FAQ = 1
   AAE = 2
   
-  # faq foreign database
-  FAQDB = 'prod_dega'  
-  
   named_scope :faq_questions, {:conditions => {:entrytype => FAQ}}
   named_scope :aae_questions, {:conditions => {:entrytype => AAE}}
 
@@ -118,21 +115,21 @@ class SearchQuestion < ActiveRecord::Base
   
     def faq_questions_sql(last_datasourced_at=nil,refreshall=false)
       mydatabase = self.connection.instance_variable_get("@config")[:database]
-      faqdatabase = SearchQuestion::FAQDB
+      faqtable = Page.table_name
       mytable = self.table_name        
       
         
-      sql = "INSERT INTO #{mydatabase}.#{mytable} (entrytype,foreignid,foreignrevision,displaytitle,fulltitle,content,status,created_at,updated_at)"
-      sql +=  " SELECT #{SearchQuestion::FAQ},#{faqdatabase}.questions.id,#{faqdatabase}.revisions.id,"
-      sql += "CAST((SUBSTRING(#{faqdatabase}.revisions.question_text,1,255)) AS BINARY),CAST(#{faqdatabase}.revisions.question_text AS BINARY),CAST(#{faqdatabase}.revisions.answer AS BINARY),"
-      sql += "#{faqdatabase}.questions.status,#{faqdatabase}.questions.created_at,#{faqdatabase}.questions.updated_at"
-      sql +=  " FROM #{faqdatabase}.questions, #{faqdatabase}.revisions"
-      sql +=  " WHERE #{faqdatabase}.questions.current = #{faqdatabase}.revisions.id"
+      sql = "INSERT INTO #{mydatabase}.#{mytable} (entrytype,foreignid,displaytitle,fulltitle,content,created_at,updated_at)"
+      sql +=  " SELECT #{SearchQuestion::FAQ},#{faqtable}.id,"
+      sql += "CAST((SUBSTRING(#{faqtable}.title,1,255)) AS BINARY),CAST(#{faqtable}.title AS BINARY),CAST(#{faqtable}.content AS BINARY),"
+      sql += "#{faqtable}.source_created_at,#{faqtable}.source_updated_at"
+      sql +=  " FROM #{faqtable}"
+      sql +=  " WHERE #{faqtable}.datatype = 'Faq'"
       if(!refreshall and !last_datasourced_at.nil?)
         compare_time_string = last_datasourced_at.strftime("%Y-%m-%d %H:%M:%S")
-        sql +=  " AND #{faqdatabase}.questions.updated_at >= '#{compare_time_string}'"
+        sql +=  " AND #{faqtable}.source_updated_at >= '#{compare_time_string}'"
       end
-      sql +=  " ON DUPLICATE KEY UPDATE #{mydatabase}.#{mytable}.updated_at = #{faqdatabase}.questions.updated_at, #{mydatabase}.#{mytable}.status = #{faqdatabase}.questions.status,"
+      sql +=  " ON DUPLICATE KEY UPDATE #{mydatabase}.#{mytable}.updated_at = #{faqtable}.source_updated_at"
       sql +=  "#{mydatabase}.#{mytable}.displaytitle = CAST((SUBSTRING(#{faqdatabase}.revisions.question_text,1,255)) AS BINARY), #{mydatabase}.#{mytable}.fulltitle = CAST(#{faqdatabase}.revisions.question_text AS BINARY), "
       sql +=  "#{mydatabase}.#{mytable}.content = CAST(#{faqdatabase}.revisions.answer AS BINARY) "
   

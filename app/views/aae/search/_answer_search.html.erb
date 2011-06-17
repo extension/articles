@@ -7,8 +7,8 @@
        <%= hidden_field_tag(:squid, @submitted_question.id) %>
        
        <ul id="search_parameters">
-           <li><%= check_box_tag('faq_search', "1", is_checked('faq')) %> FAQ</li>
-           <li><%= check_box_tag('aae_search', "2", is_checked('aae')) %> AaE</li>
+           <li><%= radio_button_tag('search_type', "FAQ", is_checked('faq')) %> FAQ</li>
+           <li><%= radio_button_tag('search_type', "AAE", is_checked('aae')) %> AaE</li>
        </ul>
        <br class="clear"/>
     </p>

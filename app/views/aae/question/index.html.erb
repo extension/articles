@@ -24,7 +24,11 @@
     <h2 class="inc_question"><span><%= format_text_for_display(@submitted_question.asked_question) %></span></h2>
     <br class="clear" />
     
+    <%- if @submitted_question.submitter -%>
     <p class="inc_descriptive"><strong><%= link_to(@submitter_name, aae_submitterquestions_url(@submitted_question.submitter.id), :title => "More questions from this person") %></strong> submitted this question <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+    <%- else -%>
+    <p class="inc_descriptive">This question was submitted <%= time_ago_in_words(@submitted_question.created_at) %> ago</p>
+    <%- end -%>
     
     <p class="inc_descriptive">Category: <strong><span id="category_names_<%= @submitted_question.id %>"><%= @submitted_question.category_names %></span></strong>
         <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
@@ -98,12 +102,12 @@
     	    <% end %>
     	    </p>
             <p><%= humane_date(response.created_at) %></p>
-            <% if contributing_question = response.contributing_question %>
+            <% if contributing_content = response.contributing_content %>
     	        <p><strong>This response used 
-    	        <% if contributing_question.entrytype == SearchQuestion::FAQ %>
-    	          <%= link_to "FAQ # #{contributing_question.foreignid}", "http://faq.extension.org/questions/show/#{contributing_question.foreignid}" %>
-    	        <% else %>
-    	          <%= link_to "AaE Question # #{contributing_question.foreignid}", aae_question_url(:id => contributing_question.foreignid) %>
+    	        <% if contributing_content.class == Page %>    	        
+    	          <%= link_to "Page # #{contributing_content.id}", page_url(:id => contributing_content.id, :title => contributing_content.url_title) %>
+    	        <% elsif contributing_content.class == SubmittedQuestion %>
+    	          <%= link_to "AaE Question # #{contributing_content.id}", aae_question_url(:id => contributing_content.id) %>
     	        <% end %>
     	        </strong></p>
     	    <% end %>
@@ -201,7 +205,7 @@
         <% else %>
         <h3>This question has been resolved</h3>
         <% end %>
-        <% if !@submitted_question.contributing_question and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER and @submitted_question.status_state != SubmittedQuestion::STATUS_CLOSED %>
+        <% if !@submitted_question.contributing_content and @submitted_question.status_state != SubmittedQuestion::STATUS_REJECTED and @submitted_question.status_state != SubmittedQuestion::STATUS_NO_ANSWER and @submitted_question.status_state != SubmittedQuestion::STATUS_CLOSED %>
         <br/> 
 
         

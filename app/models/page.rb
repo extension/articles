@@ -82,6 +82,16 @@ class Page < ActiveRecord::Base
     conditions = states.collect { |s| sanitize_sql_array(["state_abbreviations like ?", "%#{s.to_s.upcase}%"]) }.join(' AND ')
     {:conditions => "#{conditions} OR (state_abbreviations = '' and coverage = 'National')"}
   }
+  
+  named_scope :full_text_search, lambda{|options|
+    match_string = options[:q]
+    boolean_mode = options[:boolean_mode] || false
+    if(boolean_mode)
+      {:select => "#{self.table_name}.*, MATCH(title,content) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => "MATCH(title,content) AGAINST (#{sanitize(match_string)} IN BOOLEAN MODE)"}
+    else
+      {:select => "#{self.table_name}.*, MATCH(title,content) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => ["MATCH(title,content) AGAINST (?)", sanitize(match_string)]}
+    end
+  }
 
   # returns a class::method::options string to use as a memcache key
   #
@@ -1059,6 +1069,10 @@ class Page < ActiveRecord::Base
   
   def event_time
     @event_time || (self.event_start.blank? ? nil : (self.event_all_day? ? nil : self.event_start.in_time_zone(self.time_zone).strftime('%I:%M %p')))
+  end
+  
+  def displaytitle
+    self.title.truncate(255,{:omission => '', :avoid_orphans => true})
   end
     
 

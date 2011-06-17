@@ -196,9 +196,13 @@ class Aae::QuestionController < ApplicationController
     end
     
     @status = params[:status_state]
-    # if expert chose a SearchQuestion to answer this with, find that so that we can 
+    # if expert chose a SubmittedQuestion to answer this with, find that so that we can 
     # attach that to the submitted question as a contributing question
-    @question = SearchQuestion.find_by_id(params[:question]) if params[:question]
+    if(params[:type] and params[:type] == 'page')
+      @question = Page.find_by_id(params[:question]) if params[:question]
+    else
+      @question = SubmittedQuestion.find_by_id(params[:question]) if params[:question]
+    end
     @sampletext = params[:sample] if params[:sample]
     signature_pref = @currentuser.user_preferences.find_by_name('signature')
     signature_pref ? @signature = signature_pref.setting : @signature = "-#{@currentuser.fullname}"
@@ -212,10 +216,10 @@ class Aae::QuestionController < ApplicationController
         return
       end
       
-      @question ? contributing_question = @question.id : contributing_question = nil
+      @question ? contributing_content = @question : contributing_content = nil
       (@status and @status.to_i == SubmittedQuestion::STATUS_NO_ANSWER) ? sq_status = SubmittedQuestion::STATUS_NO_ANSWER : sq_status = SubmittedQuestion::STATUS_RESOLVED
       
-      @submitted_question.add_resolution(sq_status, @currentuser, answer, @signature, contributing_question)   
+      @submitted_question.add_resolution(sq_status, @currentuser, answer, @signature, contributing_content)   
       
       Notification.create(:notifytype => Notification::AAE_PUBLIC_EXPERT_RESPONSE, :account => User.systemuser, :creator => @currentuser, :additionaldata => {:submitted_question_id => @submitted_question.id, :signature => @signature })  	    
       flash[:success] = "Thanks for answering this question."

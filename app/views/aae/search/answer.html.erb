@@ -3,7 +3,7 @@
     
     <h3><%= link_to "Incoming Question #{@submitted_question.id}", aae_question_url(:id => @submitted_question.id) %> > Search Result Details</h3>
     
-    <p class="clear"><strong><%= link_to "Return to search results", aae_answer_search_url(:squid => @submitted_question, :q => params[:q], :faq_search => params[:faq_search], :aae_search => params[:aae_search]) %></strong></p>
+    <p class="clear"><strong><%= link_to "Return to search results", aae_answer_search_url(:squid => @submitted_question, :q => params[:q], :search_type => params[:search_type]) %></strong></p>
     
     <h2 class="inc_question"><span><%= @submitted_question.asked_question %></span></h2>
     <br class="clear" />
@@ -16,10 +16,31 @@
     <h3>If you want to answer this question, you need to first assign it to yourself on the <%= link_to "Question page", aae_question_url(:id => @submitted_question.id) %>.</h3>
     <% else %>
     <h3><%= link_to "This is a relevant answer. Use it to write my response.", :controller => 'aae/question', :action => 'answer', :question => @aae_search_item, 
-            :squid => @submitted_question %></h3>
+            :squid => @submitted_question, :type => (@aae_search_item.class == Page) ? 'page' : 'aae' %></h3>
     <% end %>
 </div>
 
 
-<%= render(:partial => "aae/question/question_summary") %>
+<div id="inc_to_FAQ">
+<div class="question">
+    <h2>
+        <% if @aae_search_item.class == SubmittedQuestion %>
+          <%= link_to "Aae ##{@aae_search_item.id}", aae_question_url(:id => @aae_search_item.id) %>
+        <% else %>
+          Page #<%= @aae_search_item.id %>
+        <% end %>    
+    </h2>
 
+    <% if @aae_search_item.class == SubmittedQuestion %>
+    <p>Resolved By: <%= link_to @aae_search_item.resolved_by.fullname, aae_profile_url(:id => @aae_search_item.resolved_by.login)  %></p>
+    <% end %>
+    <% if @aae_search_item.class == SubmittedQuestion %>
+      <p><%= h @aae_search_item.asked_question %></p>
+    <% else %>
+    <p><%= h @aae_search_item.title %></p>
+    <% end %>
+</div>
+<div class="answer">
+    <%= simple_format(@aae_search_item.content) %>
+</div>
+</div>
