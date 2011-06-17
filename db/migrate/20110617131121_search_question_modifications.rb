@@ -28,6 +28,8 @@ class SearchQuestionModifications < ActiveRecord::Migration
     
     execute("UPDATE submitted_question_events,search_questions,pages SET submitted_question_events.contributing_content_id = pages.id, submitted_question_events.contributing_content_type = 'Page' where search_questions.entrytype = 1 and submitted_question_events.contributing_content_id = search_questions.id and pages.migrated_id = search_questions.foreignid and pages.datatype = 'Faq'")
     
+    execute "ALTER TABLE submitted_questions ENGINE=MyISAM;"
+    execute "ALTER TABLE pages ENGINE=MyISAM;"    
     execute 'ALTER TABLE `submitted_questions` ADD FULLTEXT `question_response_full_index` (`asked_question` ,`current_response`)'    
     execute 'ALTER TABLE `pages` ADD FULLTEXT `title_content_full_index` (`title` ,`content`)'    
 
