@@ -75,7 +75,7 @@ class Aae::SearchController < ApplicationController
         end
         
         formatted_search_terms = format_full_text_search_terms(params[:q])
-        @aae_search_results = SubmittedQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).all(:order => 'match_score desc').paginate(:page => params[:page])        
+        @aae_search_results = SubmittedQuestion.resolved.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).all(:order => 'match_score desc').paginate(:page => params[:page])        
     else
       flash[:failure] = "You must enter valid text into the search field." 
       request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
@@ -107,7 +107,7 @@ class Aae::SearchController < ApplicationController
         if(params[:search_type] and params[:search_type] == 'FAQ')
           @aae_search_results = Page.faqs.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).order('match_score desc').limit(30)          
         else
-          @aae_search_results = SubmittedQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).order('match_score desc').limit(30)
+          @aae_search_results = SubmittedQuestion.resolved.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).order('match_score desc').limit(30)
         end
       else
         flash[:failure] = "You must enter valid text into the search field." 
