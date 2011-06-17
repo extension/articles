@@ -242,6 +242,8 @@ class Link < ActiveRecord::Base
     elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/taxonomy/term/(\d+)})
       # exemption for create and links to taxonomy terms
       this_link.linktype = CATEGORY
+    elsif(original_uri.path =~ %r{^/wiki/Category:.*})
+      this_link.linktype = CATEGORY
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
       if(original_uri.path =~ /^\/wiki\/Category:.*/)
         this_link.linktype = CATEGORY
