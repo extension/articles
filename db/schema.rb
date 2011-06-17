@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110617131121) do
+ActiveRecord::Schema.define(:version => 20110617171530) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -804,23 +804,6 @@ ActiveRecord::Schema.define(:version => 20110617131121) do
   create_table "roles", :force => true do |t|
     t.string "name"
   end
-
-  create_table "search_questions", :force => true do |t|
-    t.integer  "entrytype"
-    t.integer  "foreignid"
-    t.integer  "foreignrevision",                       :default => 0
-    t.string   "source"
-    t.string   "sourcewidget"
-    t.string   "displaytitle"
-    t.text     "fulltitle"
-    t.text     "content",         :limit => 2147483647
-    t.string   "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "search_questions", ["entrytype", "foreignid"], :name => "recordsignature", :unique => true
-  add_index "search_questions", ["fulltitle", "content"], :name => "title_content_full_index"
 
   create_table "social_networks", :force => true do |t|
     t.datetime "created_at"
