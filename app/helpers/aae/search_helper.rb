@@ -21,7 +21,6 @@ module Aae::SearchHelper
       else
         return false
       end
-      session[:aae_search_mode] = search_mode
     end
   end
   
