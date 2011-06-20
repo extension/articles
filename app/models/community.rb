@@ -245,7 +245,7 @@ class Community < ActiveRecord::Base
     if(self.shortname.blank?)
       tmpshortname = self.name.gsub(/\W/,'').downcase
     else
-      tmpshortname = self.shortname.gsub(/\W/,'').downcase
+      tmpshortname = self.shortname.gsub(/[^\w-]/,'').downcase
     end
     
     increment = 0
