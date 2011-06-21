@@ -166,8 +166,8 @@ class AppConfig
     
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
-    @@configtable['faq_create_url'] = 'http://cop.extension.org/questions/new_from_aae'
-    
+    @@configtable['faq_create_url'] = 'http://create.extension.org/node/add/faq'
+     
     @@configtable['geoip_data_file'] = "#{RAILS_ROOT}/data/GeoIP/GeoIPCity.dat"
 
   end
