@@ -117,7 +117,7 @@ class Repoint < Thor
       faq_source_url = row[1]
       is_published = !(row[2].blank?)
     
-      if(match_page = Page.find_by_source_url_and_page_source_id(faq_source_url,2))
+      if(match_page = Page.find_by_source_url_fingerprint_and_page_source_id(Digest::SHA1.hexdigest(faq_source_url),2))
         current_source = match_page.source_url          
         new_source = "http://#{options[:drupal_host]}/node/#{drupal_id}"
         update_attributes = {:source => create_page_source.name, :page_source => create_page_source, :source_id => new_source, :source_url => new_source, :source_url_fingerprint => Digest::SHA1.hexdigest(new_source)}
