@@ -49,9 +49,8 @@
 	  		<%= render(:partial => 'showuser_communities',:locals => { :showuser => @showuser, :displayactions => ((@currentuser.communities.find(:all, :conditions => ["connectiontype = 'leader'"]) & @showuser.communities).size > 0) ? true : false }) %>
 		</div>
 		<div>
-		    <h2>Ask an Expert and FAQ</h2>
+		    <h2>Ask an Expert</h2>
 		    <ul class="simplelist">
-		        <li><%= link_to("FAQ Profile", "http://faq.extension.org/account/profile/" + @showuser.login)%></li>
 		        <li><%= link_to("Ask an Expert Profile", aae_profile_url(:id => @showuser.login))%></li>
 		    </ul>
 		</div>
