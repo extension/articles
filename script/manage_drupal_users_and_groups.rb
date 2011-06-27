@@ -365,6 +365,41 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   puts "field_revision_group_group table updated..."
 
 
+  # group designation
+  puts "starting droup designation data table replacement..."
+  sql = "INSERT INTO #{drupaldatabase}.field_data_field_group_designation (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_group_designation_value)"
+  sql +=  " SELECT 'node', 'group', 0, #{mydatabase}.communities.drupal_node_id, #{mydatabase}.communities.drupal_node_id, 'und', 0, #{mydatabase}.communities.entrytype"
+  sql +=  " FROM #{mydatabase}.communities"
+  sql +=  " WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL"
+  sql +=  " ON DUPLICATE KEY UPDATE field_group_designation_value=#{mydatabase}.communities.entrytype"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal group designation field data: #{err}"
+    return false
+  end
+  puts "finished user drupal group designation field data table replacement."
+
+
+  puts "starting droup designation revision table replacement..."
+  sql = "INSERT INTO #{drupaldatabase}.field_revision_field_group_designation (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_group_designation_value)"
+  sql +=  " SELECT 'node', 'group', 0, #{mydatabase}.communities.drupal_node_id, #{mydatabase}.communities.drupal_node_id, 'und', 0, #{mydatabase}.communities.entrytype"
+  sql +=  " FROM #{mydatabase}.communities"
+  sql +=  " WHERE #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL"
+  sql +=  " ON DUPLICATE KEY UPDATE field_group_designation_value=#{mydatabase}.communities.entrytype"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during replacement of the drupal group designation field revision: #{err}"
+    return false
+  end
+  puts "finished user drupal group designation field revision table replacement."
+
+
 
   ####### # delete current memberships
     

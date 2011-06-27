@@ -697,8 +697,6 @@ border-radius: 4px;
 .doublewide_institution_actions_wrapper {width:925px;}
 
 #content_css_reset {margin:0;padding:0;width:630px;}
-/* this constrains the div when there images or tables that exceed the column width */
-#content_css_reset #article {width:630px;}
 
 .sponsor_carousel {padding:0 0 10px !important;margin:0 !important; height:144px !important; background:#fff;margin-bottom:20px !important; border-bottom:1px solid #ccc;}
 .rotator_sponsorlogo {height:140px !important;text-align:center; }
@@ -950,7 +948,7 @@ td.longurls a {word-wrap: break-word;width:450px;}
 #content_css_reset ol li {list-style:decimal;}
 
 /* this constrains the div when there images or tables that exceed the column width */
-#content_css_reset #article {width:653px;}
+#content_css_reset #article {width:630px;}
 
 blockquote {padding:2em 2em 1em; font-size:1.1em; background:#ebf2f8;margin:1.5em; border-left: 3px solid #b5d9f8;}
 

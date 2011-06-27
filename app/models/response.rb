@@ -11,7 +11,8 @@ class Response < ActiveRecord::Base
   belongs_to :submitted_question
   belongs_to :resolver, :class_name => "User", :foreign_key => "resolver_id"
   belongs_to :submitter, :class_name => "Account", :foreign_key => "submitter_id"
-  belongs_to :contributing_question, :class_name => "SearchQuestion", :foreign_key => "contributing_question_id"
+  
+  belongs_to :contributing_content, :polymorphic => true
   has_many :file_attachments
   
   before_create :calculate_duration_since_last, :clean_response

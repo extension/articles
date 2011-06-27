@@ -8,15 +8,15 @@
 module Aae::SearchHelper
 
   def is_checked(search_mode)
-    if !session[:aae_search] or session[:aae_search] == []
-      session[:aae_search] = ['faq', 'aae']
-      if search_mode == 'faq' || search_mode == 'aae'
+    if session[:aae_search_mode].blank?
+      session[:aae_search_mode] = 'aae'
+      if search_mode == 'aae'
         return true
       else
         return false
       end
     else
-      if session[:aae_search].include?(search_mode)
+      if session[:aae_search_mode] == search_mode
         return true
       else
         return false

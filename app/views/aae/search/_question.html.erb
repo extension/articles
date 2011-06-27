@@ -10,13 +10,13 @@
             </p>
             <p class="clear">
             <strong>
-            <%= link_to "Return to search results", aae_answer_search_url(:squid => @submitted_question, :q => params[:q]) %>
+            <%= link_to "Return to search results", aae_answer_search_url(:squid => @submitted_question, :q => params[:q], :search_type => params[:search_type]) %>
             </strong>
             </p>
     <% end %>
 <% end %>
 
-<h2><span><%= @type %> #<%= @aae_search_item.foreignid %></span></h2>    
+<h2><span><%= @type %> #<%= @aae_search_item.id %></span></h2>    
     
 <div class="question">
     <p><%= h @aae_search_item.fulltitle %></p>

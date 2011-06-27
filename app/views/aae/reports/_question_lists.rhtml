@@ -14,7 +14,7 @@
         <th scope="col">Question</th>
       
           <% if @questions.length > 0%>
-	         <th scope="col"><%= link_to "Contributing Question", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @desc,:type => @type,  :category => @catname, :location => @locid, :county => @county_id, :datefrom => @date1, :dateto => @date2, :order_by_field => 'current_contributing_question', :sortorder => (params[:sortorder] != "a")? "a": "d"} %></th>
+	         <th scope="col"><%= link_to "Contributing Content", { :action => controller.action_name,  :page => params[:page], :user => @user, :descriptor => @desc,:type => @type,  :category => @catname, :location => @locid, :county => @county_id, :datefrom => @date1, :dateto => @date2, :order_by_field => 'contributing_content_id', :sortorder => (params[:sortorder] != "a")? "a": "d"} %></th>
 	        <th scope="col"><%= link_to "Last Updated", { :action => controller.action_name,  :page => params[:page],  :user => @user, :descriptor => @desc,  :type => @type,  :category => @catname, :location => @locid, :county => @county_id, :datefrom => @date1, :dateto => @date2, :order_by_field => 'squpdated', :sortorder => (params[:sortorder] != "a") ? "a" : "d" } %></th>
 	       <% else%>
 	          <th scope="col">Converted FAQ ID</th>
@@ -46,16 +46,16 @@
             </td>
        
             <td>
-               <% if question.current_contributing_question%>
+               <% if question.contributing_content%>
                 <%question.responses.each do |response| %>
            
-                  <% if contributing_question = response.contributing_question %>
+                  <% if contributing_content = response.contributing_content %>
 	    	        
-	    	        <% if contributing_question.entrytype == SearchQuestion::FAQ %>
-	    	          <%= link_to "FAQ # #{contributing_question.foreignid}", "http://faq.extension.org/questions/show/#{contributing_question.foreignid}" %>
-	    	        <% else %>
-	    	          <%= link_to "AaE Question # #{contributing_question.foreignid}", aae_question_url(:id => contributing_question.foreignid) %>
-	    	        <% end %>
+        	        <% if contributing_content.class == Page %>    	        
+        	          <%= link_to "Page # #{contributing_content.id}", page_url(:id => contributing_content.id, :title => contributing_content.url_title) %>
+        	        <% elsif contributing_content.class == SubmittedQuestion %>
+        	          <%= link_to "AaE Question # #{contributing_content.id}", aae_question_url(:id => contributing_content.id) %>
+        	        <% end %>
 	    	        
 	    	      <% end %>
 	             <% end %>

@@ -18,8 +18,7 @@ belongs_to :location
 belongs_to :widget
 has_many :submitted_question_events
 has_and_belongs_to_many :categories
-# TODO: need to change this
-belongs_to :contributing_question, :class_name => "SearchQuestion", :foreign_key => "current_contributing_question"
+belongs_to :contributing_content, :polymorphic => true
 belongs_to :assignee, :class_name => "User", :foreign_key => "user_id"
 belongs_to :resolved_by, :class_name => "User", :foreign_key => "resolved_by"
 belongs_to :submitter, :class_name => "Account", :foreign_key => "submitter_id"
@@ -50,6 +49,17 @@ has_rakismet :author => proc { "#{self.submitter_firstname} #{self.submitter_las
              :referrer => :referrer
              
 ordered_by :default => "#{self.table_name}.created_at ASC"
+
+
+named_scope :full_text_search, lambda{|options|
+  match_string = options[:q]
+  boolean_mode = options[:boolean_mode] || false
+  if(boolean_mode)
+    {:select => "#{self.table_name}.*, MATCH(asked_question,current_response) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => "MATCH(asked_question,current_response) AGAINST (#{sanitize(match_string)} IN BOOLEAN MODE)"}
+  else
+    {:select => "#{self.table_name}.*, MATCH(asked_question,current_response) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => ["MATCH(asked_question,current_response) AGAINST (?)", sanitize(match_string)]}
+  end
+}
              
 # status numbers (will be used from now on for status_state and the old field of status will be phased out)     
 STATUS_SUBMITTED = 1
@@ -131,28 +141,28 @@ named_scope :by_dateinterval, lambda {|dateinterval|
 
 # updates the submitted question, creates a response and  
 # calls the function to log a new resolved submitted question event 
-def add_resolution(sq_status, resolver, response, signature = nil, contributing_question = nil)
+def add_resolution(sq_status, resolver, response, signature = nil, contributing_content = nil)
   
   t = Time.now
   
   case sq_status
     when STATUS_RESOLVED    
-      self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
+      self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :contributing_content => contributing_content, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
       @response = Response.new(:resolver => resolver, 
                                :submitted_question => self, 
                                :response => response,
                                :sent => true, 
-                               :contributing_question_id => contributing_question, 
+                               :contributing_content => contributing_content, 
                                :signature => signature)
       @response.save
       SubmittedQuestionEvent.log_resolution(self)    
     when STATUS_NO_ANSWER
-      self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :current_contributing_question => contributing_question, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
+      self.update_attributes(:status => SubmittedQuestion.convert_to_string(sq_status), :status_state =>  sq_status, :resolved_by => resolver, :current_response => response, :resolver_email => resolver.email, :contributing_content => contributing_content, :resolved_at => t.strftime("%Y-%m-%dT%H:%M:%SZ"))  
       @response = Response.new(:resolver => resolver, 
                                :submitted_question => self, 
                                :response => response, 
                                :sent => true, 
-                               :contributing_question_id => contributing_question, 
+                               :contributing_content => contributing_content, 
                                :signature => signature)
       @response.save
       SubmittedQuestionEvent.log_no_answer(self)  
@@ -175,6 +185,14 @@ end
 
 def set_last_opened
   self.last_opened_at = Time.now
+end
+
+def displaytitle
+  self.asked_question.truncate(255,{:omission => '', :avoid_orphans => true})
+end
+
+def content
+  self.current_response
 end
 
 def category_names

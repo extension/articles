@@ -11,26 +11,45 @@ class Aae::SearchController < ApplicationController
   before_filter :check_purgatory, :except => [:get_counties]  
   
   def index
-    @aae_search_item = SearchQuestion.find_by_entrytype_and_foreignid(params[:type], params[:qid])
+    if(params[:type] and params[:type] == 'page')
+      @aae_search_item = Page.find_by_id(params[:qid])
+    else
+      @aae_search_item = SubmittedQuestion.find_by_id(params[:qid])
+    end
     if !@aae_search_item
       flash[:failure] = "Invalid question parameters"
       redirect_to incoming_url
       return
     end
     
-    @aae_search_item.entrytype == SearchQuestion::AAE ? @type = 'Ask an Expert Question' : @type = 'FAQ'
+    if(@aae_search_item.class == SubmittedQuestion)
+      @type = 'Ask an Expert Question'
+    elsif(@aae_search_item.class == Page)
+      @type = 'Page'
+    end
   end
   
   def answer
-    @aae_search_item = SearchQuestion.find(params[:id])
+    if(params[:type] and params[:type] == 'page')
+      @aae_search_item = Page.find_by_id(params[:id])
+    else
+      @aae_search_item = SubmittedQuestion.find_by_id(params[:id])
+    end
+    
     @submitted_question = SubmittedQuestion.find(params[:squid])
-    @aae_search_item.entrytype == SearchQuestion::AAE ? @type = 'Ask an Expert Question' : @type = 'FAQ'
-  
+      
     if !(@aae_search_item and @submitted_question)
       flash[:failure] = "Invalid input"
       redirect_to incoming_url
       return
     end
+  
+    if(@aae_search_item.class == SubmittedQuestion)
+      @type = 'Ask an Expert Question'
+    elsif(@aae_search_item.class == Page)
+      @type = 'Page'
+    end
+    
   end
   
   def enable_search_by_name
@@ -51,12 +70,12 @@ class Aae::SearchController < ApplicationController
     if params[:q] and params[:q].strip != ''
        # if someone put in a number (id) to search on
         if params[:q] =~ /^[0-9]+$/
-          @aae_search_results = SearchQuestion.aae_questions.find_all_by_foreignid(params[:q]).paginate(:page => params[:page]) 
+          @aae_search_results = SubmittedQuestion.find_all_by_id(params[:q]).paginate(:page => params[:page]) 
           return
         end
         
         formatted_search_terms = format_full_text_search_terms(params[:q])
-        @aae_search_results = SearchQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).aae_questions.all(:order => 'match_score desc').paginate(:page => params[:page])        
+        @aae_search_results = SubmittedQuestion.resolved.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).all(:order => 'match_score desc').paginate(:page => params[:page])        
     else
       flash[:failure] = "You must enter valid text into the search field." 
       request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
@@ -64,33 +83,31 @@ class Aae::SearchController < ApplicationController
     end      
   end
   
-  def answers
-    setup_aae_search_params
+  def answers  
     if params[:squid] and @submitted_question = SubmittedQuestion.find_by_id(params[:squid])    
       if params[:q] and params[:q].strip != ''
         
+        if(params[:search_type] and params[:search_type] == 'FAQ')
+          session[:aae_search_mode] = 'faq'
+        else
+          session[:aae_search_mode] = 'aae'
+        end
+        
         # if someone put in a number (id) to search on
         if params[:q] =~ /^[0-9]+$/
-          
-          if session[:aae_search] == ['faq']
-            @aae_search_results = SearchQuestion.faq_questions.find_all_by_foreignid(params[:q])
-          elsif session[:aae_search] == ['aae']
-            @aae_search_results = SearchQuestion.aae_questions.find_all_by_foreignid(params[:q])
+          if(params[:search_type] and params[:search_type] == 'FAQ')
+            search_results = Page.find_by_id(params[:q])
           else
-            @aae_search_results = SearchQuestion.find_all_by_foreignid(params[:q])
+            search_results = SubmittedQuestion.find_by_id(params[:q])
           end
-          
           return
         end
         
         formatted_search_terms = format_full_text_search_terms(params[:q])
-        
-        if session[:aae_search] == ['faq']
-          @aae_search_results = SearchQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).faq_questions.all(:order => 'match_score desc', :limit => 30)
-        elsif session[:aae_search] == ['aae']
-          @aae_search_results = SearchQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).aae_questions.all(:order => 'match_score desc', :limit => 30)
+        if(params[:search_type] and params[:search_type] == 'FAQ')
+          @aae_search_results = Page.faqs.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).order('match_score desc').limit(30)          
         else
-          @aae_search_results = SearchQuestion.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).all(:order => 'match_score desc', :limit => 30)
+          @aae_search_results = SubmittedQuestion.resolved.full_text_search({:q => formatted_search_terms, :boolean_mode => true}).order('match_score desc').limit(30)
         end
       else
         flash[:failure] = "You must enter valid text into the search field." 
@@ -178,16 +195,6 @@ class Aae::SearchController < ApplicationController
     user_ids = selected_users.map{|u| u.id}.join(',')
     answering_role = Role.find_by_name(Role::AUTO_ROUTE)
     user_intersection = answering_role.users.find(:all, :select => "accounts.*", :conditions => "accounts.id IN (#{user_ids})")
-  end
-  
-  def setup_aae_search_params
-    session[:aae_search] = []
-    if !params[:faq_search] and !params[:aae_search]
-      session[:aae_search] = ['faq', 'aae']
-    else
-      session[:aae_search] << 'faq' if params[:faq_search]
-      session[:aae_search] << 'aae' if params[:aae_search]
-    end
   end
   
   # get instance variables ready for expert search by category and location

@@ -82,6 +82,16 @@ class Page < ActiveRecord::Base
     conditions = states.collect { |s| sanitize_sql_array(["state_abbreviations like ?", "%#{s.to_s.upcase}%"]) }.join(' AND ')
     {:conditions => "#{conditions} OR (state_abbreviations = '' and coverage = 'National')"}
   }
+  
+  named_scope :full_text_search, lambda{|options|
+    match_string = options[:q]
+    boolean_mode = options[:boolean_mode] || false
+    if(boolean_mode)
+      {:select => "#{self.table_name}.*, MATCH(title,content) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => "MATCH(title,content) AGAINST (#{sanitize(match_string)} IN BOOLEAN MODE)"}
+    else
+      {:select => "#{self.table_name}.*, MATCH(title,content) AGAINST (#{sanitize(match_string)}) as match_score", :conditions => ["MATCH(title,content) AGAINST (?)", sanitize(match_string)]}
+    end
+  }
 
   # returns a class::method::options string to use as a memcache key
   #
@@ -727,6 +737,12 @@ class Page < ActiveRecord::Base
     end
   end
   
+  def self.find_by_legacy_title_from_url(url)
+   return nil unless url
+   real_title = url.gsub(/_/, ' ')
+   self.where("created_at <= '2011-03-21'").where("datatype IN ('Article','News')").find_by_title(real_title)
+  end
+  
   def self.find_by_title_url(url)
    return nil unless url
    real_title = url.gsub(/_/, ' ')
@@ -877,25 +893,26 @@ class Page < ActiveRecord::Base
       convert_image_count = 0
       # if we are running in the "production" app location - then we need to rewrite image references that
       # refer to the host of the feed to reference a relative URL
-      if(AppConfig.configtable['app_location'] == 'production')
-        converted_content.css('img').each do |image|
-          if(image['src'])
-            begin
-              original_uri = URI.parse(image['src'])
-            rescue
-              image.set_attribute('src', '')
-              next
+      converted_content.css('img').each do |image|
+        if(image['src'])
+          begin
+            original_uri = URI.parse(image['src'])
+          rescue
+            image.set_attribute('src', '')
+            next
+          end
+          
+          if(image_link = Link.find_or_create_by_image_reference(original_uri.to_s,self.source_host))
+            image.set_attribute('src', image_link.href_url)
+            if(!self.links.include?(link))
+              self.links << link
             end
-
-            if((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == self.source_host)
-              # make relative
-              newsrc = original_uri.path
-              image.set_attribute('src',newsrc)
-              convert_image_count += 1
-            end
-          end # img tag had a src attribute
-        end # loop through the img tags
-      end # was this the production site?
+          else
+            image.set_attribute('src', '')
+          end            
+          convert_image_count += 1
+        end # img tag had a src attribute
+      end # loop through the img tags
       returninfo.merge!({:images => convert_image_count})
     end
     
@@ -1059,6 +1076,10 @@ class Page < ActiveRecord::Base
   
   def event_time
     @event_time || (self.event_start.blank? ? nil : (self.event_all_day? ? nil : self.event_start.in_time_zone(self.time_zone).strftime('%I:%M %p')))
+  end
+  
+  def displaytitle
+    self.title.truncate(255,{:omission => '', :avoid_orphans => true})
   end
     
 
