@@ -50,6 +50,7 @@ class Link < ActiveRecord::Base
   named_scope :local, :conditions => {:linktype => LOCAL}
   named_scope :file, :conditions => {:linktype => DIRECTFILE}
   named_scope :category, :conditions => {:linktype => CATEGORY}
+  named_scope :image, :conditions => {:linktype => IMAGE}
 
   named_scope :checked, :conditions => ["last_check_at IS NOT NULL"]
   named_scope :unchecked, :conditions => ["last_check_at IS NULL"]
