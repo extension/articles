@@ -44,6 +44,8 @@ gem 'newrelic_rpm'
 # widget related
 gem 'rest-client'
 gem 'json_pure'
+# soap gem for bronto downloads
+gem 'savon'
 
 # Deploy with Capistrano
 gem 'capistrano'
