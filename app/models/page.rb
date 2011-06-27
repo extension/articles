@@ -737,6 +737,12 @@ class Page < ActiveRecord::Base
     end
   end
   
+  def self.find_by_legacy_title_from_url(url)
+   return nil unless url
+   real_title = url.gsub(/_/, ' ')
+   self.where("created_at <= '2011-03-21'").where("datatype IN ('Article','News')").find_by_title(real_title)
+  end
+  
   def self.find_by_title_url(url)
    return nil unless url
    real_title = url.gsub(/_/, ' ')

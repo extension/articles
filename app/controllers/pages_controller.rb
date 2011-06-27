@@ -44,7 +44,7 @@ class PagesController < ApplicationController
         title_to_lookup = raw_title_to_lookup
       end
       
-      @page = Page.find_by_title_url(title_to_lookup)       
+      @page = Page.find_by_legacy_title_from_url(title_to_lookup)       
     elsif(params[:id])
       if(params[:print])
         print = true
