@@ -914,6 +914,12 @@ class Page < ActiveRecord::Base
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'file_link')
             returninfo[:directfile] += 1
+          when Link::IMAGE
+            newhref = link.href_url
+            # ignore the fragment
+            anchor.set_attribute('href', newhref)
+            anchor.set_attribute('class', 'file_link')
+            returninfo[:directfile] += 1
           end
         end
       end
