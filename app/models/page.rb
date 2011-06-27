@@ -887,25 +887,26 @@ class Page < ActiveRecord::Base
       convert_image_count = 0
       # if we are running in the "production" app location - then we need to rewrite image references that
       # refer to the host of the feed to reference a relative URL
-      if(AppConfig.configtable['app_location'] == 'production')
-        converted_content.css('img').each do |image|
-          if(image['src'])
-            begin
-              original_uri = URI.parse(image['src'])
-            rescue
-              image.set_attribute('src', '')
-              next
+      converted_content.css('img').each do |image|
+        if(image['src'])
+          begin
+            original_uri = URI.parse(image['src'])
+          rescue
+            image.set_attribute('src', '')
+            next
+          end
+          
+          if(image_link = Link.find_or_create_by_image_reference(original_uri.to_s,self.source_host))
+            image.set_attribute('src', image_link.href_url)
+            if(!self.links.include?(link))
+              self.links << link
             end
-
-            if((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == self.source_host)
-              # make relative
-              newsrc = original_uri.path
-              image.set_attribute('src',newsrc)
-              convert_image_count += 1
-            end
-          end # img tag had a src attribute
-        end # loop through the img tags
-      end # was this the production site?
+          else
+            image.set_attribute('src', '')
+          end            
+          convert_image_count += 1
+        end # img tag had a src attribute
+      end # loop through the img tags
       returninfo.merge!({:images => convert_image_count})
     end
     
