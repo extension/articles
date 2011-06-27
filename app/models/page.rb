@@ -795,6 +795,36 @@ class Page < ActiveRecord::Base
     returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0, :directfile => 0, :local => 0}
     # walk through the anchor tags and pull out the links
     converted_content = Nokogiri::HTML::DocumentFragment.parse(original_content)
+    
+    # images first
+    
+    if(self.is_copwiki_or_create?)
+      convert_image_count = 0
+      # if we are running in the "production" app location - then we need to rewrite image references that
+      # refer to the host of the feed to reference a relative URL
+      converted_content.css('img').each do |image|
+        if(image['src'])
+          begin
+            original_uri = URI.parse(image['src'])
+          rescue
+            image.set_attribute('src', '')
+            next
+          end
+          
+          if(image_link = Link.find_or_create_by_image_reference(original_uri.to_s,self.source_host))
+            image.set_attribute('src', image_link.href_url)
+            if(!self.links.include?(image_link))
+              self.links << image_link
+            end
+          else
+            image.set_attribute('src', '')
+          end            
+          convert_image_count += 1
+        end # img tag had a src attribute
+      end # loop through the img tags
+      returninfo.merge!({:images => convert_image_count})
+    end
+      
     converted_content.css('a').each do |anchor|
       if(anchor['href'])
         if(anchor['href'] =~ /^\#/) # in-page anchor, don't change      
@@ -889,32 +919,7 @@ class Page < ActiveRecord::Base
       end
     end
     
-    if(self.is_copwiki_or_create?)
-      convert_image_count = 0
-      # if we are running in the "production" app location - then we need to rewrite image references that
-      # refer to the host of the feed to reference a relative URL
-      converted_content.css('img').each do |image|
-        if(image['src'])
-          begin
-            original_uri = URI.parse(image['src'])
-          rescue
-            image.set_attribute('src', '')
-            next
-          end
-          
-          if(image_link = Link.find_or_create_by_image_reference(original_uri.to_s,self.source_host))
-            image.set_attribute('src', image_link.href_url)
-            if(!self.links.include?(image_link))
-              self.links << image_link
-            end
-          else
-            image.set_attribute('src', '')
-          end            
-          convert_image_count += 1
-        end # img tag had a src attribute
-      end # loop through the img tags
-      returninfo.merge!({:images => convert_image_count})
-    end
+
     
     self.content = converted_content.to_html
     returninfo
