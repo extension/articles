@@ -904,8 +904,8 @@ class Page < ActiveRecord::Base
           
           if(image_link = Link.find_or_create_by_image_reference(original_uri.to_s,self.source_host))
             image.set_attribute('src', image_link.href_url)
-            if(!self.links.include?(link))
-              self.links << link
+            if(!self.links.include?(image_link))
+              self.links << image_link
             end
           else
             image.set_attribute('src', '')
