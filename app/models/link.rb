@@ -26,6 +26,7 @@ class Link < ActiveRecord::Base
   CATEGORY = 5
   DIRECTFILE = 6
   LOCAL = 7
+  IMAGE = 8
   
   
   
@@ -47,6 +48,9 @@ class Link < ActiveRecord::Base
   named_scope :internal, :conditions => {:linktype => INTERNAL}
   named_scope :unpublished, :conditions => {:linktype => WANTED}
   named_scope :local, :conditions => {:linktype => LOCAL}
+  named_scope :file, :conditions => {:linktype => DIRECTFILE}
+  named_scope :category, :conditions => {:linktype => CATEGORY}
+  named_scope :image, :conditions => {:linktype => IMAGE}
 
   named_scope :checked, :conditions => ["last_check_at IS NOT NULL"]
   named_scope :unchecked, :conditions => ["last_check_at IS NULL"]
@@ -64,6 +68,14 @@ class Link < ActiveRecord::Base
   
   def is_create?
     self.class.is_create?(self.host)
+  end
+  
+  def is_copwiki_or_create?
+    hostlist = []
+    ['cop','cop.demo','create','create.demo'].each do |host|
+      hostlist << "#{host}.extension.org"
+    end
+    hostlist.include?(self.host)
   end
     
   def status_to_s
@@ -121,6 +133,12 @@ class Link < ActiveRecord::Base
       end
     when DIRECTFILE
       self.path
+    when IMAGE
+      if(self.is_copwiki_or_create?)
+        "http://www.extension.org#{self.path}"
+      else
+        self.url
+      end
     end
   end
 
@@ -221,11 +239,6 @@ class Link < ActiveRecord::Base
 
     if(this_link = self.find_by_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
       return this_link
-    elsif(!original_uri.host.blank? and (original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /www\.extension\.org$/))
-      # this is a www link, see if we can find a page for what it links to
-      if(page = Page.find_by_alt_reference(original_uri.path))
-        return page.primary_link
-      end
     end
       
     # create it - if host matches source_host and we want to identify this as "wanted" - then make it wanted else - call it external
@@ -242,18 +255,14 @@ class Link < ActiveRecord::Base
     elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/taxonomy/term/(\d+)})
       # exemption for create and links to taxonomy terms
       this_link.linktype = CATEGORY
-    elsif(original_uri.path =~ %r{^/wiki/Category:.*})
+    elsif(original_uri.path =~ %r{^/wiki/Category:.*})  
       this_link.linktype = CATEGORY
+    elsif(original_uri.path =~ %r{^/mediawiki/.*})  
+      this_link.linktype = DIRECTFILE
+    elsif(original_uri.path =~ %r{^/learninglessons/.*})  
+      this_link.linktype = DIRECTFILE
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
-      if(original_uri.path =~ /^\/wiki\/Category:.*/)
-        this_link.linktype = CATEGORY
-      elsif(original_uri.path =~ /^\/mediawiki\/.*/)
-        this_link.linktype = DIRECTFILE
-      elsif(original_uri.path =~ /^\/learninglessons\/.*/)
-        this_link.linktype = DIRECTFILE
-      else
-        this_link.linktype = WANTED
-      end
+      this_link.linktype = WANTED
     elsif(original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /\.extension\.org$/)
       # host is extension
       this_link.linktype = LOCAL
@@ -261,6 +270,55 @@ class Link < ActiveRecord::Base
       this_link.linktype = EXTERNAL      
     end
     
+    # set host and path - mainly just for aggregation purposes
+    if(!original_uri.host.blank?)
+      this_link.host = original_uri.host.downcase
+    end
+    if(!original_uri.path.blank?)
+      this_link.path = CGI.unescape(original_uri.path)
+    end
+    this_link.save
+    return this_link        
+  end
+  
+  # this is meant to be called when parsing a piece of content for items it links out to from its content.
+  def self.find_or_create_by_image_reference(image_reference,source_host)
+    # make sure the URL is valid format
+    begin
+      original_uri = URI.parse(image_reference)
+    rescue
+      return nil
+    end  
+
+
+    if(original_uri.host.blank?) 
+      # wiki link exception inside existing create articles that we still have
+      if(original_uri.path =~ %r{^/mediawiki/} and source_host == 'create.extension.org')
+        original_uri.host = 'cop.extension.org'
+      else
+        original_uri.host = source_host 
+      end
+    end
+    original_uri.scheme = 'http' if(original_uri.scheme.blank?)
+
+    # for comparison purposes - we need to drop the fragment - the caller is going to
+    # need to maintain the fragment when they get an URI back from this class.
+    if(!original_uri.fragment.blank?)
+      original_uri.fragment = nil
+    end
+    
+    if(this_link = self.find_by_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
+      if(this_link.linktype != IMAGE)
+        this_link.update_attribute(:linktype, IMAGE)
+      end
+      return this_link
+    end
+      
+    this_link = self.new(:url => original_uri.to_s, 
+                            :fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)), 
+                            :source_host => source_host,
+                            :linktype => IMAGE)
+                                
     # set host and path - mainly just for aggregation purposes
     if(!original_uri.host.blank?)
       this_link.host = original_uri.host.downcase
