@@ -1,0 +1,48 @@
+ <div id="paginator_wrapper"> 
+ <% if @sends.length > 0 %>
+     <p class="display_results">Displaying <strong><%= @sends.offset + 1 %>-<%= @sends.offset + @sends.length %></strong> of <strong><%= @sends.total_entries %></strong></p>
+ <% else %>
+     <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+ <% end %>
+
+ <%= will_paginate @sends %>
+ </div>
+
+ <p id="csv"><%= link_to('Download a list of these results (csv, limited to the last month)',:action => 'index', :download => 'csv') %> </p>
+ <table cellspacing="0">
+     <tr>
+         <th>Recipient Email</th>
+         <th>Message Name</th>
+         <th>Sent</th>
+         <th>URL</th>
+         <th>Clicked</th>
+     </tr>
+  
+     <% for send in @sends %>
+         <tr id="send_row_<%= send.id %>">
+            <%- if send.bronto_recipient.nil? -%>
+              <td><%= send.bronto_recipient_id %></td>
+            <%- else -%>
+              <td><%= send.bronto_recipient.email %></td>
+            <%- end -%>
+            <%- if send.bronto_message.nil? -%>
+              <td><%= send.bronto_message_id %></td>
+            <%- else -%>
+              <td><%= send.bronto_message.message_name %></td>
+            <%- end -%>
+            <td><%= humane_date(send.sent) %></td>
+            <td><%= send.url %></td>
+            <td><%= humane_date(send.clicked) %></td>
+         </tr>
+     <% end%>
+ </table>
+ 
+ <div id="paginator_wrapper"> 
+ <% if @sends.length > 0 %>
+     <p class="display_results">Displaying <strong><%= @sends.offset + 1 %>-<%= @sends.offset + @sends.length %></strong> of <strong><%= @sends.total_entries %></strong></p>
+ <% else %>
+     <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
+ <% end %>
+
+ <%= will_paginate @sends %>
+ </div>
