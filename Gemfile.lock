@@ -55,7 +55,6 @@ GEM
     mofo (0.2.16)
       hpricot (>= 0.4.59)
     mysql (2.8.1)
-    net-http-spy (0.2.1)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -129,7 +128,6 @@ DEPENDENCIES
   map_by_method
   mofo
   mysql
-  net-http-spy
   newrelic_rpm
   nokogiri
   paperclip
