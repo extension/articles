@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110617171530) do
+ActiveRecord::Schema.define(:version => 20110629150124) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -190,6 +190,40 @@ ActiveRecord::Schema.define(:version => 20110617171530) do
 
   add_index "api_keys", ["keyvalue"], :name => "index_api_keys_on_keyvalue", :unique => true
   add_index "api_keys", ["user_id", "name"], :name => "index_api_keys_on_user_id_and_name", :unique => true
+
+  create_table "bronto_deliveries", :force => true do |t|
+    t.string   "bronto_message_id", :null => false
+    t.string   "status",            :null => false
+    t.datetime "start",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bronto_messages", :force => true do |t|
+    t.string   "message_name"
+    t.boolean  "is_jitp"
+    t.datetime "last_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bronto_recipients", :force => true do |t|
+    t.string   "email"
+    t.datetime "last_updated_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bronto_sends", :force => true do |t|
+    t.string   "bronto_delivery_id",  :null => false
+    t.string   "bronto_message_id",   :null => false
+    t.string   "bronto_recipient_id", :null => false
+    t.datetime "sent",                :null => false
+    t.string   "url"
+    t.datetime "clicked"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "bucketings", :force => true do |t|
     t.integer  "page_id",           :null => false
