@@ -44,6 +44,8 @@ gem 'newrelic_rpm'
 # widget related
 gem 'rest-client'
 gem 'json_pure'
+# soap gem for bronto downloads
+gem 'savon'
 
 # Deploy with Capistrano
 gem 'capistrano'
@@ -62,7 +64,7 @@ group :development, :test do
   gem "awesome_print"
   gem "map_by_method"
   gem "what_methods"
-  gem "net-http-spy"
+  #gem "net-http-spy"  # not useable with the savon gem, results in SystemStackError: stack level too deep on requests
   gem "devserver"
   gem "rails-footnotes"
 end

@@ -162,6 +162,10 @@ class AppConfig
     @@configtable['googleapps_aaemailer'] = 'NotSet'
     @@configtable['googleapps_aaemailer_secret'] = 'NotSet'
 
+    @@configtable['bronto_api_key'] = 'NotSet'
+    @@configtable['bronto_username'] = 'NotSet'
+    @@configtable['bronto_password'] = 'NotSet'
+    @@configtable['bronto_sitename'] = 'NotSet'
     
     
     # Ask an expert settings
