@@ -202,14 +202,12 @@ ActiveRecord::Schema.define(:version => 20110629150124) do
   create_table "bronto_messages", :force => true do |t|
     t.string   "message_name"
     t.boolean  "is_jitp"
-    t.datetime "last_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "bronto_recipients", :force => true do |t|
     t.string   "email"
-    t.datetime "last_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

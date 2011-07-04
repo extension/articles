@@ -7,6 +7,8 @@
 
 class BrontoConnection
   
+  JITP_DELIVERY_GROUP = '54e33a5a-145c-4791-8ceb-55f803749335'
+  
   
   attr_accessor :v3_session_id, :v3_client_connection
   attr_accessor :session_id, :client_connection
@@ -115,7 +117,7 @@ class BrontoConnection
         }
         soap.body = {
           :filter => filter,
-          :include_recipients => true,
+          # :include_recipients => true,
           :page_number => page_number,
         }
       end
@@ -128,5 +130,151 @@ class BrontoConnection
     end while not response_return.blank?
     results
   end
+  
+  
+  # gets the sends for a particular delivery
+  # this is a v3 api call because as of implementation
+  # the v4 equivalent (readActivities, sends) has a bug
+  # (according to Bronto) that is causing it to return
+  # an error the sends value is included in the readActivities
+  # call
+  def read_sends_for_delivery(delivery_id)
+    
+    if(!self.v3_session_id)
+      self.connect
+    end
+    results = []
+    
+    filter = {
+      :value => {
+        :type => 'string',
+        :value => delivery_id
+      },
+      :attribute => 'deliveryId',
+      :comparison => '=',
+    }    
+  
+    response = self.v3_client_connection.request(:api, :read_sends) do
+      soap.header = { 
+        "api:sessionHeader" => {
+          'api:sessionId' => self.v3_session_id 
+        }
+      }
+      soap.body = {
+        :filter => {:criteria => filter},
+        :attributes => {:created => true}
+      }
+    end
+    
+    if(response[:read_sends_response][:return] and response[:read_sends_response][:return][:sends])
+      return_response = response[:read_sends_response][:return][:sends]
+      if(return_response.is_a?(Array))
+        results += return_response
+      else
+        results << return_response
+        return results
+      end
+    else
+      return results
+    end
+    
+    begin
+      next_response = self.v3_client_connection.request(:api, :read_next) do
+        soap.header = { 
+          "api:sessionHeader" => {
+            'api:sessionId' => self.v3_session_id 
+          }
+        }
+      end
+      if(next_response[:read_next_response][:return] and next_response[:read_next_response][:return][:sends])
+        next_response_return = next_response[:read_next_response][:return][:sends]
+      else
+        next_response_return = nil
+      end
+      if(next_response_return)
+        if(next_response_return.is_a?(array))
+          results += next_response_return
+        else
+          results << next_response_return
+        end
+      end
+    end while not next_response_return.blank?
+    results
+  end
+  
+
+  def read_messages_for_delivery_group_id(delivery_group_id)
+    if(!self.session_id)
+      self.connect
+    end
+    
+    filter = {
+      :delivery_group_id => delivery_group_id,
+      :list_by_type => 'MESSAGEGROUPS'
+    }
+  
+    response = self.client_connection.request(:v4, :read_delivery_groups) do
+      soap.header = { 
+        "v4:sessionHeader" => {
+          :session_id => self.session_id 
+        }
+      }
+      soap.body = {
+        :filter => filter,
+      }
+    end
+    
+    results = response[:read_delivery_groups_response][:return][:message_ids]
+    results
+  end
+  
+  def read_message_for_id(message_id)
+    if(!self.session_id)
+      self.connect
+    end
+    
+    filter = {
+      :id => message_id,
+    }
+  
+    response = self.client_connection.request(:v4, :read_messages) do
+      soap.header = { 
+        "v4:sessionHeader" => {
+          :session_id => self.session_id 
+        }
+      }
+      soap.body = {
+        :filter => filter,
+      }
+    end
+    
+    results = response[:read_messages_response][:return]
+    results
+  end
+  
+  def read_contact_for_id(contact_id)
+    if(!self.session_id)
+      self.connect
+    end
+    
+    filter = {
+      :id => contact_id,
+    }
+  
+    response = self.client_connection.request(:v4, :read_contacts) do
+      soap.header = { 
+        "v4:sessionHeader" => {
+          :session_id => self.session_id 
+        }
+      }
+      soap.body = {
+        :filter => filter,
+      }
+    end
+    
+    results = response[:read_contacts_response][:return]
+    results
+  end  
+    
 
 end

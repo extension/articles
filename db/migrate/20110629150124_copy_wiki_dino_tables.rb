@@ -9,29 +9,27 @@ class CopyWikiDinoTables < ActiveRecord::Migration
       t.timestamps
     end
     execute "ALTER table bronto_deliveries ADD PRIMARY KEY (id)"
-    execute "INSERT into bronto_deliveries SELECT id, messageId, status, start, NOW(),NOW() from prod_copwiki.wikidino_deliveries"
+    execute "INSERT into bronto_deliveries SELECT id, messageId, status, start, NOW(),NOW() from prod_copwiki.wikidino_deliveries where  prod_copwiki.wikidino_deliveries.status = 'sent'"
     
     
     create_table "bronto_messages", :force => true, :id => false do |t|
       t.string   "id", :null => false
       t.string   "message_name",  :null => true
       t.boolean  "is_jitp", :null => true
-      t.datetime "last_updated_at", :null => true
       t.timestamps
     end
     
     execute "ALTER table bronto_messages ADD PRIMARY KEY (id)"
-    execute "INSERT into bronto_messages SELECT DISTINCT(message_id), message_name, 1, NOW(),NOW(),NOW() from prod_copwiki.wikidino_sends group by message_id"
+    execute "INSERT into bronto_messages SELECT DISTINCT(message_id), message_name, 1, NOW(),NOW() from prod_copwiki.wikidino_sends group by message_id"
     
     create_table "bronto_recipients", :force => true, :id => false do |t|
       t.string   "id", :null => false
       t.string   "email",  :null => true
-      t.datetime "last_updated_at", :null => true
       t.timestamps
     end
     
     execute "ALTER table bronto_recipients ADD PRIMARY KEY (id)"
-    execute "INSERT into bronto_recipients SELECT DISTINCT(user_id), user_email, NOW(),NOW(),NOW() from prod_copwiki.wikidino_sends  group by user_id"
+    execute "INSERT into bronto_recipients SELECT DISTINCT(user_id), user_email, NOW(),NOW() from prod_copwiki.wikidino_sends  group by user_id"
     
     
     create_table "bronto_sends", :force => true do |t|
@@ -44,7 +42,7 @@ class CopyWikiDinoTables < ActiveRecord::Migration
       t.timestamps
     end
     
-    add_index('bronto_clicks',['bronto_delivery_id','bronto_message_id','bronto_recipient_id'], :unique => true)
+    add_index('bronto_sends',['bronto_delivery_id','bronto_message_id','bronto_recipient_id'], :unique => true)
     execute "INSERT into bronto_sends (bronto_delivery_id,bronto_message_id,bronto_recipient_id,sent,updated_at,created_at) SELECT delivery_id,message_id,user_id,created,NOW(),NOW() from prod_copwiki.wikidino_sends"
     execute "UPDATE bronto_sends,prod_copwiki.wikidino_clicks SET bronto_sends.url = prod_copwiki.wikidino_clicks.url, clicked = prod_copwiki.wikidino_clicks.created WHERE bronto_recipient_id = prod_copwiki.wikidino_clicks.user_id AND bronto_sends.bronto_delivery_id = prod_copwiki.wikidino_clicks.delivery_id"
     
