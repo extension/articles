@@ -14,7 +14,11 @@ class BrontoConnection
   attr_accessor :session_id, :client_connection
   
   
-  def initialize
+  def initialize(savon_logging = false)
+    Savon.configure do |config|
+      config.log = savon_logging
+    end
+    
     self.v3_client_connection = Savon::Client.new do 
       wsdl.document = "http://api.bronto.com/?q=mail_3&wsdl" 
     end
