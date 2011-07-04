@@ -223,6 +223,8 @@ ActiveRecord::Schema.define(:version => 20110629150124) do
     t.datetime "updated_at"
   end
 
+  add_index "bronto_sends", ["bronto_delivery_id", "bronto_message_id", "bronto_recipient_id"], :name => "send_ndx", :unique => true
+
   create_table "bucketings", :force => true do |t|
     t.integer  "page_id",           :null => false
     t.integer  "content_bucket_id", :null => false
