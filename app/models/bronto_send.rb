@@ -38,6 +38,7 @@ class BrontoSend < ActiveRecord::Base
         bronto_send.update_attributes(:url => click[:link_url],:clicked => click[:activity_date])
       end
     end
+    clicks
   end    
     
 end
