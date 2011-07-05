@@ -1,4 +1,14 @@
-<h2>Bronto sends for <%= @filteredparameters.start_date.to_s%> - <%= @filteredparameters.end_date.to_s %></h2>
+<h2>Bronto sends for <%= @filteredparameters.start_date.strftime('%b %e, %Y')%> - <%= @filteredparameters.end_date.strftime('%b %e, %Y') %></h2>
+
+<div id="date_range">
+<% form_tag ({:action => params[:action]}) do %>
+  <%= calendar_date_select_tag "start_date", @filteredparameters.start_date.strftime('%Y-%m-%d'), :popup => true%>
+  <span>to</span>
+  <%= calendar_date_select_tag "end_date", @filteredparameters.end_date.strftime('%Y-%m-%d'), :popup => true%> 
+  <%= submit_tag 'Go' %>
+<% end%>
+</div>
+
 
  <div id="paginator_wrapper"> 
  <% if @sends.length > 0 %>

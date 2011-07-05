@@ -63,6 +63,7 @@ class ReportsController < ApplicationController
   end
   
   def bronto
+    @reporting = true
     @right_column = false
     @filteredparameters = ParamsFilter.new([{:start_date => {:datatype => :date, :default => (Date.yesterday - 1.month)}},
                                             {:end_date => {:datatype => :date, :default => (Date.yesterday)}},
