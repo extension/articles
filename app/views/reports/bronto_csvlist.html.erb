@@ -1,4 +1,4 @@
-"Bronto sends for <%= (Date.today - 1.month).to_s%> - <%= Date.today.to_s %>"
+"Bronto sends for <%= @filteredparameters.start_date.to_s%> - <%= @filteredparameters.end_date.to_s %>"
 
 Recipient ID,Recipient Email,Message Name,Sent,URL,Clicked
 <%- for send in @sends -%>

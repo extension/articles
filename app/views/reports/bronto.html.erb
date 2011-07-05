@@ -1,3 +1,5 @@
+<h2>Bronto sends for <%= @filteredparameters.start_date.to_s%> - <%= @filteredparameters.end_date.to_s %></h2>
+
  <div id="paginator_wrapper"> 
  <% if @sends.length > 0 %>
      <p class="display_results">Displaying <strong><%= @sends.offset + 1 %>-<%= @sends.offset + @sends.length %></strong> of <strong><%= @sends.total_entries %></strong></p>
@@ -5,10 +7,10 @@
      <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
  <% end %>
 
- <%= will_paginate @sends %>
+ <%= will_paginate @sends, :params => {:start_date => @filteredparameters.start_date.to_s, :end_date => @filteredparameters.end_date.to_s} %>
  </div>
 
- <p id="csv"><%= link_to('Download a list of these results (csv, limited to the last month)',:action => 'index', :download => 'csv') %> </p>
+ <p id="csv"><%= link_to('Download a list of these results (csv)',:action => 'bronto', :download => 'csv', :start_date => @filteredparameters.start_date.to_s, :end_date => @filteredparameters.end_date.to_s) %> </p>
  <table cellspacing="0">
      <tr>
          <th>Recipient Email</th>
@@ -44,5 +46,5 @@
      <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
  <% end %>
 
- <%= will_paginate @sends %>
+ <%= will_paginate @sends, :params => {:start_date => @filteredparameters.start_date.to_s, :end_date => @filteredparameters.end_date.to_s} %>
  </div>
