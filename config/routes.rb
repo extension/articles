@@ -208,9 +208,6 @@ ActionController::Routing::Routes.draw do |map|
   map.pageinfo_pagelist 'pageinfo/pagelist/:content_tag', :controller => 'pageinfo', :action => 'pagelist'
   map.pageinfo_page 'pageinfo/:id', :controller => 'pageinfo', :action => 'show'
 
-  map.bronto 'bronto', :controller => 'bronto', :action => 'index'
-
-
   # legacy routes to 410
   map.connect ':content_tag/events/:state', :controller => 'main', :action => 'do_410'
   map.connect ':content_tag/events/:year/:month/:state', :controller => 'main', :action => 'do_410'

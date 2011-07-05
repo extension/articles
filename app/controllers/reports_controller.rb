@@ -8,6 +8,7 @@
 class ReportsController < ApplicationController
   layout 'pubsite'
   before_filter :login_optional
+  before_filter :login_required, :only => [:bronto]
   
   def index    
     set_title("Reports")
@@ -58,6 +59,22 @@ class ReportsController < ApplicationController
     else   
       @chart_partial = 'reports/areachart'
       @chart_options.merge!({:width => 800,:height => 480,:chartdiv => 'visualization_chart',:legend => 'bottom',:lineSize => 2, :pointSize => 3})
+    end
+  end
+  
+  def bronto
+    @right_column = false
+    @filteredparameters = ParamsFilter.new([{:start_date => {:datatype => :date, :default => (Date.yesterday - 1.month)}},
+                                            {:end_date => {:datatype => :date, :default => (Date.yesterday)}},
+                                            {:download => :string}],params)
+    
+    if(!@filteredparameters.download.nil? and @filteredparameters.download == 'csv')
+      @sends = BrontoSend.where('sent >= ? and sent <=?',@filteredparameters.start_date,@filteredparameters.end_date).order('sent DESC')
+      response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+      response.headers['Content-Disposition'] = 'attachment; filename=brontosends.csv'
+      render(:template => 'reports/bronto_csvlist', :layout => false)
+    else
+      @sends = BrontoSend.where('sent >= ? and sent <=?',@filteredparameters.start_date,@filteredparameters.end_date).order('sent DESC').paginate(:page => params[:page])
     end
   end
   
