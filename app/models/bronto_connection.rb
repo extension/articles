@@ -15,16 +15,19 @@ class BrontoConnection
   
   
   def initialize(savon_logging = false)
+    HTTPI.log = false
     Savon.configure do |config|
       config.log = savon_logging
     end
     
-    self.v3_client_connection = Savon::Client.new do 
-      wsdl.document = "http://api.bronto.com/?q=mail_3&wsdl" 
+    self.v3_client_connection = Savon::Client.new  do |wsdl, http|
+      wsdl.document = "http://api.bronto.com/?q=mail_3&wsdl"
+      http.auth.ssl.verify_mode = :none 
     end
 
-    self.client_connection = Savon::Client.new do 
-      wsdl.document = "https://api.bronto.com/v4?wsdl" 
+    self.client_connection = Savon::Client.new do |wsdl, http| 
+      wsdl.document = "https://api.bronto.com/v4?wsdl"
+      http.auth.ssl.verify_mode = :none  
     end
   end
   
