@@ -510,7 +510,7 @@ a:hover.print {text-decoration:underline;}
 .gizmo      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/gizmo5.png) 0 0 no-repeat;}
 .google     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/google.png) 0 0 no-repeat;}
 .gtalk      {padding:0 0 0 26px; background: url(/images/people/socialnetworks/gtalk.png) 0 0 no-repeat;}
-.other		{padding:0 0 0 26px; background: url(/images/people/socialnetworks/other.png) 0 0 no-repeat;}
+#socialnetworks .other	{padding:0 0 0 26px; background: url(/images/people/socialnetworks/other.png) 0 0 no-repeat;}
 .identica   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/identica.png) 0 0 no-repeat;}
 .jabber     {padding:0 0 0 26px; background: url(/images/people/socialnetworks/jabber.png) 0 0 no-repeat;}
 .linkedin   {padding:0 0 0 26px; background: url(/images/people/socialnetworks/linkedin.png) 0 0 no-repeat;}

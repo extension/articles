@@ -60,6 +60,9 @@
       <%= javascript_include_tag 'date-picker' %>
     <%- end -%>
     
+    <%- if @reporting -%>
+      <%= calendar_date_select_includes "silver" %>
+    <%- end -%>
     <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
     
 	<link rel="stylesheet" type="text/css" href="/stylesheets/contentslider.css" />
