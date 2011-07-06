@@ -120,11 +120,11 @@ class Link < ActiveRecord::Base
     when CATEGORY
       if(self.path =~ /^\/wiki\/Category\:(.+)/)
         content_tag = $1.gsub(/_/, ' ')
-        content_tag_index_url(:content_tag => content_tag)
+        category_tag_index_url(:content_tag => content_tag)
       elsif(self.is_create? and self.path =~ %r{^/taxonomy/term/(\d+)})
         # special case for Create taxonomy terms
         if(taxonomy_term = CreateTaxonomyTerm.find($1))
-          content_tag_index_url(:content_tag => taxonomy_term.name)
+          category_tag_index_url(:content_tag => taxonomy_term.name)
         else
           ''
         end
