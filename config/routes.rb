@@ -193,7 +193,7 @@ ActionController::Routing::Routes.draw do |map|
   # more named routes
   map.logo  'logo/:file.:format', :controller => 'logo', :action => :display
   map.reports 'reports', :controller => :reports
-  map.content_tag_index 'category/:content_tag', :controller => 'main', :action => 'content_tag'
+  map.category_tag_index 'category/:content_tag', :controller => 'main', :action => 'category_tag'
   
   # wiki compatibility version
   map.preview_wikipage 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
@@ -209,8 +209,9 @@ ActionController::Routing::Routes.draw do |map|
   map.pageinfo_page 'pageinfo/:id', :controller => 'pageinfo', :action => 'show'
 
   # legacy routes to 410
-  map.connect ':content_tag/events/:state', :controller => 'main', :action => 'do_410'
-  map.connect ':content_tag/events/:year/:month/:state', :controller => 'main', :action => 'do_410'
+  map.connect ':content_tag/events/:one', :controller => 'main', :action => 'do_410'
+  map.connect ':content_tag/events/:one/:two', :controller => 'main', :action => 'do_410'
+  map.connect ':content_tag/events/:one/:two/:three', :controller => 'main', :action => 'do_410'
   
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
@@ -221,7 +222,7 @@ ActionController::Routing::Routes.draw do |map|
   map.site_learning_lessons ':content_tag/learning_lessons', :controller => 'pages', :action => 'learning_lessons'
 
   map.short_pageid ':id', :controller => 'pages', :action => 'show',  :requirements => { :id => /\d+/ }
-  map.site_index ':content_tag', :controller => 'main', :action => 'content_tag'
+  map.site_index ':content_tag', :controller => 'main', :action => 'community_tag'
   
   ### catch?  I'm not sure that these are ever actually touched because of the :content_tag routes above
   map.connect ':controller', :action => 'index'

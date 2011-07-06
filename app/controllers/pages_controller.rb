@@ -29,7 +29,7 @@ class PagesController < ApplicationController
       # special handling for mediawiki-like "Categoy:bob" - style titles
       if raw_title_to_lookup =~ /Category\:(.+)/
         content_tag = $1.gsub(/_/, ' ')
-        redirect_to content_tag_index_url(:content_tag => content_tag), :status=>301
+        redirect_to category_tag_index_url(:content_tag => content_tag), :status=>301
         return
       end
       
