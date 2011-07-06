@@ -29,7 +29,7 @@ class PagesController < ApplicationController
       # special handling for mediawiki-like "Categoy:bob" - style titles
       if raw_title_to_lookup =~ /Category\:(.+)/
         content_tag = $1.gsub(/_/, ' ')
-        redirect_to content_tag_index_url(:content_tag => content_tag), :status=>301
+        redirect_to category_tag_index_url(:content_tag => content_tag), :status=>301
         return
       end
       
@@ -184,8 +184,8 @@ class PagesController < ApplicationController
       set_title("#{@page.title}", "Frequently asked questions from our resource area experts.")
       set_titletag("#{@page.title} - eXtension")
     elsif(@page.is_event?)
-      set_title("#{@page.title.titleize} - eXtension Event",  @page.title.titleize)
-      set_titletag("#{@page.title.titleize} - eXtension Event")
+      set_title("#{@page.title.titleize} - #{@page.event_start.utc.to_date.strftime("%B %d, %Y")} - eXtension Event",  @page.title.titleize)
+      set_titletag("#{@page.title.titleize} - #{@page.event_start.utc.to_date.strftime("%B %d, %Y")} - eXtension Event")
     elsif @page_bucket_names.include?('learning lessons')
       set_title('Learning', "Don't just read. Learn.")
       set_titletag("#{@page.title} - eXtension Learning Lessons")

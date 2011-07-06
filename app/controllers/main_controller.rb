@@ -30,21 +30,14 @@ class MainController < ApplicationController
      @calendar_events = Page.recent_content({:datatypes => ['Event'], :within_days => 5, :calendar_date => @calendar_date, :limit => 6, :order => 'event_start ASC'})
      @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
    end
-  
-  def content_tag
-    @published_content = true  # index CoP landing pages
+   
+  def category_tag
     
-    if(!@community.nil?) 
-      set_title(@community.public_name,@community.public_description)
-      set_titletag("#{@community.public_name} - eXtension")
-      community_content_tag_names = @community.content_tag_names
-      @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
-      @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
-      @community_highlights = Page.main_feature_list({:content_tag => @content_tag, :limit => 8})
-      @youth = true if @topic and @topic.name == 'Youth'
-      flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
-      flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
-    elsif(!@content_tag.nil?)
+    if(!@community.nil?)
+      return redirect_to site_index_url(:content_tag => params[:content_tag]), :status=>301
+    end
+    
+    if(!@content_tag.nil?)
       set_title("Content tagged with:", @content_tag.name.titleize)
       set_titletag("Content tagged with '#{@content_tag.name}'  - eXtension")
       @youth = true if @content_tag.name == 'youth'
@@ -53,7 +46,7 @@ class MainController < ApplicationController
       set_title("All Content")
       set_titletag("All Content - eXtension")  
     end
-
+    
     @calendar_date = get_calendar_date
     
     if(@content_tag.nil?)
@@ -70,12 +63,39 @@ class MainController < ApplicationController
       @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
       @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
     end
+        
+    return render(:template => 'main/category_landing') 
+    
+  end
   
-    if(!@community.nil?)
-      return render(:template => 'main/community_landing') 
-    else
-      return render(:template => 'main/category_landing') 
+  def community_tag
+    @published_content = true  # index CoP landing pages
+    
+    if(@community.nil?)
+      return redirect_to category_tag_index_url(:content_tag => params[:content_tag]), :status=>301
     end
+    
+    set_title(@community.public_name,@community.public_description)
+    set_titletag("#{@community.public_name} - eXtension")
+    community_content_tag_names = @community.content_tag_names
+    @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
+    @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
+    @community_highlights = Page.main_feature_list({:content_tag => @content_tag, :limit => 8})
+    @youth = true if @topic and @topic.name == 'Youth'
+    flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
+    flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
+
+    @calendar_date = get_calendar_date
+    
+
+    @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
+    @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
+    @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
+    @calendar_events =  Page.recent_content({:datatypes => ['Event'],:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag], :order => 'event_start ASC'})
+    @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
+    @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
+
+    return render(:template => 'main/community_landing') 
   end
   
   def search
