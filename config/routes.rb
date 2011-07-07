@@ -206,6 +206,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.pageinfo_pagelinklist 'pageinfo/pagelinklist/:content_tag', :controller => 'pageinfo', :action => 'pagelinklist'
   map.pageinfo_pagelist 'pageinfo/pagelist/:content_tag', :controller => 'pageinfo', :action => 'pagelist'
+  map.pageinfo_source 'pageinfo/source/:source_name/:source_id', :controller => 'pageinfo', :action => 'find_by_source'
+  map.pageinfo_findsource  'pageinfo/source', :controller => 'pageinfo', :action => 'find_by_source'
   map.pageinfo_page 'pageinfo/:id', :controller => 'pageinfo', :action => 'show'
 
   # legacy routes to 410

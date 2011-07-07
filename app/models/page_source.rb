@@ -18,6 +18,18 @@ class PageSource < ActiveRecord::Base
   
   named_scope :active, :conditions => {:active => true}
   
+  def page_source_url(node_id)
+    # presumes a drupal source, which is all we have right now
+    # also presumes that we are looking up a /node/id
+    begin
+      parsed_uri = URI.parse(self.uri)
+      host = parsed_uri.host
+    rescue
+      nil
+    end
+    "http://#{host}/node/#{CGI::escape(node_id.to_s)}" 
+  end
+  
   def page_feed_url(source_id,options = {})
     if(!options[:demofeed].blank?)
       use_demo_uri = options[:demofeed]

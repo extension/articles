@@ -9,6 +9,21 @@ class PageinfoController < ApplicationController
   before_filter :login_optional
   before_filter :set_content_tag_and_community_and_topic
   layout 'pubsite'
+  
+  
+  def find_by_source
+    @right_column = false
+    source_name = params[:source_name]
+    source_id = params[:source_id]
+    if(!source_name.blank? and !source_id.blank?)      
+      @page = Page.find_by_source_name_and_id(source_name,source_id)
+      if(@page)
+        return redirect_to pageinfo_page_url(:id => @page.id)
+      else
+        flash.now[:error] = "Unable to find a page with that source and node id"
+      end
+    end
+  end
  
   def show
     @right_column = false

@@ -1,0 +1,20 @@
+<% @page_title = "Find By Source" %>
+
+<h1>Find Page By Source</h1>
+<p>
+  <% form_tag({:controller => "pageinfo", :action=> "find_by_source"}) do %>
+  <fieldset class="search">
+      <p>
+          <label for="source_id">Node ID:</label>
+          <input type="text" name="source_id" id="searchterm" size="25" value=""/>
+          <ul id="search_parameters">
+              <%- PageSource.active.each do |ps| -%>
+                <li><%= radio_button_tag('source_name', ps.name, (params[:source_name].blank? ? ps.name == 'create' : ps.name == params[:source_name])) %> <%= ps.name %></li>
+              <%- end -%>
+          </ul>
+          <br class="clear"/>
+          <%= submit_tag 'Find Page' %>
+      </p>
+  </fieldset>
+  <% end %>
+</p>
