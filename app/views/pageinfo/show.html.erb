@@ -5,6 +5,10 @@
   
   <table cellspacing="0" border="1">
       <tr>
+          <td>Published URL</td>
+          <td><%= link_to(@page.id_and_link, @page.id_and_link) %></td>
+      </tr>
+      <tr>
           <td>Internal Page ID</td>
           <td><%= @page.id %></td>
       </tr>

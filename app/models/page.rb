@@ -1092,6 +1092,12 @@ class Page < ActiveRecord::Base
   def displaytitle
     self.title.truncate(255,{:omission => '', :avoid_orphans => true})
   end
+  
+  def self.find_by_source_name_and_id(source_name,source_id)
+    page_source = PageSource.find_by_name(source_name)
+    return nil if(page_source.blank?)
+    Page.find_by_source_url(page_source.page_source_url(source_id))
+  end
     
 
 end

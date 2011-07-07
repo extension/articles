@@ -44,50 +44,47 @@
    <%- end -%>
 
    <div class="section">
-   <h2>Events and FAQs</h2>
+   <h2>Pages</h2>
+   <p><%= link_to("Find Page by Node ID",pageinfo_findsource_url)%>
    <ul>
-      <!-- events -->
-      <%- if @events_count > 0 -%>
-         <li><span class="launchready">Yes</span> <%= link_to("<span>#{@events_count}</span> Published Events", pageinfo_pagelist_url(:content_tag => @content_tag.name, :content_types => 'events')) %> <span>(D)</span> </li>
-      <%- else -%>
-         <li class="missing">No Published Events <span>(D)</span></li>
-      <%- end -%>
-      
-      <!-- faqs -->
-      <%- if @faqs_count > 0 -%>
-         <li><span class="launchready">Yes</span> <%= link_to("<span>#{@faqs_count}</span> Published Faqs", pageinfo_pagelist_url(:content_tag => @content_tag.name, :content_types => 'faqs')) %> <span>(F)</span></li>
-      <%- else -%>
-         <li class="missing">No Published FAQs <span>(F)</span></li>
-      <%- end -%>   
+       <!-- Articles -->
+       <%- if @articles_count > 0 -%>                
+          <li><span class="launchready">Yes</span> <%= link_to("<span>#{@articles_count}</span> Published Articles", pageinfo_pagelist_url(:content_tag => @content_tag.name, :content_types => 'articles')) %></li>
+       <%- else -%>
+          <li class="missing">No Published Articles</li>
+       <%- end -%>
+       
+       <!-- events -->
+       <%- if @events_count > 0 -%>
+          <li><span class="launchready">Yes</span> <%= link_to("<span>#{@events_count}</span> Published Events", pageinfo_pagelist_url(:content_tag => @content_tag.name, :content_types => 'events')) %> <span>(D)</span> </li>
+       <%- else -%>
+          <li class="missing">No Published Events <span>(D)</span></li>
+       <%- end -%>
+
+       <!-- faqs -->
+       <%- if @faqs_count > 0 -%>
+          <li><span class="launchready">Yes</span> <%= link_to("<span>#{@faqs_count}</span> Published Faqs", pageinfo_pagelist_url(:content_tag => @content_tag.name, :content_types => 'faqs')) %> <span>(F)</span></li>
+       <%- else -%>
+          <li class="missing">No Published FAQs <span>(F)</span></li>
+       <%- end -%>
+
+       <!-- News -->
+       <%- if @news_count > 0 -%>
+          <li><span class="launchready">Yes</span> <%= link_to("<span>#{@news_count}</span> Published News", pageinfo_pagelist_url(:content_tag => @content_tag.name, :content_types => 'news')) %> <span>(H)</span></li>
+       <%- else -%>
+          <li class="missing">No Published Articles categorized as "news" <span>(H)</span></li>
+       <%- end -%>
+
+       <!-- Learning Lessons -->
+       <%- if @learning_lessons_count > 0 -%>      
+       <li><span class="launchready">Yes</span> <%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"", pageinfo_pagelist_url(:content_tag => @content_tag.name, :articlefilter => 'learning lessons', :content_types => 'articles')) %> <span>(E)</span></li>
+       <%- else -%>
+          <li class="missing">No Published Articles categorized as "learning lesson" <span>(E)</span></li>
+       <%- end -%>              
+
    </ul>
    </div>
-   
-   <div class="section">
-       <h2>Articles</h2>
-       <ul>
-      <!-- Articles -->
-      <%- if @articles_count > 0 -%>                
-         <li><span class="launchready">Yes</span> <%= link_to("<span>#{@articles_count}</span> Published Articles", pageinfo_pagelist_url(:content_tag => @content_tag.name, :content_types => 'articles')) %></li>
-      <%- else -%>
-         <li class="missing">No Published Articles</li>
-      <%- end -%>
-      
-      <!-- News -->
-      <%- if @news_count > 0 -%>
-         <li><span class="launchready">Yes</span> <%= link_to("<span>#{@news_count}</span> Published Articles categorized as \"news\"", pageinfo_pagelist_url(:content_tag => @content_tag.name, :content_types => 'news')) %> <span>(H)</span></li>
-      <%- else -%>
-         <li class="missing">No Published Articles categorized as "news" <span>(H)</span></li>
-      <%- end -%>
-      
-      <!-- Learning Lessons -->
-      <%- if @learning_lessons_count > 0 -%>      
-      <li><span class="launchready">Yes</span> <%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"", pageinfo_pagelist_url(:content_tag => @content_tag.name, :articlefilter => 'learning lessons', :content_types => 'articles')) %> <span>(E)</span></li>
-      <%- else -%>
-         <li class="missing">No Published Articles categorized as "learning lesson" <span>(E)</span></li>
-      <%- end -%>              
-    </ul>
-    </div>
-   
+
    <div class="section">
    <h2>Special Features</h2>
    <ul>
