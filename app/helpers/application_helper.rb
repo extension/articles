@@ -163,8 +163,12 @@ module ApplicationHelper
   
   def get_title(html_content)
     return "" unless html_content
-    sushi = Nokogiri::HTML::DocumentFragment.parse(html_content)
-    text = sushi.css("div#wow").text
+    parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
+    text = parsed_html.css("div#wow").text
+    if(text.blank?)
+      # fallback to the first paragraph
+      text = parsed_html.css("p").text
+    end
     return text
   end
   
