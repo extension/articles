@@ -66,16 +66,20 @@ class Link < ActiveRecord::Base
     (host == 'create.extension.org' or host == 'create.demo.extension.org')
   end
   
+  def self.is_copwiki?(host)
+    (host == 'cop.extension.org' or host == 'cop.demo.extension.org')
+  end
+    
   def is_create?
     self.class.is_create?(self.host)
   end
   
+  def is_copwiki?
+    self.class.is_copwiki?(self.host)
+  end
+  
   def is_copwiki_or_create?
-    hostlist = []
-    ['cop','cop.demo','create','create.demo'].each do |host|
-      hostlist << "#{host}.extension.org"
-    end
-    hostlist.include?(self.host)
+    self.class.is_create?(self.host) or self.class.is_copwiki?(self.host)
   end
     
   def status_to_s
@@ -151,15 +155,45 @@ class Link < ActiveRecord::Base
     end
   end
   
-  def self.create_from_source_url_and_page(source_url,page)
+  
+  def self.create_from_page(page)
+    if(page.source_url.blank?)
+      return nil
+    end
+    
     # make sure the URL is valid format
     begin
-      original_uri = URI.parse(source_url)
+      source_uri = URI.parse(page.source_url)
+      source_uri_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(source_uri.to_s.downcase))
     rescue
       return nil
     end
     
-    if(this_link = self.find_by_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
+    # specical case for create urls - does this have an alias_uri?
+    if(page.page_source and page.page_source.name == 'create')    
+      if(!page.old_source_url.blank?)
+        begin 
+          old_source_uri = URI.parse(page.old_source_url)
+          old_source_uri_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(old_source_uri.to_s.downcase))
+        rescue
+          # do nothing
+        end
+      elsif(migrated_url = MigratedUrl.find_by_target_url_fingerprint(source_uri_fingerprint))
+        begin 
+          old_source_uri = URI.parse(migrated_url.alias_url)
+          old_source_uri_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(old_source_uri.to_s.downcase))
+        rescue
+          # do nothing
+        end
+      end
+    end
+    
+    find_condition = "fingerprint = '#{source_uri_fingerprint}'"
+    if(old_source_uri)
+      find_condition += " OR alias_fingerprint = '#{old_source_uri_fingerprint}'"
+    end
+      
+    if(this_link = self.where(find_condition).first)
       # this was a wanted link - we need to update the link now - and kick off the process of updating everything
       # that links to this page
       this_link.update_attributes(:page => page, :linktype => INTERNAL)
@@ -167,40 +201,31 @@ class Link < ActiveRecord::Base
         linked_page.store_content # parses links and images again and saves it.
       end
     else    
-      this_link = self.new(:page => page, :url => original_uri.to_s, :fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)))
-      this_link.source_host = original_uri.host
+      this_link = self.new(:page => page, :url => source_uri.to_s, :fingerprint => source_uri_fingerprint)
+      if(old_source_uri)
+        this_link.alias_url = old_source_uri.to_s
+        this_link.alias_fingerprint = old_source_uri_fingerprint
+      end
+        
+      this_link.source_host = source_uri.host
       this_link.linktype = INTERNAL
     
       # set host and path - mainly just for aggregation purposes
-      if(!original_uri.host.blank?)
-        this_link.host = original_uri.host
+      if(!source_uri.host.blank?)
+        this_link.host = source_uri.host
       end
-      if(!original_uri.path.blank?)
-        this_link.path = CGI.unescape(original_uri.path)
+      if(!source_uri.path.blank?)
+        this_link.path = CGI.unescape(source_uri.path)
       end
       this_link.save
     end
     return this_link
-  end
   
-  
-  def self.create_from_page(page)
-    if(page.source_url.blank?)
-      return nil
-    end
-    
-    returnlink = self.create_from_source_url_and_page(page.source_url,page)
-    
-    if(page.page_source and page.page_source.name == 'create' and !page.old_source_url.blank?)
-      # create a second link for the old source url
-      self.create_from_source_url_and_page(page.old_source_url,page)
-    end
-    
     return returnlink
   end
   
   # this is meant to be called when parsing a piece of content for items it links out to from its content.
-  def self.find_or_create_by_linked_url(linked_url,source_host,make_wanted_if_source_host_match = true)
+  def self.find_or_create_by_linked_url(linked_url,source_host)
     # make sure the URL is valid format
     begin
       original_uri = URI.parse(linked_url)
@@ -213,8 +238,7 @@ class Link < ActiveRecord::Base
       return ''
     end
     
-
-    
+  
     # is this a relative url? (no scheme/no host)- so attach the source_host and http
     # to it, to see if that matches an original URL that we have
     if(!original_uri.is_a?(URI::MailTo))
@@ -235,51 +259,92 @@ class Link < ActiveRecord::Base
       original_uri.fragment = nil
     end
     
-    # we'll keep the path around - but we might should drop them for CoP wiki sourced articles
-
-    if(this_link = self.find_by_fingerprint(Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s))))
+    # check both the fingerprint and alias_fingerprint
+    original_uri_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s.downcase))    
+    if(this_link = self.where("fingerprint = ? or alias_fingerprint = ?",original_uri_fingerprint,original_uri_fingerprint).first)
       return this_link
     end
       
     # create it - if host matches source_host and we want to identify this as "wanted" - then make it wanted else - call it external
-    # the reason for the make_wanted_if_source_host_match parameter is I imagine we are going to have a situation with 
-    # some feed provider where they want to link back to their own content - and we shouldn't necessarily force that link to be relative
-    this_link = self.new(:url => original_uri.to_s, 
-                            :fingerprint => Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s)), 
-                            :source_host => source_host)
-    if(original_uri.is_a?(URI::MailTo))
-      this_link.linktype = MAILTO
-    elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/sites/default/files/.*})
-      # exemption for create and directfile links
-      this_link.linktype = DIRECTFILE
-    elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/taxonomy/term/(\d+)})
-      # exemption for create and links to taxonomy terms
-      this_link.linktype = CATEGORY
-    elsif(original_uri.path =~ %r{^/wiki/Category:.*})  
-      this_link.linktype = CATEGORY
-    elsif(original_uri.path =~ %r{^/mediawiki/.*})  
-      this_link.linktype = DIRECTFILE
-    elsif(original_uri.path =~ %r{^/learninglessons/.*})  
-      this_link.linktype = DIRECTFILE
-    elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
-      this_link.linktype = WANTED
-    elsif(original_uri.host.downcase == 'cop.extension.org')
-      # host is cop.extension.org - call it wanted
-      this_link.linktype = WANTED
-    elsif(original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /\.extension\.org$/)
-      # host is extension
-      this_link.linktype = LOCAL
+    this_link = self.new(:source_host => source_host)
+    # check to see if this is a migrated url
+    if(self.is_copwiki?(original_uri.host) and migrated_url = MigratedUrl.find_by_alias_url_fingerprint(original_uri_fingerprint))
+      begin 
+        target_uri = URI.parse(migrated_url.target_url)
+        target_url_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(target_uri.to_s.downcase))
+        this_link.url = target_uri.to_s
+        this_link.fingerprint = target_url_fingerprint
+        this_link.alias_url = original_uri.to_s
+        this_link.alias_fingerprint = original_uri_fingerprint
+        this_link.linktype = WANTED
+        # set host and path - mainly just for aggregation purposes
+        if(!target_uri.host.blank?)
+          this_link.host = target_uri.host.downcase
+        end
+        if(!target_uri.path.blank?)
+          this_link.path = CGI.unescape(target_uri.path)
+        end
+      rescue
+        return nil
+      end
+    elsif(self.is_create?(original_uri.host) and migrated_url = MigratedUrl.find_by_target_url_fingerprint(original_uri_fingerprint))
+      begin 
+        alias_uri = URI.parse(migrated_url.alias_url)
+        alias_url_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(alias_uri.to_s.downcase))
+        this_link.alias_url = alias_uri.to_s
+        this_link.alias_fingerprint = alias_url_fingerprint
+        this_link.url = original_uri.to_s
+        this_link.fingerprint = original_uri_fingerprint
+        this_link.linktype = WANTED
+        # set host and path - mainly just for aggregation purposes
+        if(!original_uri.host.blank?)
+          this_link.host = original_uri.host.downcase
+        end
+        if(!original_uri.path.blank?)
+          this_link.path = CGI.unescape(original_uri.path)
+        end
+      rescue
+        return nil
+      end  
     else
-      this_link.linktype = EXTERNAL      
+      this_link.url = original_uri.to_s
+      this_link.fingerprint = original_uri_fingerprint
+        
+      if(original_uri.is_a?(URI::MailTo))
+        this_link.linktype = MAILTO
+      elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/sites/default/files/.*})
+        # exemption for create and directfile links
+        this_link.linktype = DIRECTFILE
+      elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/taxonomy/term/(\d+)})
+        # exemption for create and links to taxonomy terms
+        this_link.linktype = CATEGORY
+      elsif(original_uri.path =~ %r{^/wiki/Category:.*})  
+        this_link.linktype = CATEGORY
+      elsif(original_uri.path =~ %r{^/mediawiki/.*})  
+        this_link.linktype = DIRECTFILE
+      elsif(original_uri.path =~ %r{^/learninglessons/.*})  
+        this_link.linktype = DIRECTFILE
+      elsif(original_uri.host == source_host)
+        this_link.linktype = WANTED
+      elsif(self.is_copwiki?(original_uri.host))
+        # host is cop.extension.org, doesn't match the above and wasn't migrated, call it wanted
+        this_link.linktype = WANTED
+      elsif(original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /\.extension\.org$/)
+        # host is extension
+        this_link.linktype = LOCAL
+      else
+        this_link.linktype = EXTERNAL      
+      end
+        
+      # set host and path - mainly just for aggregation purposes
+      if(!original_uri.host.blank?)
+        this_link.host = original_uri.host.downcase
+      end
+      if(!original_uri.path.blank?)
+        this_link.path = CGI.unescape(original_uri.path)
+      end
     end
     
-    # set host and path - mainly just for aggregation purposes
-    if(!original_uri.host.blank?)
-      this_link.host = original_uri.host.downcase
-    end
-    if(!original_uri.path.blank?)
-      this_link.path = CGI.unescape(original_uri.path)
-    end
     this_link.save
     return this_link        
   end

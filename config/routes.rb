@@ -196,7 +196,7 @@ ActionController::Routing::Routes.draw do |map|
   map.category_tag_index 'category/:content_tag', :controller => 'main', :action => 'category_tag'
   
   # wiki compatibility version
-  map.preview_wikipage 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
+  #map.preview_wikipage 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
   # everyone else
   map.preview_page 'preview/page/:source/:source_id', :controller => 'preview', :action => 'showpage'
    

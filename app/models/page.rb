@@ -20,16 +20,16 @@ class Page < ActiveRecord::Base
   NOT_GOOGLE_INDEXED = 2
   
    
-  after_create :store_content, :create_primary_links
+  after_create :store_content, :create_primary_link
   before_save  :set_url_title
   before_update :check_content
-  before_destroy :change_primary_links
+  before_destroy :change_primary_link
   
   has_content_tags
   ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest events' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
                             :default => "source_updated_at DESC"
          
-  has_many :primary_links, :class_name => "Link"
+  has_one :primary_link, :class_name => "Link"
   has_many :linkings
   has_many :links, :through => :linkings
   has_many :bucketings
@@ -582,7 +582,7 @@ class Page < ActiveRecord::Base
     page.source_id = entry.id
     if(page.source_url.blank?)
       page.source_url = provided_source_url 
-      page.source_url_fingerprint = Digest::SHA1.hexdigest(provided_source_url)
+      page.source_url_fingerprint = Digest::SHA1.hexdigest(provided_source_url.downcase)
     end
     
     if(page.datatype == 'Event')
@@ -936,24 +936,14 @@ class Page < ActiveRecord::Base
     self.save
   end
   
-  def primary_link
-    if(!self.primary_links.blank?)
-      self.primary_links.where(:source_host => self.source_host).first
-    else
-      nil
-    end
-  end
-  
-  def create_primary_links
+  def create_primary_link
     Link.create_from_page(self)
   end
   
-  def change_primary_links
+  def change_primary_link
     # update items that might link to this article
-    if(!self.primary_links.blank?)
-      self.primary_links.each do |link|
-        link.change_to_wanted
-      end
+    if(!self.primary_link.blank?)
+      self.primary_link.change_to_wanted
     end
   end
   
