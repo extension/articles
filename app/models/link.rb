@@ -263,6 +263,9 @@ class Link < ActiveRecord::Base
       this_link.linktype = DIRECTFILE
     elsif(original_uri.host == source_host and make_wanted_if_source_host_match)
       this_link.linktype = WANTED
+    elsif(original_uri.host.downcase == 'cop.extension.org')
+      # host is cop.extension.org - call it wanted
+      this_link.linktype = WANTED
     elsif(original_uri.host.downcase == 'extension.org' or original_uri.host.downcase =~ /\.extension\.org$/)
       # host is extension
       this_link.linktype = LOCAL
