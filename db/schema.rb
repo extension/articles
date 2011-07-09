@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110629150124) do
+ActiveRecord::Schema.define(:version => 20110709032031) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -192,9 +192,9 @@ ActiveRecord::Schema.define(:version => 20110629150124) do
   add_index "api_keys", ["user_id", "name"], :name => "index_api_keys_on_user_id_and_name", :unique => true
 
   create_table "bronto_deliveries", :force => true do |t|
-    t.string   "bronto_message_id", :null => false
-    t.string   "status",            :null => false
-    t.datetime "start",             :null => false
+    t.string   "bronto_message_id", :limit => 40, :default => "", :null => false
+    t.string   "status",                                          :null => false
+    t.datetime "start",                                           :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -213,10 +213,10 @@ ActiveRecord::Schema.define(:version => 20110629150124) do
   end
 
   create_table "bronto_sends", :force => true do |t|
-    t.string   "bronto_delivery_id",  :null => false
-    t.string   "bronto_message_id",   :null => false
-    t.string   "bronto_recipient_id", :null => false
-    t.datetime "sent",                :null => false
+    t.string   "bronto_delivery_id",  :limit => 40, :default => "", :null => false
+    t.string   "bronto_message_id",   :limit => 40, :default => "", :null => false
+    t.string   "bronto_recipient_id", :limit => 40, :default => "", :null => false
+    t.datetime "sent",                                              :null => false
     t.string   "url"
     t.datetime "clicked"
     t.datetime "created_at"
@@ -611,6 +611,8 @@ ActiveRecord::Schema.define(:version => 20110629150124) do
     t.string   "path"
     t.string   "fingerprint"
     t.text     "url"
+    t.string   "alias_fingerprint"
+    t.text     "alias_url"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "status"
@@ -622,6 +624,7 @@ ActiveRecord::Schema.define(:version => 20110629150124) do
     t.text     "last_check_information"
   end
 
+  add_index "links", ["alias_fingerprint"], :name => "alias_fingerprint_ndx"
   add_index "links", ["fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
   add_index "links", ["page_id", "status", "linktype"], :name => "coreindex"
 
@@ -661,6 +664,13 @@ ActiveRecord::Schema.define(:version => 20110629150124) do
     t.datetime "created_at"
     t.integer  "db_file_id"
     t.integer  "logotype",     :default => 0
+  end
+
+  create_table "migrated_urls", :force => true do |t|
+    t.string "alias_url"
+    t.string "alias_url_fingerprint"
+    t.string "target_url"
+    t.string "target_url_fingerprint"
   end
 
   create_table "notifications", :force => true do |t|
