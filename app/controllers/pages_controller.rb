@@ -290,7 +290,7 @@ class PagesController < ApplicationController
  
   def articles
     if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
     
     @show_selector = true
@@ -314,7 +314,7 @@ class PagesController < ApplicationController
   
   def news
     if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
     
     @show_selector = true
@@ -338,7 +338,7 @@ class PagesController < ApplicationController
   
   def learning_lessons
     if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
     
     @show_selector = true
@@ -362,7 +362,7 @@ class PagesController < ApplicationController
   
   def faqs
     if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
     
     @show_selector = true
@@ -387,7 +387,7 @@ class PagesController < ApplicationController
   
   def events
     if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
     
     @show_selector = true
