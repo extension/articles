@@ -48,7 +48,7 @@
   
       <%- if @page_content_tag_names -%>
         <p class="caption publictags">Browse related <%= @page.datatype.pluralize %> by tag: 
-          <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(tag)}.join(', ') %>    
+          <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag))}.join(', ') %>    
         </p>
       <%- end -%>
     </div>
