@@ -39,6 +39,7 @@ class MainController < ApplicationController
       return redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end  
     
+    
     if(!@content_tag.nil?)
       set_title("Content tagged with:", @content_tag.name.titleize)
       set_titletag("Content tagged with '#{@content_tag.name}'  - eXtension")
@@ -58,6 +59,7 @@ class MainController < ApplicationController
       @calendar_events = Page.recent_content({:datatypes => ['Event'],:within_days => 3, :calendar_date => @calendar_date})
       @articles = Page.ordered(Page.orderings['Newest to oldest']).limit(3)
     else
+      @canonical_link = category_tag_index_url(:content_tag => @content_tag.url_display_name)      
       @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
       @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
       @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
@@ -81,6 +83,7 @@ class MainController < ApplicationController
     
     set_title(@community.public_name,@community.public_description)
     set_titletag("#{@community.public_name} - eXtension")
+    @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)      
     community_content_tag_names = @community.content_tag_names
     @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
     @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
