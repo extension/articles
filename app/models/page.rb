@@ -1079,6 +1079,10 @@ class Page < ActiveRecord::Base
     @event_time || (self.event_start.blank? ? nil : (self.event_all_day? ? nil : self.event_start.in_time_zone(self.time_zone).strftime('%I:%M %p')))
   end
   
+  def event_duration
+    read_attribute(:event_duration) || (self.event_all_day? ? 1 : 0)
+  end
+  
   def displaytitle
     self.title.truncate(255,{:omission => '', :avoid_orphans => true})
   end
