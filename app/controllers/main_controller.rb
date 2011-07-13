@@ -109,7 +109,7 @@ class MainController < ApplicationController
       redirect_params = {:content_tag => 'all', :year => params[:year], :month => params[:month], :event_state => params[:event_state]}
     end
     
-    return redirect_to site_events_url(redirect_params)
+    return redirect_to site_events_url(redirect_params), :status=>301
   end
   
   def search
@@ -259,16 +259,6 @@ class MainController < ApplicationController
     end
     
     return date
-  end
-  
-  def canonicalized_category?(category)
-    if(category != category.downcase)
-      return false
-    elsif(category != category.gsub(' ','_'))
-      return false
-    else
-      return true
-    end
   end
 
 end
