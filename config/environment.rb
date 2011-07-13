@@ -39,9 +39,9 @@ Rails::Initializer.run do |config|
   # cache configuration
   config.cache_store = :mem_cache_store, 'localhost', {:namespace => 'pubsite'}
   
-  # config.middleware.insert_before(Rack::Lock, Rack::Rewrite) do
-  #   r301 %r{^/(.*)/$}, '/$1'
-  # end
+  config.middleware.insert_before(Rack::Lock, Rack::Rewrite) do
+    r301 %r{^/(.*)/$}, '/$1'
+  end
 end
 
 # enable Garbage Collection 
