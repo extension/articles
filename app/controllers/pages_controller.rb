@@ -387,7 +387,9 @@ class PagesController < ApplicationController
   
   def events
     if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      redirect_params = {:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])}
+      redirect_params.merge!({:year => params[:year], :month => params[:month], :event_state => params[:event_state]})
+      return redirect_to(redirect_params), :status=>301
     end
     
     @show_selector = true
