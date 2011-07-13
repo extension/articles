@@ -46,6 +46,11 @@ class Tag < ActiveRecord::Base
     self.name = self.class.normalizename(self.name)
   end
   
+  def url_display_name
+    self.name.gsub(' ','_')
+  end
+    
+  
   named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}"}
   
   # TODO: review.  This is kind of a hack that might should be done differently
@@ -92,14 +97,15 @@ class Tag < ActiveRecord::Base
     # now, use the replacement versions of gsub and strip on returnstring
     # convert underscores to spaces
     returnstring.gsub!('_',' ')
-    # get rid of anything that's not a "word", not whitespace, not : and not - 
-    returnstring.gsub!(/[^\w\s:-]/,'')
-    # reduce whitespace/multiple spaces to a single space
-    returnstring.gsub!(/\s+/,' ')
+    # get rid of anything that's not a "word", not space, not : and not - 
+    returnstring.gsub!(/[^\w :-]/,'')
+    # reduce multiple spaces to a single space
+    returnstring.gsub!(/ +/,' ')
     # remove leading and trailing whitespace
     returnstring.strip!
     returnstring
   end
+  
 
   def self.castlist_to_array(obj,normalizestring=true,processnots=false)      
     returnarray = []

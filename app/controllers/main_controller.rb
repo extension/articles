@@ -32,10 +32,12 @@ class MainController < ApplicationController
    end
    
   def category_tag
-    
+      
     if(!@community.nil?)
-      return redirect_to site_index_url(:content_tag => params[:content_tag]), :status=>301
-    end
+      return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    elsif(!canonicalized_category?(params[:content_tag]))
+      return redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    end  
     
     if(!@content_tag.nil?)
       set_title("Content tagged with:", @content_tag.name.titleize)
@@ -72,7 +74,9 @@ class MainController < ApplicationController
     @published_content = true  # index CoP landing pages
     
     if(@community.nil?)
-      return redirect_to category_tag_index_url(:content_tag => params[:content_tag]), :status=>301
+      return redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    elsif(!canonicalized_category?(params[:content_tag]))
+      return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
     
     set_title(@community.public_name,@community.public_description)
@@ -96,6 +100,16 @@ class MainController < ApplicationController
     @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
 
     return render(:template => 'main/community_landing') 
+  end
+  
+  def legacy_events_redirect
+    if(@content_tag)
+      redirect_params = {:content_tag => @content_tag.url_display_name, :year => params[:year], :month => params[:month], :event_state => params[:event_state]}
+    else
+      redirect_params = {:content_tag => 'all', :year => params[:year], :month => params[:month], :event_state => params[:event_state]}
+    end
+    
+    return redirect_to site_events_url(redirect_params)
   end
   
   def search
@@ -245,6 +259,16 @@ class MainController < ApplicationController
     end
     
     return date
+  end
+  
+  def canonicalized_category?(category)
+    if(category != category.downcase)
+      return false
+    elsif(category != category.gsub(' ','_'))
+      return false
+    else
+      return true
+    end
   end
 
 end

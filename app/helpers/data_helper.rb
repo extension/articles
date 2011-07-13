@@ -48,7 +48,7 @@ module DataHelper
     elsif(community.content_tag_names.empty?)
       return community.public_name
     else
-      return "<span>"  + link_to(h(community.public_name  + " Home"), site_index_url(:content_tag => community.primary_content_tag_name)) + "</span>"
+      return "<span>"  + link_to(h(community.public_name  + " Home"), site_index_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name))) + "</span>"
     end
   end
   
@@ -56,7 +56,7 @@ module DataHelper
     if(community.content_tag_names.empty?)
       return community.public_name
     else
-      return link_to(h(community.public_name), site_index_url(:content_tag => community.primary_content_tag_name))
+      return link_to(h(community.public_name), site_index_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name)))
     end
   end
   
@@ -64,7 +64,7 @@ module DataHelper
     if(community.content_tag_names.empty?)
       return community.public_name
     else
-      return "<span>"  + link_to(h(community.public_name + "Home"), preview_tag_url(:content_tag => community.primary_content_tag_name)) + "</span>"
+      return "<span>"  + link_to(h(community.public_name + "Home"), preview_tag_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name))) + "</span>"
     end
   end
   
@@ -72,7 +72,7 @@ module DataHelper
   def month_select(date, link_to_current = false, content_tag = nil, state = nil)
     url_params = {}
     if(!content_tag.nil?)
-      url_params.update({:content_tag => content_tag.name})
+      url_params.update({:content_tag => content_tag_url_display_name(content_tag.name)})
     else
       url_params.update({:content_tag => 'all'})
     end
@@ -104,7 +104,7 @@ module DataHelper
     
   def state_select(name, params)
     if(@content_tag)
-      make_a_link = "\"/#{@content_tag.name}/events?event_state=\" + this.value"
+      make_a_link = "\"/#{@content_tag.url_display_name}/events?event_state=\" + this.value"
     else
       make_a_link = "\"/all/events?event_state=\" + this.value"
     end

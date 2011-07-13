@@ -29,7 +29,7 @@ class PagesController < ApplicationController
       # special handling for mediawiki-like "Categoy:bob" - style titles
       if raw_title_to_lookup =~ /Category\:(.+)/
         content_tag = $1.gsub(/_/, ' ')
-        redirect_to category_tag_index_url(:content_tag => content_tag), :status=>301
+        redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(content_tag)), :status=>301
         return
       end
       
@@ -289,6 +289,10 @@ class PagesController < ApplicationController
   
  
   def articles
+    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
+      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    end
+    
     @show_selector = true
     @list_content = true # don't index this page
     order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
@@ -309,6 +313,10 @@ class PagesController < ApplicationController
   end
   
   def news
+    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
+      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    end
+    
     @show_selector = true
     @list_content = true # don't index this page
     order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
@@ -329,6 +337,10 @@ class PagesController < ApplicationController
   end
   
   def learning_lessons
+    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
+      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    end
+    
     @show_selector = true
     @list_content = true # don't index this page
     order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
@@ -349,6 +361,10 @@ class PagesController < ApplicationController
   end
   
   def faqs
+    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
+      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    end
+    
     @show_selector = true
     @list_content = true # don't index this page
     order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
@@ -370,6 +386,10 @@ class PagesController < ApplicationController
   
   
   def events
+    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
+      return redirect_to (:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    end
+    
     @show_selector = true
     @list_content = true # don't index this page
         

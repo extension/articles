@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   helper_method :get_calendar_month
   helper_method :with_content_tag?
   helper_method :admin_mode?
-
+  helper_method :content_tag_url_display_name
   
   def set_app_location
     @app_location_for_display = AppConfig.configtable['app_location']
@@ -512,6 +512,10 @@ class ApplicationController < ActionController::Base
     time.strftime("%B %e, %Y, %l:%M %p")
   end
   
+  def content_tag_url_display_name(content_tag)
+    content_tag.downcase.gsub(' ','_')
+  end
+  
   def go_back
     request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to incoming_url)
   end
@@ -520,9 +524,19 @@ class ApplicationController < ActionController::Base
     if(params[:controller] == 'main' and params[:action] == 'index')
       return {:content_tag => 'all'}
     elsif(!@content_tag.nil?)
-      return {:content_tag => @content_tag.name}
+      return {:content_tag => @content_tag.url_display_name}
     else
       return {:content_tag => 'all'}
+    end
+  end
+  
+  def canonicalized_category?(category)
+    if(category != category.downcase)
+      return false
+    elsif(category != category.gsub(' ','_'))
+      return false
+    else
+      return true
     end
   end
   

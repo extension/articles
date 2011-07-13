@@ -48,7 +48,7 @@
         <span class="community">Community:</span>
         <%community_tags = (Tag.community_content_tags({:launchedonly => true}) & event.tags) %>
         <%for community_tag in community_tags%>
-            <%= link_to community_tag.content_community.public_name, site_index_url(:content_tag => community_tag.name)%>
+            <%= link_to community_tag.content_community.public_name, site_index_url(:content_tag => content_tag_url_display_name(community_tag.name))%>
         <%end%>
     </dd>
     <dd>

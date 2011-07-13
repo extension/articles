@@ -2,6 +2,7 @@
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+require 'rack-rewrite'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -37,6 +38,10 @@ Rails::Initializer.run do |config|
 
   # cache configuration
   config.cache_store = :mem_cache_store, 'localhost', {:namespace => 'pubsite'}
+  
+  config.middleware.insert_before(Rack::Lock, Rack::Rewrite) do
+    r301 %r{^/(.*)/$}, '/$1'
+  end
 end
 
 # enable Garbage Collection 
@@ -46,3 +51,4 @@ GC.enable_stats if defined?(GC) && GC.respond_to?(:enable_stats)
 # commented out for now
 # TODO: figure out why this has to be in environment.rb
 require 'tagging_extensions'
+

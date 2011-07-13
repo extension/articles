@@ -134,6 +134,7 @@ ActionController::Routing::Routes.draw do |map|
 
   #################################################################
   ### pubsite routes ###
+  map.redirect 'main', :controller => 'main', :action => 'index', :permanent => true
   map.connect 'main/:action', :controller => 'main'
   map.connect 'feeds', :controller => 'feeds'
     
@@ -211,9 +212,9 @@ ActionController::Routing::Routes.draw do |map|
   map.pageinfo_page 'pageinfo/:id', :controller => 'pageinfo', :action => 'show'
 
   # legacy routes to 410
-  map.connect ':content_tag/events/:one', :controller => 'main', :action => 'do_410'
-  map.connect ':content_tag/events/:one/:two', :controller => 'main', :action => 'do_410'
-  map.connect ':content_tag/events/:one/:two/:three', :controller => 'main', :action => 'do_410'
+  map.connect ':content_tag/events/:year', :controller => 'main', :action => 'legacy_events_redirect'
+  map.connect ':content_tag/events/:year/:month', :controller => 'main', :action => 'legacy_events_redirect'
+  map.connect ':content_tag/events/:year/:month/:event_stat', :controller => 'main', :action => 'legacy_events_redirect'
   
   
   ### pubsite content_tag routes - should pretty much catch *everything* else right now

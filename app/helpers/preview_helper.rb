@@ -12,7 +12,7 @@ module PreviewHelper
 		linkarray << '<ul class="content_tags">'
 		if links
 		  content_tag_array.each do |tagname|
-  			linkarray << '<li>' + link_to("checklist", preview_tag_url(:content_tag => tagname)) + "</li>"
+  			linkarray << '<li>' + link_to("checklist", preview_tag_url(:content_tag => content_tag_url_display_name(tagname))) + "</li>"
   		end
 	  else
 	    content_tag_array.each do |tagname|

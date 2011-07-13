@@ -209,7 +209,7 @@ class FilteredParameter
     when :taglist
        return Tag.castlist_to_array(value.gsub('|',','),true,false)
     when :content_tag
-       return Tag.content_tags.find_by_name(value)
+       return Tag.content_tags.find_by_name(value.downcase.gsub('_',' '))
     else
       nil # TODO: raise invalid datatype error
     end

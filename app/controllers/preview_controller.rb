@@ -24,6 +24,11 @@ class PreviewController < ApplicationController
       return render(:template => 'preview/invalid_tag')
     end
     
+    if(!canonicalized_category?(params[:content_tag]))
+      return redirect_to preview_tag_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    end
+    
+    
     if(@community.nil?)
       @title_tag = "eXtension Content Checklist for tag: #{@content_tag}"
       # youth styling
