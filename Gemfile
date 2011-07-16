@@ -39,8 +39,6 @@ gem 'mail'
 gem 'fake_arel'
 # microformats
 gem 'mofo'
-# performance
-gem 'newrelic_rpm'
 # widget related
 gem 'rest-client'
 gem 'json_pure'
