@@ -513,7 +513,7 @@ class ApplicationController < ActionController::Base
   end
   
   def content_tag_url_display_name(content_tag)
-    content_tag.downcase.gsub(' ','_')
+    Tag.url_display_name(content_tag.downcase)
   end
   
   def go_back

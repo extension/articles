@@ -46,8 +46,12 @@ class Tag < ActiveRecord::Base
     self.name = self.class.normalizename(self.name)
   end
   
+  def self.url_display_name(name)
+    name.gsub(' ','_')
+  end
+  
   def url_display_name
-    self.name.gsub(' ','_')
+    self.class.url_display_name(self.name)
   end
     
   

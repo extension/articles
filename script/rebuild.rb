@@ -180,7 +180,7 @@ class Rebuild < Thor
       Community.launched.each do |community|
         community.cached_content_tags.each do |name|
           sitemap_communities.puts('<url>')
-          sitemap_communities.puts("<loc>http://www.extension.org/#{URI.encode(name)}</loc>")
+          sitemap_communities.puts("<loc>http://www.extension.org/#{URI.encode(Tag.url_display_name(name))}</loc>")
           sitemap_communities.puts('</url>')
         end
       end
