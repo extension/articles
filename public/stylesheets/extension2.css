@@ -873,6 +873,10 @@ td.longurls a {word-wrap: break-word;width:450px;}
 
 /* Classes and IDs originating from CoP Wiki templates and presumably Drupal
 -----------------------------------------------------------------------------*/
+
+.imageleft {margin-right:1em;}
+.imageright {margin-left:1em;}
+
 /* .hiddenStructure is pulled over from CoP wiki templates */
 .hiddenStructure {position:absolute;left:-5000px;display:hidden;}
 
