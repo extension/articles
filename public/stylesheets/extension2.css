@@ -874,6 +874,7 @@ td.longurls a {word-wrap: break-word;width:450px;}
 /* Classes and IDs originating from CoP Wiki templates and presumably Drupal
 -----------------------------------------------------------------------------*/
 
+em {font-style:italic;}
 .imageleft {margin-right:1em;}
 .imageright {margin-left:1em;}
 
