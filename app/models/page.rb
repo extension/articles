@@ -136,7 +136,7 @@ class Page < ActiveRecord::Base
   
   def is_old_faq?
     # drupal faq conversion date is June 22, 2011
-    (self.datatype == 'Faq') and (self.updated_at.to_date <= Date.parse('2011-06-22'))
+    (self.datatype == 'Faq') and (self.updated_at.to_date <= Date.parse('2011-07-09'))
   end
   
   # syntactic sugar - returns true if the datatype is an event
