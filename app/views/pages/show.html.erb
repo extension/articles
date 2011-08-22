@@ -36,7 +36,7 @@
       <%- if(!@page.reference_pages.blank?) -%>
         <%= render(:partial => 'reference_pages') %>
       <%- end -%>
-      <%- if(@page.source == 'copfaq') -%>
+      <%- if(@page.is_old_faq?) -%>
         <%= simple_format(@page.content) %>
       <%- else -%>
         <%= @page.content %>
