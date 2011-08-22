@@ -476,8 +476,6 @@ a:hover.print {text-decoration:underline;}
 .pageextras {float:right;width:112px;margin-right:10px;}
 .view_as_web_page {display:none;}
 
-.homesection iframe {display:none;}
-
 #publicprofile {padding:2em;}
 
 #publicprofile h2 {color:#DF7432; margin-bottom:.75em;}
@@ -875,6 +873,11 @@ td.longurls a {word-wrap: break-word;width:450px;}
 
 /* Classes and IDs originating from CoP Wiki templates and presumably Drupal
 -----------------------------------------------------------------------------*/
+
+em {font-style:italic;}
+.imageleft {margin-right:1em;}
+.imageright {margin-left:1em;}
+
 /* .hiddenStructure is pulled over from CoP wiki templates */
 .hiddenStructure {position:absolute;left:-5000px;display:hidden;}
 

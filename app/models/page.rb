@@ -656,11 +656,17 @@ class Page < ActiveRecord::Base
     else
       # content didn't change, don't save the article - most useful for dpl's
       returndata = [page.source_updated_at, 'nochange']
+      # force a return for now so that we don't keep injecting eOrganic/PBGworks content as recent
+      # the byproduct of this is tags merely change and not content
+      # we won't update the tags, but I guess that's the breaks.
+      returndata << page
+      return returndata
     end
   
 
     # handle categories - which will include updating categories/tags
     # even if the content didn't change
+    
     if(!entry_category_terms.blank?)
       page.replace_tags_with_and_cache(entry_category_terms,User.systemuserid,Tagging::CONTENT)
       page.put_in_buckets(entry_category_terms)    
