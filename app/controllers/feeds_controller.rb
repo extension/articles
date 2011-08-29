@@ -61,6 +61,7 @@ class FeedsController < ApplicationController
   end
     
   def content
+    begin
     filteredparameters_list = [:max_results,
                                {:limit => {:default => AppConfig.configtable['default_feed_content_limit']}},
                                :tags,
@@ -126,6 +127,10 @@ class FeedsController < ApplicationController
                  :subtitle => "eXtension published content",
                  :updated_at => @returnitems.blank? ? Time.zone.now : @returnitems.first.updated_at}
     return render :text => atom_feed_from(@returnitems, feed_meta), :content_type => Mime::ATOM
+  rescue
+    do_404
+  end
+  
   end
       
   private
