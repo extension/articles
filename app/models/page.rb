@@ -844,7 +844,7 @@ class Page < ActiveRecord::Base
         
         # make sure the URL is valid format
         begin
-          original_uri = URI.parse(anchor['href'])
+          original_uri = URI.parse(anchor['href'].strip)
         rescue
           anchor.set_attribute('href', '')
           next
