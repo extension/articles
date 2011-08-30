@@ -1017,7 +1017,13 @@ class Page < ActiveRecord::Base
   end
     
   def states
-    clean_abbreviations.collect { | abbrev | Location.find_by_abbreviation(abbrev).name }
+    states = []
+    clean_abbreviations.each do |abbrev|
+      if(location = Location.find_by_abbreviation(abbrev))
+        states << location.name
+      end
+    end
+    states
   end
 
   def state_names
