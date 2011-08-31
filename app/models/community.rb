@@ -84,10 +84,10 @@ class Community < ActiveRecord::Base
   belongs_to :homage, :class_name => "Page", :foreign_key => "homage_id"
   
   
-  has_many :cached_tags, :as => :tagcacheable
+  has_many :cached_tags, :as => :tagcacheable, :dependent => :destroy
   
 
-  has_many :daily_numbers, :as => :datasource
+  has_many :daily_numbers, :as => :datasource, :dependent => :destroy
   
   has_one :email_alias, :dependent => :destroy
   has_one  :google_group

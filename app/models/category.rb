@@ -10,9 +10,9 @@ class Category < ActiveRecord::Base
   acts_as_tree :order => 'name'
   has_and_belongs_to_many :submitted_questions
   
-  has_many :expertise_areas
+  has_many :expertise_areas, :dependent => :destroy
   has_many :users, :through => :expertise_areas
-  has_many :expertise_events
+  has_many :expertise_events,:foreign_key => :expertise_id, :dependent => :destroy
   
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false, :scope => :parent_id, :if => Proc.new { |cat| !cat.parent }
