@@ -419,6 +419,15 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
     return false
   end
   
+  
+  #  truncate first
+  begin
+    result = connection.execute("DELETE FROM  #{drupaldatabase}.og_membership WHERE #{drupaldatabase}.og_memberrship.entity_type = 'user';")
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the deletion of old records in og_membership table: #{err}"
+    return false
+  end
+  
   #  truncate first
   begin
     result = connection.execute("DELETE FROM  #{drupaldatabase}.field_revision_group_audience WHERE #{drupaldatabase}.field_revision_group_audience.entity_type = 'user';")
@@ -486,6 +495,24 @@ def update_groups_from_darmok_communities(connection,drupaldatabase,mydatabase)
   end
   
   puts "field_revision_group_audience managed memberships created..."
+  
+  
+  
+####### # set current memberships - og_membership
+  
+  puts "creating managed memberships in the og_membership table..."
+
+  sql = "INSERT INTO #{drupaldatabase}.og_membership (name, etid, entity_type, gid, state, created) SELECT 'og_membership_type_default', #{mydatabase}.communityconnections.user_id, 'user',#{drupaldatabase}.og.gid, '1', UNIX_TIMESTAMP(#{mydatabase}.communityconnections.created_at) FROM #{drupaldatabase}.og, #{mydatabase}.communities, #{mydatabase}.communityconnections WHERE #{drupaldatabase}.og.etid = #{mydatabase}.communities.drupal_node_id AND #{mydatabase}.communities.id = #{mydatabase}.communityconnections.community_id AND #{mydatabase}.communityconnections.connectiontype IN ('leader','member') AND #{mydatabase}.communities.connect_to_drupal = 1 and #{mydatabase}.communities.drupal_node_id IS NOT NULL;"
+
+  # execute the sql
+  begin
+    result = connection.execute(sql)
+  rescue => err
+    $stderr.puts "ERROR: Exception raised during the og_membership creation: #{err}"
+    return false
+  end
+  
+  puts "og_membership managed memberships created..."
   
   
   ####### # finally - dump cache_field
