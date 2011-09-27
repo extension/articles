@@ -41,7 +41,7 @@ class User < Account
   has_many :user_events, :order => 'created_at DESC', :dependent => :destroy
   has_many :activities, :order => 'created_at DESC', :dependent => :destroy
   
-  has_many :notifications, :dependent => :destroy
+  has_many :notifications, :foreign_key => "account_id", :dependent => :destroy
   
   has_many :widget_events
   has_many :created_widgets, :class_name => "Widget", :foreign_key => "user_id"
@@ -60,9 +60,7 @@ class User < Account
 
   has_many :communityconnections, :dependent => :destroy
   has_many :communities, :through => :communityconnections, :select => "communityconnections.connectiontype as connectiontype, communityconnections.sendnotifications as sendnotifications, communities.*", :order => "communities.name"
-    
-  has_many :list_owners, :dependent => :destroy
-  has_many :listownerships, :through => :list_owners, :source => :list
+  
   
   # TODO - this is a ridiculously insane number of has many associations - this needs to be fixed.
   has_many :communitiesofanyinterest, :through => :communityconnections, :source => :community, :conditions => "communityconnections.connectiontype != 'nointerest'", :order => "communities.name"
