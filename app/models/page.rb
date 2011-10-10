@@ -19,6 +19,8 @@ class Page < ActiveRecord::Base
   INDEXED = 1
   NOT_GOOGLE_INDEXED = 2
   
+  DEFAULT_TIMEZONE = 'America/New_York'
+  
    
   after_create :store_content, :create_primary_link
   before_save  :set_url_title
@@ -1042,6 +1044,9 @@ class Page < ActiveRecord::Base
   # use convert=false when you need a timezone string that mysql can handle
   def time_zone(convert=true)
     tzinfo_time_zone_string = read_attribute(:time_zone)
+    if(tzinfo_time_zone_string.blank?)
+      tzinfo_time_zone_string = DEFAULT_TIMEZONE
+    end
 
     if(convert)
       reverse_mappings = ActiveSupport::TimeZone::MAPPING.invert
