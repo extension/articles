@@ -205,7 +205,7 @@ class Aae::PrefsController < ApplicationController
    
   def widget_preferences
     if !request.post?
-      @widgets = Widget.get_all_with_assignee_count(:conditions => 'widgets.active = true')
+      @widgets = Widget.active
       @filter_widgets = UserPreference.find(:all, :conditions => "user_id = #{@currentuser.id} and name = '#{UserPreference::FILTER_WIDGET_ID}'").collect{|pref| pref.setting.to_i}
       role_for_widget_routing = Role.find(:first, :conditions => "name = '#{Role::WIDGET_AUTO_ROUTE}'")
       @auto_assign_widgets = UserRole.find(:all, :conditions => "user_id = #{@currentuser.id} and role_id = #{role_for_widget_routing.id}").collect{|role| role.widget_id}
@@ -237,7 +237,7 @@ class Aae::PrefsController < ApplicationController
     role_for_widget_routing = Role.find(:first, :conditions => "name = '#{Role::WIDGET_AUTO_ROUTE}'")
     @auto_assign_widgets = UserRole.find(:all, :conditions => "user_id = #{@currentuser.id} and role_id = #{role_for_widget_routing.id}").collect{|role| role.widget_id}
     widget_name = params[:widget_name]
-    @widgets = Widget.get_all_with_assignee_count(:conditions => "widgets.name like '#{widget_name}%'")
+    @widgets = Widget.all(:conditions => "widgets.name like '#{widget_name}%'")
     
     render :partial => "widget_list", :layout => false
   end

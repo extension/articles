@@ -56,6 +56,28 @@ class Widget < ActiveRecord::Base
     self.community.joined.all(:conditions => 'aae_responder = 1')
   end
   
+  def assignee_count
+    self.class.assignee_counts[self.id] || 0
+  end
+  
+  class << self
+    extend ActiveSupport::Memoizable
+
+    def assignee_counts
+      assignee_counts = {}
+      widgets_with_counts = self.find(:all, 
+                :select => 'widgets.*, COUNT(accounts.id) AS count_of_assignees',
+                :joins => {:community => :joined},
+                :conditions => "accounts.aae_responder = 1",
+                :group => 'widgets.id')
+      
+      widgets_with_counts.map{|w| assignee_counts[w.id] = w.count_of_assignees.to_i}          
+      assignee_counts
+    end
+
+    memoize :assignee_counts
+  end
+  
   # include those who opted out of receiving questions
   def all_assignees
     self.community.joined.all
@@ -89,20 +111,6 @@ class Widget < ActiveRecord::Base
     return "<iframe style='border:0' width='100%' src='#{self.widgeturl}' height='#{height}'></iframe>"
   end
   
-  def self.get_all_with_assignee_count(options = {})
-    if(options[:conditions])
-      conditions = options[:conditions] + " AND accounts.aae_responder = 1"
-    else
-      conditions = "accounts.aae_responder = 1"
-    end
-
-    self.find(:all, 
-              :select => 'widgets.*, COUNT(accounts.id) AS assignee_count',
-              :joins => {:community => :joined},
-              :conditions => options[:conditions] ||= nil,
-              :group => 'widgets.id',
-              :order => options[:order] ||= 'widgets.name')
-  end
   
   def tag_myself_with_shared_tags(taglist)
     self.replace_tags_with_and_cache(taglist,User.systemuserid,Tagging::SHARED)
