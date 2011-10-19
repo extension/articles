@@ -188,7 +188,7 @@ $j(document).ready(function() {
       link.preventDefault();
       _gaq.push(['_trackPageview','/outgoing/'+ $j(this).attr('href')]);
       _gaq.push(['_trackEvent', 'Outbound Links', $j(this).attr('href')]);
-      // setTimeout('document.location = "' + $j(this).attr('href') + '"', 100);
+      setTimeout('document.location = "' + $j(this).attr('href') + '"', 100);
     }
   });
 });
