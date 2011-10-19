@@ -180,7 +180,7 @@ toggle_table_of_contents = function() {
 
 
 $j(document).ready(function() {
-  $j(".external_link, .local_link").click(function(link){
+  $j(".external_link, .local_link, .file_link").click(function(link){
     if ($j(this).attr('target') == "_blank") {
       _gaq.push(['_trackPageview','/outgoing/'+ $j(this).attr('href')]);
       _gaq.push(['_trackEvent', 'Outbound Links', $j(this).attr('href')]);
@@ -188,7 +188,7 @@ $j(document).ready(function() {
       link.preventDefault();
       _gaq.push(['_trackPageview','/outgoing/'+ $j(this).attr('href')]);
       _gaq.push(['_trackEvent', 'Outbound Links', $j(this).attr('href')]);
-      setTimeout('document.location = "' + $j(this).attr('href') + '"', 100);
+      // setTimeout('document.location = "' + $j(this).attr('href') + '"', 100);
     }
   });
 });
