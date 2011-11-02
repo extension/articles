@@ -27,9 +27,11 @@ class BrontoMessage < ActiveRecord::Base
       message
     else
       return_message = bronto_connection.read_message_for_id message_id
-      message = self.new(:message_name => return_message[:name], :is_jitp => self.is_jitp_message(message_id,bronto_connection))
-      message.id = message_id
-      message.save
+      if(return_message)
+        message = self.new(:message_name => return_message[:name], :is_jitp => self.is_jitp_message(message_id,bronto_connection))
+        message.id = message_id
+        message.save
+      end
     end
     message
   end
