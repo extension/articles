@@ -14,9 +14,11 @@ class BrontoRecipient < ActiveRecord::Base
       recipient
     else
       return_recipient = bronto_connection.read_contact_for_id contact_id
-      recipient = self.new(:email => return_recipient[:email])
-      recipient.id = contact_id
-      recipient.save
+      if(return_recipient)
+        recipient = self.new(:email => return_recipient[:email])
+        recipient.id = contact_id
+        recipient.save
+      end
     end
     recipient
   end
