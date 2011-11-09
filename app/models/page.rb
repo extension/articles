@@ -1071,6 +1071,11 @@ class Page < ActiveRecord::Base
       write_attribute(:time_zone, nil)
     end
   end
+  
+  def has_time_zone?
+    tzinfo_time_zone_string = read_attribute(:time_zone)
+    return (!tzinfo_time_zone_string.blank?)
+  end
 
   def clean_abbreviations(abbreviations_string = self.state_abbreviations)
     return [] unless abbreviations_string

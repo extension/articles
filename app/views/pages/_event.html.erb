@@ -16,7 +16,7 @@
      <% event_time = format_event_time(@page) %>
      <% if !event_time.blank? -%>
        <abbr class="dtstart" title="<%= event_time.strftime("%Y-%m-%dT%H:%M:%S") %>"><%= event_time.strftime("%B %d, %Y at %l:%M %p") %></abbr>
-       <%- if !@page.time_zone.blank? -%>
+       <%- if @page.has_time_zone? -%>
          <%= event_time.strftime("%Z") %>
        <%- end -%>
      <%- end -%>
@@ -29,7 +29,7 @@
    </strong>
  </div>
  
- <% if !@page.time_zone.blank? %>
+ <% if @page.has_time_zone? %>
  <p>
  <label for="user_time_zone">Time zone:</label>
  <%= select_tag('time_zone', time_zone_options_for_select(@selected_time_zone, ActiveSupport::TimeZone.us_zones)) %>

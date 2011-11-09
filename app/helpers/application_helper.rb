@@ -96,7 +96,7 @@ module ApplicationHelper
   def format_event_time(event)
     return nil if event.blank?
     
-    if !event.time_zone.blank?
+    if event.has_time_zone?
       # if user has not selected a timezone to have things displayed in...
       if (@currentuser.nil? or !@currentuser.has_time_zone?)
         return event.event_start.in_time_zone(event.time_zone) 
