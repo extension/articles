@@ -12,6 +12,9 @@ GEM
     activeresource (2.3.14)
       activesupport (= 2.3.14)
     activesupport (2.3.14)
+    airbrake (3.0.5)
+      activesupport
+      builder
     awesome_print (0.3.2)
     builder (2.1.2)
     calendar_date_select (1.16.2)
@@ -111,6 +114,7 @@ PLATFORMS
 
 DEPENDENCIES
   SystemTimer
+  airbrake
   awesome_print
   calendar_date_select
   capistrano

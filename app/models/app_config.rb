@@ -173,6 +173,9 @@ class AppConfig
     @@configtable['faq_create_url'] = 'http://create.extension.org/node/add/faq'
      
     @@configtable['geoip_data_file'] = "#{RAILS_ROOT}/data/GeoIP/GeoIPCity.dat"
+    
+    # Airbrake notifications
+    @@configtable['airbrake_api_key'] = 'NotSet'
 
   end
   
