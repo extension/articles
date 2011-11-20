@@ -1,4 +1,5 @@
 require 'yaml'
+require 'airbrake/capistrano'
 
 #------------------------------
 # <i>Should</i> only have to edit these three vars for standard eXtension deployments
