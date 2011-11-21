@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   include LoginSystem
   include ControllerExtensions
   include SslRequirement
+  rescue_from WillPaginate::InvalidPage, :with => :do_invalid_page
   
 
   # Scrub sensitive parameters from your log
@@ -139,6 +140,10 @@ class ApplicationController < ActionController::Base
     personalize_location_and_institution if not @personal
     @page_title_text = 'Status 410 - Page Removed'
     render :template => "/shared/410", :status => "410"
+  end
+  
+  def do_invalid_page
+    render :text => 'Invalid page requested', :status => 400
   end
     
   private
