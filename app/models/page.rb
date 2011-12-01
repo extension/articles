@@ -112,8 +112,8 @@ class Page < ActiveRecord::Base
     return cache_key
   end
   
-  def is_copwiki_or_create?
-    (self.source == 'copwiki' or self.source == 'create')
+  def is_create?
+    (self.source == 'create')
   end
   
   # syntactic sugar - returns true if the datatype is an article
@@ -470,38 +470,10 @@ class Page < ActiveRecord::Base
   def self.contents_for_content_tag(options = {})
     self.articles.bucketed_as('contents').tagged_with_content_tag(options[:content_tag].name).ordered.first
   end
-  
-  def self.parse_id_from_atom_entryid(idurl,source)
-    begin
-      parsedurl = URI.parse(idurl)
-    rescue
-      return nil
-    end
-    
-    case source
-    when 'copwiki'
-    else
-      if(idlist = parsedurl.path.scan(/\d+/))
-        id = idlist[0]
-        return id
-      else
-        return nil
-      end
-    end
-
-  end
-     
+       
   def self.create_or_update_from_atom_entry(entry,page_source)
     current_time = Time.now.utc
-    # copwiki atom id's include a revision number, so we have to use
-    # the link rel='alternate' which should be the only link
-    # as the source url
-    if(page_source.name == 'copwiki')
-      provided_source_url = entry.links[0].href
-    else
-      provided_source_url = entry.id
-    end
-    
+    provided_source_url = entry.id    
     page = self.find_by_source_url(provided_source_url) || self.new
     page.source = page_source.name
     page.page_source = page_source
@@ -533,17 +505,7 @@ class Page < ActiveRecord::Base
       page.destroy
       return returndata
     end
-    
-    # check for 'animal manure management' or 'ag energy' from the copwiki
-      # so that we can ignore dpl content and duplicate data
-      if(page_source.name == 'copwiki')
-        if(!entry_category_terms.blank? and (entry_category_terms.include?('animal manure management') or entry_category_terms.include?('ag energy')))
-          returndata = [page.source_updated_at, 'ignored', provided_source_url]
-          return returndata
-        end
-      end
-      
-      
+          
     # check for datatype
     if(!entry_category_terms.blank?)
       # news overrides article => overrides faq
@@ -811,7 +773,7 @@ class Page < ActiveRecord::Base
     
     # images first
     
-    if(self.is_copwiki_or_create?)
+    if(self.is_create?)
       convert_image_count = 0
       # if we are running in the "production" app location - then we need to rewrite image references that
       # refer to the host of the feed to reference a relative URL
