@@ -169,6 +169,16 @@ class Link < ActiveRecord::Base
       return nil
     end
     
+    # special case for where the alternate != source_url
+    if(page.alternate_source_url != page.source_url)
+      begin 
+        alternate_source_uri = URI.parse(page.alternate_source_url)
+        alternate_source_uri_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(alternate_source_uri.to_s.downcase))
+      rescue
+        # do nothing
+      end
+    end  
+    
     # specical case for create urls - does this have an alias_uri?
     if(page.page_source and page.page_source.name == 'create')    
       if(!page.old_source_url.blank?)
@@ -189,9 +199,13 @@ class Link < ActiveRecord::Base
     end
     
     find_condition = "fingerprint = '#{source_uri_fingerprint}'"
+    if(alternate_source_uri)
+      find_condition += " OR alternate_fingerprint = '#{alternate_source_uri_fingerprint}'"
+    end
     if(old_source_uri)
       find_condition += " OR alias_fingerprint = '#{old_source_uri_fingerprint}'"
     end
+    
       
     if(this_link = self.where(find_condition).first)
       # this was a wanted link - we need to update the link now - and kick off the process of updating everything
@@ -202,6 +216,12 @@ class Link < ActiveRecord::Base
       end
     else    
       this_link = self.new(:page => page, :url => source_uri.to_s, :fingerprint => source_uri_fingerprint)
+      
+      if(alternate_source_uri)
+        this_link.alternate_url = alternate_source_uri.to_s
+        this_link.alternate_fingerprint = alternate_source_uri_fingerprint
+      end
+      
       if(old_source_uri)
         this_link.alias_url = old_source_uri.to_s
         this_link.alias_fingerprint = old_source_uri_fingerprint
@@ -259,9 +279,9 @@ class Link < ActiveRecord::Base
       original_uri.fragment = nil
     end
     
-    # check both the fingerprint and alias_fingerprint
+    # check both the fingerprint and alternate_fingerprint and alias_fingerprint
     original_uri_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(original_uri.to_s.downcase))    
-    if(this_link = self.where("fingerprint = ? or alias_fingerprint = ?",original_uri_fingerprint,original_uri_fingerprint).first)
+    if(this_link = self.where("fingerprint = ? or alternate_fingerprint = ? or alias_fingerprint = ?",original_uri_fingerprint,original_uri_fingerprint,original_uri_fingerprint).first)
       return this_link
     end
       

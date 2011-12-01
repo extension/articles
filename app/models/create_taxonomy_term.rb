@@ -6,7 +6,7 @@
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class CreateTaxonomyTerm < ActiveRecord::Base
-  # connects to the darmok database
+  # connects to the create database
   self.establish_connection :create
   self.set_table_name 'taxonomy_term_data'
   self.set_primary_key "tid"

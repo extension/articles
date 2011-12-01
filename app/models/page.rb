@@ -473,7 +473,14 @@ class Page < ActiveRecord::Base
        
   def self.create_or_update_from_atom_entry(entry,page_source)
     current_time = Time.now.utc
-    provided_source_url = entry.id    
+    provided_source_url = entry.id
+    entry.links.each do |entry_link|
+      if(entry_link.rel == 'alternate')
+        page.alternate_source_url = entry_link.href
+      end
+    end
+    
+    entry.links[0].href    
     page = self.find_by_source_url(provided_source_url) || self.new
     page.source = page_source.name
     page.page_source = page_source
@@ -546,9 +553,7 @@ class Page < ActiveRecord::Base
     if(entry_category_terms.include?('forceindex'))
       page.indexed = Page::INDEXED
     end
-    
-      
-    page.source_id = entry.id
+          
     if(page.source_url.blank?)
       page.source_url = provided_source_url 
       page.source_url_fingerprint = Digest::SHA1.hexdigest(provided_source_url.downcase)

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110709032031) do
+ActiveRecord::Schema.define(:version => 20111201175030) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -613,6 +613,8 @@ ActiveRecord::Schema.define(:version => 20110709032031) do
     t.text     "url"
     t.string   "alias_fingerprint"
     t.text     "alias_url"
+    t.string   "alternate_fingerprint"
+    t.text     "alternate_url"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "status"
@@ -625,6 +627,7 @@ ActiveRecord::Schema.define(:version => 20110709032031) do
   end
 
   add_index "links", ["alias_fingerprint"], :name => "alias_fingerprint_ndx"
+  add_index "links", ["alternate_fingerprint"], :name => "alternate_fingerprint_ndx"
   add_index "links", ["fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
   add_index "links", ["page_id", "status", "linktype"], :name => "coreindex"
 
@@ -776,7 +779,6 @@ ActiveRecord::Schema.define(:version => 20110709032031) do
     t.datetime "source_created_at"
     t.datetime "source_updated_at"
     t.string   "source"
-    t.text     "source_id"
     t.text     "source_url"
     t.string   "source_url_fingerprint"
     t.boolean  "is_dpl",                                       :default => false
@@ -795,6 +797,7 @@ ActiveRecord::Schema.define(:version => 20110709032031) do
     t.text     "cached_content_tags"
     t.text     "old_source_url"
     t.boolean  "event_all_day"
+    t.text     "alternate_source_url"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
