@@ -189,12 +189,8 @@ class Link < ActiveRecord::Base
           # do nothing
         end
       elsif(migrated_url = MigratedUrl.find_by_target_url_fingerprint(source_uri_fingerprint))
-        begin 
-          old_source_uri = URI.parse(migrated_url.alias_url)
-          old_source_uri_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(old_source_uri.to_s.downcase))
-        rescue
-          # do nothing
-        end
+        old_source_uri = migrated_url.alias_url
+        old_source_uri_fingerprint = migrated_url = migrated_url.alias_url_fingerprint
       end
     end
     
@@ -258,6 +254,12 @@ class Link < ActiveRecord::Base
       return ''
     end
     
+    # explicitly ignore callto: links
+    if(original_uri.scheme.blank?)
+      original_uri.scheme = 'http'
+    elsif(original_uri.scheme == 'callto')
+      return nil
+    end
   
     # is this a relative url? (no scheme/no host)- so attach the source_host and http
     # to it, to see if that matches an original URL that we have
@@ -270,7 +272,6 @@ class Link < ActiveRecord::Base
           original_uri.host = source_host 
         end
       end
-      original_uri.scheme = 'http' if(original_uri.scheme.blank?)
     end
     
     # for comparison purposes - we need to drop the fragment - the caller is going to

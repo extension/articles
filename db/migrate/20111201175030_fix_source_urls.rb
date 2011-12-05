@@ -29,6 +29,18 @@ class FixSourceUrls < ActiveRecord::Migration
       end
       say "Fixed #{found_count} articles, had to remove #{destroyed_count} duplicates."
     end
+    
+    say_with_time "Fixing data items" do
+      MigratedUrl.all.each do |migrated_url|
+        begin
+          uri = URI.parse(migrated_url.alias_url)
+        rescue
+          if(migrated_url.alias_url =~ %r{http://cop.extension.org/wiki/(.*)})
+            migrated_url.update_attribute(:alias_url, "http://cop.extension.org/wiki/#{CGI.escape($1)}")
+          end
+        end
+      end
+    end
   end
 
   def self.down

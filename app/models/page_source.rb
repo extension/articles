@@ -180,15 +180,15 @@ class PageSource < ActiveRecord::Base
             item_ids[:ignored] << object
           end
         rescue Exception => e
-          item_counts[:errors] += 1
-          if(entry.id)
-            message = "#{entry.id}:#{e.message}"
-          else
-            message = e.message
-          end
-          item_ids[:errors] << message
-        end # exception handling for create_or_update_from_atom_entry
-      end
+            item_counts[:errors] += 1
+            if(entry.id)
+              message = "#{entry.id}:#{e.message}"
+            else
+              message = e.message
+            end
+            item_ids[:errors] << message
+          end # exception handling for create_or_update_from_atom_entry
+        end
     
       update_options = {:last_requested_at => Time.now.utc, :last_requested_success => true, :last_requested_information => {:item_counts => item_counts, :item_ids => item_ids}}
       
