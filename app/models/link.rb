@@ -155,6 +155,22 @@ class Link < ActiveRecord::Base
     end
   end
   
+  def change_alternate_url    
+    if(self.page.alternate_source_url != self.page.source_url)
+      begin 
+        alternate_source_uri = URI.parse(page.alternate_source_url)
+        alternate_source_uri_fingerprint = Digest::SHA1.hexdigest(CGI.unescape(alternate_source_uri.to_s.downcase))
+      rescue
+        # do nothing
+      end
+    end
+    
+    if(alternate_source_uri)
+      self.alternate_url = alternate_source_uri.to_s
+      self.alternate_fingerprint = alternate_source_uri_fingerprint
+      self.save
+    end
+  end
   
   def self.create_from_page(page)
     if(page.source_url.blank?)

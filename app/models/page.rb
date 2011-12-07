@@ -23,6 +23,7 @@ class Page < ActiveRecord::Base
   
    
   after_create :store_content, :create_primary_link
+  after_update :update_primary_link_alternate
   before_save  :set_url_title
   before_update :check_content
   before_destroy :change_primary_link
@@ -893,6 +894,14 @@ class Page < ActiveRecord::Base
     # update items that might link to this article
     if(!self.primary_link.blank?)
       self.primary_link.change_to_wanted
+    end
+  end
+  
+  def update_primary_link_alternate
+    if(self.alternate_source_url_changed?)
+      if(!self.primary_link.blank?)
+        self.primary_link.change_alternate_url
+      end
     end
   end
   
