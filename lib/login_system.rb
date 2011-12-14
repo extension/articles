@@ -16,7 +16,7 @@ module LoginSystem
     elsif AppConfig.configtable['reserved_uids'].include?(checkuser.id)
       return false
     elsif(!checkuser.last_login_at.blank?)
-      if(checkuser.last_login_at < Time.now.utc - 7.days)
+      if(checkuser.last_login_at < Time.now.utc - 4.days)
         return false
       else
         return true
