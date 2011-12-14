@@ -85,6 +85,7 @@ class OpieController < ApplicationController
         end
         # add the sreg response if requested
         self.add_sreg(opierequest, response)
+        @currentuser.update_attribute(:last_login_at,Time.now.utc)
         UserEvent.log_event(:etype => UserEvent::LOGIN_OPENID_SUCCESS,:user => @currentuser,:description => 'openid login',:appname => opierequest.trust_root)                  
         log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_OPENID,:trustroot => opierequest.trust_root)                                     
       elsif opierequest.immediate
@@ -256,12 +257,20 @@ EOS
       if not checkuser      
         return false
       elsif(is_idselect)
-        @currentuser = checkuser
-        return true
-      else
-        if(check_openidurl_foruser(checkuser,identity))
+        if(authorize?(checkuser))
           @currentuser = checkuser
           return true
+        else
+          return false
+        end
+      else
+        if(check_openidurl_foruser(checkuser,identity))
+          if(authorize?(checkuser))
+            @currentuser = checkuser
+            return true
+          else
+            return false
+          end
         else
           flash[:failure] = "The OpenID you used doesn't match the OpenID for your account.  Please use your back button and enter your OpenID: #{checkuser.openid_url(true)}"
           return false

@@ -16,7 +16,7 @@ module LoginSystem
     elsif AppConfig.configtable['reserved_uids'].include?(checkuser.id)
       return false
     elsif(!checkuser.last_login_at.blank?)
-      if(checkuser.last_login_at < Time.now.utc - 4.days)
+      if(checkuser.last_login_at < Time.now.utc - 7.days)
         return false
       else
         return true
@@ -89,6 +89,7 @@ module LoginSystem
       checkuser = User.find_by_id(session[:userid])
       if (authorize?(checkuser))
         @currentuser = checkuser
+        @currentuser.update_attribute(:last_login_at,Time.now.utc)
         session[:account_id] = @currentuser.id  
         return true
       end
@@ -108,6 +109,7 @@ module LoginSystem
       checkuser = User.find_by_id(session[:userid])
       if (authorize?(checkuser))
         @currentuser = checkuser
+        @currentuser.update_attribute(:last_login_at,Time.now.utc)
         session[:account_id] = @currentuser.id  
         return true
       end
