@@ -38,6 +38,9 @@ def update_apps_users
   needs_update_list.each do |google_account|
     puts "Updating Google apps account for #{google_account.username}..."
     google_account.update_apps_account
+    if google_account.has_error? and !google_account.last_error.nil?
+      $stderr.puts google_account.last_error 
+    end
   end
   
   # new accounts
@@ -45,6 +48,9 @@ def update_apps_users
   needs_update_list.each do |google_account|
     puts "Creating Google apps account for #{google_account.username}..."
     google_account.update_apps_account
+    if google_account.has_error? and !google_account.last_error.nil?
+      $stderr.puts google_account.last_error 
+    end
   end
 end
 
@@ -54,7 +60,10 @@ def update_apps_groups
   groups_list.each do |google_group|
     puts "Creating/Updating Google groups information for #{google_group.group_id}..."
     google_group.update_apps_group_members  # will create/update group as well
-    google_group.update_apps_group_owners # update owners    
+    google_group.update_apps_group_owners # update owners
+    if google_group.has_error? and !google_group.last_error.nil?
+      $stderr.puts google_group.last_error 
+    end
   end
   
   # new groups
@@ -63,6 +72,9 @@ def update_apps_groups
     puts "Creating/Updating Google groups information for #{google_group.group_id}..."
     google_group.update_apps_group_members  # will create/update group as well
     google_group.update_apps_group_owners # update owners    
+    if google_group.has_error? and !google_group.last_error.nil?
+      $stderr.puts google_group.last_error 
+    end
   end
 end
  
