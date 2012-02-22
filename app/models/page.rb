@@ -41,6 +41,7 @@ class Page < ActiveRecord::Base
   belongs_to :page_source
   has_many :cached_tags, :as => :tagcacheable
   
+  validates_numericality_of :learn_id, :allow_blank => true, :message => "event must be a valid event number." 
 
   named_scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}

@@ -41,6 +41,9 @@
  <% end %>
  
  <div class="description"><p><strong>Description</strong>:<br /><%= @page.content %></p></div>
+ <% if @page.learn_id.present? %>
+ <p><strong>Learn URL</strong>: <%= link_to "#{AppConfig.configtable['learn_event_url']}/#{@page.learn_id}", "#{AppConfig.configtable['learn_event_url']}/#{@page.learn_id}" %></p>
+ <% end %>
  <p class="coverage"><strong>Coverage:</strong> <%= @page.coverage %></p> 
  <p class="states"><strong>States:</strong> <%= @page.states.join(', ') %></p>
  <%if @page.has_map?%>

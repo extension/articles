@@ -9,20 +9,16 @@
 /config/appconfig.yml
 /config/devserver.yml
 /config/newrelic.yml
-
 # /log/
 /log/*.log
 /log/*.pid
-
 # /public/
 /public/system
 /public/sitemaps/*.xml
-
 # /db/
-
 # /data/
 /data/*
-
 # /doc
 /.yardoc
 /doc/*
+/*.ru

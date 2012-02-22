@@ -176,6 +176,9 @@ class AppConfig
     
     # Airbrake notifications
     @@configtable['airbrake_api_key'] = 'NotSet'
+    
+    # learn.extension.org event url
+    @@configtable['learn_event_url'] = 'http://learn.extension.org/events'
 
   end
   

@@ -128,7 +128,11 @@ class PagesController < ApplicationController
     end
     
     # set canonical_link
-    @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
+    if @page.is_event? && @page.learn_id.present?
+      @canonical_link = "#{AppConfig.configtable['learn_event_url']}/#{@page.learn_id}"
+    else
+      @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
+    end
     
     # redirect check
     if(!params[:title] or params[:title] != @page.url_title)
@@ -431,6 +435,7 @@ class PagesController < ApplicationController
       @event.source_updated_at = @event.source_created_at = Time.now.utc
       @event.source_url_fingerprint = Digest::SHA1.hexdigest('local-event' + rand().to_s)
       @event.source = 'local'
+      
       begin
         Time.zone = @event.time_zone
         if(!@event.event_all_day?)

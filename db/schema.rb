@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111201175030) do
+ActiveRecord::Schema.define(:version => 20120222145648) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -798,10 +798,12 @@ ActiveRecord::Schema.define(:version => 20111201175030) do
     t.text     "old_source_url"
     t.boolean  "event_all_day"
     t.text     "alternate_source_url"
+    t.integer  "learn_id"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
   add_index "pages", ["event_start"], :name => "index_pages_on_event_start"
+  add_index "pages", ["learn_id"], :name => "index_pages_on_learn_id"
   add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
   add_index "pages", ["source_created_at", "source_updated_at"], :name => "index_pages_on_source_created_at_and_source_updated_at"
   add_index "pages", ["source_url_fingerprint"], :name => "index_pages_on_source_url_fingerprint", :unique => true
