@@ -87,7 +87,11 @@ textarea {width:98%;}
 #event_time input {
 	width: 5em;
 }
-
+.field-learn-event input {
+   width: 4em;
+	display: inline;
+}
+.field-learn-event span {display:block;}
 .field-duration input {
 	width: 2em;
 	display: inline;
