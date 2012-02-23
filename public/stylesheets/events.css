@@ -91,6 +91,11 @@ textarea {width:98%;}
    width: 4em;
 	display: inline;
 }
+.field-learn-event a {
+   color:#888;
+   font-size:.9em;
+}
+
 .field-learn-event span {display:block;}
 .field-duration input {
 	width: 2em;
