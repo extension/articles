@@ -506,7 +506,7 @@ class User < Account
    self.vouched_at = Time.now.utc
    if(self.save)
     if(!self.additionaldata.nil? and !self.additionaldata[:signup_institution_id].nil?)
-      self.change_profile_community(Community.find(self.additionaldata[:signup_institution_id]))
+      self.change_profile_community(Community.find(self.additionaldata[:signup_institution_id])) if self.additionaldata[:signup_institution_id] != '0'
     end
     return true
    else
