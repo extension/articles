@@ -622,15 +622,15 @@ class Page < ActiveRecord::Base
     if(page.new_record?)
       returndata = [page.source_updated_at, 'added']
       page.save
-    elsif(page.original_content_changed?)
+    elsif(page.original_content_changed? or page.source == 'create') #add conditional to force all create.ex edits to go through.
       returndata = [page.source_updated_at, 'updated']
       page.save
     else
       # content didn't change, don't save the article - most useful for dpl's
       returndata = [page.source_updated_at, 'nochange']
       # force a return for now so that we don't keep injecting eOrganic/PBGworks content as recent
-      # the byproduct of this is tags merely change and not content
-      # we won't update the tags, but I guess that's the breaks.
+      # the byproduct of this we won't update their tags if 
+      # that's all they change, but I guess that's the breaks.
       returndata << page
       return returndata
     end
