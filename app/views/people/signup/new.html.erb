@@ -44,7 +44,7 @@
                     <%= password_field "user", "password", :class => "medsize", :value => '' %>
                     <span class="advice">minimum six characters</span>
                 </p>	
-
+                
                 <p>
                     <label for="user_phonenumber">Preferred Phone Number:</label>
                     <%= text_field("user", "phonenumber", {:value => number_to_phone(@user.phonenumber,:area_code => true)}) %>
@@ -60,12 +60,19 @@
                   <%= time_zone_select(:user,:time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)") %>
                 </p>
                 
-                <p>
-                    <label>Your Involvement with Cooperative Extension: <em class="required">*</em></label>
-                    <%= text_area_tag(:signup_affiliation, params[:signup_affiliation], :rows => 3) %>                
-                <p>
+                
 	
             </fieldset>
+        </div>
+        
+        <div class="form_section">
+        <h3>Your Connection</h3>
+
+        <p>
+            <label>Please list someone in Extension with whom you have a connection, and tell us how you would like to be involved with eXtension.<em class="required">*</em></label>
+            <%= text_area_tag(:signup_affiliation, params[:signup_affiliation], :rows => 3) %>
+        <p>
+        
         </div>
         
         <div class="form_section">
