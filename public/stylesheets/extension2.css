@@ -209,8 +209,8 @@ h1.logo a {display:block;overflow:hidden; height:78px;line-height:1;color:#666;}
 .searchbar .searchfield {width: 190px;}
 
 
-#flash_notice {list-style: none; text-align: left; padding: 0; margin: 0 0 .5em;}
-#flash_notice p {padding: .3em .5em;margin:0;}
+#flash_notice {list-style: none; text-align: left; padding: .5em 1em; margin: 0 0 .5em;}
+#flash_notice p {padding: .3em .5em;margin:0; font-size:1.2em;}
 #flash_notice.notice {color: #000;background: #deff5c;border-top: 3px solid #bedc51;border-bottom: 3px solid #bedc51;}
 #flash_notice.warning {color: red;background: #f4f4f4;border-top: 1px solid red;border-bottom: 1px solid red;}
 
