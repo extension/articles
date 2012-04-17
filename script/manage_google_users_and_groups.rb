@@ -44,7 +44,7 @@ def update_apps_users
   end
   
   # new accounts
-  needs_update_list = GoogleAccount.null_apps_update.no_apps_error.all(:conditions => "DATE(created_at) > '#{@start_date}'", :order => 'updated_at DESC')
+  needs_update_list = GoogleAccount.null_apps_update.has_password.no_apps_error.all(:conditions => "DATE(created_at) > '#{@start_date}'", :order => 'updated_at DESC')
   needs_update_list.each do |google_account|
     puts "Creating Google apps account for #{google_account.username}..."
     google_account.update_apps_account

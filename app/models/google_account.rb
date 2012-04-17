@@ -20,6 +20,7 @@ class GoogleAccount < ActiveRecord::Base
   named_scope :needs_apps_update, {:conditions => "updated_at > apps_updated_at"}
   named_scope :no_apps_error, {:conditions => "has_error = 0"}
   named_scope :null_apps_update, {:conditions => "apps_updated_at IS NULL"}
+  named_scope :has_password, {:conditions => "password !=''"}
 
 
   def set_values_from_user
