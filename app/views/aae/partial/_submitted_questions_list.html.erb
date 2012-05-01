@@ -47,10 +47,14 @@
                        :title => "Show all incoming questions for " + sq.location.name) %>    
                       </span>
                     <% end %>
-                    <% if @questions_status && @questions_status != SubmittedQuestion::STATUS_RESOLVED %>
+                    
                     <% if !sq.spam %>
                     <%= link_to_remote "edit", :update => "category_change_#{sq.id}", :html => {:class => "recatedit", :id => "recat_link"},
                             :url => { :controller => 'aae/question', :action => :enable_category_change, :id => sq.id } %>
+                    <% end %>
+                    
+                    <% if @questions_status && @questions_status != SubmittedQuestion::STATUS_RESOLVED %>
+                    <% if !sq.spam %>
                     <% if !sq.asked_question.index("http://").nil? %>
                     &nbsp;| &nbsp;
                     <%= link_to "Report as Spam", aae_report_spam_url(:id => sq.id), 

@@ -31,7 +31,7 @@
     <%- end -%>
     
     <p class="inc_descriptive">Category: <strong><span id="category_names_<%= @submitted_question.id %>"><%= @submitted_question.category_names %></span></strong>
-        <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
+        <% if !@submitted_question.spam %>
             <%= link_to_function "edit", "((this.innerHTML == 'edit') ? this.innerHTML = 'close': this.innerHTML = 'edit');" + " Effect.toggle('recat_#{@submitted_question.id}','blind', { duration: .4});", :id => "recat_link" %>
         <% end %>
     </p>
@@ -42,7 +42,7 @@
       <% end %>
     </p>
     
-    <% if @submitted_question.status_state == SubmittedQuestion::STATUS_SUBMITTED %>
+    <% if !@submitted_question.spam %>
         <div id="recat_<%= @submitted_question.id %>" style="display:none;" class="recat">
         <%= render(:partial => "aae/partial/category_form") %>
         </div>
