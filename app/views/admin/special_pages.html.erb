@@ -15,7 +15,7 @@
 	<tbody>
 	<% SpecialPage.includes(:page).order('path').all.each do |special_page| %>
 		<tr>
-			<td><%= link_to(main_special_path(:path => special_page.path)) %></td>
+			<td><%= link_to(main_special_path(:path => special_page.path),main_special_path(:path => special_page.path)) %></td>
 			<td><%= link_to("Page ID: #{special_page.page.id}",  pageinfo_page_path(:id => special_page.page.id)) %></td>
 		</tr>
 	<% end %>
