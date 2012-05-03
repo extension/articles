@@ -177,13 +177,6 @@ class MainController < ApplicationController
     @communities = Community.launched.ordered_by_topic
     @article = Page.find_by_title_url("eXtension_Resource_Areas")
   end
-
-  def sponsors
-    set_title('Our Sponsors')
-    set_titletag('eXtension - Our Sponsors')
-    @article = Page.find_by_title_url("eXtension_Sponsors")
-    render :partial => "shared/article", :locals => {:article => @article}, :layout => true
-  end
     
   def show_institution_list
     if params[:zip_or_state]
