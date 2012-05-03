@@ -134,10 +134,17 @@ class PagesController < ApplicationController
       @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
     end
     
+    # special redirect check
+    if(@page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id))
+      return redirect_to(main_special_url(:path => @special_page.path),:status => :moved_permanently)
+    end
+      
+    
     # redirect check
     if(!params[:title] or params[:title] != @page.url_title)
-      redirect_to(@canonical_link,:status => :moved_permanently)
+      return redirect_to(@canonical_link,:status => :moved_permanently)
     end
+    
     
 
     # get the tags on this article that correspond to community content tags

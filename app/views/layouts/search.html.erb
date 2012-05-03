@@ -41,11 +41,11 @@
         <p><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is an educational partnership of 74 universities in the United States.</p>
         <p class="copyright">&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
         <ul>
-            <li><%= link_to_unless_current "institutional partners", :controller => "main", :action => "partners" %></li>
-            <li><%= link_to_unless_current "privacy", :controller => "main", :action => "privacy" %></li>
-            <li><%= link_to_unless_current "contact us", :controller => "main", :action => "contact_us" %></li>
-            <li><%= link_to_unless_current "disclaimer", :controller => "main", :action => "disclaimer" %></li>
-            <li class="last"><%= link_to_unless_current "terms of use", :controller => "main", :action => "termsofuse" %></li>
+	        <li><%= link_to_unless_current "institutional partners", main_special_path(:path => 'partners') %></li>
+	        <li><%= link_to_unless_current "privacy", main_special_path(:path => 'privacy') %></li>
+	        <li><%= link_to_unless_current "contact us", main_special_path(:path => 'contact_us') %></li>
+	        <li><%= link_to_unless_current "disclaimer", main_special_path(:path => 'disclaimer') %></li>
+	        <li class="last"><%= link_to_unless_current "terms of use", main_special_path(:path => 'termsofuse') %></li>
         </ul>
       </div>
 

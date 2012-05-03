@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120222145648) do
+ActiveRecord::Schema.define(:version => 20120503140751) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -799,6 +799,7 @@ ActiveRecord::Schema.define(:version => 20120222145648) do
     t.boolean  "event_all_day"
     t.text     "alternate_source_url"
     t.integer  "learn_id"
+    t.boolean  "is_special_page",                              :default => false
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
@@ -871,6 +872,17 @@ ActiveRecord::Schema.define(:version => 20120222145648) do
   add_index "social_networks", ["network", "accountid"], :name => "index_social_networks_on_network_and_accountid"
   add_index "social_networks", ["privacy"], :name => "index_social_networks_on_privacy"
   add_index "social_networks", ["user_id"], :name => "index_social_networks_on_user_id"
+
+  create_table "special_pages", :force => true do |t|
+    t.string  "path"
+    t.string  "titletag"
+    t.string  "main_heading"
+    t.string  "sub_heading"
+    t.integer "page_id"
+  end
+
+  add_index "special_pages", ["page_id"], :name => "page_ndx", :unique => true
+  add_index "special_pages", ["path"], :name => "path_ndx", :unique => true
 
   create_table "sponsors", :force => true do |t|
     t.integer "logo_id"
