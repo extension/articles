@@ -97,12 +97,7 @@ class User < Account
   has_one  :directory_item_cache
   
   # has_many :invitations
-  
-  has_many :learn_connections
-  has_many :learn_sessions, :through => :learn_connections, :select => "learn_connections.connectiontype as connectiontype, learn_sessions.*"
-  has_many :learn_sessions_presented, :source => :learn_session, :through => :learn_connections, :conditions => "learn_connections.connectiontype = #{LearnConnection::PRESENTER}"
-  
-  
+    
   after_save :update_chataccount
   after_save :update_google_account
   after_save :update_email_aliases
@@ -1134,18 +1129,7 @@ class User < Account
     connection.update_attribute(:sendnotifications,notification)
    end
   end
-  
-  def update_connection_to_learn_session(learn_session,connectiontype,connected=true)
-    connection = self.learn_connections.find(:first, :conditions => "connectiontype = #{connectiontype} and learn_session_id = #{learn_session.id}")
-    if(!connection.nil?)
-      if(!connected)
-        connection.destroy
-      end
-    elsif(connected == true)
-      LearnConnection.create(:learn_session_id => learn_session.id, :user_id => self.id, :connectiontype => connectiontype, :email => self.email)
-    end
-  end
-         
+           
   def is_sudoer?
    return AppConfig.configtable['sudoers'][self.login.downcase]
   end

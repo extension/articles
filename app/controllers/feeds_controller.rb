@@ -19,47 +19,7 @@ class FeedsController < ApplicationController
   def community
     return redirect_to(content_feed_url(:tags => params[:tags]), :status => 301)
   end
-    
-  def learn
-    filteredparameters_list = [{:limit => {:default => AppConfig.configtable['default_feed_content_limit']}},:tags]
-    filteredparams = ParamsFilter.new(filteredparameters_list,params)
-    
-    # limit over max? let's be pedantic
-    if(filteredparams.limit > AppConfig.configtable['max_feed_content_limit'])
-      return render_feed_error({:errormessage => "Requested limit of #{filteredparams.limit} is greater than the max allowed: #{AppConfig.configtable['max_feed_content_limit']}"})
-    end
         
-    # empty tags? - presume "all"
-    if(filteredparams.tags.nil?)
-       alltags = true
-    else
-       tag_operator = filteredparams._tags.taglist_operator      
-       alltags = (filteredparams.tags.include?('all'))
-       content_tags = filteredparams.tags
-    end
-    
-    title = "eXtension Professional Development Sessions"
-    if(alltags)
-      title += " - All"
-    else
-      title += " - " + content_tags.join(" #{filteredparams._tags.taglist_operator} ")
-    end
-    
-    if(alltags)
-      sessions = LearnSession.limit(filteredparams.limit).all(:order => 'updated_at DESC')
-    elsif(filteredparams._tags.taglist_operator == 'or')
-      sessions = LearnSession.tagged_with_any_shared_tags(filteredparams.tags).limit(filteredparams.limit).all(:order => 'updated_at DESC')
-    else
-      sessions = LearnSession.tagged_with_shared_tags(filteredparams.tags).limit(filteredparams.limit).all(:order => 'updated_at DESC')
-    end
-    
-    feed_meta = {:title => "Professional Development Sessions - eXtension", 
-                 :subtitle => "eXtension published content",
-                 :alternate => url_for(:controller => 'learn', :action => 'index', :only_path => false),
-                 :updated_at => sessions.first.session_start}
-    return render :text => atom_feed_from(sessions, feed_meta), :content_type => Mime::ATOM
-  end
-    
   def content
     begin
     filteredparameters_list = [:max_results,

@@ -1,3 +1,0 @@
-<p><%= check_box_tag("session_connection","makeconnection",@currentuser.learn_sessions.find(:all, :conditions => ["connectiontype = #{LearnConnection::ATTENDED}"]).include?(@learn_session), {:id => "session_connection_attendance_#{@learn_session.id}"}) %> I attended this session</p>
-<%= observe_field("session_connection_attendance_#{@learn_session.id}", :update => "session_connection", :url => {:controller => :learn, :action => :change_my_connection, :id => @learn_session.id}, :with => "'connectiontype=attended&connection=' + value") %>
-
