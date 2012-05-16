@@ -1,0 +1,35 @@
+<% @page_title = "Ask an Expert Future Directions" %>
+<%= render(:partial => "partial/flashmessages") %>
+
+<h2><%= @page_title %></h2>
+
+<p>The <a href="http://create.extension.org/node/617">eXtension Strategic Roadmap for 2011-2014</a> includes a key item to expand our eXtension Ask an Expert (AaE) system. The interaction between those asking questions and the Extension personnel that answer them is one of Extension's success stories, and we are proposing to expand that interaction, modeling the interactions online after those that occur at the local level everyday throughout the Extension system. It is proposed that this "second generation" of AaE ("AaE 2.0") becomes public. Questions and answers may be publicly viewable, and everyone will be able to provide feedback, add context, and discuss impact through comments on the original question and answer.</p>
+
+<p>We have started this process and we'd like to make sure that each and every person that uses AaE has an opportunity to make their voice heard, and we'd like to collect some quantitative data regarding your opinions. Please see the <a href="http://about.extension.org/aae">background information</a> – including the forums that we've setup in our Learn and Create tools where you can discuss directions with the eXtension staff and other colleagues, then weigh in below with your thoughts on the following two questions (we'll associate your answer with you, and you can come back in and change it at any time while the survey is open):</p>
+
+<div id="aae_public_survey">
+    <% form_tag(:controller => 'aae/survey', :action => 'post_public_answer') do %>
+		<h2>Answers</h2>
+    <p>1. Question One</p>
+    <ul id="peer_review">
+        <li><%= radio_button_tag('peer_review', 1, survey_response_checked?(@response,'peer_review',1)) %> Answer One</li>
+        <li><%= radio_button_tag('peer_review', 2, survey_response_checked?(@response,'peer_review',2)) %> Answer Two</li>
+    </ul>
+		
+		<h2>Comments</h2>
+    <p>2. Question Two</p>
+    <ul id="public_comment">
+        <li><%= radio_button_tag('public_comment', 1, survey_response_checked?(@response,'public_comment',1)) %> Answer One</li>
+        <li><%= radio_button_tag('public_comment', 2, survey_response_checked?(@response,'public_comment',2)) %> Answer Two</li>
+    </ul>
+    <p class="save_it">
+			<%- if @response.new_record? -%>
+				<%= submit_tag 'Submit Responses' %>
+			<%- else -%>
+				<%= submit_tag 'Change Responses' %>
+			<%- end -%>
+		</p>
+		<%- end -%> <!-- form -->
+</div>
+
+
