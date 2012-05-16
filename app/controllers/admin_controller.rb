@@ -186,7 +186,7 @@ class AdminController < ApplicationController
   def show_config
   end
   
-  def show_lastupdate_status
+  def special_pages
   end  
   
     

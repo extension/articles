@@ -2,7 +2,7 @@
   <h3><strong>Welcome!</strong> What's your local institution?</h3>
   <ul>
     <% institutions.each{ |inst|  %>
-    <li><%=link_to inst.name, :controller => 'main', :action => 'set_institution', :institution_id => inst.id %></li>
+    <li><%=link_to inst.name, set_institution_path(:institution_id => inst.id) %></li>
     <% } %>
   </ul>
 </div>

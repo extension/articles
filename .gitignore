@@ -2,6 +2,7 @@
 /tmp
 /mkmf.log
 .rvmrc
+.powenv
 
 # /config/
 /config/database.yml

@@ -135,7 +135,6 @@ ActionController::Routing::Routes.draw do |map|
   #################################################################
   ### pubsite routes ###
   map.redirect 'main', :controller => 'main', :action => 'index', :permanent => true
-  map.connect 'main/:action', :controller => 'main'
   map.connect 'feeds', :controller => 'feeds'
     
   map.redirect 'feeds/articles', :controller => 'feeds', :action => 'content', :content_types => 'articles', :permanent => true  
@@ -225,6 +224,13 @@ ActionController::Routing::Routes.draw do |map|
   map.site_learning_lessons ':content_tag/learning_lessons', :controller => 'pages', :action => 'learning_lessons'
 
   map.short_pageid ':id', :controller => 'pages', :action => 'show',  :requirements => { :id => /\d+/ }
+
+  map.site_search '/main/search', :controller => 'main', :action => 'search'
+  map.main_communities '/main/communities', :controller => 'main', :action => 'communities'
+  map.set_institution '/main/set_institution', :controller => 'main', :action => 'set_institution'
+  map.show_institution_list '/main/show_institution_list', :controller => 'main', :action => 'show_institution_list'
+  map.main_special '/main/:path', :controller => 'main', :action => 'special'
+  
   map.site_index ':content_tag', :controller => 'main', :action => 'community_tag'
   
   ### catch?  I'm not sure that these are ever actually touched because of the :content_tag routes above

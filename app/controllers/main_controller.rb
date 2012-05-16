@@ -120,70 +120,32 @@ class MainController < ApplicationController
     set_title("Search results")
     set_titletag("eXtension - Search results")
   end
-      
-  def about
-    @right_column = false
-    set_title('About', "Read about our origins and what we have to offer online.")
-    set_titletag('About eXtension - Our origins and what we have to offer')
-    @article = Page.find_by_title_url("eXtension_About")
-    render :partial => "shared/article", :locals => {:article => @article}, :layout => true
-  end
   
-  def contact_us
-    @right_column = false
-    set_title('Contact Us', "Your comments and questions are very important to us. Your quality feedback makes a tremendous impact on improving our site.")
-    set_titletag('eXtension - Contact Us')
-    @article = Page.find_by_title_url("eXtension_Contact_Us")
-    @article_class = "contactus"
-    render :partial => "shared/article", :locals => {:article => @article}, :layout => true
-  end 
-
-  def privacy
-    @right_column = false
-    set_title('Privacy Policy', "We have developed this privacy statement in order to demonstrate our commitment to safeguarding the privacy of those who use the eXtension web site.")
-    set_titletag('eXtension - Privacy Policy')
-    @article = Page.find_by_title_url("eXtension_Privacy_Policy")
-    render :partial => "shared/article", :locals => {:article => @article}, :layout => true
-  end
-  
-  def termsofuse
-    @right_column = false
-    set_title('Terms of Use', "Please read terms of use before using this site.")
-    set_titletag('eXtension - Terms of Use')
-    @article = Page.find_by_title_url("eXtension_Terms_of_Use")
-    render :partial => "shared/article", :locals => {:article => @article}, :layout => true
-  end
-  
-  def disclaimer
-    @right_column = false
-    set_title('Legal Disclaimer', "Please read the disclaimer before using this site.")
-    set_titletag('eXtension - Legal Disclaimer')
-    @article = Page.find_by_title_url("eXtension_Disclaimer")
-    render :partial => "shared/article", :locals => {:article => @article}, :layout => true
-  end
-
-  def partners
-    @right_column = false
-    set_title('Partners', "Without our partners, eXtension would not be possible.")
-    set_titletag('eXtension - Partners')
-    @article = Page.find_by_title_url("eXtension_Partners")
-    render :partial => "shared/article", :locals => {:article => @article}, :layout => true
-  end
-
   def communities
+    @published_content = true
+    @canonical_link = main_communities_url
     @right_column = false
-    set_title('Resource Areas', ' eXtension content is organized around resource areas. See which areas might make a connection with you.')
-    set_titletag('eXtension - Resource Areas')
+    @special_page = SpecialPage.find_by_path('communities')
+    @page = @special_page.page
+    set_title(@special_page.main_heading, @special_page.sub_heading)
+    set_titletag(@special_page.titletag)
     @communities = Community.launched.ordered_by_topic
-    @article = Page.find_by_title_url("eXtension_Resource_Areas")
+  end
+  
+  def special
+    path = params[:path]
+    if(!path or !@special_page = SpecialPage.find_by_path(path))
+      return do_404
+    end
+
+    @published_content = true
+    @canonical_link = main_special_url(:path => @special_page.path)
+    @right_column = false
+    @page = @special_page.page
+    set_title(@special_page.main_heading, @special_page.sub_heading)
+    set_titletag(@special_page.titletag)
   end
 
-  def sponsors
-    set_title('Our Sponsors')
-    set_titletag('eXtension - Our Sponsors')
-    @article = Page.find_by_title_url("eXtension_Sponsors")
-    render :partial => "shared/article", :locals => {:article => @article}, :layout => true
-  end
     
   def show_institution_list
     if params[:zip_or_state]
