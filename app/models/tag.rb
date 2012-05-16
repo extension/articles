@@ -94,7 +94,7 @@ class Tag < ActiveRecord::Base
   end
 
   # normalize tag names 
-  # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces)   
+  # convert whitespace to single space, underscores to space, Yank everything that's not alphanumeric except colon, hyphen, or whitespace (which is now single spaces)   
   def self.normalizename(name)
     # make an initial downcased copy - don't want to modify name as a side effect
     returnstring = name.downcase
