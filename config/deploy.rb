@@ -18,7 +18,7 @@ set :localuser, ENV['USER']
 
 set :repository, "git@github.com:extension/#{application}.git"
 set :scm, "git"
-set :use_sudo, false
+set :use_sudo, true
 set :ruby, "/usr/local/bin/ruby"
 ssh_options[:forward_agent] = true
 set :port, 24
@@ -41,14 +41,6 @@ namespace :deploy do
   
   desc "Deploy the #{application} application with migrations"
   task :default, :roles => :app do
-    
-    # allow a custom branch
-    if(stage == 'demo')
-      if(branch = ENV['BRANCH'])
-        set :branch, branch
-      end
-    end
-     
     # Invoke deployment with migrations
     deploy.migrations
   end
