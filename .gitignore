@@ -23,3 +23,9 @@
 /.yardoc
 /doc/*
 /*.ru
+
+# added by capatross generate_config
+/config/capatross.local.yml
+
+# added by capatross generate_config
+/capatross_logs

@@ -1,4 +1,6 @@
 source 'http://rubygems.org'
+source 'http://systems.extension.org/rubygems/'
+
 gem 'rails', '2.3.14'
 # database
 gem 'mysql'
@@ -47,6 +49,9 @@ gem 'savon'
 
 # Deploy with Capistrano
 gem 'capistrano'
+# log stuff
+gem 'capatross'
+
 # Server passenger (dev and production)
 gem 'passenger'
 
