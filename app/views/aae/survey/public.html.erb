@@ -11,13 +11,13 @@
 
 <div id="survey_faq">	
 <p>The first question concerns whether answers to questions should go through a formal peer-review process before being displayed on the new public Ask an Expert Web site.  For our purposes, peer-review is defined as:
-<blockquote class="survey">A process of self-regulation by a profession or a process of evaluation involving qualified individuals within the relevant field. Peer review methods are employed to maintain standards, improve performance and provide credibility. In academia peer review is often used to determine an academic paper's suitability for publication.</blockquote></p>
+<blockquote class="survey">A process of self-regulation by a profession or a process of evaluation involving qualified individuals within the relevant field. Peer review methods are employed to maintain standards, improve performance and provide credibility.</blockquote></p>
 <p>The second question is if comments from the public regarding submitted questions and answers should be permitted on the new Ask an Expert site.  Please note, that comments will be reviewed for inappropriate language and self-promotion or spam. This question specifically regards whether any comments should be permitted.</p>
 </div>
 
 <div id="aae_public_survey">
     <% form_tag(:controller => 'aae/survey', :action => 'post_public_answer') do %>
-    <p>Do your answers need to be formally peer-reviewed before they are shared with the public on a new Ask an Expert Web site?</p>
+    <p>Do your answers need to be formally peer-reviewed before they are displayed on a new public Ask an Expert Web site?</p>
     <p><span><%= radio_button_tag('peer_review', 1, survey_response_checked?(@response,'peer_review',1)) %> Yes</span>
         <span><%= radio_button_tag('peer_review', 0, survey_response_checked?(@response,'peer_review',0)) %> No</span>
     </p>
