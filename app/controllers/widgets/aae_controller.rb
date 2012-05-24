@@ -57,6 +57,7 @@ class Widgets::AaeController < ApplicationController
       @widget_assignees = @widget.assignees
       @non_active_assignees = @widget.non_active_assignees
       @widget_connection = @currentuser.connection_with_community(@widget.community)
+      @can_edit_widget = @widget.can_edit_attributes?(@currentuser)
     end
   end
   
