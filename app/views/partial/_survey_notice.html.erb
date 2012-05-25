@@ -1,0 +1,15 @@
+<% if(!@currentuser.nil?) %>  
+  <% if !AaePublicSurvey.find_by_user_id(@currentuser.id) %>
+  <div id="surveynotice">
+  <% else %>
+  <div id="surveynotice" style="display:none">
+  <% end %>
+    <div id="container">
+      <p><%= link_to("<strong>Please help us out by taking a short survey on the future of Ask an Expert!</strong>".html_safe, 
+                                  url_for(:controller => 'aae/survey', :action => 'public')) -%>
+      </p>
+      <br class="clearing"/>
+    </div>	
+  </div>
+<% end %>
+
