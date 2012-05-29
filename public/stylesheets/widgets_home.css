@@ -280,3 +280,27 @@ a:active    {color: red;}
 a:visited   {color: #005bae;}
 a:hover     {color: #0043da;}
 .alert {background:yellow; font-style:normal; padding:4px;}
+
+/* Error handling and feedback
+-----------------------------------------------------------------------------*/
+.feedback_banner {
+	font-weight: bold;
+	padding: 2px 6px 2px 28px;
+	border-top: 1px solid #333;
+	border-bottom: 1px solid #333;
+	margin-bottom: 1em; }
+.feedback_banner p {margin: .25em 0 .5em; font-weight: normal;}
+
+.warning {
+	color: #666;
+	border-color: #E0BC12;
+	background: #FFF6CB url(/images/common/warning.gif) 6px 3px no-repeat; }
+.success {
+	color: #000;
+	border-color: #feb700;
+	background: #fcff47}
+.failure {
+	color: #d90000;
+	border-color: #d84040;
+	background: #ffebf3 url(/images/common/failure.gif) 4px 3px no-repeat; }
+

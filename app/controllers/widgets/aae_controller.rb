@@ -104,6 +104,11 @@ class Widgets::AaeController < ApplicationController
       flash[:error] = "Missing widget id."
       return redirect_to(:action => 'index')
     end
+    
+    if !@widget.can_edit_attributes?(@currentuser)
+      flash[:error] = "You must be signed up for this widget and active in AaE to edit this widget."
+      return redirect_to(:action => 'view', :id => @widget.id)
+    end
   end
   
   def update
@@ -177,6 +182,7 @@ class Widgets::AaeController < ApplicationController
     @widget_leaders = @widget.leaders
     @widget_assignees = @widget.assignees
     @non_active_assignees = @widget.non_active_assignees
+    @can_edit_widget = @widget.can_edit_attributes?(@currentuser)
 
     respond_to do |format|
       format.js

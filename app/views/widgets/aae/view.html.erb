@@ -1,5 +1,7 @@
 <%= render(:partial => 'aae_widget_nav') %>
 
+<%= render(:partial => "partial/flashmessages") %>
+
 <p id="breadcrumb"><%= link_to "All widgets", :controller => 'widgets/aae', :action => 'list' %> > Widget info</p>
 <div id="article">
 
@@ -21,77 +23,9 @@
 	<%= render(:partial => 'widget_assignees') %>
 </div>
 
-<% if @non_active_assignees.length > 0 %>
-<p><strong>Note:</strong> There are people who have signed up to receive questions for this widget, but have opted out of receiving AaE questions:<br />
-<% @non_active_assignees.each do |assignee| %>
-<li><%= link_to(assignee.fullname, aae_profile_url(:id => assignee.login), {:class => "profile"}) %></li>
-<% end %>
-</p>
-<% end %>
-
-<h4>Widget Status</h4>
-<% if !@can_edit_widget %>
-  <p>You currently cannot edit this widget (including activating or deactivating), in order to do so, you must be signed up to receive questions from it.</p>
-<% end %>
-<div class="active-status">
-    <p>This widget is currently <strong id="widget_active"><%= @widget.active? ? "Active" : "Inactive" %></strong>
-      <% if @can_edit_widget %>
-        <% if @widget.active? %>
-          <%= link_to('Make Inactive', widgets_edit_aae_url(:id => @widget.id))%>
-        <% else %>
-          <%= link_to('Activate', widgets_edit_aae_url(:id => @widget.id))%>
-        <% end %>
-      <% end %>
-    </p>
-    <p>When a widget is inactive, questions can not be submitted from it. The widget code should be removed from any web page.</p>
+<div id="edit_widget_attributes">
+  <%= render(:partial => 'edit_widget_attributes')%>
 </div>
-
-<h4>Widget Attributes</h4>
-<%- if @can_edit_widget -%>
-  <p><%= link_to("edit",widgets_edit_aae_url(:id => @widget.id)) %></p>
-<% else %>
-  <p>You currently cannot edit this widget (including activating or deactivating), in order to do so, you must be signed up to receive questions from it.</p>
-<%- end -%>
-
-<table>
-  <tr>
-    <td>Widget Enabled?</td>
-    <td><%= @widget.active? ? 'Yes' : 'No' %></td>
-  </tr>
-  
-  <tr>
-    <td>Location:</td>
-    <td>
-    <%- if @widget.location -%>
-      <%- if @widget.county -%>
-        <%= @widget.county.name %>, 
-      <%- end -%>
-      <%= @widget.location.name -%>
-    <%- else -%>
-      None specified.
-    <%- end -%>
-    </td>
-  <tr>
-  <td>Uploads enabled?</td>
-  <td><%= @widget.upload_capable? ? 'Yes' : 'No' %></td>
-  </tr>
-  
-  <tr>
-  <td>Show location menu?</td>
-  <td><%= @widget.show_location? ? 'Yes' : 'No' %></td>
-  </tr>
-  
-  <tr>
-  <td>Incoming Group Notifications?</td>
-  <td><%= @widget.group_notify? ? 'Yes' : 'No' %></td>
-  </tr>
-  
-  <tr>
-  <td>Widget Key:</td>
-  <td><%= @widget.fingerprint %></td>
-  </tr>
-
-</table>
 
 
 <h4>Widget iFrame Code</h4>
