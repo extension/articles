@@ -304,3 +304,5 @@ a:hover     {color: #0043da;}
 	border-color: #d84040;
 	background: #ffebf3 url(/images/common/failure.gif) 4px 3px no-repeat; }
 
+.highlight {background:#feffd1; padding:.25em .5em;}
+.edit {padding:.25em .5em; font-weight:normal;}
