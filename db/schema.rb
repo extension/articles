@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120516184816) do
+ActiveRecord::Schema.define(:version => 20120503140751) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -34,14 +34,6 @@ ActiveRecord::Schema.define(:version => 20120516184816) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "aae_public_surveys", :force => true do |t|
-    t.integer "user_id"
-    t.integer "peer_review"
-    t.integer "public_comment"
-  end
-
-  add_index "aae_public_surveys", ["user_id"], :name => "survey_ndx", :unique => true
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
