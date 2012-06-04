@@ -1600,11 +1600,3 @@ a.nodec:hover {text-decoration:underline;}
 
 blockquote.survey {margin:1.5em;}
 #survey_faq {margin-top: 1em;background: #eee;padding: 1em;margin-bottom: 3em;clear:both;}
-
-#surveynotice {background:#e87d1d;
-   z-index:10;
-   position:relative;}
-#surveynotice #container {
-   margin: 0 auto;
-   width: 1000px;}
- #surveynotice #container p a {color:#FFF;}
