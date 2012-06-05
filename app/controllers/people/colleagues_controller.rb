@@ -237,7 +237,7 @@ class People::ColleaguesController < ApplicationController
       if @userlist.nil? || @userlist.length == 0
         flash.now[:warning] = "<p>No colleague was found that matches your search term.</p> <p>Your colleague may not yet have an eXtensionID. <a href='#{url_for(:controller => '/people/colleagues', :action => :invite)}'>Invite your colleague to get an eXtensionID</a></p>"
       else
-        if @userlist.length == 1
+        if @userlist.length == 1 and (params[:page].blank? or params[:page] == 1)
           redirect_to :action => :showuser, :id => @userlist[0].login
         end
       end
