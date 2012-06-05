@@ -1,0 +1,68 @@
+<h4>Widget Status</h4>
+<div class="active-status">
+    <p>This widget is currently <strong id="widget_active"><%= @widget.active? ? "Active" : "Inactive" %></strong>
+      <% if @can_edit_widget %>
+      <span class="highlight">
+        <% if @widget.active? %>
+          <%= link_to('Make Inactive', widgets_edit_aae_url(:id => @widget.id))%>
+        <% else %>
+          <%= link_to('Activate', widgets_edit_aae_url(:id => @widget.id))%>
+        <% end %>
+        </span>
+      <% end %>
+    </p>
+    <% if !@can_edit_widget %>
+      <p><span class="highlight">To activate or deactivate, you must be signed up to receive questions from this widget.</span></p>
+    <% end %>
+    <p>When a widget is inactive, questions can not be submitted from it. The widget code should be removed from any web page.</p>
+</div>
+
+
+<%- if @can_edit_widget -%>
+<h4>Widget Attributes
+  <span class="edit highlight"><%= link_to("edit this widget",widgets_edit_aae_url(:id => @widget.id)) %></span>
+  </h4>
+<% else %>
+<h4>Widget Attributes</h4>
+  <p><span class="highlight">To edit, activate or deactivate, you must be signed up to receive questions from this widget.</span></p>
+<%- end -%>
+
+<table>
+  <tr>
+    <td>Widget Enabled?</td>
+    <td><%= @widget.active? ? 'Yes' : 'No' %></td>
+  </tr>
+  
+  <tr>
+    <td>Location:</td>
+    <td>
+    <%- if @widget.location -%>
+      <%- if @widget.county -%>
+        <%= @widget.county.name %>, 
+      <%- end -%>
+      <%= @widget.location.name -%>
+    <%- else -%>
+      None specified.
+    <%- end -%>
+    </td>
+  <tr>
+  <td>Uploads enabled?</td>
+  <td><%= @widget.upload_capable? ? 'Yes' : 'No' %></td>
+  </tr>
+  
+  <tr>
+  <td>Show location menu?</td>
+  <td><%= @widget.show_location? ? 'Yes' : 'No' %></td>
+  </tr>
+  
+  <tr>
+  <td>Incoming Group Notifications?</td>
+  <td><%= @widget.group_notify? ? 'Yes' : 'No' %></td>
+  </tr>
+  
+  <tr>
+  <td>Widget Key:</td>
+  <td><%= @widget.fingerprint %></td>
+  </tr>
+
+</table>
