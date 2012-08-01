@@ -47,14 +47,6 @@ gem 'json_pure'
 # soap gem for bronto downloads
 gem 'savon'
 
-# Deploy with Capistrano
-gem 'capistrano'
-# log stuff
-gem 'capatross'
-
-# Server passenger (dev and production)
-gem 'passenger'
-
 # handle rewrites of trailing slashes
 gem 'rack-rewrite'
 
@@ -76,4 +68,8 @@ group :development, :test do
   #gem "net-http-spy"  # not useable with the savon gem, results in SystemStackError: stack level too deep on requests
   gem "powder"
   gem "rails-footnotes"
+  # Deploy with Capistrano
+  gem 'capistrano'
+  # log stuff
+  gem 'capatross'
 end

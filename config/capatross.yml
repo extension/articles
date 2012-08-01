@@ -24,3 +24,5 @@ appkey: 'c4b5d44276e49f362d373b169412103378711237'
 ##   local development
 ## default:
 # albatross_uri: 'http://deploys.extension.org' 
+getdata:
+  dbfile: 'dump_scrubbed_prod_darmok.sql'
