@@ -9,7 +9,8 @@ class Aae::SearchController < ApplicationController
   layout 'aae'
   before_filter :login_required, :except => [:get_counties]
   before_filter :check_purgatory, :except => [:get_counties]  
-  
+  ssl_allowed :get_counties
+
   def index
     if(params[:type] and params[:type] == 'page')
       @aae_search_item = Page.find_by_id(params[:qid])
