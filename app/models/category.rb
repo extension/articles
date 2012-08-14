@@ -131,7 +131,7 @@ class Category < ActiveRecord::Base
   class << self
   
     # normalize category names - intentionally does not allow "colons" (while tags and content buckets do)
-    # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces)   
+    # convert whitespace to single space, underscores to space, Yank everything that's not alphanumeric except hyphen or whitespace (which is now single spaces)   
     def normalizename(name)
       # make an initial downcased copy - don't want to modify name as a side effect
       returnstring = name.downcase

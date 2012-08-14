@@ -1,0 +1,28 @@
+#### config/capatross.yml
+## User this file for shared campout settings for the project. It's 
+## recommended that you add this file to your SCM.
+##
+## personal overrides or other settings can be placed 
+## within a config/capatross.local.yml file.  
+## 
+### global action settings
+##
+## copy_log_to_server:
+##   If set to true - the cap deployment log will be copied to a "capatross_logs"
+##   subdirectory of your #{shared_path}. The filename will be in the format:
+##   #{capatross_id}.json
+## default:
+# copy_log_to_server: true
+##
+## appkey:
+##   The application identifier - obtained from the albatross data
+## default:
+appkey: 'c4b5d44276e49f362d373b169412103378711237'
+##
+## albatross_uri:
+##   The uri for the albatross server. Override in capatross.local.yml for 
+##   local development
+## default:
+# albatross_uri: 'http://deploys.extension.org' 
+getdata:
+  dbfile: 'dump_scrubbed_prod_darmok.sql'

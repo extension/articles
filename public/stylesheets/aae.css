@@ -1597,3 +1597,6 @@ a.nodec:hover {text-decoration:underline;}
 #container p a {color:#333; padding:5px;}
 #notice {float:left;  color:#333;}
 #actions {float:left; }
+
+blockquote.survey {margin:1.5em;}
+#survey_faq {margin-top: 1em;background: #eee;padding: 1em;margin-bottom: 3em;clear:both;}

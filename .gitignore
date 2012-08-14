@@ -2,7 +2,7 @@
 /tmp
 /mkmf.log
 .rvmrc
-.powenv
+.powrc
 
 # /config/
 /config/database.yml
@@ -22,4 +22,9 @@
 # /doc
 /.yardoc
 /doc/*
-/*.ru
+
+# added by capatross generate_config
+/config/capatross.local.yml
+
+# added by capatross generate_config
+/capatross_logs
