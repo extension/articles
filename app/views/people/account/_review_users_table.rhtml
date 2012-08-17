@@ -6,11 +6,12 @@
 		<table cellspacing="0" border="1">
 		    <tr>
 		        <th>eXtensionID:</th>
-		        <th>email</th>
-		        <th>first name</th>
-		        <th>last name</th>
-		        <th>institution</th>
-		        <th>location</th>
+		        <th>Email</th>
+		        <th>First name</th>
+		        <th>Last name</th>
+		        <th>Institution</th>
+		        <th>Other affiliation</th>
+		        <th>Location</th>
 		    </tr>
     
 		    <% for showuser in @reviewers %>
@@ -20,6 +21,7 @@
 		            <td><%= showuser.first_name %></td>
 		            <td><%= showuser.last_name %></td>
 			        <td><%= showuser.primary_institution_name('(Not specified)') %></td>
+			        <td><%= (showuser.affiliation.blank?) ? 'N/A': showuser.affiliation %></td>
 			        <td><%= (showuser.location.nil?) ? 'N/A': showuser.location.abbreviation %></td>
 		        </tr>
 		    <% end%>

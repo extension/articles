@@ -49,7 +49,7 @@ class People::SignupController < ApplicationController
     end
     
     if params[:user]
-      @user = User.new(params[:community])
+      @user = User.new(params[:user])
     else
       @user = User.new
     end

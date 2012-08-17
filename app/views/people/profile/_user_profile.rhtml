@@ -55,16 +55,26 @@
 			    <span class="vcardLabel missing">Primary Institution:</span>
     			<span class="organization-name"><%= @currentuser.primary_institution_name('&nbsp;') %>
 			    <div class="primarydirs"><strong>Your primary institution is missing. Set it by joining that institution's community:</strong>
-			      <ul><li>1) <%= link_to "Search for your institution", :controller => '/people/communities' %></li>
+			      	<ul>
+			      	<li>1) <%= link_to "Search for your institution", :controller => '/people/communities' %></li>
 			        <li>2) Join </li>
 			        <li>3) Check the "This is my primary institution" box</li>
 			        </ul>
+			        <span><em>Institution not listed? <%= link_to("Contact Us", :controller => 'help', :action => 'index') %> to get your institution listed</em></span>
 			    </div>
 			    <br class="clearing" />
 			<%- end -%>
 			</span>
 		</p>
 	</div>
+
+	<div class="org">
+		<p class="item">
+			<span class="vcardLabel">Other/Additional Affiliation:</span>
+			<span class="organization-name"><%= (@currentuser.affiliation.blank?) ? '&nbsp;': @currentuser.affiliation %></span>
+		</p>
+	</div>
+
 	<div class="adr">	
 		<p class="item">
 			<span class="vcardLabel">Location:</span>

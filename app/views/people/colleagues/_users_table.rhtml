@@ -4,6 +4,7 @@
         <th>eXtensionID</th>
         <th>Email</th>
         <th>Institution</th>
+        <th>Other Affiliation</th>
         <th>Location</th>
     </tr>
     
@@ -13,6 +14,7 @@
             <td><%= showuser.login %></td>
             <td><%= showuser.email %></td>            
 	        <td><%= showuser.primary_institution_name('<span class="na">not specified</span>') %></td>
+            <td><%= (showuser.affiliation.blank?) ? '<span class="na">n/a</span>': showuser.affiliation %></td>
 	        <td><%= (showuser.location.nil?) ? '<span class="na">n/a</span>': showuser.location.abbreviation %></td>
         </tr>
     <% end%>
