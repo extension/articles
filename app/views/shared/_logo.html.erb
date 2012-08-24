@@ -1,4 +1,4 @@
-<%- showdoublewide = (!@personal[:location].nil? and (@personal[:location].abbreviation == 'KY' or @personal[:location].abbreviation == 'TX')) -%>
+<%- showdoublewide = (!@personal[:location].nil? and (@personal[:location].abbreviation == 'KY' or @personal[:location].abbreviation == 'TX' or @personal[:location].abbreviation == 'DE'))  -%>
   <h1 class="logo" >
   <%- if !(@personal[:institution].logo.nil?) -%>
     <%= link_to(render_inline_logo({:logo => @personal[:institution].logo, :alt_text => @personal[:institution].name}), home_url, {:style => "width: #{@personal[:institution].logo.width}px;"}) %>
