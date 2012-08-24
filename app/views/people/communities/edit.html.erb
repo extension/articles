@@ -63,10 +63,15 @@
           <em>Community shortnames are an additional unique identifier for the community.  The shortname can be used to link to the community in People, and it becomes the group name (and email address) for Google Apps if this community is connected to Google Apps.</em>    
         </p>
 
-        <%- if(!@community.is_institution? and !@community.is_widget?) -%>
+        <%- if(!@community.is_widget?) -%>
           <p>
             <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
+            <%- if(!@community.is_institution?) -%>
             <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
+            <%- else -%>
+            <em>Institutions that are marked as "Show in Public List" will be listed in the branding interface. Modifying this setting can impact branding, so please be extremely cautious before
+              making this change! You'll need to make sure that the institution has a logo and link to the institution (edited as part of the <%= link_to('public site institutional and logo management', :controller => '/admin') %></em>
+            <%- end -%>
           </p>
         <%- end -%>
 
