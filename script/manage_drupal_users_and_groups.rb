@@ -260,7 +260,7 @@ def update_groups_from_darmok_communities(drupaldatabase,mydatabase)
   # og_membership
   delete_sql = "DELETE FROM  #{drupaldatabase}.og_membership WHERE #{drupaldatabase}.og_membership.entity_type = 'user';"
   insert_sql = <<-END_SQL.gsub(/\s+/, " ").strip
-  INSERT INTO #{drupaldatabase}.og_membership (name, etid, entity_type, gid, state, created) 
+  INSERT INTO #{drupaldatabase}.og_membership (type, etid, entity_type, gid, state, created) 
     SELECT 'og_membership_type_default', #{mydatabase}.communityconnections.user_id, 'user',#{drupaldatabase}.og.gid, '1', UNIX_TIMESTAMP(#{mydatabase}.communityconnections.created_at)
     FROM #{drupaldatabase}.og, #{mydatabase}.communities, #{mydatabase}.communityconnections 
     WHERE #{drupaldatabase}.og.etid = #{mydatabase}.communities.drupal_node_id
