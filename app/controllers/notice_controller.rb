@@ -9,6 +9,7 @@ class NoticeController < ApplicationController
   layout 'notice'
     
   def ask
+    render :layout => false
   end
 
 end
