@@ -20,12 +20,6 @@
         </p>
         
         <p>
-            <label>Publicity</label>
-            <%= check_box_tag('institution[show_in_public_list]', "1", @institution.show_in_public_list) %>Show Institution to Public?
-            <span class="instructions">Visitors can pick this institution when entering a location for branding.</span>
-        </p>
-
-        <p>
             <input type="submit" value="Update"> 
             <%= link_to 'cancel', {:controller => "admin", :action => "manage_institutions"}, {:class => "cancel"}  %> 
         </p>
