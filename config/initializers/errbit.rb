@@ -3,4 +3,5 @@ Airbrake.configure do |config|
 		 config.host				= 'apperrors.extension.org'
 		 config.port				= 80
 		 config.secure			= config.port == 443
+		 config.ignore       << "ActionController::UnknownHttpMethod"
 	 end
