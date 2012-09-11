@@ -51,7 +51,7 @@ gem 'savon'
 gem 'rack-rewrite'
 
 #airbrake
-gem 'airbrake'
+gem 'airbrake', '3.1.2'
 
 # To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
 # gem 'ruby-debug'
