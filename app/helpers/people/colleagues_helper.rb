@@ -8,7 +8,7 @@
 module People::ColleaguesHelper
   
   def makeusercsvstring(user)
-    #eXtensionID,First Name,Last Name,Email,Title,Position,Institution,Location,County,Agreement Status,Account Created
+    #eXtensionID,First Name,Last Name,Email,Title,Position,Institution,Affiliation,Location,County,Agreement Status,Account Created
     csvstring = user.login+','
     csvstring += user.first_name.tr(',',' ')+','
     csvstring += user.last_name.tr(',',' ')+','
@@ -17,6 +17,7 @@ module People::ColleaguesHelper
     csvstring += ((user.title.nil? or user.title == '') ? 'not specified' : user.title.tr(',',' '))+','
     csvstring += ((user.position.nil? or user.position == '') ? 'not specified' : user.position.name.tr(',',' '))+','
     csvstring += user.primary_institution_name.tr(',',' ')+','
+    csvstring += ((user.affiliation.blank?) ? 'not specified' : user.affiliation.tr(',',' '))+','
     csvstring += ((user.location.nil? or user.location == '') ? 'not specified' : user.location.name.tr(',',' '))+','
     csvstring += ((user.county.nil? or user.county == '') ? 'not specified' : user.county.name.tr(',',' '))+','
   	

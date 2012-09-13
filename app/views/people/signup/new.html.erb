@@ -98,10 +98,16 @@
         	<div id="institution">
         		<% if !@institutionlist.nil? %>
         			<%= render(:partial => 'people/signup/institutionlist', :locals => {:countylist => @institutionlist}) %>
-        		<% else %>
+
+                <% else %>
         		    <p><em>select a location to show institutions for that location</em></p>
         		<% end %>
         	</div>
+            <p><em>Don't see your institution listed? Need to add more information? Use the field below to let others know more about your affiliation</em></p>
+<p><label for="user_affiliation">Other/Additional Affiliation</label>
+<%= text_field "user", "affiliation", :class => "medsize" %>
+</p>
+
         </div>
 
         <div class="form_section">

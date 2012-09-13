@@ -34,8 +34,20 @@ ActionController::Routing::Routes.draw do |map|
     people.connect 'lists/:id', :controller => :lists, :action => :show, :requirements => { :id => /\d+/ }  
     people.connect 'lists', :controller => :lists, :action => :index
 
-    people.resources :communities, :collection => { :downloadlists => :get,  :filter => :get, :newest => :get, :mine => :get, :browse => :get, :tags => :get, :findcommunity => :get},
-                              :member => {:userlist => :get, :invite => :any, :change_my_connection => :post, :modify_user_connection => :post, :xhrfinduser => :post, :editlists => :any }
+    people.resources :communities, :collection => { :downloadlists => :get,  
+                                                    :filter => :get, 
+                                                    :newest => :get,
+                                                    :institutions => :get, 
+                                                    :mine => :get, 
+                                                    :browse => :get, 
+                                                    :tags => :get, 
+                                                    :findcommunity => :get},
+                                    :member => {:userlist => :get, 
+                                                :invite => :any, 
+                                                :change_my_connection => :post, 
+                                                :modify_user_connection => :post, 
+                                                :xhrfinduser => :post, 
+                                                :editlists => :any }
     people.resources :invitations,  :collection => {:mine => :get}
   end
   

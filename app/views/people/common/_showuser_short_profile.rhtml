@@ -38,6 +38,12 @@
 			<span class="organization-name"><%= showuser.primary_institution_name('&nbsp;') %></span>
 		
 	</div>
+	<div class="org">
+		<p class="item">
+			<span class="vcardLabel">Other/Additional Affiliation:</span>
+			<span class="organization-name"><%= (showuser.affiliation.blank?) ? '&nbsp;': showuser.affiliation %></span>
+		</p>
+	</div>
 	<div class="adr">	
 		
 			<span class="vcardLabel">Location:</span>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120814130454) do
+ActiveRecord::Schema.define(:version => 20120817012336) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(:version => 20120814130454) do
     t.boolean  "first_aae_away_reminder",                :default => false
     t.boolean  "second_aae_away_reminder",               :default => false
     t.integer  "primary_account_id"
+    t.string   "affiliation"
   end
 
   add_index "accounts", ["email"], :name => "email", :unique => true

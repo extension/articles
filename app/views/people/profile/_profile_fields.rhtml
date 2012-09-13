@@ -24,6 +24,15 @@
       <label for="user_time_zone">Time zone:</label>
       <%= time_zone_select(:user,:time_zone, ActiveSupport::TimeZone.us_zones, :default => "Eastern Time (US & Canada)") %>
     </p>
+
+    <p>
+      <label for="user_time_zone">Other/Additional Affiliation:</label>
+        <%= text_field "user", "affiliation", :class => "medsize" %>
+        <span class="advice">Use this field to add an affiliation other than or in addition to joining an <%= link_to('official institution',institutions_people_communities_path) %>.
+        Institution not listed? <%= link_to("Contact Us", :controller => 'help', :action => 'index') %> to get your institution listed</span>
+    </p>
+
+
 </fieldset>
 </div>
     

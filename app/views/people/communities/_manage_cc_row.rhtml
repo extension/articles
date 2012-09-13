@@ -2,6 +2,7 @@
 <td><%= showuser.login %></td>
 <td><%= showuser.email %></td>            
 <td><%= showuser.primary_institution_name('<span class="na">not specified</span>') %></td>
+<td><%= (showuser.affiliation.blank?) ? '<span class="na">&nbsp;</span>': showuser.affiliation %></td>        
 <td><%= (showuser.location.nil?) ? '<span class="na">n/a</span>': showuser.location.abbreviation %></td>		    
 <td><%= showuser.connection_display(community) %></td>            
 <% if isleader %>

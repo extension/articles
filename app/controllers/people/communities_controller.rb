@@ -422,6 +422,17 @@ class People::CommunitiesController < ApplicationController
   def newest 
     @communitylist = Community.paginate(:all,:order => 'created_at DESC', :page => params[:page])
     @currentuser_communities = @currentuser.communities_by_connectiontype
+    @page_title = "Institutions"
+    @currentuser_communities = @currentuser.communities_by_connectiontype
+    
+    respond_to do |format|
+      format.html { render :template => "people/communities/communitylist" }
+    end
+  end 
+
+  def institutions 
+    @communitylist = Community.institution.paginate(:all,:order => 'created_at DESC', :page => params[:page])
+    @currentuser_communities = @currentuser.communities_by_connectiontype
     @page_title = "Newest Communities"
     @currentuser_communities = @currentuser.communities_by_connectiontype
     
@@ -429,6 +440,7 @@ class People::CommunitiesController < ApplicationController
       format.html { render :template => "people/communities/communitylist" }
     end
   end 
+
   
   def mine 
     @communitylist = @currentuser.communities.paginate(:all,:order => 'created_at DESC', :page => params[:page])
