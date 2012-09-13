@@ -2,12 +2,12 @@
 <ul id="userinfo">
     <li id="username"><%= @currentuser.login %></li>
 	<li><%= link_to "account", :controller => "profile", :action => 'account' %></li>
-    <li><%= link_to "sign out", :controller => "account", :action => "logout" %></li>
+    <li><%= link_to "sign out", :controller => "people/account", :action => "logout" %></li>
 </ul>
 <% else %>
 <% if @selected_tab != :login %>
 <ul id="userinfo">
-	<li><%= link_to "sign in", :controller => "account", :action => "login" %></li>
+	<li><%= link_to "sign in", :controller => "people/account", :action => "login" %></li>
 </ul>
 <% end %>
 <% end %>
