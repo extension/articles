@@ -551,34 +551,6 @@ ActiveRecord::Schema.define(:version => 20120817012336) do
   add_index "invitations", ["token"], :name => "tokenlookup"
   add_index "invitations", ["user_id"], :name => "index_invitations_on_user_id"
 
-  create_table "learn_connections", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "email",            :null => false
-    t.integer  "learn_session_id", :null => false
-    t.integer  "connectiontype",   :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "learn_connections", ["learn_session_id", "connectiontype"], :name => "index_learn_connections_on_learn_session_id_and_connectiontype"
-
-  create_table "learn_sessions", :force => true do |t|
-    t.text     "title",            :null => false
-    t.text     "description",      :null => false
-    t.datetime "session_start",    :null => false
-    t.datetime "session_end",      :null => false
-    t.integer  "session_length",   :null => false
-    t.text     "location"
-    t.text     "recording"
-    t.integer  "created_by",       :null => false
-    t.integer  "last_modified_by", :null => false
-    t.datetime "updated_at"
-    t.datetime "created_at"
-    t.string   "time_zone"
-  end
-
-  add_index "learn_sessions", ["session_start", "session_end"], :name => "index_learn_sessions_on_session_start_and_session_end"
-
   create_table "link_stats", :force => true do |t|
     t.integer  "page_id"
     t.integer  "total"

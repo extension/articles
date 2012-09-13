@@ -1,9 +1,0 @@
-<p id="close_link"><%= link_to_function 'Close', "$('presenter_list').innerHTML = ''"  %></p>
-
-<ul>
-<% @users.each do |user| %>
-  <li><%= link_to_remote("#{user.fullname}", {:url => {:controller => :learn, :action => :add_remove_presenters, :user_id => user.id, :add => "1"}, :with => "'presenter_ids=' + $('presenter_list_to_save').value", :loading => "Element.show('loading_presenters_#{user.id}')", :complete => "Element.hide('loading_presenters_#{user.id}'); $('presenter_list').innerHTML = ''"}) %>
-  <span id="loading_presenters_<%= user.id %>" style="display:none"><img src='/images/loading.gif' /></span>
-  </li>
-<% end %>
-</ul>
