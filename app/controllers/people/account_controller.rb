@@ -123,24 +123,28 @@ class People::AccountController < ApplicationController
   def login
     @openidmeta = openidmeta(@openiduser)
     if request.post?
-      result = authuser(params[:email],params[:password])
-      if(AUTH_SUCCESS != result[:code] and result[:localfail])
-        if(result[:localfail])
-          flash.now[:failure]  = explainauthresult(result[:code])
-          if(AUTH_PASSWORD_EXPIRED == result[:code])
-            result[:user].send_resetpass_confirmation
+      if(!params[:email].blank?)
+        result = authuser(params[:email],params[:password])
+        if(AUTH_SUCCESS != result[:code] and result[:localfail])
+          if(result[:localfail])
+            flash.now[:failure]  = explainauthresult(result[:code])
+            if(AUTH_PASSWORD_EXPIRED == result[:code])
+              result[:user].send_resetpass_confirmation
+            end
+            UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_FAILED,:user => result[:user], :description => 'login failed ('+authlogmsg(result[:code])+')')                  
           end
-          UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_FAILED,:user => result[:user], :description => 'login failed ('+authlogmsg(result[:code])+')')                  
+        else
+          @currentuser = result[:user]
+          @currentuser.update_attribute(:last_login_at,Time.now.utc)
+          session[:userid] = @currentuser.id
+          session[:account_id] = @currentuser.id
+          flash.now[:success] = "Login successful."
+          UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login')        
+          log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_PASSWORD, :appname => 'local')
+          redirect_back_or_default(people_welcome_url)
         end
       else
-        @currentuser = result[:user]
-        @currentuser.update_attribute(:last_login_at,Time.now.utc)
-        session[:userid] = @currentuser.id
-        session[:account_id] = @currentuser.id
-        flash.now[:success] = "Login successful."
-        UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login')        
-        log_user_activity(:user => @currentuser,:activitytype => Activity::LOGIN, :activitycode => Activity::LOGIN_PASSWORD, :appname => 'local')
-        redirect_back_or_default(people_welcome_url)
+        flash.now[:failure]  = explainauthresult(AUTH_INVALID_ID)
       end
     else
       if(!@currentuser.nil?)
