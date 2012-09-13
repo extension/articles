@@ -26,8 +26,6 @@ class MainController < ApplicationController
      # get diverse list of articles across different communities
      @community_highlights = Page.diverse_feature_list({:limit => 6})
 
-     @calendar_date = get_calendar_date
-     @calendar_events = Page.recent_content({:datatypes => ['Event'], :within_days => 5, :calendar_date => @calendar_date, :limit => 6, :order => 'event_start ASC'})
      @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
    end
    
@@ -50,20 +48,17 @@ class MainController < ApplicationController
       set_titletag("All Content - eXtension")  
     end
     
-    @calendar_date = get_calendar_date
-    
+   
     if(@content_tag.nil?)
       @news = Page.recent_content({:datatypes => ['News'], :limit => 3})
       @recent_learning_lessons = Page.main_lessons_list({:limit => 3})
       @faqs = Page.recent_content({:datatypes => ['Faq'], :limit => 3})
-      @calendar_events = Page.recent_content({:datatypes => ['Event'],:within_days => 3, :calendar_date => @calendar_date})
       @articles = Page.ordered(Page.orderings['Newest to oldest']).limit(3)
     else
       @canonical_link = category_tag_index_url(:content_tag => @content_tag.url_display_name)      
       @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
       @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
       @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
-      @calendar_events =  Page.recent_content({:datatypes => ['Event'],:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag], :order => 'event_start ASC'})
       @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
       @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
     end
@@ -92,13 +87,10 @@ class MainController < ApplicationController
     flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
     flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
 
-    @calendar_date = get_calendar_date
-    
 
     @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
     @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
     @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
-    @calendar_events =  Page.recent_content({:datatypes => ['Event'],:limit => 5, :calendar_date => @calendar_date, :content_tags => [@content_tag], :order => 'event_start ASC'})
     @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
     @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
 
@@ -213,17 +205,6 @@ class MainController < ApplicationController
       return false
     end
   end
-  
-  def get_calendar_date
-    if params[:year] && params[:month] && params[:date]
-      date = Date.civil(params[:year].to_i, params[:month].to_i, params[:date].to_i)
-    elsif params[:year] && params[:month]
-      date = Date.civil(params[:year].to_i, params[:month].to_i, 1)
-    else
-      date = Time.now.to_date
-    end
-    
-    return date
-  end
+
 
 end

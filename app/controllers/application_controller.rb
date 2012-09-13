@@ -38,7 +38,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :get_location_options
   helper_method :get_county_options
-  helper_method :get_calendar_month
   helper_method :with_content_tag?
   helper_method :admin_mode?
   helper_method :content_tag_url_display_name
@@ -496,22 +495,6 @@ class ApplicationController < ActionController::Base
     @widget_filter_url = url_for(:controller => 'aae/prefs', :action => 'widget_preferences', :only_path => false)
   end
   
-  
-  def get_calendar_month
-    todays_date = Date.today
-    if params[:year] && params[:month]
-      begin
-        month = Date.civil(params[:year].to_i, params[:month].to_i, 1)
-      rescue
-        month = Date.civil(todays_date.year, todays_date.month, 1)
-      end
-    else
-      month = Date.civil(todays_date.year, todays_date.month, 1)
-    end
-    
-    return month
-  end
-
   def get_humane_date(time)
     time.strftime("%B %e, %Y, %l:%M %p")
   end

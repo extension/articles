@@ -9,7 +9,6 @@ class PagesController < ApplicationController
   layout 'pubsite'
   before_filter :set_content_tag_and_community_and_topic
   before_filter :login_optional
-  before_filter :login_required, :check_purgatory, :only => [:new_event, :edit_event, :delete_event]
   
   def redirect_article
     # folks chop off the page name and expect the url to give them something
@@ -123,17 +122,14 @@ class PagesController < ApplicationController
       return do_404
     end
 
+    # redirect to learn
     if(@page.is_event?)
-      (@selected_time_zone = (!@currentuser.nil? and @currentuser.has_time_zone?) ? @currentuser.time_zone : @page.time_zone) if @page.time_zone
+      return redirect_to(AppConfig.configtable['learn_site'],:status => :moved_permanently)
     end
     
     # set canonical_link
-    if @page.is_event? && @page.learn_id.present?
-      @canonical_link = "#{AppConfig.configtable['learn_event_url']}/#{@page.learn_id}"
-    else
-      @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
-    end
-    
+    @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
+   
     # special redirect check
     if(@page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id))
       return redirect_to(main_special_url(:path => @special_page.path),:status => :moved_permanently)
@@ -395,138 +391,7 @@ class PagesController < ApplicationController
     render(:template => 'pages/list')
   end
   
-  
   def events
-    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      redirect_params = {:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag])}
-      redirect_params.merge!({:year => params[:year], :month => params[:month], :event_state => params[:event_state]})
-      return redirect_to(redirect_params, :status=>301)
-    end
-    
-    @show_selector = true
-    @list_content = true # don't index this page
-        
-    set_title('Calendar', 'Check out our calendar to see what exciting events might be happening in your neighborhood.')
-    if(!@content_tag.nil?)
-      set_titletag("eXtension - #{@content_tag.name} - Calendar of Events")
-      @eventslist  =  Page.events.monthly(get_calendar_month).ordered('Events Default').in_states(params[:event_state]).tagged_with_content_tag(@content_tag.name)      
-    else
-      set_titletag('eXtension - all - Calendar of Events')
-      @eventslist  =  Page.events.monthly(get_calendar_month).ordered('Events Default').in_states(params[:event_state]).all
-    end    
-    @youth = true if @topic and @topic.name == 'Youth'
-    render :action => 'events'    
+    return redirect_to(AppConfig.configtable['learn_site'],:status => :moved_permanently)
   end
-  
-  def update_time_zone
-    if request.post? and !params[:new_time_zone].blank? and !params[:id].blank? and event = Page.find_by_id(params[:id])
-      # we need to do a timezone conversion here, take the time from the event and convert to the desired time zone
-      time_obj = event.event_start.in_time_zone(params[:new_time_zone])
-      render :update do |page|
-        page.replace_html :time_with_tz, :partial => 'event_time', :locals => {:event_time => time_obj}
-        page.visual_effect :highlight, :time_with_tz 
-      end
-    else
-      do_404
-      return
-    end
-  end
-  
-  def new_event
-    @event_editing = true
-    @right_column = false
-    @resource_area_tags = Tag.community_content_tags({:launchedonly => true}).map(&:name)
-    if(request.post?)
-      @event = Page.new(params[:event])
-      @event.datatype = 'Event'
-      @event.source_updated_at = @event.source_created_at = Time.now.utc
-      @event.source_url_fingerprint = Digest::SHA1.hexdigest('local-event' + rand().to_s)
-      @event.source = 'local'
-      
-      begin
-        Time.zone = @event.time_zone
-        if(!@event.event_all_day?)
-          @event.event_start = Time.zone.parse("#{@event.event_date} #{@event.event_time}").utc
-        else
-          @event.event_start = Time.zone.parse("#{@event.event_date} 00:00:00").utc
-        end
-        validtime = true
-      rescue
-        validtime = false
-        @event.errors.add_to_base("Invalid date and time specified")
-      end
-      
-      if(validtime and @event.save)
-        @event.replace_tags_with_and_cache(params[:publish_tag_field],User.systemuserid,Tagging::CONTENT)
-        PageUpdate.create(:page => @event, :action => 'create', :remote_addr => request.env["REMOTE_ADDR"], :user => @currentuser)
-        return redirect_to(page_url(:id => @event.id, :title => @event.url_title))
-      else
-        @content_tag_list = params[:publish_tag_field]
-      end
-    else
-      @event = Page.new()
-      @content_tag_list = ''
-    end
-  end
-  
-  
-  def edit_event
-    @event = Page.find_by_id(params[:id])
-    if(@event.nil? or @event.datatype != 'Event')
-      flash[:error] = 'Event not found.'
-      return redirect_to site_events_url(with_content_tag?)
-    end
-    @event_editing = true
-    @right_column = false
-    @resource_area_tags = Tag.community_content_tags({:launchedonly => true}).map(&:name)
-    if(request.post?)
-      @event.attributes = @event.attributes.merge(params[:event])    
-      @event.datatype = 'Event'
-      @event.source_created_at = Time.now.utc
-      @event.time_zone = nil if (params[:event][:timezone].blank? and params[:event][:event_time].blank?)
-      @event.source_url_fingerprint = Digest::SHA1.hexdigest("local-event-#{@event.id}")
-      
-      begin
-        Time.zone = @event.time_zone
-        if(!@event.event_all_day?)
-          @event.event_start = Time.zone.parse("#{@event.event_date} #{@event.event_time}").utc
-        else
-          @event.event_start = Time.zone.parse("#{@event.event_date} 00:00:00").utc
-        end
-        validtime = true
-      rescue
-        validtime = false
-        @event.errors.add_to_base("Invalid date and time specified")
-      end
-      
-      if(validtime and @event.save)
-        @event.replace_tags_with_and_cache(params[:publish_tag_field],User.systemuserid,Tagging::CONTENT)
-        PageUpdate.create(:page => @event, :action => 'update', :remote_addr => request.env["REMOTE_ADDR"], :user => @currentuser)
-        return redirect_to(page_url(:id => @event.id, :title => @event.url_title))
-      else
-        @content_tag_list = params[:publish_tag_field]
-      end
-    else
-      @content_tag_list = @event.cached_content_tag_names.join(Tag::JOINER)
-    end
-  end
-  
-  def delete_event
-    @event = Page.find_by_id(params[:id])
-    if(@event.nil? or @event.datatype != 'Event')
-      flash[:error] = 'Event not found.'
-      return redirect_to site_events_url(with_content_tag?)
-    end
-    @event_editing = true
-    if(request.post?)
-      PageUpdate.create(:page => @event, :action => 'destroy', :remote_addr => request.env["REMOTE_ADDR"], :user => @currentuser)
-      @event.destroy
-      flash[:success] = 'Event removed.'
-      return redirect_to site_events_url(with_content_tag?)
-    else
-      return redirect_to edit_event_url(:id => @event.id)
-    end
-  end
-  
-  
 end

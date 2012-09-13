@@ -67,41 +67,7 @@ module DataHelper
       return "<span>"  + link_to(h(community.public_name + "Home"), preview_tag_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name))) + "</span>"
     end
   end
-  
-  
-  def month_select(date, link_to_current = false, content_tag = nil, state = nil)
-    url_params = {}
-    if(!content_tag.nil?)
-      url_params.update({:content_tag => content_tag_url_display_name(content_tag.name)})
-    else
-      url_params.update({:content_tag => 'all'})
-    end
-    url_params.update({:state => state}) if state
-    
-    if Time.now.year < date.year
-      url_params.update({:month => 12, :year => date.year-1})
-      txt = link_to((date.year-1).to_s, site_events_url(url_params))
-    else
-      txt = ''
-    end
-    
-    1.upto(12) do |month_number|
-      
-      month_name = Date::ABBR_MONTHNAMES[month_number].upcase
-      if month_number == date.month and not link_to_current
-        txt += '<strong>'+month_name+'</strong>'
-      else
-        url_params.update({:month => month_number, :year => date.year})
-        txt += link_to(month_name, site_events_url(url_params))
-      end
-      
-    end
-    
-    url_params.update({:month => 1, :year => date.year+1})
-    txt += link_to((date.year+1).to_s, site_events_url(url_params))
-    txt
-  end
-    
+     
   def state_select(name, params)
     if(@content_tag)
       make_a_link = "\"/#{@content_tag.url_display_name}/events?event_state=\" + this.value"
