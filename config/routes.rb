@@ -134,11 +134,6 @@ ActionController::Routing::Routes.draw do |map|
   map.search 'search', :controller => 'search', :action => 'index'
   map.annotation_event_page 'search/manage_event/:id', :controller => 'search', :action => 'manage_event'
 
-  ### Learn Stuff ###
-  map.learn 'learn', :controller => 'learn', :action => 'index'
-  map.learn_session 'learn/event/:id', :controller => :learn, :action => :event
-  map.connect 'learn/events', :controller => :learn, :action => :events
-  map.connect 'learn/events/:sessiontype', :controller => :learn, :action => :events
 
   ## Debug ##
   map.debuglocation 'debug/location', :controller => 'debug', :action => 'location'
