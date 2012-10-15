@@ -55,9 +55,7 @@
 </div>
 <br class="clearing" />
 
-<%- if @page.is_event? and @page.has_map? -%>
-  <%= render(:partial => 'maps_scripts') %>
-<%- end -%>
+
 <% if not @youth %>
   <div id="aae_plug">
     <h4>Have a specific question? <%= link_to 'Try asking one of our Experts', ask_form_url %></h4>
@@ -66,11 +64,6 @@
 <% end %>
 
 <%- if @currentuser -%>
-<%- if @page.is_event? -%>
-<p id="newevent">
-<%= link_to('edit',edit_event_url(:id => @page.id), :class => "bigbutton blue") %>
-  <span>This notice only displays for users signed in with their eXtensionID.</span></p>
-<%- end -%>  
   <p id="pagelinks"><%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %><br />This notice only displays for users signed in with their eXtensionID.</p>
 <%- end -%>
 
