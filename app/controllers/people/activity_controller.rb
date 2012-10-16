@@ -57,12 +57,12 @@ class People::ActivityController < ApplicationController
     # doesn't yet accept a filtered listing
     case @displayfilter
     when 'approved'
-      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED,@filteredparams.order) 
+      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED,:order => @filteredparams.order) 
     when 'usercontributed'
-      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @filteredparams.order) 
+      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, :order => @filteredparams.order) 
     else
-      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @filteredparams.order) 
-      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @filteredparams.order) 
+      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, :order => @filteredparams.order) 
+      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, :order => @filteredparams.order) 
     end
   end
     
@@ -73,11 +73,7 @@ class People::ActivityController < ApplicationController
   def positions
     @positions = Position.find(:all, :order => 'entrytype,name') 
   end
-  
-  def applications
-    @applications = ActivityApplication.find(:all, :order => 'displayname') 
-  end
-  
+    
   def list
     filteredparams_list = [{:order => {:default => 'activities.created_at DESC'}}]
     filteredparams_list += Activity.filteredparameters
