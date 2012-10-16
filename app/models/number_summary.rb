@@ -100,35 +100,7 @@ class NumberSummary
        check_result_for_nil(result,'faq',:objects)
     end
   end
-  
-  def resolved_questions
-    get_or_set_data_value(this_method.to_sym) do 
-      result = Activity.count_users_contributions_objects_by_activityentrytype(self.findoptions.merge({:activity=>"aaeresolve"}),self.forcecacheupdate)
-      check_result_for_nil(result,'aae_question',:objects)
-    end
-  end
-  
-  def rejected_questions
-    get_or_set_data_value(this_method.to_sym) do 
-      result = Activity.count_users_contributions_objects_by_activityentrytype(self.findoptions.merge({:activity=>"aaereject"}),self.forcecacheupdate)
-      check_result_for_nil(result,'aae_question',:objects)
-    end
-  end
-  
-  def unanswered_questions
-    get_or_set_data_value(this_method.to_sym) do 
-      result = Activity.count_users_contributions_objects_by_activityentrytype(self.findoptions.merge({:activity=>"aaenoanswer"}),self.forcecacheupdate)
-      check_result_for_nil(result,'aae_question',:objects)
-    end
-  end
-   
-  def submitted_questions
-    get_or_set_data_value(this_method.to_sym) do 
-      result = Activity.count_users_contributions_objects_by_activityentrytype(self.findoptions.merge({:activity=>"aaesubmission"}),self.forcecacheupdate)
-      check_result_for_nil(result,'aae_question',:objects)
-    end
-  end
-  
+    
   def counties
     get_or_set_data_value(this_method.to_sym) do 
       County.filtered(self.findoptions).count(:id, :distinct => true)
