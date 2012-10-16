@@ -26,15 +26,15 @@ class People::NumbersController < ApplicationController
     # doesn't yet accept a filtered listing
     case @displayfilter
     when 'approved'
-      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @filteredparams.order) 
+      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, :order => @filteredparams.order) 
     when 'usercontributed'
-      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @filteredparams.order) 
+      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, :order => @filteredparams.order) 
     when 'institutions'
-      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, @filteredparams.order) 
+      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, :order => @filteredparams.order) 
     else
-      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, @filteredparams.order) 
-      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, @filteredparams.order) 
-      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, @filteredparams.order) 
+      @approved_communities = Community.find_all_by_entrytype(Community::APPROVED, :order => @filteredparams.order) 
+      @usercontributed_communities = Community.find_all_by_entrytype(Community::USERCONTRIBUTED, :order => @filteredparams.order) 
+      @institution_communities = Community.find_all_by_entrytype(Community::INSTITUTION, :order => @filteredparams.order) 
     end
   end
   
