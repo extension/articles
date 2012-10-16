@@ -127,54 +127,9 @@ class People::NumbersController < ApplicationController
     redirect_to :action => :summary, :community => params[:id]
   end
   
-  # counts edit numbers, puts up a table
   def editors
-    @filteredparams = ParamsFilter.new([:dateinterval,:activityapplication,:limit],params)
-    baseoptions = {}
-    baseoptions[:activityapplication] = @filteredparams.activityapplication
-    baseoptions[:dateinterval] = @filteredparams.dateinterval
-               
-    
-    # count logins
-    filteroptions = {:dateinterval => @filteredparams.dateinterval, :activitycodes => Activity.activity_to_codes('login')}
-    @logindata = Activity.filtered(filteroptions).count(:id,:group => 'user_id', :order => 'count_id DESC')
-    # count edits
-    filteroptions = baseoptions.merge({:activitycodes => Activity.activity_to_codes('edit')})
-    @editdata = Activity.filtered(filteroptions).count(:id,:group => 'user_id', :order => 'count_id DESC')
-    # count objects
-    filteroptions = baseoptions.merge({:activitycodes => Activity.activity_to_codes('edit')})
-    @objectdata = Activity.filtered(filteroptions).count(:activity_object_id,:distinct => true, :group => 'user_id', :order => 'count_activity_object_id DESC')
-    
-    # calculate thresholds
-    @edit_percentages = {}
-    running_total = 0
-    @editdata.to_a.each_with_index do |(user_id,edits),index|
-      if(index == (@editdata.size * 0.05).ceil-1)
-        @edit_percentages['5%'] = {:users => index, :edits => running_total}
-      elsif(index == (@editdata.size * 0.10).ceil-1)
-        @edit_percentages['10%'] = {:users => index, :edits => running_total}
-      elsif(index == (@editdata.size * 0.25).ceil-1)
-        @edit_percentages['25%'] = {:users => index, :edits => running_total}
-      end
-      running_total += edits
-    end
-    
-    @item_percentages = {}
-    running_total = 0
-    @objectdata.to_a.each_with_index do |(user_id,items),index|
-      if(index == (@objectdata.size * 0.05).ceil-1)
-        @item_percentages['5%'] = {:users => index, :edits => running_total}
-      elsif(index == (@objectdata.size * 0.10).ceil-1)
-        @item_percentages['10%'] = {:users => index, :edits => running_total}
-      elsif(index == (@objectdata.size * 0.25).ceil-1)
-        @item_percentages['25%'] = {:users => index, :edits => running_total}
-      end
-      running_total += items
-    end
-    
-    # default to the 10% of the editors
-    @limit = (@filteredparams.limit.nil?) ? @item_percentages['10%'][:users] : @filteredparams.limit
-    
+    data_url = "#{AppConfig.configtable['data_site']}nodes"
+    return redirect_to(data_url, :status => :moved_permanently)
   end
   
 end
