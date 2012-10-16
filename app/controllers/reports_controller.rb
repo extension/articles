@@ -22,12 +22,8 @@ class ReportsController < ApplicationController
   end
   
   def publishedcontent
-    filteredparams = ParamsFilter.new([{:datadate => {:default => Date.yesterday}}],params)
-    set_title("Published Content by Community")
-    set_titletag("Reports - eXtension")
-    @right_column = false
-    @date = filteredparams.datadate
-    @published_values = DailyNumber.all_published_item_counts_for_date(@date)
+    data_url = "#{AppConfig.configtable['data_site']}pages/publishedcontent"
+    return redirect_to(data_url, :status => :moved_permanently)
   end
   
   def activitygraph

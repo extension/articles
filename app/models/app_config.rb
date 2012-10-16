@@ -78,8 +78,9 @@ class AppConfig
     @@configtable['public_site'] = 'http://www.extension.org'
     @@configtable['search_site'] = 'http://search.extension.org'
     @@configtable['aae_site'] = 'http://aae.extension.org'
-    @@configtable['campus_site'] = 'http://campus.extension.org/ '
-    @@configtable['pdc_site'] = 'http://pdc.extension.org/ '
+    @@configtable['campus_site'] = 'http://campus.extension.org/'
+    @@configtable['pdc_site'] = 'http://pdc.extension.org/'
+    @@configtable['data_site'] = 'http://data.extension.org/'
 
 
     # token timeouts are in days
