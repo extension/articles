@@ -14,7 +14,7 @@
 		<h4>Can you vouch for <%= @showuser.fullname%>?</h4>
 
 		<p>If you know <%= @showuser.first_name%> and can verify that <%= @showuser.first_name%> is affiliated with Cooperative Extension or working with you and others in your Communities of Practice or in Cooperative Extension in general, you can vouch for <%= @showuser.first_name%>'s eXtensionID.</p>
-		
+
 		<% form_tag({:action=> "vouch"}, {:id => "colleague_search"}) do %>
 		    <fieldset>
 		        <p>
@@ -49,9 +49,11 @@
 	  		<%= render(:partial => 'showuser_communities',:locals => { :showuser => @showuser, :displayactions => ((@currentuser.communities.find(:all, :conditions => ["connectiontype = 'leader'"]) & @showuser.communities).size > 0) ? true : false }) %>
 		</div>
 		<div>
-		    <h2>Ask an Expert</h2>
+		    <h2>Profiles across eXtension</h2>
 		    <ul class="simplelist">
-		        <li><%= link_to("Ask an Expert Profile", aae_profile_url(:id => @showuser.login))%></li>
+		      <li><%= link_to("Ask an Expert Profile", aae_profile_url(:id => @showuser.login))%></li>
+		      <li><%= link_to("Create Profile","http://create.extension.org/user/#{@showuser.id}")%></li>
+		      <li><%= link_to("Data Profile","http://data.extension.org/contributors/#{@showuser.id}")%></li>
 		    </ul>
 		</div>
 		<div id="showuser_activity">
@@ -62,5 +64,5 @@
 		</div>
 
 	<% end %>
-	
+
 <% end %>
