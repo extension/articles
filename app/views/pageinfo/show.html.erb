@@ -2,7 +2,7 @@
    <p>Invalid article id</p>
 <%- else -%>
   <h2>Article Information</h2>
-  
+
   <table cellspacing="0" border="1">
       <tr>
 		  <%- if @page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id) -%>
@@ -12,7 +12,7 @@
 			<td>Published URL</td>
           	<td><%= link_to(@page.id_and_link, @page.id_and_link) %></td>
 	  	  <%- end -%>
-		
+
       </tr>
       <tr>
           <td>Internal Page ID</td>
@@ -61,7 +61,7 @@
       <tr>
           <td>Source Published At</td>
           <td><%= humane_date(@page.source_created_at) %></td>
-      </tr>      
+      </tr>
       <tr>
           <td>Source Updated At</td>
           <td><%= humane_date(@page.source_updated_at) %></td>
@@ -78,13 +78,17 @@
       <tr>
           <td>Created At</td>
           <td><%= humane_date(@page.created_at) %></td>
-      </tr>      
+      </tr>
       <tr>
           <td>Updated At</td>
           <td><%= humane_date(@page.updated_at) %></td>
       </tr>
       <%- end -%>
-      
+      <tr>
+          <td>Page Data and Analytics</td>
+          <td><%= link_to("http://data.extension.org/pages/#{@page.id}","http://data.extension.org/pages/#{@page.id}") %></td>
+      </tr>
+
   </table>
 
   <%- if @external_links and @external_links.size > 0 -%>
@@ -114,7 +118,7 @@
     <% end %>
   </table>
   <%- end -%>
-  
+
   <%- if @local_links and @local_links.size > 0 -%>
   <h2>Local Links</h2>
   <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
@@ -142,7 +146,7 @@
     <% end%>
   </table>
   <%- end -%>
-  
+
   <%- if @internal_links and @internal_links.size > 0 -%>
   <h2>Internal Links</h2>
   <table cellspacing="0" border="1">
@@ -156,14 +160,14 @@
     <% for link in @internal_links %>
       <tr id="link_row_<%= link.id %>">
         <td><%= link_to(link.page.title, link.page.id_and_link) %></td>
-        <td><%= link_to(link.page.id,pageinfo_page_url(:id => link.page.id)) %></td>        
+        <td><%= link_to(link.page.id,pageinfo_page_url(:id => link.page.id)) %></td>
         <td><%= humane_date(link.page.source_created_at) %></td>
         <td><%= humane_date(link.page.source_updated_at) %></td>
       </tr>
     <% end%>
   </table>
   <%- end -%>
-  
+
   <%- if @wanted_links and @wanted_links.size > 0 -%>
   <h2>Internal Links (Unpublished)</h2>
   <table cellspacing="0" border="1">
