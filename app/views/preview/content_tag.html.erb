@@ -1,14 +1,14 @@
 <div id="community_checklist">
-    
+
     <div id="checklist_header">
         <h1>Launch Checklist for Content Tagged With "<%= @content_tag.name %>"</h1>
         <p>This page provides a listing of all elements needed correctly display a launched content page for an eXtension Community of Practice on the Public Site.</p>
     </div>
-    
+
     <%= image_tag("/images/pubsite/checklist-diagram-2.png", :alt => "", :class => "checklist_diagram") %>
-    
-    
-    
+
+
+
     <%- if @community.nil? -%>
     <div class="section">
         <h2>Community name <span>(A)</span></h2>
@@ -19,7 +19,7 @@
         <h2>Community name <span>(A)</span></h2>
         <p class="launchready"><%= html_escape(@community.public_name)%></p>
     </div>
-      
+
       <div class="section">
       <h2>Public Description</h2>
       <%- if @community.public_description.blank? -%>
@@ -32,7 +32,7 @@
         <p class="launchready"><%= html_escape(@community.public_description) %></p>
       <%- end -%>
       </div>
-      
+
       <div class="section">
        <h2>Homage Image <span>(G)</span></h2>
        <%- if @community.logo.nil? -%>
@@ -48,12 +48,12 @@
    <p><%= link_to("Find Page by Node ID",pageinfo_findsource_url)%>
    <ul>
        <!-- Articles -->
-       <%- if @articles_count > 0 -%>                
+       <%- if @articles_count > 0 -%>
           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@articles_count}</span> Published Articles", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'articles')) %></li>
        <%- else -%>
           <li class="missing">No Published Articles</li>
        <%- end -%>
-       
+
        <!-- events -->
        <%- if @events_count > 0 -%>
           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@events_count}</span> Published Events", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'events')) %> <span>(D)</span> </li>
@@ -76,11 +76,11 @@
        <%- end -%>
 
        <!-- Learning Lessons -->
-       <%- if @learning_lessons_count > 0 -%>      
+       <%- if @learning_lessons_count > 0 -%>
        <li><span class="launchready">Yes</span> <%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'learning lessons', :content_types => 'articles')) %> <span>(E)</span></li>
        <%- else -%>
           <li class="missing">No Published Articles categorized as "learning lesson" <span>(E)</span></li>
-       <%- end -%>              
+       <%- end -%>
 
    </ul>
    </div>
@@ -94,76 +94,51 @@
       <%- else -%>
          <li class="missing">No Published Articles categorized as "feature" <span>(B)</span></li>
       <%- end -%>
-      
+
       <!-- Contents -->
       <%- if @contents_count > 1 -%>
         <li class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %> <span>(C)</span>
          <br />(<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
          </li>
-      <%- elsif @contents_count == 1 -%>                
+      <%- elsif @contents_count == 1 -%>
          <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "contents"', @contents_page.id_and_link) %> <span>(C)</span></li>
       <%- else -%>
          <li class="missing">No Published Article categorized as "contents" <span>(C)</span></li>
       <%- end -%>
-      
+
       <!-- Homage -->
       <%- if @homage_count > 1 -%>
          <li class="missing"><%= link_to("<span>#{@homage_count}</span> Published Articles categorized as \"homage\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'homage', :content_types => 'articles')) %> <span>(G)</span>
              <br />
          (<%= link_to("#{@community.homage.title} is currently chosen for the homage view", @community.homage.id_and_link) %>)
          </li>
-      <%- elsif @homage_count == 1 -%>                
+      <%- elsif @homage_count == 1 -%>
          <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "homage"', @community.homage.id_and_link) %> <span>(G)</span></li>
       <%- else -%>
          <li class="missing">No Published Article categorized as "homage" <span>(G)</span></li>
       <%- end -%>
-      
+
    </ul>
-   </div>
-   
-<div class="section">
-   <h2>Ask an Expert</h2>
-   <%- if @expertise_category.nil? -%>
-      <p class="missing">"<%= @content_tag.name %>" is not currently entered as a category for Ask an Expert - please ask your content staff representative to create this top-level AaE category</p>
-   <%- else -%>
-      <ul>
-         <!-- Experts -->
-         <%- if @aae_expertise_count > 0 -%>                
-            <li><span class="launchready">Yes</span>    	       	
-               <%= link_to("<span>#{@aae_expertise_count}</span> Experts have indicated that this content tag is an area of expertise", :controller => '/aae/reports', :action => "state_answerers", :id => @expertise_category.id, :category => @expertise_category.name) %>
-               </li>
-         <%- else -%>
-            <li class="missing">No Experts have indicated that this content tag is an area of expertise</li>
-         <%- end -%>
-         
-         <!-- Auto Routed Experts -->
-         <%- if @aae_autorouting_count > 0 -%>                
-            <li><span class="launchready">Yes</span> <span><%= @aae_autorouting_count %></span> Experts have indicated that they will receive auto-routed questions</li>
-         <%- else -%>
-            <li class="missing">No Experts have indicated that they will receive auto-routed questions</li>
-         <%- end -%>
-      </ul>
-   <%- end -%>
    </div>
 
   <div class="section">
      <h2>Link Audit</h2>
      <h3>Broken Links</h3>
      <ul>
-       <%- if @articles_broken_count > 0 -%>                
+       <%- if @articles_broken_count > 0 -%>
           <li class="missing"><%= link_to(pluralize(@articles_broken_count,'article'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'articles',:onlybroken => true)) %> have broken links</li>
        <%- end -%>
-       <%- if @faqs_broken_count > 0 -%>                
+       <%- if @faqs_broken_count > 0 -%>
           <li class="missing"><%= link_to(pluralize(@faqs_broken_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs',:onlybroken => true)) %> have broken links</li>
        <%- end -%>
-       <%- if @events_broken_count > 0 -%>                
+       <%- if @events_broken_count > 0 -%>
           <li class="missing"><%= link_to(pluralize(@events_broken_count,'event'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'events',:onlybroken => true)) %> have broken links</li>
        <%- end -%>
-       <%- if @news_broken_count > 0 -%>                
+       <%- if @news_broken_count > 0 -%>
           <li class="missing"><%= link_to(pluralize(@news_broken_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news',:onlybroken => true)) %> have broken links</li>
-       <%- end -%>     
+       <%- end -%>
      </ul>
-     
+
      <h3>All Links</h3>
      <ul>
         <li><%= link_to(pluralize(@articles_count,'article'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'articles')) %></li>
@@ -171,7 +146,7 @@
         <li><%= link_to(pluralize(@events_count,'event'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'events')) %></li>
         <li><%= link_to(pluralize(@news_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news')) %></li>
      </ul>
-     
+
   </div>
 
 </div>

@@ -8,7 +8,7 @@
 class PreviewController < ApplicationController
   before_filter :login_optional
   before_filter :set_content_tag_and_community_and_topic
-  
+
   layout 'pubsite'
 
   def index
@@ -16,19 +16,19 @@ class PreviewController < ApplicationController
     @approved_communities =  Community.approved.all(:order => 'name')
     @other_public_communities = Community.usercontributed.public_list.all(:order => 'name')
   end
-  
+
   def content_tag
     @right_column = false
-    
+
     if(@content_tag.nil?)
       return render(:template => 'preview/invalid_tag')
     end
-    
+
     if(!canonicalized_category?(params[:content_tag]))
       return redirect_to preview_tag_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
-    
-    
+
+
     if(@community.nil?)
       @title_tag = "eXtension Content Checklist for tag: #{@content_tag}"
       # youth styling
@@ -40,7 +40,7 @@ class PreviewController < ApplicationController
       @other_community_content_tag_names = @community.cached_content_tags(true).reject{|name| name == @content_tag.name}
       # TODO: sponsor list?
     end
-    
+
     @all_content_count = Page.tagged_with_content_tag(@content_tag.name).count
     @events_count = Page.events.tagged_with_content_tag(@content_tag.name).count
     @faqs_count = Page.faqs.tagged_with_content_tag(@content_tag.name).count
@@ -60,49 +60,44 @@ class PreviewController < ApplicationController
     @all_broken_count = Page.tagged_with_content_tag(@content_tag.name).broken_links.count
 
     @contents_page = Page.contents_for_content_tag({:content_tag => @content_tag})
-      
-    @expertise_category = Category.find_by_name(@content_tag.name)
-    if(@expertise_category)
-      @aae_expertise_count = User.experts_by_category(@expertise_category.id).count
-      @aae_autorouting_count = User.experts_by_category(@expertise_category.id).auto_routers.count
-    end
+
   end
-        
+
   def expertlist
   end
-  
+
   def showcategory
     # force applocation to be preview
     @app_location_for_display = 'preview'
     @right_sidebar_to_display = "empty_vessel"
     @category_string = params[:categorystring]
   end
-    
-    
-    
+
+
+
   def showpage
     if((params[:source].blank? or params[:source_id].blank?) and params[:title].blank?)
       return(redirect_to(preview_home_url))
     end
-    
+
     # force applocation to be preview
     @app_location_for_display = 'preview'
     @right_sidebar_to_display = "empty_vessel"
-    
+
     source = params[:source] || 'copwiki'
     source_id = params[:source_id] || ''
-    
+
     if(!params[:title].blank?)
       # got here via /preview/pages/title for handling wiki titles
       # so we can't use the title param - we have to use the request_uri because of
-      # the infamous question mark articles      
+      # the infamous question mark articles
       title_to_lookup = CGI.unescape(request.request_uri.gsub('/preview/pages/', ''))
       title_to_lookup.gsub!(' ', '_')
       source_id = title_to_lookup
     end
-      
 
-    begin 
+
+    begin
       @article =  PreviewPage.new_from_source(source,source_id)
     rescue ContentRetrievalError => exception
       @missing = title_to_lookup
@@ -169,9 +164,9 @@ class PreviewController < ApplicationController
     end
 
   end
-  
-  
-  
 
-  
+
+
+
+
 end
