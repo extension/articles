@@ -1,31 +1,10 @@
 <h1>Reports</h1>
 
 <h3>Published Item Count</h3>
-<p><a href="/reports/publishedcontent">Published content by resource area tag</a></p>
-<table cellspacing="0" summary="Item Counts"o>
-    <tr>
-        <th scope="col">Item</th> 
-        <th scope="col">Published Count</th>
-    </tr>
-    <tr>
-        <td>Articles</td>
-        <td><%= Page.articles.count %></td>
-    </tr>
-        <td>Faqs</td>
-        <td><%= Page.faqs.count %></td>
-    <tr>
-    </tr>
-        <td>Events</td>
-       <td><%= Page.events.count %></td>
-    <tr>
-      </tr>
-          <td>News</td>
-         <td><%= Page.news.count %></td>
-      <tr>
-</table>
+<p>Please visit <a href="http://data.extension.org">data.extension.org</a> for publishing data and page analytics.</p>
 
 <h3>Additional Reports</h3>
 <ul>
-<li><%= link_to "Numbers (People Report)", :controller => "people/numbers", :action => "index"%></li>
-<li><%= link_to "Ask an Expert Reports (requires login)", :controller => "aae/reports", :action => "index" %></li>
+<li><%= link_to "People and Communities", :controller => "people/numbers", :action => "index"%></li>
+<li><%= link_to "Learn Reports (requires login)", 'https://learn.extension.org/data' %></li>
 </ul>

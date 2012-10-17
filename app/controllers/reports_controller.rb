@@ -9,62 +9,37 @@ class ReportsController < ApplicationController
   layout 'pubsite'
   before_filter :login_optional
   before_filter :login_required, :only => [:bronto]
-  
-  def index    
+
+  def index
     set_title("Reports")
     set_titletag("Reports - eXtension")
     @right_column = false
   end
-  
-  
+
   def graphs
+    set_title("Graphs")
+    set_titletag("Graphs - eXtension")
     @right_column = false
   end
-  
+
   def publishedcontent
     data_url = "#{AppConfig.configtable['data_site']}pages/publishedcontent"
     return redirect_to(data_url, :status => :moved_permanently)
   end
-  
+
   def activitygraph
+    set_title("Activity Graphs")
+    set_titletag("Activity Graphs - eXtension")
     @right_column = false
-    datatype = params[:datatype].nil? ? 'hourly' : params[:datatype]
-    if(params[:primary_type].nil?)
-      @graphtype = params[:graphtype] || ((datatype == 'weekday' or datatype == 'hourly') ? 'column' : 'area')
-    else # assume comparison
-      @graphtype = params[:graphtype] || 'area'
-    end
-    
-    urloptions = params
-    urloptions.merge!({:action => :activitytable,:controller => 'api/gviz', :datatype => datatype, :graphtype => @graphtype}) 
-    
-    @page_title = "#{datatype.capitalize} Activity"
-    
-    if(params[:dateinterval])
-      @page_title += " (dates: #{@dateinterval})"
-    end
-    
-    @chart_options = {:querysource => url_for(urloptions)}
-       
-    if (@graphtype == 'column')
-      @chart_partial = 'reports/columnchart'
-      @chart_options.merge!({:width => 800,:height => 480,:chartdiv => 'visualization_chart',:legend => 'bottom',:lineSize => 2, :pointSize => 3})
-    elsif(@graphtype == 'timeline')
-      @chart_partial = 'reports/timeline'
-      @chart_options.merge!({:width => 800,:height => 480,:chartdiv => 'visualization_chart',:legend => 'bottom',:lineSize => 2, :pointSize => 3})
-    else   
-      @chart_partial = 'reports/areachart'
-      @chart_options.merge!({:width => 800,:height => 480,:chartdiv => 'visualization_chart',:legend => 'bottom',:lineSize => 2, :pointSize => 3})
-    end
   end
-  
+
   def bronto
     @reporting = true
     @right_column = false
     @filteredparameters = ParamsFilter.new([{:start_date => {:datatype => :date, :default => (Date.yesterday - 1.month)}},
                                             {:end_date => {:datatype => :date, :default => (Date.yesterday)}},
                                             {:download => :string}],params)
-    
+
     if(!@filteredparameters.download.nil? and @filteredparameters.download == 'csv')
       @sends = BrontoSend.where('sent >= ? and sent <=?',@filteredparameters.start_date,@filteredparameters.end_date).order('sent DESC')
       response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
@@ -74,5 +49,5 @@ class ReportsController < ApplicationController
       @sends = BrontoSend.where('sent >= ? and sent <=?',@filteredparameters.start_date,@filteredparameters.end_date).order('sent DESC').paginate(:page => params[:page])
     end
   end
-  
+
 end
