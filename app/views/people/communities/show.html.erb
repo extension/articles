@@ -16,11 +16,11 @@
 
     <%- if !@community.description.nil? -%>
       <p id="description">
-        <%= @community.description -%> 
+        <%= @community.description -%>
         <%- if (@am_i_leader or admin_mode?) -%>
           <p><small class="edit"><%= link_to 'edit', edit_people_community_path(@community) -%></small></p>
         <%- end -%>
-      </p>              
+      </p>
     <%- end -%>
 
     <div id="col_one">
@@ -33,9 +33,14 @@
       <%= render(:partial => 'community_numbers') -%>
       </div>
 
+      <h2>Community Information</h2>
+      <div id="communityreports" class="dashmodule">
+      <p><%= link_to("Community Activity", activity_people_community_path(@community)) -%></p>
+      <p><%= link_to("Community Membership Statistics", :controller => '/people/numbers', :action => :community, :id => @community.id) -%></p>
+      </div>
 
       <h2>
-        <%= @community.viewlabel.capitalize -%> Mailing Lists 
+        <%= @community.viewlabel.capitalize -%> Mailing Lists
         <%- if (@am_i_leader or admin_mode?) -%>
           <small><%= link_to 'edit', editlists_people_community_path(@community) -%></small>
         <%- end -%>
@@ -47,20 +52,6 @@
 
 
     <div id="col_two">
-      <%- if @community.is_launched? -%>
-        <h2>Publishing Totals <small>(through <%= @datadate.to_s -%>)</small></h2>
-        <div class="dashmodule">
-          <ul id="publishing_totals">                    
-            <li><span><%= @community.item_count_for_date(@datadate,'published events') -%></span> Events</li>
-            <li><span><%= @community.item_count_for_date(@datadate,'published faqs') -%></span> FAQs</li>
-            <li><span><%= @community.item_count_for_date(@datadate,'published articles') -%></span> Articles</li>
-            <li><span><%= @community.item_count_for_date(@datadate,'published learning lessons') -%></span> Learning Lessons</li>
-            <li><span><%= @community.item_count_for_date(@datadate,'published features') -%></span> Features</li>
-            <li><span><%= @community.item_count_for_date(@datadate,'published news') -%></span> News</li>
-          </ul>
-          <p><small>"Articles" includes all published pages, features, dpls, learning lessons. It does not include "News"</small></p>
-        </div>
-      <%- end -%>
       <h2><%= @community.viewlabel.capitalize -%> Tags <a class="tooltip-help" href="#" id="tags_trigger">?</a></h2>
       <div class="dashmodule">
         <div id="sharedtaglist">
@@ -78,13 +69,16 @@
       </div>
 
       <h2>
-        <%= @community.viewlabel.capitalize -%> Information 
+        <%= @community.viewlabel.capitalize -%> Attributes
         <%- if (@am_i_leader or admin_mode?) -%>
           <small><%= link_to 'edit', edit_people_community_path(@community) -%></small>
         <%- end -%>
       </h2>
+      
+
+      
       <div class="dashmodule">
-        <p><%= link_to("Reports: Numbers and Activity", :controller => '/people/numbers', :action => :community, :id => @community.id) -%></p>
+
         <dl>
           <dt>Community Type:</dt>
           <dd><%= @community.entrytype_to_s -%>
@@ -100,13 +94,32 @@
           <dd><%= humane_date(@community.created_at) -%></dd>
         </dl>
       </div>
-    </div>
-  </div> 
-  
-  <div id="community_sidebar">
-    <div id="recent_community_activity" class="section">
-    <%= render(:partial => 'recent_activity') -%>
+
+      <%- if (@community.connect_to_drupal? and @community.drupal_node_id) or @community.is_launched? -%>
+      <h2>Elsewhere in eXtension</h2>
+      <div class="dashmodule">
+        <p><em>Links to information for this community in other eXtension applications</em></p>
+        <dl>
+        <%- if (@community.connect_to_drupal? and @community.drupal_node_id) -%>
+          <dt>create.extension.org</dt>
+          <dd><a href="http://create.extension.org/node/<%= @community.drupal_node_id %>">Community Dashboard</a></dd>
+        <%- end -%>
+        <%- if  @community.is_launched? -%>
+          <dt>data.extension.org</dt>
+          <dd><a href="http://data.extension.org/groups/<%= @community.id %>">Group Information</a></dd>
+          <%- if !@community.cached_content_tags.blank? -%>
+            <dt>www.extension.org/preview</dt>
+            <%- @community.cached_content_tags.each do |tagname| -%>
+              <dd><%= link_to("content checklist (tag: #{tagname})", preview_tag_url(:content_tag => content_tag_url_display_name(tagname))) %></dd>
+            <%- end -%>
+          <%- end -%>
+        <%- end -%>
+        </dl>
+      </div>
+      <%- end -%>
+
     </div>
   </div>
+
 </div>
 
