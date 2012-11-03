@@ -47,7 +47,8 @@ ActionController::Routing::Routes.draw do |map|
                                                 :change_my_connection => :post, 
                                                 :modify_user_connection => :post, 
                                                 :xhrfinduser => :post, 
-                                                :editlists => :any }
+                                                :editlists => :any,
+                                                :activity => :get }
     people.resources :invitations,  :collection => {:mine => :get}
   end
   
