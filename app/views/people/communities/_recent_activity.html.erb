@@ -1,9 +1,0 @@
-<h3>Recent Activity <span class="feed"><%= link_to("feed", :controller => '/people/feeds', :action => :community, :id => @community.id, :feedkey => @currentuser.feedkey, :filter => 'all')%></span></h3>
-<%= render(:partial => 'people/activity/activitylist', :locals => { :activitylist => @community.recent_community_activity, :activityoptions => {:communityview => false} }) %>
-
-<h3>More...</h3>
-<ul>
-    <li><%= link_to("Community activity only",{:controller => '/people/activity', :action => :list, :community => @community.id, :communityactivity => 'community'})%></li>
-    <li><%= link_to("Member activity only",{:controller => '/people/activity', :action => :list, :community => @community.id, :communityactivity => 'member'})%>)</li>
-    <li><%= link_to("Combined (all activity)",{:controller => '/people/activity', :action => :list, :community => @community.id, :communityactivity => 'all'})%></li>
-</ul>

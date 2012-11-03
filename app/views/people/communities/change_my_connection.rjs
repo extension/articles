@@ -1,4 +1,3 @@
 page.replace_html "connectiontocommunity", :partial => '/people/communities/community_connection'
 page.replace_html "sharedtaglist", :partial => '/people/communities/shared_tag_list'
 page.replace_html "communitynumbers", :partial => '/people/communities/community_numbers'
-page.replace_html "recent_community_activity", :partial => '/people/communities/recent_activity'

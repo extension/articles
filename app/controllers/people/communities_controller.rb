@@ -108,7 +108,8 @@ class People::CommunitiesController < ApplicationController
     else
       # do nothing
     end
-
+    
+    @currentuser.reload
     @currentuser_communities = @currentuser.communities_by_connectiontype
 
     respond_to do |format|
