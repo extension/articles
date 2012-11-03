@@ -56,12 +56,6 @@
 		      <li><%= link_to("Data Profile","http://data.extension.org/contributors/#{@showuser.id}")%></li>
 		    </ul>
 		</div>
-		<div id="showuser_activity">
-			<h2>Recent Activity</h2>
-			<p class="syndication"><%= link_to("feed", :controller => '/people/feeds', :action => :showuser, :id => @showuser.id)%></p>
-			<%= render(:partial => 'people/activity/activitylist', :locals => { :activitylist => @showuser.recent_public_activity, :activityoptions => {:userview => true}}) %>
-			<p><%= link_to("More...",{:controller => '/people/activity', :action => :showuser, :id => @showuser.id })%></p>
-		</div>
 
 	<% end %>
 
