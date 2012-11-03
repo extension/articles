@@ -19,7 +19,7 @@ GEM
     awesome_print (0.3.2)
     builder (2.1.2)
     calendar_date_select (1.16.2)
-    capatross (1.4)
+    capatross (1.4.1)
       capistrano (>= 2.11)
       grit (>= 2.4)
       mysql2 (>= 0.3.11)
