@@ -1,0 +1,16 @@
+<% @selected_tab = :communities %>
+<h1>Community Activity for <%= link_to(@community.name,people_community_path(@community)) %></h1>
+<div id="paginator_wrapper">
+  <%= will_paginate @activitylist %>
+</div>
+
+<% @activitylist.each do |activityitem| %>
+<dl class="event">
+    <dt><%= link_to("#{time_ago_in_words(activityitem.created_at,true)} ago",'#',{:id => activityitem.id, :title => activityitem.created_at.to_s}) %></dt>
+    <dd><%= activity_to_s(activityitem) %></dd>
+</dl>
+<% end %>
+
+<div id="paginator_wrapper">
+  <%= will_paginate @activitylist %>
+</div>

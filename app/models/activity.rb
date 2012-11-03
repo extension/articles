@@ -13,13 +13,13 @@ class Activity < ActiveRecord::Base
   extend DataImportActivity
 
   EARLIEST_TRACKED_ACTIVITY_DATE = '2005-11-01 00:00:00'
-  
+
   #### PRIVACY SETTINGS
-  
+
   PRIVATE = 100
   PROTECTED = 101
   PUBLIC = 102
-  
+
 
   #### activity types
   LOGIN = 1
@@ -27,8 +27,8 @@ class Activity < ActiveRecord::Base
   AAE = 3
   PEOPLE = 4
   COMMUNITY = 5
-  
-  #### activity codes  
+
+  #### activity codes
   SIGNUP = 101
   INVITATION = 102
   VOUCHED_BY = 103
@@ -40,12 +40,12 @@ class Activity < ActiveRecord::Base
   INVITATION_ACCEPTED = 109
   CREATED_COMMUNITY = 110
   EDIT = 111
-  
+
   # COMMUNITY
   COMMUNITY_ACTIVITY = 200
   COMMUNITY_ACTIVITY_START = 201
   COMMUNITY_ACTIVITY_END = 599
-  
+
   COMMUNITY_JOIN = 201
   COMMUNITY_WANTSTOJOIN = 202
   COMMUNITY_LEFT= 203
@@ -55,7 +55,7 @@ class Activity < ActiveRecord::Base
   COMMUNITY_NOWANTSTOJOIN = 207
   COMMUNITY_INTEREST = 208
   COMMUNITY_NOINTEREST = 209
-  
+
   COMMUNITY_INVITEDASLEADER = 210
   COMMUNITY_INVITEDASMEMBER = 211
   COMMUNITY_ADDEDASLEADER = 212
@@ -63,7 +63,7 @@ class Activity < ActiveRecord::Base
   COMMUNITY_REMOVEDASLEADER = 214
   COMMUNITY_REMOVEDASMEMBER = 215
   COMMUNITY_INVITATIONRESCINDED = 216
-  
+
   COMMUNITY_INVITELEADER = 301
   COMMUNITY_INVITEMEMBER = 302
   COMMUNITY_ADDLEADER = 303
@@ -72,13 +72,13 @@ class Activity < ActiveRecord::Base
   COMMUNITY_REMOVEMEMBER = 306
   COMMUNITY_RESCINDINVITATION = 307
   COMMUNITY_INVITEREMINDER = 308
-  
+
   COMMUNITY_UPDATE_INFORMATION = 401
   COMMUNITY_CREATED_LIST = 402
   COMMUNITY_TAGGED = 403
 
   LIST_POST = 501
-  
+
   # AAE
   AAE_RESOLVE = 601
   AAE_ASSIGN = 602
@@ -88,14 +88,14 @@ class Activity < ActiveRecord::Base
   AAE_SUBMISSION_PUBSITE = 610
   AAE_SUBMISSION_WIDGET = 611
   AAE_SUBMISSION_OTHER = 612
-  
+
   # INFORMATION
   INFORMATION_EDIT = 701
   INFORMATION_COMMENT = 702
   INFORMATION_PUBLISH = 703
   INFORMATION_CHANGESET = 704
-  
-    
+
+
   ACTIVITY_LOCALE_STRINGS = {
     AAE_ASSIGN => 'aae_assign',
     AAE_NOANSWER => 'aae_noanswer',
@@ -147,54 +147,58 @@ class Activity < ActiveRecord::Base
     VOUCHED_BY => 'vouched_by',
     VOUCHED_FOR => 'vouched_for'
   }
-  
+
   belongs_to :user
   belongs_to :creator, :class_name => "User", :foreign_key => "created_by"
   belongs_to :colleague, :class_name => "User", :foreign_key => "colleague_id"
   belongs_to :community
   belongs_to :activity_application
   belongs_to :activity_object
-  
+
   serialize :additionaldata
-  
+
   named_scope :bydate, lambda {|options| {:conditions => build_date_condition(options)} }
   named_scope :displayactivity, :conditions => ["privacy IN (#{Activity::PUBLIC},#{Activity::PROTECTED})"]
-  
+
   named_scope :validusers, {:joins => [:user], :conditions => { :users => ["retired = 0 and vouched = 1 and id != 1"]}}
-  
+
   named_scope :filtered, lambda {|options| useractivity_filter(options)}
-  
+
   named_scope :byactivityoptions, lambda {|options|
     {:conditions => build_activity_conditions(options)}
   }
-  
+
   named_scope :forusers, lambda {|options|
     {:conditions => build_userlimit_condition(options)}
   }
-  
+
   ######
   # location, county, position of user
   named_scope :byuserassociation, lambda {|options|
     {:joins => [:user], :conditions => User.build_association_conditions(options)}
   }
-  
+
   named_scope :location, lambda {|location|
     {:joins => [:user], :conditions => { :users => {:location_id => location.id}}}
   }
-  
+
   named_scope :county, lambda {|county|
     {:joins => [:user], :conditions => { :users => {:county_id => county.id}}}
   }
-  
+
   named_scope :position, lambda {|position|
     {:joins => [:user], :conditions => { :users => {:position_id => position.id}}}
   }
-    
+
+  named_scope :community, where("activitycode BETWEEN #{Activity::COMMUNITY_ACTIVITY_START} AND #{Activity::COMMUNITY_ACTIVITY_END}")
+
   # -----------------------------------
   # Class-level methods
   # -----------------------------------
   class << self
-    
+
+
+
     def filteredparameters
       filteredparams_list = []
       # list everything that Activity#useractivity_filter handles - which needs to be refactored
@@ -214,11 +218,11 @@ class Activity < ActiveRecord::Base
       filteredparams_list += [{:allactivity => :boolean},:community,:communitytype, {:allusers => :boolean}]
       filteredparams_list
     end
-    
+
     def per_page
       25
     end
-    
+
     def build_community_joins(options)
       communityactivity = options[:communityactivity] || 'member'
       if(communityactivity == 'member')
@@ -227,15 +231,15 @@ class Activity < ActiveRecord::Base
         return nil
       end
     end
-    
-    def build_community_conditions(options)      
+
+    def build_community_conditions(options)
       connectiontype = options[:connectiontype] || 'joined'
       communityactivity = options[:communityactivity] || 'member'
 
       if(communityactivity == 'community')
         return "#{table_name}.community_id = #{options[:community].id}"
       elsif(communityactivity == 'all')
-        # hack! 
+        # hack!
         userlist = User.filtered({:community => options[:community], :connectiontype => connectiontype, :dateinterval => 'all'})
         if(userlist.size > 0)
           return "#{table_name}.user_id IN (#{userlist.map(&:id).join(',')}) OR #{table_name}.community_id = #{options[:community].id}"
@@ -246,8 +250,8 @@ class Activity < ActiveRecord::Base
         return "#{Community.table_name}.id = #{options[:community].id} AND #{Communityconnection.connection_condition(options[:connectiontype])}"
       end
     end
-    
-    
+
+
     def build_communitytype_joins(options)
       communityactivity = options[:communityactivity] || 'member'
       if(communityactivity == 'member')
@@ -256,19 +260,19 @@ class Activity < ActiveRecord::Base
         return :community
       end
     end
-    
+
     def build_communitytype_conditions(options)
       connectiontype = options[:connectiontype] || 'joined'
       communityactivity = options[:communityactivity] || 'member'
-      
+
       if(communityactivity == 'community')
         return "#{Community.communitytype_condition(options[:communitytype])}"
       else
         return "(#{Community.communitytype_condition(options[:communitytype])} AND #{Communityconnection.connection_condition(options[:connectiontype])})"
       end
     end
-    
-  
+
+
     def build_userlimit_condition(options={})
       if(options[:user])
         return "activities.user_id = #{options[:user].id}"
@@ -280,10 +284,10 @@ class Activity < ActiveRecord::Base
         return nil
       end
     end
-    
+
     def build_activity_conditions(options={})
       conditionsarray = []
-      
+
       #ipaddress
       if(options[:activityaddress])
         conditionsarray << "#{table_name}.ipaddr LIKE '#{options[:activityaddress]}%'"
@@ -299,7 +303,7 @@ class Activity < ActiveRecord::Base
           conditionsarray << "#{table_name}.activitycode IN (#{activitycodes.join(',')})"
         end
       end
-      
+
       # activity types(s) or activitygroup label (most common case)
       if(options[:activitytype])
         conditionsarray << "#{table_name}.activitytype = #{options[:activitytype]}"
@@ -310,7 +314,7 @@ class Activity < ActiveRecord::Base
           conditionsarray << "#{table_name}.activitytype IN (#{activitytypes.join(',')})"
         end
       end
-      
+
       # narrow to certain activity_applications
       if(options[:activityapplication])
         conditionsarray << "#{table_name}.activity_application_id = #{options[:activityapplication].id}"
@@ -319,16 +323,16 @@ class Activity < ActiveRecord::Base
       elsif(options[:appname])
         if(aa = ActivityApplication.find_by_shortname(options[:appname]))
           conditionsarray << "#{table_name}.activity_application_id = #{aa.id}"
-        end  
+        end
       end # TODO? 'appnames?'
-          
+
       if(!conditionsarray.blank?)
         return conditionsarray.join(' AND ')
       else
         return nil
       end
     end
-    
+
     def build_activityentrytype_condition(options)
       conditions = nil
       # narrow to certain activity_applications
@@ -339,37 +343,37 @@ class Activity < ActiveRecord::Base
       elsif(options[:activityentrytypes])
         # TODO!
       end
-      
+
       return conditions
     end
-    
-    def useractivity_filter(options={})    
+
+    def useractivity_filter(options={})
       joins = [:user]
-      
+
       conditions = []
-      
+
       conditions << build_date_condition(options)
 
       # activity conditions?
       conditions << build_activity_conditions(options)
-      
+
       # specific entrytype?
       if(activityentrytype_condition = build_activityentrytype_condition(options))
         joins << :activity_object
         conditions << activityentrytype_condition
       end
-      
-      
+
+
 
       if(options[:allactivity].nil? or !options[:allactivity])
         conditions << "#{table_name}.privacy != #{Activity::PRIVATE}"
       end
-      
+
       # activity object type?
       if(options[:community])
         conditions << "#{table_name}.privacy != #{Activity::PRIVATE}"
       end
-      
+
       # TODO:  how much of this check is relevant if looking at a user or userlist?
       if(options[:community])
         joins << build_community_joins(options)
@@ -381,71 +385,71 @@ class Activity < ActiveRecord::Base
 
       if(userlimitconditions = build_userlimit_condition(options))
         conditions << userlimitconditions
-      else           
+      else
         # location, position, institution?
         conditions << User.build_association_conditions(options)
-        
+
         if(options[:allusers].nil? or !options[:allusers])
           #conditions << "#{User.table_name}.retired = 0 and #{User.table_name}.vouched = 1 and #{User.table_name}.id != 1"
           conditions << "#{User.table_name}.retired = 0 and #{User.table_name}.vouched = 1"
         end
       end
-            
-      return {:joins => joins.compact, :conditions => conditions.compact.join(' AND ')}  
+
+      return {:joins => joins.compact, :conditions => conditions.compact.join(' AND ')}
     end
-    
-  
+
+
     def hourlycount_with_userfilter(options = {},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do       
-        datefield = options[:datefield] || AppConfig.configtable['default_datefield'] 
-        tz = options[:tz] || AppConfig.configtable['default_timezone']  
-        
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
+        datefield = options[:datefield] || AppConfig.configtable['default_datefield']
+        tz = options[:tz] || AppConfig.configtable['default_timezone']
+
         if(tz and tz != 'UTC' and TZInfo::Timezone.all_identifiers.include?(tz))
           activityhour = "HOUR(CONVERT_TZ(#{table_name}.#{datefield},'UTC','#{tz}'))"
         else
           activityhour = "HOUR(#{table_name}.#{datefield})"
         end
-      
+
         counts = self.filtered(options).count(:all, :group => activityhour)
         activity = {}
         counts.map{|values| activity[values[0].to_i] = values[1].to_i}
         return activity
       end
     end
-    
+
     def weekdaycount_with_userfilter(options = {},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do       
-        datefield = options[:datefield] || AppConfig.configtable['default_datefield'] 
-        tz = options[:tz] || AppConfig.configtable['default_timezone']  
-        
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
+        datefield = options[:datefield] || AppConfig.configtable['default_datefield']
+        tz = options[:tz] || AppConfig.configtable['default_timezone']
+
         if(tz and tz != 'UTC' and TZInfo::Timezone.all_identifiers.include?(tz))
           activityweekday = "WEEKDAY(CONVERT_TZ(#{table_name}.#{datefield},'UTC','#{tz}'))"
         else
           activityweekday = "WEEKDAY(#{table_name}.#{datefield})"
         end
-      
+
         counts = self.filtered(options).count(:all, :group => activityweekday)
         activity = {}
         returncounts = []
         counts.map{|values| activity[values[0].to_i] = values[1].to_i}
         return activity
       end
-    end    
-  
+    end
+
     def weekofyearcount_with_userfilter(options = {},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do       
-        datefield = options[:datefield] || AppConfig.configtable['default_datefield'] 
-        tz = options[:tz] || AppConfig.configtable['default_timezone']  
-        
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
+        datefield = options[:datefield] || AppConfig.configtable['default_datefield']
+        tz = options[:tz] || AppConfig.configtable['default_timezone']
+
         if(tz and tz != 'UTC' and TZInfo::Timezone.all_identifiers.include?(tz))
           activityweekofyear = "WEEK(CONVERT_TZ(#{table_name}.#{datefield},'UTC','#{tz}'),1)"
         else
           activityweekofyear = "WEEK(#{table_name}.#{datefield},1)"
         end
-      
+
         counts = self.filtered(options).count(:all, :group => activityweekofyear)
         activity = {}
         returncounts = []
@@ -453,19 +457,19 @@ class Activity < ActiveRecord::Base
         return activity
       end
     end
-    
+
     def yearweekcount_with_userfilter(options = {},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do       
-        datefield = options[:datefield] || AppConfig.configtable['default_datefield'] 
-        tz = options[:tz] || AppConfig.configtable['default_timezone']  
-        
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
+        datefield = options[:datefield] || AppConfig.configtable['default_datefield']
+        tz = options[:tz] || AppConfig.configtable['default_timezone']
+
         if(tz and tz != 'UTC' and TZInfo::Timezone.all_identifiers.include?(tz))
           activityweek = "DATE_FORMAT(CONVERT_TZ(#{table_name}.#{datefield},'UTC','#{tz}'),'%Y-%u')"
         else
           activityweek = "DATE_FORMAT(#{table_name}.#{datefield}, '%Y-%u')"
         end
-      
+
         counts = self.filtered(options).count(:all, :group => activityweek)
         activity = {}
         returncounts = []
@@ -473,19 +477,19 @@ class Activity < ActiveRecord::Base
         return activity
       end
     end
-    
+
     def yearmonthcount_with_userfilter(options = {},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do       
-        datefield = options[:datefield] || AppConfig.configtable['default_datefield'] 
-        tz = options[:tz] || AppConfig.configtable['default_timezone']  
-        
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
+        datefield = options[:datefield] || AppConfig.configtable['default_datefield']
+        tz = options[:tz] || AppConfig.configtable['default_timezone']
+
         if(tz and tz != 'UTC' and TZInfo::Timezone.all_identifiers.include?(tz))
           activitymonth = "DATE_FORMAT(CONVERT_TZ(#{table_name}.#{datefield},'UTC','#{tz}'),'%Y-%m')"
         else
           activitymonth = "DATE_FORMAT(#{table_name}.#{datefield}, '%Y-%m')"
         end
-      
+
         counts = self.filtered(options).count(:all, :group => activitymonth)
         activity = {}
         returncounts = []
@@ -493,40 +497,40 @@ class Activity < ActiveRecord::Base
         return activity
       end
     end
-    
-    
+
+
     def monthcount_with_userfilter(options = {},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do       
-        datefield = options[:datefield] || AppConfig.configtable['default_datefield'] 
-        tz = options[:tz] || AppConfig.configtable['default_timezone']  
-        
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
+        datefield = options[:datefield] || AppConfig.configtable['default_datefield']
+        tz = options[:tz] || AppConfig.configtable['default_timezone']
+
         if(tz and tz != 'UTC' and TZInfo::Timezone.all_identifiers.include?(tz))
           activitymonth = "MONTH(CONVERT_TZ(#{table_name}.#{datefield},'UTC','#{tz}'))"
         else
           activitymonth = "MONTH(#{table_name}.#{datefield})"
         end
-      
+
         counts = self.filtered(options).count(:all, :group => activitymonth)
         activity = {}
         returncounts = []
         counts.map{|values| activity[values[0].to_i] = values[1].to_i}
         return activity
       end
-    end    
-    
+    end
+
     def datecount_with_userfilter(options = {},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do       
-        datefield = options[:datefield] || AppConfig.configtable['default_datefield'] 
-        tz = options[:tz] || AppConfig.configtable['default_timezone']  
-        
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
+        datefield = options[:datefield] || AppConfig.configtable['default_datefield']
+        tz = options[:tz] || AppConfig.configtable['default_timezone']
+
         if(tz and tz != 'UTC' and TZInfo::Timezone.all_identifiers.include?(tz))
           activitydate = "DATE(CONVERT_TZ(#{table_name}.#{datefield},'UTC','#{tz}'))"
         else
           activitydate = "DATE(#{table_name}.#{datefield})"
         end
-      
+
         counts = self.filtered(options).count(:all, :group => activitydate)
         activity = {}
         returncounts = []
@@ -535,53 +539,53 @@ class Activity < ActiveRecord::Base
         lastday = activity.keys.sort.last
         return activity
       end
-    end    
-          
+    end
+
     def count_with_userfilter(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
         Activity.filtered(options).count(:all)
       end
     end
-    
+
     def count_signups(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
         Activity.filtered(options.merge({:activity => 'signup'})).count(:all,:group => "accounts.id").size
       end
     end
-    
+
     def count_unique_logins(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
         Activity.filtered(options.merge({:activity => 'login'})).count(:all,:group => "accounts.id").size
       end
-    end   
-    
+    end
+
     def count_active_users(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
         Activity.filtered(options.merge({:activity => 'active'})).count(:all,:group => "accounts.id").size
       end
     end
-    
+
     def count_unique_users(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
         Activity.filtered(options).count(:all,:group => "accounts.id").size
       end
-    end    
-    
+    end
+
     def count_unique_communities_with_new_members(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
         Activity.filtered(options.merge({:activity => 'joincommunity'})).count(:all,:group => "communities.id").size
       end
     end
-    
+
     def count_unique_users_as_new_community_members(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
         Activity.filtered(options.merge({:activity => 'joincommunity'})).count(:all,:group => "accounts.id").size
       end
     end
@@ -593,42 +597,42 @@ class Activity < ActiveRecord::Base
       records.map{|values| returnhash[values[0]] = values[1].to_i}
       return returnhash
     end
-    
+
     def count_unique_activityobjects_by_activityentrytype(options={},forcecacheupdate=false)
       returnhash = {}
       records = self.filtered(options.merge(:activitygroup => 'contribution')).count('DISTINCT(activities.activity_object_id)',:joins => :activity_object, :group => 'activity_objects.entrytype')
       records.map{|values| returnhash[values[0]] = values[1].to_i}
       return returnhash
-    end   
-    
+    end
+
     def count_uniqueusers_contributing_by_activityentrytype(options={},forcecacheupdate=false)
       returnhash = {}
       records = self.filtered(options.merge(:activitygroup => 'contribution')).count('DISTINCT(activities.user_id)',:joins => :activity_object,:group => 'activity_objects.entrytype')
       records.map{|values| returnhash[values[0]] = values[1].to_i}
       return returnhash
     end
-    
+
     def count_users_contributions_objects_by_activityentrytype(options={},forcecacheupdate=false)
       cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do 
-        returnhash = {}      
+      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
+        returnhash = {}
 
         edits = self.count_contributions_by_activityentrytype(options)
         objects = self.count_unique_activityobjects_by_activityentrytype(options)
         users = self.count_uniqueusers_contributing_by_activityentrytype(options)
-      
-      
-        keys = edits.keys + objects.keys + users.keys 
+
+
+        keys = edits.keys + objects.keys + users.keys
         keys.uniq.each{|key| returnhash[ActivityObject::ENTRYTYPELABELS[key.to_i]] = {:contributions => 0, :users => 0, :objects => 0}}
-      
+
         objects.each{|key,value| returnhash[ActivityObject::ENTRYTYPELABELS[key.to_i]][:objects] = value}
         edits.each{|key,value| returnhash[ActivityObject::ENTRYTYPELABELS[key.to_i]][:contributions] = value}
         users.each{|key,value| returnhash[ActivityObject::ENTRYTYPELABELS[key.to_i]][:users] = value}
-        returnhash 
+        returnhash
       end
-    end 
-    
-        
+    end
+
+
     def activity_to_codes(activity)
       case activity
       when 'signup'
@@ -657,7 +661,7 @@ class Activity < ActiveRecord::Base
         return nil
       end
     end
-    
+
     def activitygroup_to_types(activitygroup)
       case activitygroup
       when 'people'
@@ -669,7 +673,7 @@ class Activity < ActiveRecord::Base
       when 'contribution'
         return [Activity::INFORMATION,Activity::AAE]
       when 'aae'
-        return [Activity::AAE]        
+        return [Activity::AAE]
       when 'active'
         return [Activity::LOGIN,Activity::INFORMATION,Activity::AAE]
       when 'community'
@@ -678,8 +682,8 @@ class Activity < ActiveRecord::Base
         return nil
       end
     end
-    
-    
+
+
     def code_to_activity(activitycode)
       case activitycode
       when Activity::SIGNUP
@@ -687,7 +691,7 @@ class Activity < ActiveRecord::Base
       when Activity::LOGIN_OPENID
       when Activity::LOGIN_PASSWORD
         return 'login'
-      when Activity::INFORMATION_EDIT        
+      when Activity::INFORMATION_EDIT
         return 'edit'
       when Activity::COMMUNITY_ACTIVITY
         return 'community'
@@ -700,8 +704,8 @@ class Activity < ActiveRecord::Base
         return nil
       end
     end
-    
-    
+
+
     def log_activity(opts = {})
       # TODO: public activity
       if(opts[:activitycode] == COMMUNITY_INVITATIONRESCINDED or opts[:activitycode] == COMMUNITY_NOINTEREST)
@@ -709,8 +713,8 @@ class Activity < ActiveRecord::Base
       else
         opts[:privacy] = Activity::PROTECTED
       end
-      
-      
+
+
       # creator check
       if(opts[:creator].nil?)
         opts[:creator] = User.systemuser
@@ -722,14 +726,14 @@ class Activity < ActiveRecord::Base
 
       # ActivityApplication lookups
       aa = opts.delete(:activity_application)
-      if(aa.nil?) 
+      if(aa.nil?)
         # check for appname/trustroot - except for api auth, we should basically always hit this branch
         if(opts[:activitycode] == Activity::LOGIN_OPENID)
           trustroot = opts.delete(:trustroot)  # must have a trustroot for now
           opts[:activity_uri] = trustroot
           aa = ActivityApplication.finduri(trustroot)
           if(aa.nil?)
-            opts[:privacy] = Activity::PRIVATE            
+            opts[:privacy] = Activity::PRIVATE
           end
         elsif(!opts[:appname].nil?)
           appname = opts.delete(:appname)
@@ -754,12 +758,12 @@ class Activity < ActiveRecord::Base
       rescue ActiveRecord::StatementInvalid => e
         raise unless e.to_s =~ /duplicate/i
       end
-      
+
     end
-        
+
   end
-  
-  
-  
+
+
+
 
 end

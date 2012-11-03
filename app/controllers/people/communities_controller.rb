@@ -538,6 +538,13 @@ class People::CommunitiesController < ApplicationController
     end
   end
 
+  def activity
+    @community = Community.find(params[:id])
+    @page_title = "Community Activity for #{@community.name}"
+    @activitylist = @community.activities.community.paginate(:all, :order => 'created_at DESC', :page => params[:page])
+  end
+
+
 
   #----------------------------------
   # protected functions
