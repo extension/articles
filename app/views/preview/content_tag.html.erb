@@ -54,13 +54,6 @@
           <li class="missing">No Published Articles</li>
        <%- end -%>
 
-       <!-- events -->
-       <%- if @events_count > 0 -%>
-          <li><span class="launchready">Yes</span> <%= link_to("<span>#{@events_count}</span> Published Events", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'events')) %> <span>(D)</span> </li>
-       <%- else -%>
-          <li class="missing">No Published Events <span>(D)</span></li>
-       <%- end -%>
-
        <!-- faqs -->
        <%- if @faqs_count > 0 -%>
           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@faqs_count}</span> Published Faqs", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'faqs')) %> <span>(F)</span></li>
