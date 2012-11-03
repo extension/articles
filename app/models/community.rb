@@ -495,43 +495,6 @@ class Community < ActiveRecord::Base
     end
   end
     
-  def item_count_for_date(datadate,datatype,getvalue = 'total',update=false)
-    if(datadate.nil?)
-      datadate = Date.today
-    end
-    if(!update and (dn = self.daily_numbers.find_by_datatype_and_datadate(datatype,datadate)))
-      return dn.send(getvalue)
-    end
-    
-    case datatype
-    when 'published articles'
-      total = Page.articles.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.articles.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count
-    when 'published faqs'
-      total = Page.faqs.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.faqs.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
-    when 'published events'
-      total = Page.events.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.events.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
-    when 'published news'
-      total = Page.news.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.news.tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
-    when 'published features'
-      total = Page.newsicles.bucketed_as('feature').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.newsicles.bucketed_as('feature').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
-    when 'published learning lessons'
-      total = Page.articles.bucketed_as('learning lessons').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) <= '#{datadate.to_s(:db)}'").count
-      thatday = Page.articles.bucketed_as('learning lessons').tagged_with_any_content_tags(self.content_tag_names).all(:conditions => "DATE(pages.source_created_at) = '#{datadate.to_s(:db)}'").count      
-    else
-      return nil
-    end
-    
-    if(dn = DailyNumber.update_or_create(self,datatype,datadate,{:total => total, :thatday => thatday}))
-      return dn.send(getvalue)
-    else
-      return nil
-    end
-  end
   
   def update_email_alias
     if(!self.email_alias.blank?)
