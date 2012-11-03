@@ -1,6 +1,0 @@
-<% @selected_tab = :activity %>
-<% @activity_text = activity_to_s(@activity,{:wantstitle => true}) %>
-<h1><%= @activity_text[:title]%></h1>
-<p><%= @activity_text[:body]%></p>
-<p>Occurred at: <%= humane_date(@activity.created_at) %></p>
-

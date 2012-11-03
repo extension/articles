@@ -20,8 +20,6 @@ ActionController::Routing::Routes.draw do |map|
     people.connect 'colleagues/:action', :controller => :colleagues
     people.connect 'admin/:action', :controller => :admin
     people.connect 'signup', :controller => :signup, :action => :readme
-    people.connect 'activity/:action', :controller => :activity
-    people.connect 'activity/:action/:id/:filter', :controller => :activity
     people.connect 'numbers/:action', :controller => :numbers
     people.connect 'invite/:invite', :controller => :signup, :action => :readme
     people.connect 'sp/:token', :controller => :account, :action => :set_password
