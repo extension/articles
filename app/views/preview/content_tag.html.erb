@@ -124,9 +124,6 @@
        <%- if @faqs_broken_count > 0 -%>
           <li class="missing"><%= link_to(pluralize(@faqs_broken_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs',:onlybroken => true)) %> have broken links</li>
        <%- end -%>
-       <%- if @events_broken_count > 0 -%>
-          <li class="missing"><%= link_to(pluralize(@events_broken_count,'event'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'events',:onlybroken => true)) %> have broken links</li>
-       <%- end -%>
        <%- if @news_broken_count > 0 -%>
           <li class="missing"><%= link_to(pluralize(@news_broken_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news',:onlybroken => true)) %> have broken links</li>
        <%- end -%>
@@ -136,7 +133,6 @@
      <ul>
         <li><%= link_to(pluralize(@articles_count,'article'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'articles')) %></li>
         <li><%= link_to(pluralize(@faqs_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs')) %></li>
-        <li><%= link_to(pluralize(@events_count,'event'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'events')) %></li>
         <li><%= link_to(pluralize(@news_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news')) %></li>
      </ul>
 
