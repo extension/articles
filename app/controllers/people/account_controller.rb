@@ -13,40 +13,6 @@ class People::AccountController < ApplicationController
   before_filter :login_required, :except => [:login, :signup, :new_password, :set_password, :authenticate]
   before_filter :login_optional, :only => [:login]
 
-  def review
-    return redirect_to(:controller => '/people/signup', :action => :review, :status => 301)
-  end
-
-  def ajaxfindreviewer
-    if (params[:findreviewer] and params[:findreviewer].strip != "" and params[:findreviewer].strip.length >= 3 )
-      findstring = params[:findreviewer].gsub(/^\*/,'$')
-      # test for "string1 string2" - will treat this as first last or last first - neat huh?
-      words = findstring.split(%r{,\s*|\s+})
-      if(words.length > 1)
-        findvalues = { 
-          :firstword => words[0],
-          :secondword => words[1]
-        }
-        @reviewers = User.find(:all, :limit => 26, :order => 'last_name,first_name', :conditions => ["((first_name rlike :firstword AND last_name rlike :secondword) OR (first_name rlike :secondword AND last_name rlike :firstword)) AND users.retired = 0",findvalues])      
-      else
-        findvalues = {
-          :findlogin => findstring,
-          :findemail => findstring,
-          :findfirst => findstring,
-          :findlast => findstring 
-        }
-        @reviewers = User.find(:all, :limit => 26, :order => 'last_name,first_name', :conditions => ["(email rlike :findemail OR login rlike :findlogin OR first_name rlike :findfirst OR last_name rlike :findlast) AND users.retired = 0",findvalues])      
-      end
-    else
-      @reviewers = []
-    end
-
-    render(:update) do |page|
-        page.replace_html  :users_table, :partial => 'review_users_table'
-    end
-
-  end
-
   def confirmemail
     @sendmode = false
     @tokenexpired = false
