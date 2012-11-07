@@ -147,7 +147,7 @@ class Rebuild < Thor
   def sitemaps
     load_rails(options[:environment])
     # get the pages
-    @pages = Page.all
+    @pages = Page.where("datatype != 'Event'").all
     index_pages_count = (@pages.size / 50000) + 1
 
     # create the index
