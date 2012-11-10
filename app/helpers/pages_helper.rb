@@ -21,7 +21,7 @@ module PagesHelper
   #  please mail any improvements to the author
   #*/
   #---------------------------------------------------------------------------
-  # date_picker_field modified by NC State below 
+  # date_picker_field modified by NC State below
   #---------------------------------------------------------------------------
   def date_picker_field(object, method, cssclass=nil)
      obj = instance_eval("@#{object}")
@@ -41,4 +41,15 @@ module PagesHelper
        out
      end
   end
+
+  def homage_link(community)
+    link_text = community.homage_name.present? ? community.homage_name : community.public_name
+    if(community.homage.present?)
+      link_target = community.homage.id_and_link
+    else
+      link_target = site_index_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name))
+    end
+    link_to(link_text,link_target).html_safe
+  end
+
 end

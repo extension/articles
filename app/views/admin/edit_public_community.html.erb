@@ -1,13 +1,13 @@
 <div id="admin">
     <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Communities', :action => 'manage_communities' %></p>
     <h1>Edit Community Details</h1>
-    
+
     <h2><%= @community.name %></h2>
-    
-  
+
+
     <% form_tag( {:action => 'update_public_community', :id => @community}) do %>
         <%= error_messages_for :community %>
-    
+
         <fieldset class="stacked">
             <h3>Edit details</h3>
         <p>
@@ -15,35 +15,41 @@
             <%= text_field_tag 'community[public_name]', @community.public_name %>
             <span class="instructions">This will show up for links to this community.</span>
         </p>
-                
+
+        <p>
+            <label>Homage Name:</label>
+            <%= text_field_tag 'community[public_name]', @community.homage_name %>
+            <span class="instructions">This text, if present, will be used instead of the community's public name in the homage.  e.g. "This resource area was created by the <%= @community.homage_name.blank? ? @community.public_name : @community.homage_name %> community."</span>
+        </p>
+
         <p>
             <label>Topic:</label>
             <%= select_tag_for_topic(@community)%>
             <span class="instructions">The heading the community shows up in the right navigation bar.</span>
         </p>
-        
+
         <p>
             <label>Description:</label>
             <%= text_field_tag 'community[public_description]', @community.public_description %>
             <span class="instructions">The sentence that shows up under the community name on its main page.</span>
         <p>
-        
+
         <p>
             <%= check_box_tag 'community[is_launched]', true, @community.is_launched %> Show to the Public?
             <span class="instructions">Allows the public to see this community. The change is immediate.</span>
         </p>
-                
+
         <p>
             <label>Resource Area Tag:</label>
             <%= text_field_tag 'community[content_tag_names]', @community.content_tag_names %>
             <span class="instructions">The term used to associate content with this community.</span>
         </p>
-            
+
         <p>
-            <input type="submit" value="Update"> 
-            <%= link_to 'cancel', {:controller => "admin", :action => "manage_communities"}, {:class => "cancel"}  %> 
+            <input type="submit" value="Update">
+            <%= link_to 'cancel', {:controller => "admin", :action => "manage_communities"}, {:class => "cancel"}  %>
         </p>
         </fieldset>
     <% end %>
-    
+
 </div>
