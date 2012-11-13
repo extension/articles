@@ -2088,35 +2088,46 @@ class User < Account
   end
   
 
-  def review_request_text
+  def post_account_review_request
     if(self.vouched?)
-      return ''
+      return true
     end
-    
-    default_url_options[:host] = AppConfig.get_url_host
-    default_url_options[:protocol] = AppConfig.get_url_protocol
-    if(default_port = AppConfig.get_url_port)
-      default_url_options[:port] = default_port
-    end
-    text = "This is a system generated account review request on behalf of:\n"
-    text += "\n"
-    text += "#{self.fullname}\n" 
-    text += "#{self.email}\n"
-    text += "\n"
+
+    request_options = {}
+    request_options['account_review_key'] = AppConfig.configtable['account_review_key']
+    request_options['idstring'] = self.login
+    request_options['email'] = self.email
+    request_options['fullname'] = self.fullname
     if (!self.additionaldata.blank? and !self.additionaldata[:signup_affiliation].blank?)
-      text += "Additional information from #{self.first_name} about their Extension involvement:\n"
-      text += "\n"
-      text += Hpricot(self.additionaldata[:signup_affiliation]).to_plain_text + "\n"
+      request_options['additional_information'] = self.additionaldata[:signup_affiliation]
     end
-    text += "\n"
-    text += "Please vouch for the account at:"
-    text += "\n\n"
-    text += url_for(:controller => 'people/colleagues', :action => 'showuser', :id => self.login)
-    text += "\n\n"
-    text += "Accounts not vouched within 14 days will automatically be retired. If you are a people administrator, please retire the account if it cannot be vouched for."
-    text
+
+    begin
+    raw_result = RestClient.post(AppConfig.configtable['account_review_url'],
+                             request_options.to_json,
+                             :content_type => :json, :accept => :json)
+    rescue StandardError => e
+      raw_result = e.response
+    end
+    result = ActiveSupport::JSON.decode(raw_result)
+    if(result['success'])
+      if(!self.additionaldata.blank?)
+        self.additionaldata = self.additionaldata.merge({:vouch_results => {:success => true, :request_id => result['question_id']}})
+      else
+        self.additionaldata = {:vouch_results => {:success => true, :request_id => result['question_id']}}
+      end
+      self.save!
+      return true
+    else
+      if(!self.additionaldata.blank?)
+        self.additionaldata = self.additionaldata.merge({:vouch_results => {:success => false, :error => result['message']}})
+      else
+        self.additionaldata = {:vouch_results => {:success => false, :error => result['message']}}
+      end
+      self.save!
+      return false
+    end
   end
-    
 
   def create_admin_account
     admin_user = User.new

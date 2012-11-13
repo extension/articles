@@ -181,6 +181,11 @@ class AppConfig
     # learn.extension.org event url
     @@configtable['learn_event_url'] = 'http://learn.extension.org/events'
 
+    # account reviews
+    @@configtable['account_review_url'] = 'https://ask.extension.org/questions/account_review_request'
+    @@configtable['account_review_key'] = 'notset'
+
+
   end
   
   def AppConfig.get_url_port
