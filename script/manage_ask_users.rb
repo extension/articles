@@ -68,8 +68,9 @@ class AskImporter < Thor
     def people_account_insert_query(ask_database = 'prod_aae')
       people_database = get_people_database
       query = <<-END_SQL.gsub(/\s+/, " ").strip
-      INSERT INTO #{ask_database}.users (first_name,last_name,kind,email, time_zone,darmok_id,is_admin,created_at, updated_at) 
-      SELECT #{people_database}.accounts.first_name,
+      INSERT INTO #{ask_database}.users (login,first_name,last_name,kind,email, time_zone,darmok_id,is_admin,created_at, updated_at) 
+      SELECT #{people_database}.accounts.login,
+             #{people_database}.accounts.first_name,
              #{people_database}.accounts.last_name, 
              'User',
              #{people_database}.accounts.email, 
