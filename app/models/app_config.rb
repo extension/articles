@@ -66,6 +66,7 @@ class AppConfig
         
   
     #Default sites
+    @@configtable['ask_two_point_oh'] = 'https://dev.ask.extension.org/'
     @@configtable['ask_two_point_oh_form'] = 'https://dev.ask.extension.org/ask'
     @@configtable['faq_site'] = 'http://cop.extension.org/faq'
     @@configtable['events_site'] = 'http://cop.extension.org/events'

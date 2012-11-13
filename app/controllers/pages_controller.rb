@@ -201,6 +201,7 @@ class PagesController < ApplicationController
       set_titletag("#{@page.title} - eXtension")
     end
     
+    @ask_two_point_oh = AppConfig.configtable['ask_two_point_oh']
     @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     
     if(!@community_content_tag_names.blank? and !@page_content_tag_names.blank?)
