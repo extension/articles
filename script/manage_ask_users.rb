@@ -50,6 +50,7 @@ class AskImporter < Thor
       UPDATE #{ask_database}.users, #{people_database}.accounts
       SET #{ask_database}.users.kind = 'User',
           #{ask_database}.users.darmok_id = #{people_database}.accounts.id,
+          #{ask_database}.users.login = #{people_database}.accounts.login,
           #{ask_database}.users.first_name=#{people_database}.accounts.first_name, 
           #{ask_database}.users.last_name=#{people_database}.accounts.last_name,
           #{ask_database}.users.retired=#{people_database}.accounts.retired,
