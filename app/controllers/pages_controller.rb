@@ -200,10 +200,13 @@ class PagesController < ApplicationController
       set_title("#{@page.title} - eXtension", "Articles from our resource area experts.")
       set_titletag("#{@page.title} - eXtension")
     end
-
+    
+    @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+    
     if(!@community_content_tag_names.blank? and !@page_content_tag_names.blank?)
       flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
       flash.now[:googleanalyticsresourcearea] = @community_content_tag_names[0].gsub(' ','_')
+      @community_content_tag_id = Category.find_by_name(@community_content_tag_names[0]).id
     end
     
     

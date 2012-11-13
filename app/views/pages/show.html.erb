@@ -9,7 +9,7 @@
 
 <div class="pageextras">
   <% if not @youth %>
-    <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', ask_form_url %></p>
+    <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', @ask_two_point_oh_form, :class => 'aae_form_link' %></p>
   <% end %>
   <%- if(!params[:print]) -%>
     <p class="print_and_share"><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %>
@@ -58,7 +58,20 @@
 
 <% if not @youth %>
   <div id="aae_plug">
-    <h4>Have a specific question? <%= link_to 'Try asking one of our Experts', ask_form_url %></h4>
+    
+    <% if @community_content_tag_id %>
+    <script language="javascript">
+      $j.getJSON("http://aae.dev/ajax/group_by_category_id?darmok_expertise_id=<%= @community_content_tag_id %>&format=js&callback=?", function(data) {
+        var aae_group_id = data[0].id;
+        // console.log(aae_group_id);
+        if (aae_group_id) {
+          $j("a.aae_form_link").attr("href", "https://dev.ask.extension.org/groups/" + aae_group_id + "/ask");
+        }
+      });
+    </script>
+    <% end %>
+    
+    <h4>Have a specific question? <%= link_to "Try asking one of our Experts", @ask_two_point_oh_form, :class => "aae_form_link" %></h4>
     <p>Unlike most other resources on the web, we have experts from Universities around the country ready to answer your questions.</p>
   </div>
 <% end %>
