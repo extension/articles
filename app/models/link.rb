@@ -273,7 +273,7 @@ class Link < ActiveRecord::Base
     # explicitly ignore callto: links
     if(original_uri.scheme.blank?)
       original_uri.scheme = 'http'
-    elsif(original_uri.scheme == 'callto')
+    elsif(original_uri.is_a?(URI::Generic))
       return nil
     end
   
