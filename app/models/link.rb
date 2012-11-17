@@ -395,6 +395,10 @@ class Link < ActiveRecord::Base
       return nil
     end  
 
+    if(original_uri.scheme == 'data')
+      return nil
+    end
+
 
     if(original_uri.host.blank?) 
       # wiki link exception inside existing create articles that we still have
