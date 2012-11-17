@@ -41,7 +41,7 @@ class Rebuild < Thor
       returndata = {}
       puts "Processing in-page links"
       errors = {}
-      Page.limit(1).all.each do |page|
+      Page.all.each do |page|
         if(verbose)
           puts "Processing Page: #{page.id} (#{page.datatype}) ##{page_count}"
         end
