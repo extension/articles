@@ -38,29 +38,36 @@ class Rebuild < Thor
       # dump the linkings table
       Linking.connection.execute('truncate table linkings;')      
       page_count = 1
-      overall_links = {}
+      returndata = {}
       puts "Processing in-page links"
-      Page.all.each do |page|
+      errors = {}
+      Page.limit(1).all.each do |page|
         if(verbose)
           puts "Processing Page: #{page.id} (#{page.datatype}) ##{page_count}"
         end
-        links = page.convert_links
-        page.set_sizes
-        page.save
-        if(verbose)
-          puts "Links: #{links.inspect}"
-        end
-        links.keys.each do |key|
-          if(overall_links[key])
-            overall_links[key] += links[key]
-          else
-            overall_links[key] = links[key]
+        begin
+          links = page.convert_links
+          page.set_sizes
+          page.save
+          if(verbose)
+            puts "Links: #{links.inspect}"
           end
+          links.keys.each do |key|
+            if(returndata[key])
+              returndata[key] += links[key]
+            else
+              returndata[key] = links[key]
+            end
+          end
+          page_count += 1
+        rescue StandardError => error
+          puts "Error! #{error}"
+          errors[page.id] = error
         end
-        page_count += 1
       end
-      overall_links[:page_count] = page_count
-      return overall_links
+      returndata[:page_count] = page_count
+      returndata[:errors] = errors
+      returndata
     end
     
     def split_array(array, chunks)
@@ -130,7 +137,14 @@ class Rebuild < Thor
     load_rails(options[:environment])
     recreate_primary_links(options[:verbose])
     if(options[:linkings])
-      recreate_linkings(options[:verbose])
+      returndata = recreate_linkings(options[:verbose])
+    end
+    if(!returndata[:errors].blank?)
+      puts "Errors:"
+      returndata[:errors].each do |page_id,error|
+        puts "Page ID: #{page_id}"
+        puts "Error: #{error}"
+      end
     end
   end
 
@@ -139,7 +153,14 @@ class Rebuild < Thor
   method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
   def linkings
     load_rails(options[:environment])
-    recreate_linkings(options[:verbose])
+    returndata = recreate_linkings(options[:verbose])
+    if(!returndata[:errors].blank?)
+      puts "Errors:"
+      returndata[:errors].each do |page_id,error|
+        puts "Page ID: #{page_id}"
+        puts "Error: #{error}"
+      end
+    end
   end
   
   desc "sitemaps", "Recreate sitemaps"
