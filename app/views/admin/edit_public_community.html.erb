@@ -18,7 +18,7 @@
 
         <p>
             <label>Homage Name:</label>
-            <%= text_field_tag 'community[public_name]', @community.homage_name %>
+            <%= text_field_tag 'community[homage_name]', @community.homage_name %>
             <span class="instructions">This text, if present, will be used instead of the community's public name in the homage.  e.g. "This resource area was created by the <%= @community.homage_name.blank? ? @community.public_name : @community.homage_name %> community."</span>
         </p>
 
