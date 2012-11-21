@@ -201,13 +201,16 @@ class PagesController < ApplicationController
       set_titletag("#{@page.title} - eXtension")
     end
     
-    @ask_two_point_oh = AppConfig.configtable['ask_two_point_oh']
-    @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
-    
+    # link for Ask an Expert group form
+    if(@community and @community.aae_group_id.present?)
+      @ask_two_point_oh_form ="#{AppConfig.configtable['ask_two_point_oh']}/groups/#{@community.aae_group_id}/ask"
+    else
+      @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+    end  
+
     if(!@community_content_tag_names.blank? and !@page_content_tag_names.blank?)
       flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
       flash.now[:googleanalyticsresourcearea] = @community_content_tag_names[0].gsub(' ','_')
-      @community_content_tag_id = Category.find_by_name(@community_content_tag_names[0]).id
     end
     
     

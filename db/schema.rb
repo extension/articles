@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121017005005) do
+ActiveRecord::Schema.define(:version => 20121121003449) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(:version => 20121017005005) do
     t.boolean  "active",                                :default => true
     t.string   "homage_name"
     t.integer  "homage_id"
+    t.integer  "aae_group_id"
   end
 
   add_index "communities", ["name"], :name => "communities_name_index", :unique => true
