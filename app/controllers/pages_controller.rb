@@ -203,7 +203,7 @@ class PagesController < ApplicationController
     
     # link for Ask an Expert group form
     if(@community and @community.aae_group_id.present?)
-      @ask_two_point_oh_form ="#{AppConfig.configtable['ask_two_point_oh']}/groups/#{@community.aae_group_id}/ask"
+      @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
     else
       @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     end  
