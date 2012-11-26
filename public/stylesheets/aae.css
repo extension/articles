@@ -1600,3 +1600,5 @@ a.nodec:hover {text-decoration:underline;}
 
 blockquote.survey {margin:1.5em;}
 #survey_faq {margin-top: 1em;background: #eee;padding: 1em;margin-bottom: 3em;clear:both;}
+
+#aae_banner {background:#FFF292; padding:.2em 1em; line-height:1.2em; margin:1em 0 .65em; color: #201B1B !important; font-family: Georgia, serif; font-size:1.1em; border:1px solid #aaa;}
