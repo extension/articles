@@ -41,6 +41,15 @@
            <p class="homage_image"><%= render_inline_logo({:logo => @community.logo, :show_thumbnail => false }) %></p>
        <%- end -%>
        </div>
+
+       <div class="section">
+       <h2>Ask an Expert Group</h2>
+       <%- if @community.aae_group_id.blank? -%>
+           <p class="missing">This community is not yet associated with a group in Ask an Expert. Contact your content staff representative to set the Ask an Expert Group for your community.</p>
+       <%- else -%>
+           <p class="launchready"><%= link_to("Ask an Expert Group ##{@community.aae_group_id}",@community.ask_an_expert_group_url) %></p>
+       <%- end -%>
+       </div>
    <%- end -%>
 
    <div class="section">

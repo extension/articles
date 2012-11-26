@@ -66,6 +66,8 @@ class AppConfig
         
   
     #Default sites
+    @@configtable['ask_two_point_oh'] = 'https://ask.extension.org/'
+    @@configtable['ask_two_point_oh_form'] = 'https://ask.extension.org/ask'
     @@configtable['faq_site'] = 'http://cop.extension.org/faq'
     @@configtable['events_site'] = 'http://cop.extension.org/events'
     @@configtable['people_site'] = 'http://people.extension.org/'
@@ -180,6 +182,13 @@ class AppConfig
     
     # learn.extension.org event url
     @@configtable['learn_event_url'] = 'http://learn.extension.org/events'
+
+    # account reviews
+    @@configtable['account_review_url'] = 'https://ask.extension.org/questions/account_review_request'
+    @@configtable['account_review_key'] = 'notset'
+
+    # ask database
+    @@configtable['ask2_database'] = 'prod_aae'
 
   end
   

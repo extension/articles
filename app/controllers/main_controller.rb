@@ -27,6 +27,7 @@ class MainController < ApplicationController
      @community_highlights = Page.diverse_feature_list({:limit => 6})
 
      @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
+     @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
    end
    
   def category_tag

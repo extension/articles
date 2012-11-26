@@ -46,6 +46,8 @@ gem 'rest-client'
 gem 'json_pure'
 # soap gem for bronto downloads
 gem 'savon'
+# command line
+gem 'thor'
 
 # handle rewrites of trailing slashes
 gem 'rack-rewrite'

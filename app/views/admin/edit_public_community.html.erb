@@ -46,6 +46,12 @@
         </p>
 
         <p>
+            <label>Ask an Expert Group:</label>
+            <%= text_field_tag 'community[aae_group_id]', @community.aae_group_id %>
+            <span class="instructions">This will show up for links to this community.</span>
+        </p>
+
+        <p>
             <input type="submit" value="Update">
             <%= link_to 'cancel', {:controller => "admin", :action => "manage_communities"}, {:class => "cancel"}  %>
         </p>

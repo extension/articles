@@ -777,6 +777,14 @@ class Community < ActiveRecord::Base
     else
       return nil
     end
-  end   
+  end  
+
+  def ask_an_expert_group_url
+    if(self.aae_group_id.blank?)
+      nil
+    else
+      "#{AppConfig.configtable['ask_two_point_oh']}/groups/#{self.aae_group_id}"
+    end
+  end 
     
 end
