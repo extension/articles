@@ -37,6 +37,7 @@
 </head>
     
 <body id="aae">
+  
     <% if (@app_location_for_display != 'production') %>
         <div id="app_location" class="<%= @app_location_for_display %>">
             <p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p>
@@ -53,9 +54,15 @@
          </div>	
        </div>
     <%- end -%>
+    
     <%= render(:partial => 'partial/away_notice') %>
     
     <div id="pageContainer">
+      <div id="aae_banner">
+          <h4>A new version of Ask an Expert is coming Monday, December 3rd.</h4>
+          <p>We invite you to attend a walk-through of Ask an Expert 2.0 on either <a href="https://learn.extension.org/events/818">Tuesday, Nov. 27</a> or <a href="https://learn.extension.org/events/819">Wednesday, Nov 28</a> of this week at 3:00 PM ET. You can also explore the new app on your own by visiting the <a href="https://dev.ask.extension.org/expert/home">demo site.</a></p>
+      </div>
+      
         <div id="masthead">
             <h1><%= link_to("eXtension Ask an Expert", incoming_url) %></h1>
             
