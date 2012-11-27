@@ -53,29 +53,6 @@ class Api::DataController < ApplicationController
      return render :text => returnhash.to_json    
   end
 
-  def aae_numbers
-    filteredparams = ParamsFilter.new([:person,:apikey],params)
-    apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
-    # TODO: consider doing this automatically in application_controller as a before_filter
-    ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
-    
-    # just going to get them for a single user for now
-    if(filteredparams.person.nil?)
-      returnhash = {:success => false, :errormessage => 'Not a valid account'}
-      return render :text => returnhash.to_json
-    end
-    
-    returnhash = {}
-    returnhash[:total_incoming] = SubmittedQuestion.submitted.count
-    returnhash[:answered] = SubmittedQuestion.resolved.filtered({:resolved_by => filteredparams.person}).count
-    returnhash[:assigned] = SubmittedQuestion.submitted.filtered({:assignee => filteredparams.person}).count
-    filteroptions = filteredparams.person.aae_filter_prefs
-    # skip the joins because we are including them already with listdisplayincludes
-    returnhash[:filtered_incoming] = SubmittedQuestion.submitted.filtered(filteroptions).count
-    return render :text => returnhash.to_json
-  end
-  
-
   def publicprofile
     filteredparams = ParamsFilter.new([:person,:apikey],params)
     apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
