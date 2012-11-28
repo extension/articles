@@ -57,75 +57,11 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'opie/:action', :controller => 'opie'
   map.connect 'opie/delegate/:extensionid', :controller => 'opie', :action => 'delegate'
     
-  
-  ################################################################
-  ### AaE ###
-
-  map.ask_form 'ask', :controller => 'ask', :action => 'index'
-  # requires that if there is a parameter after the /ask, that it is in hexadecimal representation
-  map.ask_question 'ask/:fingerprint', :controller => 'ask', :action => 'question', :requirements => { :fingerprint => /[[:xdigit:]]+/ }
-  
-  map.incoming 'aae/incoming', :controller => 'aae/incoming', :action => 'index'
-  map.my_assigned 'aae/my_assigned', :controller => 'aae/my_assigned', :action => 'index'
-  map.my_resolved 'aae/my_resolved', :controller => 'aae/my_resolved', :action => 'index'
-  map.resolved 'aae/resolved', :controller => 'aae/resolved', :action => 'index'
-  map.spam 'aae/spam_list', :controller => 'aae/spam_list', :action => 'index'
-  map.view_search_question 'aae/search', :controller => 'aae/search', :action => 'index'
-  map.answer_question 'aae/question/answer', :controller => 'aae/question', :action => 'answer'
-  map.aae_name_search 'aae/name_search', :controller => 'aae/search', :action => 'enable_search_by_name'
-  map.aae_cat_loc_search 'aae/cat_loc_search', :controller => 'aae/search', :action => 'enable_search_by_cat_loc'
-  map.aae_answer_search 'aae/search/answers', :controller => 'aae/search', :action => 'answers'
-  map.aae_answer 'aae/search/answer', :controller => 'aae/search', :action => 'answer'
-  map.aae_profile 'aae/profile', :controller => 'aae/profile', :action => 'index'
-  map.aae_show_profile 'aae/profile/show_profile', :controller => 'aae/profile', :action => 'show_profile'
-  map.aae_reserve_question 'aae/question/reserve_question/:sq_id', :controller => 'aae/question', :action => 'reserve_question'
-  map.aae_report_spam 'aae/question/report_spam', :controller => 'aae/question', :action => 'report_spam'
-  map.aae_report_ham  'aae/question/report_ham', :controller => 'aae/question', :action => 'report_ham'
-  
-  map.namespace :aae do |aae|
-     aae.connect 'expertise/experts_by_category/:legacycategory', :controller => :expertise, :action => :experts_by_category
-     aae.connect 'search/:action/:id', :controller => :search
-     aae.connect 'question/escalation_report/:legacycategory', :controller => :question, :action => :escalation_report
-     aae.question 'question/:id', :controller => :question, :action => :index, :requirements => { :id => /\d+/ }     
-     aae.connect 'question/:action/:id', :controller => :question
-     aae.submitterquestions 'questions/submitter/:account', :controller => :questions, :action => :submitter
-     aae.connect 'help', :controller => :help
-     aae.connect 'feeds/:action/:legacycategory', :controller => :feeds
-     aae.home '/', :controller => :home, :action => :index     
-  end
-  
-  # redirect
-  map.redirect 'aae/admin', :controller => 'admin', :action => 'index', :permanent => true
-  
-  
-  ### AaE API ###
-  map.connect 'api/aae/ask.json', :controller => 'api/aae', :action => :ask  
-    
-  ### Widget iFrame ###
-  map.widget_submit_question 'widget_submit_question', :controller => 'widget', :action => 'create_from_widget'
-  
-  # route for existing bonnie_plants widget for continued operation.
-  map.connect 'widget/bonnie_plants/tracking/:widget', :controller => 'widget', :action => 'index'
-  # Route for named/tracked widget w/ no location *unused is a catcher for /location and /location/county for
-  # existing widgets, since we aren't using that in the URL anymore
-  map.widget_tracking 'widget/tracking/:widget/*unused', :controller => 'widget', :action => 'index'
-  # recognize widget/index as well
-  map.connect 'widget/index/:widget/*unused', :controller => 'widget', :action => 'index'
-  # Widget route for unnamed/untracked widgets
-  map.widget 'widget', :controller => 'widget', :action => 'index'
-
-  map.connect 'widget/create_from_widget', :controller => 'widget', :action => 'create_from_widget'
-  
   ### Widget Stuff ###
   # redirects
-  map.redirect 'aae/widgets', :controller => 'widgets/aae', :action => 'index', :permanent => true
-  map.redirect 'aae/widgets/:redirectparam', :controller => 'widgets/aae', :action => 'redirector', :permanent => true
   map.namespace :widgets do |widgets|
-    widgets.aae 'aae', :controller => :aae, :action => 'index'
     widgets.content 'content', :controller => :content, :action => 'index'
     widgets.home '/', :controller => :home, :action => :index     
-    widgets.view_aae 'aae/view/:id', :controller => :aae, :action => 'view'
-    widgets.edit_aae 'aae/edit/:id', :controller => :aae, :action => 'edit'
   end
 
   ### Search Stuff ###
@@ -136,7 +72,6 @@ ActionController::Routing::Routes.draw do |map|
 
   ## Debug ##
   map.debuglocation 'debug/location', :controller => 'debug', :action => 'location'
-
 
   #################################################################
   ### pubsite routes ###
@@ -152,15 +87,11 @@ ActionController::Routing::Routes.draw do |map|
   map.content_feed 'feeds/content/:tags', :controller => 'feeds', :action => 'content'
   map.connect 'feeds/:action', :controller => 'feeds'
   
-
-  
   ### pubsite redirect routes
   map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
   map.redirect 'news', :controller => 'pages', :action => 'news', :content_tag => 'all', :permanent => true  
   map.redirect 'faqs', :controller => 'pages', :action => 'faqs', :content_tag => 'all', :permanent => true
   map.redirect 'articles', :controller => 'pages', :action => 'articles', :content_tag => 'all', :permanent => true
-  map.redirect 'expert/ask_an_expert', :controller => 'ask', :action => 'index', :permanent => true
-  
   
   ### pubsite admin routes
   map.namespace :admin do |admin|
