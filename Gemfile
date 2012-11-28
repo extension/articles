@@ -59,6 +59,9 @@ gem 'airbrake', '3.1.2'
 # gem 'ruby-debug'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
+# monitoring
+gem 'scout_rails'
+
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
