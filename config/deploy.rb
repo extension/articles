@@ -65,6 +65,7 @@ namespace :deploy do
     rm -rf #{release_path}/public/robots.txt &&
     rm -rf #{release_path}/config/appconfig.yml &&
     ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
+    ln -nfs #{shared_path}/config/scout_rails.yml #{release_path}/config/scout_rails.yml &&
     ln -nfs #{shared_path}/config/robots.txt #{release_path}/public/robots.txt &&
     ln -nfs #{shared_path}/config/appconfig.yml #{release_path}/config/appconfig.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
