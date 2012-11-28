@@ -1,2 +1,0 @@
-page.replace_html "expertisecategory_#{@category.id}", :partial => 'category_listitem', :locals => {:category => @category}
-page.visual_effect :highlight, "expertisecategory_#{@category.id}"

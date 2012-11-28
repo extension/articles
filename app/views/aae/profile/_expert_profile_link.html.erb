@@ -1,9 +1,0 @@
-<%= link_to_remote(user.fullname, {:url => aae_show_profile_url(:id => user.id)}, {:class => 'tooltip_link profile', :rel => "#user_tooltip_" + user.id.to_s}) %>
-
-<% if !@mobile_device %>
-<!-- enable jquery tooltip for the expert's new link -->
-<!-- using the onActivate event for the cluetip to determine (based on the profile being open or closed) whether or not to activate the tooltip -->
-<script type="text/javascript">
-    $j('.tooltip_link').cluetip({sticky:true, local:true, cursor: 'pointer',width: 300,mouseOutClose: true, showTitle: false, onActivate:       function(e) { if ($('expert_profile_<%= user.id %>').style.display != 'none') {return false;} else {return true;}}});
-</script>
-<% end %>
