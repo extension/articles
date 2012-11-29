@@ -106,12 +106,9 @@ GEM
       httpi (>= 0.7.8)
       nokogiri (>= 1.4.0)
       nori (>= 0.2.0)
-<<<<<<< HEAD
-    thor (0.16.0)
-=======
     scout_rails (1.0.7)
     thor (0.14.6)
->>>>>>> add_scout
+    thor (0.16.0)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     tzinfo (0.3.26)

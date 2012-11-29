@@ -174,10 +174,6 @@ class FilteredParameter
       Account.find_by_email_or_extensionid_or_id(value,false)
     when :category    
       Category.find_by_name_or_id(value)
-    when :submitted_question
-      SubmittedQuestion.find_by_id(value)
-    when :widget
-      Widget.find_by_fingerprint_or_id_or_name(value)
     when :activity_application 
       ActivityApplication.find_by_id_or_shortname(value)
     when :activity
