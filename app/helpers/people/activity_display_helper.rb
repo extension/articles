@@ -145,8 +145,6 @@ module People::ActivityDisplayHelper
       return_uri_string = "#{activityobject.activity_application.link_uri}/docs/#{activityobject.fulltitle}"
     elsif(ActivityObject::WIKITYPES.include?(activityobject.entrytype))
       return_uri_string = "#{activityobject.activity_application.link_uri}/#{activityobject.fulltitle}"
-    elsif(activityobject.entrytype == ActivityObject::AAE)
-      return_uri_string = "#{activityobject.activity_application.link_uri}/aae/question/#{activityobject.foreignid}"
     elsif(activityobject.entrytype == ActivityObject::EVENT)
       return_uri_string = "#{activityobject.activity_application.link_uri}/events/#{activityobject.foreignid}"
     elsif(activityobject.entrytype == ActivityObject::FAQ)

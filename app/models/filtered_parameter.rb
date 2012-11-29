@@ -39,12 +39,6 @@ class FilteredParameter
 
   RECOGNIZED_PARAMETERS[:content_types] = :method
   RECOGNIZED_PARAMETERS[:ipaddress] = :string 
-  
-  
-  # AaE params
-  RECOGNIZED_PARAMETERS[:squid] = :submitted_question
-  RECOGNIZED_PARAMETERS[:widget] = :widget
-  
     
   # TODO: review this vis-a-vis dateinterval and datefield
   RECOGNIZED_PARAMETERS[:datadate] = :date

@@ -28,7 +28,7 @@ class NotificationMailer < ActionMailer::Base
       emailsettings_label = 'default'
     end
     
-    # setup the name for the :from address, widgets can now have custom :from names for AaE correspondance 
+    # setup the name for the :from address
     from_name = AppConfig.configtable['emailsettings'][emailsettings_label]['name'] if from_name.nil? 
     
     @from           = %("#{from_name}" <#{AppConfig.configtable['emailsettings'][emailsettings_label]['address']}>)

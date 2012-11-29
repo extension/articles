@@ -50,37 +50,6 @@ module ApplicationHelper
     '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'
   end
   
-  def get_filtered_aae_incoming_count
-    return SubmittedQuestion.submitted.filtered(@currentuser.aae_filter_prefs).count
-  end
-  
-  def get_total_incoming_questions
-    return SubmittedQuestion.submitted.count
-  end 
-  
-  def get_aae_assigned_to_me_count
-    return SubmittedQuestion.submitted.filtered({:assignee => @currentuser}).count
-  end
-  
-  def get_aae_resolved_by_me_count
-    return SubmittedQuestion.resolved.filtered({:resolved_by => @currentuser}).count
-  end
-  
-  def options_from_categories(selected = nil)
-    categories = Array.new
-
-    categories = Category.root_categories.all(:order => 'name').collect { |cat| [cat.name, cat.id] }
-
-    categories.insert(0, [Category::UNASSIGNED, Category::UNASSIGNED])
-    categories.insert(0, ["All categories", Category::ALL])
-
-    if selected.kind_of? Category 
-      options_for_select(categories, selected.id)
-    else
-      options_for_select(categories, selected)
-    end    
-  end
-  
   def expanded_time_print(time)
     time.strftime("%B %d, %Y")
   end
@@ -135,14 +104,6 @@ module ApplicationHelper
     return summary
   end
   
-  def prepare_aae_signature(response)
-    if response.signature.blank?
-      return ''
-    else
-      return '<br />' + format_text_for_display(response.signature)
-    end   
-  end
-
   def format_text_for_display(content)
     return word_wrap(simple_format(auto_link(content, :all, :target => "_blank"))) 
   end

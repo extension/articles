@@ -1310,31 +1310,6 @@ class User < Account
     pref && pref.setting == "1"
    end
 
-   def self.count_by_cat_loc(category, location, county)
-     user_cond = get_cat_loc_conditions(category, location, county)
-     return 0 if !user_cond
-     
-     return User.count(:all, :conditions => user_cond + " and accounts.retired = false")
-   end
-
-   def self.find_by_cat_loc(category, location, county, page_number = nil)
-     user_cond = get_cat_loc_conditions(category, location, county)
-     return [] if !user_cond 
-     
-     if page_number
-       page_number = page_number.to_i
-       if page_number > 1
-         sql_offset = (page_number - 1) * User.per_page
-       else
-         sql_offset = 0
-       end
-     else
-       sql_offset = nil   
-     end
-       
-     return User.notsystem_or_admin.validusers.find(:all, :include => [:expertise_locations, :expertise_counties, :open_questions, :categories], :conditions => user_cond, :order => "accounts.is_question_wrangler DESC, accounts.first_name asc", :offset => sql_offset, :limit => sql_offset ? User.per_page : nil)
-   end
-
    def get_counties_in_location(location)
     if intersect_counties = expertise_counties_in_location(location)
       return "(#{intersect_counties.map{|c| c.name}.join(', ')})"
@@ -1417,8 +1392,6 @@ class User < Account
     admin_user
   end
   
-   
-  
   protected
   
   def check_status
@@ -1447,29 +1420,4 @@ class User < Account
    end
   end
     
-  def self.get_cat_loc_conditions(category, location, county)
-    if category
-      filtered_users = category.users.collect{|cu| cu.id}.join(',')
-      return nil if !filtered_users or filtered_users.strip == ''
-    end
-
-    if location
-      (filtered_users and filtered_users != '') ? loc_cond = "accounts.id IN (#{filtered_users})" : loc_cond = nil 
-      # not only pull experts that marked the location in AaE prefs, but also the experts who marked 
-      # the location in their People profile.
-      # this was done so that when searching for experts by location, all experts affiliated with a location will 
-      # be returned, not just the ones who remembered to mark it in their AaE prefs.
-      filtered_users = self.experts_from_aae_or_people_location(location.fipsid).find(:all, :conditions => loc_cond).collect{|lu| lu.id}.join(',')
-      return nil if !filtered_users or filtered_users.strip == ''
-    end
-
-    if location and county
-      county_cond = "accounts.id IN (#{filtered_users})"
-      filtered_users = county.users.find(:all, :conditions => county_cond).collect{|cu| cu.id}.join(',') 
-      return nil if !filtered_users or filtered_users.strip == ''
-    end
-
-    (filtered_users and filtered_users != '') ? (return "accounts.id IN (#{filtered_users})") : (return nil)
-  end
-  
 end

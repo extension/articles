@@ -24,7 +24,6 @@ class Activity < ActiveRecord::Base
   #### activity types
   LOGIN = 1
   INFORMATION = 2
-  AAE = 3
   PEOPLE = 4
   COMMUNITY = 5
 
@@ -79,16 +78,6 @@ class Activity < ActiveRecord::Base
 
   LIST_POST = 501
 
-  # AAE
-  AAE_RESOLVE = 601
-  AAE_ASSIGN = 602
-  AAE_REJECT = 603
-  AAE_OTHER = 604
-  AAE_NOANSWER = 605
-  AAE_SUBMISSION_PUBSITE = 610
-  AAE_SUBMISSION_WIDGET = 611
-  AAE_SUBMISSION_OTHER = 612
-
   # INFORMATION
   INFORMATION_EDIT = 701
   INFORMATION_COMMENT = 702
@@ -97,13 +86,6 @@ class Activity < ActiveRecord::Base
 
 
   ACTIVITY_LOCALE_STRINGS = {
-    AAE_ASSIGN => 'aae_assign',
-    AAE_NOANSWER => 'aae_noanswer',
-    AAE_OTHER => 'aae_other',
-    AAE_REJECT => 'aae_reject',
-    AAE_RESOLVE => 'aae_resolve',
-    AAE_SUBMISSION_PUBSITE => 'aae_submission_pubsite',
-    AAE_SUBMISSION_WIDGET => 'aae_submission_widget',
     COMMUNITY_ACCEPT_INVITATION => 'community_accept_invitation',
     COMMUNITY_ADDEDASLEADER => 'community_addedasleader',
     COMMUNITY_ADDEDASMEMBER => 'community_addedasmember',
@@ -643,18 +625,6 @@ class Activity < ActiveRecord::Base
         return [Activity::INFORMATION_EDIT]
       when 'publish'
         return [Activity::INFORMATION_PUBLISH]
-      when 'aaeresolve'
-        return [Activity::AAE_RESOLVE]
-      when 'aaereject'
-        return [Activity::AAE_REJECT]
-      when 'aaenoanswer'
-        return [Activity::AAE_NOANSWER]
-      when 'aaesubmission'
-        return [Activity::AAE_SUBMISSION_WIDGET,Activity::AAE_SUBMISSION_PUBSITE]
-      when 'aaesubmissionwidget'
-        return [Activity::AAE_SUBMISSION_WIDGET]
-      when 'aaesubmissionpubsite'
-        return [Activity::AAE_SUBMISSION_PUBSITE]
       when 'joinedcommunity'
         return [Activity::COMMUNITY_JOIN,Activity::COMMUNITY_ACCEPT_INVITATION,Activity::COMMUNITY_ADDEDASMEMBER,Activity::COMMUNITY_ADDEDASLEADER]
       else
@@ -671,11 +641,9 @@ class Activity < ActiveRecord::Base
       when 'information'
         return [Activity::INFORMATION]
       when 'contribution'
-        return [Activity::INFORMATION,Activity::AAE]
-      when 'aae'
-        return [Activity::AAE]
+        return [Activity::INFORMATION]
       when 'active'
-        return [Activity::LOGIN,Activity::INFORMATION,Activity::AAE]
+        return [Activity::LOGIN,Activity::INFORMATION]
       when 'community'
         return [Activity::COMMUNITY]
       else
