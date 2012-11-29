@@ -763,7 +763,7 @@ class Community < ActiveRecord::Base
     if(self.aae_group_id.blank?)
       nil
     else
-      "#{AppConfig.configtable['ask_two_point_oh']}/groups/#{self.aae_group_id}"
+      "#{AppConfig.configtable['ask_two_point_oh']}groups/#{self.aae_group_id}"
     end
   end 
     
