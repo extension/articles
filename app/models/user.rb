@@ -73,9 +73,6 @@ class User < Account
 
   has_many :user_preferences
   
-  has_many :user_roles
-  has_many :roles, :through => :user_roles
-  
   has_many :api_keys
   has_many :api_key_events, :through => :api_keys
   has_one  :directory_item_cache
