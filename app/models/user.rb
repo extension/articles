@@ -325,7 +325,6 @@ class User < Account
       AdminEvent.log_event(retired_by, AdminEvent::RETIRE_ACCOUNT,{:extensionid => self.login, :reason => retired_reason})
       UserEvent.log_event(:etype => UserEvent::PROFILE,:user => self,:description => "account retired by #{retired_by.login}")                                              
       self.clear_all_community_connections
-      self.reassign_assigned_questions
       return true
     else
       return false
