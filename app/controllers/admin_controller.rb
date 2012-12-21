@@ -123,6 +123,8 @@ class AdminController < ApplicationController
     @community.public_name = params['community']['public_name']
     @community.is_launched = ( params['community']['is_launched'] ? true : false)
     @community.homage_name = params['community']['homage_name']
+    @community.aae_group_id = params['community']['aae_group_id']
+
   
     # sanity check tag names
     this_community_content_tags = @community.tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT)
