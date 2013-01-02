@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://systems.extension.org/rubygems/'
 
-gem 'rails', '2.3.14'
+gem 'rails', '2.3.14.20130101'
 # database
 gem 'mysql'
 # pagination
