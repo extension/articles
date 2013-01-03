@@ -7,11 +7,7 @@
   <div id="primary_column" class="dashboard">
     <div id="titleblock" class="<%= community_class(@community) -%>">
       <h1><%= @community.name%></h1>
-      <p><%= @community.entrytype_to_s -%>
-        <%- if @community.is_widget? -%>
-          ( See more about this widget on the <%= link_to('widget detail page',widgets_view_aae_url(@community.widget.id)) -%>.)
-        <%- end -%>
-      </p>
+      <p><%= @community.entrytype_to_s -%></p>
     </div>
 
     <%- if !@community.description.nil? -%>
@@ -81,11 +77,7 @@
 
         <dl>
           <dt>Community Type:</dt>
-          <dd><%= @community.entrytype_to_s -%>
-          <%- if @community.is_widget? -%>
-          ( <%= link_to('more information',widgets_view_aae_url(@community.widget.id)) -%> )
-          <%- end -%>
-          </dd>
+          <dd><%= @community.entrytype_to_s -%></dd>
           <dt>Membership:</dt>
           <dd><%= @community.memberfilter_to_s -%></dd>
           <dt>Created by:</dt>

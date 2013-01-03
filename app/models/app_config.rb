@@ -49,23 +49,18 @@ class AppConfig
     @@configtable['emailsettings']['errors'] = 'eXtensionAppErrors@extension.org'
     
     # address, from string, and bcc for various functional areas
-    @@configtable['emailsettings']['aae_public'] = {'address' => 'ask-an-expert@extension.org', 'name' => 'eXtension Ask an Expert Response', 'bcc' => 'aaepublic.bcc.mirror@extension.org'}
-    @@configtable['emailsettings']['aae_internal'] = {'address' => 'aae-notify@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
-    @@configtable['emailsettings']['aae_escalation'] = {'address' => 'aae-escalation@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
-    @@configtable['emailsettings']['aae_noreply'] = {'address' => 'aae-noreply@extension.org', 'name' => 'Do Not Reply - eXtension Ask an Expert Notification', 'bcc' => 'aaenotify.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['people'] = {'address' => 'peoplemail@extension.org', 'name' => 'eXtension People Notification - Do Not Reply', 'bcc' => 'people.bcc.mirror@extension.org', 'review' => 'eXtensionHelp@extension.org'}
     @@configtable['emailsettings']['default'] = {'address' => 'noreply@extension.org', 'name' => 'eXtension Notification', 'bcc' => 'default.bcc.mirror@extension.org'}
     @@configtable['emailsettings']['deploy'] = {'address' => 'exdev@extension.org', 'name' => 'eXDevBot', 'bcc' => 'deploys.mirror@extension.org'}
         
-    # in hours
-    @@configtable['aae_escalation_delta'] = 24
-    
     # password expirations (days)
     @@configtable['password_activity_expiration'] = 180
     @@configtable['password_retire_expiration'] = 7
         
   
     #Default sites
+    @@configtable['ask_two_point_oh'] = 'https://ask.extension.org/'
+    @@configtable['ask_two_point_oh_form'] = 'https://ask.extension.org/ask'
     @@configtable['faq_site'] = 'http://cop.extension.org/faq'
     @@configtable['events_site'] = 'http://cop.extension.org/events'
     @@configtable['people_site'] = 'http://people.extension.org/'
@@ -180,6 +175,13 @@ class AppConfig
     
     # learn.extension.org event url
     @@configtable['learn_event_url'] = 'http://learn.extension.org/events'
+
+    # account reviews
+    @@configtable['account_review_url'] = 'https://ask.extension.org/questions/account_review_request'
+    @@configtable['account_review_key'] = 'notset'
+
+    # ask database
+    @@configtable['ask2_database'] = 'prod_aae'
 
   end
   

@@ -20,7 +20,6 @@ class ActivityObject < ActiveRecord::Base
   # entrytype
   UNKNOWN = 0
   FAQ = 1
-  AAE = 2
   EVENT = 3
   ABOUTWIKI_PAGE = 4
   COPWIKI_PAGE = 5
@@ -36,7 +35,6 @@ class ActivityObject < ActiveRecord::Base
   ENTRYTYPELABELS = {
     UNKNOWN => 'unknown',
     FAQ => 'faq',
-    AAE => 'aae_question',
     EVENT => 'event',
     ABOUTWIKI_PAGE => 'aboutwiki_page',
     COPWIKI_PAGE => 'copwiki_page',
@@ -53,7 +51,6 @@ class ActivityObject < ActiveRecord::Base
   named_scope :copwikipages, {:conditions => {:entrytype => COPWIKI_PAGE}}
   named_scope :events, {:conditions => {:entrytype => EVENT}}
   named_scope :faq_questions, {:conditions => {:entrytype => FAQ}}
-  named_scope :aae_questions, {:conditions => {:entrytype => AAE}}
   named_scope :filtered, lambda {|options| filter_conditions(options)}
     
   # -----------------------------------
@@ -120,38 +117,6 @@ class ActivityObject < ActiveRecord::Base
       end
     end
 
-    def resolved_questions(options = {}, forcecacheupdate=false)
-      filteroptions = options.merge({:entrytype => AAE, :status => 'resolved'})
-      cache_key = self.get_cache_key(this_method,filteroptions)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
-        ActivityObject.filtered(filteroptions).count
-      end
-    end
-
-    def rejected_questions(options = {}, forcecacheupdate=false)
-      filteroptions = options.merge({:entrytype => AAE, :status => 'rejected'})
-      cache_key = self.get_cache_key(this_method,filteroptions)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
-        ActivityObject.filtered(filteroptions).count
-      end
-    end
-
-    def unanswered_questions(options = {}, forcecacheupdate=false)
-      filteroptions = options.merge({:entrytype => AAE, :status => 'no answer'})
-      cache_key = self.get_cache_key(this_method,filteroptions)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
-        ActivityObject.filtered(filteroptions).count
-      end
-    end
-
-    def submitted_questions(options = {}, forcecacheupdate=false)
-      filteroptions = options.merge({:entrytype => AAE})
-      cache_key = self.get_cache_key(this_method,filteroptions)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
-        ActivityObject.filtered(filteroptions).count
-      end
-    end
-    
     def label_to_entrytype(string)
       return ENTRYTYPELABELS.index(string)
     end

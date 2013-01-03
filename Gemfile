@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://systems.extension.org/rubygems/'
 
-gem 'rails', '2.3.14'
+gem 'rails', '2.3.14.20130101'
 # database
 gem 'mysql'
 # pagination
@@ -46,6 +46,8 @@ gem 'rest-client'
 gem 'json_pure'
 # soap gem for bronto downloads
 gem 'savon'
+# command line
+gem 'thor'
 
 # handle rewrites of trailing slashes
 gem 'rack-rewrite'
@@ -56,6 +58,9 @@ gem 'airbrake', '3.1.2'
 # To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
 # gem 'ruby-debug'
 # gem 'ruby-debug19', :require => 'ruby-debug'
+
+# monitoring
+gem 'scout_rails'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

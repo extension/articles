@@ -9,7 +9,7 @@
     <% end %>
     
     <div class="aae_module">
-        <% link_to(ask_form_url) do %>
+        <% link_to(AppConfig.configtable['ask_two_point_oh_form'], :class => 'aae_form_link') do %>
             <span>Ask an Expert</span>
             <p>Connect with experts from Universities across the country</p>
         <% end %>

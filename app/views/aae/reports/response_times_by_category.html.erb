@@ -1,9 +1,0 @@
-<% @page_title = "Response Times Report by #{@pagetype}"%>
-
-<p id="activity_report"><%= link_to "All Reports",  :controller => 'reports' %> &gt; <%= link_to "Response Times Report",  :action => 'response_times' %> &gt; <%= @page_title %></p>
-	
-<% genstring = "Response Time Statistics by "+ @pagetype %>
-<h1><%= genstring %></h1>
-<%= (@type=="Location") ? "<p>This report only reflects the location of the responding Expert, not the location of the question or the submitter.</p>" : ""%>   
-
-<%= render :partial => 'resptimes', :locals => {:genstring => genstring}%> 

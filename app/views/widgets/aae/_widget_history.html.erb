@@ -1,7 +1,0 @@
-<h4>History:</h4>
-<ul class="widget-history">
-    <li>Created at <%= @widget.created_at %> by <%= link_to_user(@widget.user) %></li>
-    <% @widget.widget_events.each do |event| %>
-    <li><%= event.event.capitalize %> on <%= event.created_at %> by <%= link_to_user(event.user) %></li>
-    <% end %>
-</ul>

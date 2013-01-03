@@ -55,8 +55,6 @@ class ActivityApplication < ActiveRecord::Base
         # todo 'published' for faq
       when 'events'
         datatypes = ['eventitems']
-      when 'aae'
-        datatypes = ['submittedquestions']
       else
         return false
       end
@@ -106,8 +104,6 @@ class ActivityApplication < ActiveRecord::Base
         datatypes = ['edit','publish']
       when 'events'
         datatypes = ['edit']
-      when 'aae'
-        datatypes = ['submission','activity']
       else
         return returninformation
       end

@@ -15,12 +15,6 @@
         <li><%= link_to 'Show Special Pages', :action => 'special_pages' %></li>
     </ul>
     
-    <h2>AaE Management</h2>
-    <ul>
-        <li><%= link_to 'Manage Categories', :controller => '/aae/expertise', :action => 'categories' %> (<em>make sure to turn on admin mode</em>)</li>
-    </ul>
-    
-    
     <h2>Program Configuration</h2>
     <ul>
         <% if @currentuser.is_sudoer? %>

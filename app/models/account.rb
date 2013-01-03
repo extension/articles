@@ -26,8 +26,6 @@ class Account < ActiveRecord::Base
   validates_length_of :password, :within => 6..40, :allow_blank => true
   validates_presence_of :email, :login
   
-  has_many :submitted_questions, :foreign_key => 'submitter_id'
-  
   belongs_to :primary_account, :class_name => 'Account'
 
   

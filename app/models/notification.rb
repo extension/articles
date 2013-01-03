@@ -50,30 +50,6 @@ class Notification < ActiveRecord::Base
   # TODO: new account created?
   
   ##########################################
-  #  Ask an Expert Notifications - Internal
-
-  NOTIFICATION_AAE_INTERNAL = [1000,1999]   # 'aae-internal'
-  AAE_ASSIGNMENT = 1001  # assignment notification
-  AAE_REASSIGNMENT = 1002  # reassignment notification
-  AAE_ESCALATION = 1003  # escalation notification
-  AAE_PUBLIC_EDIT = 1004  # a public user edited their question
-  AAE_PUBLIC_COMMENT = 1005 # a public user posted another comment
-  AAE_REJECT = 1006 # an expert has rejected a question
-  AAE_VACATION_RESPONSE = 1007 # received a vacation response to an assigned question
-  AAE_EXPERT_COMMENT = 1008 # an expert posted a comment
-  AAE_EXPERT_NOREPLY = 1009 # an expert replied to the no-reply address
-  AAE_WIDGET_BROADCAST = 1010 # broadcast email sent to all widget assignees 
-    
-  ##########################################
-  #  Ask an Expert Notifications - Public
-  
-  NOTIFICATION_AAE_PUBLIC = [2000,2099]   # 'aae-public'
-  AAE_PUBLIC_EXPERT_RESPONSE = 2001  # notification of an expert response, also "A Space Odyssey"
-  AAE_PUBLIC_NOREPLY = 2002 # public replied to the no-reply address
-  AAE_PUBLIC_NOQUESTION = 2003 # public sent a new question to the no-reply address
-  AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT = 2010  # notification of submission, also "The Year We Make Contact"
-
-  ##########################################
   #  Learn Notifications
   
   LEARN_UPCOMING_SESSION = 2100
@@ -106,21 +82,6 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[WELCOME] = ['welcome']    
   MAILERMETHODS[CONFIRM_EMAIL_CHANGE] = ['confirm_email_change']      
   MAILERMETHODS[CONFIRM_SIGNUP] = ['confirm_signup']    
-  MAILERMETHODS[AAE_ASSIGNMENT] = ['aae_assigned']  
-  MAILERMETHODS[AAE_REASSIGNMENT] = ['aae_reassigned'] 
-  MAILERMETHODS[AAE_REJECT] = ['aae_reject']   
-  # TODO: MAILERMETHODS[AAE_ESCALATION] = ['todo']    
-  MAILERMETHODS[AAE_PUBLIC_EDIT] = ['aae_public_edit']    
-  MAILERMETHODS[AAE_PUBLIC_EXPERT_RESPONSE] = ['aae_public_response']    
-  MAILERMETHODS[AAE_PUBLIC_SUBMISSION_ACKNOWLEDGEMENT] = ['aae_public_submission'] 
-  MAILERMETHODS[AAE_PUBLIC_COMMENT] = ['aae_public_comment']   
-  MAILERMETHODS[AAE_VACATION_RESPONSE] = ['aae_vacation_response']   
-  MAILERMETHODS[AAE_EXPERT_COMMENT] = ['aae_expert_comment']   
-  MAILERMETHODS[AAE_EXPERT_NOREPLY] = ['aae_expert_noreply']   
-  MAILERMETHODS[AAE_PUBLIC_NOREPLY] = ['aae_public_noreply']   
-  MAILERMETHODS[AAE_PUBLIC_NOQUESTION] = ['aae_public_noquestion'] 
-  MAILERMETHODS[AAE_WIDGET_BROADCAST] = ['aae_widget_broadcast']  
-
   MAILERMETHODS[LEARN_UPCOMING_SESSION] = ['learn_upcoming_session']   
 
   
@@ -136,8 +97,6 @@ class Notification < ActiveRecord::Base
   after_create :send_now?
   
   named_scope :tosend, :conditions => {:sent_email => false,:send_error => false}, :order => "created_at ASC"
-  named_scope :aae_internal, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_AAE_INTERNAL[0]} and #{NOTIFICATION_AAE_INTERNAL[1]})"]
-  named_scope :aae_public, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_AAE_PUBLIC[0]} and #{NOTIFICATION_AAE_PUBLIC[1]})"] 
   named_scope :people, :conditions => ["notifytype BETWEEN (#{NOTIFICATION_PEOPLE[0]} and #{NOTIFICATION_PEOPLE[1]})"] 
   named_scope :failed, :conditions => {:send_error => true}, :order => "created_at ASC"
   
@@ -168,10 +127,6 @@ class Notification < ActiveRecord::Base
       return 'none'
     elsif(self.notifytype >= NOTIFICATION_PEOPLE[0] and self.notifytype <= NOTIFICATION_PEOPLE[1])
       return 'people'
-    elsif(self.notifytype >= NOTIFICATION_AAE_INTERNAL[0] and self.notifytype <= NOTIFICATION_AAE_INTERNAL[1])
-      return 'aae_internal'
-    elsif(self.notifytype >= NOTIFICATION_AAE_PUBLIC[0] and self.notifytype <= NOTIFICATION_AAE_PUBLIC[1])
-      return 'aae_public'
     else
       return nil
     end

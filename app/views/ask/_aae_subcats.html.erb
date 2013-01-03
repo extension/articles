@@ -1,6 +1,0 @@
-<% if @sub_category_options and @sub_category_options.length > 1 %>
-
-<label>Pick a sub-category:</label> 
-<%= select_tag ("subcategory", options_for_select(@sub_category_options, @sub_category)) %>
-
-<% end %>
