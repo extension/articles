@@ -74,31 +74,21 @@ class People::SignupController < ApplicationController
     end
     
     # search for an existing account.  doing this here instead
-    # of validations because if the person had a "PublicUser" account
-    # we need to convert that to a "User" account - else if there's
-    # a user conflict, just show the "already registered" message
+    # of validations because of historical presence of 'PublicUser'
+    # accounts - this will be removed when People is separated
     if(params[:user] and params[:user][:email])
       checkemail = params[:user][:email]
       if(account = Account.find_by_email(checkemail))
-        if(account.class == User) 
-          # has existing user account
-          failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:controller => 'people/account', :action => :new_password)}'>request a new password</a>"
-          flash.now[:failure] = failuremsg
-          @user = User.new(params[:user])          
-          @locations = Location.displaylist
-          if(!(@user.location.nil?))  
-            @countylist = @user.location.counties
-            @institutionlist = @user.location.communities.institutions.find(:all, :order => 'name')
-          end
-          return render(:action => "new")
-        elsif(account.class == PublicUser)
-          # convert the account
-          account.update_attribute(:type,'User')
-          @account_conversion = true
-          @user = Account.find(account.id)
-          @user.attributes=params[:user]
-          @user.set_login_string(true)
+        # has existing user account
+        failuremsg = "Your email address has already been registered with us.  If you've forgotten your password for that account, please <a href='#{url_for(:controller => 'people/account', :action => :new_password)}'>request a new password</a>"
+        flash.now[:failure] = failuremsg
+        @user = User.new(params[:user])          
+        @locations = Location.displaylist
+        if(!(@user.location.nil?))  
+          @countylist = @user.location.counties
+          @institutionlist = @user.location.communities.institutions.find(:all, :order => 'name')
         end
+        return render(:action => "new")
       else
         @user = User.new(params[:user])
       end
@@ -117,9 +107,6 @@ class People::SignupController < ApplicationController
     else
       flash.now[:failure] = "Please let us know how you are involved with Cooperative Extension"
       @locations = Location.displaylist
-      if(@account_conversion)
-        @user.update_attribute(:type,'PublicUser')
-      end
       return render(:action => "new")
     end
         
@@ -160,9 +147,6 @@ class People::SignupController < ApplicationController
         @institutionlist = @user.location.communities.institutions.find(:all, :order => 'name')
       end
       
-      if(@account_conversion)
-        @user.update_attribute(:type,'PublicUser')
-      end
       render(:action => "new")
     else        
       # automatically log them in

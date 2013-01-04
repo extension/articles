@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121121003449) do
+ActiveRecord::Schema.define(:version => 20130104184455) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
