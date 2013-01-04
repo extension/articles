@@ -10,14 +10,6 @@ class People::SignupController < ApplicationController
   layout 'people'
   before_filter :login_required, :only => [:confirm, :reconfirm, :confirmationsent, :review]
 
-  def readme
-    # just in case we got here from an openid login
-    session[:last_opierequest] = nil
-     
-    if(!params[:invite].nil?)
-      @invitation = Invitation.find_by_token(params[:invite])
-    end
-  end
   
   def xhr_county_and_institution
     if(!request.post?)
@@ -35,35 +27,7 @@ class People::SignupController < ApplicationController
         page.replace_html  :institution, :partial => 'institutionlist', :locals => {:institutionlist => @institutionlist}
     end    
   end
-  
-  def new
-    if(!request.post?)
-      return redirect_to(:action => 'readme', :invite => params[:invite])
-    end
     
-    # just in case we got here from an openid login
-    session[:last_opierequest] = nil
-    
-    if(!params[:invite].nil?)
-      @invitation = Invitation.find_by_token(params[:invite])
-    end
-    
-    if params[:user]
-      @user = User.new(params[:user])
-    else
-      @user = User.new
-    end
-    
-    @locations = Location.displaylist
-    if(!(@user.location.nil?))  
-      @countylist = @user.location.counties
-    end
-    
-    respond_to do |format|
-      format.html # new.html.erb
-    end
-  end
-  
   def create
     if(!request.post?)
       return redirect_to(:action => :new)
