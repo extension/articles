@@ -1004,10 +1004,6 @@ class User < Account
    end
   end
            
-  def is_sudoer?
-   return AppConfig.configtable['sudoers'][self.login.downcase]
-  end
- 
   def fix_email(newemailaddress,adminuser)
    now = Time.now.utc
    

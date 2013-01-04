@@ -28,10 +28,7 @@ module LoginSystem
     end
   end
     
-  def sudoer?(checkuser)
-    (authorize?(checkuser) && AppConfig.configtable['sudoers'][checkuser.login.downcase]) 
-  end
-  
+
   def purgatory?(checkuser)
     if(!checkuser.vouched?)
       return true

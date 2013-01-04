@@ -19,10 +19,7 @@ class AppConfig
     @@configtable['load_query_trace'] = false
     @@configtable['load_rails_footnotes'] = false
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
-    @@configtable['sudoers'] = Hash.new
-    
-
-    
+     
     # possibly return different ones for demo?    
     @@configtable['openid_url_prefix'] = {}
     @@configtable['openid_url_prefix']['production'] = {}
