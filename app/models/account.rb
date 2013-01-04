@@ -69,17 +69,13 @@ class Account < ActiveRecord::Base
   end
     
   def first_name=(first_name_string)
-    if(self.type == 'PublicUser' and first_name_string.blank?)
-      write_attribute(:first_name, 'Anonymous')
-    elsif(!first_name_string.blank?)
+    if(!first_name_string.blank?)
       write_attribute(:first_name, first_name_string.strip)
     end
   end
   
   def last_name=(last_name_string)
-    if(self.type == 'PublicUser' and last_name_string.blank?)
-      write_attribute(:last_name, 'Guest')
-    elsif(!last_name_string.blank?)
+    if(!last_name_string.blank?)
       write_attribute(:last_name, last_name_string.strip)
     end
   end
@@ -176,11 +172,7 @@ class Account < ActiveRecord::Base
   
   def set_login_string(reset=false)
     if(reset or self.login.blank?)
-      if(self.type == 'User')
-        self.base_login_string = (self.first_name + self.last_name.each_char[0]).mb_chars.downcase.gsub!(/[^\w]/,'')
-      elsif(self.type == 'PublicUser')
-        self.base_login_string = 'public'
-      end
+      self.base_login_string = (self.first_name + self.last_name.each_char[0]).mb_chars.downcase.gsub!(/[^\w]/,'')
     
       # get maximum increment
       if(max = self.class.maximum(:login_increment,:conditions => "base_login_string = '#{self.base_login_string}'"))
