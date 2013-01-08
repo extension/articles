@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130104184455) do
+ActiveRecord::Schema.define(:version => 20130108201600) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -618,6 +618,9 @@ ActiveRecord::Schema.define(:version => 20130104184455) do
     t.integer  "community_id"
     t.string   "connectiontype"
   end
+
+  add_index "lists", ["community_id", "connectiontype"], :name => "community_type_ndx", :unique => true
+  add_index "lists", ["name"], :name => "name_ndx", :unique => true
 
   create_table "locations", :force => true do |t|
     t.integer "fipsid",                     :default => 0,  :null => false
