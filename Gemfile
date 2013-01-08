@@ -2,6 +2,8 @@ source 'http://rubygems.org'
 source 'http://systems.extension.org/rubygems/'
 
 gem 'rails', '2.3.15'
+# rdoc - removes a warning
+gem 'rdoc'
 # database
 gem 'mysql'
 # pagination
