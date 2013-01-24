@@ -53,6 +53,7 @@ class Page < ActiveRecord::Base
   named_scope :articles, :conditions => {:datatype => 'Article'}
   named_scope :news, :conditions => {:datatype => 'News'}
   named_scope :faqs, :conditions => {:datatype => 'Faq'}
+  named_scope :events, :conditions => {:datatype => 'Event'}
   named_scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
   
   
