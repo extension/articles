@@ -53,7 +53,6 @@ class Page < ActiveRecord::Base
   named_scope :articles, :conditions => {:datatype => 'Article'}
   named_scope :news, :conditions => {:datatype => 'News'}
   named_scope :faqs, :conditions => {:datatype => 'Faq'}
-  named_scope :events, :conditions => {:datatype => 'Event'}
   named_scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
   
   
@@ -288,7 +287,7 @@ class Page < ActiveRecord::Base
   # @param [Hash] options query options
   # @option options [Integer] :limit query limit
   # @option options [String] :content_tags string of content tags to search for (it could also an array or anything Tag.castlist_to_array takes)
-  # @option options [Array] :datatypes array of datatypes to search for ['Article','Event','Faq','News] accepted
+  # @option options [Array] :datatypes array of datatypes to search for ['Article','Faq','News] accepted
   # @option options [Date] :calendar_date for Events filtering
   # @option options [Integer] :within_days for Events filtering
   # @option options [String] :tag_operator 'and' or 'or' matching for content tags
@@ -297,7 +296,7 @@ class Page < ActiveRecord::Base
     cache_key = self.get_cache_key(this_method,options)
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
       if(options[:datatypes].nil? or options[:datatypes] == 'all')
-        datatypes = ['Article','Faq','News','Event']
+        datatypes = ['Article','Faq','News']
       elsif(options[:datatypes].is_a?(Array))
         datatypes = options[:datatypes]
       else
@@ -352,15 +351,6 @@ class Page < ActiveRecord::Base
         datatype_conditions << "(datatype = 'Faq')"
       when 'News'
         datatype_conditions << "(datatype = 'News')"
-      when 'Event'
-        calendar_date = options[:calendar_date] || Date.today
-        if(options[:allevents])
-          datatype_conditions << "(datatype = 'Event')"
-        elsif(!options[:within_days].nil?)
-          datatype_conditions << "(datatype = 'Event' and (event_start >= '#{calendar_date.to_s(:db)}' and event_start < '#{(calendar_date + options[:within_days]).to_s(:db)}'))"
-        else
-          datatype_conditions << "(datatype = 'Event' and event_start >= '#{calendar_date.to_s(:db)}')"
-        end
       end
     end
     
@@ -375,8 +365,6 @@ class Page < ActiveRecord::Base
         datatypes << 'Faq'
       when 'articles'
         datatypes << 'Article'
-      when 'events'
-        datatypes << 'Event'
       when 'news'
         datatypes << 'News'
       end

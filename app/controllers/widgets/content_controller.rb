@@ -114,15 +114,13 @@ class Widgets::ContentController < ApplicationController
         @content_types = ['faqs']
       when 'articles'
         @content_types = ['articles']
-      when 'events'
-        @content_types = ['articles']
       else
         @content_types = ['articles','news','faqs']
       end
     elsif(@filteredparams.content_types)
       @content_types = @filteredparams.content_types
     else
-      @content_types = ['articles','news','faqs','events']
+      @content_types = ['articles','news','faqs']
     end
     
     
@@ -160,8 +158,6 @@ class Widgets::ContentController < ApplicationController
         datatypes << 'Faq'
       when 'articles'
         datatypes << 'Article'
-      when 'events'
-        datatypes << 'Event'
       when 'news'
         datatypes << 'News'
       end
@@ -170,7 +166,7 @@ class Widgets::ContentController < ApplicationController
     if(alltags)
        @contents = Page.recent_content(:datatypes => datatypes, :limit => @limit)
     else
-       @contents = Page.recent_content(:datatypes => datatypes, :content_tags => @content_tags, :limit => @limit, :tag_operator => tag_operator, :within_days => AppConfig.configtable['events_within_days'])
+       @contents = Page.recent_content(:datatypes => datatypes, :content_tags => @content_tags, :limit => @limit, :tag_operator => tag_operator)
     end
   end
 

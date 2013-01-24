@@ -14,7 +14,7 @@ class FilteredParameter
   ALLOWED_GDATA_ALT_TYPES = ['atom','rss','json','json-in-script','atom-in-script','rss-in-script']
   
   # content types
-  ALLOWED_CONTENT_TYPES = ['articles','faqs','events','news']
+  ALLOWED_CONTENT_TYPES = ['articles','faqs','news']
 
   # recognized names and types
   RECOGNIZED_PARAMETERS = {}
