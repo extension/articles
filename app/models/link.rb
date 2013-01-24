@@ -43,7 +43,7 @@ class Link < ActiveRecord::Base
   # maximum number of times we'll check a broken link before giving up
   MAX_ERROR_COUNT = 10
   
-  named_scope :checklist, :conditions => ["linktype IN (#{EXTERNAL},#{LOCAL})"]
+  named_scope :checklist, :conditions => ["linktype IN (#{EXTERNAL},#{LOCAL},#{IMAGE})"]
   named_scope :external, :conditions => {:linktype => EXTERNAL}
   named_scope :internal, :conditions => {:linktype => INTERNAL}
   named_scope :unpublished, :conditions => {:linktype => WANTED}
