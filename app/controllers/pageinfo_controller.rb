@@ -30,9 +30,11 @@ class PageinfoController < ApplicationController
     @page = Page.find_by_id(params[:id])
     if(@page)
       @external_links = @page.links.external
+      @image_links = @page.links.image
       @local_links = @page.links.local
       @internal_links = @page.links.internal
       @wanted_links = @page.links.unpublished
+
     end
   end
   

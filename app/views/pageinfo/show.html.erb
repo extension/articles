@@ -147,6 +147,35 @@
   </table>
   <%- end -%>
 
+
+  <%- if @image_links and @image_links.size > 0 -%>
+  <h2>Image Links</h2>
+  <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
+  <table cellspacing="0" border="1">
+    <tr>
+      <th>Link</th>
+      <th>Host</th>
+      <th>Status</th>
+      <th>Last Check At</th>
+      <th>Last Check Code</th>
+    </tr>
+
+    <% for link in @image_links %>
+      <tr id="link_row_<%= link.id %>" class="checkedlinks">
+        <td><%= link_to(link.url, link.url) %></td>
+        <td><%= link.host %></td>
+        <td class="<%= link.status_to_s.downcase %>"><%= link.status_to_s %></td>
+        <td><%= humane_date(link.last_check_at) %></td>
+        <%- if link.last_check_at.blank? -%>
+          <td></td>
+        <%- else -%>
+          <td><%= link.last_check_code.blank? ? 'no response' : link_to(link.last_check_code,'http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html') %></td>
+        <%- end -%>
+      </tr>
+    <% end%>
+  </table>
+  <%- end -%>
+
   <%- if @internal_links and @internal_links.size > 0 -%>
   <h2>Internal Links</h2>
   <table cellspacing="0" border="1">
