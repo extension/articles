@@ -713,28 +713,6 @@ ActiveRecord::Schema.define(:version => 20130129224709) do
 
   add_index "privacy_settings", ["user_id"], :name => "index_privacy_settings_on_user_id"
 
-  create_table "responses", :force => true do |t|
-    t.integer  "resolver_id"
-    t.integer  "submitter_id"
-    t.integer  "submitted_question_id",                        :null => false
-    t.text     "response",                                     :null => false
-    t.integer  "duration_since_last",                          :null => false
-    t.boolean  "sent",                      :default => false, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "contributing_content_id"
-    t.text     "signature"
-    t.string   "user_ip"
-    t.string   "user_agent"
-    t.string   "referrer"
-    t.string   "contributing_content_type"
-  end
-
-  add_index "responses", ["contributing_content_id", "contributing_content_type"], :name => "contributing_content_ndx"
-  add_index "responses", ["resolver_id"], :name => "index_responses_on_user_id"
-  add_index "responses", ["submitted_question_id"], :name => "index_responses_on_submitted_question_id"
-  add_index "responses", ["submitter_id"], :name => "index_responses_on_submitter_id"
-
   create_table "social_networks", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"

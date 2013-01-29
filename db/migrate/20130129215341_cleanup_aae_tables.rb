@@ -9,6 +9,7 @@ class CleanupAaeTables < ActiveRecord::Migration
     drop_table "expertise_events"
     drop_table "expertise_locations"
     drop_table "expertise_locations_users"
+    drop_table "responses"
     drop_table "roles"
     drop_table "submitted_question_events"
     drop_table "submitted_questions"
