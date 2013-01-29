@@ -63,44 +63,13 @@ class NumberSummary
       Activity.count_active_users(self.findoptions.merge({:dateinterval => self.summarydateinterval}),self.forcecacheupdate)
     end
   end
-  
-  def applications
-    get_or_set_data_value(this_method.to_sym) do 
-      countoptions = self.findoptions.merge({:dateinterval => self.summarydateinterval})
-      if(!self.filtercommunity.nil?)
-        countoptions.merge!(:connectiontype => 'joined')
-      end
-      Activity.count_users_contributions_objects_by_activityentrytype(countoptions,self.forcecacheupdate)
-    end
-  end
-  
+    
   def locations
     get_or_set_data_value(this_method.to_sym) do 
       Location.filtered(self.findoptions).count(:id, :distinct => true)
     end
   end
-  
-  def published_events
-    get_or_set_data_value(this_method.to_sym) do 
-      result = Activity.count_users_contributions_objects_by_activityentrytype(self.findoptions.merge({:activity=>"edit", :appname=>"events"}),self.forcecacheupdate)
-      check_result_for_nil(result,'event',:objects)
-    end
-  end
-  
-  def published_copwikipages
-    get_or_set_data_value(this_method.to_sym) do       
-       result = Activity.count_users_contributions_objects_by_activityentrytype(self.findoptions.merge({:activity=>"publish", :appname=>"copwiki"}),self.forcecacheupdate)
-       check_result_for_nil(result,'copwiki_page',:objects)
-    end
-  end
-  
-  def published_faqs
-    get_or_set_data_value(this_method.to_sym) do 
-       result = Activity.count_users_contributions_objects_by_activityentrytype(self.findoptions.merge({:activity=>"publish", :appname=>"faq"}),self.forcecacheupdate)
-       check_result_for_nil(result,'faq',:objects)
-    end
-  end
-    
+      
   def counties
     get_or_set_data_value(this_method.to_sym) do 
       County.filtered(self.findoptions).count(:id, :distinct => true)

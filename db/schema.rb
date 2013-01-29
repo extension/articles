@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130129225810) do
+ActiveRecord::Schema.define(:version => 20130129230210) do
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
@@ -66,7 +66,6 @@ ActiveRecord::Schema.define(:version => 20130129225810) do
     t.string   "ipaddr"
     t.integer  "created_by",              :default => 0
     t.integer  "colleague_id",            :default => 0
-    t.integer  "activity_object_id"
     t.integer  "privacy"
     t.string   "activity_uri"
     t.integer  "responsetime"
@@ -74,7 +73,6 @@ ActiveRecord::Schema.define(:version => 20130129225810) do
   end
 
   add_index "activities", ["activity_application_id"], :name => "index_activities_on_activity_application_id"
-  add_index "activities", ["activity_object_id"], :name => "index_activities_on_activity_object_id"
   add_index "activities", ["activitycode"], :name => "index_activities_on_activitycode"
   add_index "activities", ["activitytype"], :name => "index_activities_on_activitytype"
   add_index "activities", ["created_at", "user_id", "activitycode", "activity_application_id", "community_id", "privacy"], :name => "recordsignature", :unique => true
@@ -91,33 +89,6 @@ ActiveRecord::Schema.define(:version => 20130129225810) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "activity_events", :force => true do |t|
-    t.integer  "user_id",                               :default => 0, :null => false
-    t.integer  "activity_application_id",               :default => 0, :null => false
-    t.integer  "event",                                 :default => 0, :null => false
-    t.string   "ipaddr",                  :limit => 20
-    t.text     "eventdata"
-    t.datetime "created_at"
-  end
-
-  create_table "activity_objects", :force => true do |t|
-    t.integer  "activity_application_id", :default => 1
-    t.integer  "entrytype"
-    t.integer  "namespace"
-    t.integer  "foreignid"
-    t.integer  "foreignrevision"
-    t.string   "source"
-    t.string   "sourcewidget"
-    t.string   "displaytitle"
-    t.text     "fulltitle"
-    t.string   "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "additionaldata"
-  end
-
-  add_index "activity_objects", ["entrytype", "namespace", "foreignid"], :name => "recordsignature", :unique => true
 
   create_table "admin_events", :force => true do |t|
     t.integer  "user_id",                  :default => 0, :null => false

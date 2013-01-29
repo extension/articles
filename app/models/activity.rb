@@ -10,7 +10,6 @@ require 'ipaddr'
 class Activity < ActiveRecord::Base
   extend ConditionExtensions
   extend GoogleVisualization
-  extend DataImportActivity
 
   EARLIEST_TRACKED_ACTIVITY_DATE = '2005-11-01 00:00:00'
 
@@ -135,7 +134,6 @@ class Activity < ActiveRecord::Base
   belongs_to :colleague, :class_name => "User", :foreign_key => "colleague_id"
   belongs_to :community
   belongs_to :activity_application
-  belongs_to :activity_object
 
   serialize :additionaldata
 
@@ -315,19 +313,6 @@ class Activity < ActiveRecord::Base
       end
     end
 
-    def build_activityentrytype_condition(options)
-      conditions = nil
-      # narrow to certain activity_applications
-      if(options[:activityentrytype])
-        if(entrytype = ActivityObject.label_to_entrytype(options[:activityentrytype]))
-          conditions = "#{ActivityObject.table_name}.entrytype = #{entrytype}"
-        end
-      elsif(options[:activityentrytypes])
-        # TODO!
-      end
-
-      return conditions
-    end
 
     def useractivity_filter(options={})
       joins = [:user]
@@ -338,14 +323,6 @@ class Activity < ActiveRecord::Base
 
       # activity conditions?
       conditions << build_activity_conditions(options)
-
-      # specific entrytype?
-      if(activityentrytype_condition = build_activityentrytype_condition(options))
-        joins << :activity_object
-        conditions << activityentrytype_condition
-      end
-
-
 
       if(options[:allactivity].nil? or !options[:allactivity])
         conditions << "#{table_name}.privacy != #{Activity::PRIVATE}"
@@ -572,59 +549,12 @@ class Activity < ActiveRecord::Base
       end
     end
 
-    def count_contributions_by_activityentrytype(options={},forcecacheupdate=false)
-      # not caching right now
-      returnhash = {}
-      records = self.filtered(options.merge(:activitygroup => 'contribution')).count(:id,:joins => :activity_object, :group => 'activity_objects.entrytype')
-      records.map{|values| returnhash[values[0]] = values[1].to_i}
-      return returnhash
-    end
-
-    def count_unique_activityobjects_by_activityentrytype(options={},forcecacheupdate=false)
-      returnhash = {}
-      records = self.filtered(options.merge(:activitygroup => 'contribution')).count('DISTINCT(activities.activity_object_id)',:joins => :activity_object, :group => 'activity_objects.entrytype')
-      records.map{|values| returnhash[values[0]] = values[1].to_i}
-      return returnhash
-    end
-
-    def count_uniqueusers_contributing_by_activityentrytype(options={},forcecacheupdate=false)
-      returnhash = {}
-      records = self.filtered(options.merge(:activitygroup => 'contribution')).count('DISTINCT(activities.user_id)',:joins => :activity_object,:group => 'activity_objects.entrytype')
-      records.map{|values| returnhash[values[0]] = values[1].to_i}
-      return returnhash
-    end
-
-    def count_users_contributions_objects_by_activityentrytype(options={},forcecacheupdate=false)
-      cache_key = self.get_cache_key(this_method,options)
-      Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.count_cache_expiry) do
-        returnhash = {}
-
-        edits = self.count_contributions_by_activityentrytype(options)
-        objects = self.count_unique_activityobjects_by_activityentrytype(options)
-        users = self.count_uniqueusers_contributing_by_activityentrytype(options)
-
-
-        keys = edits.keys + objects.keys + users.keys
-        keys.uniq.each{|key| returnhash[ActivityObject::ENTRYTYPELABELS[key.to_i]] = {:contributions => 0, :users => 0, :objects => 0}}
-
-        objects.each{|key,value| returnhash[ActivityObject::ENTRYTYPELABELS[key.to_i]][:objects] = value}
-        edits.each{|key,value| returnhash[ActivityObject::ENTRYTYPELABELS[key.to_i]][:contributions] = value}
-        users.each{|key,value| returnhash[ActivityObject::ENTRYTYPELABELS[key.to_i]][:users] = value}
-        returnhash
-      end
-    end
-
-
     def activity_to_codes(activity)
       case activity
       when 'signup'
         return [Activity::SIGNUP]
       when 'login'
         return [Activity::LOGIN_PASSWORD,Activity::LOGIN_OPENID]
-      when 'edit'
-        return [Activity::INFORMATION_EDIT]
-      when 'publish'
-        return [Activity::INFORMATION_PUBLISH]
       when 'joinedcommunity'
         return [Activity::COMMUNITY_JOIN,Activity::COMMUNITY_ACCEPT_INVITATION,Activity::COMMUNITY_ADDEDASMEMBER,Activity::COMMUNITY_ADDEDASLEADER]
       else
@@ -638,12 +568,8 @@ class Activity < ActiveRecord::Base
         return [Activity::PEOPLE]
       when 'login'
         return [Activity::LOGIN]
-      when 'information'
-        return [Activity::INFORMATION]
-      when 'contribution'
-        return [Activity::INFORMATION]
       when 'active'
-        return [Activity::LOGIN,Activity::INFORMATION]
+        return [Activity::LOGIN,Activity::COMMUNITY]
       when 'community'
         return [Activity::COMMUNITY]
       else
@@ -659,8 +585,6 @@ class Activity < ActiveRecord::Base
       when Activity::LOGIN_OPENID
       when Activity::LOGIN_PASSWORD
         return 'login'
-      when Activity::INFORMATION_EDIT
-        return 'edit'
       when Activity::COMMUNITY_ACTIVITY
         return 'community'
       when Activity::COMMUNITY_JOIN
