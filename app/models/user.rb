@@ -1262,45 +1262,7 @@ class User < Account
     end
    end
   
-   # faq user model...
-   def get_preference_by_name(name)
-    user_preferences.find_by_name(name)
-   end
-
-   def publisher?
-    pref = user_preferences.find_by_name(UserPreference::SHOW_PUBLISHING_CONTROLS)
-    pref && pref.setting == "1"
-   end
-
-   def get_counties_in_location(location)
-    if intersect_counties = expertise_counties_in_location(location)
-      return "(#{intersect_counties.map{|c| c.name}.join(', ')})"
-    else
-      return ""
-    end
-   end
-
-    def self.find_state_users(options={})
-       dateinterval = options[:dateinterval]
-
-        conditions = []      
-        if(!dateinterval.nil? )
-          conditions << User.build_date_condition({:dateinterval => dateinterval})
-        end
-  
-        if options[:county]
-          conditions << " county_id=#{options[:county]} "
-        else
-          if options[:location]
-               conditions << " location_id = #{options[:location].id} "
-          end
-        end
-       
-      @users=User.with_scope(:find => { :conditions => conditions.compact.join(' AND '), :limit => 100}) do
-        paginate(options[:numparm].to_sym, options[:args])
-      end
-    end
-    
+   
   def post_account_review_request
     if(self.vouched?)
       return true
