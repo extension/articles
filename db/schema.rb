@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130108201600) do
+ActiveRecord::Schema.define(:version => 20130129212946) do
 
   create_table "aae_emails", :force => true do |t|
     t.string   "from"
@@ -992,19 +992,6 @@ ActiveRecord::Schema.define(:version => 20130108201600) do
   end
 
   add_index "update_times", ["datasource_type", "datasource_id", "datatype"], :name => "recordsignature", :unique => true
-
-  create_table "user_emails", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id"
-    t.string   "entrytype"
-    t.string   "email",      :limit => 96
-    t.integer  "privacy"
-  end
-
-  add_index "user_emails", ["email"], :name => "email", :unique => true
-  add_index "user_emails", ["privacy"], :name => "index_user_emails_on_privacy"
-  add_index "user_emails", ["user_id"], :name => "index_user_emails_on_user_id"
 
   create_table "user_events", :force => true do |t|
     t.string   "login",                                       :null => false

@@ -81,19 +81,7 @@ class People::ProfileController < ApplicationController
       @socialnetworkslist = SocialNetwork.get_edit_networks
     end
   end
-    
-  def otheremails
-    if request.post?      
-      @currentuser.modify_user_emails(params[:useremails])
-      UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "other emails updated")
-      log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')                    
-      flash[:success] = 'Emails updated.'
-      redirect_to(:controller => 'profile', :action => 'me')
-    else
-      #show form
-    end
-  end
-  
+      
   def removeopenidsite
     if not params[:id].nil?
       @removesite = @currentuser.opie_approvals.find(params[:id])

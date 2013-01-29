@@ -48,7 +48,6 @@ class User < Account
   belongs_to :county
 
   has_many :social_networks, :dependent => :destroy
-  has_many :user_emails, :dependent => :destroy
 
   has_many :communityconnections, :dependent => :destroy
   has_many :communities, :through => :communityconnections, :select => "communityconnections.connectiontype as connectiontype, communityconnections.sendnotifications as sendnotifications, communities.*", :order => "communities.name"
@@ -814,39 +813,6 @@ class User < Account
   
   def tag_myself_with(taglist)
    self.replace_tags(taglist,self.id,Tagging::USER)
-  end
-  
-  def modify_user_emails(otheruseremails)
-   if(otheruseremails.nil?)
-    return user_emails.delete_all
-   end
-   
-   if(!otheruseremails['new'].nil? and !otheruseremails['new'].empty?)
-    otheruseremails['new'].each do |attributes|
-      user_emails.build(attributes)
-    end
-   end
-   
-   if(!otheruseremails['existing'].nil? and !otheruseremails['existing'].empty?)
-    existingnetworks = otheruseremails['existing']
-    user_emails.reject(&:new_record?).each do |user_email|
-      attributes = existingnetworks[user_email.id.to_s]
-      if attributes
-       user_email.attributes = attributes
-      else
-       user_emails.delete(user_email)
-      end
-    end
-   end
-
-   user_emails.each do |user_email|
-    begin
-      user_email.save()
-    rescue ActiveRecord::StatementInvalid => e
-      raise unless e.to_s =~ /duplicate/i
-    end
-   end
-   
   end
   
   def modify_social_networks(socialnetworks)
