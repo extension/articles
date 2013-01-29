@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130129224709) do
+ActiveRecord::Schema.define(:version => 20130129225810) do
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
@@ -427,14 +427,6 @@ ActiveRecord::Schema.define(:version => 20130129224709) do
   end
 
   add_index "google_groups", ["community_id"], :name => "index_google_groups_on_community_id", :unique => true
-
-  create_table "help_feeds", :force => true do |t|
-    t.string   "title"
-    t.string   "etag"
-    t.text     "content"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "invitations", :force => true do |t|
     t.integer  "user_id",                      :default => 0, :null => false
