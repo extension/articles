@@ -138,10 +138,7 @@ class AppConfig
     
     @@configtable['cse_id'] = 'NotSet'
     @@configtable['cse_secret'] = 'NotSet'
-    
-    # Akismet spam blocker key
-    @@configtable['akismet_key'] = 'default'
-    
+      
 		# Google CSE ID 
 		@@configtable['old_goog_cse_key'] = '018217748441857184963:boqsgyytwwe'
 		@@configtable['goog_cse_key'] = '010978498346658208303:rljk-euizvq'
