@@ -31,7 +31,6 @@ puts "Refreshing NumberSummary cache (for index summary)..."
 @total.totalpeople
 @total.newpeople
 @total.active
-@total.applications
 @total.communities
 @total.locations
 @total.positions

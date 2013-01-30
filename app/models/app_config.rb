@@ -16,7 +16,6 @@ class AppConfig
 
     @@configtable.clear
     @@configtable['app_location'] = "localdev"
-    @@configtable['load_query_trace'] = false
     @@configtable['load_rails_footnotes'] = false
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
     @@configtable['sudoers'] = Hash.new
@@ -154,9 +153,6 @@ class AppConfig
     @@configtable['googleapps_account'] = 'NotSet'
     @@configtable['googleapps_secret'] = 'NotSet'
     @@configtable['googleapps_domain'] = 'apps.extension.org'
-    # Google Apps - AaE emailer
-    @@configtable['googleapps_aaemailer'] = 'NotSet'
-    @@configtable['googleapps_aaemailer_secret'] = 'NotSet'
 
     @@configtable['bronto_api_key'] = 'NotSet'
     @@configtable['bronto_username'] = 'NotSet'

@@ -49,12 +49,10 @@
     <% if(admin_mode?)%>
       <fieldset>
         <legend>Administrative Options:</legend>
-        <%- if(!@community.is_widget?) -%>
-          <p>
-            <label for="community_entrytype">Community Type<em class="required">*</em></label>
-            <%= select(:community, :entrytype, get_communitytypes_for_select, :include_blank => false) %> 
-          </p>
-        <%- end -%>
+        <p>
+          <label for="community_entrytype">Community Type<em class="required">*</em></label>
+          <%= select(:community, :entrytype, get_communitytypes_for_select, :include_blank => false) %> 
+        </p>
 
         <p>
           <label for="community_shortname">Community Shortname:
@@ -63,7 +61,6 @@
           <em>Community shortnames are an additional unique identifier for the community.  The shortname can be used to link to the community in People, and it becomes the group name (and email address) for Google Apps if this community is connected to Google Apps.</em>    
         </p>
 
-        <%- if(!@community.is_widget?) -%>
           <p>
             <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
             <%- if(!@community.is_institution?) -%>
@@ -73,7 +70,6 @@
               making this change! You'll need to make sure that the institution has a logo and link to the institution (edited as part of the <%= link_to('public site institutional and logo management', :controller => '/admin') %></em>
             <%- end -%>
           </p>
-        <%- end -%>
 
         <p>
           <label><%= check_box(:community,:connect_to_google_apps) %>Connect to Google Apps for eXtension.org?</label>

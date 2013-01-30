@@ -354,20 +354,6 @@ class NotificationMailer < ActionMailer::Base
       urls['contactus'] = people_contact_url
       @body           = {:isdemo => @isdemo, :token => token, :urls => urls }  
     end
-   
-  
-   # -----------------------------------
-   #  system administration
-   # -----------------------------------
-
-   def deployment(deployinfo,scmoutput)
-      # base parameters for the email
-      self.base_email('deploy')
-      @recipients     = 'dev-commits@extension.org'
-      #override
-      @bcc = nil
-      @subject        = @subjectlabel+'Darmok deployment notification'
-      @body           = {:isdemo => @isdemo, :deployinfo => deployinfo, :scmoutput => scmoutput}  
-    end    
+ 
    
 end

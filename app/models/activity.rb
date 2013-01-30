@@ -9,7 +9,6 @@ require 'digest/sha1'
 require 'ipaddr'
 class Activity < ActiveRecord::Base
   extend ConditionExtensions
-  extend GoogleVisualization
 
   EARLIEST_TRACKED_ACTIVITY_DATE = '2005-11-01 00:00:00'
 

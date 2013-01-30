@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130129230210) do
+ActiveRecord::Schema.define(:version => 20130130013039) do
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
@@ -278,20 +278,6 @@ ActiveRecord::Schema.define(:version => 20130129230210) do
   add_index "counties", ["location_id"], :name => "fk_loc_id"
   add_index "counties", ["name"], :name => "name"
   add_index "counties", ["state_fipsid"], :name => "state_fipsid"
-
-  create_table "daily_numbers", :force => true do |t|
-    t.integer  "datasource_id"
-    t.string   "datasource_type", :limit => 50
-    t.date     "datadate"
-    t.string   "datatype",        :limit => 50
-    t.integer  "total"
-    t.integer  "thatday"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "additionaldata"
-  end
-
-  add_index "daily_numbers", ["datasource_id", "datasource_type", "datadate", "datatype"], :name => "dn_index"
 
   create_table "db_files", :force => true do |t|
     t.binary "data", :limit => 2147483647
