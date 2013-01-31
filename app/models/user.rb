@@ -1284,7 +1284,7 @@ class User < Account
     rescue StandardError => e
       raw_result = e.response
     end
-    result = ActiveSupport::JSON.decode(raw_result)
+    result = ActiveSupport::JSON.decode(raw_result.gsub(/'/,"\""))
     if(result['success'])
       if(!self.additionaldata.blank?)
         self.additionaldata = self.additionaldata.merge({:vouch_results => {:success => true, :request_id => result['question_id']}})
