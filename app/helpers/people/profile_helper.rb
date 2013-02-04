@@ -12,19 +12,8 @@ module People::ProfileHelper
     fields_for("socialnetworks[#{prefix}][]", social_network, &block)
   end
   
-  def fields_for_user_email(user_email, &block)
-    prefix = user_email.new_record? ? 'new' : 'existing'
-    fields_for("useremails[#{prefix}][]", user_email, &block)
-  end
-  
   def add_socialnetwork_link(linktext,networkname) 
     link_to_remote(linktext, {:url => {:action => :xhr_newsocialnetwork, :networkname => networkname}, :method => :post}, :title => "#{linktext} Network: #{networkname}")
-  end
-
-  def add_otheremail_link(linktext) 
-    link_to_function linktext do |page| 
-      page.insert_html :bottom, :useremails, :partial => 'user_email', :locals => {:user_email => UserEmail.new }
-    end
   end
     
   def accounturl_link(accounturl)

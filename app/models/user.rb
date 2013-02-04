@@ -48,7 +48,6 @@ class User < Account
   belongs_to :county
 
   has_many :social_networks, :dependent => :destroy
-  has_many :user_emails, :dependent => :destroy
 
   has_many :communityconnections, :dependent => :destroy
   has_many :communities, :through => :communityconnections, :select => "communityconnections.connectiontype as connectiontype, communityconnections.sendnotifications as sendnotifications, communities.*", :order => "communities.name"
@@ -816,39 +815,6 @@ class User < Account
    self.replace_tags(taglist,self.id,Tagging::USER)
   end
   
-  def modify_user_emails(otheruseremails)
-   if(otheruseremails.nil?)
-    return user_emails.delete_all
-   end
-   
-   if(!otheruseremails['new'].nil? and !otheruseremails['new'].empty?)
-    otheruseremails['new'].each do |attributes|
-      user_emails.build(attributes)
-    end
-   end
-   
-   if(!otheruseremails['existing'].nil? and !otheruseremails['existing'].empty?)
-    existingnetworks = otheruseremails['existing']
-    user_emails.reject(&:new_record?).each do |user_email|
-      attributes = existingnetworks[user_email.id.to_s]
-      if attributes
-       user_email.attributes = attributes
-      else
-       user_emails.delete(user_email)
-      end
-    end
-   end
-
-   user_emails.each do |user_email|
-    begin
-      user_email.save()
-    rescue ActiveRecord::StatementInvalid => e
-      raise unless e.to_s =~ /duplicate/i
-    end
-   end
-   
-  end
-  
   def modify_social_networks(socialnetworks)
    if(socialnetworks.nil?)
     return social_networks.delete_all
@@ -1292,45 +1258,7 @@ class User < Account
     end
    end
   
-   # faq user model...
-   def get_preference_by_name(name)
-    user_preferences.find_by_name(name)
-   end
-
-   def publisher?
-    pref = user_preferences.find_by_name(UserPreference::SHOW_PUBLISHING_CONTROLS)
-    pref && pref.setting == "1"
-   end
-
-   def get_counties_in_location(location)
-    if intersect_counties = expertise_counties_in_location(location)
-      return "(#{intersect_counties.map{|c| c.name}.join(', ')})"
-    else
-      return ""
-    end
-   end
-
-    def self.find_state_users(options={})
-       dateinterval = options[:dateinterval]
-
-        conditions = []      
-        if(!dateinterval.nil? )
-          conditions << User.build_date_condition({:dateinterval => dateinterval})
-        end
-  
-        if options[:county]
-          conditions << " county_id=#{options[:county]} "
-        else
-          if options[:location]
-               conditions << " location_id = #{options[:location].id} "
-          end
-        end
-       
-      @users=User.with_scope(:find => { :conditions => conditions.compact.join(' AND '), :limit => 100}) do
-        paginate(options[:numparm].to_sym, options[:args])
-      end
-    end
-    
+   
   def post_account_review_request
     if(self.vouched?)
       return true
@@ -1352,7 +1280,7 @@ class User < Account
     rescue StandardError => e
       raw_result = e.response
     end
-    result = ActiveSupport::JSON.decode(raw_result)
+    result = ActiveSupport::JSON.decode(raw_result.gsub(/'/,"\""))
     if(result['success'])
       if(!self.additionaldata.blank?)
         self.additionaldata = self.additionaldata.merge({:vouch_results => {:success => true, :request_id => result['question_id']}})

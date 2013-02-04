@@ -16,7 +16,6 @@ class AppConfig
 
     @@configtable.clear
     @@configtable['app_location'] = "localdev"
-    @@configtable['load_query_trace'] = false
     @@configtable['load_rails_footnotes'] = false
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
      
@@ -135,10 +134,7 @@ class AppConfig
     
     @@configtable['cse_id'] = 'NotSet'
     @@configtable['cse_secret'] = 'NotSet'
-    
-    # Akismet spam blocker key
-    @@configtable['akismet_key'] = 'default'
-    
+      
 		# Google CSE ID 
 		@@configtable['old_goog_cse_key'] = '018217748441857184963:boqsgyytwwe'
 		@@configtable['goog_cse_key'] = '010978498346658208303:rljk-euizvq'
@@ -150,9 +146,6 @@ class AppConfig
     @@configtable['googleapps_account'] = 'NotSet'
     @@configtable['googleapps_secret'] = 'NotSet'
     @@configtable['googleapps_domain'] = 'apps.extension.org'
-    # Google Apps - AaE emailer
-    @@configtable['googleapps_aaemailer'] = 'NotSet'
-    @@configtable['googleapps_aaemailer_secret'] = 'NotSet'
 
     @@configtable['bronto_api_key'] = 'NotSet'
     @@configtable['bronto_username'] = 'NotSet'

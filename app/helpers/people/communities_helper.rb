@@ -10,8 +10,6 @@ module People::CommunitiesHelper
   def community_class(community)
     if community.is_institution? 
       "institution"
-    elsif community.is_widget?
-      "widget"
     else 
       "community"
     end

@@ -48,13 +48,7 @@ class Notification < ActiveRecord::Base
     
   ## Other User actions
   # TODO: new account created?
-  
-  ##########################################
-  #  Learn Notifications
-  
-  LEARN_UPCOMING_SESSION = 2100
-  
-  
+    
   # method names for sending notificationmailer mailers for each notification
   MAILERMETHODS = {}
   MAILERMETHODS[COMMUNITY_USER_JOIN] = ['community_user']
@@ -82,7 +76,6 @@ class Notification < ActiveRecord::Base
   MAILERMETHODS[WELCOME] = ['welcome']    
   MAILERMETHODS[CONFIRM_EMAIL_CHANGE] = ['confirm_email_change']      
   MAILERMETHODS[CONFIRM_SIGNUP] = ['confirm_signup']    
-  MAILERMETHODS[LEARN_UPCOMING_SESSION] = ['learn_upcoming_session']   
 
   
   # TODO: add description labels that can get strings from the locale tabel describing each 

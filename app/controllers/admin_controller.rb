@@ -126,6 +126,12 @@ class AdminController < ApplicationController
     @community.aae_group_id = params['community']['aae_group_id']
 
   
+    # sanity check tags
+    if(params['community']['content_tag_names'].blank?)
+      flash[:notice] = "You must specify a resource area tag for publishing communities"
+      return(render(:action => "edit_public_community"))
+    end
+
     # sanity check tag names
     this_community_content_tags = @community.tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT)
     other_community_tags = Tag.community_content_tags({:all => true},true) - this_community_content_tags

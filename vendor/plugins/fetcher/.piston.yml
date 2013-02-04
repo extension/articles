@@ -1,8 +1,0 @@
---- 
-format: 1
-handler: 
-  commit: 9c0eb25293ef493e110de98735f9eefc3b03c3ff
-  branch: master
-lock: false
-repository_class: Piston::Git::Repository
-repository_url: http://github.com/look/fetcher.git
