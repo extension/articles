@@ -36,7 +36,10 @@ class AskImporter < Thor
           #{ask_database}.users.retired=#{people_database}.accounts.retired,
           #{ask_database}.users.is_admin=#{people_database}.accounts.is_admin,
           #{ask_database}.users.email=#{people_database}.accounts.email,
-          #{ask_database}.users.time_zone = #{people_database}.accounts.time_zone
+          #{ask_database}.users.time_zone = #{people_database}.accounts.time_zone,
+          #{ask_database}.users.location_id = #{people_database}.accounts.location_id,
+          #{ask_database}.users.county_id = #{people_database}.accounts.county_id,
+          #{ask_database}.users.title = #{people_database}.accounts.title
       WHERE #{ask_database}.users.darmok_id = #{people_database}.accounts.id 
       AND #{ask_database}.users.kind = 'User'
       AND #{people_database}.accounts.vouched=1
@@ -57,7 +60,10 @@ class AskImporter < Thor
           #{ask_database}.users.retired=#{people_database}.accounts.retired,
           #{ask_database}.users.is_admin=#{people_database}.accounts.is_admin,
           #{ask_database}.users.email=#{people_database}.accounts.email,
-          #{ask_database}.users.time_zone = #{people_database}.accounts.time_zone
+          #{ask_database}.users.time_zone = #{people_database}.accounts.time_zone,
+          #{ask_database}.users.location_id = #{people_database}.accounts.location_id,
+          #{ask_database}.users.county_id = #{people_database}.accounts.county_id,
+          #{ask_database}.users.title = #{people_database}.accounts.title
       WHERE #{ask_database}.users.email = #{people_database}.accounts.email
       AND #{ask_database}.users.kind = 'PublicUser' 
       AND #{people_database}.accounts.vouched=1
@@ -68,7 +74,7 @@ class AskImporter < Thor
     def people_account_insert_query(ask_database = 'prod_aae')
       people_database = get_people_database
       query = <<-END_SQL.gsub(/\s+/, " ").strip
-      INSERT INTO #{ask_database}.users (login,first_name,last_name,kind,email, time_zone,darmok_id,is_admin,created_at, updated_at) 
+      INSERT INTO #{ask_database}.users (login, first_name, last_name, kind, email, time_zone, darmok_id, is_admin, location_id, county_id, title, created_at, updated_at) 
       SELECT #{people_database}.accounts.login,
              #{people_database}.accounts.first_name,
              #{people_database}.accounts.last_name, 
@@ -77,6 +83,9 @@ class AskImporter < Thor
              #{people_database}.accounts.time_zone, 
              #{people_database}.accounts.id, 
              #{people_database}.accounts.is_admin, 
+             #{people_database}.accounts.location_id,
+             #{people_database}.accounts.county_id,
+             #{people_database}.accounts.title,
              #{people_database}.accounts.created_at, 
              NOW()
       FROM #{people_database}.accounts LEFT JOIN #{ask_database}.users ON #{people_database}.accounts.id = #{ask_database}.users.darmok_id
