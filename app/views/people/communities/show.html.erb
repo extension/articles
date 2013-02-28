@@ -38,7 +38,7 @@
       <h2>
         <%= @community.viewlabel.capitalize -%> Mailing Lists
         <%- if (@am_i_leader or admin_mode?) -%>
-          <small><%= link_to 'edit', editlists_people_community_path(@community) -%></small>
+          <small><%= link_to 'details', editlists_people_community_path(@community) -%></small>
         <%- end -%>
       </h2>
       <div id="communitymailinglists" class="dashmodule">
