@@ -35,34 +35,31 @@
 	    <p><%= change_community_connection_link('connectiontocommunity',@community,'I want to join this community','join') %></p>
 	    <p class="leave"><%= change_community_connection_link('connectiontocommunity',@community,'I am no longer interested in this community','nointerest',{:class => "delete"}) %></p>
 	    </div>
-		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :interest => false, :nointerest => true}}) %>
+		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :nointerest => true}}) %>
 
 <% elsif @currentuser_communities['nointerest'].include?(@community) %>
 
 	    <h3>You have indicated that you are not interested in this community.<a class="tooltip-help" href="#" id="source_trigger">?</a> <span id="memberoptions"><%= link_to_function 'membership options', "Effect.toggle('connection_options','blind', { duration: .4});" %></span></h3>
 	    <div id="connection_options" style="display:none;">
 	    <p><%= change_community_connection_link('connectiontocommunity',@community,'I want to join this community','join') %></p>
-		<p><%= change_community_connection_link('connectiontocommunity',@community,'I am interested in this community','interest') %></p>
 		</div>
-		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :interest => true, :nointerest => false}}) %>
+		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :nointerest => false}}) %>
 
 <% elsif @community.memberfilter == Community::OPEN %>
 
         <h3>Membership Options <a class="tooltip-help" href="#" id="source_trigger">?</a></h3>
         <div id="connection_options">
 	    <p><%= change_community_connection_link('connectiontocommunity',@community,"Join #{@community.viewlabel.capitalize}",'join') %></p>
-		<p><%= change_community_connection_link('connectiontocommunity',@community,'I am interested in this community','interest') %></p>
 		</div>
-		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :interest => true, :nointerest => false}}) %>
+		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :nointerest => false}}) %>
 
 <% elsif @community.memberfilter == Community::MODERATED %>
 
         <h3>Membership Options <a class="tooltip-help" href="#" id="source_trigger">?</a></h3>
         <div id="connection_options" >
 	    <p><%= change_community_connection_link('connectiontocommunity',@community,'I want to join this community','join') %></p>
-		<p><%= change_community_connection_link('connectiontocommunity',@community,'I am interested in this community','interest') %></p>
 		</div>
-		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :interest => true, :nointerest => false}}) %>
+		<%= render(:partial => 'connection_tooltips', :locals => {:showtip => {:wantstojoin => true, :nointerest => false}}) %>
 <% elsif @community.memberfilter == Community::INVITATIONONLY %>
     <h3>Create a connection with this Community</h3>
     <p>Contact a <%= link_to('community leader', userlist_people_community_url(@community.id, :connectiontype => 'leaders')) %> to find out more about how to make a connection with this community</p>
