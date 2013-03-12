@@ -1,5 +1,6 @@
 var globalNav = '<style media="screen" type="text/css">\
 body {margin:0;}\
+.extension_global_nav li {font-size: 1em;}\
 .extension_global_nav {font: normal 13px/20px \'Helvetica Neue\', Helvetica, Arial, sans-serif;}\
 .extension_global_nav {text-align: center; margin:0;padding:.25em 0 .35em; background: #000;}\
 .extension_global_nav .group {display:inline;}\
