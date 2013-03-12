@@ -316,3 +316,6 @@ h1 a:visited {color: #7b000a;}
 .action {text-align:center;}
 .deleted .action span {background:#ffd6d6; color:#cb0000; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; padding:2px 6px;}
 .added {}
+#cse input {font-size:1.3em;padding:4px;outline:#aaa solid 1px !important;}
+#cse input:focus {outline:#2C3984 1px solid !important;}
+#cse .gsc-search-button input {font-size:1em; padding:.5em 1em !important; height:2.5em; line-height:1.5em;display:block; outline:none !important;}
