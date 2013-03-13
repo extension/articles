@@ -18,11 +18,6 @@
 	
 	<title><%= @title_tag %></title>
 	<meta name="description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:image" content="<%= image_path("#{root_url}images/extension_logo.jpg") %>">
-  <meta name="twitter:title" content="<%= (@title_tag) ? @title_tag : "eXtension - Objective. Research-based. Credible." %>">
-  <meta property="twitter:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
-	
 	
 	<% if @mobile_device %>
         <meta name = "viewport" content = "width = device-width, user-scalable = yes">
