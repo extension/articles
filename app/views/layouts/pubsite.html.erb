@@ -22,7 +22,9 @@
   <meta property="og:type" content="<%= (@page_type == "article") ? "article" : "website" %>"/>
   <meta property="og:title" content="<%= (@title_tag) ? @title_tag : "eXtension - Objective. Research-based. Credible." %>"/>
   <meta property="og:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
-  <meta property="og:image" content="<%= image_path("#{root_url}images/extension_logo.jpg") %>"/>
+  <% if @page_type != "article" %>
+    <meta property="og:image" content="<%= image_path("#{root_url}images/extension_logo.jpg") %>"/>
+  <% end %>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:image" content="<%= image_path("#{root_url}images/extension_logo.jpg") %>">
   <meta name="twitter:title" content="<%= (@title_tag) ? @title_tag : "eXtension - Objective. Research-based. Credible." %>">
@@ -312,7 +314,7 @@
     <div id="footer_wrapper">
 		<div id="footer_inner_wrapper">
             <div id="footer">
-                <p class="footerabout"><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is a critical part of the Cooperative Extension System and an educational partner with 75 land-grant universities in the United States.</p>
+                <p class="footerabout"><span id="extension_icon_256"><img id="extension_icon_256" src="/images/extension_icon_256.png" width="80" height="80" alt="eXtension: more mind reach" /></span><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is a critical part of the Cooperative Extension System and an educational partner with 75 land-grant universities in the United States.</p>
                 <p class="copyright">&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
                 <ul>
                     <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
