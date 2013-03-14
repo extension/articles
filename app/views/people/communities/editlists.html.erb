@@ -3,16 +3,15 @@
 
 <div id="mailinglists_faq">
     <h3>About Mailing Lists</h3>
-     <p>Every Community can have up to three mailing lists:</p>
+     <p>Two mailing lists are available to each community:</p>
 		<p>• A mailing list for the <%= link_to('Leaders', userlist_people_community_url(@community.id, :connectiontype => 'leaders'))%> in the community</p>
 		<p>• A mailing list for those that have a <%= link_to('"Joined"', userlist_people_community_url(@community.id, :connectiontype => 'joined'))%> (leaders+members) connection with the community</p>
-		<p>• A mailing list for those that have a <%= link_to('"Interested"', userlist_people_community_url(@community.id, :connectiontype => 'interested'))%> (leaders+wants to join+interest) connection with the community</p>
-    <p>As colleagues create or delete connections with the community they will automatically be added or removed from the appropriate mailing lists associated with the community.</p>
+    <p>As colleagues create or delete connections with the community they will automatically be added or removed from the appropriate mailing lists associated with the community. These changes happen every hour.</p>
 	<p>Lists are hosted on the mailing lists server "lists.extension.org" - subscribers can post to the list by sendmail email to <em>list-name</em>@lists.extension.org</p>
+  <h4>Creating a Mailing List</h4>
+  <p>If you'd like a mailing list created for the leaders or the leaders+members of your community - <a href='https://ask.extension.org/groups/1228/ask'>contact our eXtension Engineering team</a> to have the list created.</p>
 	<h4>Please Note:  Naming Lists</h4>
-	<p>Once created, lists <strong>cannot</strong> be renamed.  If you wish to rename a list, please <%= link_to("contact us", :controller => '/people/help', :action => :index) %> to delete the old list so that you can create a new one.   The posting history and any archives for the list will be lost.</p>
-	<h4>Please Note:  List Creation Delay</h4>
-	<p>The actual mailing list creation is a scheduled process that currently runs once an hour.  It may take up to an hour before you can send email to the list.</p>
+	<p>Once created, lists <strong>cannot</strong> be renamed.</p>
 </div>
 
 <h3>Leaders List</h3>
@@ -22,9 +21,5 @@
 <h3>Joined List</h3>
 <div id="community_<%= @community.id %>_joined_list">
 <%= render(:partial => 'managelist', :locals => { :listtype => 'joined', :community => @community, :listname => '', :errors => nil }) %>
-</div>
-<h3>Interested List</h3>
-<div id="community_<%= @community.id %>_interested_list">
-<%= render(:partial => 'managelist', :locals => { :listtype => 'interested', :community => @community, :listname => '', :errors => nil }) %>
 </div>
 
