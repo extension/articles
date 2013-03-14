@@ -1,5 +1,7 @@
 <% @in_this_resource_area = true %>
 <% @resource_area_feeds = true %>
+<% @page_meta_description = "#{strip_tags(@page.content.gsub(/[[:space:]]/, ' ')).strip.truncate(140, :separator => ' ')}" %>
+<% @page_type = "article" %>
 
 <%- if(!@page_communities.blank?) -%>
   <p id="relatedresources">

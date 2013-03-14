@@ -27,10 +27,8 @@
     <% end %>
     
     <% if !@mobile_device %>
-	<div id="pageBanners">
-		<%= render(:partial => 'people/partial/pageBanners', :locals => {:adminmode => admin_mode?}) %>
-	</div>
-	<% end %>
+	    <script src="https://www.extension.org/javascripts/global_nav_internal.js" type="text/javascript"></script>
+	  <% end %>
 	
 	<%- if(admin_mode?) -%>
 	  <div id="adminnotice">
@@ -58,11 +56,9 @@
 			<br class="clear" />
 		</div>
 		<% if @mobile_device %>
-		<%= render(:partial => 'people/partial/userinfo') %>
-    	<div id="pageBanners">
-    		<%= render(:partial => 'people/partial/pageBanners', :locals => {:adminmode => admin_mode?}) %>
-    	</div>
-    	<% end %>
+		  <%= render(:partial => 'people/partial/userinfo') %>
+    	<script src="https://www.extension.org/javascripts/global_nav_internal.js" type="text/javascript"></script>
+    <% end %>
     	
     	
 		

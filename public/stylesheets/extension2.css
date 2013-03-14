@@ -980,3 +980,7 @@ blockquote {padding:2em 2em 1em; font-size:1.1em; background:#ebf2f8;margin:1.5e
 #article.contactus p {margin:0 0 1.5em;}
 
 .footerabout {padding-bottom:2em;}
+ul.extension_global_nav {background:#53586d !important;}
+ul.extension_global_nav a {color:#ccc !important;}
+#extension_icon_256 {float:left; margin-right:1em;}
+.icon_80, .icon_80 img {width:80px; height:80px;}
