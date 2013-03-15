@@ -109,13 +109,15 @@
       <%- end -%>
 
       <!-- Homage -->
-      <%- if @homage_count > 1 -%>
+      <%- if @community.homage.blank? && @homage_count > 0 -%>
+        <li class="missing">No Published Article categorized as "homage" chosen for the homage view.<span>(G)</span></li>
+      <%- elsif @homage_count > 1 -%>
          <li class="missing"><%= link_to("<span>#{@homage_count}</span> Published Articles categorized as \"homage\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'homage', :content_types => 'articles')) %> <span>(G)</span>
              <br />
          (<%= link_to("#{@community.homage.title} is currently chosen for the homage view", @community.homage.id_and_link) %>)
          </li>
       <%- elsif @homage_count == 1 -%>
-         <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "homage"', @community.homage.id_and_link) %> <span>(G)</span></li>
+         <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "homage"', @community.homage.id_and_link) %> <span>(G)</span></li>   
       <%- else -%>
          <li class="missing">No Published Article categorized as "homage" <span>(G)</span></li>
       <%- end -%>
