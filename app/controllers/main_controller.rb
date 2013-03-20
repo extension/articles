@@ -34,6 +34,9 @@ class MainController < ApplicationController
       
     if(!@community.nil?)
       return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      # check for CategoryTagRedirect
+    elsif(redirect = CategoryTagRedirect.where("term = ?",params[:content_tag].downcase).first)
+      return redirect_to(redirect.target_url, :status=>301)  
     elsif(!canonicalized_category?(params[:content_tag]))
       return redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end  
@@ -72,7 +75,12 @@ class MainController < ApplicationController
     @published_content = true  # index CoP landing pages
     
     if(@community.nil?)
-      return redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      # check for CategoryTagRedirect
+      if(redirect = CategoryTagRedirect.where("term = ?",params[:content_tag].downcase).first)
+        return redirect_to(redirect.target_url, :status=>301)
+      else
+        return redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      end
     elsif(!canonicalized_category?(params[:content_tag]))
       return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
