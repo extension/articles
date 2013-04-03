@@ -198,6 +198,8 @@ class AdminController < ApplicationController
   def special_pages
   end  
   
+  def category_tag_redirects
+  end
     
   def reload_config
     AppConfig.load_config

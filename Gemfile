@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 source 'http://systems.extension.org/rubygems/'
 
-gem 'rails', '2.3.17'
+gem 'rails', '2.3.18'
 # rdoc - removes a warning
 gem 'rdoc'
 # database

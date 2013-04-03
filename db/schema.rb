@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130130013039) do
+ActiveRecord::Schema.define(:version => 20130320183324) do
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
@@ -195,6 +195,13 @@ ActiveRecord::Schema.define(:version => 20130130013039) do
   end
 
   add_index "cached_tags", ["tagcacheable_id", "tagcacheable_type", "owner_id", "tagging_kind"], :name => "signature"
+
+  create_table "category_tag_redirects", :force => true do |t|
+    t.string "term"
+    t.string "target_url"
+  end
+
+  add_index "category_tag_redirects", ["term"], :name => "name_ndx", :unique => true
 
   create_table "chat_accounts", :force => true do |t|
     t.integer  "user_id",    :default => 0, :null => false
