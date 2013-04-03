@@ -77,6 +77,12 @@ class MainController < ApplicationController
       return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
     
+    if(@community and @community.aae_group_id.present?)
+      @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
+    else
+      @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+    end
+    
     set_title(@community.public_name,@community.public_description)
     set_titletag("#{@community.public_name} - eXtension")
     @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)      
