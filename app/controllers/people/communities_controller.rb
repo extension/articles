@@ -204,7 +204,7 @@ class People::CommunitiesController < ApplicationController
     if(!params[:download].nil? and params[:download] == 'csv')
       @findoptions.merge!(:paginate => false)
       reportusers = User.filtered(@findoptions).ordered(@filteredparams.order).all
-      csvfilename =  @page_title.tr(' ','_').gsub('\W','').downcase
+      csvfilename =  @page_title.tr(' ','_').tr(',','').gsub('\W','').downcase
       return community_csvuserlist(reportusers,csvfilename,@community)
     else
       @userlist = User.filtered(@findoptions).ordered(@filteredparams.order).paginate(:all,:page => params[:page])
