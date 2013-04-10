@@ -1,0 +1,27 @@
+<% @page_title = "Category Tag redirects" %>
+<% @selected_tab = :admin %>
+
+<h2>Special Pages</h2>
+
+<p>The following category tags are redirected to another url, inside or outside of eXtension.</p>
+
+<table cellspacing="0" border="1">
+  <thead>
+    <tr>
+        <th scope="col">Tag</th>
+        <th scope="col">Target URL</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% CategoryTagRedirect.order('term').all.each do |redirect| %>
+    <tr>
+      <td><%= redirect.term %></td>
+      <td><a href="<%= redirect.target_url %>"><%= redirect.target_url %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to 'Admin Home', :action => 'index' %>
+</p>
