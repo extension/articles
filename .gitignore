@@ -1,30 +1,37 @@
-# /
-/tmp
-/mkmf.log
-.rvmrc
-.powrc
+# Ignore bundler config
+/.bundle
 
-# /config/
-/config/database.yml
-/config/micodaloco.yml
-/config/appconfig.yml
-/config/devserver.yml
-/config/newrelic.yml
-# /log/
+# environment files
+/.rvmrc
+/.powenv
+/.powrc
+/.tm_properties
+/.ruby-gemset
+/.ruby-version
+
+# Ignore all logfiles and tempfiles.
 /log/*.log
 /log/*.pid
-# /public/
+/tmp
+
+# public dir
 /public/system
 /public/sitemaps/*.xml
-# /db/
-# /data/
-/data/*
-# /doc
+
+# configuration
+/config/database.yml
+/config/settings.local.yml
+/config/appconfig.yml
+/config/newrelic.yml
+
+# capatross
+/config/capatross.local.yml
+/capatross_logs
+
+# legacy yarddocs
 /.yardoc
 /doc/*
 
-# added by capatross generate_config
-/config/capatross.local.yml
-
-# added by capatross generate_config
-/capatross_logs
+# /data/
+# (jayoung) no idea why this is ignored 
+/data/*
