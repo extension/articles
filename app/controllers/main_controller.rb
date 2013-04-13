@@ -168,13 +168,13 @@ class MainController < ApplicationController
         end
         return
       else
-        public_institutions_for_location = location.communities.institutions.public_list
-        if(!public_institutions_for_location.blank?)
-          if(public_institutions_for_location.length == 1)
-            @personal[:institution] = public_institutions_for_location[0]
+        branding_institutions_for_location = location.branding_institutions
+        if(!branding_institutions_for_location.blank?)
+          if(branding_institutions_for_location.length == 1)
+            @personal[:institution] = branding_institutions_for_location[0]
             @personal[:location] = location
             session[:location_and_county] = {:location_id => location.id}
-            session[:institution_community_id] = @personal[:institution].id.to_s
+            session[:branding_institution_id] = @personal[:institution].id.to_s
             session[:multistate] = nil
             render(:update) do |page| 
               page.replace_html "logo", :partial =>  "shared/logo"
@@ -182,7 +182,7 @@ class MainController < ApplicationController
             return
           else
             render(:update) do |page| 
-              page.replace_html "logo", :partial => "shared/multistate", :locals => {:institutions => public_institutions_for_location}
+              page.replace_html "logo", :partial => "shared/multistate", :locals => {:institutions => branding_institutions_for_location}
             end
             return
           end
@@ -198,8 +198,8 @@ class MainController < ApplicationController
   end
   
   def set_institution
-    if(institution = Community.find_by_id(params[:institution_id]))
-      session[:institution_community_id] = institution.id
+    if(institution = BrandingInstitution.find_by_id(params[:institution_id]))
+      session[:branding_institution_id] = institution.id
       session[:location_and_county] = {:location_id => institution.location.id}
       session[:multistate] = nil
     end

@@ -187,29 +187,29 @@ class ApplicationController < ActionController::Base
     end
     
         
-    if(!session[:institution_community_id].nil?)
-      search_id = session[:institution_community_id]
+    if(!session[:branding_institution_id].nil?)
+      search_id = session[:branding_institution_id]
       begin
-        personalized_institution = Community.find_by_entrytype_and_id(Community::INSTITUTION,search_id)        
+        personalized_institution = BrandingInstitution.find_by_id(search_id)        
       rescue
-        session[:institution_community_id] = nil
+        session[:branding_institution_id] = nil
       end
       @personal[:institution] = personalized_institution if(!personalized_institution.nil?)
       if (personalized_institution and @personal[:location].nil?)
         @personal[:location] = @personal[:institution].location
       end
-    elsif(refering_institution = Community.find_institution_by_referer(request.referer))
-      session[:institution_community_id] = refering_institution.id.to_s
+    elsif(refering_institution = BrandingInstitution.find_by_referer(request.referer))
+      session[:branding_institution_id] = refering_institution.id.to_s
       @personal[:institution] = refering_institution
     elsif(@personal[:location])
-      public_institutions_for_location = @personal[:location].communities.institutions.public_list
-      if(!public_institutions_for_location.blank?)
-        if(public_institutions_for_location.size == 1)
-          @personal[:institution] = public_institutions_for_location[0]
-          session[:institution_community_id] = @personal[:institution].id.to_s
+      branding_institutions_for_location = @personal[:location].branding_institutions
+      if(!branding_institutions_for_location.blank?)
+        if(branding_institutions_for_location.size == 1)
+          @personal[:institution] = branding_institutions_for_location[0]
+          session[:branding_institution_id] = @personal[:institution].id.to_s
           session[:multistate] = nil
         else
-          @public_institutions_for_location = public_institutions_for_location
+          @branding_institutions_for_location = branding_institutions_for_location
           session[:multistate] =  @personal[:location].abbreviation
         end
       end

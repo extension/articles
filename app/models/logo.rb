@@ -10,6 +10,7 @@ class Logo < ActiveRecord::Base
   # logotypes
   SPONSOR = 1
   COMMUNITY = 2
+  INSTITUTION = 3
   
   named_scope :sponsorlogos, :conditions => {:logotype => SPONSOR} 
   
