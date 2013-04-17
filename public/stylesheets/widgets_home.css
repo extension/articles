@@ -49,9 +49,6 @@ a {text-decoration:none;}
 a .section li, a .section p {margin-bottom:1em; font-size:15px; }
 
 .section a {color:#0047ae;}
-.section.aae {width:220px; margin: 0 20px 40px 40px;}
-.section.aae ul {padding:0 20px; width:150px;}
-.section.aae li {list-style:disc; margin-bottom:1em;}
 
 .image {text-align:center;}
 .go_button {
@@ -115,15 +112,6 @@ ol li {margin: 0 0 .75em;padding:0;}
 
 #subnav #tagline {font-size:2em; color:#3d76ba;}
 .signin, .usericon {position:absolute; top:0; right:20px;}
-
-#aae_nav {margin-top:0;width:200px;float:right;}
-#aae_nav {list-style:none;margin:0;padding:0;clear:both;}
-#aae_nav li {margin:0;}
-#aae_nav li a {line-height: 1.2em;display:block;font-size:1.2em;padding: 1em 20px;width:160px;}
-#aae_nav li a:link,
-#aae_nav li a:visited {color:#fff; text-decoration:none;background: #5294cc url(/images/ask/side_nav.png) repeat-y -200px bottom;}
-#aae_nav li a:hover {background: #5294cc url(/images/ask/side_nav.png) repeat-y -400px bottom ;}
-#aae_nav li.selected a {color:#fff; text-decoration:none;background: #5294cc url(/images/ask/side_nav.png) repeat-y 0 0;}
 
 #nav {
     float: left;
@@ -192,22 +180,6 @@ p.inline label input {width:auto;}
 .detailpage  h2 {margin:0; float:left; width:50%;}
 #widget_wrapper {background:#fff; padding:20px;}
 
-#ask-to-aae {margin:0 0 3em; background:#fff; text-align:center;padding:1em 0 2em;border:1px solid #888; width:510px;}
-#ask-to-aae ol {
-    float:left;margin:0 0 1.5em;padding:0;
-}
-#ask-to-aae li{
-    text-align:left;
-    float:left;width:148px;margin:0 8px 0 12px;padding:0 0 0 0;
-    list-style-position:inside;
-    color:#ea7e1d;
-    line-height:1.1em;
-    font-size:1.5em;
-}
-#ask-to-aae li.last {
-    margin:0 8px 0 20px;width:140px;
-}
-#ask-to-aae h4 {font-weight:normal;font-size:1.9em;color:#333;}
 #errorExplanation {color:red;}
 #errorExplanation h2 {color:red;margin:0 0 .5em;}
 #errorExplanation p {margin:0 0 .5em;}
