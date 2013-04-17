@@ -48,15 +48,35 @@ class AdminController < ApplicationController
     @approved_communities =  Community.approved.all(:order => 'name')
     @other_public_communities = Community.usercontributed.public_list.all(:order => 'name')
   end
+
+  def manage_institution_logos
+    set_titletag("Manage Institution Logos - Pubsite Admin")
+    @institutionslist = BrandingInstitution.all(:order => 'name')
+  end  
   
   def manage_community_logos
     set_titletag("Manage Community Logos - Pubsite Admin")
-    if(!params[:communitytype].nil? and params[:communitytype] == 'institutions')  
-      @communitieslist = Community.institutions.all(:order => 'name')
-    else
-      @communitieslist = Community.approved.all(:order => 'name') + Community.usercontributed.public_list.all(:order => 'name')
-    end
+    @communitieslist = Community.approved.all(:order => 'name') + Community.usercontributed.public_list.all(:order => 'name')
   end
+
+  def edit_institution_logo
+    @institution = BrandingInstitution.find_by_id(params[:id])
+    if(@institution.nil?)
+      flash[:error] = 'Invalid institution'
+      redirect_to :action => :index
+    end
+    @logo = @institution.logo
+    if(request.post?)
+      @newlogo = Logo.new(params[:logo])
+      @newlogo.logotype = Logo::INSTITUTION
+      if @newlogo.save
+        @logo.destroy if !(@logo.nil?)
+        @institution.update_attribute(:logo_id, @newlogo.id)
+        flash[:notice] = 'Logo was successfully uploaded.'
+        redirect_to(:action => 'manage_institution_logos')
+      end
+    end
+  end  
   
   def edit_community_logo
     @community = Community.find_by_id(params[:id])
@@ -72,7 +92,7 @@ class AdminController < ApplicationController
         @logo.destroy if !(@logo.nil?)
         @community.update_attribute(:logo_id, @newlogo.id)
         flash[:notice] = 'Logo was successfully uploaded.'
-        redirect_to(:action => 'manage_community_logos', :communitytype => (@community.is_institution? ? 'institutions' : 'approved'))
+        redirect_to(:action => 'manage_community_logos')
       end
     end
   end
@@ -85,12 +105,23 @@ class AdminController < ApplicationController
     end
     @community.logo.destroy
     flash[:notice] = 'Logo was successfully removed.'
-    redirect_to(:action => 'manage_community_logos', :communitytype => (@community.is_institution? ? 'institutions' : 'approved'))
+    redirect_to(:action => 'manage_community_logos')
   end
   
+  def delete_institution_logo
+    @institution = BrandingInstitution.find_by_id(params[:id])
+    if(@institution.nil?)
+      flash[:error] = 'Invalid institution'
+      redirect_to :action => :index
+    end
+    @institution.logo.destroy
+    flash[:notice] = 'Logo was successfully removed.'
+    redirect_to(:action => 'manage_institution_logos')
+  end
+
   def manage_institutions
     set_titletag("Manage Institutions - Pubsite Admin")    
-    @landgrant_institutions =  Community.institutions.all(:include => :location, :order => 'locations.abbreviation')
+    @landgrant_institutions =  BrandingInstitution.all(:include => :location, :order => 'locations.abbreviation')
   end
     
   def manage_locations_office_links
@@ -175,7 +206,7 @@ class AdminController < ApplicationController
   end
   
   def update_public_institution
-    @institution =  Community.find(params['id'])
+    @institution =  BrandingInstitution.find(params['id'])
     @institution.referer_domain = params['institution']['referer_domain']
     @institution.public_uri = params['institution']['public_uri']
 
@@ -192,7 +223,7 @@ class AdminController < ApplicationController
   def edit_public_institution
     set_title('Edit Institution Public Options')
     set_titletag("Edit Institution - Pubsite Admin")
-    @institution = Community.find(params[:id])
+    @institution = BrandingInstitution.find(params[:id])
   end
   
   def show_config

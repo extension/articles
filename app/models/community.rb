@@ -692,26 +692,7 @@ class Community < ActiveRecord::Base
     
     find_by_sql(sql)
   end
-  
-  # TODO: this function is a little silly no?
-  def self.find_institution_by_referer(referer)
-    return nil unless referer
-    begin
-      uri = URI.parse(referer)
-    rescue URI::InvalidURIError => e
-      nil
-    end
-    return nil unless uri.kind_of? URI::HTTP
-    return nil unless uri.host
-    return nil if uri.host.empty?
-    referer_domain = uri.host.split('.').slice(-2, 2).join(".") rescue nil
-    # handle some exceptions
-    if(referer_domain)
-      return find(:first, :conditions => ["referer_domain = '#{referer_domain}' and entrytype = #{INSTITUTION}"])
-    else
-      return nil
-    end
-  end  
+
 
   def ask_an_expert_group_url
     if(self.aae_group_id.blank?)

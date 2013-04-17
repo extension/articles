@@ -24,6 +24,7 @@ class Location < ActiveRecord::Base
   has_many :users
   has_many :counties
   has_many :communities
+  has_many :branding_institutions
   
   named_scope :filtered, lambda {|options| userfilter_conditions(options)}
   named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}

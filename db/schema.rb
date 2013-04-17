@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130320183324) do
+ActiveRecord::Schema.define(:version => 20130413171028) do
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
@@ -138,6 +138,21 @@ ActiveRecord::Schema.define(:version => 20130320183324) do
 
   add_index "api_keys", ["keyvalue"], :name => "index_api_keys_on_keyvalue", :unique => true
   add_index "api_keys", ["user_id", "name"], :name => "index_api_keys_on_user_id_and_name", :unique => true
+
+  create_table "branding_institutions", :force => true do |t|
+    t.string   "name",                                          :null => false
+    t.integer  "location_id",                    :default => 0
+    t.string   "public_uri"
+    t.string   "referer_domain"
+    t.string   "institution_code", :limit => 10
+    t.integer  "logo_id",                        :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "branding_institutions", ["location_id"], :name => "location_ndx"
+  add_index "branding_institutions", ["name"], :name => "name_ndx", :unique => true
+  add_index "branding_institutions", ["referer_domain"], :name => "referer_ndx"
 
   create_table "bronto_deliveries", :force => true do |t|
     t.string   "bronto_message_id", :limit => 40, :default => "", :null => false

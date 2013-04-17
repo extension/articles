@@ -7,6 +7,13 @@
     <% form_tag( {:action => 'update_public_institution', :id => @institution.id}) do %>
         <fieldset class="stacked">
             <h3>Edit details</h3>
+
+        <p>
+            <label>Name</label>
+            <%= text_field_tag 'institution[name]', @institution.name %>
+            <span class="instructions">Institution Name.</span>
+        </p>
+
         <p>
             <label>Referer Domain</label>
             <%= text_field_tag 'institution[referer_domain]', @institution.referer_domain %>
