@@ -1,2 +1,0 @@
-page.replace_html "communitylist_row_#{@community.id}", :partial => 'manage_cc_row', :locals => { :community => @community, :showuser => @showuser, :connectaction => @connectaction }
-page.visual_effect :highlight, "communitylist_row_#{@community.id}"

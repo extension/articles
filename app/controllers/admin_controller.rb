@@ -5,10 +5,13 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 class AdminController < ApplicationController
-  before_filter :admin_required
-  before_filter :check_purgatory
+  # TODO: replace with new account system
+  # before_filter :admin_required
+  # before_filter :check_purgatory
+  # before_filter :sudo_required, :only => [:reload_config]
+
   before_filter :turn_off_right_column
-  before_filter :sudo_required, :only => [:reload_config]
+
   
   layout 'pubsite'
   

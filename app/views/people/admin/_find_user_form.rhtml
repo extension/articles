@@ -1,9 +1,0 @@
-<% form_tag(:action=> "finduser") do %>
-    <fieldset class="search">
-        <p>
-            <label for="searchterm">search by eXtensionID, email address, first name, or last name:</label>
-	        <%= text_field_tag("searchterm","",:size => 25)%>
-            <%= submit_tag 'Find User' %>
-        </p>
-    </fieldset>
-<% end %>

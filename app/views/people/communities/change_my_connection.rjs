@@ -1,3 +1,0 @@
-page.replace_html "connectiontocommunity", :partial => '/people/communities/community_connection'
-page.replace_html "sharedtaglist", :partial => '/people/communities/shared_tag_list'
-page.replace_html "communitynumbers", :partial => '/people/communities/community_numbers'

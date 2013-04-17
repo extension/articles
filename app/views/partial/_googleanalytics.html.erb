@@ -12,7 +12,6 @@ end
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', '<%= @gaprofile %>']);
   _gaq.push(['_setDomainName', '.extension.org']);
-  _gaq.push(['_setCustomVar', 2, 'login', '<%= @analytics_vistor %>', 1]);
 <%- if !flash[:googleanalytics].nil? -%>
   _gaq.push(['_setCustomVar', 1, 'rat', '<%= flash[:googleanalyticsresourcearea] %>', 3]);
   _gaq.push(['_trackPageview', '<%= flash[:googleanalytics] %>']);

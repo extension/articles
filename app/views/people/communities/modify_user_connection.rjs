@@ -1,2 +1,0 @@
-page.replace_html "userlist_row_#{@showuser.id}", :partial => 'manage_cc_row', :locals => { :community => @community, :showuser => @showuser, :isleader => (@currentuser.is_community_leader?(@community) or admin_mode?), :connectaction => @connectaction }
-page.visual_effect :highlight, "userlist_row_#{@showuser.id}"

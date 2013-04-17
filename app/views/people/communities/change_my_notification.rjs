@@ -1,2 +1,0 @@
-page.replace_html "communitynotification", :partial => '/people/communities/community_notification'
-page.visual_effect :highlight, "communitynotificationhighlight"

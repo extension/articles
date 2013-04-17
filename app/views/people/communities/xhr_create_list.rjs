@@ -1,2 +1,0 @@
-page.replace_html "community_#{@community.id}_#{@listtype}_list", :partial => 'managelist', :locals => { :listtype => @listtype, :community => @community, :listname => @list_form_value, :errors => @errors }
-page.visual_effect :highlight, "community_#{@community.id}_#{@listtype}_list"
