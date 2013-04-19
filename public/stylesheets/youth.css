@@ -21,7 +21,9 @@ a:link {cursor: pointer; text-decoration: none; color: #336699}
 .navbar {height: 72px; background:none;overflow:visible;}
 
 .globalnav {float:left;width: 620px;padding:0;}
-.globalnav ul{height:72px; padding:0; float:left;width:680px;}
+.globalnav ul{height:72px; padding:0; float:left;width:680px;background:url(/images/layout/youth/youthsearchbkgrnd.gif) 0 0 repeat-x;}
+
+
 .globalnav ul li {float:left; padding:0; width:85px; border:0;}
 .globalnav ul li a {height:72px; display:block; text-indent:-5000px;overflow:auto;}
 
