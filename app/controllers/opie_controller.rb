@@ -291,7 +291,11 @@ EOS
   end
 
   def approved(trust_root)
-    if(OpieApproval.find(:first, :conditions => ['user_id = ? and trust_root = ?',@currentuser.id,trust_root]))
+    # auto-approve extension.org
+    if(trust_root =~ %r{extension\.org})
+      @currentuser.opie_approvals.create(:trust_root => trust_root)
+      return true  
+    elsif(OpieApproval.find(:first, :conditions => ['user_id = ? and trust_root = ?',@currentuser.id,trust_root]))
       return true
     else
       return false
