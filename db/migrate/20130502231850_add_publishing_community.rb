@@ -14,6 +14,7 @@ class AddPublishingCommunity < ActiveRecord::Migration
       t.string   "homage_name"
       t.integer  "homage_id"
       t.integer  "aae_group_id"
+      t.timestamps
     end
 
     PublishingCommunity.reset_column_information
