@@ -198,7 +198,7 @@ class Rebuild < Thor
     File.open("#{RAILS_ROOT}/public/sitemaps/sitemap_communities.xml", 'w') do |sitemap_communities|
       sitemap_communities.puts('<?xml version="1.0" encoding="UTF-8"?>')
       sitemap_communities.puts('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
-      Community.launched.each do |community|
+      PublishingCommunity.launched.each do |community|
         community.cached_content_tags.each do |name|
           sitemap_communities.puts('<url>')
           sitemap_communities.puts("<loc>http://www.extension.org/#{URI.encode(Tag.url_display_name(name))}</loc>")

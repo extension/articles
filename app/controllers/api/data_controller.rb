@@ -95,7 +95,7 @@ class Api::DataController < ApplicationController
     when 'launched'
       communitylist = Community.launched.all(:order => 'name')
     when 'publishing'
-      communitylist = Community.all(:conditions => ["entrytype = #{Community::APPROVED} or (entrytype = #{Community::USERCONTRIBUTED} and show_in_public_list = 1)"], :order => 'name')      
+      communitylist = Community.all(:conditions => ["entrytype = #{Community::APPROVED} or (entrytype = #{Community::USERCONTRIBUTED} and publishing_community = 1)"], :order => 'name')      
     else
       returnhash = {:success => false, :errormessage => 'Unrecognized communitytype.'}
       return render :text => returnhash.to_json

@@ -26,7 +26,7 @@ module DataHelper
       make_a_link = "\"/\" + this.value + \"/#{params[:action]}\""
     end
     
-    communities = Community.launched.ordered("public_name ASC")
+    communities = PublishingCommunity.launched.ordered("public_name ASC")
     txt = "<select name='community'"
     txt += " onchange='go_category(#{make_a_link})'"
     txt += ">"

@@ -84,13 +84,7 @@ class ActiveRecord::Base #:nodoc:
         self.update_attribute("#{cached_tag_field}",fulltextlist)
       end
       
-      # TODO: review this special case - communities get all tags cached for now, others get the one specified
-      if(self.is_a?(Community))
-        CachedTag.create_or_update(self,User.anyuser,Tagging::ALL)
-      else
-        CachedTag.create_or_update(self,ownerid,kind)
-      end
-        
+      CachedTag.create_or_update(self,ownerid,kind)
     end
     
     def tag_with_and_cache(list,ownerid=User.systemuserid,kind=self.default_tagging_kind,weight=1)

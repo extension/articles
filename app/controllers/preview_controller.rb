@@ -13,8 +13,7 @@ class PreviewController < ApplicationController
 
   def index
     @right_column = false
-    @approved_communities =  Community.approved.all(:order => 'name')
-    @other_public_communities = Community.usercontributed.public_list.all(:order => 'name')
+    @communities =  PublishingCommunity.all(:order => 'name')
   end
 
   def content_tag

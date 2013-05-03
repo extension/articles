@@ -93,7 +93,6 @@ GEM
       activeresource (= 2.3.18)
       activesupport (= 2.3.18)
       rake (>= 0.8.3)
-    rails-footnotes (3.6.7)
     rake (10.0.3)
     ratom (0.6.7)
       libxml-ruby (>= 1.1.2)
@@ -147,7 +146,6 @@ DEPENDENCIES
   powder
   rack-rewrite
   rails (= 2.3.18)
-  rails-footnotes
   ratom
   rdoc
   rest-client
