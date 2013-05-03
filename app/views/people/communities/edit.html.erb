@@ -31,13 +31,6 @@
             <p id="tooltip_hook"><strong>Open:</strong> allows anyone to become a member by clicking a "Join" button. <strong>Moderated:</strong> anyone can indicate that they want to join the community, but they have to be approved by a community leader to become members. <strong>Invitation Only:</strong> members can only be invited to join the community</p>
         </div>
 
-   <p>
-       <label for="community_tag_list">Provide some initial tags for this community: 
-       <%= text_area_tag(:tag_list,@community.system_sharedtags_displaylist,{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
-       <em>Separate tags with commas.</em>
-       </label>
-   </p>
-
   <p>
     <label><%= check_box(:community,:connect_to_drupal) %>Connect to the eXtension Drupal CMS?</label>
     <em>Communities can be added as groups within the eXtension Drupal CMS if you check this setting.  eXtension Communities of Practice are automatically connected regardless of this setting.</em>
@@ -63,8 +56,8 @@
 
           <%- if(!@community.is_institution?) -%>
           <p>
-            <label><%= check_box(:community,:show_in_public_list) %>Show Community in Public List?</label>
-            <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
+            <label><%= check_box(:community,:publishing_community) %>Community publishes content to www.extension.org?</label>
+               <em>Communities can be associated with public content, and will show up on the public site administration page if you check this setting.  eXtension Communities of Practice are automatically shown regardless of this setting.</em>
           </p>
           <%- end -%>
 

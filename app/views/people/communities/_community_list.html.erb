@@ -7,9 +7,6 @@
 	<p><%= community.joined.count %> Joined</p>
     
 	
-<!-- TODO: link to somewhere through helper -->
-	<p class="tags">tags: <%= link_shared_tags(community.shared_tag_list.map(&:name).sort) %></p>
-	
 	<% if @currentuser_communities['invited'].include?(community) %>
 		<p class="user">You are have been invited to join this community.</p>
 	<% elsif @currentuser_communities['wantstojoin'].include?(community) %>

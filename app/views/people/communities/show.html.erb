@@ -48,22 +48,6 @@
 
 
     <div id="col_two">
-      <h2><%= @community.viewlabel.capitalize -%> Tags <a class="tooltip-help" href="#" id="tags_trigger">?</a></h2>
-      <div class="dashmodule">
-        <div id="sharedtaglist">
-          <%= render(:partial => 'shared_tag_list') -%>
-          <div id='tags_tooltip' style="display:none;" class="tooltip">
-            <p id="tooltip_hook">
-              <strong><%= @community.viewlabel.capitalize -%>  Tags</strong> These tags describe the <%= @community.viewlabel -%> and can be searched on. They are set by <%= (@community.is_institution? ? 'institutional team members' : 'community leaders')%>.
-            </p>
-          </div>
-
-          <script type="text/javascript">
-          var my_tooltip = new Tooltip('tags_trigger', 'tags_tooltip')
-          </script>
-        </div>
-      </div>
-
       <h2>
         <%= @community.viewlabel.capitalize -%> Attributes
         <%- if (@am_i_leader or admin_mode?) -%>

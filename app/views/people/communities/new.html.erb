@@ -28,13 +28,7 @@
             <p id="tooltip_hook"><strong>Open:</strong> allows anyone to become a member by clicking a "Join" button. <strong>Moderated:</strong> anyone can indicate that they want to join the community, but they have to be approved by a community leader to become members. <strong>Invitation Only:</strong> members can only be invited to join the community</p>
         </div>
 
-	 <p>
-	     <label for="community_tag_list">Provide some initial tags for this community: 
-	     <%= text_area_tag(:tag_list,params[:tag_list],{:rows => "4", :class => 'keywords', "onChange" => "fitTextArea(this)", "onKeyUp" => "fitTextArea(this)"}) %>
-	     <em>Separate tags with commas.</em>
-	     </label>
-	 </p>
-	 
+ 
 	 <p>
      <label><%= check_box(:community,:connect_to_drupal) %>Connect to the eXtension Drupal CMS?</label>
      <em>Communities can be added as groups within the eXtension Drupal CMS if you check this setting.  eXtension Communities of Practice are automatically connected regardless of this setting.</em>
