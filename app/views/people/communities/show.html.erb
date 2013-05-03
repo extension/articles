@@ -87,7 +87,7 @@
         </dl>
       </div>
 
-      <%- if (@community.connect_to_drupal? and @community.drupal_node_id) or @community.is_launched? -%>
+      <%- if (@community.connect_to_drupal? and @community.drupal_node_id) or @community.publishing_community? -%>
       <h2>Elsewhere in eXtension</h2>
       <div class="dashmodule">
         <p><em>Links to information for this community in other eXtension applications</em></p>
@@ -96,13 +96,15 @@
           <dt>create.extension.org</dt>
           <dd><a href="http://create.extension.org/node/<%= @community.drupal_node_id %>">Community Dashboard</a></dd>
         <%- end -%>
-        <%- if  @community.is_launched? -%>
+        <%- if  @community.publishing_community? -%>
           <dt>data.extension.org</dt>
           <dd><a href="http://data.extension.org/groups/<%= @community.id %>">Group Information</a></dd>
-          <%- if !@community.cached_content_tags.blank? -%>
-            <dt>www.extension.org/preview</dt>
-            <%- @community.cached_content_tags.each do |tagname| -%>
-              <dd><%= link_to("content checklist (tag: #{tagname})", preview_tag_url(:content_tag => content_tag_url_display_name(tagname))) %></dd>
+          <%- if publishing_community = PublishingCommunity.find_by_id(@community.id) -%>
+            <%- if !publishing_community.cached_content_tags.blank? -%>
+              <dt>www.extension.org/preview</dt>
+              <%- publishing_community.cached_content_tags.each do |tagname| -%>
+                <dd><%= link_to("content checklist (tag: #{tagname})", preview_tag_url(:content_tag => content_tag_url_display_name(tagname))) %></dd>
+              <%- end -%>
             <%- end -%>
           <%- end -%>
         <%- end -%>

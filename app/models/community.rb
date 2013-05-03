@@ -154,7 +154,7 @@ class Community < ActiveRecord::Base
   
   def flag_attributes_for_approved
     if(self.entrytype == APPROVED)
-      self.show_in_public_list = true
+      self.publishing_community = true
       self.connect_to_drupal = true
     end
   end
