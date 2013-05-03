@@ -104,6 +104,7 @@ class Community < ActiveRecord::Base
   before_save :clean_description_and_shortname, :flag_attributes_for_approved
   after_save :update_email_alias
   after_save :update_google_group
+  after_save :update_publishing_community
 
   def is_institution?
     return (self.entrytype == INSTITUTION)
@@ -156,6 +157,18 @@ class Community < ActiveRecord::Base
     if(self.entrytype == APPROVED)
       self.publishing_community = true
       self.connect_to_drupal = true
+    end
+  end
+
+  def update_publishing_community
+    if(publishing_community = PublishingCommunity.find_by_id(self.id))
+      if(self.publishing_community?)
+        publishing_community.update_attributes({:name => self.name})
+      else
+        publishing_community.destroy
+      end
+    elsif(self.publishing_community?)
+      self.connection.execute("INSERT IGNORE INTO #{PublishingCommunity.table_name} (id,name,created_at,updated_at) VALUES(#{self.id},'#{self.name}',NOW(),NOW())")
     end
   end
   
