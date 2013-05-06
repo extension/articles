@@ -273,35 +273,17 @@ def update_groups_from_darmok_communities(drupaldatabase,mydatabase)
   execute_sql('og_membership insertion', insert_sql)
 end
 
-def update_group_resource_tags(drupaldatabase)
-  puts "updating group resource tags..."
-  
-  # build my insert query
-  communities = Community.public_list.all(:order => 'name')
-  insert_values = []
-  communities.each do |community|
-    next if !community.connect_to_drupal
-    next if community.drupal_node_id.blank?
-    next if community.cached_content_tags(true).blank?
-    community.cached_content_tags.each do |content_tag|
-      if(content_tag == community.primary_content_tag_name)
-        primary = 1
-      else
-        primary = 0
-      end
-      insert_values << "(#{community.drupal_node_id},#{ActiveRecord::Base.quote_value(community.name)},#{community.id},#{ActiveRecord::Base.quote_value(content_tag)},#{primary})"
-    end
+
+def publishing_community_updates
+  # now, update all the publishing communities in the event the drupal_node_id changed
+  Community.notinstitutions.where(:publishing_community => true).all.each do |community|
+    community.update_publishing_community
   end
-  
-  if(!insert_values.blank?)
-    insert_sql = "INSERT INTO #{drupaldatabase}.group_resource_tags (nid,community_name,community_id,resource_tag_name,is_primary_tag)"
-    insert_sql += " VALUES #{insert_values.join(',')}"
-    
-    execute_sql('group_resource_tags trunction',"TRUNCATE TABLE  #{drupaldatabase}.group_resource_tags;")
-    execute_sql('group_resource_tags insertion',insert_sql)
+
+  # and update all the resource tags
+  PublishingCommunity.all.each do |publishing_community|
+    publishing_community.update_create_group_resource_tags
   end
-  
-  return true;
 end
 
 
@@ -313,8 +295,8 @@ puts "\n## New group creation:"
 new_groups_from_darmok_communities(@drupaldatabase,mydatabase)
 puts "\n## Existing groups update:"
 update_groups_from_darmok_communities(@drupaldatabase,mydatabase)
-puts "\n## Group resource tags update:"
-update_group_resource_tags(@drupaldatabase)
+puts "\n## Updating Publishing Communities:"
+publishing_community_updates
 puts "\n## Clearing the cache"
 execute_sql('cache_field truncation', "TRUNCATE table #{@drupaldatabase}.cache_field;")
 

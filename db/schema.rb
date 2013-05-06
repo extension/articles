@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130502231850) do
+ActiveRecord::Schema.define(:version => 20130506192645) do
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
@@ -697,6 +697,7 @@ ActiveRecord::Schema.define(:version => 20130502231850) do
     t.integer  "aae_group_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "drupal_node_id"
   end
 
   create_table "social_networks", :force => true do |t|

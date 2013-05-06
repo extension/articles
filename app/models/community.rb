@@ -163,12 +163,12 @@ class Community < ActiveRecord::Base
   def update_publishing_community
     if(publishing_community = PublishingCommunity.find_by_id(self.id))
       if(self.publishing_community?)
-        publishing_community.update_attributes({:name => self.name})
+        publishing_community.update_attributes({:name => self.name, :drupal_node_id => self.drupal_node_id})
       else
         publishing_community.destroy
       end
     elsif(self.publishing_community?)
-      self.connection.execute("INSERT IGNORE INTO #{PublishingCommunity.table_name} (id,name,created_at,updated_at) VALUES(#{self.id},'#{self.name}',NOW(),NOW())")
+      self.connection.execute("INSERT IGNORE INTO #{PublishingCommunity.table_name} (id,name,drupal_node_id,created_at,updated_at) VALUES(#{self.id},'#{self.name}',#{self.drupal_node_id || 'NULL'},NOW(),NOW())")
     end
   end
   

@@ -182,6 +182,8 @@ class AdminController < ApplicationController
     if @community.save
       flash[:notice] = 'Community Updated'
       @community.content_tag_names=(params['community']['content_tag_names'])
+      # update create resource tags
+      @community.update_create_group_resource_tags
       AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
       # cache updates - this is kind of a hack
       if(@community.is_launched_changed?)
