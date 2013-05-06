@@ -13,7 +13,7 @@ class FeedsController < ApplicationController
     @right_column = false
     set_title('Feeds')
     set_titletag('eXtension - Feeds')
-    @communities = Community.launched.all(:order => 'public_name')
+    @communities = PublishingCommunity.launched.all(:order => 'public_name')
   end
  
   def community

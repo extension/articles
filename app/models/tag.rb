@@ -29,7 +29,7 @@ class Tag < ActiveRecord::Base
   
   # Set up the polymorphic relationship.
   has_many_polymorphs :taggables, 
-    :from => [:accounts, :communities, :pages, :sponsors], 
+    :from => [:accounts, :communities, :pages, :sponsors, :publishing_communities], 
     :through => :taggings, 
     :dependent => :destroy,
     :as => :tag,
@@ -58,14 +58,8 @@ class Tag < ActiveRecord::Base
   named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}"}
   
   # TODO: review.  This is kind of a hack that might should be done differently
-  def content_community(forcecacheupdate=false)
-    # OPTIMIZE: Review this caching
-    cache_key = self.class.get_object_cache_key(self,this_method,{:name => self.name})
-    # just store the id and get the community each time
-    communityid = Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
-      self.communities.first(:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}")
-    end
-    return Community.find_by_id(communityid)
+  def content_community
+    self.publishing_communities.first(:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}")
   end
   
   def self.get_object_cache_key(theobject,method_name,optionshash={})

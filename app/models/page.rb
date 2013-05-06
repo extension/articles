@@ -403,7 +403,7 @@ class Page < ActiveRecord::Base
       pages_to_return = []
       
       # get a list of launched communities
-      launched_communitylist = Community.launched.all(:order => 'name')
+      launched_communitylist = PublishingCommunity.launched.all(:order => 'name')
       launched_community_ids = launched_communitylist.map(&:id).join(',')
       
       # limit to last AppConfig.configtable['recent_feature_limit'] days so we aren't pulling the full list every single time
@@ -415,9 +415,9 @@ class Page < ActiveRecord::Base
       # to more than one community
       pagelist = self.find(
         :all, 
-        :select => "#{self.table_name}.*, GROUP_CONCAT(communities.id) as community_ids_string", 
-        :joins => [:content_buckets, {:tags => :communities}], 
-        :conditions => "(datatype = 'Article' or datatype = 'News') AND DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
+        :select => "#{self.table_name}.*, GROUP_CONCAT(publishing_communities.id) as community_ids_string", 
+        :joins => [:content_buckets, {:tags => :publishing_communities}], 
+        :conditions => "(datatype = 'Article' or datatype = 'News') AND DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}' and taggings.tagging_kind = #{Tagging::CONTENT} AND publishing_communities.id IN (#{launched_community_ids}) AND content_buckets.name = 'feature'", 
         :group => "#{self.table_name}.id",
         :order => "#{self.table_name}.source_updated_at DESC"
       )

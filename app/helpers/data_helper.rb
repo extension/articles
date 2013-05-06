@@ -26,7 +26,7 @@ module DataHelper
       make_a_link = "\"/\" + this.value + \"/#{params[:action]}\""
     end
     
-    communities = Community.launched.ordered("public_name ASC")
+    communities = PublishingCommunity.launched.ordered("public_name ASC")
     txt = "<select name='community'"
     txt += " onchange='go_category(#{make_a_link})'"
     txt += ">"
@@ -43,7 +43,7 @@ module DataHelper
   end
   
   def link_to_public_community_home(community)
-    if(community.nil? or !community.show_in_public_list?)
+    if(community.nil? or !community.publishing_community?)
       return ''
     elsif(community.content_tag_names.empty?)
       return community.public_name

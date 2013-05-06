@@ -45,8 +45,7 @@ class AdminController < ApplicationController
   
   def manage_communities
     set_titletag("Manage Communities - Pubsite Admin")    
-    @approved_communities =  Community.approved.all(:order => 'name')
-    @other_public_communities = Community.usercontributed.public_list.all(:order => 'name')
+    @communities =  PublishingCommunity.all(:order => 'name')
   end
 
   def manage_institution_logos
@@ -56,7 +55,7 @@ class AdminController < ApplicationController
   
   def manage_community_logos
     set_titletag("Manage Community Logos - Pubsite Admin")
-    @communitieslist = Community.approved.all(:order => 'name') + Community.usercontributed.public_list.all(:order => 'name')
+    @communitieslist = PublishingCommunity.all(:order => 'name')
   end
 
   def edit_institution_logo
@@ -79,7 +78,7 @@ class AdminController < ApplicationController
   end  
   
   def edit_community_logo
-    @community = Community.find_by_id(params[:id])
+    @community = PublishingCommunity.find_by_id(params[:id])
     if(@community.nil?)
       flash[:error] = 'Invalid community'
       redirect_to :action => :index
@@ -98,7 +97,7 @@ class AdminController < ApplicationController
   end
   
   def delete_community_logo
-    @community = Community.find_by_id(params[:id])
+    @community = PublishingCommunity.find_by_id(params[:id])
     if(@community.nil?)
       flash[:error] = 'Invalid community'
       redirect_to :action => :index
@@ -151,7 +150,7 @@ class AdminController < ApplicationController
   end
     
   def update_public_community
-    @community =  Community.find(params['id'])
+    @community =  PublishingCommunity.find(params['id'])
     @community.public_topic_id = params['community']['public_topic_id']
     @community.public_description = params['community']['public_description']
     @community.public_name = params['community']['public_name']
@@ -202,7 +201,7 @@ class AdminController < ApplicationController
   def edit_public_community
     set_title('Edit Community Public Options')
     set_titletag("Edit Community - Pubsite Admin")
-    @community = Community.find(params[:id])
+    @community = PublishingCommunity.find(params[:id])
   end
   
   def update_public_institution

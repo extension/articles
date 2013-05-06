@@ -14,9 +14,9 @@
         </tr>
 
         <%- @communitieslist.each do |community| -%>
-        <tr class="<%= community.show_in_public_list %>">
+        <tr class="<%= community.is_launched %>">
             <td><%= link_to('edit', :action => 'edit_community_logo', :id => community.id)%></td>
-            <td class="islive"><%= community.show_in_public_list %></td>
+            <td class="islive"><%= community.is_launched %></td>
             <td><%= link_to_people_community(community) %></td>
             <%- if community.logo.nil? %>
                 <td>Not yet provided.</td>

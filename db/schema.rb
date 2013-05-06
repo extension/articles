@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130413171028) do
+ActiveRecord::Schema.define(:version => 20130502231850) do
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
@@ -245,7 +245,7 @@ ActiveRecord::Schema.define(:version => 20130413171028) do
     t.boolean  "is_launched",                           :default => false
     t.integer  "public_topic_id"
     t.text     "cached_content_tag_data"
-    t.boolean  "show_in_public_list",                   :default => false
+    t.boolean  "publishing_community",                  :default => false
     t.integer  "location_id",                           :default => 0
     t.string   "public_uri"
     t.string   "referer_domain"
@@ -683,6 +683,21 @@ ActiveRecord::Schema.define(:version => 20130413171028) do
   end
 
   add_index "privacy_settings", ["user_id"], :name => "index_privacy_settings_on_user_id"
+
+  create_table "publishing_communities", :force => true do |t|
+    t.string   "name",                                       :null => false
+    t.string   "public_name"
+    t.text     "public_description"
+    t.boolean  "is_launched",             :default => false
+    t.integer  "public_topic_id"
+    t.text     "cached_content_tag_data"
+    t.integer  "logo_id",                 :default => 0
+    t.string   "homage_name"
+    t.integer  "homage_id"
+    t.integer  "aae_group_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "social_networks", :force => true do |t|
     t.datetime "created_at"

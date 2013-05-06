@@ -96,7 +96,6 @@ ActionController::Routing::Routes.draw do |map|
   ### pubsite admin routes
   map.namespace :admin do |admin|
     admin.resources :sponsors, :collection => {:update_positions => :post}
-    admin.resources :feed_locations
     admin.resources :logos
   end
   

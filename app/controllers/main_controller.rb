@@ -137,7 +137,7 @@ class MainController < ApplicationController
     @page = @special_page.page
     set_title(@special_page.main_heading, @special_page.sub_heading)
     set_titletag(@special_page.titletag)
-    @communities = Community.launched.ordered_by_topic
+    @communities = PublishingCommunity.launched.ordered_by_topic
   end
   
   def special
