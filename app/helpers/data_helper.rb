@@ -43,7 +43,7 @@ module DataHelper
   end
   
   def link_to_public_community_home(community)
-    if(community.nil? or !community.publishing_community?)
+    if(community.nil?)
       return ''
     elsif(community.content_tag_names.empty?)
       return community.public_name
