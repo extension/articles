@@ -29,6 +29,7 @@ class AuthController < ApplicationController
     if(person)
       if(person.retired?)
         flash[:error] = "Your account is currently marked as retired."
+        return redirect_to(root_url)
       else
         set_current_person(person)
         flash[:success] = "You are signed in as #{current_person.fullname}"

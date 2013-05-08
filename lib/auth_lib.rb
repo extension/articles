@@ -11,7 +11,7 @@ module AuthLib
       end
     end
 
-    if(!@current_person.signin_allowed?)
+    if(@current_person and !@current_person.signin_allowed?)
       @current_person = nil
       nil
     else
