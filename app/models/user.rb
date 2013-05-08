@@ -1331,7 +1331,7 @@ class User < Account
                                 :is_admin => self.is_admin, 
                                 :retired => self.retired})
 
-    else
+    elsif(self.vouched?)
       query = <<-END_SQL.gsub(/\s+/, " ").strip
       INSERT IGNORE INTO #{Person.table_name} (id,uid,first_name,last_name,is_admin,retired,created_at,updated_at)
       SELECT  #{self.id}, 
