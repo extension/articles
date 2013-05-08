@@ -33,7 +33,7 @@ class AuthController < ApplicationController
       flash[:error] = "Unable to find your account, please contact an Engineering staff member to create your account"
     end
   
-    return redirect_back_or_default(root_url)
+    return www_redirect_back_or_default(root_url)
 
   end
   
