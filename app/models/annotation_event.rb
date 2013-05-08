@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class AnnotationEvent < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :person
   belongs_to :annotation, :primary_key => :url
   serialize :additionaldata
   
@@ -39,13 +39,6 @@ class AnnotationEvent < ActiveRecord::Base
   end
   
   def self.log_event(opts)
-    # user and login convenience column
-    if(opts[:user].nil?)
-      opts[:login] = ((opts[:additionaldata].nil? or opts[:additionaldata][:login].nil?) ? 'unknown' : opts[:additionaldata][:login])
-    else
-      opts[:login] = opts[:user].login
-    end
-
     # ip address
     if(opts[:ip].nil?)
       opts[:ip] = AppConfig.configtable['request_ip_address']

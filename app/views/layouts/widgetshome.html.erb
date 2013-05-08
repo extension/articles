@@ -25,7 +25,7 @@
         <p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p>
     </div>
     <% end %>
-    <%- if(admin_mode?) -%>
+  <%- if(current_person and current_person.is_admin?) -%>
    	  <div id="adminnotice">
          <div id="container">
            <p><strong>You are logged into an admin account</strong> </p>

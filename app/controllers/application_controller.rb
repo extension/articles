@@ -12,10 +12,12 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   #protect_from_forgery # See ActionController::RequestForgeryProtection for details  
   include LoginSystem
+  include AuthLib
   include ControllerExtensions
   include SslRequirement
   rescue_from WillPaginate::InvalidPage, :with => :do_invalid_page
-  
+  helper_method :current_person
+
 
   # Scrub sensitive parameters from your log
   filter_parameter_logging :password

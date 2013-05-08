@@ -6,8 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Admin::LogosController < ApplicationController
-  before_filter :admin_required
-  before_filter :check_purgatory
+  before_filter :admin_signin_required
   before_filter :turn_off_right_column
   
   layout 'pubsite'
@@ -27,7 +26,7 @@ class Admin::LogosController < ApplicationController
 
     if @logo.save
       flash[:notice] = 'Logo was successfully uploaded.'
-      AdminEvent.log_event(@currentuser, AdminEvent::CREATE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})      
+      AdminLog.log_event(current_person, AdminLog::CREATE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})      
       redirect_to(admin_logos_url)
     else
       render(:action => "new")
@@ -36,7 +35,7 @@ class Admin::LogosController < ApplicationController
 
   def destroy
     @logo = Logo.find(params[:id])
-    AdminEvent.log_event(@currentuser, AdminEvent::DELETE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})
+    AdminLog.log_event(current_person, AdminLog::DELETE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})
     @logo.destroy
     redirect_to(admin_logos_url)
   end    

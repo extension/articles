@@ -15,12 +15,4 @@
         <li><%= link_to 'Show Category Tag Redirects', :action => 'category_tag_redirects' %></li>
     </ul>
     
-    <h2>Program Configuration</h2>
-    <ul>
-        <% if @currentuser.is_sudoer? %>
-            <li><%= link_to 'Show/Reload Program Configuration', :action => :show_config %></li>
-        <% else %>
-            <li><%= link_to 'Show Program Configuration', :action => :show_config %></li>
-        <% end %>
-    </ul>
 </div>

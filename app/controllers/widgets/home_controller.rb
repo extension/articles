@@ -7,7 +7,7 @@
 
 class Widgets::HomeController < ApplicationController
   layout 'widgetshome'
-  before_filter :login_optional
+  before_filter :signin_optional
 
   def index
   end

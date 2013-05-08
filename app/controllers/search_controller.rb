@@ -10,9 +10,8 @@ include ActionController::UrlWriter
 include ActionView::Helpers::TagHelper
 
 class SearchController < ApplicationController
-  before_filter :login_optional, :only => :index
-  before_filter :login_required, :except => :index
-  before_filter :check_purgatory, :except => :index
+  before_filter :signin_optional, :only => :index
+  before_filter :signin_required, :except => :index
   layout 'search'
   
   def index
@@ -45,7 +44,7 @@ class SearchController < ApplicationController
   def add
     if (!params[:url].nil? and !params[:url].empty?)
       annote = Annotation.new
-      result = annote.add(params[:url], @currentuser)
+      result = annote.add(params[:url], current_person)
       
       if result[:success]
         flash[:success] = "#{annote.url} has been added to search."
@@ -65,7 +64,7 @@ class SearchController < ApplicationController
       goner = Annotation.find_by_id(params[:id])
       
       if goner
-        result = goner.remove(@currentuser)
+        result = goner.remove(current_person)
       else
         result = {:success => false, :msg => "URL ID not found"}
       end
