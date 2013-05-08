@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 class DebugController < ApplicationController
   layout 'generic'
-  before_filter :login_optional
+  before_filter :signin_optional
   
   def items
     
