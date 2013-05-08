@@ -2,6 +2,11 @@
    <p>Invalid article id</p>
 <%- else -%>
   <h2>Article Information</h2>
+  <%- if !current_person -%>
+    <p>Extension personnel with an eXtension account can <%= link_to('sign in',url_for(:controller => 'auth', :action => 'people')) %> for more information</p>
+  <%- else -%>
+    <p>You are currently signed in as <%= current_person.fullname -%> (<%= link_to('sign out',logout_path) %>)</p>
+  <%- end -%>
 
   <table cellspacing="0" border="1">
       <tr>
@@ -49,45 +54,47 @@
           <td>Published Title</td>
           <td><%= link_to(@page.title, @page.id_and_link) %></td>
       </tr>
-      <%- if @page.source != 'local' -%>
-      <tr>
-          <td>Source</td>
-          <td><%= @page.page_source.name %></td>
-      </tr>
-      <tr>
-          <td>Source URL</td>
-          <td><%= link_to(@page.source_url, @page.source_url)%></td>
-      </tr>
-      <tr>
-          <td>Source Published At</td>
-          <td><%= humane_date(@page.source_created_at) %></td>
-      </tr>
-      <tr>
-          <td>Source Updated At</td>
-          <td><%= humane_date(@page.source_updated_at) %></td>
-      </tr>
-      <%- else -%>
-      <tr>
-          <td>Source</td>
-          <td>
-            Local <%- if @page.datatype == 'Event' -%>
-              <%= link_to('edit',edit_event_url(:id => @page.id)) %>
-            <%- end -%>
-          </td>
-      </tr>
-      <tr>
-          <td>Created At</td>
-          <td><%= humane_date(@page.created_at) %></td>
-      </tr>
-      <tr>
-          <td>Updated At</td>
-          <td><%= humane_date(@page.updated_at) %></td>
-      </tr>
+      <%- if current_person -%>
+        <%- if @page.source != 'local' -%>
+        <tr>
+            <td>Source</td>
+            <td><%= @page.page_source.name %></td>
+        </tr>
+        <tr>
+            <td>Source URL</td>
+            <td><%= link_to(@page.source_url, @page.source_url)%></td>
+        </tr>
+        <tr>
+            <td>Source Published At</td>
+            <td><%= humane_date(@page.source_created_at) %></td>
+        </tr>
+        <tr>
+            <td>Source Updated At</td>
+            <td><%= humane_date(@page.source_updated_at) %></td>
+        </tr>
+        <%- else -%>
+        <tr>
+            <td>Source</td>
+            <td>
+              Local <%- if @page.datatype == 'Event' -%>
+                <%= link_to('edit',edit_event_url(:id => @page.id)) %>
+              <%- end -%>
+            </td>
+        </tr>
+        <tr>
+            <td>Created At</td>
+            <td><%= humane_date(@page.created_at) %></td>
+        </tr>
+        <tr>
+            <td>Updated At</td>
+            <td><%= humane_date(@page.updated_at) %></td>
+        </tr>
+        <%- end -%>
+        <tr>
+            <td>Page Data and Analytics</td>
+            <td><%= link_to("http://data.extension.org/pages/#{@page.id}","http://data.extension.org/pages/#{@page.id}") %></td>
+        </tr>
       <%- end -%>
-      <tr>
-          <td>Page Data and Analytics</td>
-          <td><%= link_to("http://data.extension.org/pages/#{@page.id}","http://data.extension.org/pages/#{@page.id}") %></td>
-      </tr>
 
   </table>
 
