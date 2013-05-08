@@ -6,6 +6,10 @@ ActionController::Routing::Routes.draw do |map|
   # notices
   map.connect 'notice/ask', :controller => 'notice', :action => 'ask'
 
+  # auth
+  map.logout '/logout', :controller => 'auth', :action => 'end'
+  map.connect '/auth/:provider/callback', :controller => 'auth', :action => 'success'
+
   
   #################################################################
   ### people routes ###
@@ -165,8 +169,6 @@ ActionController::Routing::Routes.draw do |map|
   
   map.site_index ':content_tag', :controller => 'main', :action => 'community_tag'
   
-  map.logout '/logout', :controller => 'auth', :action => 'end'
-  map.connect '/auth/:provider/callback', :controller => 'auth', :action => 'success'
 
   ### catch?  I'm not sure that these are ever actually touched because of the :content_tag routes above
   map.connect ':controller', :action => 'index'

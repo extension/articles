@@ -31,8 +31,11 @@ module AuthLib
       person = Person.find_by_id(session[:person_id])
       if (person.signin_allowed?)
         set_current_person(person)
-      end
-      return true
+        return true
+      else
+        set_current_person(nil)
+        return redirect_to(root_url)
+      end        
     end
 
     # store current location so that we can 
@@ -52,7 +55,6 @@ module AuthLib
     end
     return true
   end
-
 
   def www_access_denied
     redirect_to(:controller=>:auth, :action => :people)
@@ -85,8 +87,11 @@ module AuthLib
       person = Person.find_by_id(session[:person_id])
       if (person.signin_allowed? and person.is_admin?)
         set_current_person(person)
+        return true
+      else
+        set_current_person(nil)
+        return redirect_to(:controller => 'notice', :action => 'admin_required')
       end
-      return true
     end
 
     # store current location so that we can 
