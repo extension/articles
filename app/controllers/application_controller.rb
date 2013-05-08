@@ -35,7 +35,6 @@ class ApplicationController < ActionController::Base
   helper_method :get_location_options
   helper_method :get_county_options
   helper_method :with_content_tag?
-  helper_method :admin_mode?
   helper_method :content_tag_url_display_name
   
   def set_app_location
@@ -209,15 +208,7 @@ class ApplicationController < ActionController::Base
   def set_titletag(main)
     @title_tag = ERB::Util::html_escape(main)
   end
-  
-  def admin_mode?
-    if(!@currentuser.nil? && @currentuser.is_admin?)
-      return true
-    else
-      return false
-    end
-  end
-  
+    
   def set_content_tag
     @content_tag = nil
     
