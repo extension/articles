@@ -10,7 +10,8 @@ module AuthLib
         @current_person = Person.find_by_id(session[:person_id])
       end
     end
-    if(!@current_person.signin_allowed?))
+
+    if(!@current_person.signin_allowed?)
       @current_person = nil
       nil
     else
