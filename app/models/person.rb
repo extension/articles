@@ -12,5 +12,9 @@ class Person < ActiveRecord::Base
   def signin_allowed?
     !self.retired?
   end
+
+  def systemuserid
+    1
+  end
   
 end

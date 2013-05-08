@@ -253,14 +253,14 @@ class Page < ActiveRecord::Base
   
   def cached_content_tag_names
     if(self.cached_content_tags.blank?)
-      self.cache_tags(User.systemuserid,Tagging::CONTENT)
+      self.cache_tags(Person.systemuserid,Tagging::CONTENT)
     end
     cached_tag_list = self.cached_content_tags.split(Tag::JOINER)
     cached_tag_list.reject{|tagname| Tag::CONTENTBLACKLIST.include?(tagname) }.compact
   end
   
   def cached_tag_field(ownerid,kind)
-    if(ownerid == User.systemuserid and kind == Tagging::CONTENT)
+    if(ownerid == Person.systemuserid and kind == Tagging::CONTENT)
       return 'cached_content_tags'
     else
       return nil
@@ -629,7 +629,7 @@ class Page < ActiveRecord::Base
     # even if the content didn't change
     
     if(!entry_category_terms.blank?)
-      page.replace_tags_with_and_cache(entry_category_terms,User.systemuserid,Tagging::CONTENT)
+      page.replace_tags_with_and_cache(entry_category_terms,Person.systemuserid,Tagging::CONTENT)
       page.put_in_buckets(entry_category_terms)    
     
       # check for homage replacement    

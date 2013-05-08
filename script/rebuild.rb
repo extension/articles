@@ -94,7 +94,7 @@ class Rebuild < Thor
     load_rails(options[:environment])
     # this is the same as CachedTag.rebuild_all - but looping here to show progress
     Page.all.each do |page|
-      cached_tag = CachedTag.create_or_update(page,User.systemuserid,Tagging::CONTENT)
+      cached_tag = CachedTag.create_or_update(page,Person.systemuserid,Tagging::CONTENT)
       puts "Processed Page #{page.id} : #{cached_tag.fulltextlist}" if (options[:verbose])
     end
   end

@@ -42,7 +42,7 @@ class PublishingCommunity < ActiveRecord::Base
   # it's up to the controller level to deal with the warnings on this
   def content_tag_names=(taglist)
     # get content tags in use by other communities
-    my_content_tags = tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT)
+    my_content_tags = tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT)
     other_community_tags = Tag.community_content_tags - my_content_tags
     other_community_tag_names = other_community_tags.map(&:name)
     updatelist = Tag.castlist_to_array(taglist,true)
@@ -50,11 +50,11 @@ class PublishingCommunity < ActiveRecord::Base
     
     # primary tag - first in the list
     if(!other_community_tag_names.include?(primary) and !Tag::CONTENTBLACKLIST.include?(primary))
-      self.replace_tags(primary,User.systemuserid,Tagging::CONTENT_PRIMARY)
+      self.replace_tags(primary,Person.systemuserid,Tagging::CONTENT_PRIMARY)
     end
     
     # okay, do all the tags as CONTENT taggings - updating the cached_tags for search
-    self.replace_tags(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},User.systemuserid,Tagging::CONTENT)
+    self.replace_tags(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},Person.systemuserid,Tagging::CONTENT)
     
     # update the Tag model's community_content_tags
     cctags = Tag.community_content_tags({:all => true},true)
@@ -79,13 +79,13 @@ class PublishingCommunity < ActiveRecord::Base
   def cached_content_tags(force_cache_update=false)
     if(self.cached_content_tag_data.blank? or self.cached_content_tag_data[:primary_tag].blank? or self.cached_content_tag_data[:all_tags].blank? or force_cache_update)
       # get primary content tag first - should be only one - and if not, we'll force it anyway
-      primary_tags = tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT_PRIMARY)
+      primary_tags = tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT_PRIMARY)
       if(!primary_tags.blank?)
         tagarray = []
         primary_content_tag = primary_tags[0]
         tagarray << primary_content_tag
         # get the rest...
-        other_content_tags = tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT)
+        other_content_tags = tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT)
         other_content_tags.each do |tag| 
           if(tag != primary_content_tag)
             tagarray << tag
@@ -93,7 +93,7 @@ class PublishingCommunity < ActiveRecord::Base
         end
         tagarray += other_content_tags if !other_content_tags.blank?
       else
-        tagarray = tags_by_ownerid_and_kind(User.systemuserid,Tagging::CONTENT)
+        tagarray = tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT)
       end
       
       cachedata = {}
