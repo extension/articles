@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   #protect_from_forgery # See ActionController::RequestForgeryProtection for details  
   include AuthLib
-  include ControllerExtensions
   include SslRequirement
   rescue_from WillPaginate::InvalidPage, :with => :do_invalid_page
   helper_method :current_person
@@ -26,7 +25,6 @@ class ApplicationController < ActionController::Base
   before_filter :personalize_location_and_institution
   before_filter :set_request_url_options
   before_filter :set_app_location
-  before_filter :set_currentuser_time_zone
 
   has_mobile_fu
   skip_before_filter :set_mobile_format
