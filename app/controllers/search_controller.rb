@@ -33,7 +33,7 @@ class SearchController < ApplicationController
   
   def manage_activity
     @page_title = "CSE Link Management Activity"
-    @events = AnnotationEvent.paginate(:all, :joins => :user, :order => 'created_at DESC', :page => params[:page])
+    @events = AnnotationEvent.paginate(:all, :joins => :person, :order => 'created_at DESC', :page => params[:page])
   end
   
   def manage_event
