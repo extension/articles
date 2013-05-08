@@ -28,7 +28,7 @@
   <%- if(current_person and current_person.is_admin?) -%>
    	  <div id="adminnotice">
          <div id="container">
-           <p><strong>You are logged into an admin account</strong> </p>
+         <p><strong>You are logged into an admin account</strong> (<%= link_to('sign out',logout_path) %>)</p>
          </div>	
        </div>
     <%- end -%>

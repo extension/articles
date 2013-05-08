@@ -166,7 +166,7 @@ class Annotation < ActiveRecord::Base
   end
  
   def log_event(action, user)
-    opts = {:annotation => self, :action => action, :user => user}
+    opts = {:annotation => self, :action => action, :person => user}
     AnnotationEvent.log_event(opts)
   end
   

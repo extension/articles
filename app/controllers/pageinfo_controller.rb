@@ -6,8 +6,9 @@
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class PageinfoController < ApplicationController
-  before_filter :login_optional
+  before_filter :signin_optional
   before_filter :set_content_tag_and_community_and_topic
+  before_filter :www_store_location
   layout 'pubsite'
   
   

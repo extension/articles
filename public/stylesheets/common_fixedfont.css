@@ -175,3 +175,5 @@ span.button a {
    min-width: 840px;
    width: 75%;}
 #container p {text-align: center; color:#FFF; padding:8px 20px; margin:0; line-height:1em; font-size:1.3em;}
+#adminnotice a {color:#FFF;}
+#adminnotice a:hover {text-decoration: underline;}

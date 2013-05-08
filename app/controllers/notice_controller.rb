@@ -6,10 +6,13 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class NoticeController < ApplicationController
-  layout 'notice'
-    
+  layout 'pubsite'  
   def ask
     render :layout => false
+  end
+
+  def admin_required
+    @right_column = false 
   end
 
 end

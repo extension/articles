@@ -7,7 +7,8 @@
 class AdminController < ApplicationController
   before_filter :admin_signin_required
   before_filter :turn_off_right_column
-  
+  before_filter :www_store_location
+
   layout 'pubsite'
   
   def index

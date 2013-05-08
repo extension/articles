@@ -11,7 +11,7 @@ class AddPeople < ActiveRecord::Migration
       t.timestamps
     end
 
-    execute("INSERT INTO people (id,uid,first_name,last_name,is_admin,retired,created_at,updated_at) SELECT id,CONCAT('https://people.extension.org/',login),first_name,last_name,is_admin,retired,created_at,updated_at FROM accounts")
+    execute("INSERT INTO people (id,uid,first_name,last_name,is_admin,retired,created_at,updated_at) SELECT id,CONCAT('https://people.extension.org/',login),first_name,last_name,is_admin,retired,created_at,updated_at FROM accounts WHERE accounts.vouched = 1")
   end
 
   def self.down
