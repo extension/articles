@@ -82,6 +82,7 @@ class User < Account
   after_save :update_google_account
   after_save :update_email_aliases
   after_save :touch_lists
+  after_save :update_person
   
   before_validation :convert_phonenumber
   before_save :check_status, :generate_feedkey
@@ -1314,6 +1315,37 @@ class User < Account
     admin_user.password = ''
     admin_user.save
     admin_user
+  end
+
+  def quoted_value_or_null(value)
+    value.blank? ? 'NULL' : ActiveRecord::Base.quote_value(value)
+  end
+
+  def update_person
+    # always make it people
+    openid_url_for_update = "https://people.extension.org/#{self.login}"
+    if(person = Person.find_by_id(self.id))
+      person.update_attributes({:uid => openid_url_for_update, 
+                                :first_name => self.first_name, 
+                                :last_name => self.last_name, 
+                                :is_admin => self.is_admin, 
+                                :retired => self.retired})
+
+    else
+      query = <<-END_SQL.gsub(/\s+/, " ").strip
+      INSERT IGNORE INTO #{Person.table_name} (id,uid,first_name,last_name,is_admin,retired,created_at,updated_at)
+      SELECT  #{self.id}, 
+              #{ActiveRecord::Base.quote_value(openid_url_for_update)},
+              #{quoted_value_or_null(self.first_name)},
+              #{quoted_value_or_null(self.last_name)},
+              #{self.retired},
+              #{self.is_admin},
+              #{ActiveRecord::Base.quote_value(self.created_at.to_s(:db))},
+              #{ActiveRecord::Base.quote_value(self.updated_at.to_s(:db))}
+      END_SQL
+
+      self.connection.execute(query)
+    end
   end
   
   protected
