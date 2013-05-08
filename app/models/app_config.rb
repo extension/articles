@@ -172,6 +172,8 @@ class AppConfig
     # ask database
     @@configtable['ask2_database'] = 'prod_aae'
 
+    # create database
+    @@configtable['create_database'] = 'prod_create'
   end
   
   def AppConfig.get_url_port

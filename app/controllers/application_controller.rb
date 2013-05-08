@@ -11,9 +11,11 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   #protect_from_forgery # See ActionController::RequestForgeryProtection for details  
+  include AuthLib
   include ControllerExtensions
   include SslRequirement
   rescue_from WillPaginate::InvalidPage, :with => :do_invalid_page
+  helper_method :current_person
 
   require 'zip_code_to_state'
   require 'image_size'

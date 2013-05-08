@@ -74,7 +74,8 @@ namespace :deploy do
     ln -nfs #{shared_path}/sites #{release_path}/public/sites &&   
     ln -nfs #{shared_path}/data #{release_path}/data &&
     rm -rf #{release_path}/public/sitemaps &&
-    ln -nfs #{shared_path}/sitemaps #{release_path}/public/sitemaps
+    ln -nfs #{shared_path}/sitemaps #{release_path}/public/sitemaps &&
+    ln -nfs #{shared_path}/omniauth #{release_path}/tmp/omniauth
     CMD
   end
   

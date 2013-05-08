@@ -5,13 +5,8 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 class AdminController < ApplicationController
-  # TODO: replace with new account system
-  # before_filter :admin_required
-  # before_filter :check_purgatory
-  # before_filter :sudo_required, :only => [:reload_config]
-
+  before_filter :admin_signin_required
   before_filter :turn_off_right_column
-
   
   layout 'pubsite'
   
@@ -27,7 +22,7 @@ class AdminController < ApplicationController
   
   def destroy_topic
     if(topic = Topic.find_by_id(params[:id]))
-      AdminEvent.log_event(@currentuser, AdminEvent::DELETE_TOPIC,{:topicname => topic.name})
+      AdminLog.log_event(current_person, AdminLog::DELETE_TOPIC,{:topicname => topic.name})
       topic.destroy
     end
     flash[:notice] = 'Topic Deleted'
@@ -38,7 +33,7 @@ class AdminController < ApplicationController
     topic = Topic.create(params[:topic])
     if(!topic.nil?)
       flash[:notice] = 'Topic Created'
-      AdminEvent.log_event(@currentuser, AdminEvent::CREATE_TOPIC,{:topicname => topic.name})
+      AdminLog.log_event(current_person, AdminLog::CREATE_TOPIC,{:topicname => topic.name})
     end
     redirect_to :action => :manage_topics
   end
@@ -140,7 +135,7 @@ class AdminController < ApplicationController
     @location.office_link = params['location']['office_link']
 
     if @location.save
-      AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_LOCATION_OFFICE_LINK,{:location_id => @location.id, :location_name => @location.name, :oldlink => oldlink, :newlink => @location.office_link})
+      AdminLog.log_event(current_person, AdminLog::UPDATE_LOCATION_OFFICE_LINK,{:location_id => @location.id, :location_name => @location.name, :oldlink => oldlink, :newlink => @location.office_link})
       flash[:notice] = 'Location Updated'
     else
       flash[:notice] = 'Error updating location'
@@ -185,7 +180,9 @@ class AdminController < ApplicationController
     if @community.save
       flash[:notice] = 'Community Updated'
       @community.content_tag_names=(params['community']['content_tag_names'])
-      AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
+      # update create resource tags
+      @community.update_create_group_resource_tags
+      AdminLog.log_event(current_person, AdminLog::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
       # cache updates - this is kind of a hack
       if(@community.is_launched_changed?)
         Tag.community_content_tags({:launchedonly => true},true)
@@ -211,7 +208,7 @@ class AdminController < ApplicationController
 
     if @institution.save
       flash[:notice] = 'Institution Updated'
-      AdminEvent.log_event(@currentuser, AdminEvent::UPDATE_PUBLIC_INSTITUTION,{:institution_id => @institution.id, :institution_name => @institution.name})
+      AdminLog.log_event(current_person, AdminLog::UPDATE_PUBLIC_INSTITUTION,{:institution_id => @institution.id, :institution_name => @institution.name})
       
     else
       flash[:notice] = 'Error updating institution'
@@ -224,21 +221,13 @@ class AdminController < ApplicationController
     set_titletag("Edit Institution - Pubsite Admin")
     @institution = BrandingInstitution.find(params[:id])
   end
-  
-  def show_config
-  end
-  
+   
   def special_pages
   end  
   
   def category_tag_redirects
   end
     
-  def reload_config
-    AppConfig.load_config
-    redirect_to :action => :show_config 
-  end
-  
   # list recent notifications
   def notifications
     dateinterval = params[:dateinterval] || 'withinlastweek'

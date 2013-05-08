@@ -21,7 +21,7 @@ class DebugController < ApplicationController
     @geoname = GeoName.find_by_geoip(@search_ip)
     
     if(@geo_location)
-      @public_institutions_for_location = @geo_location.communities.institutions.public_list
+      @public_institutions_for_location = @geo_location.branding_institutions
     end
   end
   

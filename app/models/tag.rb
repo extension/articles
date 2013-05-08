@@ -80,9 +80,9 @@ class Tag < ActiveRecord::Base
     Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => CONTENT_TAG_CACHE_EXPIRY) do
       launchedonly = options[:launchedonly].nil? ? false : options[:launchedonly]
       if(launchedonly)
-        self.find(:all, :joins => [:communities], :conditions => "taggings.tagging_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'Community' and communities.is_launched = TRUE", :order => 'name')
+        self.find(:all, :joins => [:publishing_communities], :conditions => "taggings.tagging_kind = #{Tagging::CONTENT} and taggings.taggable_type = 'PublishingCommunity' and publishing_communities.is_launched = TRUE", :order => 'name')
       else
-        self.find(:all, :include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT} and taggable_type = 'Community'", :order => 'name')
+        self.find(:all, :include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT} and taggable_type = 'PublishingCommunity'", :order => 'name')
       end
     end  
   end

@@ -7,8 +7,8 @@
 
 class ReportsController < ApplicationController
   layout 'pubsite'
-  before_filter :login_optional
-  before_filter :login_required, :only => [:bronto]
+  before_filter :signin_optional
+  before_filter :signin_required, :only => [:bronto]
 
   def index
     set_title("Reports")
@@ -17,9 +17,8 @@ class ReportsController < ApplicationController
   end
 
   def graphs
-    set_title("Graphs")
-    set_titletag("Graphs - eXtension")
-    @right_column = false
+    data_url = "#{AppConfig.configtable['data_site']}"
+    return redirect_to(data_url, :status => :moved_permanently)
   end
 
   def publishedcontent
@@ -28,9 +27,8 @@ class ReportsController < ApplicationController
   end
 
   def activitygraph
-    set_title("Activity Graphs")
-    set_titletag("Activity Graphs - eXtension")
-    @right_column = false
+    data_url = "#{AppConfig.configtable['data_site']}"
+    return redirect_to(data_url, :status => :moved_permanently)
   end
 
   def bronto

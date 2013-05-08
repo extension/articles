@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130502231850) do
+ActiveRecord::Schema.define(:version => 20130508025648) do
 
   create_table "accounts", :force => true do |t|
     t.string   "type",                                   :default => "",    :null => false
@@ -98,13 +98,20 @@ ActiveRecord::Schema.define(:version => 20130502231850) do
     t.datetime "created_at"
   end
 
+  create_table "admin_logs", :force => true do |t|
+    t.integer  "person_id",                :default => 0, :null => false
+    t.integer  "event",                    :default => 0, :null => false
+    t.string   "ip",         :limit => 20
+    t.text     "data"
+    t.datetime "created_at"
+  end
+
   create_table "annotation_events", :force => true do |t|
-    t.integer  "user_id"
+    t.integer  "person_id"
     t.string   "annotation_id"
     t.string   "action"
     t.string   "ip"
     t.datetime "created_at"
-    t.string   "login"
     t.text     "additionaldata"
   end
 
@@ -665,6 +672,17 @@ ActiveRecord::Schema.define(:version => 20130502231850) do
   add_index "pages", ["title", "content"], :name => "title_content_full_index"
   add_index "pages", ["title"], :name => "index_pages_on_title", :length => {"title"=>"255"}
 
+  create_table "people", :force => true do |t|
+    t.string   "uid"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.boolean  "is_admin",       :default => false
+    t.boolean  "retired"
+    t.datetime "last_active_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "positions", :force => true do |t|
     t.integer  "entrytype",  :default => 0, :null => false
     t.string   "name",                      :null => false
@@ -697,6 +715,7 @@ ActiveRecord::Schema.define(:version => 20130502231850) do
     t.integer  "aae_group_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "drupal_node_id"
   end
 
   create_table "social_networks", :force => true do |t|

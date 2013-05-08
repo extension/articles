@@ -8,7 +8,7 @@
 class PagesController < ApplicationController
   layout 'pubsite'
   before_filter :set_content_tag_and_community_and_topic
-  before_filter :login_optional
+  before_filter :signin_optional
   
   def redirect_article
     # folks chop off the page name and expect the url to give them something

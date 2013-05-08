@@ -64,7 +64,7 @@ class PublishingCommunity < ActiveRecord::Base
     
     # now update the cached content community for each tag
     cctags.each do |t|
-      t.content_community(true)
+      t.content_community
     end
     
     # now update my cached_content_tags
@@ -127,6 +127,35 @@ class PublishingCommunity < ActiveRecord::Base
     else
       "#{AppConfig.configtable['ask_two_point_oh']}groups/#{self.aae_group_id}"
     end
-  end 
+  end
+
+
+def update_create_group_resource_tags
+  drupaldatabase = AppConfig.configtable['create_database']
+  if(self.drupal_node_id.blank?)
+    return true
+  end
+
+  insert_values = []
+  self.cached_content_tags(true).each do |content_tag|
+    if(content_tag == self.primary_content_tag_name)
+      primary = 1
+    else
+      primary = 0
+    end
+    insert_values << "(#{self.drupal_node_id},#{ActiveRecord::Base.quote_value(self.name)},#{self.id},#{ActiveRecord::Base.quote_value(content_tag)},#{primary})"
+  end
+
+  if(!insert_values.blank?)
+    insert_sql = "INSERT INTO #{drupaldatabase}.group_resource_tags (nid,community_name,community_id,resource_tag_name,is_primary_tag)"
+    insert_sql += " VALUES #{insert_values.join(',')}"
+    
+    self.connection.execute("DELETE FROM #{drupaldatabase}.group_resource_tags WHERE nid = #{self.drupal_node_id}")
+    self.connection.execute(insert_sql)
+  end
+  
+  return true;
+end
+
 
 end
