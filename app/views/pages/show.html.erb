@@ -65,9 +65,7 @@
   </div>
 <% end %>
 
-<%- if current_person -%>
-  <p id="pagelinks"><%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %><br />This notice only displays for users signed in with their eXtensionID.</p>
-<%- end -%>
+  <p id="pagelinks"><%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %><br /></p>
 
 
 
