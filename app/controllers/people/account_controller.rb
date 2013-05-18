@@ -137,7 +137,6 @@ class People::AccountController < ApplicationController
           @currentuser = result[:user]
           @currentuser.update_attribute(:last_login_at,Time.now.utc)
           session[:userid] = @currentuser.id
-          session[:person_id] = @currentuser.id
           session[:account_id] = @currentuser.id
           flash.now[:success] = "Login successful."
           UserEvent.log_event(:etype => UserEvent::LOGIN_LOCAL_SUCCESS,:user => @currentuser,:description => 'login')        
@@ -181,7 +180,6 @@ class People::AccountController < ApplicationController
   def logout
     @currentuser = nil
     session[:userid] = nil
-    session[:person_id] = nil
     session[:adminmode] = 0
     session[:last_opierequest] = nil
     # TODO:  I have no idea what these are - they very much need to be more descriptive
