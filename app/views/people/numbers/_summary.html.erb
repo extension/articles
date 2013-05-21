@@ -12,7 +12,7 @@
         <td class="bignumber"><%= number_with_delimiter(lastmonth.newpeople) %></td>
     </tr>
     <tr>
-        <td>Active Users (those with a login or edit within the last month)</td>
+        <td>Active Users (those with a login within the last month)</td>
         <td class="bignumber"><%= number_with_delimiter(lastmonth.active) %></td>
     </tr>
     <% if !total.positions.nil? and total.positions != 0 %>
