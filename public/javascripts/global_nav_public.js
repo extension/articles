@@ -15,7 +15,7 @@ ul.extension_global_nav li a:hover {color: #fff;}\
 \
 \
 \
-<ul class="extension_global_nav public_nav">\
+<ul class="extension_global_nav public_nav noprint">\
   <li class="group"><span>Public sites</span>\
     <ul>\
       <li><a href="http://about.extension.org/" title="A starting place for all things eXtension.">About eXtension</a></li>\
