@@ -23,6 +23,35 @@
         <%end%>
     </div>
 
+    <% if @featured_article.present? %>
+	  <div>
+	    <% link_to(@featured_article.id_and_link) do %>
+	      <div class="contentdiv">
+	         <dl>
+	            <dt><%= @featured_article.title %></dt>
+	            <dd class="img"><%= first_image @featured_article.content %></dd>
+	            <dd><%= get_title(@featured_article.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read More</span></dd>                    
+	         </dl>
+	      </div>
+	    <% end %>
+	  </div>
+	<% end %>
+
+	<% if @featured_bio.present? %>
+	<div>
+	  <h3>Meet Extension</h3>
+	    <% link_to(@featured_bio.id_and_link) do %>
+	      <div class="contentdiv">
+	         <dl>
+	            <dt><%= @featured_bio.title %></dt>
+	            <dd class="img"><%= first_image @featured_bio.content %></dd>
+	            <dd><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read</span></dd>                    
+	         </dl>
+	      </div>
+	    <% end %>
+	</div>
+	<% end %>
+	
     <div class="grid_4 omega ">     
         <div class="recentcolumn">
         <h2>Recent Articles, News &amp; Answers</h2>
