@@ -8,7 +8,7 @@
 class MainController < ApplicationController
   before_filter :set_content_tag_and_community_and_topic
 
-  layout 'pubsite'
+  layout 'frontporch'
   
   def index
      @published_content = true  # index the main page
