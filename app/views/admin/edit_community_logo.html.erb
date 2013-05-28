@@ -1,5 +1,5 @@
 <div id="admin">
-    <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Community Logos', :action => 'manage_community_logos', :communitytype => (@community.is_institution? ? 'institutions' : 'approved') %></p>
+    <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Community Logos', :action => 'manage_community_logos', :communitytype => 'approved' %></p>
     <h1>Edit Community Logo</h1>
 	<p> Current Logo:
 		<%- if @logo.nil? %>
