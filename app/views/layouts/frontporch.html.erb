@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>eXtension Home</title>
-        <meta name="description" content="eXtension Home Page template">
-        <meta name="viewport" content="width=device-width">
+  <meta charset="utf-8" />
+  
+  <% if !@openidmeta.nil? %><%= @openidmeta %><% end %>
 
-        <link rel="stylesheet" href="css/bootstrap.css">
-        <!--<link rel="stylesheet" href="css/bootstrap-responsive.min.css">-->
-        <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="css/main.css">
+  <%- if(@list_content) -%>
+    <meta name="robots" content="noindex,nofollow" /> 
+	<%- elsif(!@published_content or params[:print]) -%>
+    <meta name="robots" content="noindex,follow" /> 
+  <%- elsif(@page and @page.indexed == Page::NOT_GOOGLE_INDEXED) -%>
+    <meta name="googlebot" content="noindex,follow" /> 
+  <%- end -%>
 
-    </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
+  <%- if @canonical_link -%>
+    <link rel="canonical" href="<%= @canonical_link %>"/>
+  <%- end -%>
+
+  <title><%= @title_tag %></title>
+  <meta name="description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/main.css">
+
+</head>
+
+<body>
+
+<!--[if lt IE 7]>
+  <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
 
         <div class="container">
  
@@ -211,12 +228,7 @@
 	            interval: 6000
 	        })
     	</script>
-
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-        </script>
+    
+    <%= render(:partial => '/partial/googleanalytics') %>
     </body>
 </html>
