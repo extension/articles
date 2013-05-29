@@ -531,6 +531,8 @@ ul.nav {
 #aae_qw li.last {
   border:0;  
 }
+#aae_qw h3 {display:none;}
+#aae_qw ul {margin-left: 0; list-style: none;}
 
 
 .featured_aae_questions .btn {
