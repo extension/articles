@@ -43,13 +43,15 @@
 	            		<div class="local-extension-office span3">
 	            			<h3>Local Extension Offices Near You:</h3>
 	            			<a href='#'><img src="/images/frontporch//va_tech.jpg" alt="Virginia Tech" />Learn more about this institution</a>
-							<form class="form-locate">
-								<label>Select a different institution</label>
-								<div class="input-append">
-									<input type="text" class="span2 search-query" placeholder="State or Zip" >
-									<button type="submit" class="btn">LOCATE</button>
-								</div>
-							</form>
+	            			
+<% form_remote_tag :update => 'institution_list', :url => show_institution_list_url, :class => "zipcode form-locate" do %>
+  <label>Select a different institution</label>
+  <div class="input-append">
+    <input id="zip_or_state" name="zip_or_state" type="text" class="span2 search-query" placeholder="State or Zip" />
+    <button type="submit" class="btn">LOCATE</button>
+  </div>
+<% end %>
+
 	            		</div>
             		</div>
             	</div>

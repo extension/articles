@@ -387,7 +387,7 @@ ul.nav {
 	cursor:default;
 }
 
-.local-extension-office form.form-locate input {
+.local-extension-office form input {
 	position: relative;
 	background:#FFF url(../img/locate_bg.jpg) 12px 7px no-repeat;
 	-webkit-box-shadow:inset 2px 2px 5px #888;
@@ -398,11 +398,11 @@ ul.nav {
 	border-right:0;
 }
 
-.local-extension-office form.form-locate input:focus {
+.local-extension-office form input:focus {
 	border-color:rgb(204, 204, 204);
 }
 
-.local-extension-office form.form-locate .btn {
+.local-extension-office form .btn {
 	position: relative;
 	background: #fa6218;
 	color:#FFF;
@@ -416,7 +416,7 @@ ul.nav {
 	font-size: 13px;
 }
 
-.local-extension-office form.form-locate .btn:hover {
+.local-extension-office form .btn:hover {
 	color:#EEE;
 }
 
@@ -907,13 +907,13 @@ footer a:hover {
 	font-size: 11px;
 }
 
-.local-extension-office form.form-locate input {
+.local-extension-office form input {
 	background-image:none;
 	padding:2px 2px 2px 10px;
 	font-size:10px;
 }
 
-.local-extension-office form.form-locate .btn {
+.local-extension-office form .btn {
 	font-size: 10px;
 	padding:4px 8px;
 	line-height: 16px;
