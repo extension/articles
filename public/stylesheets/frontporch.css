@@ -439,35 +439,48 @@ ul.nav {
 	margin-right:20px;
 }
 
-.upcoming-webinars,
+.upcoming_learn_events,
 .meet-extension,
-.trending-questions,
+.featured_aae_questions,
 .latest-tweets {
 	font-size: 14px;
 }
 
-.upcoming-webinars h2,
+.upcoming_learn_events h2,
 .meet-extension h2,
-.trending-questions h2,
+.featured_aae_questions h2,
 .latest-tweets h2 {
     font-family: 'Sanchez', serif;
 	font-size: 20px;
 	color:#f86f20;
 }
 
-.upcoming-webinars dt {
-	font-size:13px;
-    background:#F7F7F7;
-    border-left:3px solid #F76F1F;
-    padding:2px 10px;
-    margin:0;
+
+.featured_aae_questions a,
+.upcoming_learn_events a {
+  color:#333;
+  text-decoration:none;
 }
 
-.upcoming-webinars dd {
+.learn_ew_subhead,
+.learn_ew_see_more {display:none;}
+
+.learn_ew_event_title a {display:block;}
+
+.upcoming_learn_events .learn_ew_event_time {
+	font-size:13px;
+  background:#F7F7F7;
+  border-left:3px solid #F76F1F;
+  padding:2px 10px;
+  margin:0;
+  font-weight:bold;
+}
+
+.upcoming_learn_events .learn_ew_event_title {
 	margin:10px 0 20px;
 }
 
-.upcoming-webinars a {
+.upcoming_learn_events .more_events {
 	color:#f86f20;
 	font-size:12px;
 	text-transform: uppercase;
@@ -493,7 +506,7 @@ ul.nav {
 	margin-top:10px;
 }
 
-.trending-questions li,
+.featured_aae_questions li,
 .aae_qw li {
 	padding-bottom:10px;
 	border-bottom:1px dashed #AAA;
@@ -501,20 +514,17 @@ ul.nav {
 }
 
 
-.trending-questions a {
-  color:#333;
-  text-decoration:none;
-}
-.trending-questions a span.aae_qw_view_response {
+
+.featured_aae_questions a span.aae_qw_view_response {
 	color:#f86f20;
 	font-size:12px;
 	font-style: italic;
 }
 
-.trending-questions a:hover span.aae_qw_view_response {
+.featured_aae_questions a:hover span.aae_qw_view_response {
 	text-decoration:underline;
 }
-.trending-questions a span.aae_qw_view_response {clear:both; display:block;text-align:right}
+.featured_aae_questions a span.aae_qw_view_response {clear:both; display:block;text-align:right}
 .aae_qw_title {display:block;}
 .aae_qw_see_more {display:none;}
 
@@ -523,7 +533,7 @@ ul.nav {
 }
 
 
-.trending-questions .btn {
+.featured_aae_questions .btn {
 	padding:8px 0 !important;
 	margin:0;
 	font-style: normal;

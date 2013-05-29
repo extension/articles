@@ -64,50 +64,44 @@
                 </div>
             </div>
 
-            <!-- Upcoming Webinars, Meet Extension, Trending Questions, Latest Tweets -->
-            <div class="row">
-                <div class="upcoming-webinars span3">
-                	<h2>Upcoming Webinars</h2>
-					<dl>
-						<dt>February 22</dt>
-						<dd>Google+: Tips, tricks, and what's new</dd>
-						<dt>February 25</dt>
-						<dd>The Complex Nature of Savings: Results from a Multi-state Research Project</dd>
-						<dt>February 26</dt>
-						<dd>Google+: Tips, tricks, and what's new</dd>
-						<dt>February 22</dt>
-						<dd>The Complex Nature of Savings: Results from a Multi-state Research Project</dd>
-					</dl>             	
-					<a href='#' class='pull-right'>More Webinars</a>
-                </div>
-                <div class='visible-phone clearfix'></div>
+  <!-- Upcoming Webinars, Meet Extension, Trending Questions, Latest Tweets -->
+  <div class="row">
+    
+    <div class="upcoming_learn_events span3">
+      <h2>Upcoming Webinars</h2>
+      <script type="text/javascript" src="http://learn.dev/widgets/front_porch"></script>
+      <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
+    </div>
+    
+    <div class='visible-phone clearfix'></div>
                 
-                <div class="meet-extension span3">
-                  <% if @featured_bio.present? %>
-                	  <h2>Meet Extension</h2>
-                	  <% link_to(@featured_bio.id_and_link) do %>
-                	    <%= first_image @featured_bio.content %>
-                	    <strong><%= @featured_bio.title %></strong><br />
-                      <!-- <em>Communications Expert</em><br /> -->
-                      <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></p>
-                	  <% end %>
-                	<% else %>
-                	  <h2>No Extension Bio Available</h2>
-                	  <p>Show something else</p>
-                	<% end %>
-                </div>
+    <div class="meet-extension span3">
+      <% if @featured_bio.present? %>
+    	  <h2>Meet Extension</h2>
+    	  <% link_to(@featured_bio.id_and_link) do %>
+    	    <%= first_image @featured_bio.content %>
+    	    <strong><%= @featured_bio.title %></strong><br />
+          <!-- <em>Communications Expert</em><br /> -->
+          <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></p>
+    	  <% end %>
+    	<% else %>
+    	  <h2>No Extension Bio Available</h2>
+    	  <p>Show something else</p>
+    	<% end %>
+    </div>
                 
-                <div class='trending-questions span3'>
-                	<h2>Trending Questions</h2>
-                	<script type="text/javascript" src="http://aae.dev/widgets/front_porch"></script> 
-                	<a href="http://ask.extension.org" class='btn orange lg span3' title="One-to-one answers from a network of experts at universities across America.">Ask an Expert</a>
-                </div>
+    <div class='featured_aae_questions span3'>
+    	<h2>Trending Questions</h2>
+    	<script type="text/javascript" src="http://aae.dev/widgets/front_porch"></script> 
+    	<a href="http://ask.extension.org" class='btn orange lg span3' title="One-to-one answers from a network of experts at universities across America.">Ask an Expert</a>
+    </div>
                 
-                <div class='latest-tweets span3'>
-                	<h2>Latest Tweets</h2>
-					<div class="tweet"></div>
-					<a href='#' class='btn'>Follow @extensions</a>
-                </div>
-            </div>
+    <div class='latest-tweets span3'>
+      <h2>Latest Tweets</h2>
+      <div class="tweet"></div>
+      <a href='#' class='btn'>Follow @extensions</a>
+    </div>
+  
+  </div>
 
-            <hr>
+  <hr>
