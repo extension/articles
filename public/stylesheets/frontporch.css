@@ -493,21 +493,35 @@ ul.nav {
 	margin-top:10px;
 }
 
-.trending-questions li {
+.trending-questions li,
+.aae_qw li {
 	padding-bottom:10px;
 	border-bottom:1px dashed #AAA;
 	margin-bottom:10px;
 }
 
-.trending-questions li:last-child {
-	border:0;
-}
 
 .trending-questions a {
+  color:#333;
+  text-decoration:none;
+}
+.trending-questions a span.aae_qw_view_response {
 	color:#f86f20;
 	font-size:12px;
 	font-style: italic;
 }
+
+.trending-questions a:hover span.aae_qw_view_response {
+	text-decoration:underline;
+}
+.trending-questions a span.aae_qw_view_response {clear:both; display:block;text-align:right}
+.aae_qw_title {display:block;}
+.aae_qw_see_more {display:none;}
+
+#aae_qw li.last {
+  border:0;  
+}
+
 
 .trending-questions .btn {
 	padding:8px 0 !important;
