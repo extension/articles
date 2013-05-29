@@ -58,8 +58,8 @@
             <!-- Tagline -->
             <div class="row">
                 <div class="tagline span12">
-                	<a href='#' class='pull-right btn orange lg hidden-phone'>Learn More</a>
-                	<div>Extending Knowledge. Changing Lives.<a href='#' class='visible-phone btn orange lg'>Learn More</a>
+                	<%= link_to('Learn More', main_special_path(:path => 'about'), :class => "pull-right btn orange lg hidden-phone") %>
+                	<div>Extending Knowledge. Changing Lives. <%= link_to('Learn More', main_special_path(:path => 'about'), :class => "visible-phone btn orange lg") %>
 </div>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                 <div class='trending-questions span3'>
                 	<h2>Trending Questions</h2>
                 	<script type="text/javascript" src="http://aae.dev/widgets/front_porch"></script> 
-                	<a href='#' class='btn orange lg span3'>Ask an Expert</a>
+                	<a href="http://ask.extension.org" class='btn orange lg span3' title="One-to-one answers from a network of experts at universities across America.">Ask an Expert</a>
                 </div>
                 
                 <div class='latest-tweets span3'>
@@ -111,23 +111,3 @@
             </div>
 
             <hr>
-
-
-
-<% @show_resource_areas = true %>
-<div class="grid_12" id="sitehome_main">
-	
-    <div class="grid_4 omega ">     
-        <div class="recentcolumn">
-        <h2>Recent Articles, News &amp; Answers</h2>
-        <ul class="event_listings">
-        <%for content in @recent_content%>
-            <li><%= link_to content.title, content.id_and_link %></li>
-        <%end%>
-        </ul>
-        </div>
-    </div>
-    <div class="clear"></div>
-    
-</div>
-

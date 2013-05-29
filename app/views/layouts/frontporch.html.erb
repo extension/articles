@@ -75,8 +75,8 @@
                                     <li><a href="#">One more separated link</a></li>
                                 </ul>
                             </li>
-                            <li><a href="/templates/subpage.html">About</a></li>
-                            <li><a href="#">Support Us</a></li>
+                            <li><%= link_to('About', main_special_path(:path => 'about')) %></li>
+                            <li><%=link_to 'Support Us', "http://about.extension.org/foundation/donate/" %></li>
                             <li><a href="#">Blog</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
