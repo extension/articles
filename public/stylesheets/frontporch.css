@@ -5,7 +5,7 @@
    ========================================================================== */
 
 body {
-	background: #DDD url(../img/background_bg.jpg) 0 0 repeat fixed;
+	background: #DDD url(/images/frontporch/background_bg.jpg) 0 0 repeat fixed;
 	height:100%;
 	font-size: 16px;
 	line-height:140%;
@@ -560,7 +560,7 @@ ul.nav {
 
 .latest-tweets li {
 	list-style: none;
-	background:#FFF url(../img/tweet_bg.gif) 5px 10px no-repeat;
+	background:#FFF url(/images/frontporch/tweet_bg.gif) 5px 10px no-repeat;
 	margin:10px;
 	padding:5px 5px 5px 25px;
 	text-align: left;
@@ -571,7 +571,7 @@ ul.nav {
 }
 
 .latest-tweets .btn {
-	background:transparent url(../img/tweet_bg.gif) 5px 5px no-repeat;
+	background:transparent url(/images/frontporch/tweet_bg.gif) 5px 5px no-repeat;
 	padding:2px 5px 2px 25px;
 	color:#666;
 	font-weight: bold;
