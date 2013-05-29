@@ -859,6 +859,24 @@ footer a:hover {
 }
 
 
+ul.extension_global_nav {background:#53586d !important;}
+ul.extension_global_nav a {color:#ccc !important;}
+
+#adminnotice {background:#E42020;}
+#adminnotice p {text-align: center; color:#fff; padding:.5em 0; margin:0;}
+#adminnotice p a {color:#fff;}
+
+div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:8px;text-align:left;}
+div#app_location p {margin:0;line-height:1em;}
+div#app_location.localdev {background: #ccc;border:1px solid #888;color:#222;padding:4px;}
+div#app_location.demo {background: #ff00ff;border:1px solid #000;color:#222;}
+div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
+div#app_location.localdev a {color:#000; text-decoration:underline;}
+
+#myCarousel .item {background:#ccc;}
+#myCarousel .item {height:336px;}
+
+
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
    ========================================================================== */
@@ -1070,3 +1088,6 @@ footer p {
 	font-size: 85%;
 }
 }
+
+
+
