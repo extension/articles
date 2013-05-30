@@ -374,7 +374,7 @@ ul.nav {
 	text-decoration: none;
 }
 
-.local-extension-office form {
+#institution_picker {
 	background: #F8F8F8;
 	padding:10px;
 	color:#F76F1F;
@@ -383,11 +383,7 @@ ul.nav {
 	margin-top:10px;
 }
 
-.local-extension-office form label {
-	cursor:default;
-}
-
-.local-extension-office form input {
+#institution_picker input {
 	position: relative;
 	background:#FFF url(/images/frontporch/locate_bg.jpg) 12px 7px no-repeat;
 	-webkit-box-shadow:inset 2px 2px 5px #888;
@@ -398,12 +394,11 @@ ul.nav {
 	border-right:0;
 }
 
-.local-extension-office form input:focus {
+#institution_picker input:focus {
 	border-color:rgb(204, 204, 204);
 }
-
-.local-extension-office form .btn {
-	position: relative;
+#institution_picker .btn {
+  position: relative;
 	background: #fa6218;
 	color:#FFF;
 	border:1px solid #d65506;
@@ -415,10 +410,9 @@ ul.nav {
 	text-transform: uppercase;
 	font-size: 13px;
 }
-
-.local-extension-office form .btn:hover {
+#institution_picker .btn:hover {
 	color:#EEE;
-}
+} 
 
 .tagline {
     line-height: 30px;
@@ -877,6 +871,8 @@ div#app_location.localdev a {color:#000; text-decoration:underline;}
 #myCarousel .item {background:#ccc;}
 #myCarousel .item {height:336px;}
 
+
+#institutional_branding #institution_actions {list-style:none; margin:0;}
 
 /* ==========================================================================
    Responsive overrides (tablet/small screen)

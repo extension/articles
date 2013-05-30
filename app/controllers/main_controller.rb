@@ -174,10 +174,9 @@ class MainController < ApplicationController
         state = params[:zip_or_state].upcase
       end
       if(!(location = Location.find_by_abbreviation(state)))
-        render(:update) do |page| 
-          page.replace_html "logo", :partial =>  "shared/no_institution"
+        respond_to do |format|
+          format.js {render :template => 'main/show_no_institution'}
         end
-        return
       else
         branding_institutions_for_location = location.branding_institutions
         if(!branding_institutions_for_location.blank?)
@@ -187,25 +186,22 @@ class MainController < ApplicationController
             session[:location_and_county] = {:location_id => location.id}
             session[:branding_institution_id] = @personal[:institution].id.to_s
             session[:multistate] = nil
-            render(:update) do |page| 
-              page.replace_html "logo", :partial =>  "shared/logo"
+            respond_to do |format|
+              format.js {render :template => 'main/show_institution'}
             end
-            return
           else
-            render(:update) do |page| 
-              page.replace_html "logo", :partial => "shared/multistate", :locals => {:institutions => branding_institutions_for_location}
+            @branding_institutions_for_location = branding_institutions_for_location
+            respond_to do |format|
+              format.js {render :template => 'main/show_multistate'}
             end
-            return
           end
         else
-          render(:update) do |page| 
-            page.replace_html "logo", :partial =>  "shared/no_institution"
+          respond_to do |format|
+            format.js {render :template => 'main/show_no_institution'}
           end
-          return
         end
       end
     end
-    render :nothing => true
   end
   
   def set_institution
