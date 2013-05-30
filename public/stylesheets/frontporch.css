@@ -245,7 +245,7 @@ ul.nav {
 }
 
 .navbar .form-search input.search-query {
-	background:#F8F8F8 url(../img/search_bg.gif) 10px 4px no-repeat;
+	background:#F8F8F8 url(/images/frontporch/search_bg.gif) 10px 4px no-repeat;
 	-webkit-box-shadow:inset 2px 2px 5px #888;
 	-moz-box-shadow:inset 2px 2px 5px #888;
 	box-shadow:inset 2px 2px 5px #888;
@@ -389,7 +389,7 @@ ul.nav {
 
 .local-extension-office form input {
 	position: relative;
-	background:#FFF url(../img/locate_bg.jpg) 12px 7px no-repeat;
+	background:#FFF url(/images/frontporch/locate_bg.jpg) 12px 7px no-repeat;
 	-webkit-box-shadow:inset 2px 2px 5px #888;
 	-moz-box-shadow:inset 2px 2px 5px #888;
 	box-shadow:inset 2px 2px 5px #888;
@@ -866,6 +866,7 @@ ul.extension_global_nav a {color:#ccc !important;}
 #adminnotice p {text-align: center; color:#fff; padding:.5em 0; margin:0;}
 #adminnotice p a {color:#fff;}
 
+div#app_location {display:none;}
 div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:8px;text-align:left;}
 div#app_location p {margin:0;line-height:1em;}
 div#app_location.localdev {background: #ccc;border:1px solid #888;color:#222;padding:4px;}
