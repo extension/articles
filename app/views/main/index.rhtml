@@ -31,37 +31,9 @@
   </div>
 
   <div class="span3">
-    <div class='row'>
-      <div class="connect-with-us span3 home">
-        <h3>Connect with us</h3>
-        <ul class="inline">
-          <li><%=link_to image_tag("/images/frontporch/icon_twitter.gif", :alt => "Twitter"), "https://twitter.com/eXtension4U" %></li>
-          <li><%=link_to image_tag("/images/frontporch/icon_facebook.gif", :alt => "Facebook"), "https://www.facebook.com/eXtensionInitiative" %></li>
-          <li><%=link_to image_tag("/images/frontporch/icon_youtube.gif", :alt => "YouTube"), "http://www.youtube.com/extensioninitiative" %></li>
-          <li><%=link_to image_tag("/images/frontporch/icon_pinterest.gif", :alt => "Pinterest"), "#" %></li>
-          <li><%=link_to image_tag("/images/frontporch/icon_googleplus.gif", :alt => "Google+"), "#" %></li>
-        </ul>
-      </div>
-    </div>
-            		<div class='row'>
-	            		<div class="local-extension-office span3">
-                    <div id="institutional_branding">
-                      <%= render(:partial => 'shared/institutional_branding') %>
-                    </div>
-                    
-                    <div id="institution_picker">
-                    <label for="zip_or_state">Select a different institution</label>
-                    <div class="input-append">
-                      <input id="zip_or_state" name="zip_or_state" type="text" class="span2 search-query" placeholder="State or Zip" />
-                      <span id="submit_zip" class="btn">LOCATE</span>
-                    </div>
-                    </div>
-
-
-	            		</div>
-            		</div>
-            	</div>
-            </div>
+    <%= render(:partial => 'shared/social_and_locations') %>
+  </div>
+</div>
 
             <!-- Tagline -->
             <div class="row">
