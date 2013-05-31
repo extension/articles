@@ -163,6 +163,7 @@ class MainController < ApplicationController
     @page = @special_page.page
     set_title(@special_page.main_heading, @special_page.sub_heading)
     set_titletag(@special_page.titletag)
+    render(:template => "/pages/show")
   end
 
     
