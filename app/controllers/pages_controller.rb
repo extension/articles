@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class PagesController < ApplicationController
-  layout 'pubsite'
+  layout 'frontporch'
   before_filter :set_content_tag_and_community_and_topic
   before_filter :signin_optional
   

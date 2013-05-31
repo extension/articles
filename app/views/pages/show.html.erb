@@ -1,73 +1,103 @@
 <% @in_this_resource_area = true %>
 <% @resource_area_feeds = true %>
 <% @page_meta_description = "#{strip_tags(@page.content.gsub(/[[:space:]]/, ' ')).strip.truncate(140, :separator => ' ')}" %>
-<% @page_type = "article" %>
-
-<%- if(!@page_communities.blank?) -%>
-  <p id="relatedresources">
-    <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
-  </p>
-<%- end -%>
-
-<div class="pageextras">
-  <% if not @youth %>
-    <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', @ask_two_point_oh_form, :class => 'aae_form_link' %></p>
-  <% end %>
-  <%- if(!params[:print]) -%>
-    <p class="print_and_share"><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %>
-      <%= render(:partial => 'addtoany') %>
-    </p>
-  <%- end -%>
-</div>
-
-<div class = "headline left">
-  <h1 class="title"><%= @page.title %></h1>
-  <p class="caption">Last Updated: <%= micro_time_print(@page.source_updated_at, 'updated') %></p>
-  <p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
-</div>
-<br class="clearing" />
 
 
-
-<div id="content_css_reset">
-  <%- if @page.is_event? -%>
-    <div id="article" class = 'event'>
-      <%= render(:partial => 'event') %>
-  <%- elsif @page.is_faq? -%>
-    <div id="article" class = 'faq'>
-      <%- if(!@page.reference_pages.blank?) -%>
-        <%= render(:partial => 'reference_pages') %>
+<!-- Article, Right Column -->
+<div class="row">
+	<!-- Article -->
+	<div class="span9">
+		<h1><%= @page.title %></h1>
+		<div class='infobar bordered'>
+		  
+		  <%- if(!@page_communities.blank?) -%>
+          <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
       <%- end -%>
-      <%- if(@page.is_old_faq?) -%>
-        <%= simple_format(@page.content) %>
-      <%- else -%>
-        <%= @page.content %>
-      <%- end -%>
-  <%- elsif -%>
-    <div id="article">
-      <%= @page.content %>
-  <%- end -%>
-  
-      <%- if @page_content_tag_names -%>
-        <p class="caption publictags">Browse related <%= @page.datatype.pluralize %> by tag: 
-          <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag))}.join(', ') %>    
-        </p>
-      <%- end -%>
-    </div>
-</div>
-<br class="clearing" />
-
-
-<% if not @youth %>
-  <div id="aae_plug">  
-    <h4>Have a specific question? <%= link_to "Try asking one of our Experts", @ask_two_point_oh_form, :class => "aae_form_link" %></h4>
-    <p>Unlike most other resources on the web, we have experts from Universities around the country ready to answer your questions.</p>
+      <span><%= micro_time_print(@page.source_updated_at, 'updated') %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %></span>
+              <!-- AddThis Button BEGIN - desktop only -->
+            	<div class="addthis_toolbox addthis_default_style pull-right visible-desktop">
+            	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+            	<a class="addthis_button_tweet"></a>
+            	<a class="addthis_button_pinterest_pinit"></a>
+            	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+            	<a class="addthis_counter addthis_pill_style"></a>
+            	</div>
+            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
+            <!-- AddThis Button END -->
+            <!-- AddThis Button BEGIN - hidden on desktop -->
+            	<div class="addthis_toolbox addthis_default_style addthis_16x16_style pull-right hidden-desktop">
+            	<a class="addthis_button_facebook"></a>
+            	<a class="addthis_button_twitter"></a>
+            	<a class="addthis_button_pinterest_share"></a>
+            	<a class="addthis_button_google_plusone_share"></a>
+            	</div>
+            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
+            <!-- AddThis Button END -->
+		</div>
+		
+		<%= @page.content %>
+		
+		<div class='backtotop span9'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
+		<div class='row'>
+  		<div class='article-info span6'>
+  			<h3 class='bordered'>Browse related by Tag</h3>
+  			<%- if @page_content_tag_names -%>
+          <p class="caption publictags">
+            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag))}.join(', ') %>
+          </p>
+        <%- end -%>
+  		</div>
+  		<div class='article-info span3'>
+  			<h3 class='bordered'>Share this post</h3>
+  			<div class='share'>
+		        <!-- AddThis Button BEGIN -->
+        		<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+        		<a class="addthis_button_twitter"></a>
+        		<a class="addthis_button_facebook"></a>
+        		<a class="addthis_button_google_plusone_share"></a>
+        		<a class="addthis_button_pinterest_share"></a>
+        		<a class="addthis_button_email"></a>
+        		</div>
+        		<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
+        		<!-- AddThis Button END -->	  
+  			</div>          			
+  			<div class='callout orange'>
+  				<h4>Have a Question?</h4>
+  				<p><a href='#'>Click here to ask one of our experts</a></p>
+  			</div>
+  		</div>
+		</div>
+		
   </div>
-<% end %>
-
-  <p id="pagelinks"><%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %><br /></p>
-
-
-
-
-
+  
+  <div class="span3">
+    <%= render(:partial => 'shared/social_and_locations') %>
+    
+    <div class='row'>
+    	<div class='callout orange span3'>
+    		<h4>Donate to <%= @community.name %></h4>
+    		<p>Few words to go here why someone should donate</p>
+    		<a href='#' class='btn orange lg'><i class='icon-heart icon-white'></i> Donate Now</a>
+    	</div>
+    </div>
+    <br />
+    
+    <div class='row'>
+      <div class='latest-tweets span3'>
+        <h2>Latest Tweets</h2>
+        <div class="tweet"></div>
+        <a href='#' class='btn'>Follow @extensions</a>
+      </div>
+    </div>
+    
+    <div class='row'>
+      <div class="upcoming_learn_events span3">
+        <h2>Upcoming Webinars</h2>
+        <script type="text/javascript" src="http://dev.learn.extension.org/widgets/front_porch"></script>
+        <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
+      </div>
+    </div>
+    
+  </div>
+</div>
+<p id="pagelinks"><%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %></p>

@@ -48,7 +48,7 @@ module DataHelper
     elsif(community.content_tag_names.empty?)
       return community.public_name
     else
-      return "<span>"  + link_to(h(community.public_name  + " Home"), site_index_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name))) + "</span>"
+      return "<span class=\"label label-tag\">"  + link_to(h(community.public_name), site_index_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name))) + "</span>"
     end
   end
   

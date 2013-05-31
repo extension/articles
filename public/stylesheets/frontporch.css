@@ -614,8 +614,12 @@ ul.nav {
   white-space: nowrap;
   text-shadow: none;
   border-radius: 0;
-  background:#f87924 url(../img/label_tag_bg.jpg) 100% -1px no-repeat;
+  background:#f87924 url(/images/frontporch/label_tag_bg.jpg) 100% -1px no-repeat;
   margin-right:10px;
+}
+
+.label-tag a {
+  color:#fff;
 }
 
 ul.thumbnails {
@@ -875,6 +879,9 @@ div#app_location.localdev a {color:#000; text-decoration:underline;}
 
 
 #institutional_branding #institution_actions {list-style:none; margin:0;}
+
+/* .hiddenStructure is pulled over from CoP wiki templates. I guess this will never die.  */
+.hiddenStructure {display:none;}
 
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
