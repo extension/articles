@@ -98,13 +98,12 @@ class MainController < ApplicationController
     
     if(@community and @community.aae_group_id.present?)
       @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
-      @ask_question_widget_url = "https://dev.ask.extension.org/widgets/front_porch?group_id=#{@community.aae_group_id}"
     else
       @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
-      @ask_question_widget_url = "https://dev.ask.extension.org/widgets/front_porch"
     end
     
-    @learn_event_widget_url = "http://dev.learn.extension.org/widgets/front_porch?tags=#{@content_tag.name}"
+    @ask_question_widget_url = "https://dev.ask.extension.org/answered/front_porch?tags=#{@content_tag.name}"
+    @learn_event_widget_url = "http://dev.learn.extension.org/upcoming/front_porch?tags=#{@content_tag.name}"
     
     set_title(@community.public_name,@community.public_description)
     set_titletag("#{@community.public_name} - eXtension")
