@@ -65,8 +65,8 @@
                             <li class="active"><a href="/">Home</a></li>
                             <li><%= link_to('Our Resources', main_communities_path()) %></li>
                             <li><%= link_to('About', main_special_path(:path => 'about')) %></li>
-                            <li><%=link_to 'Support Us', "http://about.extension.org/foundation/donate/" %></li>
-                            <li><%=link_to 'Blog', "http://about.extension.org/blog/" %></li>
+                            <li><%= link_to 'Support Us', "http://about.extension.org/foundation/donate/" %></li>
+                            <li><%= link_to('Blog', main_blog_path()) %></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                     <div class="search-collapse collapse">
@@ -79,7 +79,9 @@
 
       
       <%= yield :layout %>
-
+      
+      <hr>
+      
       <footer>
         <ul class='inline'>
           <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>

@@ -1,11 +1,23 @@
-
-<%for topic in topics%>
-        <h3><%= topic.name%></h3>
-        <ul>
+<!-- Left Column, Content, Right Column -->
+<div class="row">
+	<!-- Left column -->
+	<div class='span2 resource-areas'>
+	  <h3>Resource Areas</h3>
+	  <%for topic in topics%>
+      <h4><%= topic.name%></h4>
+      <ul class='unstyled'>
         <%for community in topic.publishing_communities %>
-            <li><%= link_to_public_community(community) %></li>
+          <li><%= link_to_public_community(community) %></li>
         <%end%>
-        </ul>
-<%end%>
+      </ul>
+    <%end%>
+	</div><!-- END Left column -->
 
-<p class="sidenote">More resource areas are being added every month...</p>
+
+  <!-- Content -->
+	<div class="span7">
+		<div class='title'>Our Resources</div>
+		
+  </div><!-- END Content -->
+
+</div><!-- END Left Column, Content, Right Column -->

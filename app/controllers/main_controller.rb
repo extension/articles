@@ -140,15 +140,26 @@ class MainController < ApplicationController
     set_titletag("eXtension - Search results")
   end
   
+  def blog
+    @page_title_text = "Blog"
+    @pages = Page.diverse_feature_list().paginate(:page => params[:page], :per_page => 10)
+    render :template => "/pages/list"
+  end
+  
   def communities
-    @published_content = true
+    @page_title_text = "Our Resources"
     @canonical_link = main_communities_url
-    @right_column = false
     @special_page = SpecialPage.find_by_path('communities')
-    @page = @special_page.page
-    set_title(@special_page.main_heading, @special_page.sub_heading)
-    set_titletag(@special_page.titletag)
-    @communities = PublishingCommunity.launched.ordered_by_topic
+    @pages = Page.diverse_feature_list().paginate(:page => params[:page], :per_page => 10)
+    render :template => "/pages/list"
+    # @right_column = false
+    # @published_content = true
+    # @page = @special_page.page
+    # set_title(@special_page.main_heading, @special_page.sub_heading)
+    # @communities = PublishingCommunity.launched.ordered_by_topic
+    # set_titletag(@special_page.titletag)
+    # @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100)
+    # @featured_articles = Page.articles.tagged_with_content_tag('front_page').ordered.first
   end
   
   def special

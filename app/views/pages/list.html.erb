@@ -1,43 +1,72 @@
-<%- if(@community.nil?) -%>
-  <% @show_resource_areas = true %>
-  <% @includejquery = true %>
-  <% @cat_landing = true %>
-<%- end -%>
+<!-- Left Column, Content, Right Column -->
+<div class="row">
+	<!-- Left column -->
+	<div class='span2 resource-areas'>
+	  <h3>Resource Areas</h3>
+	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+      <h4><%= topic.name%></h4>
+      <ul class='unstyled'>
+        <%for community in topic.publishing_communities %>
+          <li><%= link_to_public_community(community) %></li>
+        <%end%>
+      </ul>
+    <%end%>
+	</div><!-- END Left column -->
 
-<div class = "mission">
-  <%- if @page_title_text && @header_description -%>
-    <h2 class="missionstatement"><%=@page_title_text%></h2>
-  <%- end -%>
-</div>
 
-<%- if(@show_selector) -%>
-  <%- form_tag do -%>
-      <fieldset class="resource_selector">
-          <p>
-              <%=community_select(@community)%> <%= link_to 'Show All', {:content_tag => 'all'} %> 
-          </p>
-      </fieldset>
-  <%- end -%>
-<%- end -%>
-
-<%- if(@pages.blank?)-%>
-  <h2>There are currently no matches for this resource area.</h2>
-<%- else -%>
-  <div class = "pagelinks">
-    <%= will_paginate(@pages,:params => {:content_types => params[:content_types], :tags => params[:tags], :articlefilter => params[:articlefilter]}) %>
+  <!-- Content -->
+	<div class="span7">
+		<div class='title'><%= @page_title_text %></div>
+		<%- @pages.each do |page| -%>
+		
+		<div class='article'>
+		  <% if @image %> <!-- todo -->
+  		  <p><img src="/assets/img/blogimg_1.jpg" alt="Blog Image 1" /></p>
+  		<% end %>
+  		
+        <h1><%= link_to(page.title,page_url(:id => page.id, :title => page.url_title)) %></h1>
+        <div class='infobar'>
+          <% if(!page.community_content_tag_names.blank?) -%>
+            <% page.community_content_tag_names.each do |tagname| %>
+              <%= link_to_public_community_home(Tag.find_by_name(tagname).content_community) %>
+            <% end %>
+          <% end %>
+    			<span><i class='icon-clock-orange'></i> Updated: <%= expanded_time_print(page.source_updated_at)%></span>
+    		</div>
+    		<% link_to(page.id_and_link) do %>
+        <p><%= get_title(page.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></p>
+        <a href='#' class='btn orange lg'>Read More</a>
+      <% end %>  
+  	</div>
+    <%- end -%>
+    
+    <div class = "pagelinks">
+      <%= will_paginate(@pages,:params => {:content_types => params[:content_types], :tags => params[:tags], :articlefilter => params[:articlefilter]}) %>
+    </div>
+    
+  </div><!-- END Content -->
+  
+  
+  <div class="span3">
+    <%= render(:partial => 'shared/social_and_locations') %>
+    
+    <div class='row'>
+      <div class='latest-tweets span3'>
+        <h2>Latest Tweets</h2>
+        <div class="tweet"></div>
+        <a href='#' class='btn'>Follow @extensions</a>
+      </div>
+    </div>
+    
+    <div class='row'>
+      <div class="upcoming_learn_events span3">
+        <h2>Upcoming Webinars</h2>
+        <script type="text/javascript" src="http://dev.learn.extension.org/widgets/front_porch"></script>
+        <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
+      </div>
+    </div>
+    
   </div>
-  <%- index_start = (@pages.current_page - 1) * @pages.per_page + 1 -%>
-  <ol class="articlelist" start="<%= index_start %>;">
-  <%- @pages.each do |page| -%>
-  <li>
-    <%= link_to(page.title,page_url(:id => page.id, :title => page.url_title)) -%>
-    <span class="published">Updated: <%= expanded_time_print(page.source_updated_at)%></span>
-  </li>
-  <%- end -%>
-  </ol>
-  <div class = "pagelinks">
-    <%= will_paginate(@pages,:params => {:content_types => params[:content_types], :tags => params[:tags], :articlefilter => params[:articlefilter]}) %>
-  </div>
-<%- end -%>
+  
 
-<p class="askanexpert">Didn't find what you were looking for? <%= link_to 'Try asking one of our Experts', AppConfig.configtable['ask_two_point_oh_form'] %>.</p>
+</div><!-- END Left Column, Content, Right Column -->

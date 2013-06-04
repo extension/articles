@@ -162,6 +162,7 @@ ActionController::Routing::Routes.draw do |map|
   map.short_pageid ':id', :controller => 'pages', :action => 'show',  :requirements => { :id => /\d+/ }
 
   map.site_search '/main/search', :controller => 'main', :action => 'search'
+  map.main_blog '/main/blog', :controller => 'main', :action => 'blog'
   map.main_communities '/main/communities', :controller => 'main', :action => 'communities'
   map.set_institution '/main/set_institution', :controller => 'main', :action => 'set_institution'
   map.show_institution_list '/main/show_institution_list', :controller => 'main', :action => 'show_institution_list'
