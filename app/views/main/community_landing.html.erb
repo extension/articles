@@ -1,109 +1,86 @@
-<% @resource_area_feeds = true %>
 
-<h1><%=@page_title_text%></h1>
-<h2><%=@header_description%></h2>
-
-<%if @community and @community_highlights.length > 0 %>
-    <h3 class="instructions">Here are some of our featured articles and activities...</h3>
-    
-
-        <div id="slider2" class="cop_slider">
-  		    <%for highlight in @community_highlights%>
-                <div class="contentdiv">
-                    <dl>
-                        <dt><%= link_to highlight.title, highlight.id_and_link %></dt>
-                        <dd class="img"><%=first_image highlight.content%></dd>
-                        <dd><%= get_title(highlight.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></dd>
-                        <dd class="more"><%= link_to "More...", highlight.id_and_link %></dd>
-                    </dl>
-                </div>
-  		    <%end%>
-  		    <div class="clearing"></div>
-        </div>
-        <div class="pagination" id="paginate-slider2"></div>
-	<script type="text/javascript">
-	//<![CDATA[
-		ContentSlider("slider2", 10000)
-	//]]>
-	</script>
-<%end%>
-
-<%if @news.length > 0 || @faqs.length > 0 %>
-<div style = "margin-top: 30px; padding-bottom: 20px">
-    <%if (@in_this_section or @recent_newsicles) %>
-        <%if @faqs.length > 0%>
-            <div class="homesection half left">
-        <% else %>
-            <div>
+<!-- Image Rotator, Connect With Us, Local Extension Office -->
+<div class="row">
+  <div class="span9">
+    <h1 class='title'><%= @page_title_text %></h1>
+    <div id="myCarousel" class="carousel slide">
+      <ol class="carousel-indicators">
+        <% @community_highlights.each_with_index do |feature, i| %>
+          <li data-target="#myCarousel" data-slide-to="<%= i %>" class="<%= i == 0 ? "active" : "" %>"></li>
         <% end %>
-            <% if @in_this_section %>
-                <h2 class="fullwidth">In This Resource Area</h2>
-                <div class="whatsnewbox">
-                    <%=@in_this_section.content %>
-                </div>
-            <% else %>
-               <h2>Recent Articles</h2>
-               <div class="whatsnewbox">
-                  <%for article in @recent_newsicles %>
-        		       <dl>
-        		         <dt><%= expanded_time_print(article.source_updated_at)%></dt>
-                     <dd><%= link_to article.title, article.id_and_link %></dd>
-                   </dl>
-                  <%end%>
-                  <p><%= link_to "More ...", site_articles_url(with_content_tag?) %></p>
-                  
-               </div>
-            <% end %>
+      </ol>
+      <div class="carousel-inner">
+		  
+      <!-- replace with @featured_article -->
+		  <% @community_highlights.each_with_index do |feature, i| %>
+        <div class="item <%= i == 0 ? "active" : "" %>">
+          <%= first_image feature.content %>
+            <div class="carousel-caption">
+              <% link_to(feature.id_and_link) do %>
+                <h1><%= feature.title %></h1>
+                <p><%= get_title(feature.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read More</span></p>
+              <% end %>
             </div>
-    <%end%>
+        </div>  
+      <% end %>
+      
+      </div>
+      <!-- Carousel nav -->
+      <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+      <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+    </div>
+  </div>
 
-    <%if @faqs.length > 0%>
-         <div class="homesection half left">
-                <h2>Answers from our Experts</h2>
-                <div class="whatsnewbox">
-                    <%for faq in @faqs%>
-                        <dl>
-                            <dt><%= expanded_time_print(faq.source_updated_at)%></dt>
-                            <dd><%= link_to(faq.title.truncate(100,{:omission => '...', :avoid_orphans => true}), page_url(:id => faq.id, :title => faq.url_title)) %></dd>                            
-                        </dl>
-                    <%end%>
-                    <p><%= link_to "More ...", site_faqs_url(with_content_tag?) %></p>
-                </div>
-            </div>
-    <%end%>
-    
+  <div class="span3">
+    <%= render(:partial => 'shared/social_and_locations') %>
+  </div>
 </div>
-<%end%>
 
-<%if @newsicles && @newsicles.length > 0%>
-    <div class="homesection">
-        <h2>Recent Articles</h2>
-        <div class = "whatsnewbox">
-            <%for article in @newsicles%>
-  		       <dl>
-  		         <dt><%= expanded_time_print(article.source_updated_at)%></dt>
-               <dd><%= link_to article.title, article.id_and_link %></dd>
-             </dl>
-            <%end%>
-   
-        <p><%= link_to "More ...", site_articles_url(with_content_tag?) %></p>
+            <!-- Tagline -->
+            <div class="row">
+                <div class="tagline span12">
+                	<%= link_to('Learn More', main_special_path(:path => 'about'), :class => "pull-right btn orange lg hidden-phone") %>
+                	<div>Extending Knowledge. Changing Lives. <%= link_to('Learn More', main_special_path(:path => 'about'), :class => "visible-phone btn orange lg") %>
+</div>
+                </div>
+            </div>
+
+  <!-- Upcoming Webinars, Meet Extension, Trending Questions, Latest Tweets -->
+  <div class="row">
+    
+    <div class="upcoming_learn_events span3">
+      <h2>Upcoming Webinars</h2>
+      <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
+      <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
     </div>
-<%end%>
-
-
-<%if @recent_learning_lessons.length > 0%>
-    <div class="homesection">
-        <h2>Recent Learning Lessons</h2>
-	    <div class = "whatsnewbox">
-            <%for lesson in @recent_learning_lessons%>
-             <dl>
-               <dt><%= expanded_time_print(lesson.source_updated_at)%></dt>
-               <dd><%= link_to lesson.title, lesson.id_and_link %></dd>
-             </dl>
-            <%end%>
-        </div>
-        <p><%= link_to "More ...", site_learning_lessons_url(with_content_tag?) %></p>
+    
+    <div class='visible-phone clearfix'></div>
+                
+    <div class="meet-extension span3">
+      <% if @featured_bio.present? %>
+    	  <h2>Meet Extension</h2>
+    	  <% link_to(@featured_bio.id_and_link) do %>
+    	    <%= first_image @featured_bio.content %>
+    	    <strong><%= @featured_bio.title %></strong><br />
+          <!-- <em>Communications Expert</em><br /> -->
+          <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></p>
+    	  <% end %>
+    	<% else %>
+    	  <h2>No Extension Bio Available</h2>
+    	  <p>Show something else</p>
+    	<% end %>
     </div>
-<%end%>
-
-
+                
+    <div class='featured_aae_questions span3'>
+    	<h2>Trending Questions</h2>
+    	<script type="text/javascript" src="<%= @ask_question_widget_url %>"></script> 
+    	<a href="http://ask.extension.org" class='btn orange lg span3' title="One-to-one answers from a network of experts at universities across America.">Ask an Expert</a>
+    </div>
+                
+    <div class='latest-tweets span3'>
+      <h2>Latest Tweets</h2>
+      <div class="tweet"></div>
+      <a href='#' class='btn'>Follow @extensions</a>
+    </div>
+  
+  </div>
