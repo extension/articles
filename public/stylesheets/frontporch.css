@@ -526,6 +526,7 @@ ul.nav {
   border:0;  
 }
 #aae_qw h3 {display:none;}
+#aae_qw h3.aae_qw_no_matches {display:block;}
 #aae_qw ul {margin-left: 0; list-style: none;}
 
 

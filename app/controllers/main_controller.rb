@@ -102,7 +102,7 @@ class MainController < ApplicationController
       @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     end
     
-    @ask_question_widget_url = "https://dev.ask.extension.org/answered/front_porch?tags=#{@content_tag.name}"
+    @ask_question_widget_url = "https://ask.extension.org/widgets/answered?tags=#{@content_tag.name}"
     @learn_event_widget_url = "http://dev.learn.extension.org/upcoming/front_porch?tags=#{@content_tag.name}"
     
     set_title(@community.public_name,@community.public_description)
