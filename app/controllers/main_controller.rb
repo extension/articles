@@ -26,16 +26,16 @@ class MainController < ApplicationController
      # get diverse list of articles across different communities
      @community_highlights = Page.diverse_feature_list({:limit => 6})
      
-     # articles tagged 'front_page' in Create will be eligible for front page display. the one with the latest source updated timestamp will win.
+     # articles tagged 'front page' in Create will be eligible for front page display. the one with the latest source updated timestamp will win.
      # in the case that one does not exist, it will fall back to the about page.
-     @featured_article = Page.articles.tagged_with_content_tag('front_page').ordered.first
+     @featured_article = Page.articles.tagged_with_content_tag('front page').ordered.first
      if @featured_article.blank?
        @featured_article = Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
      end
      
-     # articles tagged with both 'front_page' and 'bio in Create will be eligible for the front page bio display. the one with the latest source updated timestamp will win.
+     # articles tagged with both 'front page' and 'bio in Create will be eligible for the front page bio display. the one with the latest source updated timestamp will win.
      # in the case that one does not exist, the bio area will just collapse
-     @featured_bio = Page.articles.tagged_with_all_content_tags(['front_page', 'bio']).ordered.first
+     @featured_bio = Page.articles.tagged_with_all_content_tags(['front page', 'bio']).ordered.first
      
      @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
      @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
@@ -162,7 +162,7 @@ class MainController < ApplicationController
     # @communities = PublishingCommunity.launched.ordered_by_topic
     # set_titletag(@special_page.titletag)
     # @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100)
-    # @featured_articles = Page.articles.tagged_with_content_tag('front_page').ordered.first
+    # @featured_articles = Page.articles.tagged_with_content_tag('front page').ordered.first
   end
   
   def special
