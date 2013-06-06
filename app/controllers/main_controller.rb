@@ -103,7 +103,7 @@ class MainController < ApplicationController
     end
     
     @ask_question_widget_url = "https://ask.extension.org/widgets/answered?tags=#{@content_tag.name}"
-    @learn_event_widget_url = "http://dev.learn.extension.org/upcoming/front_porch?tags=#{@content_tag.name}"
+    @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming?tags=#{@content_tag.name}"
     
     set_title(@community.public_name,@community.public_description)
     set_titletag("#{@community.public_name} - eXtension")
