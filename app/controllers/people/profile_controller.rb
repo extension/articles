@@ -125,10 +125,7 @@ class People::ProfileController < ApplicationController
             
       # emailchange?
       emailchanged = @currentuser.email_changed?
-      
-      # announce change?
-      announcechange = @currentuser.announcements_changed?
-      
+
       if @currentuser.save
         UserEvent.log_event(:etype => UserEvent::PROFILE,:user => @currentuser,:description => "profile updated")
         log_user_activity(:user => @currentuser,:activitycode => Activity::UPDATE_PROFILE, :appname => 'local')

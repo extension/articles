@@ -77,10 +77,6 @@
 			<span class="agreementstatus">Not Yet Reviewed</span>
 		<% end %>	
 	</p>
-	<p class="item">
-		<span class="vcardLabel">Announcements List:</span>
-		<span class="announcements"><%= (showuser.announcements) ? 'Subscribed': 'Not Subscribed' %></span>
-	</p>
 	<%- if !showuser.vouched? and !showuser.additionaldata.blank? and !showuser.additionaldata[:signup_affiliation].blank? -%>
 	  <p class="item">
 	    <span class="vcardLabel">Connection with Extension:</span>

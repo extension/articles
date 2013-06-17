@@ -513,9 +513,6 @@ class User < Account
   def lists
     list_of_lists = []
     if(self.is_validuser? and self.emailconfirmed?)    
-      if(self.announcements?)
-        list_of_lists << List.find_announce_list
-      end
       self.communities.each do |community|
         case community.connectiontype
         when 'member'
