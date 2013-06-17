@@ -113,18 +113,6 @@
         <div class="form_section">
            <%= render(:partial => 'people/signup/profile_position', :locals => { :positionslist => Position.geteditlist}) %>
         </div>
-
-
-        <div class="form_section">
-        <h3>Announcements</h3>
-        	<div id="announcements">
-        	    <p>
-        	        <label>
-        	            <%= check_box(:user,:announcements) %>Subscribe me to the eXtension.org "announcements" mailing list.
-        	        </label>
-        	    </p>
-        	</div>
-        </div>
 		
         <p><%= submit_tag 'Submit Registration' %></p>
     </div>
