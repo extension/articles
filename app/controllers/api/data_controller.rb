@@ -52,15 +52,7 @@ class Api::DataController < ApplicationController
      returnhash[:updated] = page.source_updated_at
      return render :text => returnhash.to_json    
   end
-
-  def publicprofile
-    #TODO: redirect to people
-  end
-
-  def communitymembers
-    #TODO: redirect to people
-  end
-  
+ 
   
    def content_titles
       filteredparams = ParamsFilter.new([:apikey,:content_types,:limit,:tags],params)
