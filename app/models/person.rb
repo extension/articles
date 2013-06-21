@@ -13,7 +13,7 @@ class Person < ActiveRecord::Base
     !self.retired?
   end
 
-  def systemuserid
+  def self.systemuserid
     1
   end
   
