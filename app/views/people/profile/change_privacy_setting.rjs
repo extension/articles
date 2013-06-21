@@ -1,1 +1,0 @@
-page.visual_effect :highlight, "privacy_setting_row_#{@privacysetting.id}"

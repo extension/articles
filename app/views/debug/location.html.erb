@@ -75,7 +75,7 @@
 
             <%- @public_institutions_for_location.each do |community| -%>
             <tr>
-                <td><%= link_to_people_community(community) %></td>
+                <td><%= community.name %></td>
                 <%- if community.logo.nil? %>
                     <td>Not yet provided.</td>
             	<%- else -%>

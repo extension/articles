@@ -1,8 +1,0 @@
-<% if(list = community.lists.find_by_connectiontype(listtype)) %>
-	<h4><%= list.name %></h4>
-	<p>Created On: <strong><%= humane_date(list.created_at) %></strong></p>
-<% else %>
-
-	<p>No <%= listtype %> mailing list has been created for this community.</p>
-
-<% end %>

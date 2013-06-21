@@ -36,19 +36,10 @@ end
 
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-if @forceupdate
-  #loop through all the managed lists and force the memberships to be updated
-  List.managed.all.each do |list|
-    puts "Forcefully updating mailman information for: #{list.name}"
-    result = list.create_or_update_mailman_list(true)
-    puts "#{list.name} adds: #{result[:add_count]} removes: #{result[:remove_count]}"
-  end
-else
-  # loop through all the lists that need updating
-  List.needs_mailman_update.managed.all.each do |list|
-    puts "Updating mailman information for: #{list.name}"
-    result = list.create_or_update_mailman_list
-    puts "#{list.name} adds: #{result[:add_count]} removes: #{result[:remove_count]}"
-  end
+#loop through all the managed lists and force the memberships to be updated
+MailmanList.managed.all.each do |list|
+  puts "Updating mailman information for: #{list.name}"
+  result = list.create_or_update_mailman_list(true)
+  puts "#{list.name} adds: #{result[:add_count]} removes: #{result[:remove_count]}"
 end
 

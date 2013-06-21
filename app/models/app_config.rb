@@ -18,11 +18,7 @@ class AppConfig
     @@configtable['app_location'] = "localdev"
     @@configtable['load_rails_footnotes'] = false
     @@configtable['sessionsecret'] = Digest::SHA1.hexdigest("no session key present")
-    @@configtable['sudoers'] = Hash.new
-    
-    # reserved user id's, not allowed to login
-    @@configtable['reserved_uids'] = [1,2,3,4,5,6,7,8]
-    
+     
     # possibly return different ones for demo?    
     @@configtable['openid_url_prefix'] = {}
     @@configtable['openid_url_prefix']['production'] = {}

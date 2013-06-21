@@ -1,4 +1,0 @@
-<% if !@filterstring.blank? %><%= "Colleagues (Filtered)\n" + @filterstring %><% else %>Colleagues<% end %>
-
-eXtensionID,First Name,Last Name,Email,Phone,Title,Position,Institution,Other Affiliation,Location,County,Agreement Status,Account Created
-<% for showuser in @userlist %><%= makeusercsvstring(showuser)+"\n" %><% end %>

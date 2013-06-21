@@ -5,8 +5,10 @@
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-class List < ActiveRecord::Base
-  
+class MailmanList < ActiveRecord::Base
+  self.establish_connection :people
+
+
   
   # MAILMAN TYPES
   MAILMAN_TRUE = 1
@@ -25,7 +27,7 @@ class List < ActiveRecord::Base
     
   validates_length_of :name, :maximum=>50
   
-  named_scope :managed, {:conditions => ["managed = 1 and deleted = 0"]}
+  named_scope :managed, {:conditions => ["name != 'mailman'"]}
   named_scope :needs_mailman_update, {:conditions => ["last_mailman_update IS NULL or updated_at > last_mailman_update"]}
   
   # mailman attributes
@@ -56,21 +58,31 @@ class List < ActiveRecord::Base
     end
   end
 
+
   def list_subscriptions
-    if(self.is_announce_list?)
-      User.where(:announcements => true).list_eligible.map(&:email)
+    case connectiontype
+    when 'leaders'
+      typelist = "'leader'"
+    when 'joined'
+      typelist = "'member','leader'"
     else
-      case connectiontype
-      when 'leaders'
-        self.community.leaders.list_eligible.map(&:email)
-      when 'joined'
-        self.community.joined.list_eligible.map(&:email)
-      when 'interested'
-        self.community.interested.list_eligible.map(&:email)
-      else
-        []
-      end
+      return []
     end
+
+    sql = <<-END_SQL.gsub(/\s+/, " ").strip
+      SELECT `people`.`email` FROM `people` INNER JOIN `community_connections` ON `people`.`id` = `community_connections`.`person_id` 
+      WHERE `community_connections`.`community_id` = #{self.community_id} 
+      AND (retired = false and vouched = true) 
+      AND (connectiontype IN (#{typelist}))
+    END_SQL
+
+    results = self.connection.execute(sql)
+    addresses = []
+    results.each do |r|
+      addresses += r
+    end 
+    addresses
+    
   end
         
   def self.per_page
@@ -227,7 +239,8 @@ class List < ActiveRecord::Base
     remove_members = current_mailman_members - subscriber_emails
     self.add_mailman_members(add_members)
     self.remove_mailman_members(remove_members)
-    self.touch(:last_mailman_update)
+    # www won't have write access to people
+    #self.touch(:last_mailman_update)
     return {:add_count => add_members.size, :remove_count => remove_members.size}
   end
   

@@ -38,17 +38,17 @@ class ActiveRecord::Base #:nodoc:
       end
 
     # Replace or add the existing tags on <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.
-    def replace_tags(list,ownerid=User.systemuserid,kind=self.default_tagging_kind,weight=1)    
+    def replace_tags(list,ownerid=Person.systemuserid,kind=self.default_tagging_kind,weight=1)    
       add_and_or_remove_tags({:taglist => list, :ownerid => ownerid, :kind => kind, :weight => weight, :replacetags => true})
     end
     
-    def tag_with(list,ownerid=User.systemuserid,kind=self.default_tagging_kind,weight=1)    
+    def tag_with(list,ownerid=Person.systemuserid,kind=self.default_tagging_kind,weight=1)    
       add_and_or_remove_tags({:taglist => list, :ownerid => ownerid, :kind => kind, :weight => weight, :replacetags => false})
     end
     
     def add_and_or_remove_tags(options)    
       list = options[:taglist]
-      ownerid = options[:ownerid] || User.systemuserid
+      ownerid = options[:ownerid] || Person.systemuserid
       kind = options[:kind] || self.default_tagging_kind
       weight = options[:weight] || 1
       replacetags = options[:replacetags].nil? ? 'true' : options[:replacetags]
@@ -87,12 +87,12 @@ class ActiveRecord::Base #:nodoc:
       CachedTag.create_or_update(self,ownerid,kind)
     end
     
-    def tag_with_and_cache(list,ownerid=User.systemuserid,kind=self.default_tagging_kind,weight=1)
+    def tag_with_and_cache(list,ownerid=Person.systemuserid,kind=self.default_tagging_kind,weight=1)
       tag_with(list,ownerid,kind,weight)
       cache_tags(ownerid,kind)
     end    
     
-    def replace_tags_with_and_cache(list,ownerid=User.systemuserid,kind=self.default_tagging_kind,weight=1)
+    def replace_tags_with_and_cache(list,ownerid=Person.systemuserid,kind=self.default_tagging_kind,weight=1)
       replace_tags(list,ownerid,kind,weight)
       cache_tags(ownerid,kind)
     end
@@ -110,23 +110,23 @@ class ActiveRecord::Base #:nodoc:
       taggings.count(:group => :tag)
     end  
     
-    def tag_count_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tagging::ALL)      
+    def tag_count_by_ownerid_and_kind(ownerid=Person.systemuserid,kind=Tagging::ALL)      
       # TODO: this may be problematic down the line for an object with a lot of tags
       taggable?(true)
       taggings.count(:group => :tag, :conditions => tagcond(ownerid,kind))
     end
     
-    def tags_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tagging::ALL)      
+    def tags_by_ownerid_and_kind(ownerid=Person.systemuserid,kind=Tagging::ALL)      
       taggable?(true)
       # has to be uniq by mysql index
       tags.find(:all, :select => "tags.*,count(tags.id) as frequency", :conditions => tagcond(ownerid,kind), :group => "tags.id")
     end
         
-    def tag_list_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tagging::ALL)
+    def tag_list_by_ownerid_and_kind(ownerid=Person.systemuserid,kind=Tagging::ALL)
        tags_by_ownerid_and_kind(ownerid,kind).map(&:name).join(Tag::JOINER)
     end
 
-     def tag_displaylist_by_ownerid_and_kind(ownerid=User.systemuserid,kind=Tagging::ALL,returnarray=false)
+     def tag_displaylist_by_ownerid_and_kind(ownerid=Person.systemuserid,kind=Tagging::ALL,returnarray=false)
        taggable?(true)
        array = taggings.find(:all, :conditions => tagcond(ownerid,kind)).map(&:tag_display)
        if(returnarray)

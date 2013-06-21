@@ -11,28 +11,20 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   #protect_from_forgery # See ActionController::RequestForgeryProtection for details  
-  include LoginSystem
   include AuthLib
-  include ControllerExtensions
   include SslRequirement
   rescue_from WillPaginate::InvalidPage, :with => :do_invalid_page
   helper_method :current_person
-
-
-  # Scrub sensitive parameters from your log
-  filter_parameter_logging :password
 
   require 'zip_code_to_state'
   require 'image_size'
 
   before_filter :set_default_request_ip_address
-  before_filter :set_analytics_visitor
   before_filter :set_locale
   before_filter :unescape_params
   before_filter :personalize_location_and_institution
   before_filter :set_request_url_options
   before_filter :set_app_location
-  before_filter :set_currentuser_time_zone
 
   has_mobile_fu
   skip_before_filter :set_mobile_format
@@ -41,7 +33,6 @@ class ApplicationController < ActionController::Base
   helper_method :get_location_options
   helper_method :get_county_options
   helper_method :with_content_tag?
-  helper_method :admin_mode?
   helper_method :content_tag_url_display_name
   
   def set_app_location
@@ -97,18 +88,6 @@ class ApplicationController < ActionController::Base
       AppConfig.configtable['request_ip_address'] = AppConfig.configtable['default_request_ip']
     end
     return true
-  end
-  
-  def set_analytics_visitor
-    if(session[:account_id])
-      if(account = Account.find_by_id(session[:account_id]))
-        @analytics_vistor = (account.class == User) ? 'internal' : 'external'
-      else
-        @analytics_vistor = 'anonymous'
-      end
-    else
-      @analytics_vistor = 'anonymous'
-    end
   end
     
   def set_locale
@@ -227,15 +206,7 @@ class ApplicationController < ActionController::Base
   def set_titletag(main)
     @title_tag = ERB::Util::html_escape(main)
   end
-  
-  def admin_mode?
-    if(!@currentuser.nil? && @currentuser.is_admin?)
-      return true
-    else
-      return false
-    end
-  end
-  
+    
   def set_content_tag
     @content_tag = nil
     

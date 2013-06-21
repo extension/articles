@@ -1,9 +1,0 @@
-<% @page_title = "Invite a Colleague" %>
-<% @selected_tab = :colleagues %>
-<%= render(:partial => 'navtabs', :locals => { :selected => 'new' }) %>
-<%= render(:partial => 'partial/flashmessages') %>
-
-<h1>Resent Invitation!</h1>
-
-<p>Your invitation to <%= @invitation.email %> has been queued for delivery.  You can <%= link_to('invite another colleague', new_people_invitation_url) %>, <%= link_to('browse pending invitations', people_invitations_url) %>, or <%= link_to('browse and find other colleagues', :controller => 'colleagues') %></p>
-

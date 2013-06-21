@@ -1,2 +1,0 @@
-page.replace_html "connectiontocommunity", :partial => '/people/communities/community_connection'
-page.replace_html "communitynumbers", :partial => '/people/communities/community_numbers'

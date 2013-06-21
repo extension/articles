@@ -1,1 +1,0 @@
-page.visual_effect :highlight, "social_network_row_#{@socialnetwork.id}"

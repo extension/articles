@@ -29,7 +29,7 @@ class Tag < ActiveRecord::Base
   
   # Set up the polymorphic relationship.
   has_many_polymorphs :taggables, 
-    :from => [:accounts, :communities, :pages, :sponsors, :publishing_communities], 
+    :from => [:pages, :sponsors, :publishing_communities], 
     :through => :taggings, 
     :dependent => :destroy,
     :as => :tag,
