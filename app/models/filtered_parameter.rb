@@ -33,7 +33,6 @@ class FilteredParameter
   RECOGNIZED_PARAMETERS[:width] = :integer
   RECOGNIZED_PARAMETERS[:order] = :method # caller is responsible for collapsing orderby and sortorder into order
   RECOGNIZED_PARAMETERS[:forcecacheupdate] = {:datatype => :boolean, :default => false} 
-  RECOGNIZED_PARAMETERS[:apikey] = :apikey
   RECOGNIZED_PARAMETERS[:tags] = :taglist
   RECOGNIZED_PARAMETERS[:content_tag] = :content_tag
 
@@ -194,8 +193,6 @@ class FilteredParameter
       else
         return nil # TODO: raise invalid error
       end
-    when :apikey
-      ApiKey.find_by_keyvalue(value)
     when :taglist
        return Tag.castlist_to_array(value.gsub('|',','),true,false)
     when :content_tag
