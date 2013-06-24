@@ -8,9 +8,7 @@
 class Api::DataController < ApplicationController
   
   def articlelink
-     filteredparams = ParamsFilter.new([{:source_url => :string},{:original_url => :string},:apikey],params)
-     apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
-     ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
+     filteredparams = ParamsFilter.new([{:source_url => :string},{:original_url => :string}],params)
     
      if(filteredparams.original_url.nil? and filteredparams.source_url.nil? )
        returnhash = {:success => false, :errormessage => 'Not a valid source url'}
@@ -55,10 +53,8 @@ class Api::DataController < ApplicationController
  
   
    def content_titles
-      filteredparams = ParamsFilter.new([:apikey,:content_types,:limit,:tags],params)
-      apikey = (filteredparams.apikey.nil? ? ApiKey.systemkey : filteredparams.apikey)
+      filteredparams = ParamsFilter.new([:content_types,:limit,:tags],params)
       # TODO: consider doing this automatically in application_controller as a before_filter
-      ApiKeyEvent.log_event("#{controller_path}/#{action_name}",apikey)
       returnhash = {:success => true, :content_titles => [], :version => 1}
       
       # empty content types? return error
