@@ -162,7 +162,7 @@ class MailmanList < ActiveRecord::Base
       output.each { |address|
         # validate email - this regex might should be pulled out 
         # to a higher level since it's used elsewhere in the app
-        if EmailAddress.is_valid_address?(address)
+        if self.class.is_valid_email_address?(address)
           @mailman_members << address.strip.downcase
         else
           @mailman_invalid_members << address.strip
@@ -285,6 +285,16 @@ class MailmanList < ActiveRecord::Base
     # update members
     return self.update_mailman_members
   end
+
+  def self.is_valid_email_address?(email_address)
+    begin
+      TMail::Address.parse(email_address)
+    rescue TMail::SyntaxError
+      return false
+    else
+      return true
+    end
+  end
   
   protected
   
@@ -318,4 +328,6 @@ class MailmanList < ActiveRecord::Base
     return email_address_array.size
   end
   
+
+
 end
