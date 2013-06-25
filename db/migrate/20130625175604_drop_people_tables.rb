@@ -1,5 +1,6 @@
 class DropPeopleTables < ActiveRecord::Migration
   def self.up
+    drop_table "admin_events"
     drop_table "accounts"
     drop_table "activities"
     drop_table "activity_applications"

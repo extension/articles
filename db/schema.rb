@@ -11,14 +11,6 @@
 
 ActiveRecord::Schema.define(:version => 20130625175604) do
 
-  create_table "admin_events", :force => true do |t|
-    t.integer  "user_id",                  :default => 0, :null => false
-    t.integer  "event",                    :default => 0, :null => false
-    t.string   "ip",         :limit => 20
-    t.text     "data"
-    t.datetime "created_at"
-  end
-
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
     t.integer  "event",                    :default => 0, :null => false
