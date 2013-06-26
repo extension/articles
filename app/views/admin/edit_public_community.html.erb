@@ -53,6 +53,33 @@
             <% end %></span>
             
         </p>
+   
+        <h3>Social Networks</h3>
+
+        <p>
+	       <label>Twitter</label>
+	       <%= text_field_tag 'community[twitter_handle]', @community.twitter_handle %>
+	    </p>
+
+        <p>
+	       <label>Facebook</label>
+	       <%= text_field_tag 'community[facebook_handle]', @community.facebook_handle %>
+	    </p>
+	
+	    <p>
+	       <label>YouTube</label>
+	       <%= text_field_tag 'community[youtube_handle]', @community.youtube_handle %>
+	    </p>
+	
+	    <p>
+	       <label>Pinterest</label>
+	       <%= text_field_tag 'community[pinterest_handle]', @community.pinterest_handle %>
+	    </p>
+	
+	    <p>
+	       <label>Google Plus</label>
+	       <%= text_field_tag 'community[gplus_handle]', @community.gplus_handle %>
+	    </p> 
 
         <p>
             <input type="submit" value="Update">

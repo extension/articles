@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130625175604) do
+ActiveRecord::Schema.define(:version => 20130626171005) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -369,6 +369,11 @@ ActiveRecord::Schema.define(:version => 20130625175604) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "drupal_node_id"
+    t.string   "facebook_handle"
+    t.string   "twitter_handle"
+    t.string   "youtube_handle"
+    t.string   "pinterest_handle"
+    t.string   "gplus_handle"
   end
 
   create_table "special_pages", :force => true do |t|
