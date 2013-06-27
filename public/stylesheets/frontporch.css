@@ -499,6 +499,8 @@ ul.nav {
 .meet-extension p {
 	margin-top:10px;
 }
+.meet-extension a {color:#333;}
+.meet-extension a:hover {text-decoration:none;}
 
 .featured_aae_questions li,
 .aae_qw li {

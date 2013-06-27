@@ -88,4 +88,11 @@ module DataHelper
     return '<img height="135" '+src+' alt="" />'
   end
   
+  def first_bio_image(content)
+    return unless content
+    image_tag = content.match(/<img[^>]*>/)
+    return unless image_tag
+    src = image_tag[0].match(/src="[^"]*"/)[0]
+    return '<img height="135" '+src+' alt="" />'
+  end  
 end

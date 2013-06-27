@@ -59,7 +59,7 @@
       <% if @featured_bio.present? %>
     	  <h2>Meet Extension</h2>
     	  <% link_to(@featured_bio.id_and_link) do %>
-    	    <%= first_image @featured_bio.content %>
+    	    <%= first_bio_image @featured_bio.content %>
     	    <strong><%= @featured_bio.title %></strong><br />
           <!-- <em>Communications Expert</em><br /> -->
           <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></p>
