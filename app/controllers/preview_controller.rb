@@ -56,7 +56,9 @@ class PreviewController < ApplicationController
     @faqs_broken_count =  Page.faqs.tagged_with_content_tag(@content_tag.name).broken_links.count
     @events_broken_count =  Page.events.tagged_with_content_tag(@content_tag.name).broken_links.count
     @news_broken_count =  Page.news.tagged_with_content_tag(@content_tag.name).broken_links.count
-    @all_broken_count = Page.tagged_with_content_tag(@content_tag.name).broken_links.count
+    @instant_survey_count = Page.tagged_with_content_tag(@content_tag.name).with_instant_survey_links.count
+
+
 
     @contents_page = Page.contents_for_content_tag({:content_tag => @content_tag})
 

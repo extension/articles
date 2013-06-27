@@ -39,7 +39,6 @@ class Page < ActiveRecord::Base
   has_many :content_buckets, :through => :bucketings
   has_one :link_stat
   belongs_to :page_source
-  has_many :cached_tags, :as => :tagcacheable
   
   validates_numericality_of :learn_id, :allow_blank => true, :message => "event must be a valid event number." 
 
@@ -1059,5 +1058,10 @@ class Page < ActiveRecord::Base
     Page.find_by_source_url(page_source.page_source_url(source_id))
   end
     
+  def self.with_instant_survey_links
+    with_scope do
+      includes([:link_stat,:links]).where("links.host = 'is-nri.com'")
+    end
+  end
 
 end

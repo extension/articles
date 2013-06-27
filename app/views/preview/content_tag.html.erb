@@ -147,6 +147,13 @@
         <li><%= link_to(pluralize(@news_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news')) %></li>
      </ul>
 
+     <%- if @instant_survey_count > 0 -%>
+     <h3>Instant Survey Links</h3>
+     <ul>
+        <li><%= link_to(pluralize(@instant_survey_count,'page'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:with_instant_survey_links => true)) %> have links to instant survey</li>
+      </ul>
+     <%- end -%>
+
   </div>
 
 </div>
