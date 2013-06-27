@@ -9,7 +9,7 @@ class AdminController < ApplicationController
   before_filter :turn_off_right_column
   before_filter :www_store_location
 
-  layout 'pubsite'
+  layout 'frontporch'
   
   def index
     set_titletag("eXtension Pubsite Admin")

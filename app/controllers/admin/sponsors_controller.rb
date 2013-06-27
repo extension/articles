@@ -9,7 +9,7 @@ class Admin::SponsorsController < ApplicationController
   before_filter :admin_signin_required
   before_filter :turn_off_right_column
   
-  layout 'pubsite'
+  layout 'frontporch'
   
   # ajax call to update the position of the ads relative to each other
   def update_positions

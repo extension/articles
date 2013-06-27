@@ -884,6 +884,12 @@ div#app_location.localdev a {color:#000; text-decoration:underline;}
 /* .hiddenStructure is pulled over from CoP wiki templates. I guess this will never die.  */
 .hiddenStructure {display:none;}
 
+#admin table tr.true {background:#edfbff;}
+#admin table tr .islive {text-indent:-5000px;}
+#admin table tr.true .islive {background: #edfbff url(/images/pubsite/green_dot.png) 50% 50% no-repeat;}
+#admin table td.notset {color:#aaa;}
+
+label {font-weight:bold;}
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
    ========================================================================== */
@@ -1095,6 +1101,3 @@ footer p {
 	font-size: 85%;
 }
 }
-
-
-

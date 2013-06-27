@@ -9,7 +9,7 @@ class Admin::LogosController < ApplicationController
   before_filter :admin_signin_required
   before_filter :turn_off_right_column
   
-  layout 'pubsite'
+  layout 'frontporch'
 
   def index
     set_titletag('Manage Logos- Pubsite Admin')

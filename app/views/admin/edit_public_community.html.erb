@@ -1,54 +1,50 @@
 <div id="admin">
     <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Communities', :action => 'manage_communities' %></p>
-    <h1>Edit Community Details</h1>
-
-    <h2><%= @community.name %></h2>
-
+    <h1>Edit Community Details: <%= @community.name %></h1>
 
     <% form_tag( {:action => 'update_public_community', :id => @community}) do %>
         <%= error_messages_for :community %>
 
-        <fieldset class="stacked">
-            <h3>Edit details</h3>
-        <p>
+        <fieldset>
+
             <label>Public Name:</label>
             <%= text_field_tag 'community[public_name]', @community.public_name %>
-            <span class="instructions">This will show up for links to this community.</span>
-        </p>
+            <span class="help-block">This will show up for links to this community.</span>
+        </fieldset>
 
-        <p>
+        <fieldset>
             <label>Homage Name:</label>
             <%= text_field_tag 'community[homage_name]', @community.homage_name %>
-            <span class="instructions">This text, if present, will be used instead of the community's public name in the homage.  e.g. "This resource area was created by the <%= @community.homage_name.blank? ? @community.public_name : @community.homage_name %> community."</span>
-        </p>
+            <span class="help-block">This text, if present, will be used instead of the community's public name in the homage.  e.g. "This resource area was created by the <%= @community.homage_name.blank? ? @community.public_name : @community.homage_name %> community."</span>
+        </fieldset>
 
-        <p>
+        <fieldset>
             <label>Topic:</label>
             <%= select_tag_for_topic(@community)%>
-            <span class="instructions">The heading the community shows up in the right navigation bar.</span>
-        </p>
+            <span class="help-block">The heading the community shows up in the right navigation bar.</span>
+        </fieldset>
 
         <p>
             <label>Description:</label>
             <%= text_field_tag 'community[public_description]', @community.public_description %>
-            <span class="instructions">The sentence that shows up under the community name on its main page.</span>
+            <span class="help-block">The sentence that shows up under the community name on its main page.</span>
         <p>
 
         <p>
             <%= check_box_tag 'community[is_launched]', true, @community.is_launched %> Show to the Public?
-            <span class="instructions">Allows the public to see this community. The change is immediate.</span>
+            <span class="help-block">Allows the public to see this community. The change is immediate.</span>
         </p>
 
         <p>
             <label>Resource Area Tag:</label>
             <%= text_field_tag 'community[content_tag_names]', @community.content_tag_names %>
-            <span class="instructions">The term used to associate content with this community.</span>
+            <span class="help-block">The term used to associate content with this community.</span>
         </p>
 
         <p>
             <label>Ask an Expert Group #:</label>
             <%= text_field_tag 'community[aae_group_id]', @community.aae_group_id %>
-            <span class="instructions">Every page on www.extension.org includes links to Ask an Expert. The Group # (found in AaE) is used to link directly to a specific AaE Group's Ask form. <% if @community.aae_group_id %>
+            <span class="help-block">Every page on www.extension.org includes links to Ask an Expert. The Group # (found in AaE) is used to link directly to a specific AaE Group's Ask form. <% if @community.aae_group_id %>
               AaE links will point to this form: <%= link_to ("https://ask.extension.org/groups/#{@community.aae_group_id}/ask", "https://ask.extension.org/groups/#{@community.aae_group_id}/ask") %>
             <% end %></span>
             
@@ -82,8 +78,8 @@
 	    </p> 
 
         <p>
-            <input type="submit" value="Update">
-            <%= link_to 'cancel', {:controller => "admin", :action => "manage_communities"}, {:class => "cancel"}  %>
+            <input type="submit" value="Update" class="btn btn-primary btn-large">
+            <%= link_to 'cancel', {:controller => "admin", :action => "manage_communities"}, {:class => "btn btn-link"}  %>
         </p>
         </fieldset>
     <% end %>
