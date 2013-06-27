@@ -82,6 +82,42 @@ class MainController < ApplicationController
     
   end
   
+  def about_community
+    @published_content = true  # index CoP landing pages
+    
+    if(@community.nil?)
+      # check for CategoryTagRedirect
+      if(redirect = CategoryTagRedirect.where("term = ?",params[:content_tag].downcase).first)
+        return redirect_to(redirect.target_url, :status=>301)
+      else
+        return redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+      end
+    elsif(!canonicalized_category?(params[:content_tag]))
+      return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
+    end
+    
+    if(@community and @community.aae_group_id.present?)
+      @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
+    else
+      @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+    end
+    
+    @ask_question_widget_url = "https://ask.extension.org/widgets/answered?tags=#{@content_tag.name}"
+    @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming?tags=#{@content_tag.name}"
+    
+    set_title(@community.public_name,@community.public_description)
+    set_titletag("#{@community.public_name} - eXtension")
+    @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)      
+    community_content_tag_names = @community.content_tag_names
+    @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
+    @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
+    @about_this_community_section = Page.homage_for_content_tag({:content_tag => @content_tag})
+    
+    @community_highlights = Page.main_feature_list({:content_tag => @content_tag, :limit => 8})
+    flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
+    flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
+  end
+  
   def community_tag
     @published_content = true  # index CoP landing pages
     

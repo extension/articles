@@ -169,6 +169,7 @@ ActionController::Routing::Routes.draw do |map|
   map.main_special '/main/:path', :controller => 'main', :action => 'special'
   
   map.site_index ':content_tag', :controller => 'main', :action => 'community_tag'
+  map.about_community ':content_tag/about', :controller => 'main', :action => 'about_community'
   
 
   ### catch?  I'm not sure that these are ever actually touched because of the :content_tag routes above

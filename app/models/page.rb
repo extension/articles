@@ -461,6 +461,10 @@ class Page < ActiveRecord::Base
   def self.contents_for_content_tag(options = {})
     self.articles.bucketed_as('contents').tagged_with_content_tag(options[:content_tag].name).ordered.first
   end
+  
+  def self.homage_for_content_tag(options = {})
+    self.articles.bucketed_as('homage').tagged_with_content_tag(options[:content_tag].name).ordered.first
+  end
        
   def self.create_or_update_from_atom_entry(entry,page_source)
     current_time = Time.now.utc

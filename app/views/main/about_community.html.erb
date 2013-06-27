@@ -1,0 +1,105 @@
+<% @in_this_resource_area = true %>
+<% @resource_area_feeds = true %>
+<% @page_meta_description = "#{@page_title_text}" %>
+
+
+<!-- Article, Right Column -->
+<div class="row">
+	<!-- Article -->
+	<div class="span9">
+		<h1><%= @page_title_text %></h1>
+		<div class='infobar bordered'>
+		  
+
+          <%= link_to_public_community_home(@community)  %>
+
+              <!-- AddThis Button BEGIN - desktop only -->
+            	<div class="addthis_toolbox addthis_default_style pull-right visible-desktop">
+            	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+            	<a class="addthis_button_tweet"></a>
+            	<a class="addthis_button_pinterest_pinit"></a>
+            	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+            	<a class="addthis_counter addthis_pill_style"></a>
+            	</div>
+            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
+            <!-- AddThis Button END -->
+            <!-- AddThis Button BEGIN - hidden on desktop -->
+            	<div class="addthis_toolbox addthis_default_style addthis_16x16_style pull-right hidden-desktop">
+            	<a class="addthis_button_facebook"></a>
+            	<a class="addthis_button_twitter"></a>
+            	<a class="addthis_button_pinterest_share"></a>
+            	<a class="addthis_button_google_plusone_share"></a>
+            	</div>
+            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
+            <!-- AddThis Button END -->
+		</div>
+		
+		<%= @about_this_community_section.content %>
+    
+    <%= @in_this_section.content %>
+		
+		<div class='backtotop span9'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
+		<div class='row'>
+  		<div class='article-info span6'>
+  			<h3 class='bordered'>Browse related by Tag</h3>
+  			<%- if @page_content_tag_names -%>
+          <p class="caption publictags">
+            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag))}.join(', ') %>
+          </p>
+        <%- end -%>
+  		</div>
+  		<div class='article-info span3'>
+  			<h3 class='bordered'>Share this post</h3>
+  			<div class='share'>
+		        <!-- AddThis Button BEGIN -->
+        		<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+        		<a class="addthis_button_twitter"></a>
+        		<a class="addthis_button_facebook"></a>
+        		<a class="addthis_button_google_plusone_share"></a>
+        		<a class="addthis_button_pinterest_share"></a>
+        		<a class="addthis_button_email"></a>
+        		</div>
+        		<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
+        		<!-- AddThis Button END -->	  
+  			</div>          			
+  			<div class='callout orange'>
+  				<h4>Have a Question?</h4>
+  				<p><a href='#'>Click here to ask one of our experts</a></p>
+  			</div>
+  		</div>
+		</div>
+		
+  </div>
+  
+  <div class="span3">
+    <%= render(:partial => 'shared/social_and_locations') %>
+    
+    <div class='row'>
+    	<div class='callout orange span3'>
+    		<h4>Donate to <%= @community.name %></h4>
+    		<p>Few words to go here why someone should donate</p>
+    		<a href='#' class='btn orange lg'><i class='icon-heart icon-white'></i> Donate Now</a>
+    	</div>
+    </div>
+    <br />
+    
+    
+    <div class='row'>
+      <div class='latest-tweets span3'>
+        <h2>Latest Tweets</h2>
+        <div class="tweet"></div>
+        <a href='https://twitter.com/eXtension4U' class='btn'>Follow @eXtension4U</a>
+      </div>
+    </div>
+    
+    <div class='row'>
+      <div class="upcoming_learn_events span3">
+        <h2>Upcoming Webinars</h2>
+        <script type="text/javascript" src="http://dev.learn.extension.org/widgets/front_porch"></script>
+        <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
