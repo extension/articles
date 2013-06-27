@@ -16,6 +16,8 @@ class PublishingCommunity < ActiveRecord::Base
   belongs_to :topic, :foreign_key => 'public_topic_id'
   belongs_to :logo
   belongs_to :homage, :class_name => "Page", :foreign_key => "homage_id"
+  
+  validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
    
 
   named_scope :tagged_with_content_tag, lambda {|tagname| 

@@ -153,7 +153,12 @@ class AdminController < ApplicationController
     @community.is_launched = ( params['community']['is_launched'] ? true : false)
     @community.homage_name = params['community']['homage_name']
     @community.aae_group_id = params['community']['aae_group_id']
-
+    @community.aae_group_id = params['community']['aae_group_id']
+    @community.twitter_handle = params['community']['twitter_handle']
+    @community.facebook_handle = params['community']['facebook_handle']
+    @community.youtube_handle = params['community']['youtube_handle']
+    @community.pinterest_handle = params['community']['pinterest_handle']
+    @community.gplus_handle = params['community']['gplus_handle']
   
     # sanity check tags
     if(params['community']['content_tag_names'].blank?)
