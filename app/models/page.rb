@@ -1055,5 +1055,10 @@ class Page < ActiveRecord::Base
     Page.find_by_source_url(page_source.page_source_url(source_id))
   end
     
+  def self.with_instant_survey_links
+    with_scope do
+      includes([:link_stat,:links]).where("links.host = 'is-nri.com'")
+    end
+  end
 
 end

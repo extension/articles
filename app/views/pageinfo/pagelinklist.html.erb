@@ -7,6 +7,10 @@
       <h1>All Articles for Tag: <%= @content_tag.name %></h1>
    <%- end -%>
 
+   <%- if @filteredparameters.with_instant_survey_links -%>
+   <p><strong>Showing only pages with links to Instant Survey (is-nri.com)</strong></p>
+   <%- end -%>
+
    <div id="paginator_wrapper"> 
    <% if @pages.length > 0 %>
        <p class="display_results">Displaying <strong><%= @pages.offset + 1 %>-<%= @pages.offset + @pages.length %></strong> of <strong><%= @pages.total_entries %></strong></p>
