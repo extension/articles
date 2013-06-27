@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130625175604) do
+ActiveRecord::Schema.define(:version => 20130627140043) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -94,20 +94,6 @@ ActiveRecord::Schema.define(:version => 20130625175604) do
   end
 
   add_index "bucketings", ["page_id", "content_bucket_id"], :name => "bucketingindex", :unique => true
-
-  create_table "cached_tags", :force => true do |t|
-    t.integer  "tagcacheable_id"
-    t.string   "tagcacheable_type"
-    t.integer  "owner_id"
-    t.integer  "tagging_kind"
-    t.integer  "cache_kind"
-    t.text     "fulltextlist"
-    t.text     "cachedata"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cached_tags", ["tagcacheable_id", "tagcacheable_type", "owner_id", "tagging_kind"], :name => "signature"
 
   create_table "category_tag_redirects", :force => true do |t|
     t.string "term"

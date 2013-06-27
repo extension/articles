@@ -115,7 +115,7 @@ class PagesController < ApplicationController
       return
     end
     
-    @page = Page.includes(:cached_tags).find_by_id(params[:id])
+    @page = Page.find_by_id(params[:id])
     if @page
       @published_content = true
     else

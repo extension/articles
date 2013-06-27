@@ -39,7 +39,6 @@ class Page < ActiveRecord::Base
   has_many :content_buckets, :through => :bucketings
   has_one :link_stat
   belongs_to :page_source
-  has_many :cached_tags, :as => :tagcacheable
   
   validates_numericality_of :learn_id, :allow_blank => true, :message => "event must be a valid event number." 
 

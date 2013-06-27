@@ -84,7 +84,6 @@ class ActiveRecord::Base #:nodoc:
         self.update_attribute("#{cached_tag_field}",fulltextlist)
       end
       
-      CachedTag.create_or_update(self,ownerid,kind)
     end
     
     def tag_with_and_cache(list,ownerid=Person.systemuserid,kind=self.default_tagging_kind,weight=1)
