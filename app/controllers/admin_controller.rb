@@ -159,7 +159,6 @@ class AdminController < ApplicationController
     @community.pinterest_handle = params['community']['pinterest_handle']
     @community.gplus_handle = params['community']['gplus_handle']
 
-  
     # sanity check tags
     if(params['community']['content_tag_names'].blank?)
       flash[:notice] = "You must specify a resource area tag for publishing communities"
