@@ -9,94 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130508025648) do
-
-  create_table "accounts", :force => true do |t|
-    t.string   "type",                                   :default => "",    :null => false
-    t.string   "login",                    :limit => 80,                    :null => false
-    t.string   "password",                 :limit => 40
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "email",                    :limit => 96
-    t.string   "title"
-    t.datetime "email_event_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "contributor_agreement"
-    t.datetime "contributor_agreement_at"
-    t.integer  "account_status"
-    t.datetime "last_login_at"
-    t.integer  "position_id",                            :default => 0
-    t.integer  "location_id",                            :default => 0
-    t.integer  "county_id",                              :default => 0
-    t.boolean  "retired",                                :default => false
-    t.boolean  "vouched",                                :default => false
-    t.integer  "vouched_by",                             :default => 0
-    t.datetime "vouched_at"
-    t.boolean  "emailconfirmed",                         :default => false
-    t.boolean  "is_admin",                               :default => false
-    t.string   "phonenumber"
-    t.string   "feedkey"
-    t.boolean  "announcements",                          :default => true
-    t.datetime "retired_at"
-    t.text     "additionaldata"
-    t.boolean  "aae_responder",                          :default => true
-    t.string   "time_zone"
-    t.boolean  "is_question_wrangler",                   :default => false
-    t.string   "base_login_string"
-    t.integer  "login_increment"
-    t.datetime "vacated_aae_at"
-    t.boolean  "first_aae_away_reminder",                :default => false
-    t.boolean  "second_aae_away_reminder",               :default => false
-    t.integer  "primary_account_id"
-    t.string   "affiliation"
-  end
-
-  add_index "accounts", ["email"], :name => "email", :unique => true
-  add_index "accounts", ["login"], :name => "login", :unique => true
-  add_index "accounts", ["vouched", "retired"], :name => "index_users_on_vouched_and_retired"
-
-  create_table "activities", :force => true do |t|
-    t.datetime "created_at"
-    t.integer  "user_id",                 :default => 0
-    t.integer  "activitytype",            :default => 0
-    t.integer  "activitycode",            :default => 0
-    t.integer  "community_id",            :default => 0
-    t.integer  "activity_application_id", :default => 1
-    t.string   "ipaddr"
-    t.integer  "created_by",              :default => 0
-    t.integer  "colleague_id",            :default => 0
-    t.integer  "privacy"
-    t.string   "activity_uri"
-    t.integer  "responsetime"
-    t.text     "additionaldata"
-  end
-
-  add_index "activities", ["activity_application_id"], :name => "index_activities_on_activity_application_id"
-  add_index "activities", ["activitycode"], :name => "index_activities_on_activitycode"
-  add_index "activities", ["activitytype"], :name => "index_activities_on_activitytype"
-  add_index "activities", ["created_at", "user_id", "activitycode", "activity_application_id", "community_id", "privacy"], :name => "recordsignature", :unique => true
-
-  create_table "activity_applications", :force => true do |t|
-    t.string   "displayname"
-    t.string   "shortname"
-    t.text     "description"
-    t.integer  "activitysourcetype"
-    t.string   "activitysource"
-    t.boolean  "isactivesource",     :default => true
-    t.string   "trust_root_uri"
-    t.string   "link_uri"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "admin_events", :force => true do |t|
-    t.integer  "user_id",                  :default => 0, :null => false
-    t.integer  "event",                    :default => 0, :null => false
-    t.string   "ip",         :limit => 20
-    t.text     "data"
-    t.datetime "created_at"
-  end
+ActiveRecord::Schema.define(:version => 20130626171005) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -123,28 +36,6 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
   end
 
   add_index "annotations", ["url"], :name => "index_annotations_on_url"
-
-  create_table "api_key_events", :force => true do |t|
-    t.integer  "api_key_id"
-    t.string   "requestaction"
-    t.string   "ipaddr",         :limit => 20
-    t.text     "additionaldata"
-    t.datetime "created_at"
-  end
-
-  add_index "api_key_events", ["api_key_id", "created_at"], :name => "index_api_key_events_on_api_key_id_and_created_at"
-
-  create_table "api_keys", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "name"
-    t.string   "keyvalue"
-    t.integer  "created_by"
-    t.boolean  "enabled"
-    t.datetime "created_at"
-  end
-
-  add_index "api_keys", ["keyvalue"], :name => "index_api_keys_on_keyvalue", :unique => true
-  add_index "api_keys", ["user_id", "name"], :name => "index_api_keys_on_user_id_and_name", :unique => true
 
   create_table "branding_institutions", :force => true do |t|
     t.string   "name",                                          :null => false
@@ -225,68 +116,6 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
 
   add_index "category_tag_redirects", ["term"], :name => "name_ndx", :unique => true
 
-  create_table "chat_accounts", :force => true do |t|
-    t.integer  "user_id",    :default => 0, :null => false
-    t.string   "username",                  :null => false
-    t.string   "password",                  :null => false
-    t.string   "name",                      :null => false
-    t.string   "email",                     :null => false
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at"
-  end
-
-  add_index "chat_accounts", ["username"], :name => "username", :unique => true
-
-  create_table "communities", :force => true do |t|
-    t.integer  "entrytype",                             :default => 0,     :null => false
-    t.string   "name",                                                     :null => false
-    t.text     "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "created_by",                            :default => 0
-    t.string   "uri"
-    t.integer  "memberfilter",                          :default => 1
-    t.string   "shortname"
-    t.string   "public_name"
-    t.text     "public_description"
-    t.boolean  "is_launched",                           :default => false
-    t.integer  "public_topic_id"
-    t.text     "cached_content_tag_data"
-    t.boolean  "publishing_community",                  :default => false
-    t.integer  "location_id",                           :default => 0
-    t.string   "public_uri"
-    t.string   "referer_domain"
-    t.string   "institution_code",        :limit => 10
-    t.integer  "logo_id",                               :default => 0
-    t.boolean  "connect_to_drupal",                     :default => false
-    t.integer  "drupal_node_id"
-    t.boolean  "connect_to_google_apps",                :default => false
-    t.integer  "widget_id"
-    t.boolean  "active",                                :default => true
-    t.string   "homage_name"
-    t.integer  "homage_id"
-    t.integer  "aae_group_id"
-  end
-
-  add_index "communities", ["name"], :name => "communities_name_index", :unique => true
-  add_index "communities", ["referer_domain"], :name => "index_communities_on_referer_domain"
-  add_index "communities", ["shortname"], :name => "index_communities_on_shortname", :unique => true
-  add_index "communities", ["widget_id"], :name => "index_communities_on_widget_id"
-
-  create_table "communityconnections", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "community_id"
-    t.string   "connectiontype"
-    t.integer  "connectioncode"
-    t.boolean  "sendnotifications"
-    t.integer  "connected_by"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "communityconnections", ["connectiontype"], :name => "index_communityconnections_on_connectiontype"
-  add_index "communityconnections", ["user_id", "community_id"], :name => "user_community", :unique => true
-
   create_table "content_buckets", :force => true do |t|
     t.string   "name",       :null => false
     t.datetime "created_at", :null => false
@@ -311,31 +140,6 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
   create_table "db_files", :force => true do |t|
     t.binary "data", :limit => 2147483647
   end
-
-  create_table "directory_item_caches", :force => true do |t|
-    t.integer  "user_id"
-    t.text     "public_attributes"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "directory_item_caches", ["user_id"], :name => "index_directory_item_caches_on_user_id"
-
-  create_table "email_aliases", :force => true do |t|
-    t.integer  "user_id",          :default => 0,     :null => false
-    t.integer  "community_id",     :default => 0,     :null => false
-    t.string   "mail_alias",                          :null => false
-    t.string   "destination",                         :null => false
-    t.integer  "alias_type",       :default => 0,     :null => false
-    t.integer  "created_by",       :default => 1
-    t.integer  "last_modified_by", :default => 1
-    t.boolean  "disabled",         :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "email_aliases", ["destination"], :name => "destination_ndx"
-  add_index "email_aliases", ["mail_alias"], :name => "alias_ndx"
 
   create_table "feed_locations", :force => true do |t|
     t.text     "uri",                                   :null => false
@@ -381,60 +185,6 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
   end
 
   add_index "geo_names", ["feature_name", "state_abbreviation", "county"], :name => "name_state_county_ndx"
-
-  create_table "google_accounts", :force => true do |t|
-    t.integer  "user_id",          :default => 0,     :null => false
-    t.string   "username",                            :null => false
-    t.boolean  "no_sync_password", :default => false
-    t.string   "password",                            :null => false
-    t.string   "given_name",                          :null => false
-    t.string   "family_name",                         :null => false
-    t.boolean  "is_admin",         :default => false
-    t.boolean  "suspended",        :default => false
-    t.datetime "apps_updated_at"
-    t.boolean  "has_error",        :default => false
-    t.text     "last_error"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "google_accounts", ["user_id"], :name => "index_google_accounts_on_user_id", :unique => true
-
-  create_table "google_groups", :force => true do |t|
-    t.integer  "community_id",     :default => 0,     :null => false
-    t.string   "group_id",                            :null => false
-    t.string   "group_name",                          :null => false
-    t.string   "email_permission",                    :null => false
-    t.datetime "apps_updated_at"
-    t.boolean  "has_error",        :default => false
-    t.text     "last_error"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "google_groups", ["community_id"], :name => "index_google_groups_on_community_id", :unique => true
-
-  create_table "invitations", :force => true do |t|
-    t.integer  "user_id",                      :default => 0, :null => false
-    t.string   "token",          :limit => 40,                :null => false
-    t.string   "email",                                       :null => false
-    t.datetime "created_at",                                  :null => false
-    t.datetime "accepted_at"
-    t.integer  "colleague_id",                 :default => 0
-    t.datetime "reminder_at"
-    t.integer  "reminder_count",               :default => 0
-    t.text     "additionaldata"
-    t.integer  "resent_count",                 :default => 0
-    t.datetime "resent_at"
-    t.text     "message"
-    t.text     "resendmessage"
-    t.integer  "status",                       :default => 0
-  end
-
-  add_index "invitations", ["colleague_id"], :name => "index_invitations_on_colleague_id"
-  add_index "invitations", ["email"], :name => "email"
-  add_index "invitations", ["token"], :name => "tokenlookup"
-  add_index "invitations", ["user_id"], :name => "index_invitations_on_user_id"
 
   create_table "link_stats", :force => true do |t|
     t.integer  "page_id"
@@ -489,23 +239,6 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
   add_index "links", ["fingerprint"], :name => "index_content_links_on_original_fingerprint", :unique => true
   add_index "links", ["page_id", "status", "linktype"], :name => "coreindex"
 
-  create_table "lists", :force => true do |t|
-    t.string   "name",                :limit => 50
-    t.boolean  "deleted",                           :default => false
-    t.boolean  "managed",                           :default => false
-    t.boolean  "advertised",                        :default => true
-    t.boolean  "private_archive",                   :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "password"
-    t.datetime "last_mailman_update"
-    t.integer  "community_id"
-    t.string   "connectiontype"
-  end
-
-  add_index "lists", ["community_id", "connectiontype"], :name => "community_type_ndx", :unique => true
-  add_index "lists", ["name"], :name => "name_ndx", :unique => true
-
   create_table "locations", :force => true do |t|
     t.integer "fipsid",                     :default => 0,  :null => false
     t.integer "entrytype",                  :default => 0,  :null => false
@@ -535,67 +268,6 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
     t.string "alias_url_fingerprint"
     t.string "target_url"
     t.string "target_url_fingerprint"
-  end
-
-  create_table "notifications", :force => true do |t|
-    t.integer  "notifytype",     :default => 0
-    t.integer  "account_id",     :default => 0,     :null => false
-    t.integer  "created_by",     :default => 0
-    t.integer  "community_id",   :default => 0,     :null => false
-    t.boolean  "sent_email",     :default => false
-    t.boolean  "send_error",     :default => false
-    t.datetime "sent_email_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "additionaldata"
-    t.boolean  "send_on_create", :default => false
-  end
-
-  add_index "notifications", ["send_error"], :name => "index_notifications_on_send_error"
-  add_index "notifications", ["sent_email"], :name => "index_notifications_on_sent_email"
-
-  create_table "old_institutions", :force => true do |t|
-    t.integer  "entrytype",                           :default => 0,     :null => false
-    t.string   "location_abbreviation", :limit => 4
-    t.string   "name",                                                   :null => false
-    t.string   "code",                  :limit => 10
-    t.string   "uri"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "normalizedname"
-    t.integer  "location_id",                         :default => 0
-    t.integer  "created_by",                          :default => 0
-    t.string   "creatorlogin"
-    t.integer  "institutionalteam_id",                :default => 0
-    t.string   "public_uri"
-    t.string   "referer_domain"
-    t.boolean  "shared_logo",                         :default => false
-    t.boolean  "show_in_public_list",                 :default => false
-  end
-
-  add_index "old_institutions", ["location_abbreviation"], :name => "STATE_ABBR"
-  add_index "old_institutions", ["name"], :name => "NAME", :unique => true
-  add_index "old_institutions", ["referer_domain"], :name => "index_institutions_on_referer_domain"
-
-  create_table "open_id_associations", :force => true do |t|
-    t.binary  "server_url", :null => false
-    t.string  "handle",     :null => false
-    t.binary  "secret",     :null => false
-    t.integer "issued",     :null => false
-    t.integer "lifetime",   :null => false
-    t.string  "assoc_type", :null => false
-  end
-
-  create_table "open_id_nonces", :force => true do |t|
-    t.string  "server_url", :null => false
-    t.integer "timestamp",  :null => false
-    t.string  "salt",       :null => false
-  end
-
-  create_table "opie_approvals", :force => true do |t|
-    t.integer  "user_id",    :default => 0, :null => false
-    t.string   "trust_root",                :null => false
-    t.datetime "created_at",                :null => false
   end
 
   create_table "page_sources", :force => true do |t|
@@ -683,25 +355,6 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
     t.datetime "updated_at"
   end
 
-  create_table "positions", :force => true do |t|
-    t.integer  "entrytype",  :default => 0, :null => false
-    t.string   "name",                      :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "positions", ["name"], :name => "NAME", :unique => true
-
-  create_table "privacy_settings", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "item"
-    t.boolean  "is_public",  :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "privacy_settings", ["user_id"], :name => "index_privacy_settings_on_user_id"
-
   create_table "publishing_communities", :force => true do |t|
     t.string   "name",                                       :null => false
     t.string   "public_name"
@@ -716,24 +369,12 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "drupal_node_id"
+    t.string   "facebook_handle"
+    t.string   "twitter_handle"
+    t.string   "youtube_handle"
+    t.string   "pinterest_handle"
+    t.string   "gplus_handle"
   end
-
-  create_table "social_networks", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id"
-    t.string   "network",     :limit => 96
-    t.string   "displayname"
-    t.string   "accountid",   :limit => 96
-    t.string   "description"
-    t.string   "accounturl"
-    t.integer  "privacy"
-    t.boolean  "is_public",                 :default => false
-  end
-
-  add_index "social_networks", ["network", "accountid"], :name => "index_social_networks_on_network_and_accountid"
-  add_index "social_networks", ["privacy"], :name => "index_social_networks_on_privacy"
-  add_index "social_networks", ["user_id"], :name => "index_social_networks_on_user_id"
 
   create_table "special_pages", :force => true do |t|
     t.string  "path"
@@ -792,30 +433,6 @@ ActiveRecord::Schema.define(:version => 20130508025648) do
   end
 
   add_index "update_times", ["datasource_type", "datasource_id", "datatype"], :name => "recordsignature", :unique => true
-
-  create_table "user_events", :force => true do |t|
-    t.string   "login",                                       :null => false
-    t.string   "description"
-    t.string   "ip",             :limit => 20
-    t.datetime "created_at"
-    t.string   "appname"
-    t.integer  "user_id",                      :default => 0
-    t.integer  "etype",                        :default => 0
-    t.text     "additionaldata"
-  end
-
-  create_table "user_tokens", :force => true do |t|
-    t.integer  "user_id",                      :default => 0, :null => false
-    t.integer  "tokentype",                    :default => 0, :null => false
-    t.string   "token",          :limit => 40,                :null => false
-    t.text     "tokendata"
-    t.datetime "created_at",                                  :null => false
-    t.datetime "expires_at",                                  :null => false
-    t.datetime "extended_at"
-    t.integer  "extended_count",               :default => 0
-  end
-
-  add_index "user_tokens", ["token"], :name => "tokenlookup"
 
   create_table "zip_codes", :force => true do |t|
     t.integer "zip_code"
