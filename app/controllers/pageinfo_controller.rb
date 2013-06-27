@@ -40,7 +40,10 @@ class PageinfoController < ApplicationController
   end
   
   def pagelinklist
-    @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:onlybroken => :boolean}],params)
+    @filteredparameters = ParamsFilter.new([:content_tag,
+                                            :content_types,
+                                            {:onlybroken => :boolean},
+                                            {:with_instant_survey_links => :boolean}],params)
     @right_column = false
     if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
       # fake content tag for display purposes
@@ -61,16 +64,23 @@ class PageinfoController < ApplicationController
     if(@content_tag)
       pagelist_scope = pagelist_scope.tagged_with_content_tag(@content_tag.name)
     end
-
-                                          
+                                         
     sort_order = "pages.has_broken_links DESC,pages.source_updated_at DESC"
     if(@filteredparameters.onlybroken)
-      @pages = pagelist_scope.broken_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+      if(@filteredparameters.with_instant_survey_links)
+        @pages = pagelist_scope.broken_links.with_instant_survey_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+      else
+        @pages = pagelist_scope.broken_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+      end
     else
-      @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+      if(@filteredparameters.with_instant_survey_links)
+        @pages = pagelist_scope.with_instant_survey_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+      else
+        @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+      end      
     end
   end
-  
+
   def pagelist
     @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:articlefilter => :string},{:download => :string}],params)
     @right_column = false

@@ -87,18 +87,6 @@ class Rebuild < Thor
   end
 
 
-  desc "page_cached_content_tags", "Rebuild cached tags for Pages (doesn't show progress)"
-  method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
-  method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
-  def page_cached_content_tags
-    load_rails(options[:environment])
-    # this is the same as CachedTag.rebuild_all - but looping here to show progress
-    Page.all.each do |page|
-      cached_tag = CachedTag.create_or_update(page,Person.systemuserid,Tagging::CONTENT)
-      puts "Processed Page #{page.id} : #{cached_tag.fulltextlist}" if (options[:verbose])
-    end
-  end
-
   desc "total_linkcounts", "show total link counts"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   def total_linkcounts
