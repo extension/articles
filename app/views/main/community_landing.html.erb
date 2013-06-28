@@ -31,7 +31,7 @@
   </div>
 
   <div class="span3">
-    <%= render(:partial => 'shared/social_and_locations') %>
+    <%= render(:partial => 'shared/social_and_locations_community') %>
   </div>
 </div>
 
@@ -54,7 +54,7 @@
     </div>
     
     <div class='visible-phone clearfix'></div>
-                
+              
     <div class="meet-extension span3">
       <% if @featured_bio.present? %>
     	  <h2>Meet Extension</h2>
@@ -65,8 +65,8 @@
           <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></p>
     	  <% end %>
     	<% else %>
-    	  <h2>No Extension Bio Available</h2>
-    	  <p>Show something else</p>
+    	  <h2>Extension Experts</h2>
+    	  <h3>There are no expert biographies at this time.</h3>
     	<% end %>
     </div>
                 

@@ -2,7 +2,10 @@
 <% @includejquery = true %>
 <% @cat_landing = true %>
 
-
+<!-- Article, Right Column -->
+<div class="row">
+	<!-- Article -->
+	<div class="span9">
 <% if(@content_tag.nil?) %>
   <h1 class="ct_nomatchingcat">We're sorry, but we don't have any content tagged with "<%= params[:content_tag] %>". Please browse our latest content.</h1>
 <% else %>
@@ -54,3 +57,10 @@
         <p><%= link_to "More ...", site_learning_lessons_url(with_content_tag?) %></p>
     </div>
 <%end%>
+  </div>
+  
+  <div class="span3">
+    <%= render(:partial => 'shared/generic_social_location_tweets_events') %>
+  </div>
+  
+</div>
