@@ -151,7 +151,7 @@ class MainController < ApplicationController
     @youth = true if @topic and @topic.name == 'Youth'
     flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
     flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
-    @featured_bio = Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).ordered.first
+    @featured_bio = Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).offset(rand(Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).length)).first
 
     @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
     @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})

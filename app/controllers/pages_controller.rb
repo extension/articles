@@ -207,7 +207,9 @@ class PagesController < ApplicationController
     else
       @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     end  
-
+    
+    @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}"
+    
     if(!@community_content_tag_names.blank? and !@page_content_tag_names.blank?)
       flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
       flash.now[:googleanalyticsresourcearea] = @community_content_tag_names[0].gsub(' ','_')
