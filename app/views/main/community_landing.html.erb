@@ -13,7 +13,7 @@
       <!-- replace with @featured_article -->
 		  <% @community_highlights.each_with_index do |feature, i| %>
         <div class="item <%= i == 0 ? "active" : "" %>">
-          <%= feature_image feature.content %>
+          <%= first_image feature.content %>
             <div class="carousel-caption">
               <% link_to(feature.id_and_link) do %>
                 <h1><%= feature.title %></h1>
