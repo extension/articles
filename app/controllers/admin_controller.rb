@@ -158,6 +158,7 @@ class AdminController < ApplicationController
     @community.youtube_handle = params['community']['youtube_handle']
     @community.pinterest_handle = params['community']['pinterest_handle']
     @community.gplus_handle = params['community']['gplus_handle']
+    @community.twitter_widget = params['community']['twitter_widget']
 
     # sanity check tags
     if(params['community']['content_tag_names'].blank?)
