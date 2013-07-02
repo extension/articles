@@ -88,6 +88,18 @@ module DataHelper
     return '<img height="135" '+src+' alt="" />'
   end
   
+  def feature_image(content)
+    return unless content
+    image_tag = content.match(/<img[^>]*>/)
+    return '<img src = "/images/layout/generic_feature.jpg" alt="" />' unless image_tag
+    src = image_tag[0].match(/src="[^"]*"/)[0]
+    if src.match("www.extension.org/sites/default/files/")
+      file_name = File.basename(src)
+      src = 'src="http://create.extension.org/sites/default/files/styles/feature/public/' + file_name + '"'
+    end
+    return '<img '+src+' alt="" />'
+  end
+  
   def first_bio_image(content)
     return unless content
     image_tag = content.match(/<img[^>]*>/)
