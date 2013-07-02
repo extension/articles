@@ -987,3 +987,5 @@ ul.extension_global_nav {background:#53586d !important;}
 ul.extension_global_nav a {color:#ccc !important;}
 #extension_icon_256 {float:left; margin-right:1em;}
 .icon_80, .icon_80 img {width:80px; height:80px;}
+
+#article img {max-width: 630px;}
