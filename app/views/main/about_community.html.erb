@@ -9,29 +9,8 @@
 	<div class="span9">
 		<h1><%= @page_title_text %></h1>
 		<div class='infobar bordered'>
-		  
-
-          <%= link_to_public_community_home(@community)  %>
-
-              <!-- AddThis Button BEGIN - desktop only -->
-            	<div class="addthis_toolbox addthis_default_style pull-right visible-desktop">
-            	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-            	<a class="addthis_button_tweet"></a>
-            	<a class="addthis_button_pinterest_pinit"></a>
-            	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-            	<a class="addthis_counter addthis_pill_style"></a>
-            	</div>
-            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
-            <!-- AddThis Button END -->
-            <!-- AddThis Button BEGIN - hidden on desktop -->
-            	<div class="addthis_toolbox addthis_default_style addthis_16x16_style pull-right hidden-desktop">
-            	<a class="addthis_button_facebook"></a>
-            	<a class="addthis_button_twitter"></a>
-            	<a class="addthis_button_pinterest_share"></a>
-            	<a class="addthis_button_google_plusone_share"></a>
-            	</div>
-            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
-            <!-- AddThis Button END -->
+      <%= link_to_public_community_home(@community)  %>
+      <%= render(:partial => 'addthis') %>
 		</div>
 		
 		<%= @about_this_community_section.content %>
