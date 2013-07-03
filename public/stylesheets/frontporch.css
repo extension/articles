@@ -892,6 +892,8 @@ div#app_location.localdev a {color:#000; text-decoration:underline;}
 #admin table td.notset {color:#aaa;}
 
 label {font-weight:bold;}
+.carousel-caption a {text-decoration:none}
+
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
    ========================================================================== */
