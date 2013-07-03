@@ -15,7 +15,7 @@
       <%- end -%>
       <span><%= micro_time_print(@page.source_updated_at, 'updated') %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %></span>
       
-      <%= render(:partial => 'addthis') %>
+      <%= render(:partial => 'shared/addthis') %>
 		</div>
 		
 		<%= @page.content %>
@@ -41,7 +41,6 @@
         		<a class="addthis_button_pinterest_share"></a>
         		<a class="addthis_button_email"></a>
         		</div>
-        		<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-51a342d27857ae68"></script>
         		<!-- AddThis Button END -->	  
   			</div>          			
   			<div class='callout orange'>
