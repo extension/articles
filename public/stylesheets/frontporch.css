@@ -443,12 +443,13 @@ ul.nav {
 .upcoming_learn_events h2,
 .meet-extension h2,
 .featured_aae_questions h2,
-.latest-tweets h2 {
+.latest-tweets h2,
+h3.learn_widget_generic_title {
     font-family: 'Sanchez', serif;
 	font-size: 20px;
 	color:#f86f20;
 }
-
+h3.learn_widget_generic_title {margin:20px 0 10px;}
 
 .featured_aae_questions a,
 .upcoming_learn_events a {
@@ -456,12 +457,12 @@ ul.nav {
   text-decoration:none;
 }
 
-.learn_ew_subhead,
-.learn_ew_see_more {display:none;}
+.learn_widget_see_more,
+.learn_widget_specific_title {display:none;}
 
-.learn_ew_event_title a {display:block;}
+.learn_widget_event_title a {display:block;}
 
-.upcoming_learn_events .learn_ew_event_time {
+.upcoming_learn_events .learn_widget_event_time {
 	font-size:13px;
   background:#F7F7F7;
   border-left:3px solid #F76F1F;
@@ -470,7 +471,7 @@ ul.nav {
   font-weight:bold;
 }
 
-.upcoming_learn_events .learn_ew_event_title {
+.upcoming_learn_events .learn_widget_event_title {
 	margin:10px 0 20px;
 }
 
