@@ -77,8 +77,11 @@
                 
     <div class='latest-tweets span3'>
       <h2>Latest Tweets</h2>
-      <div class="tweet"></div>
-      <a href='#' class='btn'>Follow @extensions</a>
+      <% if !@community.twitter_widget.blank? %>
+        <%= @community.twitter_widget %>
+      <% else %>
+        <%= render(:partial => 'shared/twitter_timeline_general') %>
+      <% end%>
     </div>
   
   </div>
