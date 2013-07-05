@@ -1,19 +1,38 @@
-<% @show_resource_areas = true %>
-<% @includejquery = true %>
-<% @cat_landing = true %>
+<!-- This file lives in views/shared/410.rhtml -->
 
-  <!-- This file lives in views/shared/404.rhtml -->
+<!-- Article, Right Column -->
+<div class="row">
+	<!-- Article -->
+	<div class="span9">
+	  <div id="page404">
+		<h1>Page Removed</h1>
+		<div class='infobar bordered'>
+		</div>
+		
+		<div id="article_content">
+		  <p>The requested page or list has been removed from our server.</p>
+      <p>You could try searching for another page or browsing one of our Resource Areas.</p>
+		</div>
+		</div>
+		<p id="photoattribution"><a href="http://creativecommons.org/licenses/by-sa/2.0/deed.en">CC</a> photo attribution: <a href="http://www.flickr.com/photos/mahalie/571097015/">http://www.flickr.com/photos/mahalie/571097015/</a>
+  </div>
   
-  
-  
-<div id="page404">
-  <h1>Page Removed</h1>
-  
-  <p>The requested page or list has been removed from our server.</p>
-  
-  <p>You could try searching for another page or browsing one of our Resource Areas.</p>
-  
-  <p><%= render(:partial => 'shared/search') %></p>
-  
-  <p id="photoattribution"><a href="http://creativecommons.org/licenses/by-sa/2.0/deed.en">CC</a> photo attribution: <a href="http://www.flickr.com/photos/mahalie/571097015/">http://www.flickr.com/photos/mahalie/571097015/</a>
+  <div class="span3">
+    <%= render(:partial => 'shared/social_and_locations_general') %>
+
+    <div class='row'>
+      <div class='latest-tweets span3'>
+        <h2>Latest Tweets</h2>
+        <%= render(:partial => 'shared/twitter_timeline_general') %>
+      </div>
+    </div>
+    
+    <div class='row'>
+      <div class="upcoming_learn_events span3">
+        <script type="text/javascript" src="https://learn.extension.org/widgets/front_porch.js"></script>
+        <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
+      </div>
+    </div>
+    
+  </div>
 </div>

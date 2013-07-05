@@ -897,6 +897,8 @@ label {font-weight:bold;}
 
 /*.addthis_toolbox {border:1px solid lime;}*/
 .addthis_toolbox a {display:block;}
+#page404 {padding:2em 2em 370px; background: transparent url(/images/pubsite/404_field.jpg) left bottom no-repeat; min-height:180px;}
+
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
    ========================================================================== */

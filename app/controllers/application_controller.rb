@@ -110,16 +110,17 @@ class ApplicationController < ActionController::Base
   end
     
   def do_404
-    
     personalize_location_and_institution if not @personal
-    @page_title_text = 'Status 404 - Page Not Found'
-    render(:template => "/shared/404", :layout => 'pubsite', :status  => "404")
+    @title_tag = 'Status 404 - Page Not Found'
+    @page_meta_description = 'Status 404 - Page Not Found'
+    render(:template => "/shared/404", :layout => 'frontporch', :status  => "404")
   end
   
   def do_410
     personalize_location_and_institution if not @personal
-    @page_title_text = 'Status 410 - Page Removed'
-    render :template => "/shared/410", :status => "410"
+    @title_tag = 'Status 410 - Page Removed'
+    @page_meta_description = 'Status 410 - Page Removed'
+    render :template => "/shared/410", :layout => 'frontporch', :status => "410"
   end
   
   def do_invalid_page
