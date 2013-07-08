@@ -208,8 +208,8 @@ class PagesController < ApplicationController
       @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     end  
     
-    if @content_tag
-      @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}"
+    if use_content_tag
+      @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{use_content_tag.name}"
     else 
       @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
     end
