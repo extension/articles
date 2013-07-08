@@ -210,8 +210,10 @@ class PagesController < ApplicationController
     
     if use_content_tag
       @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{use_content_tag.name}"
+      @donation_block = true
     else 
       @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
+      @donation_block = false
     end
     
     
