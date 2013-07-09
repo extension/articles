@@ -13,9 +13,13 @@
       <%= render(:partial => 'shared/addthis') %>
 		</div>
 		
-		<%= @about_this_community_section.content %>
+		<% if @about_this_community_section %>
+		  <%= @about_this_community_section.content %>
+		<% end %>
     
-    <%= @in_this_section.content %>
+    <% if @in_this_section %>
+      <%= @in_this_section.content %>
+    <% end %>
 		
 		<div class='backtotop span9'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
 		<div class='row'>
