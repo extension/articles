@@ -10,17 +10,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width">
   
-  <% if params[:print] %>
-	    <%= stylesheet_link_tag 'print-for-screen' %>
-	    <%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
-	    <%= stylesheet_link_tag 'print', :media => 'print' %>
-	<% else %>
-	    <%= stylesheet_link_tag 'bootstrap' %>
-	    <%= stylesheet_link_tag 'frontporch' %>
-	    <%= stylesheet_link_tag 'search' %>
-    	<%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
-    	<%= stylesheet_link_tag 'print', :media => 'print' %>
-	<% end %>
+	<%= stylesheet_link_tag 'bootstrap' %>
+	<%= stylesheet_link_tag 'frontporch' %>
+  <%= stylesheet_link_tag 'search' %>
+	
   
   <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
   <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
