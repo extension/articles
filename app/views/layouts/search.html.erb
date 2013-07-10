@@ -1,57 +1,78 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Cooperative Extension Search: <%= @page_title %></title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-    
-    <% if @mobile_device %>
-        <meta name = "viewport" content = "width = device-width, user-scalable = yes">
-        <%= stylesheet_link_tag 'mobile_search' %>
-    <% else %>
-        <%= stylesheet_link_tag 'common' %>
-        <%= stylesheet_link_tag 'search' %>
-    <% end %>
-    <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
-    <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-    
+  <meta charset="utf-8" />
+
+  <title>Cooperative Extension Search: <%= @page_title %></title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width">
+  
+  <% if params[:print] %>
+	    <%= stylesheet_link_tag 'print-for-screen' %>
+	    <%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
+	    <%= stylesheet_link_tag 'print', :media => 'print' %>
+	<% else %>
+	    <%= stylesheet_link_tag 'bootstrap' %>
+	    <%= stylesheet_link_tag 'frontporch' %>
+	    <%= stylesheet_link_tag 'search' %>
+    	<%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
+    	<%= stylesheet_link_tag 'print', :media => 'print' %>
+	<% end %>
+  
+  <script type="text/javascript" src="http://www.google.com/jsapi?key=<%=AppConfig.configtable['google_map_key']%>"></script>
+  <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
 </head>
-<body>
+
+<body>  
   <script src="https://www.extension.org/javascripts/global_nav_public.js" type="text/javascript"></script>
+  
   <%- if(current_person and current_person.is_admin?) -%>
- 	  <div id="adminnotice">
-       <div id="container">
-         <p><strong>You are logged into an admin account</strong> (<%= link_to('sign out',logout_path) %>)</p>
-       </div>	
-     </div>
+ 	  <div id="adminnotice"><p>You are logged into an admin account (<%= link_to('sign out',logout_path) %>)</p></div>
   <%- end -%>
-   <div id="wrapper">
+  
+  <% if(@app_location_for_display != 'production')%>
+    <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://create.extension.org/node/1781") %></p></div>
+  <% end %>
+  
+<!--[if lt IE 7]>
+  <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
 
- 	  <h1 id="masthead"><%= link_to("Cooperative Extension Search", search_url) %></h1>
- 	  
-     <%= render(:partial => 'partial/flashmessages') %>
-
-      <div id="content">
-         <%= yield :layout %>
-      </div>
+  <div class="container">
+    <div id="masthead">
+      <% link_to(search_url) do %>
+        <h1><img class='hidden-phone' src="/images/search/search_logo_small.png" alt="eXtension" /><img class='visible-phone' src="/images/search/search_logo_small.png" alt="eXtension" /></h1>
+      <% end %>
+    </div>
+ 
+      <%= render(:partial => 'partial/flashmessages') %>
       
-      <div id="footer">
-        <p class="footerabout"><span class="aboutexforprint">These resources are brought to you by the Cooperative Extension System and your Local Institution.</span> eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is a critical part of the Cooperative Extension System and an educational partner with 75 land-grant universities in the United States.</p>
-        <p class="copyright">&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
-        <ul>
-	        <li><%= link_to_unless_current "institutional partners", main_special_path(:path => 'partners') %></li>
-	        <li><%= link_to_unless_current "privacy", main_special_path(:path => 'privacy') %></li>
-	        <li><%= link_to_unless_current "contact us", main_special_path(:path => 'contact_us') %></li>
-	        <li><%= link_to_unless_current "disclaimer", main_special_path(:path => 'disclaimer') %></li>
-	        <li class="last"><%= link_to_unless_current "terms of use", main_special_path(:path => 'termsofuse') %></li>
+      <%= yield :layout %>
+      
+      <hr>
+      <p class="muted">These resources are brought to you by the Cooperative Extension System and your Local Institution. eXtension provides objective and research-based information and learning opportunities that help people improve their lives. eXtension is a critical part of the Cooperative Extension System and an educational partner with 75 land-grant universities in the United States.</p>
+      
+      <footer>
+        
+        <ul class='inline'>
+          <li><%= link_to_unless_current "Institutional Partners", main_special_path(:path => 'partners') %></li>
+          <li><%= link_to_unless_current "Privacy", main_special_path(:path => 'privacy') %></li>
+          <li><%= link_to_unless_current "Contact Us", main_special_path(:path => 'contact_us') %></li>
+          <li><%= link_to_unless_current "Disclaimer", main_special_path(:path => 'disclaimer') %></li>
+          <li class="last"><%= link_to_unless_current "Terms of Use", main_special_path(:path => 'termsofuse') %></li>
         </ul>
-      </div>
+        <p>&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
+      </footer>
 
-      <%= render(:partial => 'search/partial/googleanalytics') %>
-
-   </div>
-</body>
+    </div> <!-- /container -->
+    
+    
+    <%= javascript_include_tag 'jquery-1.9.1.min' %>
+    <%= javascript_include_tag 'bootstrap.min' %>
+    
+    <%= render(:partial => 'search/partial/googleanalytics') %>
+  </body>
 </html>
