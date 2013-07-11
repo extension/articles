@@ -2,8 +2,8 @@
 <div id="preview_page" class="row">
 	<!-- Article -->
 	<div class="span9">
-		<h1><%= @article.title %></h1>
-		<div class='infobar bordered'>
+		<h1 id="article_title"><%= @article.title %></h1>
+		<div class='infobar bordered clearfix'>
 		  
 		  <%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
       
