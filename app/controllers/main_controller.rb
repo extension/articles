@@ -11,34 +11,25 @@ class MainController < ApplicationController
   layout 'frontporch'
   
   def index
-     @published_content = true  # index the main page
+    @published_content = true  # index the main page
     
-     set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
-     set_titletag('eXtension - Objective. Research-based. Credible.')
-     @right_column = false
-     @sitehome = true
-     @includejquery = true
-		sponsorlist = Sponsor.all
-     @sponsors = Hash.new
-		Sponsor::SPONSORSHIP_LEVELS.each{ |level| @sponsors[level] = Array.new}
-		sponsorlist.each{ |sponsor| @sponsors[sponsor.level] << sponsor if sponsor.level}
+    set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
+    set_titletag('eXtension - Objective. Research-based. Credible.')
      
-     # get diverse list of articles across different communities
-     @community_highlights = Page.diverse_feature_list({:limit => 6})
+    # articles tagged 'front page' in Create will be eligible for front page display. the one with the latest source updated timestamp will win.
+    # in the case that one does not exist, it will fall back to the about page.
+    @featured_articles = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered.limit(3)
+    if @featured_articles.blank?
+      @featured_articles << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
+    end
      
-     # articles tagged 'front page' in Create will be eligible for front page display. the one with the latest source updated timestamp will win.
-     # in the case that one does not exist, it will fall back to the about page.
-     @featured_article = Page.articles.tagged_with_content_tag('front page').ordered.first
-     if @featured_article.blank?
-       @featured_article = Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
-     end
+    # Articles tagged with 'front page' and 'bio in Create will be eligible for the front page bio display.
+    # The one with the latest source updated timestamp will win.
+    # in the case that one does not exist, the bio area will just collapse
+    @featured_bio = Page.articles.tagged_with_all_content_tags(['front page', 'bio']).ordered.first
      
-     # articles tagged with both 'front page' and 'bio in Create will be eligible for the front page bio display. the one with the latest source updated timestamp will win.
-     # in the case that one does not exist, the bio area will just collapse
-     @featured_bio = Page.articles.tagged_with_all_content_tags(['front page', 'bio']).ordered.first
-     
-     @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
-     @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+    @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
+    @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
    end
    
   def category_tag
