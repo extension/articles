@@ -1,65 +1,82 @@
-<% @in_this_resource_area = true %>
-<% @resource_area_feeds = true %>
-
-<%- if @community_content_tags -%>
-<p id="relatedresources">
-    <%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_preview_community_home(community) }.join(', ')  %>
-</p>
-<%- end -%>
-
-<div class = "mission">
-    <%if @page_title_text && @header_description%>
-        <h2 class="missionstatement"><%=@header_description%></h2>
-    <%end%>
-</div>
-
-    <div class="pageextras">
-        <% if not @youth %>
-          <p id="aae_pitch">Have a question? <%= link_to 'Try asking one of our Experts', AppConfig.configtable['ask_two_point_oh_form'] %></p>
-        <% end %>
-        <%- if(!params[:print]) -%>
-        <p class="print_and_share"><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %>
-            <%= image_tag("/images/common/share_save_image.gif", :size => "106x16", :title => "The Share/Save feature is disabled in Preview mode", :alt => "Share/Save") %> 
-        </p>
+<!-- Article, Right Column -->
+<div id="preview_page" class="row">
+	<!-- Article -->
+	<div class="span9">
+		<h1><%= @article.title %></h1>
+		<div class='infobar bordered'>
+		  
+		  <%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
+      
+      <span><%= micro_time_print(@article.updated_at, 'updated') %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %></span>
+      
+      <%= render(:partial => 'shared/addthis') %>
+		</div>
+		
+		<div id="article_content">
+		  <%= @article.content %>
+		</div>
+		
+		<div class='backtotop span9'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
+		<div class='row'>
+  		<div class='article-info span6'>
+  			<h3 class='bordered'>Browse related by Tag</h3>
+  			<%- if @page_content_tag_names -%>
+          <p class="caption publictags">
+            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag))}.join(', ') %>
+          </p>
         <%- end -%>
+  		</div>
+  		<div class='article-info span3'>
+  			<h3 class='bordered'>Share this post</h3>
+  			<div class='share'>
+		        <!-- AddThis Button BEGIN -->
+        		<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+        		<a class="addthis_button_twitter"></a>
+        		<a class="addthis_button_facebook"></a>
+        		<a class="addthis_button_google_plusone_share"></a>
+        		<a class="addthis_button_pinterest_share"></a>
+        		<a class="addthis_button_email"></a>
+        		</div>
+        		<!-- AddThis Button END -->	  
+  			</div>          			
+  			<div class='callout orange'>
+  				<h4>Have a Question?</h4>
+  				<p><%= link_to "Try asking one of our Experts", @ask_two_point_oh_form, :class => "aae_form_link" %></p>
+  			</div>
+  		</div>
+		</div>
+		
+  </div>
+  
+  <div class="span3">
+    <% if @community %>
+      <%= render(:partial => 'shared/social_and_locations_community') %>
+    <% else %>
+      <%= render(:partial => 'shared/social_and_locations_general') %>
+    <% end %>
+    
+    <% if @donation_block %>
+    <div class='row'>
+    	<div class='callout orange span3'>
+    		<h4>Donate to <%= @community.name %></h4>
+    		<p>Few words to go here why someone should donate</p>
+    		<% link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
+    		  <i class='icon-heart icon-white'></i> Donate Now
+    		<% end %>
+    	</div>
+    </div>
+    <br />
+    <% end %>
+    
+    <div class='row'>
+      <div class="upcoming_learn_events span3">
+        <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
+        <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
+      </div>
     </div>
     
-    <div class = "headline left">
-      <h1 class="title"><%= @article.title %></h1>
-      
-      
-      <p class="caption">Last Updated: <%= micro_time_print(@article.updated_at, 'updated') %>
-        <% if false # this attr will not exist til wiki feed updated %>
-         Published: <%= micro_time_print(@article.source_updated_at, 'published') %>
-        <% end %>
-      </p>
-      
-      <p class="view_as_web_page"><%= link_to 'View as web page', request.request_uri.gsub(/\/print(\/)?$/, '')%></p>
-    </div>
-    <br class="clearing" />
-
-      <div id="content_css_reset">
-          
-          <div id="article">
-              
-            <%= @article.content %>
-         </div>
-  	  </div>
-  	  <br class="clearing" />
-
-  <%   
-    keywords = @article_content_tag_names.collect{|tag_name| "#{tag_name}" }
-  	if keywords.length > 0
-  %>
-      <div class="related">
-          <h4>More information</h4>
-          <p><%= keywords.join(", ") %></p>
-      </div>
-  <% end %>
-  
-  <% if not @youth %>
-    <div id="aae_plug">
-        <h4>Have a specific question? <%= link_to 'Try asking one of our Experts', AppConfig.configtable['ask_two_point_oh_form'] %></h4>
-        <p>Unlike most other resources on the web, we have experts from Universities around the country ready to answer your questions.</p>
-    </div>
-  <% end %>
+    <% if @in_this_section %>
+      <%= @in_this_section.content %>
+    <% end %>
+  </div>
+</div>

@@ -147,10 +147,7 @@ class PagesController < ApplicationController
     @page_content_tag_names = @page.cached_content_tag_names
     @page_bucket_names = @page.content_buckets.map(&:name)
         
-    if(!@page_content_tag_names.blank?)
-      # is this article tagged with youth?
-      @youth = true if @page_bucket_names.include?('youth')
-      
+    if(!@page_content_tag_names.blank?)      
       # news check to set the meta tags for noindex
       @published_content = false if (@page.indexed == Page::NOT_INDEXED)
       
@@ -184,22 +181,8 @@ class PagesController < ApplicationController
       end
     end
     
-    if(@page.is_news?)
-      set_title("#{@page.title} - eXtension News", "Check out the news from the land grant university in your area.")
-      set_titletag("#{@page.title} - eXtension News")
-    elsif(@page.is_faq?)
-      set_title("#{@page.title}", "Frequently asked questions from our resource area experts.")
-      set_titletag("#{@page.title} - eXtension")
-    elsif(@page.is_event?)
-      set_title("#{@page.title.titleize} - #{@page.event_start.utc.to_date.strftime("%B %d, %Y")} - eXtension Event",  @page.title.titleize)
-      set_titletag("#{@page.title.titleize} - #{@page.event_start.utc.to_date.strftime("%B %d, %Y")} - eXtension Event")
-    elsif @page_bucket_names.include?('learning lessons')
-      set_title('Learning', "Don't just read. Learn.")
-      set_titletag("#{@page.title} - eXtension Learning Lessons")
-    else
-      set_title("#{@page.title} - eXtension", "Articles from our resource area experts.")
-      set_titletag("#{@page.title} - eXtension")
-    end
+    set_title("#{@page.title} - eXtension", "Articles from our resource area experts.")
+    set_titletag("#{@page.title} - eXtension")
     
     # link for Ask an Expert group form
     if(@community and @community.aae_group_id.present?)
@@ -221,9 +204,6 @@ class PagesController < ApplicationController
       flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
       flash.now[:googleanalyticsresourcearea] = @community_content_tag_names[0].gsub(' ','_')
     end
-    
-    
-    
   end
   
   def list
