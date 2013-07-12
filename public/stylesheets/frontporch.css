@@ -444,7 +444,8 @@ ul.nav {
 .meet-extension h2,
 .featured_aae_questions h2,
 .latest-tweets h2,
-h3.learn_widget_generic_title {
+h3.learn_widget_generic_title,
+.sponsors h2 {
     font-family: 'Sanchez', serif;
 	font-size: 20px;
 	color:#f86f20;
@@ -890,6 +891,8 @@ label {font-weight:bold;}
 /*.addthis_toolbox {border:1px solid lime;}*/
 .addthis_toolbox a {display:block;}
 #page404 {padding:2em 2em 370px; background: transparent url(/images/pubsite/404_field.jpg) left bottom no-repeat; min-height:180px;}
+.sponsor_carousel {height:144px; padding:0;margin:0;}
+.rotator_sponsorlogo {height:140px !important; text-align:center; list-style:none; padding:0;margin:0;}
 
 /* ==========================================================================
    Responsive overrides (tablet/small screen)

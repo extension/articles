@@ -15,6 +15,11 @@ class MainController < ApplicationController
     
     set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
     set_titletag('eXtension - Objective. Research-based. Credible.')
+    
+    sponsorlist = Sponsor.all
+    @sponsors = Hash.new
+    Sponsor::SPONSORSHIP_LEVELS.each{ |level| @sponsors[level] = Array.new}
+    sponsorlist.each{ |sponsor| @sponsors[sponsor.level] << sponsor if sponsor.level}
      
     # articles tagged 'front page' in Create will be eligible for front page display. the one with the latest source updated timestamp will win.
     # in the case that one does not exist, it will fall back to the about page.
