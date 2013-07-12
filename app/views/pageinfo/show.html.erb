@@ -1,14 +1,14 @@
 <%- if @page.nil? %>
-   <p>Invalid article id</p>
+  <h1>Invalid article id</h1>
 <%- else -%>
-  <h2>Article Information</h2>
+  <h1>Article Information</h1>
   <%- if !current_person -%>
     <p>Extension personnel with an eXtension account can <%= link_to('sign in',url_for(:controller => 'auth', :action => 'people')) %> for more information</p>
   <%- else -%>
     <p>You are currently signed in as <%= current_person.fullname -%> (<%= link_to('sign out',logout_path) %>)</p>
   <%- end -%>
 
-  <table cellspacing="0" border="1">
+  <table class="table">
       <tr>
 		  <%- if @page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id) -%>
 			<td>Published URL (Special Page)</td>
@@ -101,7 +101,7 @@
   <%- if @external_links and @external_links.size > 0 -%>
   <h2>External Links</h2>
   <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
-  <table cellspacing="0" border="1">
+  <table class="table">
     <tr>
       <th>Link</th>
       <th>Host</th>
@@ -129,7 +129,7 @@
   <%- if @local_links and @local_links.size > 0 -%>
   <h2>Local Links</h2>
   <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
-  <table cellspacing="0" border="1">
+  <table class="table">
     <tr>
       <th>Link</th>
       <th>Host</th>
@@ -158,7 +158,7 @@
   <%- if @image_links and @image_links.size > 0 -%>
   <h2>Image Links</h2>
   <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
-  <table cellspacing="0" border="1">
+  <table class="table">
     <tr>
       <th>Link</th>
       <th>Host</th>

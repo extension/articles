@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class ReportsController < ApplicationController
-  layout 'pubsite'
+  layout 'frontporch'
   before_filter :signin_optional
   before_filter :signin_required, :only => [:bronto]
 

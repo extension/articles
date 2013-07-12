@@ -1,19 +1,101 @@
-<h1 class="missionstatement">The following feeds are available:</h1>
 
-<ul class="communitylist">
-    <li><a href="/feeds/all/" title="All things Atom">All content</a></li>
-    <li><a href="/feeds/articles/" title="Articles over Atom">News &amp; articles</a></li>
-    <li><a href="/feeds/faqs/" title="FAQs over Atom">Frequently Asked Questions to our experts</a></li>
-    <li><a href="/feeds/events/" title="Events over Atom">Calendar Events</a></li>
-    <%for community in @communities%>
-        <%- if community.tags.length > 0 -%>
-		      <li><%= link_to(community.public_name, content_feed_url(:tags => community.primary_content_tag_name)) %></li>
-        <%- end -%>
-    <%- end -%>
-</ul>
 
-<h2 class="missionstatement">What is a feed?</h2>
+<!-- Article, Right Column -->
+<div class="row">
+	<!-- Article -->
+	<div class="span9">
+		<h1 id="article_title">The following feeds are available</h1>
+		<div class='infobar bordered clearfix'>
+      
+      <%= render(:partial => 'shared/addthis') %>
+		</div>
+		
+		<div id="article_content">
+		  <ul class="communitylist">
+          <li><a href="/feeds/all/" title="All things Atom">All content</a></li>
+          <li><a href="/feeds/articles/" title="Articles over Atom">News &amp; articles</a></li>
+          <li><a href="/feeds/faqs/" title="FAQs over Atom">Frequently Asked Questions to our experts</a></li>
+          <li><a href="/feeds/events/" title="Events over Atom">Calendar Events</a></li>
+          <%for community in @communities%>
+              <%- if community.tags.length > 0 -%>
+      		      <li><%= link_to(community.public_name, content_feed_url(:tags => community.primary_content_tag_name)) %></li>
+              <%- end -%>
+          <%- end -%>
+      </ul>
+      
+      <h2>What is a feed?</h2>
+
+      <p>Feeds like Atom feeds or RSS feeds are formats for delivering regularly changing web content. eXtension allows you to subscribe to content as a "feed" so when there is something new to tell you, it's automatically sent, much like getting an email. For example, atom feeds are being used in eXtension so you can be kept up to date on new events and news items without having to always come to the site.</p>
+
+      <p>To read an atom or RSS feed, you need something called a "Reader." Many browsers like Firefox, Internet Explorer 7, and Safari have readers built in. You can also download a reader or use a web-based one. To start using an eXtension atom feed, just click on one of the links above and follow the instructions in your browser or copy/paste the URL in to your reader. Once it's saved in your reader, whenever there is an update, it will automatically be sent to you. It's that easy!</p>
+      
+      
+		</div>
+		
+		<div class='backtotop span9'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
+		<div class='row'>
+  		<div class='article-info span6'>
+  			<h3 class='bordered'>Browse related by Tag</h3>
+  			
+  		</div>
+  		<div class='article-info span3'>
+  			<h3 class='bordered'>Share this post</h3>
+  			<div class='share'>
+		        <!-- AddThis Button BEGIN -->
+        		<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+        		<a class="addthis_button_twitter"></a>
+        		<a class="addthis_button_facebook"></a>
+        		<a class="addthis_button_google_plusone_share"></a>
+        		<a class="addthis_button_pinterest_share"></a>
+        		<a class="addthis_button_email"></a>
+        		</div>
+        		<!-- AddThis Button END -->	  
+  			</div>          			
+  			<div class='callout orange'>
+  				<h4>Have a Question?</h4>
+  				<p><%= link_to "Try asking one of our Experts", @ask_two_point_oh_form, :class => "aae_form_link" %></p>
+  			</div>
+  		</div>
+		</div>
+		
+  </div>
+  
+  <div class="span3">
+    <% if @community %>
+      <%= render(:partial => 'shared/social_and_locations_community') %>
+    <% else %>
+      <%= render(:partial => 'shared/social_and_locations_general') %>
+    <% end %>
     
-<p>Feeds like Atom feeds or RSS feeds are formats for delivering regularly changing web content. eXtension allows you to subscribe to content as a "feed" so when there is something new to tell you, it's automatically sent, much like getting an email. For example, atom feeds are being used in eXtension so you can be kept up to date on new events and news items without having to always come to the site.</p>
-
-<p>To read an atom or RSS feed, you need something called a "Reader." Many browsers like Firefox, Internet Explorer 7, and Safari have readers built in. You can also download a reader or use a web-based one like the <a href="http://reader.google.com">Google reader</a>. To start using an eXtension atom feed, just click on one of the links above and follow the instructions in your browser or copy/paste the URL in to your reader. Once it's saved in your reader, whenever there is an update, it will automatically be sent to you. It's that easy!</p>
+    <% if @donation_block %>
+    <div class='row'>
+    	<div class='callout orange span3'>
+    		<h4>Donate to <%= @community.name %></h4>
+    		<p>Few words to go here why someone should donate</p>
+    		<% link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
+    		  <i class='icon-heart icon-white'></i> Donate Now
+    		<% end %>
+    	</div>
+    </div>
+    <br />
+    <% end %>
+    
+    <div class='row'>
+    <div class='latest-tweets span3'>
+      <h2>Latest Tweets</h2>
+      <%= render(:partial => 'shared/twitter_timeline_general') %>
+    </div>
+    </div>
+    
+    <div class='row'>
+      <div class="upcoming_learn_events span3">
+        <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
+        <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
+      </div>
+    </div>
+    
+    <% if @in_this_section %>
+      <%= @in_this_section.content %>
+    <% end %>
+  </div>
+</div>

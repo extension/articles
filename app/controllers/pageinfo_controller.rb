@@ -9,7 +9,7 @@ class PageinfoController < ApplicationController
   before_filter :signin_optional
   before_filter :set_content_tag_and_community_and_topic
   before_filter :www_store_location
-  layout 'pubsite'
+  layout 'frontporch'
   
   
   def find_by_source

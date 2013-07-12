@@ -6,7 +6,7 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class NoticeController < ApplicationController
-  layout 'pubsite'  
+  layout 'frontporch'  
   def ask
     render :layout => false
   end

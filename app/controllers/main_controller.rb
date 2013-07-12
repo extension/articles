@@ -200,8 +200,8 @@ class MainController < ApplicationController
 
     @published_content = true
     @canonical_link = main_special_url(:path => @special_page.path)
-    @right_column = false
     @page = @special_page.page
+    @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
     set_title(@special_page.main_heading, @special_page.sub_heading)
     set_titletag(@special_page.titletag)
     render(:template => "/pages/show")
