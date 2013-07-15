@@ -8,7 +8,6 @@
 class ReportsController < ApplicationController
   layout 'frontporch'
   before_filter :signin_optional
-  before_filter :signin_required, :only => [:bronto]
 
   def index
     set_title("Reports")
@@ -31,21 +30,5 @@ class ReportsController < ApplicationController
     return redirect_to(data_url, :status => :moved_permanently)
   end
 
-  def bronto
-    @reporting = true
-    @right_column = false
-    @filteredparameters = ParamsFilter.new([{:start_date => {:datatype => :date, :default => (Date.yesterday - 1.month)}},
-                                            {:end_date => {:datatype => :date, :default => (Date.yesterday)}},
-                                            {:download => :string}],params)
-
-    if(!@filteredparameters.download.nil? and @filteredparameters.download == 'csv')
-      @sends = BrontoSend.where('sent >= ? and sent <=?',@filteredparameters.start_date,@filteredparameters.end_date).order('sent DESC')
-      response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
-      response.headers['Content-Disposition'] = 'attachment; filename=brontosends.csv'
-      render(:template => 'reports/bronto_csvlist', :layout => false)
-    else
-      @sends = BrontoSend.where('sent >= ? and sent <=?',@filteredparameters.start_date,@filteredparameters.end_date).order('sent DESC').paginate(:page => params[:page])
-    end
-  end
 
 end

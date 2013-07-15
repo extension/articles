@@ -1,6 +1,0 @@
-"Bronto sends for <%= @filteredparameters.start_date.to_s%> - <%= @filteredparameters.end_date.to_s %>"
-
-Recipient ID,Recipient Email,Message Name,Sent,URL,Clicked
-<%- for send in @sends -%>
-"<%= send.bronto_recipient_id %>","<%= send.bronto_recipient.nil? ? 'unknown' : send.bronto_recipient.email %>","<%= send.bronto_message.nil? ? send.bronto_message_id : send.bronto_message.message_name %>",<%= send.sent %>,"<%= send.url %>",<%= send.clicked %>
-<%- end -%>
