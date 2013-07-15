@@ -147,12 +147,6 @@ class AppConfig
     @@configtable['googleapps_secret'] = 'NotSet'
     @@configtable['googleapps_domain'] = 'apps.extension.org'
 
-    @@configtable['bronto_api_key'] = 'NotSet'
-    @@configtable['bronto_username'] = 'NotSet'
-    @@configtable['bronto_password'] = 'NotSet'
-    @@configtable['bronto_sitename'] = 'NotSet'
-    
-    
     # Ask an expert settings
     @@configtable['auto_assign_incoming_questions'] = true
     @@configtable['faq_create_url'] = 'http://create.extension.org/node/add/faq'

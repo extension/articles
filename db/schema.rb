@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130702190005) do
+ActiveRecord::Schema.define(:version => 20130715150110) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -51,40 +51,6 @@ ActiveRecord::Schema.define(:version => 20130702190005) do
   add_index "branding_institutions", ["location_id"], :name => "location_ndx"
   add_index "branding_institutions", ["name"], :name => "name_ndx", :unique => true
   add_index "branding_institutions", ["referer_domain"], :name => "referer_ndx"
-
-  create_table "bronto_deliveries", :force => true do |t|
-    t.string   "bronto_message_id", :limit => 40, :default => "", :null => false
-    t.string   "status",                                          :null => false
-    t.datetime "start",                                           :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "bronto_messages", :force => true do |t|
-    t.string   "message_name"
-    t.boolean  "is_jitp"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "bronto_recipients", :force => true do |t|
-    t.string   "email"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "bronto_sends", :force => true do |t|
-    t.string   "bronto_delivery_id",  :limit => 40, :default => "", :null => false
-    t.string   "bronto_message_id",   :limit => 40, :default => "", :null => false
-    t.string   "bronto_recipient_id", :limit => 40, :default => "", :null => false
-    t.datetime "sent",                                              :null => false
-    t.string   "url"
-    t.datetime "clicked"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "bronto_sends", ["bronto_delivery_id", "bronto_message_id", "bronto_recipient_id"], :name => "send_ndx", :unique => true
 
   create_table "bucketings", :force => true do |t|
     t.integer  "page_id",           :null => false

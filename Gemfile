@@ -46,8 +46,6 @@ gem 'mofo'
 # widget related
 gem 'rest-client'
 gem 'json_pure'
-# soap gem for bronto downloads
-gem 'savon'
 # command line
 gem 'thor'
 
