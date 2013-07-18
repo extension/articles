@@ -894,6 +894,7 @@ label {font-weight:bold;}
 .sponsor_carousel {height:144px; padding:0;margin:0;}
 .rotator_sponsorlogo {height:140px !important; text-align:center; list-style:none; padding:0;margin:0;}
 
+
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
    ========================================================================== */
@@ -959,7 +960,10 @@ label {font-weight:bold;}
 }
 
 @media (max-width: 767px) {
-
+body {
+  padding-left:0;
+  padding-right:0;
+}
 .navbar {
 	background: #FF7B00;
 	margin:0 -26px;
