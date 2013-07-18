@@ -94,10 +94,20 @@
       
       <hr>
       
-      <footer>
-        <div class="row">
-          <div class="span9">
-        
+      <div class="row">
+        <div class="span9">
+      
+        </div>
+      <div class="span3">
+      <% if !@sponsors.blank? %>
+          <div class="sponsors">
+          <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
+          </div>
+      <% end %>
+      </div>
+      </div>
+      
+      <footer>        
         <ul class='inline'>
           <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
           <li><%= link_to_unless_current "Institutional Partners", main_special_path(:path => 'partners') %></li>
@@ -107,16 +117,6 @@
           <li class="last"><%= link_to_unless_current "Terms of Use", main_special_path(:path => 'termsofuse') %></li>
         </ul>
         <p>&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
-          </div>
-        <div class="span3">
-        <% if !@sponsors.blank? %>
-            <div class="sponsors">
-            <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
-            </div>
-        <% end %>
-        </div>
-        </div>
-        
       </footer>
 
     </div> <!-- /container -->
