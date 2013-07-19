@@ -19,3 +19,6 @@ div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5e
 .clearing {clear: both;}
 
 .singleimage .thumbinner {width:auto !important;}
+
+/*override responsive styles*/
+img {height: auto !important;}
