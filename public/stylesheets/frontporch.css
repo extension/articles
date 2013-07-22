@@ -1069,6 +1069,8 @@ ul.nav {
 
 }
 @media (max-width: 480px) {
+.article h1 {font-size:24px;}
+h1#article_title {font-size: 24px; margin-top:10px;}
 #myCarousel {margin: 0 -20px;} 
 #myCarousel .item {height:auto; margin-bottom:2em;}
 .container {padding-top:0 !important;}
