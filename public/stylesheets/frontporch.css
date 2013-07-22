@@ -902,6 +902,17 @@ label {font-weight:bold;}
 
 @media (min-width: 768px) and (max-width: 979px) {
 
+.connect-with-us ul li {
+  padding:0 0px 0 0;
+  margin-right:-10px;
+}
+
+.connect-with-us img {
+  width:70%;
+  height:auto;
+  margin:0;
+}
+
 .span3 h2,
 .span3 h3 {
 	font-size: 16px;
@@ -916,16 +927,7 @@ label {font-weight:bold;}
 	margin-bottom:20px;
 }
 
-.connect-with-us ul li {
-	padding:0 0px 0 0;
-	margin-right:-10px;
-}
 
-.connect-with-us img {
-	width:70%;
-	height:auto;
-	margin:0;
-}
 
 .local-extension-office img {
 	margin:0;
@@ -960,6 +962,7 @@ label {font-weight:bold;}
 }
 
 @media (max-width: 767px) {
+.container {padding-top:0 !important;}
 body {
   padding-left:0;
   padding-right:0;
@@ -986,6 +989,7 @@ ul.nav {
 
 .navbar .brand {
 	padding:0;
+/*  outline:2px solid lime;*/
 }
 
 .nav-collapse {
@@ -1062,19 +1066,12 @@ ul.nav {
 	margin-top:1px;
 }
 
-.connect-with-us ul li {
-	padding:0 0px 0 0;
-	margin-right:-10px;
-}
 
-.connect-with-us img {
-	width:70%;
-	height:auto;
-	margin:0;
 }
-
 @media (max-width: 480px) {
-
+#myCarousel {margin: 0 -20px;} 
+#myCarousel .item {height:auto; margin-bottom:2em;}
+.container {padding-top:0 !important;}
 .brand img {
 	width:95px;
 }
