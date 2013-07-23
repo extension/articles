@@ -83,7 +83,7 @@ module DataHelper
   def first_image(content)
     return unless content
     image_tag = content.match(/<img[^>]*>/)
-    return '<img src = "/images/layout/generic_feature.jpg" alt="" />' unless image_tag
+    return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />' unless image_tag
     src = image_tag[0].match(/src="[^"]*"/)[0]
     return '<img height="135" '+src+' alt="" />'
   end
