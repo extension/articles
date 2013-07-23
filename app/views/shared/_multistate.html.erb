@@ -1,4 +1,4 @@
-<h3>Welcome! What's your local institution?</h3>
+<h3 class="yourlocal">Welcome! What's your local institution?</h3>
 <ul>
   <% @branding_institutions_for_location.each{ |inst|  %>
     <li><%=link_to inst.name, set_institution_path(:institution_id => inst.id) %></li>

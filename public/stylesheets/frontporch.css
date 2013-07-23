@@ -352,17 +352,18 @@ ul.nav {
 }
 
 .connect-with-us.home {
-	margin-bottom:35px;
+	margin-bottom:24px;
 }
 .connect-with-us ul li {
 	padding:0 5px 0 0;
 }
 
 .local-extension-office img {
-	margin:5px 0;
+	margin:20px 0 24px;
 	display:block;
 }
 
+.local-extension-office h3.yourlocal {font-size:18px;}
 .local-extension-office a {
 	color:#737373;
 	font-size: 13px;
@@ -875,7 +876,9 @@ ul.extension_global_nav a {color:#ccc !important;}
 .carousel-indicators li {cursor:pointer;}
 
 
-#institutional_branding #institution_actions {list-style:none; margin:0;}
+#institutional_branding #institution_actions {list-style:none; margin:0 0 20px;}
+#institutional_branding #institution_actions li {line-height:1em;}
+#institution_actions a {text-decoration:none; font-weight:normal;}
 
 /* .hiddenStructure is pulled over from CoP wiki templates. I guess this will never die.  */
 .hiddenStructure {display:none;}
