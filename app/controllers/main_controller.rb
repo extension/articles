@@ -115,6 +115,7 @@ class MainController < ApplicationController
   end
   
   def community_tag
+    @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @published_content = true  # index CoP landing pages
     
     if(@community.nil?)

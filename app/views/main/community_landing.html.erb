@@ -47,6 +47,8 @@
   <!-- Upcoming Webinars, Meet Extension, Trending Questions, Latest Tweets -->
   <div class="row">
     
+    
+    
     <div class="upcoming_learn_events span3">
       <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
       <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
@@ -67,12 +69,17 @@
     	  <h2>Extension Experts</h2>
     	  <h3>There are no expert biographies at this time.</h3>
     	<% end %>
-    </div>
-                
-    <div class='featured_aae_questions span3'>
+    	<div class='featured_aae_questions'>
     	<h2>Trending Questions</h2>
     	<script type="text/javascript" src="<%= @ask_question_widget_url %>"></script> 
     	<%= link_to "Ask an Expert", @ask_two_point_oh_form, :class => "btn orange lg span3", :title => "One-to-one answers from a network of experts at universities across America." %>
+    	</div>
+    </div>
+                
+    <div class='featured_aae_questions span3'>
+      <% if @in_this_section %>
+        <%= @in_this_section.content %>
+      <% end %>
     </div>
                 
     <div class='latest-tweets span3'>
