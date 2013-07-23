@@ -482,6 +482,11 @@ h3.learn_widget_generic_title {margin:20px 0 10px;}
 	font-size:12px;
 	text-transform: uppercase;
 }
+.sponsors a {
+  color:#f86f20;
+	font-size:12px;
+	text-transform: uppercase;
+}
 
 .meet-extension {
 	line-height: 20px;

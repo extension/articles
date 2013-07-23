@@ -95,16 +95,55 @@
       <hr>
       
       <div class="row">
-        <div class="span9">
-      
+        <div class="span3 resource-areas">
+          <h3>Resource Areas</h3>
+      	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+            <% if topic.name == "Alerts" || topic.name == "Community" || topic.name == "Disaster Issues" %>
+            <h4><%= topic.name%></h4>
+            <ul class='unstyled'>
+              <%for community in topic.publishing_communities %>
+                <li><%= link_to_public_community(community) %></li>
+              <%end%>
+            </ul>
+            <%end%>
+          <%end%>
         </div>
-      <div class="span3">
-      <% if !@sponsors.blank? %>
-          <div class="sponsors">
-          <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
-          </div>
-      <% end %>
-      </div>
+        <div class="span3 resource-areas">
+      	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+            <% if topic.name == "Energy" || topic.name == "Environment" || topic.name == "Family" %>
+            <h4><%= topic.name%></h4>
+            <ul class='unstyled'>
+              <%for community in topic.publishing_communities %>
+                <li><%= link_to_public_community(community) %></li>
+              <%end%>
+            </ul>
+            <%end%>
+          <%end%>
+        </div>
+        <div class="span3 resource-areas">
+      	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+      	    <% if topic.name == "Farm" %>
+            <h4><%= topic.name%></h4>
+            <ul class='unstyled'>
+              <%for community in topic.publishing_communities %>
+                <li><%= link_to_public_community(community) %></li>
+              <%end%>
+            </ul>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="span3 resource-areas">
+      	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+      	  <% if topic.name == "Health and Nutrition" || topic.name == "Lawn and Garden" || topic.name == "Pest Management" || topic.name == "Youth" %>
+            <h4><%= topic.name%></h4>
+            <ul class='unstyled'>
+              <%for community in topic.publishing_communities %>
+                <li><%= link_to_public_community(community) %></li>
+              <%end%>
+            </ul>
+            <% end %>
+          <% end %>
+        </div>
       </div>
       
       <footer>        
