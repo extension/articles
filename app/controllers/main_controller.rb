@@ -176,8 +176,13 @@ class MainController < ApplicationController
   end
   
   def blog
-    @page_title_text = "Blog"
-    @pages = Page.diverse_feature_list().paginate(:page => params[:page], :per_page => 10)
+    @page_title_text = "Recently Featured"
+    
+    @pages = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).paginate(:page => params[:page], :per_page => 10)
+    if @pages.blank?
+      @pages << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
+    end
+    
     render :template => "/pages/list"
   end
   
