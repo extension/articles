@@ -446,7 +446,8 @@ ul.nav {
 .featured_aae_questions h2,
 .latest-tweets h2,
 h3.learn_widget_generic_title,
-.sponsors h2 {
+.sponsors h2,
+.community-recourses h2 {
     font-family: 'Sanchez', serif;
 	font-size: 20px;
 	color:#f86f20;
@@ -875,7 +876,7 @@ ul.extension_global_nav a {color:#ccc !important;}
 #adminnotice p {text-align: center; color:#fff; padding:.5em 0; margin:0;}
 #adminnotice p a {color:#fff;}
 
-#myCarousel .item {background:#53586d;}
+#myCarousel .item {background:#fff;}
 #myCarousel .item {height:336px;}
 #myCarousel .item img {width:100%;}
 .carousel-indicators li {cursor:pointer;}
