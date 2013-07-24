@@ -904,6 +904,10 @@ label {font-weight:bold;}
 .rotator_sponsorlogo {height:140px !important; text-align:center; list-style:none; padding:0;margin:0;}
 
 
+.navbar .brand img.nonmobile {width: 165px;}
+
+
+
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
    ========================================================================== */
