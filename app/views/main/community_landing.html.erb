@@ -47,12 +47,13 @@
   <!-- Upcoming Webinars, Meet Extension, Trending Questions, Latest Tweets -->
   <div class="row">
     
-    
-    
-    <div class="upcoming_learn_events span3">
-      <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
-      <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
+    <div class='span3 community-recourses'>
+      <h2>Resources</h2>
+      <% if @in_this_section %>
+        <%= @in_this_section.content %>
+      <% end %>
     </div>
+
     
     <div class='visible-phone clearfix'></div>
               
@@ -76,11 +77,9 @@
     	</div>
     </div>
                 
-    <div class='span3 community-recourses'>
-      <h2>Resources</h2>
-      <% if @in_this_section %>
-        <%= @in_this_section.content %>
-      <% end %>
+    <div class="upcoming_learn_events span3">
+      <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
+      <p><a href="http://learn.extension.org/" class='pull-right more_events' title="Professional development sessions on a variety of Extension topics.">More Webinars</a></p>
     </div>
                 
     <div class='latest-tweets span3'>
