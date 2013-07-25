@@ -292,99 +292,19 @@ class PagesController < ApplicationController
   
  
   def articles
-    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag]), :status=>301)
-    end
-    
-    @show_selector = true
-    @list_content = true # don't index this page
-    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
-    # validate order
-    return do_404 unless Page.orderings.has_value?(order)
-    
-    set_title('Articles', "Don't just read. Learn.")
-    if(!@content_tag.nil?)
-      set_title("All articles tagged with \"#{@content_tag.name}\"", "Don't just read. Learn.")
-      set_titletag("Articles - #{@content_tag.name} - eXtension")
-      @pages = Page.articles.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
-    else
-      set_titletag("Articles - all - eXtension")
-      @pages = Page.articles.ordered(order).paginate(:page => params[:page])
-    end
-    @youth = true if @topic and @topic.name == 'Youth'
-    render(:template => 'pages/list')
+    redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
   
   def news
-    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag]), :status=>301)
-    end
-    
-    @show_selector = true
-    @list_content = true # don't index this page
-    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
-    # validate order
-    return do_404 unless Page.orderings.has_value?(order)
-    
-    set_title('News', "Check out the news from the land grant university in your area.")
-    if(!@content_tag.nil?)
-      set_title("All news tagged with \"#{@content_tag.name}\"", "Don't just read. Learn.")
-      set_titletag("News - #{@content_tag.name} - eXtension")
-      @pages = Page.news.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
-    else
-      set_titletag("News - all - eXtension")
-      @pages = Page.news.ordered(order).paginate(:page => params[:page])
-    end    
-    @youth = true if @topic and @topic.name == 'Youth'
-    render(:template => 'pages/list')
+    redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
   
   def learning_lessons
-    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag]), :status=>301)
-    end
-    
-    @show_selector = true
-    @list_content = true # don't index this page
-    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
-    # validate order
-    return do_404 unless Page.orderings.has_value?(order)
-    
-    set_title('Learning Lessons', "Don't just read. Learn.")
-    set_titletag('Learning Lessons - eXtension')
-    if(!@content_tag.nil?)
-      set_titletag("Learning Lessons - #{@content_tag.name} - eXtension")
-      @pages = Page.articles.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
-    else
-      set_titletag("Learning Lessons - all - eXtension")
-      @pages = Page.articles.bucketed_as('learning lessons').ordered(order).paginate(:page => params[:page])
-    end    
-    @youth = true if @topic and @topic.name == 'Youth'
-    render(:template => 'pages/list')
+    redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
   
   def faqs
-    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
-      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag]), :status=>301)
-    end
-    
-    @show_selector = true
-    @list_content = true # don't index this page
-    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
-    # validate order
-    return do_404 unless Page.orderings.has_value?(order)
-    
-    set_title('Answered Questions from Our Experts', "Frequently asked questions from our resource area experts.")
-    if(!@content_tag.nil?)
-      set_title("Questions tagged with \"#{@content_tag.name}\"", "Frequently asked questions from our resource area experts.")
-      set_titletag("Answered Questions from Our Experts - #{@content_tag.name} - eXtension")      
-      @pages = Page.faqs.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
-    else
-      set_titletag('Answered Questions from Our Experts - all - eXtension')
-      @pages = Page.faqs.ordered(order).paginate(:page => params[:page])
-    end  
-    @youth = true if @topic and @topic.name == 'Youth'
-    render(:template => 'pages/list')
+    redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
   
   def events

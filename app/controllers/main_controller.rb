@@ -49,32 +49,26 @@ class MainController < ApplicationController
     end  
     
     
-    if(!@content_tag.nil?)
-      set_title("Content tagged with:", @content_tag.name.titleize)
-      set_titletag("Content tagged with '#{@content_tag.name}'  - eXtension")
-      @youth = true if @content_tag.name == 'youth'
-      @right_column = true
-    else
-      set_title("All Content")
-      set_titletag("All Content - eXtension")  
+    if(!@content_tag.nil? and !canonicalized_category?(params[:content_tag]))
+      return redirect_to(:action => params[:action],:content_tag => content_tag_url_display_name(params[:content_tag]), :status=>301)
     end
     
-   
-    if(@content_tag.nil?)
-      @news = Page.recent_content({:datatypes => ['News'], :limit => 3})
-      @recent_learning_lessons = Page.main_lessons_list({:limit => 3})
-      @faqs = Page.recent_content({:datatypes => ['Faq'], :limit => 3})
-      @articles = Page.ordered(Page.orderings['Newest to oldest']).limit(3)
+    @show_selector = true
+    @list_content = true # don't index this page
+    order = (params[:order].blank?) ? "source_updated_at DESC" : params[:order]
+    # validate order
+    return do_404 unless Page.orderings.has_value?(order)
+    
+    set_title('Recent Content', "Don't just read. Learn.")
+    if(!@content_tag.nil?)
+      set_title("Content tagged \"#{@content_tag.name}\"", "Don't just read. Learn.")
+      set_titletag("Articles - #{@content_tag.name} - eXtension")
+      @pages = Page.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
-      @canonical_link = category_tag_index_url(:content_tag => @content_tag.url_display_name)      
-      @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
-      @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
-      @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
-      @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
-      @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
+      set_titletag("Content - all - eXtension")
+      @pages = Page.ordered(order).paginate(:page => params[:page])
     end
-        
-    return render(:template => 'main/category_landing') 
+    render(:template => 'pages/list')
     
   end
   
