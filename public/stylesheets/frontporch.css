@@ -460,7 +460,13 @@ h3.learn_widget_generic_title {margin:20px 0 10px;}
   text-decoration:none;
 }
 
-.learn_widget_see_more,
+.learn_widget_see_more a {
+  color:#f86f20;
+	font-size:12px;
+	text-transform: uppercase;
+	float:right;
+}
+
 .learn_widget_specific_title {display:none;}
 
 .learn_widget_event_title a {display:block;}
