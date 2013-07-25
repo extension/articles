@@ -22,3 +22,4 @@ div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5e
 
 /*override responsive styles*/
 img {height: auto !important;}
+a.moreaboutpitch {color:#333;}
