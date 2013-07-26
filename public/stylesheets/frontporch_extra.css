@@ -24,7 +24,7 @@ div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5e
 img {height: auto !important;}
 a.moreaboutpitch {color:#333;}
 
-.institutional_logo img {width:224px; padding:1em; border:1px solid #eee; margin:1em;}
+.institutional_logo img {max-width:224px; padding:1em; border:1px solid #eee; margin:1em;}
 .margin_bottom {margin-bottom:3em;}
 .margin_bottom.small {margin-bottom:.5em;}
 .notopmargin {margin-top:0;}
