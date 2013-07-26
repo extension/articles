@@ -1,31 +1,29 @@
-<div id="admin">
-    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %></p>
-    
-    <h1>Institution Logos</h1>
-    
-    <p><strong>Image specs:</strong> Height must be 78px. The maximum width for single logos is 360px. Doublewide logos are a special case and can be 633px. Don't include excessive whitespace around the logo; padding is added with css in the layout.</p>
-    
-    <table class="table">
-        <tr>
-            <th scope="col">&nbsp;</th>
-            <th scope="col">Institution Name</th>
-            <th scope="col">Image</th>	
-        </tr>
-
-        <%- @institutionslist.each do |institution| -%>
-        <tr>
-            <td><%= link_to('edit', :action => 'edit_institution_logo', :id => institution.id)%></td>
-            <td><%= institution.name -%></td>
-            <%- if institution.logo.nil? %>
-                <td>Not yet provided.</td>
-        	<%- else -%>
-        	    <td><%= render_inline_logo({:logo => institution.logo, :show_thumbnail => false }) %></td>
-            <%- end -%>
-        </tr>
-        <%- end -%>
-</table>
-
-
-
-
+<p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %></p>
+<h1 class="margin_bottom small">Institution Logos</h1>  
+<div class="well margin_bottom">
+  <h2 class="notopmargin">Image Guidelines</h2>
+  <ul>
+    <li>Images should be 72dpi.</li>
+    <li>Don't include excessive whitespace around the image. Padding is added with css.</li>
+    <li>Recommended width is 300 px. The minimum acceptable width is 224 px.</li>
+    <li>Recommended aspect ratio is 3:1. This isn't a hard ratio. (E.g. a 300 px wide image can have a height anywhere in the range of 80-120 px and it will look acceptable in the layout.)</li>
+  </ul>
 </div>
+
+<table class="table">
+  <tr>
+    <th scope="col">Institution Name</th>
+    <th scope="col">Image</th>	
+  </tr>
+
+  <%- @institutionslist.each do |institution| -%>
+    <tr>
+      <td><%= institution.name -%> <%= link_to('edit', :action => 'edit_institution_logo', :id => institution.id)%></td>
+      <%- if institution.logo.nil? %>
+        <td>Not yet provided.</td>
+      <%- else -%>
+        <td class="institutional_logo"><%= render_inline_logo({:logo => institution.logo, :show_thumbnail => false }) %></td>
+      <%- end -%>
+    </tr>
+  <%- end -%>
+</table>
