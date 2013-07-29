@@ -5,7 +5,7 @@ gem 'rails', '2.3.18'
 # rdoc - removes a warning
 gem 'rdoc'
 # database
-gem 'mysql'
+gem 'mysql2', '~> 0.2.20' 
 # pagination
 gem 'will_paginate'
 # command line tools
