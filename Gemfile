@@ -36,9 +36,6 @@ gem 'calendar_date_select'
 gem 'gdata'
 # cron management
 gem 'lockfile'
-# needed for mail fetching and parsing
-gem 'SystemTimer'
-gem 'mail'
 # arel syntax for rails2
 gem 'fake_arel'
 # microformats
