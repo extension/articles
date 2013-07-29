@@ -28,3 +28,8 @@ a.moreaboutpitch {color:#333;}
 .margin_bottom {margin-bottom:3em;}
 .margin_bottom.small {margin-bottom:.5em;}
 .notopmargin {margin-top:0;}
+
+.community-resources {font-size:13px; line-height:18px;}
+.community-resources a {color:#333;}
+.community-resources p {margin:0 0 .5em;}
+.community-resources li {font-size:13px; line-height:18px;}

@@ -23,7 +23,7 @@ class MainController < ApplicationController
      
     # articles tagged 'front page' in Create will be eligible for front page display. the one with the latest source updated timestamp will win.
     # in the case that one does not exist, it will fall back to the about page.
-    @featured_articles = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered.limit(3)
+    @featured_articles = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered.limit(1)
     if @featured_articles.blank?
       @featured_articles << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
     end
@@ -172,8 +172,8 @@ class MainController < ApplicationController
   
   def blog
     @page_title_text = "Recently Featured"
-    
-    @pages = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).paginate(:page => params[:page], :per_page => 10)
+    order = "source_updated_at DESC"
+    @pages = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered(order).paginate(:page => params[:page], :per_page => 10)
     if @pages.blank?
       @pages << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
     end

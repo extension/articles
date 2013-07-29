@@ -1,10 +1,12 @@
 <h3 class="yourlocal">Your Local Extension:</h3>
 
 <h1 class="logo" >
-  <%- if !(@personal[:institution].logo.nil?) -%>
-    <%= link_to(render_inline_logo({:logo => @personal[:institution].logo, :alt_text => @personal[:institution].name}), home_url, {:style => "width: #{@personal[:institution].logo.width}px;"}) %>
-  <%- else -%>
-  		<%= link_to(@personal[:institution].name, home_url, {:style => ''}) %>
+  <% link_to (@personal[:institution].public_uri) do %>
+    <%- if !(@personal[:institution].logo.nil?) -%>
+      <%= render_inline_logo({:logo => @personal[:institution].logo, :alt_text => @personal[:institution].name}) %>
+    <%- else -%>
+  		<%= @personal[:institution].name %>
+    <%- end -%>
   <%- end -%>
 </h1>
 
