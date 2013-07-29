@@ -15,7 +15,7 @@ class RetrieveContent < Thor
       if !ENV["RAILS_ENV"] || ENV["RAILS_ENV"] == ""
         ENV["RAILS_ENV"] = environment
       end
-      require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+      require_relative("../config/environment")
     end
     
     def get_refresh_since(options)
