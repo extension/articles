@@ -80,12 +80,18 @@ module DataHelper
     select(name, :event_state, Location.displaylist.collect{|l| [l.name, l.abbreviation]}.unshift(['All', '']), {:selected => params[:event_state]},{ :onchange => 'go_state(' + make_a_link + ')'})
   end
   
-  def first_image(content)
+  def first_image(content, placeholder=true)
     return unless content
     image_tag = content.match(/<img[^>]*>/)
-    return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />' unless image_tag
-    src = image_tag[0].match(/src="[^"]*"/)[0]
-    return '<img height="135" '+src+' alt="" />'
+    if placeholder
+      return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />' unless image_tag
+      src = image_tag[0].match(/src="[^"]*"/)[0]
+      return '<img height="135" '+src+' alt="" />'
+    else
+      return unless image_tag
+      src = image_tag[0].match(/src="[^"]*"/)[0]
+      return '<img height="135" '+src+' alt="" />'
+    end
   end
   
   def first_bio_image(content)
