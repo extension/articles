@@ -4,7 +4,6 @@
 # === LICENSE:
 # BSD(-compatible)
 # see LICENSE file or view at http://about.extension.org/wiki/LICENSE
-require 'mofo'
 class Page < ActiveRecord::Base
   # for events
   attr_accessor :event_time, :event_date
@@ -554,33 +553,8 @@ class Page < ActiveRecord::Base
       page.indexed = Page::INDEXED
     end
     
-    if(page.datatype == 'Event')
-      event_data = hCalendar.find(:first => {:text => entry.content.to_s})
-      page.title = event_data.summary
-      page.original_content = CGI.unescapeHTML(event_data.description)
-      page.event_start = event_data.dtstart
-
-      if event_data.properties.include?("dtend")
-        duration = (event_data.dtend - event_data.dtstart) / (24 * 60 * 60) # result in days
-        page.event_duration = duration.to_i
-      end
-
-      location = event_data.location.split('|')
-      page.event_location = location[0]
-      page.coverage = location[1]
-      page.state_abbreviations = location[2]
-
-      if event_data.properties.include?('status')
-        if event_data.status == 'CANCELLED'
-          returndata = [page.source_updated_at, 'deleted', page.source_url]
-          page.destroy
-          return returndata
-        end
-      end
-    else
-      page.title = entry.title
-      page.original_content = entry.content.to_s
-    end
+    page.title = entry.title
+    page.original_content = entry.content.to_s
 
     # reference_pages
     reference_pages_array = []

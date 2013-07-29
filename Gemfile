@@ -38,8 +38,6 @@ gem "gdata_19", "~> 1.1.5"
 gem 'lockfile'
 # arel syntax for rails2
 gem 'fake_arel'
-# microformats
-gem 'mofo'
 # widget related
 gem 'rest-client'
 gem 'json_pure'
