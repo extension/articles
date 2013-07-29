@@ -74,7 +74,7 @@ group :development, :test do
   gem "awesome_print"
   gem "map_by_method"
   gem "what_methods"
-  #gem "net-http-spy"  # not useable with the savon gem, results in SystemStackError: stack level too deep on requests
+  gem "net-http-spy"  
   gem "powder"
   #gem "rails-footnotes", '< 3.7.0'
   # Deploy with Capistrano
