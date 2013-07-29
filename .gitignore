@@ -6,8 +6,8 @@
 /.powenv
 /.powrc
 /.tm_properties
-/.ruby-gemset
-/.ruby-version
+# /.ruby-gemset
+# /.ruby-version
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
