@@ -33,7 +33,7 @@ gem 'rmagick', :require => false
 # date picking
 gem 'calendar_date_select'
 # CSE management
-gem 'gdata'
+gem "gdata_19", "~> 1.1.5"
 # cron management
 gem 'lockfile'
 # arel syntax for rails2
