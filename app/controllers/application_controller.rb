@@ -17,7 +17,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_person
 
   require 'zip_code_to_state'
-  require 'image_size'
 
   before_filter :set_default_request_ip_address
   before_filter :set_locale
