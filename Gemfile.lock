@@ -35,6 +35,7 @@ GEM
     fake_arel (0.9.7)
       activerecord (>= 2.3.5)
     fastercsv (1.5.4)
+    fastimage (1.5.0)
     gdata (1.1.2)
     geoip (1.0.0)
     geokit (1.5.0)
@@ -48,7 +49,6 @@ GEM
     highline (1.6.19)
     hpricot (0.8.4)
     i18n (0.5.0)
-    imagesize (0.1.1)
     json (1.7.7)
     json_pure (1.5.1)
     libxml-ruby (2.3.3)
@@ -127,12 +127,12 @@ DEPENDENCIES
   capistrano
   fake_arel
   fastercsv
+  fastimage
   gdata
   geoip
   geokit
   has_many_polymorphs
   hpricot
-  imagesize
   json_pure
   lockfile
   mail
