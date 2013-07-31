@@ -1,7 +1,7 @@
 <!-- Left Column, Content, Right Column -->
 <div class="row">
 	<!-- Left column -->
-	<div class='span2 resource-areas'>
+	<div class='span2 resource-areas hidden-phone'>
 	  <h3>Resource Areas</h3>
 	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
       <h4><%= topic.name%></h4>
