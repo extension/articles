@@ -88,7 +88,7 @@ module DataHelper
       src = image_tag[0].match(/src="[^"]*"/)[0]
       actual_img_src = src.gsub('src="','')[0..-2]
       actual_img_width = FastImage.size(actual_img_src)
-      if actual_img_width[0].to_f > 550
+      if actual_img_width.present? && actual_img_width[0].to_f > 550
         return '<img width="'+actual_img_width[0].to_s+'" '+src+' alt="" />'
       else
         return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />'
