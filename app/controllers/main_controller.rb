@@ -109,7 +109,6 @@ class MainController < ApplicationController
   end
   
   def community_tag
-    @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @published_content = true  # index CoP landing pages
     
     if(@community.nil?)
@@ -129,6 +128,7 @@ class MainController < ApplicationController
       @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     end
     
+    @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @ask_question_widget_url = "https://ask.extension.org/widgets/answered.js?tags=#{@content_tag.name}"
     @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}"
     
@@ -139,16 +139,9 @@ class MainController < ApplicationController
     @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
     @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @community_highlights = Page.main_feature_list({:content_tag => @content_tag, :limit => 8})
-    @youth = true if @topic and @topic.name == 'Youth'
     flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
     flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
     @featured_bio = Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).offset(rand(Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).length)).first
-
-    @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
-    @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
-    @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
-    @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
-    @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
 
     return render(:template => 'main/community_landing') 
   end
