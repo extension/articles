@@ -78,9 +78,14 @@
       </div>
     </div>
     
-    <% if @in_this_section %>
-      <%= @in_this_section.content %>
-    <% end %>
+    <div class='row'>
+      <div class="community-resources span3 clearfix">
+        <h2>Resources</h2>
+        <% if @in_this_section %>
+          <%= @in_this_section.content %>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
 <p id="pagelinks"><%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %></p>
