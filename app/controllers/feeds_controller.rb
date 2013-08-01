@@ -12,7 +12,7 @@ class FeedsController < ApplicationController
   def index
     @right_column = false
     set_title('Feeds')
-    set_titletag('eXtension - Feeds')
+    set_title('eXtension - Feeds')
     @communities = PublishingCommunity.launched.all(:order => 'public_name')
     @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
   end

@@ -110,14 +110,14 @@ class ApplicationController < ActionController::Base
     
   def do_404
     personalize_location_and_institution if not @personal
-    @title_tag = 'Status 404 - Page Not Found'
+    @page_title = 'Status 404 - Page Not Found'
     @page_meta_description = 'Status 404 - Page Not Found'
     render(:template => "/shared/404", :layout => 'frontporch', :status  => "404")
   end
   
   def do_410
     personalize_location_and_institution if not @personal
-    @title_tag = 'Status 410 - Page Removed'
+    @page_title = 'Status 410 - Page Removed'
     @page_meta_description = 'Status 410 - Page Removed'
     render :template => "/shared/410", :layout => 'frontporch', :status => "410"
   end
@@ -198,13 +198,8 @@ class ApplicationController < ActionController::Base
     return true
   end
   
-  def set_title(main, sub = nil)
-    @page_title_text = ERB::Util::html_escape(main)
-    @header_description = sub
-  end
-  
-  def set_titletag(main)
-    @title_tag = ERB::Util::html_escape(main)
+  def set_title(main)
+    @page_title = ERB::Util::html_escape(main)
   end
     
   def set_content_tag

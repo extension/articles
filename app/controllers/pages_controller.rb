@@ -180,9 +180,7 @@ class PagesController < ApplicationController
         end
       end
     end
-    
-    set_title("#{@page.title} - eXtension", "Articles from our resource area experts.")
-    set_titletag("#{@page.title} - eXtension")
+    set_title("#{@page.title}")
     
     # link for Ask an Expert group form
     if(@community and @community.aae_group_id.present?)
@@ -272,13 +270,12 @@ class PagesController < ApplicationController
     titletypes = @filteredparameters.content_types.map{|type| type.capitalize}.join(', ')
     if(!alltags)
       tagstring = content_tags.join(" #{taglist_operator} ")
-      @page_title_text = "#{titletypes} tagged with #{tagstring}"
-      @title_tag = "#{titletypes} - #{tagstring} - eXtension"
+      @page_title = "#{titletypes} tagged with #{tagstring}"
+      @page_title = "#{titletypes} - #{tagstring} - eXtension"
     else
-      @page_title_text = titletypes
-      @title_tag = "#{titletypes} - all - eXtension"
-    end 
-    @header_description = "Don't just read. Learn."
+      @page_title = titletypes
+      @page_title = "#{titletypes} - all - eXtension"
+    end
    
     if(@order)
       pagelist_scope = pagelist_scope.ordered(@order)

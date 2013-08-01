@@ -12,7 +12,7 @@ class Admin::LogosController < ApplicationController
   layout 'frontporch'
 
   def index
-    set_titletag('Manage Logos- Pubsite Admin')
+    set_title('Manage Logos - Pubsite Admin')
     @logos = Logo.sponsorlogos.find(:all, :conditions => { :parent_id => nil }, :order => 'created_at DESC')
   end
 

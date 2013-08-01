@@ -22,7 +22,7 @@ class Admin::SponsorsController < ApplicationController
   end
 
   def index
-    set_titletag('Manage Sponsors - Pubsite Admin')
+    set_title('Manage Sponsors - Pubsite Admin')
     @sponsors = Sponsor.find(:all, :order => 'position')
   end
 
