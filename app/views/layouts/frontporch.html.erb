@@ -16,12 +16,25 @@
   <%- if @canonical_link -%>
     <link rel="canonical" href="<%= @canonical_link %>"/>
   <%- end -%>
-
-  <title><%= @title_tag %></title>
+  
+  <title><%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %></title>
   <meta name="description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width">
+  
+  
+  <meta property="og:url" content="<%= request.protocol + request.host_with_port + request.fullpath %>"/>
+  <meta property="og:type" content="<%= (@page_type == "article") ? "article" : "website" %>"/>
+  <meta property="og:title" content="<%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %>"/>
+  <meta property="og:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
+
+  <meta name="twitter:card" content="summary">
+
+  <meta name="twitter:title" content="<%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %>">
+  <meta property="twitter:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
+  
+  
   
   <% if params[:print] %>
 	    <%= stylesheet_link_tag 'print-for-screen' %>
@@ -92,7 +105,7 @@
       
       <%= yield :layout %>
       
-      <hr>
+      <hr />
       
       <div class="row">
         <div class="span3 resource-areas">
@@ -146,7 +159,10 @@
         </div>
       </div>
       
-      <footer>        
+      <hr />
+      
+      <footer>
+        <span id="extension_icon_512" class="pull-left noprint"><img id="extension_logo" src="/images/extension_logo.jpg" alt="eXtension" /></span>
         <ul class='inline'>
           <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
           <li><%= link_to_unless_current "Institutional Partners", main_special_path(:path => 'partners') %></li>

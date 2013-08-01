@@ -912,7 +912,8 @@ label {font-weight:bold;}
 
 .navbar .brand img.nonmobile {width: 165px;}
 
-
+#extension_icon_512 {width:64px;height:64px;display:block; margin-right:2em; border:1px solid #ddd; padding:2px;}
+#extension_icon_512 img {width:64px;height:64px;display:block;}
 
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
@@ -1097,6 +1098,7 @@ ul.nav {
 
 }
 @media (max-width: 480px) {
+  footer ul {clear:both; padding-top:20px;}
   h1.title {font-size:24px; margin-top:10px;}
   .carousel-caption h1 {font-size:21px;}
   .carousel-caption p {font-size:15px;}
