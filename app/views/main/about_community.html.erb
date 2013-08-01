@@ -1,13 +1,13 @@
 <% @in_this_resource_area = true %>
 <% @resource_area_feeds = true %>
-<% @page_meta_description = "#{@page_title_text}" %>
+<% @page_meta_description = "#{@page_title}" %>
 
 
 <!-- Article, Right Column -->
 <div class="row">
 	<!-- Article -->
 	<div class="span9">
-		<h1><%= @page_title_text %></h1>
+		<h1><%= @page_title %></h1>
 		<div class='infobar bordered'>
       <%= link_to_public_community_home(@community)  %>
       <%= render(:partial => 'shared/addthis') %>

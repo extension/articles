@@ -20,7 +20,7 @@ class SearchController < ApplicationController
   
   def manage
     @page_title = "Manage Links"
-    set_titletag('Manage CSE Links')
+    set_title('Manage CSE Links')
     if (!params[:searchterm].nil? and !params[:searchterm].empty?)
       @annotations = Annotation.patternsearch(params[:searchterm]).paginate(:all, :order => :url, :page => params[:page])
       if @annotations.nil? || @annotations.length == 0

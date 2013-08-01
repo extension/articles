@@ -11,7 +11,7 @@ class ReportsController < ApplicationController
 
   def index
     set_title("Reports")
-    set_titletag("Reports - eXtension")
+    set_title("Reports - eXtension")
     @right_column = false
   end
 

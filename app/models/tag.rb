@@ -19,7 +19,7 @@ class Tag < ActiveRecord::Base
   CONTENTBLACKLIST = ['article', 'articles','contents', 'dpl', 'events', 'faq', 'feature',
                       'highlight', 'homage', 'youth', 'learning lessons','learning lessons home', 
                       'main', 'news', 'originalnews','beano','people','ask','aae','status','opie','feeds',
-                      'data','reports','published','noindex','nogoogleindex','forceindex']
+                      'data','reports','published','noindex','nogoogleindex','forceindex','publish ready','copy edit ready']
 
   CONTENT_TAG_CACHE_EXPIRY = 24.hours
 

@@ -1,7 +1,7 @@
 <!-- Image Rotator, Connect With Us, Local Extension Office -->
 <div class="row">
   <div class="span9">
-    <h1 class='title'><%= @page_title_text %></h1>
+    <h1 class='title'><%= @page_title %></h1>
     <div id="myCarousel" class="carousel slide">
       <ol class="carousel-indicators">
         <% @community_highlights.each_with_index do |feature, i| %>
@@ -62,7 +62,7 @@
     	  <h2>Meet Extension</h2>
     	  <% link_to(@featured_bio.id_and_link) do %>
     	    <%= first_bio_image @featured_bio.content %>
-    	    <strong><%= @featured_bio.title %></strong><br />
+    	    <strong class="clearfix"><%= @featured_bio.title %></strong>
           <!-- <em>Communications Expert</em><br /> -->
           <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></p>
     	  <% end %>

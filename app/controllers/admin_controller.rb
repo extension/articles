@@ -12,12 +12,12 @@ class AdminController < ApplicationController
   layout 'frontporch'
   
   def index
-    set_titletag("eXtension Pubsite Admin")
+    set_title("eXtension Pubsite Admin")
   end
     
   def manage_topics
     @right_column = false
-    set_titletag("Manage Topics - Pubsite Admin")
+    set_title("Manage Topics - Pubsite Admin")
     @topics = Topic.find(:all)
   end
   
@@ -40,17 +40,17 @@ class AdminController < ApplicationController
   end
   
   def manage_communities
-    set_titletag("Manage Communities - Pubsite Admin")    
+    set_title("Manage Communities - Pubsite Admin")    
     @communities =  PublishingCommunity.all(:order => 'name')
   end
 
   def manage_institution_logos
-    set_titletag("Manage Institution Logos - Pubsite Admin")
+    set_title("Manage Institution Logos - Pubsite Admin")
     @institutionslist = BrandingInstitution.all(:order => 'name')
   end  
   
   def manage_community_logos
-    set_titletag("Manage Community Logos - Pubsite Admin")
+    set_title("Manage Community Logos - Pubsite Admin")
     @communitieslist = PublishingCommunity.all(:order => 'name')
   end
 
@@ -115,18 +115,18 @@ class AdminController < ApplicationController
   end
 
   def manage_institutions
-    set_titletag("Manage Institutions - Pubsite Admin")    
+    set_title("Manage Institutions - Pubsite Admin")    
     @landgrant_institutions =  BrandingInstitution.all(:include => :location, :order => 'locations.abbreviation')
   end
     
   def manage_locations_office_links
-    set_titletag("Manage Office Links - Pubsite Admin")    
+    set_title("Manage Office Links - Pubsite Admin")    
     @locations =  Location.displaylist
   end
   
   def edit_location_office_link
     set_title('Edit Location Office Link')
-    set_titletag("Edit Location Office Link - Pubsite Admin")
+    set_title("Edit Location Office Link - Pubsite Admin")
     @location = Location.find(params[:id])    
   end
   
@@ -203,7 +203,7 @@ class AdminController < ApplicationController
     
   def edit_public_community
     set_title('Edit Community Public Options')
-    set_titletag("Edit Community - Pubsite Admin")
+    set_title("Edit Community - Pubsite Admin")
     @community = PublishingCommunity.find(params[:id])
   end
   
@@ -224,7 +224,7 @@ class AdminController < ApplicationController
     
   def edit_public_institution
     set_title('Edit Institution Public Options')
-    set_titletag("Edit Institution - Pubsite Admin")
+    set_title("Edit Institution - Pubsite Admin")
     @institution = BrandingInstitution.find(params[:id])
   end
    
