@@ -1,24 +1,25 @@
-<div id="widget_builder">
-    <h2>Customize Your Content Widget</h2>
+<div class="row">
+  <div class="span6">
+	  <h1>Customize Your Content Widget</h1>
      
     <% form_tag({}, {:id => 'content_widget_builder'}) do %>
     
-    <p><label>Type of Content:</label></p>
+    <h3>Type of Content</h3>
     <ul>
-    <li><%= radio_button_tag(:content_types, 'articles', false) %> Articles</li>
-    <li><%= radio_button_tag(:content_types, 'news', false) %> News</li>
-    <li><%= radio_button_tag(:content_types, 'faqs', false) %> FAQs</li>
-    <li><%= radio_button_tag(:content_types, 'articles,news,faqs', true) %> Articles, News, And FAQs</li>
+      <li><%= radio_button_tag(:content_types, 'articles', false) %> Articles</li>
+      <li><%= radio_button_tag(:content_types, 'news', false) %> News</li>
+      <li><%= radio_button_tag(:content_types, 'faqs', false) %> FAQs</li>
+      <li><%= radio_button_tag(:content_types, 'articles,news,faqs', true) %> Articles, News, And FAQs</li>
     </ul>
     
-    <p class="inline"><label>Number of latest items: <%= text_field_tag :quantity, @limit, :size => 3 %></label></p>
+    <p><label>Number of latest items: <%= text_field_tag :quantity, @limit, :size => 3, :class => "input-mini" %></label></p>
     
-    <p class="inline"><label>Width: <%= text_field_tag :width, @width, :size => 3 %> pixels</label></p>
+    <p><label>Width: <%= text_field_tag :width, @width, :size => 3, :class => "input-mini" %> pixels</label></p>
    
       <p>
         <label>Content Tags:</label>
-      <%= text_area_tag :tags, nil, :cols => "50", :rows => "2" %>
-      <span class="gray">Comma separated (i.e. horses, horticulture). Leave blank for all content.</span>
+        <%= text_area_tag :tags, nil, :rows => "2" %>
+        <span class="gray">Comma separated (i.e. horses, horticulture). Leave blank for all content.</span>
       </p>
       
       <ul id="tag_operator">
@@ -42,21 +43,17 @@
         :submit => 'content_widget_builder',
         :loading => "Element.show('loading')",
         :complete    => "Element.hide('loading')"  %>
-                
-</div>
+	</div>
+	
+	<div class="span6">
+	  <script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => @default_quantity, :width => @default_width, :type => 'articles_faqs' %>"></script>
 
-<div id="example_widget">
-  <div id="loading" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
-  <script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => @default_quantity, :width => @default_width, :type => 'articles_faqs' %>"></script>
-  
-  <div id="widget_code_module">
-    <p>Copy the code below and paste it on your website:</p>
-    <p><%= text_area_tag :widget_code, @widget_code, :rows => "5" %></p>
-  </div>
-  
+    <div id="widget_code_module">
+      <p>Copy the code below and paste it on your website:</p>
+      <p><%= text_area_tag :widget_code, @widget_code, :rows => "5", :class => "span5" %></p>
+    </div>
+	</div>
 </div>
-
-<br class="clearing" />
 
 <script type='text/javascript'>
   

@@ -17,7 +17,7 @@ class Widgets::ContentController < ApplicationController
     @limit = DEFAULT_LIMIT
     @width = DEFAULT_WIDTH
     @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :limit => DEFAULT_LIMIT, :width => DEFAULT_WIDTH, :content_types => 'articles,news,faqs'}\"></script>"  
-    render :layout => 'widgetshome'
+    render :layout => 'frontporch'
   end
   
   # generate_new_widget builds the widget from a template (rather than doing a document.write as you see in the show method). 
