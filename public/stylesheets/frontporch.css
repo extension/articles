@@ -921,6 +921,9 @@ label {font-weight:bold;}
 
 @media (min-width: 768px) and (max-width: 979px) {
 
+.navbar .nav > li > a { font-size: 16px}
+
+
 .connect-with-us ul li {
   padding:0 0px 0 0;
   margin-right:-10px;
