@@ -20,8 +20,7 @@
 </ul>
 <p><a href="http://<%= request.host_with_port %>/widgets/content">Create your own eXtension widget</a></p></div>
 
-
-<div id="widget_code_module">
+<div id="widget_code_module" class="well">
   <p>Copy the code below and paste it on your website:</p>
-  <p><%= text_area_tag :widget_code, @widget_code, :rows => "5" %></p>
+  <p><%= text_area_tag :widget_code, @widget_code, :rows => "5", :class => "span5" %></p>
 </div>

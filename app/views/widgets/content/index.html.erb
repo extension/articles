@@ -1,80 +1,60 @@
 <div class="row">
   <div class="span6">
-	  <h1>Customize Your Content Widget</h1>
-     
-    <% form_tag({}, {:id => 'content_widget_builder'}) do %>
+    <h1>Customize Your Content Widget</h1>
     
-    <h3>Type of Content</h3>
-    <ul>
-      <li><%= radio_button_tag(:content_types, 'articles', false) %> Articles</li>
-      <li><%= radio_button_tag(:content_types, 'news', false) %> News</li>
-      <li><%= radio_button_tag(:content_types, 'faqs', false) %> FAQs</li>
-      <li><%= radio_button_tag(:content_types, 'articles,news,faqs', true) %> Articles, News, And FAQs</li>
-    </ul>
+    <% form_tag( {:action => 'generate_new_widget'}, {:id => "widget_form"}) do %>
     
-    <p><label>Number of latest items: <%= text_field_tag :quantity, @limit, :size => 3, :class => "input-mini" %></label></p>
-    
-    <p><label>Width: <%= text_field_tag :width, @width, :size => 3, :class => "input-mini" %> pixels</label></p>
-   
+    <div class="well">
+      <h4>Type of Content</h4>
+      <label class="radio">
+        <%= radio_button_tag(:content_types, 'articles', false) %>
+        Articles
+      </label>    
+      <label class="radio">
+        <%= radio_button_tag(:content_types, 'news', false) %>
+        News
+      </label>
+      <label class="radio">
+        <%= radio_button_tag(:content_types, 'faqs', false) %>
+        FAQs
+      </label>
+      <label class="radio">
+        <%= radio_button_tag(:content_types, 'articles,news,faqs', false) %>
+        Articles, News, And FAQs
+      </label>
+      
+      <p><label>Number of latest items: <%= text_field_tag :quantity, @limit, :size => 3, :class => "input-mini" %></label></p>
+      <p><label>Width: <%= text_field_tag :width, @width, :size => 3, :class => "input-mini" %> pixels</label></p>
       <p>
         <label>Content Tags:</label>
-        <%= text_area_tag :tags, nil, :rows => "2" %>
-        <span class="gray">Comma separated (i.e. horses, horticulture). Leave blank for all content.</span>
+        <small>Comma separated. Leave blank for all content.</small>
+        <%= text_field_tag :tags, nil,  :class => "span5", :id => "widget_tags" %>
       </p>
+      <label class="radio">
+        <%= radio_button_tag(:tag_operator, 'or', true) %>
+        Display content with <strong>any</strong> of the above tags
+      </label>
+      <label class="radio">
+        <%= radio_button_tag(:tag_operator, 'and', false) %>
+        Display content with <strong>all</strong> of the above tags
+      </label>
       
-      <ul id="tag_operator">
-         <li><%= radio_button_tag(:tag_operator, 'or', true) %> Display content with <strong>any</strong> of the above tags </li>
-         <li><%= radio_button_tag(:tag_operator, 'and', false) %> Display content with <strong>all</strong> of the above tags</li>
-      </ul>
-      
-      <p>Content Tag Picker (click to add)</p>
+      <h4>Content Tag Picker (click to add)</h4>
       <div id="tag_wrapper">
-      <ul class="select_from_tags">
-      <% @launched_tags.each do |tag| %>
-          <li><%= link_to_function tag.name, "addTagsToList($('tags'), '#{tag.name}'), showOperatorOptions()" %></li>
-      <% end %>
-      </ul>
+        <ul id="select_from_tags" class="unstyled">
+          <% @launched_tags.each do |tag| %>
+            <li><%= tag.name %></li>
+          <% end %>
+        </ul>
       </div>
-      
+      <span id="submit_widget" class="btn btn-primary btn-large">Generate Widget</span>
+    </div>
     <% end %>
-    
-    <%= button_to_remote 'Generate Widget', :url => { :action => :generate_new_widget },
-        :update => 'example_widget',
-        :submit => 'content_widget_builder',
-        :loading => "Element.show('loading')",
-        :complete    => "Element.hide('loading')"  %>
 	</div>
 	
 	<div class="span6">
-	  <script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => @default_quantity, :width => @default_width, :type => 'articles_faqs' %>"></script>
-
-    <div id="widget_code_module">
-      <p>Copy the code below and paste it on your website:</p>
-      <p><%= text_area_tag :widget_code, @widget_code, :rows => "5", :class => "span5" %></p>
+	  <div id="example_widget">
+	    <%= render(:partial => 'example_widget') %>
     </div>
 	</div>
 </div>
-
-<script type='text/javascript'>
-  
-  if ($('tags').value.include(',')) {
-    $('tag_operator').setStyle({
-      display: 'block'
-    });
-  }
-  
-  Event.observe('tags', 'keyup', function() {
-    showOperatorOptions();
-  });
-  
-  function showOperatorOptions() {
-  	if ($('tags').value.include(',')) {
-      $('tag_operator').setStyle({
-        display: 'block'
-      })
-    } else {
-      $('tag_operator').hide();
-    }
-  }
-  
-</script>

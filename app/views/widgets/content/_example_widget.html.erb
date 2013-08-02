@@ -1,0 +1,5 @@
+<script type="text/javascript" src="<%= url_for :controller => 'widgets/content', :action => :show, :escape => false, :quantity => @default_quantity, :width => @default_width, :type => 'articles_faqs' %>"></script>
+<div id="widget_code_module" class="well">
+  <p>Copy the code below and paste it on your website:</p>
+  <p><%= text_area_tag :widget_code, @widget_code, :rows => "5", :class => "span5" %></p>
+</div>

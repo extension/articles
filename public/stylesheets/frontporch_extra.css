@@ -35,3 +35,13 @@ a.moreaboutpitch {color:#333;}
 .community-resources li {font-size:13px; line-height:18px;}
 
 #learn_widget.upcoming .event_year {display:none;}
+
+
+#tag_wrapper {
+  height: 120px;
+  overflow: auto;
+  background: #fff;
+  padding: 10px;
+  margin-bottom:2em;
+}
+#widget_code_module {margin-top:20px;}

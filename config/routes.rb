@@ -64,6 +64,7 @@ ActionController::Routing::Routes.draw do |map|
   ### Widget Stuff ###
   # redirects
   map.namespace :widgets do |widgets|
+    widgets.generate_new_widget 'generate_new_widget', :controller => :content, :action => 'generate_new_widget'
     widgets.content 'content', :controller => :content, :action => 'index'
     widgets.home '/', :controller => :home, :action => :index     
   end
