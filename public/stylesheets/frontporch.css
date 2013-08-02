@@ -910,7 +910,7 @@ label {font-weight:bold;}
 .rotator_sponsorlogo {height:140px !important; text-align:center; list-style:none; padding:0;margin:0;}
 
 
-.navbar .brand img.nonmobile {width: 165px;}
+.navbar .brand img.nonmobile {width: 165px; max-width:none;}
 
 #extension_icon_512 {width:64px;height:64px;display:block; margin-right:2em; border:1px solid #ddd; padding:2px;}
 #extension_icon_512 img {width:64px;height:64px;display:block;}
