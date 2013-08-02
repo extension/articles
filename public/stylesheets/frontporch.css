@@ -322,8 +322,8 @@ ul.nav {
 .carousel-caption {
   padding: 10px;
   background: #FFF;
-  background: rgba(255,255,255,0.75);
   -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(opacity=85)"; /*IE8*/
+  background: rgba(255,255,255,0.75);
 }
 
 .carousel-caption h1 {
