@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130715150110) do
+ActiveRecord::Schema.define(:version => 20130805115553) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -327,6 +327,7 @@ ActiveRecord::Schema.define(:version => 20130715150110) do
     t.string   "pinterest_handle"
     t.string   "gplus_handle"
     t.text     "twitter_widget"
+    t.boolean  "show_donation",           :default => true
   end
 
   create_table "special_pages", :force => true do |t|

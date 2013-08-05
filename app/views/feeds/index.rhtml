@@ -67,19 +67,6 @@
       <%= render(:partial => 'shared/social_and_locations_general') %>
     <% end %>
     
-    <% if @donation_block %>
-    <div class='row'>
-    	<div class='callout orange span3'>
-    		<h4>Donate to <%= @community.name %></h4>
-    		<p>Your donation keeps eXtension growing</p>
-    		<% link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
-    		  <i class='icon-heart icon-white'></i> Donate Now
-    		<% end %>
-    	</div>
-    </div>
-    <br />
-    <% end %>
-    
     <div class='row'>
     <div class='latest-tweets span3'>
       <h2>Latest Tweets</h2>

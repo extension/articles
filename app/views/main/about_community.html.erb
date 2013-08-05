@@ -56,6 +56,7 @@
   <div class="span3">
     <%= render(:partial => 'shared/social_and_locations_community') %>
     
+    <% if @donation_block %>
     <div class='row'>
     	<div class='callout orange span3'>
     		<h4>Donate to <%= @community.name %></h4>
@@ -66,7 +67,7 @@
     	</div>
     </div>
     <br />
-    
+    <% end %>
     
     <div class='row'>
       <div class='latest-tweets span3'>

@@ -189,12 +189,14 @@ class PagesController < ApplicationController
       @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     end  
     
+    @donation_block = false
+    if(@community and @community.show_donation.present?)
+      @donation_block = true
+    end
     if use_content_tag
       @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{use_content_tag.name}"
-      @donation_block = true
     else 
       @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
-      @donation_block = false
     end
     
     

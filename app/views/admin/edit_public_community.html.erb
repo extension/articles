@@ -31,7 +31,7 @@
         <p>
 
         <p>
-            <%= check_box_tag 'community[is_launched]', true, @community.is_launched %> Show to the Public?
+            <label><%= check_box_tag 'community[is_launched]', true, @community.is_launched %> Show to the Public?</label>
             <span class="help-block">Allows the public to see this community. The change is immediate.</span>
         </p>
 
@@ -49,7 +49,11 @@
             <% end %></span>
             
         </p>
-
+        
+        <p>
+            <label><%= check_box_tag 'community[show_donation]', true, @community.show_donation %> Show donation box?</label>
+            <span class="help-block">Displays the Paypal integrated donation box. The change is immediate.</span>
+        </p>
         
         <h3>Social Networks</h3>
         

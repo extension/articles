@@ -79,7 +79,10 @@ class MainController < ApplicationController
     elsif(!canonicalized_category?(params[:content_tag]))
       return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
-    
+    @donation_block = false
+    if(@community and @community.show_donation.present?)
+      @donation_block = true
+    end
     if(@community and @community.aae_group_id.present?)
       @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
     else
