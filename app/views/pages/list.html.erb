@@ -1,7 +1,7 @@
 <!-- Left Column, Content, Right Column -->
 <div class="row">
 	<!-- Left column -->
-	<div class='span2 resource-areas'>
+	<div class='span2 resource-areas hidden-phone'>
 	  <h3>Resource Areas</h3>
 	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
       <h4><%= topic.name%></h4>
@@ -16,12 +16,12 @@
 
   <!-- Content -->
 	<div class="span7">
-		<div class='title'><%= @page_title_text %></div>
+		<div class='title'><%= @page_title %></div>
 		<%- @pages.each do |page| -%>
 		
 		<div class='article'>
 		  <% link_to(page_url(:id => page.id, :title => page.url_title)) do %>
-		  <%= first_image page.content %>
+		  <%= first_image(page.content, false)  %>
 		  <% end %>
   		
         <h1><%= link_to(page.title,page_url(:id => page.id, :title => page.url_title)) %></h1>

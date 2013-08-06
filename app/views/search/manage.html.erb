@@ -1,5 +1,9 @@
 <h1><%= link_to("Cooperative Extension Search URL Manager", url_for(:action => :manage)) %></h1>
 
+<%- if @cse_auth_error -%>
+<h2>Google Error</h2>
+<p>I'm unable to retrieve the list of search urls from Google at this time, please try again later</p>
+<%- else -%>
 <% form_tag(:action=> "manage") do %>
    <fieldset class="search">
       <p>
@@ -41,3 +45,4 @@
 <% end %>
 </table>
 <%= will_paginate @annotations, :params => {:searchterm => params[:searchterm]} %>
+<%- end -%>

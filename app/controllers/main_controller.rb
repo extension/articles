@@ -12,10 +12,6 @@ class MainController < ApplicationController
   
   def index
     @published_content = true  # index the main page
-    
-    set_title('Objective. Research-based. Credible. Information and tools you can use every day to improve your life.')
-    set_titletag('eXtension - Objective. Research-based. Credible.')
-    
     sponsorlist = Sponsor.all
     @sponsors = Hash.new
     Sponsor::SPONSORSHIP_LEVELS.each{ |level| @sponsors[level] = Array.new}
@@ -59,13 +55,11 @@ class MainController < ApplicationController
     # validate order
     return do_404 unless Page.orderings.has_value?(order)
     
-    set_title('Recent Content', "Don't just read. Learn.")
+    set_title('Recent Content')
     if(!@content_tag.nil?)
-      set_title("Content tagged \"#{@content_tag.name}\"", "Don't just read. Learn.")
-      set_titletag("Articles - #{@content_tag.name} - eXtension")
       @pages = Page.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
-      set_titletag("Content - all - eXtension")
+      set_title("Content - all - eXtension")
       @pages = Page.ordered(order).paginate(:page => params[:page])
     end
     render(:template => 'pages/list')
@@ -85,7 +79,10 @@ class MainController < ApplicationController
     elsif(!canonicalized_category?(params[:content_tag]))
       return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
     end
-    
+    @donation_block = false
+    if(@community and @community.show_donation.present?)
+      @donation_block = true
+    end
     if(@community and @community.aae_group_id.present?)
       @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
     else
@@ -95,8 +92,7 @@ class MainController < ApplicationController
     @ask_question_widget_url = "https://ask.extension.org/widgets/answered.js?tags=#{@content_tag.name}"
     @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}"
     
-    set_title(@community.public_name,@community.public_description)
-    set_titletag("#{@community.public_name} - eXtension")
+    set_title(@community.public_name)
     @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)      
     community_content_tag_names = @community.content_tag_names
     @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
@@ -109,7 +105,6 @@ class MainController < ApplicationController
   end
   
   def community_tag
-    @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @published_content = true  # index CoP landing pages
     
     if(@community.nil?)
@@ -129,26 +124,19 @@ class MainController < ApplicationController
       @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     end
     
+    @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @ask_question_widget_url = "https://ask.extension.org/widgets/answered.js?tags=#{@content_tag.name}"
     @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}"
     
-    set_title(@community.public_name,@community.public_description)
-    set_titletag("#{@community.public_name} - eXtension")
+    set_title(@community.public_name)
     @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)      
     community_content_tag_names = @community.content_tag_names
     @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
     @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @community_highlights = Page.main_feature_list({:content_tag => @content_tag, :limit => 8})
-    @youth = true if @topic and @topic.name == 'Youth'
     flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
     flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
     @featured_bio = Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).offset(rand(Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).length)).first
-
-    @news = Page.recent_content({:datatypes => ['News'], :content_tag => @content_tag, :limit => 3})
-    @recent_learning_lessons = Page.main_lessons_list({:content_tag => @content_tag, :limit => 3})
-    @faqs = Page.recent_content({:datatypes => ['Faq'], :content_tags => [@content_tag], :limit => 3})
-    @newsicles = Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 8}) unless @community
-    @recent_newsicles= Page.recent_content({:datatypes => ['Article','News'], :content_tags => [@content_tag], :limit => 3}) unless @in_this_section
 
     return render(:template => 'main/community_landing') 
   end
@@ -167,11 +155,11 @@ class MainController < ApplicationController
     @right_column = false
     @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
     set_title("Search results")
-    set_titletag("eXtension - Search results")
+    set_title("eXtension - Search results")
   end
   
   def blog
-    @page_title_text = "Recently Featured"
+    @page_title = "Recently Featured"
     order = "source_updated_at DESC"
     @pages = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered(order).paginate(:page => params[:page], :per_page => 10)
     if @pages.blank?
@@ -182,19 +170,11 @@ class MainController < ApplicationController
   end
   
   def communities
-    @page_title_text = "Our Resources"
+    @page_title = "Our Resources"
     @canonical_link = main_communities_url
     @special_page = SpecialPage.find_by_path('communities')
     @pages = Page.diverse_feature_list().paginate(:page => params[:page], :per_page => 10)
     render :template => "/pages/list"
-    # @right_column = false
-    # @published_content = true
-    # @page = @special_page.page
-    # set_title(@special_page.main_heading, @special_page.sub_heading)
-    # @communities = PublishingCommunity.launched.ordered_by_topic
-    # set_titletag(@special_page.titletag)
-    # @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100)
-    # @featured_articles = Page.articles.tagged_with_content_tag('front page').ordered.first
   end
   
   def special
@@ -207,8 +187,7 @@ class MainController < ApplicationController
     @canonical_link = main_special_url(:path => @special_page.path)
     @page = @special_page.page
     @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
-    set_title(@special_page.main_heading, @special_page.sub_heading)
-    set_titletag(@special_page.titletag)
+    set_title(@special_page.main_heading)
     render(:template => "/pages/show")
   end
 

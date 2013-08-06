@@ -29,11 +29,11 @@ class PreviewController < ApplicationController
 
 
     if(@community.nil?)
-      @title_tag = "eXtension Content Checklist for tag: #{@content_tag}"
+      @page_title = "eXtension Content Checklist for tag: #{@content_tag}"
       # youth styling
       @youth = true if @content_tag.name == 'youth'
     else
-      @title_tag = "Launch checklist for content tagged \"#{@content_tag.name}\" (#{@community.name})"
+      @page_title = "Launch checklist for content tagged \"#{@content_tag.name}\" (#{@community.name})"
       # youth styling
       @youth = true if @topic and @topic.name == 'Youth'
       @other_community_content_tag_names = @community.cached_content_tags(true).reject{|name| name == @content_tag.name}
@@ -153,21 +153,7 @@ class PreviewController < ApplicationController
       end
     end
 
-    if @article_bucket_names.include?('news')
-      set_title("#{@article.title} - eXtension News", "Check out the news from the land grant university in your area.")
-      set_titletag("#{@article.title} - eXtension News")
-    elsif @article_bucket_names.include?('learning lessons')
-      set_title('Learning', "Don't just read. Learn.")
-      set_titletag("#{@article.title} - eXtension Learning Lessons")
-    else
-      set_title("#{@article.title} - eXtension", "Articles from our resource area experts.")
-      set_titletag("#{@article.title} - eXtension")
-    end
-
+    set_title("#{@article.title}")
   end
-
-
-
-
 
 end

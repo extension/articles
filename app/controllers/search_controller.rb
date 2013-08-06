@@ -20,14 +20,20 @@ class SearchController < ApplicationController
   
   def manage
     @page_title = "Manage Links"
-    set_titletag('Manage CSE Links')
-    if (!params[:searchterm].nil? and !params[:searchterm].empty?)
-      @annotations = Annotation.patternsearch(params[:searchterm]).paginate(:all, :order => :url, :page => params[:page])
-      if @annotations.nil? || @annotations.length == 0
-        flash.now[:warning] = "No URLs were found that matches your search term."
+    set_title('Manage CSE Links')
+    @cse_auth_error = false
+
+    begin
+      if (!params[:searchterm].nil? and !params[:searchterm].empty?)
+        @annotations = Annotation.patternsearch(params[:searchterm]).paginate(:all, :order => :url, :page => params[:page])
+        if @annotations.nil? || @annotations.length == 0
+          flash.now[:warning] = "No URLs were found that matches your search term."
+        end
+      else
+        @annotations = Annotation.paginate(:all, :order => 'added_at DESC', :page => params[:page])
       end
-    else
-      @annotations = Annotation.paginate(:all, :order => 'added_at DESC', :page => params[:page])
+    rescue GdataCustomSearchError
+      @cse_auth_error = true
     end
   end
   

@@ -27,7 +27,6 @@ gem 'geoip'
 gem 'nokogiri'
 gem 'hpricot'
 # image submission and other image handling
-gem 'imagesize', :require => "image_size"
 gem 'paperclip'
 gem 'rmagick', :require => false
 # date picking
@@ -43,7 +42,8 @@ gem 'rest-client'
 gem 'json_pure'
 # command line
 gem 'thor'
-
+#get image attributes
+gem 'fastimage'
 # handle rewrites of trailing slashes
 gem 'rack-rewrite'
 

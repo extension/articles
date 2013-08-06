@@ -322,6 +322,7 @@ ul.nav {
 .carousel-caption {
   padding: 10px;
   background: #FFF;
+  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(opacity=85)"; /*IE8*/
   background: rgba(255,255,255,0.75);
 }
 
@@ -910,9 +911,10 @@ label {font-weight:bold;}
 .rotator_sponsorlogo {height:140px !important; text-align:center; list-style:none; padding:0;margin:0;}
 
 
-.navbar .brand img.nonmobile {width: 165px;}
+.navbar .brand img.nonmobile {width: 165px; max-width:none;}
 
-
+#extension_icon_512 {width:64px;height:64px;display:block; margin-right:2em; border:1px solid #ddd; padding:2px;}
+#extension_icon_512 img {width:64px;height:64px;display:block;}
 
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
@@ -920,16 +922,24 @@ label {font-weight:bold;}
 
 
 @media (min-width: 768px) and (max-width: 979px) {
+.carousel-caption h1 {font-size:24px;}
+.carousel-caption p {font-size:15px;}
+
+#myCarousel .item img {height:340px !important; width:auto !important; max-width: 721px; }
+
+.navbar .nav > li > a { font-size: 16px}
+
 
 .connect-with-us ul li {
   padding:0 0px 0 0;
-  margin-right:-10px;
+/*  margin-right:-10px;*/
 }
 
 .connect-with-us img {
-  width:70%;
+  width:26px;
   height:auto;
   margin:0;
+/*  border: 1px solid lime;*/
 }
 
 .span3 h2,
@@ -981,6 +991,7 @@ label {font-weight:bold;}
 }
 
 @media (max-width: 767px) {
+  h1.title {margin-top:20px;}
 .container {padding-top:0 !important;}
 body {
   padding-left:0;
@@ -1088,6 +1099,10 @@ ul.nav {
 
 }
 @media (max-width: 480px) {
+  footer ul {clear:both; padding-top:20px;}
+  h1.title {font-size:24px; margin-top:10px;}
+  .carousel-caption h1 {font-size:21px;}
+  .carousel-caption p {font-size:15px;}
 .article h1 {font-size:24px;}
 h1#article_title {font-size: 24px; margin-top:10px;}
 #myCarousel {margin: 0 -20px;} 
