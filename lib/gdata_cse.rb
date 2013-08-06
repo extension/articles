@@ -32,16 +32,18 @@ module GData
         captcha_answer = nil, service = nil, account_type = nil)
         returndata = super(username, password)
         
-        if ! self.setup
-          returndata = nil
+        begin
+          self.setup
+          returndata
+        rescue StandardError => e
+          nil
         end
         
-        return returndata
       end
       
       def setup
         returndata = false
-        cseList = 'http://www.google.com/cse/api/default/cse/'
+        cseList = 'https://www.google.com/cse/api/default/cse/'
         cseXML = self.get(cseList).to_xml
         idList = cseXML.elements.each('//@id') # get matching attr list
         

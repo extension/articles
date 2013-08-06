@@ -4,6 +4,7 @@
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+require 'gdata_cse'
 
 class Annotation < ActiveRecord::Base
   validates_length_of :url, :within => 1..1024
@@ -175,8 +176,10 @@ class Annotation < ActiveRecord::Base
     def login
       if @@client.nil?
         @@client = GData::Client::Cse.new
-        rc = @@client.clientlogin(AppConfig.configtable['cse_uid'],
-                              AppConfig.configtable['cse_secret'])
+        rc = @@client.clientlogin(AppConfig.configtable['cse_uid'], AppConfig.configtable['cse_secret'])
+        if(rc.nil?)
+          raise GdataCustomSearchError, 'Unable to authenticate to Google to manage the eXtension CSE'
+        end
       end
     end
     
