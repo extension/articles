@@ -55,11 +55,11 @@ class MainController < ApplicationController
     # validate order
     return do_404 unless Page.orderings.has_value?(order)
     
-    set_title('Recent Content')
     if(!@content_tag.nil?)
+      set_title("Content tagged \"#{@content_tag.name}\"")
       @pages = Page.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
     else
-      set_title("Content - all - eXtension")
+      set_title("Recent Content")
       @pages = Page.ordered(order).paginate(:page => params[:page])
     end
     render(:template => 'pages/list')
