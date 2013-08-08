@@ -614,7 +614,7 @@ class Page < ActiveRecord::Base
     if(page.new_record?)
       returndata = [page.source_updated_at, 'added']
       page.save
-    elsif(page.original_content_changed?)
+    elsif(page.original_content_changed? or page.source == 'create') #add conditional to force all create.ex edits to go through.
       returndata = [page.source_updated_at, 'updated']
       page.save
     else
