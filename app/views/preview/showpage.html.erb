@@ -5,7 +5,9 @@
 		<h1 id="article_title"><%= @article.title %></h1>
 		<div class='infobar bordered clearfix'>
 		  
-		  <%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
+		<% if !@community_content_tags.blank? %>  
+		<%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
+		<% end %>
       
       <span><%= micro_time_print(@article.updated_at, 'updated') %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %></span>
       
