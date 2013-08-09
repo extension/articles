@@ -914,7 +914,6 @@ class Page < ActiveRecord::Base
   # Reprocesses the links in the given article by deleting the existing linkings 
   # for the article and running convert_links again to parse the links in the article
   # 
-  # @param [Boolean] save save self after processing (default: true)
   # @return [Hash] output from convert_links with the counts of the various link types in the article
   def reprocess_links
     self.linkings.destroy_all
