@@ -570,6 +570,8 @@ class Link < ActiveRecord::Base
       'directfile'
     when LOCAL
       'local'
+    when IMAGE
+      'image'
     else
       'unknown'
     end
