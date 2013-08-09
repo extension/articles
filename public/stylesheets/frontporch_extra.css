@@ -45,3 +45,7 @@ a.moreaboutpitch {color:#333;}
   margin-bottom:2em;
 }
 #widget_code_module {margin-top:20px;}
+
+.thumb.tright {float: right; margin-left:20px;}
+.thumb.tleft {float: left; margin-right:20px;}
+.thumbcaption {font-size:13px; margin:10px 0 10px; line-height:1.3em;}

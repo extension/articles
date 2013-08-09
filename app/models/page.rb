@@ -594,11 +594,6 @@ class Page < ActiveRecord::Base
     else
       # content didn't change, don't save the article - most useful for dpl's
       returndata = [page.source_updated_at, 'nochange']
-      # force a return for now so that we don't keep injecting eOrganic/PBGworks content as recent
-      # the byproduct of this we won't update their tags if 
-      # that's all they change, but I guess that's the breaks.
-      returndata << page
-      return returndata
     end
   
 
@@ -888,7 +883,6 @@ class Page < ActiveRecord::Base
   # Reprocesses the links in the given article by deleting the existing linkings 
   # for the article and running convert_links again to parse the links in the article
   # 
-  # @param [Boolean] save save self after processing (default: true)
   # @return [Hash] output from convert_links with the counts of the various link types in the article
   def reprocess_links
     self.linkings.destroy_all
