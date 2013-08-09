@@ -75,11 +75,7 @@
         <%- else -%>
         <tr>
             <td>Source</td>
-            <td>
-              Local <%- if @page.datatype == 'Event' -%>
-                <%= link_to('edit',edit_event_url(:id => @page.id)) %>
-              <%- end -%>
-            </td>
+            <td>Local</td>
         </tr>
         <tr>
             <td>Created At</td>
