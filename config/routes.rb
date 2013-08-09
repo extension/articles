@@ -166,7 +166,7 @@ ActionController::Routing::Routes.draw do |map|
   map.main_blog '/main/blog', :controller => 'main', :action => 'blog'
   map.main_communities '/main/communities', :controller => 'main', :action => 'communities'
   map.set_institution '/main/set_institution', :controller => 'main', :action => 'set_institution'
-  map.show_institution_list '/main/show_institution_list', :controller => 'main', :action => 'show_institution_list'
+  map.show_institution_list '/main/show_institution_list', :controller => 'main', :action => 'show_institution_list', :conditions => { :method => :post }
   map.main_special '/main/:path', :controller => 'main', :action => 'special'
   
   map.site_index ':content_tag', :controller => 'main', :action => 'community_tag'
