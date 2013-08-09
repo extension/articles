@@ -43,7 +43,7 @@ h3 {font-size:12pt;}
 h4 {font-size:11pt;}
 h5 {font-size:10pt;}
 
-h1.title {font-size:2.1em !important;font-weight:normal;padding-bottom:0;margin-bottom:0;}
+h1#article_title {font-size:2.1em !important;font-weight:normal;padding-bottom:0;margin-bottom:0;}
 
 img {border: 0;}
 
@@ -54,14 +54,6 @@ img {border: 0;}
 .singleimage.left {margin-left:0;}
 .singleimage.right {margin-right:0;}
 .thumbcaption {font-size:9pt;}
-
-#comments {display:none;margin:0;padding:0;font-size:9pt;}
-#comments h4 {margin:0 0 10pt;}
-#comments h5 {margin:0 0 0pt;}
-#comments h5 span.date {font-weight:normal;}
-#comments .comment_box {margin:0 0 10pt;padding:0 0 10pt;border-bottom: 1pt solid #ccc;}
-#comments .comment {padding:0 10pt;}
-
 
 #footer {border-top:1px solid #bbb;}
 #footer p {line-height:12pt;font-size:.9em;}
@@ -80,8 +72,6 @@ p.caption * {color:#555 !important;}
 
 #print-logo {margin-bottom:24pt;display:block;float:right;}
 .logo{float:left;margin:0;padding:0;}
-
-
 
 .clearing {clear:both;}
 .aboutex {color:#666;border-bottom:1px solid #ddd;font-size:1.3em;padding-bottom:.25em;display:none;}

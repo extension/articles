@@ -107,7 +107,7 @@
       
       <hr />
       
-      <div class="row">
+      <div class="row noprint">
         <div class="span3 resource-areas">
           <h3>Resource Areas</h3>
       	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
@@ -159,11 +159,11 @@
         </div>
       </div>
       
-      <hr />
+      <hr class="noprint" />
       
       <footer>
         <span id="extension_icon_512" class="pull-left noprint"><img id="extension_logo" src="/images/extension_logo.jpg" alt="eXtension" /></span>
-        <ul class='inline'>
+        <ul class='inline noprint'>
           <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
           <li><%= link_to_unless_current "Institutional Partners", main_special_path(:path => 'partners') %></li>
           <li><%= link_to_unless_current "Privacy", main_special_path(:path => 'privacy') %></li>

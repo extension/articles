@@ -11,7 +11,7 @@
 		  <%- if(!@page_communities.blank?) -%>
           <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
       <%- end -%>
-      <span><%= micro_time_print(@page.source_updated_at, 'updated') %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %></span>
+      <span><%= micro_time_print(@page.source_updated_at, 'updated') %></span><span class='divider hidden-phone noprint'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print noprint" %></span>
       
       <%= render(:partial => 'shared/addthis') %>
 		</div>
@@ -20,8 +20,8 @@
 		  <%= @page.content %>
 		</div>
 		
-		<div class='backtotop span9'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
-		<div class='row'>
+		<div class='backtotop span9 noprint'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
+		<div class='row noprint'>
   		<div class='article-info span6'>
   			<h3 class='bordered'>Browse related by Tag</h3>
   			<%- if @page_content_tag_names -%>
@@ -52,7 +52,7 @@
 		
   </div>
   
-  <div class="span3">
+  <div class="span3 noprint">
     <% if @community %>
       <%= render(:partial => 'shared/social_and_locations_community') %>
     <% else %>
