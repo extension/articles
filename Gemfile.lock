@@ -115,8 +115,8 @@ DEPENDENCIES
   capistrano
   fake_arel
   fastercsv
-  gdata_19 (~> 1.1.5)
   fastimage
+  gdata_19 (~> 1.1.5)
   geoip
   geokit
   has_many_polymorphs
