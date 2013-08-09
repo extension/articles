@@ -29,8 +29,6 @@ gem 'hpricot'
 # image submission and other image handling
 gem 'paperclip'
 gem 'rmagick', :require => false
-# date picking
-gem 'calendar_date_select'
 # CSE management
 gem 'gdata'
 # cron management

@@ -18,7 +18,6 @@ GEM
       builder
     awesome_print (0.3.2)
     builder (2.1.2)
-    calendar_date_select (1.16.2)
     capatross (1.5.1)
       capistrano (>= 2.11)
       grit (>= 2.4)
@@ -122,7 +121,6 @@ DEPENDENCIES
   SystemTimer
   airbrake (= 3.1.2)
   awesome_print
-  calendar_date_select
   capatross
   capistrano
   fake_arel
