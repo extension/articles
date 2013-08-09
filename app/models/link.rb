@@ -69,6 +69,10 @@ class Link < ActiveRecord::Base
   def self.is_copwiki?(host)
     (host == 'cop.extension.org' or host == 'cop.demo.extension.org')
   end
+
+  def self.is_www?(host)
+    (host == 'www.extension.org' or host == 'www.demo.extension.org')
+  end    
     
   def is_create?
     self.class.is_create?(self.host)
@@ -81,6 +85,18 @@ class Link < ActiveRecord::Base
   def is_copwiki_or_create?
     self.class.is_create?(self.host) or self.class.is_copwiki?(self.host)
   end
+
+  # note to the future humorless, the www site is currently (as of this commit) 
+  # the extension.org site that "has no name" (and multiple 
+  # attempts in the staff to attempt to give it a name) - so in an effort to
+  # encapsulate something that needs to resolve to "www" - I called it
+  # voldemort.  <jayoung>
+  def self.is_voldemort?(host)
+    self.is_create?(host) or self.is_copwiki?(host) or self.is_www?(host)
+  end
+
+
+
     
   def status_to_s
     if(self.status.blank?)
@@ -349,7 +365,7 @@ class Link < ActiveRecord::Base
         
       if(original_uri.is_a?(URI::MailTo))
         this_link.linktype = MAILTO
-      elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/sites/default/files/.*})
+      elsif(self.is_create?(source_host) and self.is_voldemort?(original_uri.host) and original_uri.path =~ %r{^/sites/default/files/.*})
         # exemption for create and directfile links
         this_link.linktype = DIRECTFILE
       elsif(self.is_create?(source_host) and original_uri.path =~ %r{^/taxonomy/term/(\d+)})
@@ -357,9 +373,9 @@ class Link < ActiveRecord::Base
         this_link.linktype = CATEGORY
       elsif(original_uri.path =~ %r{^/wiki/Category:.*})  
         this_link.linktype = CATEGORY
-      elsif(original_uri.path =~ %r{^/mediawiki/.*})  
+      elsif(self.is_create?(source_host) and self.is_voldemort?(original_uri.host) and original_uri.path =~ %r{^/mediawiki/.*})  
         this_link.linktype = DIRECTFILE
-      elsif(original_uri.path =~ %r{^/learninglessons/.*})  
+      elsif(self.is_create?(source_host) and self.is_voldemort?(original_uri.host) and original_uri.path =~ %r{^/learninglessons/.*})  
         this_link.linktype = DIRECTFILE
       elsif(original_uri.host == source_host)
         this_link.linktype = WANTED
