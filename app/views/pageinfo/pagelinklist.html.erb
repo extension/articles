@@ -21,7 +21,7 @@
    <%= will_paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
    </div>
 
-<table cellspacing="0" id="linkchecker">
+<table class="table" id="linkchecker">
   <tr>
     <td class="td_b">External</td>
     <td>links to external (non extension.org) sites.</td>
@@ -52,24 +52,25 @@
   </tr>
 </table>
 </ul>
-   <table cellspacing="0">
-     <tr>
-       <th colspan="3"></th>
-       <th colspan="7" class="superhead">Link Checker</th>
-      </tr>
-       <tr>
-           <th>Published Title</th>
-           <th>Published</th>
-           <th>Updated</th>
-           <th>External</th>
-           <th>Article</th>
-           <th>eXtension</th>
-           <th>Unpublished</th>
-           <th>Warning</th>
-           <th>Broken</th>
-           <th>Redirect</th>
-       </tr>
-    
+
+<h2>Link Checker</h2>
+
+<table class="table table-striped report_table">
+  <thead>
+    <tr>
+      <th>Published Title</th>
+      <th>Published</th>
+      <th>Updated</th>
+      <th>External</th>
+      <th>Article</th>
+      <th>eXtension</th>
+      <th>Unpublished</th>
+      <th>Warning</th>
+      <th>Broken</th>
+      <th>Redirect</th>
+    </tr>
+  </thead>
+  <tbody>
        <% for page in @pages %>
            <% link_counts = page.link_counts %>
            <tr id="article_row_<%= page.id %>" <%= page.has_broken_links? ? 'class="brokenlinks"' : '' %>>
@@ -82,10 +83,12 @@
               <td class="td_c <%= link_counts[:wanted] > 0 ? 'unpublishedlinks' : 'zero' %>"><%= link_counts[:wanted] %></td>
               <td class="td_c <%= link_counts[:warning] > 0 ? 'warningcount' : 'zero' %>"><%= link_counts[:warning] %></td>
               <td class="td_c <%= link_counts[:broken] > 0 ? 'brokencount' : 'zero' %>"><%= link_counts[:broken] %></td>
-              <td class="td_c <%= link_counts[:redirected] > 0 ? '' : 'zero' %>"><%= link_counts[:redirected] %></td>
+              <td class="td_c <%= link_counts[:redirected] > 0 ? 'redirectcount' : 'zero' %>"><%= link_counts[:redirected] %></td>
            </tr>
+
        <% end%>
-   </table>
+  </tbody>
+</table>
 
 
    <div id="paginator_wrapper"> 
