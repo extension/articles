@@ -83,7 +83,6 @@ class PageinfoController < ApplicationController
 
   def pagelist
     @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:articlefilter => :string},{:download => :string}],params)
-    @right_column = false
     if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
       # fake content tag for display purposes
       @content_tag = Tag.new(:name => 'all')
@@ -126,6 +125,9 @@ class PageinfoController < ApplicationController
      when 'homage'
        @articlefilter = 'Homage'
        bucket = 'homage'
+      when 'bio'
+         @articlefilter = 'Bio'
+         bucket = 'bio'
      end # case statement
      if(!bucket.nil?)
        pagelist_scope = pagelist_scope.bucketed_as(bucket)

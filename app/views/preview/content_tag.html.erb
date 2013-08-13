@@ -1,5 +1,6 @@
 <h1>Launch Checklist for Content Tagged "<%= @content_tag.name %>"</h1>
 <p>This page provides a listing of all elements needed correctly display a launched content page for an eXtension Community of Practice on the Public Site.</p>
+<p>View Community: <%= link_to_public_community(@community) %></p>
 
 <div class="row">
 	<div class="span7">
@@ -21,13 +22,13 @@
       <% if !@community.twitter_handle.blank? %>
         <li><%=link_to image_tag("/images/frontporch/icon_twitter.gif"), "#{@community.twitter_handle}" %> <%=link_to @community.twitter_handle, @community.twitter_handle %></li>
       <% else %>
-        <li><%= image_tag("/images/frontporch/icon_twitter.gif") %> not set</li>
+        <li><%= image_tag("/images/frontporch/icon_twitter.gif") %> Twitter not set</li>
       <% end %>
       
       <% if !@community.facebook_handle.blank? %>
         <li><%=link_to image_tag("/images/frontporch/icon_facebook.gif"), "#{@community.facebook_handle}" %> <%= link_to @community.facebook_handle, @community.facebook_handle %></li>
       <% else %>
-       <li><%= image_tag("/images/frontporch/icon_facebook.gif") %> not set</li>
+       <li><%= image_tag("/images/frontporch/icon_facebook.gif") %> Facebook not set</li>
       <% end %>
       
       <% if !@community.youtube_handle.blank? %>
@@ -68,14 +69,19 @@
     <%- end -%>
    
    <h2>Bios <span>(E)</span></h2>
-   <p>Articles with the bio tag. Randomly selected on page load.</p>
+   <p>Articles tagged with "bio". Randomly selected on page load.</p>
    
    <h2>Learn Event Widget <span>(F)</span></h2>
-    <p>Events pulled from learn.extension.org tagged with <%= @content_tag.url_display_name %></p>
+  <p>Events pulled from learn.extension.org tagged with "<%= @content_tag.url_display_name %>". If there are no events tagged <%= @content_tag.url_display_name %>, the displays recent events.</p>
    
    <h2>Twitter Widget <span>(G)</span></h2>
+   <% if @community.twitter_widget.blank? %>
+    <p class="missing">Contact your content staff representative to set up a Twitter widget for your community.</p>
+   <% end %>
+   
    
    <h2>Ask an Expert Widget <span>(H)</span></h2>
+   <p>Questions pulled from ask.extension.org which are public and tagged with "<%= @content_tag.url_display_name %>". If there are no questions tagged <%= @content_tag.url_display_name %>, the displays recent questions.</p>
    
    <h2>Pages</h2>
     <p><%= link_to("Find Page by Node ID",pageinfo_findsource_url)%>
