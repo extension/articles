@@ -59,13 +59,13 @@
    
    <h2>Resources/Contents <span>(D)</span></h2>
    <%- if @contents_count > 1 -%>
-      <p class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %> 
+    <p class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %> 
        <br />(<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
        </p>
     <%- elsif @contents_count == 1 -%>
        <p><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "contents"', @contents_page.id_and_link) %></p>
     <%- else -%>
-       <li class="missing">No Published Article categorized as "contents" <span>(C)</span></p>
+       <p class="missing">No Published Article categorized as "contents"</p>
     <%- end -%>
    
    <h2>Bios <span>(E)</span></h2>
