@@ -84,5 +84,6 @@ table td {padding:.45em;font-size:1em !important;}
 a:link:after, a:visited:after {content: " (" attr(href) ") ";font-size: 90%;}
 
 .infobar .label a:link:after,
-.infobar .label a:visited:after {content: " - ";}
+.infobar .label a:visited:after {content: "";}
+span.page_timestamp:before {content: " - ";}
 .infobar .label a {text-decoration:none !important;}
