@@ -82,6 +82,15 @@
     
     <% if params[:print] %>
       <img id="print-logo" src="/images/frontporch/eXtension-ARLN-logo-hi-res.png" width="120pt" height="66pt"/>
+      <%- if(@personal[:location] and @personal[:institution]) -%>
+        <span id="institution_logo" >
+          <%- if !(@personal[:institution].logo.nil?) -%>
+            <%= render_inline_logo({:logo => @personal[:institution].logo, :alt_text => @personal[:institution].name}) %>
+          <%- else -%>
+        		<%= @personal[:institution].name %>
+          <%- end -%>
+        </span>
+      <% end %>
     <% end %>
  
             <div class="navbar">
