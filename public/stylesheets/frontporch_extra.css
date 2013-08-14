@@ -62,3 +62,5 @@ td.longurls a {word-wrap: break-word;width:300px; display:block;}
 .missing {background: #ffebf3 url(/images/common/failure.gif) 4px 3px no-repeat; padding:.25em .25em .25em 25px; border-left:4px solid red;}
 .launchready {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0  no-repeat; padding-left:20px; height:20px;}
 span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0  no-repeat; display:block;float:left;text-indent:-2000px;}
+
+iframe {max-width:100%;}
