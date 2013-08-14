@@ -16,12 +16,6 @@ body {font-size: small;margin:0;padding:3%;font-family: georgia, times, serif;co
 .rightcolumn form,
 .rightcolumn div {display:none;}
 
-.rightcolumn #homage {display:block;background-color:#eee !important;padding:.45em .75em;font-size:.95em;clear:both;}
-.rightcolumn #homage p {display:inline;padding:0;margin:0;color:#333 !important;}
-.rightcolumn #homage p span p {font-size:1em;}
-.rightcolumn #homage p span {color:#333 !important;}
-.rightcolumn #homage a {color:#333 !important;}
-
 .clear { clear: both; }
 
 .left {float:left;}
@@ -50,9 +44,9 @@ img {border: 0;}
 
 #article {margin:0 0 20pt;padding:0 0 20pt;font-family: georgia, times, serif;}
 #content_css_reset #article {margin:0;padding:0;}
-.singleimage {margin:0 24pt 12pt 24pt;}
+.singleimage {margin:0 24pt 12pt 24pt; float:right; clear:right;}
 .singleimage.left {margin-left:0;}
-.singleimage.right {margin-right:0;}
+.singleimage.right, .singleimage .tright {margin-right:0; clear:right;}
 .thumbcaption {font-size:9pt;}
 
 #footer {border-top:1px solid #bbb;}
@@ -70,7 +64,7 @@ p.caption * {color:#555 !important;}
 #eXlogo a span {text-indent:-5000px;}
 
 
-#print-logo {margin-bottom:24pt;display:block;float:right;}
+#print-logo {margin-bottom:24pt;display:block;float:right; margin-left:20px;}
 .logo{float:left;margin:0;padding:0;}
 
 .clearing {clear:both;}
@@ -88,3 +82,7 @@ table td {padding:.45em;font-size:1em !important;}
 #app_location.preview {display:block;background:#fffbbe !important;border:1px solid #bbb; margin-bottom:2em; padding: 0 .75em;}
 .logo a:link:after, .logo a:visited:after, #eXlogo a:link:after, #eXlogo a:visited:after {content: "";}
 a:link:after, a:visited:after {content: " (" attr(href) ") ";font-size: 90%;}
+
+.infobar .label a:link:after,
+.infobar .label a:visited:after {content: " - ";}
+.infobar .label a {text-decoration:none !important;}
