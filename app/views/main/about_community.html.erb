@@ -1,7 +1,4 @@
-<% @in_this_resource_area = true %>
-<% @resource_area_feeds = true %>
 <% @page_meta_description = "#{@page_title}" %>
-
 
 <!-- Article, Right Column -->
 <div class="row">
@@ -88,5 +85,10 @@
     </div>
     
   </div>
+</div>
+
+<div id="pagelinks">
+  <p><i class="icon-list"></i> <%= link_to('View publishing information for the About this Community section', pageinfo_page_url(@about_this_community_section)) %></p>
+  <p><i class="icon-list"></i> <%= link_to('View publishing information for the Resources/Contents section', pageinfo_page_url(@in_this_section)) %></p>
 </div>
 

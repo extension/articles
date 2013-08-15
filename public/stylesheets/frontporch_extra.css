@@ -64,3 +64,7 @@ td.longurls a {word-wrap: break-word;width:300px; display:block;}
 span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0  no-repeat; display:block;float:left;text-indent:-2000px;}
 
 iframe {max-width:100%;}
+#pagelinks {font-size:13px; color:#777;}
+#pagelinks a {color:#777;}
+#pagelinks i {opacity: 0.4; filter: alpha(opacity=40);}
+#pagelinks p {line-height:1.2em; margin:0 0 2px;}
