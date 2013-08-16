@@ -135,10 +135,6 @@ class PagesController < ApplicationController
       return redirect_to(main_special_url(:path => @special_page.path),:status => :moved_permanently)
     end
     
-    if (@page.is_homage?)
-      return redirect_to(about_community_path(:content_tag => @community.primary_content_tag_name))
-    end
-    
     # redirect check
     if(!params[:title] or params[:title] != @page.url_title)
       return redirect_to(@canonical_link,:status => :moved_permanently)

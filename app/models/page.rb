@@ -147,10 +147,6 @@ class Page < ActiveRecord::Base
     (self.datatype == 'Event')
   end
   
-  def is_homage?
-    self.content_tags.include?('homage')
-  end
-  
   # returns the number of links associated with this page, if updated_at > the link_stat for this page
   # it counts and updates the link_stat
   #
