@@ -134,7 +134,10 @@ class PagesController < ApplicationController
     if(@page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id))
       return redirect_to(main_special_url(:path => @special_page.path),:status => :moved_permanently)
     end
-      
+    
+    if (@page.is_homage?)
+      return redirect_to(about_community_path(:content_tag => @community.primary_content_tag_name))
+    end
     
     # redirect check
     if(!params[:title] or params[:title] != @page.url_title)
