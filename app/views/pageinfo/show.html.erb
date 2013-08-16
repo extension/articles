@@ -97,7 +97,7 @@
   <%- if @external_links and @external_links.size > 0 -%>
   <h2>External Links</h2>
   <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
-  <table class="table">
+  <table class="table table-striped report_table">
     <tr>
       <th>Link</th>
       <th>Host</th>
@@ -125,7 +125,7 @@
   <%- if @local_links and @local_links.size > 0 -%>
   <h2>Local Links</h2>
   <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Warning" status indicates an error code was received for the last check.  A "Broken" status indicates that the last <%= Link::MAX_WARNING_COUNT %> checks failed.</em></p>
-  <table class="table">
+  <table class="table table-striped report_table">
     <tr>
       <th>Link</th>
       <th>Host</th>
@@ -181,7 +181,7 @@
 
   <%- if @internal_links and @internal_links.size > 0 -%>
   <h2>Internal Links</h2>
-  <table cellspacing="0" border="1">
+  <table class="table table-striped report_table">
     <tr>
       <th>Article</th>
       <th>Article ID</th>
@@ -202,14 +202,16 @@
 
   <%- if @wanted_links and @wanted_links.size > 0 -%>
   <h2>Internal Links (Unpublished)</h2>
-  <table cellspacing="0" border="1">
+  <table class="table table-striped report_table">
     <tr>
       <th>Wanted Path</th>
+      <th>Status</th>
     </tr>
 
     <% for link in @wanted_links %>
       <tr id="link_row_<%= link.id %>">
         <td><%= link.path %></td>
+        <td class="unpublished">unpublished</td>
       </tr>
     <% end%>
   </table>

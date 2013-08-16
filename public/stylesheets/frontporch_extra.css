@@ -49,3 +49,22 @@ a.moreaboutpitch {color:#333;}
 .thumb.tright {float: right; margin-left:20px;}
 .thumb.tleft {float: left; margin-right:20px;}
 .thumbcaption {font-size:13px; margin:10px 0 10px; line-height:1.3em;}
+
+.brokencount, .warningcount {background:#C0999E !important; font-weight:bold; font-size:1.5em; color:#85000C;}
+.broken {background:#C0999E !important; font-weight:bold; color:#85000C;}
+.redirect, .unpublished {background:#FFFF00 !important; font-weight:bold;}
+.unpublishedlinks, .redirectcount {background:#FFFF00 !important; font-size:1.5em;}
+.td_c {text-align:center !important; font-weight:bold;}
+.zero {color:#ccc;font-weight:normal;}
+.report_table {font-size:14px;}
+td.longurls a {word-wrap: break-word;width:300px; display:block;}
+
+.missing {background: #ffebf3 url(/images/common/failure.gif) 4px 3px no-repeat; padding:.25em .25em .25em 25px; border-left:4px solid red;}
+.launchready {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0  no-repeat; padding-left:20px; height:20px;}
+span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0  no-repeat; display:block;float:left;text-indent:-2000px;}
+
+iframe {max-width:100%;}
+#pagelinks {font-size:13px; color:#777;}
+#pagelinks a {color:#777;}
+#pagelinks i {opacity: 0.4; filter: alpha(opacity=40);}
+#pagelinks p {line-height:1.2em; margin:0 0 2px;}

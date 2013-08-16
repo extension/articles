@@ -1,160 +1,154 @@
-<div id="community_checklist">
+<h1>Launch Checklist for Content Tagged "<%= @content_tag.name %>"</h1>
+<p>This page provides a listing of all elements needed correctly display a launched content page for an eXtension Community of Practice on the Public Site.</p>
+<p>View Community: <%= link_to_public_community(@community) %></p>
 
-    <div id="checklist_header">
-        <h1>Launch Checklist for Content Tagged With "<%= @content_tag.name %>"</h1>
-        <p>This page provides a listing of all elements needed correctly display a launched content page for an eXtension Community of Practice on the Public Site.</p>
-    </div>
-
-    <%= image_tag("/images/pubsite/checklist-diagram-2.png", :alt => "", :class => "checklist_diagram") %>
-
-
-
-    <%- if @community.nil? -%>
-    <div class="section">
-        <h2>Community name <span>(A)</span></h2>
-        <p class="missing">There is not a community yet associated with content tagged "<%= @content_tag.name %>"</p>
-    </div>
+<div class="row">
+	<div class="span7">
+	  <h2>Community name <span>(A)</span></h2>
+	  <%- if @community.nil? -%>
+      <p class="missing">There is not a community yet associated with content tagged "<%= @content_tag.name %>"</p>
     <%- else -%>
-    <div class="section">
-        <h2>Community name <span>(A)</span></h2>
-        <p class="launchready"><%= html_escape(@community.public_name)%></p>
-    </div>
-
-      <div class="section">
-      <h2>Public Description</h2>
-      <%- if @community.public_description.blank? -%>
-         <p class="missing"><strong>A public community description for your community has not yet been created.</strong>  Contact your content staff representative to create your public community description.
-            <%- if(current_person and current_person.is_admin?) -%>
-               <%= link_to('edit link (only visible to admins)', :controller => 'admin', :action => 'edit_public_community', :id => @community.id)%>
-            <%- end -%>
-            </p>
+      <p class="launchready"><%= html_escape(@community.public_name)%></p>
+      <h2>Ask an Expert Group</h2>
+      <%- if @community.aae_group_id.blank? -%>
+        <p class="missing">This community is not yet associated with a group in Ask an Expert. Contact your content staff representative to set the Ask an Expert Group for your community.</p>
       <%- else -%>
-        <p class="launchready"><%= html_escape(@community.public_description) %></p>
+        <p class="launchready"><%= link_to("Ask an Expert Group ##{@community.aae_group_id}",@community.ask_an_expert_group_url) %></p>
       <%- end -%>
-      </div>
-
-      <div class="section">
-       <h2>Homage Image <span>(G)</span></h2>
-       <%- if @community.logo.nil? -%>
-           <p class="missing">A public homage has not been uploaded for your community. Contact your content staff representative to upload your community homage logo.</p>
-       <%- else -%>
-           <p class="homage_image"><%= render_inline_logo({:logo => @community.logo, :show_thumbnail => false }) %></p>
-       <%- end -%>
-       </div>
-
-       <div class="section">
-       <h2>Ask an Expert Group</h2>
-       <%- if @community.aae_group_id.blank? -%>
-           <p class="missing">This community is not yet associated with a group in Ask an Expert. Contact your content staff representative to set the Ask an Expert Group for your community.</p>
-       <%- else -%>
-           <p class="launchready"><%= link_to("Ask an Expert Group ##{@community.aae_group_id}",@community.ask_an_expert_group_url) %></p>
-       <%- end -%>
-       </div>
-   <%- end -%>
-
-   <div class="section">
+    <%- end -%>
+   
+    <h2>Social Media Links <span>(B)</span></h2>
+    <ul class="unstyled">
+      <% if !@community.twitter_handle.blank? %>
+        <li><%=link_to image_tag("/images/frontporch/icon_twitter.gif"), "#{@community.twitter_handle}" %> <%=link_to @community.twitter_handle, @community.twitter_handle %></li>
+      <% else %>
+        <li><%= image_tag("/images/frontporch/icon_twitter.gif") %> Twitter not set</li>
+      <% end %>
+      
+      <% if !@community.facebook_handle.blank? %>
+        <li><%=link_to image_tag("/images/frontporch/icon_facebook.gif"), "#{@community.facebook_handle}" %> <%= link_to @community.facebook_handle, @community.facebook_handle %></li>
+      <% else %>
+       <li><%= image_tag("/images/frontporch/icon_facebook.gif") %> Facebook not set</li>
+      <% end %>
+      
+      <% if !@community.youtube_handle.blank? %>
+        <li><%=link_to image_tag("/images/frontporch/icon_youtube.gif"), "#{@community.youtube_handle}" %> <%=link_to @community.youtube_handle, @community.youtube_handle %></li>
+      <% else %>
+        <li><%= image_tag("/images/frontporch/icon_youtube.gif") %> YouTube not set</li>
+      <% end %>
+      
+      <% if !@community.pinterest_handle.blank? %>
+        <li><%=link_to image_tag("/images/frontporch/icon_pinterest.gif"), "#{@community.pinterest_handle}" %> <%=link_to @community.pinterest_handle, @community.pinterest_handle %></li>
+      <% else %>
+        <li><%= image_tag("/images/frontporch/icon_pinterest.gif") %> Pinterest not set</li>
+      <% end %>
+      
+      <% if !@community.gplus_handle.blank? %>
+        <li><%=link_to image_tag("/images/frontporch/icon_googleplus.gif"), "#{@community.gplus_handle}" %> <%=link_to @community.gplus_handle, @community.gplus_handle %></li>
+      <% else %>
+        <li><%= image_tag("/images/frontporch/icon_googleplus.gif") %> Google+ not set</li>
+      <% end %>
+   </ul>
+   
+   <h2>Features <span>(C)</span></h2>
+   <%- if @features_count > 0 -%>
+    <p><span class="launchready">Yes</span> <%= link_to("<span>#{@features_count}</span> Published Articles tagged as \"feature\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'feature', :content_types => 'articles,news')) %></p>
+    <%- else -%>
+       <p class="missing">No Published Articles categorized as "feature"</p>
+    <%- end -%>
+   
+   <h2>Resources/Contents <span>(D)</span></h2>
+   <%- if @contents_count > 1 -%>
+    <p class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %> 
+       <br />(<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
+       </p>
+    <%- elsif @contents_count == 1 -%>
+       <p><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "contents"', @contents_page.id_and_link) %></p>
+    <%- else -%>
+       <p class="missing">No Published Article categorized as "contents"</p>
+    <%- end -%>
+   
+   <h2>Bios <span>(E)</span></h2>
+   <p>Articles tagged with "bio". Randomly selected on page load.</p>
+   
+   <h2>Learn Event Widget <span>(F)</span></h2>
+  <p>Events pulled from learn.extension.org tagged with "<%= @content_tag.url_display_name %>". If there are no events tagged <%= @content_tag.url_display_name %>, the displays recent events.</p>
+   
+   <h2>Twitter Widget <span>(G)</span></h2>
+   <% if @community.twitter_widget.blank? %>
+    <p class="missing">Contact your content staff representative to set up a Twitter widget for your community.</p>
+   <% end %>
+   
+   
+   <h2>Ask an Expert Widget <span>(H)</span></h2>
+   <p>Questions pulled from ask.extension.org which are public and tagged with "<%= @content_tag.url_display_name %>". If there are no questions tagged <%= @content_tag.url_display_name %>, the displays recent questions.</p>
+   
    <h2>Pages</h2>
-   <p><%= link_to("Find Page by Node ID",pageinfo_findsource_url)%>
-   <ul>
-       <!-- Articles -->
-       <%- if @articles_count > 0 -%>
-          <li><span class="launchready">Yes</span> <%= link_to("<span>#{@articles_count}</span> Published Articles", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'articles')) %></li>
-       <%- else -%>
-          <li class="missing">No Published Articles</li>
-       <%- end -%>
-
-       <!-- faqs -->
-       <%- if @faqs_count > 0 -%>
-          <li><span class="launchready">Yes</span> <%= link_to("<span>#{@faqs_count}</span> Published Faqs", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'faqs')) %> <span>(F)</span></li>
-       <%- else -%>
-          <li class="missing">No Published FAQs <span>(F)</span></li>
-       <%- end -%>
-
-       <!-- News -->
-       <%- if @news_count > 0 -%>
-          <li><span class="launchready">Yes</span> <%= link_to("<span>#{@news_count}</span> Published News", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'news')) %> <span>(H)</span></li>
-       <%- else -%>
-          <li class="missing">No Published Articles categorized as "news" <span>(H)</span></li>
-       <%- end -%>
-
-       <!-- Learning Lessons -->
-       <%- if @learning_lessons_count > 0 -%>
-       <li><span class="launchready">Yes</span> <%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'learning lessons', :content_types => 'articles')) %> <span>(E)</span></li>
-       <%- else -%>
-          <li class="missing">No Published Articles categorized as "learning lesson" <span>(E)</span></li>
-       <%- end -%>
-
-   </ul>
-   </div>
-
-   <div class="section">
-   <h2>Special Features</h2>
-   <ul>
-      <!-- Features -->
-      <%- if @features_count > 0 -%>
-      <li><span class="launchready">Yes</span> <%= link_to("<span>#{@features_count}</span> Published Articles categorized as \"feature\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'feature', :content_types => 'articles,news')) %> <span>(B)</span></li>
-      <%- else -%>
-         <li class="missing">No Published Articles categorized as "feature" <span>(B)</span></li>
-      <%- end -%>
-
-      <!-- Contents -->
-      <%- if @contents_count > 1 -%>
-        <li class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %> <span>(C)</span>
-         <br />(<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
-         </li>
-      <%- elsif @contents_count == 1 -%>
-         <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "contents"', @contents_page.id_and_link) %> <span>(C)</span></li>
-      <%- else -%>
-         <li class="missing">No Published Article categorized as "contents" <span>(C)</span></li>
-      <%- end -%>
-
-      <!-- Homage -->
-      <% if @community.present? %>
-        <%- if @community.homage.blank? && @homage_count > 0 -%>
-          <li class="missing">No Published Article categorized as "homage" chosen for the homage view.<span>(G)</span></li>
-        <%- elsif @homage_count > 1 -%>
-           <li class="missing"><%= link_to("<span>#{@homage_count}</span> Published Articles categorized as \"homage\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'homage', :content_types => 'articles')) %> <span>(G)</span>
-             <br />
-           (<%= link_to("#{@community.homage.title} is currently chosen for the homage view", @community.homage.id_and_link) %>)
-           </li>
-        <%- elsif @homage_count == 1 -%>
-           <li><span class="launchready">Yes</span> <%= link_to('Published Article categorized as "homage"', @community.homage.id_and_link) %> <span>(G)</span></li>   
+    <p><%= link_to("Find Page by Node ID",pageinfo_findsource_url)%>
+    <ul>
+        <!-- Articles -->
+        <%- if @articles_count > 0 -%>
+           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@articles_count}</span> Published Articles", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'articles')) %></li>
         <%- else -%>
-           <li class="missing">No Published Article categorized as "homage" <span>(G)</span></li>
+           <li class="missing">No Published Articles</li>
         <%- end -%>
-       <% end %>
-   </ul>
-   </div>
 
-  <div class="section">
-     <h2>Link Audit</h2>
-     <h3>Broken Links</h3>
-     <ul>
-       <%- if @articles_broken_count > 0 -%>
-          <li class="missing"><%= link_to(pluralize(@articles_broken_count,'article'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'articles',:onlybroken => true)) %> have broken links</li>
-       <%- end -%>
-       <%- if @faqs_broken_count > 0 -%>
-          <li class="missing"><%= link_to(pluralize(@faqs_broken_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs',:onlybroken => true)) %> have broken links</li>
-       <%- end -%>
-       <%- if @news_broken_count > 0 -%>
-          <li class="missing"><%= link_to(pluralize(@news_broken_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news',:onlybroken => true)) %> have broken links</li>
-       <%- end -%>
-     </ul>
+        <!-- faqs -->
+        <%- if @faqs_count > 0 -%>
+           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@faqs_count}</span> Published Faqs", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'faqs')) %> <span>(F)</span></li>
+        <%- else -%>
+           <li class="missing">No Published FAQs <span>(F)</span></li>
+        <%- end -%>
 
-     <h3>All Links</h3>
-     <ul>
-        <li><%= link_to(pluralize(@articles_count,'article'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'articles')) %></li>
-        <li><%= link_to(pluralize(@faqs_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs')) %></li>
-        <li><%= link_to(pluralize(@news_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news')) %></li>
-     </ul>
+        <!-- News -->
+        <%- if @news_count > 0 -%>
+           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@news_count}</span> Published News", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'news')) %> <span>(H)</span></li>
+        <%- else -%>
+           <li class="missing">No Published Articles categorized as "news" <span>(H)</span></li>
+        <%- end -%>
 
-     <%- if @instant_survey_count > 0 -%>
-     <h3>Instant Survey Links</h3>
-     <ul>
-        <li><%= link_to(pluralize(@instant_survey_count,'page'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:with_instant_survey_links => true)) %> have links to instant survey</li>
+        <!-- Learning Lessons -->
+        <%- if @learning_lessons_count > 0 -%>
+        <li><span class="launchready">Yes</span> <%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'learning lessons', :content_types => 'articles')) %> <span>(E)</span></li>
+        <%- else -%>
+           <li class="missing">No Published Articles categorized as "learning lesson" <span>(E)</span></li>
+        <%- end -%>
+
+    </ul>
+
+
+      <h2>Link Audit</h2>
+      <h4>Broken Links</h4>
+      <ul>
+        <%- if @articles_broken_count > 0 -%>
+           <li class="missing"><%= link_to(pluralize(@articles_broken_count,'article'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'articles',:onlybroken => true)) %> have broken links</li>
+        <%- end -%>
+        <%- if @faqs_broken_count > 0 -%>
+           <li class="missing"><%= link_to(pluralize(@faqs_broken_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs',:onlybroken => true)) %> have broken links</li>
+        <%- end -%>
+        <%- if @news_broken_count > 0 -%>
+           <li class="missing"><%= link_to(pluralize(@news_broken_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news',:onlybroken => true)) %> have broken links</li>
+        <%- end -%>
       </ul>
-     <%- end -%>
 
-  </div>
+      <h4>All Links</h4>
+      <ul>
+         <li><%= link_to(pluralize(@articles_count,'article'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'articles')) %></li>
+         <li><%= link_to(pluralize(@faqs_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs')) %></li>
+         <li><%= link_to(pluralize(@news_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news')) %></li>
+      </ul>
 
+      <%- if @instant_survey_count > 0 -%>
+      <h3>Instant Survey Links</h3>
+      <ul>
+         <li><%= link_to(pluralize(@instant_survey_count,'page'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:with_instant_survey_links => true)) %> have links to instant survey</li>
+       </ul>
+      <%- end -%>
+   
+	  
+	</div>
+  
+  <div class="span5">
+    <%= image_tag("/images/frontporch/frontporch_cop_homepage_preview.jpg", :alt => "", :class => "checklist_diagram") %>
+	</div>
 </div>

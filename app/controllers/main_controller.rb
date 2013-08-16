@@ -67,8 +67,7 @@ class MainController < ApplicationController
   end
   
   def about_community
-    @published_content = true  # index CoP landing pages
-    
+
     if(@community.nil?)
       # check for CategoryTagRedirect
       if(redirect = CategoryTagRedirect.where("term = ?",params[:content_tag].downcase).first)
@@ -76,32 +75,12 @@ class MainController < ApplicationController
       else
         return redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
       end
-    elsif(!canonicalized_category?(params[:content_tag]))
-      return redirect_to site_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
-    end
-    @donation_block = false
-    if(@community and @community.show_donation.present?)
-      @donation_block = true
-    end
-    if(@community and @community.aae_group_id.present?)
-      @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
+    elsif(@page = Page.homage_for_content_tag({:content_tag => @content_tag}))
+      return redirect_to(page_url(:id => @page.id, :title => @page.url_title),:status => :moved_permanently)
     else
-      @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+      return redirect_to(site_index_url(:content_tag => @content_tag.url_display_name),:status => :moved_permanently)
     end
-    
-    @ask_question_widget_url = "https://ask.extension.org/widgets/answered.js?tags=#{@content_tag.name}"
-    @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}"
-    
-    set_title(@community.public_name)
-    @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)      
-    community_content_tag_names = @community.content_tag_names
-    @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
-    @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
-    @about_this_community_section = Page.homage_for_content_tag({:content_tag => @content_tag})
-    
-    @community_highlights = Page.main_feature_list({:content_tag => @content_tag, :limit => 8})
-    flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
-    flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
+
   end
   
   def community_tag

@@ -57,7 +57,7 @@ gem 'omniauth-openid'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 # monitoring
-gem 'scout_rails'
+gem 'newrelic_rpm'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

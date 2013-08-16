@@ -62,6 +62,7 @@ GEM
     net-ssh (2.6.7)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
+    newrelic_rpm (3.6.6.147)
     nokogiri (1.4.4)
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
@@ -96,7 +97,6 @@ GEM
       mime-types (>= 1.16)
     rmagick (2.13.1)
     ruby-openid (2.2.3)
-    scout_rails (1.0.7)
     thor (0.16.0)
     tzinfo (0.3.26)
     what_methods (1.0.1)
@@ -124,6 +124,7 @@ DEPENDENCIES
   map_by_method
   mysql2 (~> 0.2.20)
   net-http-spy
+  newrelic_rpm
   nokogiri
   omniauth (~> 1.0)
   omniauth-openid
@@ -136,7 +137,6 @@ DEPENDENCIES
   rest-client
   rmagick
   ruby-openid
-  scout_rails
   thor
   tzinfo
   what_methods

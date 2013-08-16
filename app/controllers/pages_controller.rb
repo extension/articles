@@ -134,7 +134,6 @@ class PagesController < ApplicationController
     if(@page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id))
       return redirect_to(main_special_url(:path => @special_page.path),:status => :moved_permanently)
     end
-      
     
     # redirect check
     if(!params[:title] or params[:title] != @page.url_title)

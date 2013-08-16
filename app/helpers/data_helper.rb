@@ -81,7 +81,7 @@ module DataHelper
   end
   
   def first_image(content, placeholder=true)
-    return unless content
+    return unless content.present?
     image_tag = content.match(/<img[^>]*>/)
     if placeholder
       return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />' unless image_tag
@@ -94,9 +94,11 @@ module DataHelper
         return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />'
       end
     else
-      return unless image_tag
-      src = image_tag[0].match(/src="[^"]*"/)[0]
-      return '<img '+src+' alt="" />'
+      return unless image_tag.present?
+      src = image_tag[0].match(/src="[^"]*"/)
+      if src.present?
+        return '<img '+src[0]+' alt="" />'
+      end
     end
   end
   

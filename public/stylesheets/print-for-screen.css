@@ -5,7 +5,7 @@
 body {font-size: small;margin:0;padding:3%;font-family: georgia, times, serif;color: #000;}
 
 /*hide all these*/
-#app_location, #skiplist, .identity, .navbar, .didyouknow, #aae_pitch, #aae_plug, #rating, .feedlink, #footer ul, .hiddenStructure, .login-options, #institution_actions, .missionstatement, #relatedresources, .related, .print_and_share, #fancybox-wrap, #pagelinks {display:none;}
+#app_location, #skiplist, .identity, .navbar, .didyouknow, #aae_pitch, #aae_plug, #rating, .feedlink, #footer ul, .hiddenStructure, .login-options, #institution_actions,  .related, .print_and_share,  #pagelinks {display:none;}
 .noprint {display:none;}
 .dontprintme {display:none;}
 
@@ -16,24 +16,13 @@ body {font-size: small;margin:0;padding:3%;font-family: georgia, times, serif;co
 .rightcolumn form,
 .rightcolumn div {display:none;}
 
-.rightcolumn #homage {display:block;background-color:#eee !important;padding:.45em .75em;font-size:.95em;clear:both;}
-.rightcolumn #homage p {display:inline;padding:0;margin:0;color:#333 !important;}
-.rightcolumn #homage p span p {font-size:1em;}
-.rightcolumn #homage p span {color:#333 !important;}
-.rightcolumn #homage a {color:#333 !important;}
-
 .clear { clear: both; }
 
 .left {float:left;}
 .right {float:right;}
 
-/* format type */
 p {/*font-size: 1.4em;  */font-family: georgia, times, serif; line-height: 1.4em;}
 li {list-style-position: inside;}
-#article {/*border:1px solid orange;*/font-size:1.05em;}
-
-/*ul, ol {margin-left:0; padding-left:0;}*/
-li {/*font-size: 1.4em;*//*border:1px solid lime;*/}
 
 img {vertical-align:top;}
 
@@ -43,25 +32,17 @@ h3 {font-size:12pt;}
 h4 {font-size:11pt;}
 h5 {font-size:10pt;}
 
-h1.title {font-size:2.1em !important;font-weight:normal;padding-bottom:0;margin-bottom:0;}
+h1#article_title {font-size:2.1em !important;font-weight:normal;padding-bottom:0;margin-bottom:0;}
 
 img {border: 0;}
-
+#article_content img {max-width:260pt;height:auto; float:right; margin-bottom:20pt; margin-left:20pt;}
 
 #article {margin:0 0 20pt;padding:0 0 20pt;font-family: georgia, times, serif;}
 #content_css_reset #article {margin:0;padding:0;}
-.singleimage {margin:0 24pt 12pt 24pt;}
+.singleimage {margin:0 24pt 12pt 24pt; float:right; clear:right;}
 .singleimage.left {margin-left:0;}
-.singleimage.right {margin-right:0;}
+.singleimage.right, .singleimage .tright {margin-right:0; clear:right;}
 .thumbcaption {font-size:9pt;}
-
-#comments {display:none;margin:0;padding:0;font-size:9pt;}
-#comments h4 {margin:0 0 10pt;}
-#comments h5 {margin:0 0 0pt;}
-#comments h5 span.date {font-weight:normal;}
-#comments .comment_box {margin:0 0 10pt;padding:0 0 10pt;border-bottom: 1pt solid #ccc;}
-#comments .comment {padding:0 10pt;}
-
 
 #footer {border-top:1px solid #bbb;}
 #footer p {line-height:12pt;font-size:.9em;}
@@ -78,10 +59,9 @@ p.caption * {color:#555 !important;}
 #eXlogo a span {text-indent:-5000px;}
 
 
-#print-logo {margin-bottom:24pt;display:block;float:right;}
-.logo{float:left;margin:0;padding:0;}
-
-
+#print-logo {margin-bottom:18pt;display:block;float:right; margin-left:20px;}
+#institution_logo {margin:0;padding:0 0 0; display:block;}
+#institution_logo img {width:120pt !important;}
 
 .clearing {clear:both;}
 .aboutex {color:#666;border-bottom:1px solid #ddd;font-size:1.3em;padding-bottom:.25em;display:none;}
@@ -98,3 +78,8 @@ table td {padding:.45em;font-size:1em !important;}
 #app_location.preview {display:block;background:#fffbbe !important;border:1px solid #bbb; margin-bottom:2em; padding: 0 .75em;}
 .logo a:link:after, .logo a:visited:after, #eXlogo a:link:after, #eXlogo a:visited:after {content: "";}
 a:link:after, a:visited:after {content: " (" attr(href) ") ";font-size: 90%;}
+
+.infobar .label a:link:after,
+.infobar .label a:visited:after {content: "";}
+span.page_timestamp:before {content: " - ";}
+.infobar .label a {text-decoration:none !important;}

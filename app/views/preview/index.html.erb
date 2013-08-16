@@ -1,12 +1,13 @@
 <div id="admin">
-<h1>Preview Communities</h1>  
-<div>
-  <p>Welcome to the Content Checklist for eXtension Communities of Practice.  This list reflects the "eXtension Community of Practice" and other public communities created in the <%= link_to('People application', :controller => 'people', :action => 'communities') %>. To add a community to this page (and the Public Site), please create a community in People.</p>
+  <h1>Community Content Checklist</h1>
+  <div class="well">
+  <p>This list reflects the "eXtension Community of Practice" and other public communities created in the <%= link_to('People application', :controller => 'people', :action => 'communities') %>. To add a community to this page (and the Public Site), please create a community in People.</p>
   
   <p>To set a Public Community Name, Topic, and Resource Area Tag for your community, contact your content staff representative</p>
+  </div>
   
   <h2>eXtension Publishing Communities</h2>
-  <table cellspacing="0">
+  <table class="table report_table">
       <tr>
           <th>Live</th>
           <th>Community Name</th>
@@ -29,7 +30,6 @@
           </tr>
       <% end%>
   </table>
-    
-  </div>
+
 </div>
   
