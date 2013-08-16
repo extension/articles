@@ -95,8 +95,10 @@ module DataHelper
       end
     else
       return unless image_tag.present?
-      src = image_tag[0].match(/src="[^"]*"/)[0]
-      return '<img '+src+' alt="" />'
+      src = image_tag[0].match(/src="[^"]*"/)
+      if src.present?
+        return '<img '+src[0]+' alt="" />'
+      end
     end
   end
   
