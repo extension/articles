@@ -4,7 +4,7 @@
 <div class="row">
 	<!-- Article -->
 	<div class="span9">
-		<h1><%= @page_title %></h1>
+		<h1 class="title"><%= @page_title %></h1>
 		<div class='infobar bordered'>
       <%= link_to_public_community_home(@community)  %>
       <%= render(:partial => 'shared/addthis') %>
@@ -13,10 +13,6 @@
 		<% if @about_this_community_section %>
 		  <%= @about_this_community_section.content %>
 		<% end %>
-    
-    <% if @in_this_section %>
-      <%= @in_this_section.content %>
-    <% end %>
 		
 		<div class='backtotop span9'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
 		<div class='row'>
@@ -67,28 +63,24 @@
     <% end %>
     
     <div class='row'>
-      <div class='latest-tweets span3'>
-        <h2>Latest Tweets</h2>
-        <% if !@community.twitter_widget.blank? %>
-          <%= @community.twitter_widget %>
-        <% else %>
-          <%= render(:partial => 'shared/twitter_timeline_general') %>
-        <% end%>
+      <div class="upcoming_learn_events span3 clearfix">
+        <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
       </div>
     </div>
     
     <div class='row'>
-      <div class="upcoming_learn_events span3 clearfix">
-        <h2>Upcoming Webinars</h2>
-        <script type="text/javascript" src="http://dev.learn.extension.org/widgets/front_porch"></script>
+      <div class="community-resources span3 clearfix">
+        <h2>Resources</h2>
+        <% if @in_this_section %>
+          <%= @in_this_section.content %>
+        <% end %>
       </div>
     </div>
-    
+        
   </div>
 </div>
 
 <div id="pagelinks">
-  <p><i class="icon-list"></i> <%= link_to('View publishing information for the About this Community section', pageinfo_page_url(@about_this_community_section)) %></p>
-  <p><i class="icon-list"></i> <%= link_to('View publishing information for the Resources/Contents section', pageinfo_page_url(@in_this_section)) %></p>
+  <p><i class="icon-list"></i> <%= link_to('View publishing information about this page.', pageinfo_page_url(@about_this_community_section)) %></p>
 </div>
 

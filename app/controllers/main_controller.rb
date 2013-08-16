@@ -92,7 +92,7 @@ class MainController < ApplicationController
     @ask_question_widget_url = "https://ask.extension.org/widgets/answered.js?tags=#{@content_tag.name}"
     @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}"
     
-    set_title(@community.public_name)
+    @page_title = "About the #{@community.public_name} Community"
     @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)      
     community_content_tag_names = @community.content_tag_names
     @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
