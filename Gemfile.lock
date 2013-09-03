@@ -70,7 +70,6 @@ GEM
     net-ssh (2.6.7)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
-    newrelic_rpm (3.6.6.147)
     nokogiri (1.4.4)
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
@@ -137,7 +136,6 @@ DEPENDENCIES
   map_by_method
   mofo
   mysql
-  newrelic_rpm
   nokogiri
   omniauth (~> 1.0)
   omniauth-openid
