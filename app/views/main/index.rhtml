@@ -63,7 +63,7 @@
                 
     <div class="meet-extension span3">
       <% if @featured_bio.present? %>
-    	  <h2>Meet Extension</h2>
+    	  <h2>Our People</h2>
     	  <% link_to(@featured_bio.id_and_link) do %>
     	    <%= first_bio_image @featured_bio.content %>
     	    <strong><%= @featured_bio.title %></strong><br />
@@ -71,8 +71,8 @@
           <p><%= get_title(@featured_bio.content).truncate(320,{:omission => '...', :avoid_orphans => true}) %></p>
     	  <% end %>
     	<% else %>
-    	  <h2>Extension Experts</h2>
-    	  <h3>There are no expert biographies at this time.</h3>
+    	  <h2>Our People</h2>
+    	  <h3>There are no biographies at this time.</h3>
     	<% end %>
     </div>
                 
