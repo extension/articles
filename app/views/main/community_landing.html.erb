@@ -80,14 +80,26 @@
     <div class="upcoming_learn_events span3 clearfix">
       <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
     </div>
-                
-    <div class='latest-tweets span3'>
-      <h2>Latest Tweets</h2>
-      <% if !@community.twitter_widget.blank? %>
-        <%= @community.twitter_widget %>
-      <% else %>
-        <%= render(:partial => 'shared/twitter_timeline_general') %>
-      <% end%>
+    
+    <div class='span3'>
+      <div class='latest-tweets latest-tweets-alt'>
+        <h2>Latest Tweets</h2>
+        <% if !@community.twitter_widget.blank? %>
+          <%= @community.twitter_widget %>
+        <% else %>
+          <%= render(:partial => 'shared/twitter_timeline_general') %>
+        <% end%>
+      </div>
+    
+      <% if @donation_block %>
+      	<div class='callout orange'>
+      		<h4>Donate to <%= @community.name %></h4>
+      		<p>Your donation keeps eXtension growing.</p>
+      		<% link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
+      		  <i class='icon-heart icon-white'></i> Give Now
+      		<% end %>
+      	</div>
+      <% end %>
     </div>
   
   </div>

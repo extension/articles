@@ -446,6 +446,9 @@ ul.nav {
 	font-size: 14px;
 }
 
+.latest-tweets-alt {padding-top:20px;}
+.latest-tweets-alt h2 {margin-top:0;}
+
 .upcoming_learn_events h2,
 .meet-extension h2,
 .featured_aae_questions h2,
@@ -561,6 +564,7 @@ h3.learn_widget_generic_title {margin:20px 0 10px;}
 .latest-tweets {
 	background: #F7F7F7;
 	margin-top:20px;
+	margin-bottom:20px;
 	text-align: center;
 	padding-bottom:10px;
 }
