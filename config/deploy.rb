@@ -18,12 +18,11 @@ set :localuser, ENV['USER']
 
 set :repository, "git@github.com:extension/#{application}.git"
 set :scm, "git"
-set :use_sudo, true
+set :use_sudo, false
 set :ruby, "/usr/local/bin/ruby"
 ssh_options[:forward_agent] = true
 set :port, 24
-set :bundle_flags, ''
-set :bundle_dir, ''
+set :bundle_flags, '--deployment --binstubs'
 
 # Disable our app before running the deploy
 before "deploy", "deploy:web:disable"
