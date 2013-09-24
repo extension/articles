@@ -45,7 +45,6 @@ gem 'rest-client'
 gem 'json_pure'
 # command line
 gem 'thor'
-gem 'trollop', '1.16.2', :require => false
 #get image attributes
 gem 'fastimage'
 # handle rewrites of trailing slashes

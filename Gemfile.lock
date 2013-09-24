@@ -109,7 +109,6 @@ GEM
     thor (0.16.0)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
-    trollop (1.16.2)
     tzinfo (0.3.26)
     what_methods (1.0.1)
     will_paginate (2.3.15)
@@ -152,7 +151,6 @@ DEPENDENCIES
   rmagick
   ruby-openid
   thor
-  trollop (= 1.16.2)
   tzinfo
   what_methods
   will_paginate
