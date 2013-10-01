@@ -924,6 +924,15 @@ label {font-weight:bold;}
 #extension_icon_512 {width:64px;height:64px;display:block; margin-right:2em; border:1px solid #ddd; padding:2px;}
 #extension_icon_512 img {width:64px;height:64px;display:block;}
 
+.more_link {
+  color:#f86f20;
+	font-size:12px;
+	text-transform: uppercase;
+	float:right;
+}
+
+.more_link.orange {color:#f86f20;}
+
 /* ==========================================================================
    Responsive overrides (tablet/small screen)
    ========================================================================== */
