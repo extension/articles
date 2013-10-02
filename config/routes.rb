@@ -69,12 +69,6 @@ ActionController::Routing::Routes.draw do |map|
     widgets.home '/', :controller => :home, :action => :index     
   end
 
-  ### Search Stuff ###
-
-  map.search 'search', :controller => 'search', :action => 'index'
-  map.annotation_event_page 'search/manage_event/:id', :controller => 'search', :action => 'manage_event'
-
-
   ## Debug ##
   map.debuglocation 'debug/location', :controller => 'debug', :action => 'location'
 

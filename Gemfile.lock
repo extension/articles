@@ -35,7 +35,6 @@ GEM
       activerecord (>= 2.3.5)
     fastercsv (1.5.4)
     fastimage (1.5.0)
-    gdata (1.1.2)
     geoip (1.0.0)
     geokit (1.5.0)
     grit (2.5.0)
@@ -126,7 +125,6 @@ DEPENDENCIES
   fake_arel
   fastercsv
   fastimage
-  gdata
   geoip
   geokit
   has_many_polymorphs

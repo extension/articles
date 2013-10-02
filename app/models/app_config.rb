@@ -131,15 +131,7 @@ class AppConfig
     @@configtable['default_feed_content_limit'] = 50
     @@configtable['max_feed_content_limit'] = 200
     
-    
-    @@configtable['cse_id'] = 'NotSet'
-    @@configtable['cse_secret'] = 'NotSet'
-      
-		# Google CSE ID 
-		@@configtable['old_goog_cse_key'] = '018217748441857184963:boqsgyytwwe'
-		@@configtable['goog_cse_key'] = '010978498346658208303:rljk-euizvq'
-		
-		# Google Maps Key
+    # Google Maps Key
 		@@configtable['google_map_key'] = "ABQIAAAA1LmtLYh4TNIbY5g8p1Lv7RTX9Q_j-d1gVWC6rr14ybx0yf1UjRTepIB7tNRw_H6gggFEgWdIu5E7ig"
     
     # Google Apps settings

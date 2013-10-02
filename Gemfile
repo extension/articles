@@ -29,8 +29,6 @@ gem 'hpricot'
 # image submission and other image handling
 gem 'paperclip'
 gem 'rmagick', :require => false
-# CSE management
-gem 'gdata'
 # cron management
 gem 'lockfile'
 # needed for mail fetching and parsing
