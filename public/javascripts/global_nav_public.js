@@ -20,6 +20,7 @@ ul.extension_global_nav li a:hover {color: #fff;}\
     <ul>\
       <li><a href="http://about.extension.org/" title="A starting place for all things eXtension.">About eXtension</a></li>\
       <li><a href="https://ask.extension.org" title="One-to-one answers from a network of experts at universities across America.">Ask an Expert</a></li>\
+      <li><a href="http://blogs.extension.org/" title="eXtension Blogs">Blogs</a></li>\
       <li><a href="http://campus.extension.org/ " title="Online courses developed by Cooperative Extension and available to anyone.">Campus</a></li>\
       <li><a href="http://www.extension.org" title="A broad range of content from a network of experts at universities across America.">eXtension.org</a></li>\
       <li><a href="https://learn.extension.org/" title="Professional development sessions on a variety of Extension topics.">Learn</a></li>\
