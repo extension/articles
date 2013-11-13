@@ -424,20 +424,31 @@ ul.nav {
     line-height: 30px;
     background:#F7F7F7;
     border-left:3px solid #F76F1F;
-	padding:20px 0;
+  padding:20px 0;
     font-size: 25px;
     margin-top:15px;
     margin-bottom:15px;
 }
 
 .tagline div {
-    font-family: 'Sanchez', serif;
-	margin-left:25px;
+  font-family: 'Sanchez', serif;
+  margin-left:25px;
 }
 
 .tagline .btn {
-	margin-right:20px;
+  margin-right:20px;
 }
+
+.tagline-home {
+/*  border-left:3px solid #F76F1F;*/
+  line-height: 30px;
+  background:#F7F7F7;
+  padding:20px 0 0px;
+  font-size: 25px;
+  margin-top:15px;
+  margin-bottom:15px;
+}
+
 
 .upcoming_learn_events,
 .meet-extension,

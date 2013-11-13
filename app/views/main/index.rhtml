@@ -41,13 +41,27 @@
 </div>
 
 <!-- Tagline -->
-<div class="row">
-  <div class="tagline span12">
+<div class="tagline-home">
+  
+  <div class="row">
+    <div class="span9">
+      <div class="centennial-logo-wrapper">
+        <% link_to("http://www.extension100years.net/", {:class => ""}) do %>
+          <img class='centennial-logo' src="/images/frontporch/extension-centennial-logo_240.png" alt="Smith-Lever Extension Centennial Celebration" />
+        <% end %>
+      </div>
+      <div class="tagline-text-wrapper">
+      <%= link_to('Extending Knowledge. Changing Lives.', main_special_path(:path => 'about'), :class => "moreaboutpitch") %>
+      </div>
+    </div>
+
     
-    <%= link_to('Learn More', main_special_path(:path => 'about'), :class => "pull-right btn orange lg hidden-phone") %>
-    
-    <div><%= link_to('Extending Knowledge. Changing Lives.', main_special_path(:path => 'about'), :class => "moreaboutpitch") %> <%= link_to('Learn More', main_special_path(:path => 'about'), :class => "visible-phone btn orange lg") %></div>
-    
+    <div class="span3">
+      <div class="tagline-button-wrapper pull-right">
+      <%= link_to('Learn More', main_special_path(:path => 'about'), :class => "btn orange lg") %>
+      </div>
+    </div>
+
   </div>
 </div>
 

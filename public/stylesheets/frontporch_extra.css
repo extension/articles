@@ -75,3 +75,8 @@ iframe {max-width:100%;}
   .singleimage img {width:100% !important;}
   .singleimage .thumb {margin-left:0;margin-right:0;}
 }
+.tagline-home .centennial-logo {margin-right:20px; width:120px;height:120px;}
+.centennial-logo-wrapper {margin-left:20px !important; margin-bottom:10px; float:left; /*outline:1px solid lime;*/}
+.tagline-text-wrapper {font-family: 'Sanchez', serif; /*outline:1px solid red;*/ padding:25px;}
+.tagline-button-wrapper {margin-right:20px !important; /*line-height:120px;*/ /*outline:1px solid red;*/ margin-bottom: 20px; /*margin-left:20px;*/}
+.tagline-button-wrapper {}
