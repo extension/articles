@@ -79,4 +79,10 @@ iframe {max-width:100%;}
 .centennial-logo-wrapper {margin-left:20px !important; margin-bottom:10px; float:left; /*outline:1px solid lime;*/}
 .tagline-text-wrapper {font-family: 'Sanchez', serif; /*outline:1px solid red;*/ padding:25px;}
 .tagline-button-wrapper {margin-right:20px !important; /*line-height:120px;*/ /*outline:1px solid red;*/ margin-bottom: 20px; /*margin-left:20px;*/}
-.tagline-button-wrapper {}
+
+.table-wrapper {
+  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+table tr td {word-wrap:break-word !important;}
