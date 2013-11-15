@@ -198,6 +198,8 @@
         interval: 6000
       })
       
+      $("#article_content table.table").wrap("<div class='table-wrapper'></div>");
+      
       function change_institution() {
         var ZipOrState = $('#zip_or_state').val();
   		  $.ajax({
