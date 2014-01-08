@@ -3,7 +3,7 @@ Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
 # Bootstrap the Rails environment, frameworks, and default configuration
-require File.join(File.dirname(__FILE__), 'boot')
+require_relative 'boot'
 require 'rack-rewrite'
 
 Rails::Initializer.run do |config|
