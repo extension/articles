@@ -45,7 +45,7 @@
             <label>Ask an Expert Group #:</label>
             <%= text_field_tag 'community[aae_group_id]', @community.aae_group_id %>
             <span class="help-block">Every page on www.extension.org includes links to Ask an Expert. The Group # (found in AaE) is used to link directly to a specific AaE Group's Ask form. <% if @community.aae_group_id %>
-              AaE links will point to this form: <%= link_to ("https://ask.extension.org/groups/#{@community.aae_group_id}/ask", "https://ask.extension.org/groups/#{@community.aae_group_id}/ask") %>
+              AaE links will point to this form: <%= link_to("https://ask.extension.org/groups/#{@community.aae_group_id}/ask", "https://ask.extension.org/groups/#{@community.aae_group_id}/ask") %>
             <% end %></span>
             
         </p>
