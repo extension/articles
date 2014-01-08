@@ -7,7 +7,7 @@ gem 'rdoc'
 # database
 gem 'mysql2', '~> 0.2.20' 
 # pagination
-gem 'will_paginate'
+gem 'will_paginate', '~> 2.3.16'
 # command line tools
 gem 'thor'
 # csv output/import
@@ -67,7 +67,7 @@ group :development, :test do
   gem "powder"
   #gem "rails-footnotes", '< 3.7.0'
   # Deploy with Capistrano
-  gem 'capistrano'
+  gem 'capistrano', '~> 2.15.5' 
   # log stuff
   gem 'capatross'
 end
