@@ -29,8 +29,6 @@ gem 'hpricot'
 # image submission and other image handling
 gem 'paperclip'
 gem 'rmagick', :require => false
-# CSE management
-gem "gdata_19", "~> 1.1.5"
 # cron management
 gem 'lockfile'
 # arel syntax for rails2
@@ -40,6 +38,7 @@ gem 'rest-client'
 gem 'json_pure'
 # command line
 gem 'thor'
+gem 'trollop', '1.16.2'
 #get image attributes
 gem 'fastimage'
 # handle rewrites of trailing slashes
@@ -55,9 +54,6 @@ gem 'omniauth-openid'
 # To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
 # gem 'ruby-debug'
 # gem 'ruby-debug19', :require => 'ruby-debug'
-
-# monitoring
-gem 'newrelic_rpm'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

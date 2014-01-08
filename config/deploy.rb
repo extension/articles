@@ -18,12 +18,11 @@ set :localuser, ENV['USER']
 
 set :repository, "git@github.com:extension/#{application}.git"
 set :scm, "git"
-set :use_sudo, true
+set :use_sudo, false
 set :ruby, "/usr/local/bin/ruby"
 ssh_options[:forward_agent] = true
 set :port, 24
-set :bundle_flags, ''
-set :bundle_dir, ''
+set :bundle_flags, '--deployment --binstubs'
 
 # Disable our app before running the deploy
 before "deploy", "deploy:web:disable"
@@ -65,7 +64,6 @@ namespace :deploy do
     rm -rf #{release_path}/public/robots.txt &&
     rm -rf #{release_path}/config/appconfig.yml &&
     ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
-    ln -nfs #{shared_path}/config/newrelic.yml #{release_path}/config/newrelic.yml &&
     ln -nfs #{shared_path}/config/robots.txt #{release_path}/public/robots.txt &&
     ln -nfs #{shared_path}/config/appconfig.yml #{release_path}/config/appconfig.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&

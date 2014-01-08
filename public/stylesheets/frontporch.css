@@ -35,6 +35,10 @@ h2 {
 	margin:20px 0 10px;
 }
 
+h3 {
+	font-size: 20px;
+}
+
 .title {
     font-family: 'Sanchez', serif;
 	font-size: 35px;
@@ -420,20 +424,31 @@ ul.nav {
     line-height: 30px;
     background:#F7F7F7;
     border-left:3px solid #F76F1F;
-	padding:20px 0;
+  padding:20px 0;
     font-size: 25px;
     margin-top:15px;
     margin-bottom:15px;
 }
 
 .tagline div {
-    font-family: 'Sanchez', serif;
-	margin-left:25px;
+  font-family: 'Sanchez', serif;
+  margin-left:25px;
 }
 
 .tagline .btn {
-	margin-right:20px;
+  margin-right:20px;
 }
+
+.tagline-home {
+/*  border-left:3px solid #F76F1F;*/
+  line-height: 30px;
+  background:#F7F7F7;
+  padding:20px 0 0px;
+  font-size: 25px;
+  margin-top:15px;
+  margin-bottom:15px;
+}
+
 
 .upcoming_learn_events,
 .meet-extension,
@@ -441,6 +456,9 @@ ul.nav {
 .latest-tweets {
 	font-size: 14px;
 }
+
+.latest-tweets-alt {padding-top:20px;}
+.latest-tweets-alt h2 {margin-top:0;}
 
 .upcoming_learn_events h2,
 .meet-extension h2,
@@ -557,6 +575,7 @@ h3.learn_widget_generic_title {margin:20px 0 10px;}
 .latest-tweets {
 	background: #F7F7F7;
 	margin-top:20px;
+	margin-bottom:20px;
 	text-align: center;
 	padding-bottom:10px;
 }
@@ -915,6 +934,15 @@ label {font-weight:bold;}
 
 #extension_icon_512 {width:64px;height:64px;display:block; margin-right:2em; border:1px solid #ddd; padding:2px;}
 #extension_icon_512 img {width:64px;height:64px;display:block;}
+
+.more_link {
+  color:#f86f20;
+	font-size:12px;
+	text-transform: uppercase;
+	float:right;
+}
+
+.more_link.orange {color:#f86f20;}
 
 /* ==========================================================================
    Responsive overrides (tablet/small screen)

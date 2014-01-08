@@ -40,14 +40,30 @@
   </div>
 </div>
 
-            <!-- Tagline -->
-            <div class="row">
-                <div class="tagline span12">
-                	<%= link_to('Learn More', main_special_path(:path => 'about'), :class => "pull-right btn orange lg hidden-phone") %>
-                	<div><%= link_to('Extending Knowledge. Changing Lives.', main_special_path(:path => 'about'), :class => "moreaboutpitch") %> <%= link_to('Learn More', main_special_path(:path => 'about'), :class => "visible-phone btn orange lg") %>
+<!-- Tagline -->
+<div class="tagline-home">
+  
+  <div class="row">
+    <div class="span9">
+      <div class="centennial-logo-wrapper">
+        <% link_to("http://www.extension100years.net/", {:class => ""}) do %>
+          <img class='centennial-logo' src="/images/frontporch/extension-centennial-logo_240.png" alt="Smith-Lever Extension Centennial Celebration" />
+        <% end %>
+      </div>
+      <div class="tagline-text-wrapper">
+      <%= link_to('Extending Knowledge. Changing Lives.', main_special_path(:path => 'about'), :class => "moreaboutpitch") %>
+      </div>
+    </div>
+
+    
+    <div class="span3">
+      <div class="tagline-button-wrapper pull-right">
+      <%= link_to('Learn More', main_special_path(:path => 'about'), :class => "btn orange lg") %>
+      </div>
+    </div>
+
+  </div>
 </div>
-                </div>
-            </div>
 
   <!-- Upcoming Webinars, Meet Extension, Trending Questions, Latest Tweets -->
   <div class="row">
@@ -63,7 +79,7 @@
                 
     <div class="meet-extension span3">
       <% if @featured_bio.present? %>
-    	  <h2>Meet Extension</h2>
+    	  <h2>Our People</h2>
     	  <% link_to(@featured_bio.id_and_link) do %>
     	    <%= first_bio_image @featured_bio.content %>
     	    <strong><%= @featured_bio.title %></strong><br />
@@ -71,8 +87,8 @@
           <p><%= get_title(@featured_bio.content).truncate(320,{:omission => '...', :avoid_orphans => true}) %></p>
     	  <% end %>
     	<% else %>
-    	  <h2>Extension Experts</h2>
-    	  <h3>There are no expert biographies at this time.</h3>
+    	  <h2>Our People</h2>
+    	  <h3>There are no biographies at this time.</h3>
     	<% end %>
     </div>
                 
