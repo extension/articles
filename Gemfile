@@ -75,6 +75,9 @@ gem 'dalli'
 # attachment_fu plugin replacement
 gem "pothoven-attachment_fu"
 
+# acts_as_list
+gem 'acts_as_list'
+
 group :development do
   # require the powder gem
   gem 'powder'
