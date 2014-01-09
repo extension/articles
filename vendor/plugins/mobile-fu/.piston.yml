@@ -1,8 +1,0 @@
---- 
-format: 1
-handler: 
-  commit: 79c5535f8a76e98370bbea158fd137d866228870
-  branch: master
-lock: false
-repository_class: Piston::Git::Repository
-repository_url: git://github.com/brendanlim/mobile-fu.git
