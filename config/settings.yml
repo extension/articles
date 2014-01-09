@@ -1,5 +1,8 @@
 session_token: '1234567890123456789012345678901234567890'
 urlwriter_host: 'darmok.dev'
+urlwriter_protocol: 'http://'
+urlwriter_port: '80'
+
 airbrake_api_key: 'notset'
 app_location: 'localdev'
 account_review_url: 'http://aae.dev/questions/account_review_request'
@@ -34,11 +37,6 @@ campus_site: 'http://campus.extension.org/'
 pdc_site: 'http://pdc.extension.org/'
 data_site: 'http://data.extension.org/'
 
-
-url_options: 
-  host: 'www.extension.org'
-  port: 80
-  protocol: 'http://'
     
 # used to push IP Address down into the models, for the email crons
 default_request_ip: '127.0.0.1'
@@ -46,7 +44,7 @@ request_ip_address: '127.0.0.1'
     
 
     # cache expiry
-cache-expiry: 1.hour
+cache_expiry: 1.hour
 
 # defaults for date ranges for reports
 default_datefield: 'created_at'

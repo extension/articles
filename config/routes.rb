@@ -14,10 +14,9 @@ Darmok::Application.routes.draw do
     match '/', to: "home#index", :as => 'home'
   end
   
-end
 
-#   ## Debug ##
-#   map.debuglocation 'debug/location', :controller => 'debug', :action => 'location'
+  ## Debug ##
+  match 'debug/location', to:'debug#location', :as => 'debuglocation'
 
 #   #################################################################
 #   ### pubsite routes ###
@@ -39,87 +38,77 @@ end
 #   map.redirect 'faqs', :controller => 'pages', :action => 'faqs', :content_tag => 'all', :permanent => true
 #   map.redirect 'articles', :controller => 'pages', :action => 'articles', :content_tag => 'all', :permanent => true
   
-#   ### pubsite admin routes
-#   map.namespace :admin do |admin|
-#     admin.resources :sponsors, :collection => {:update_positions => :post}
-#     admin.resources :logos
-#   end
-  
-#   map.connect 'admin/:action/:id', :controller => 'admin'
-#   map.connect 'admin/:action', :controller => 'admin'
-  
-#   ### connect up "data" to the api/data controller
-#   map.connect 'data/:action', :controller => 'api/data'
-  
-#   ### current routes for specific content
-#   map.pagelist 'pages/list', :controller => 'pages', :action => 'list'
+  ### pubsite admin routes
+  namespace :admin do
+    resources :sponsors, :collection => {:update_positions => :post}
+    resources :logos
+  end
 
-#   map.print_pageid 'pages/:id/print', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
-#   map.pageid 'pages/:id', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
-#   map.print_page 'pages/:id/:title/print', :controller => 'pages', :action => 'show', :print => 1
-#   map.page 'pages/:id/:title', :controller => 'pages', :action => 'show', :requirements => { :id => /\d+/ }
-
-#   ### old routes for specific content
-#   map.connect 'article/:id/print', :controller => 'pages', :action => 'redirect_article', :print => 1, :requirements => { :id => /\d+/ }
-#   map.connect 'article/:id', :controller => 'pages', :action => 'redirect_article', :requirements => { :id => /\d+/ }
-#   map.connect 'events/:id/print', :controller => 'pages', :action => 'redirect_event', :print => 1
-#   map.connect 'events/:id', :controller => 'pages', :action => 'redirect_event'
-#   map.connect 'faq/:id/print', :controller => 'pages', :action => 'redirect_faq', :print => 1
-#   map.connect 'faq/:id', :controller => 'pages', :action => 'redirect_faq'  
-#   map.connect 'pages/*title', :controller => 'pages', :action => 'redirect_article'
-
-#   # more named routes
-#   map.logo  'logo/:file.:format', :controller => 'logo', :action => :display
-#   map.reports 'reports', :controller => :reports
-#   map.category_tag_index 'category/:content_tag', :controller => 'main', :action => 'category_tag'
+  match 'admin/:action/:id', :controller => 'admin'
+  match 'admin/:action', :controller => 'admin'
   
-#   # wiki compatibility version
-#   #map.preview_wikipage 'preview/pages/*title', :controller => 'preview', :action => 'showpage' # note :title is ignored in the method, and the URI is gsub'd because of '?' characters
-#   # everyone else
-#   map.preview_page 'preview/page/:source/:source_id', :controller => 'preview', :action => 'showpage'
-   
-#   map.preview_tag 'preview/:content_tag', :controller => 'preview', :action => 'content_tag'
-#   map.preview_category 'preview/showcategory/:categorystring', :controller => 'preview', :action => 'showcategory'
-#   map.preview_home 'preview', :controller => 'preview', :action => 'index'
-
-#   map.pageinfo_pagelinklist 'pageinfo/pagelinklist/:content_tag', :controller => 'pageinfo', :action => 'pagelinklist'
-#   map.pageinfo_pagelist 'pageinfo/pagelist/:content_tag', :controller => 'pageinfo', :action => 'pagelist'
-#   map.pageinfo_source 'pageinfo/source/:source_name/:source_id', :controller => 'pageinfo', :action => 'find_by_source'
-#   map.pageinfo_findsource  'pageinfo/source', :controller => 'pageinfo', :action => 'find_by_source'
-#   map.pageinfo_page 'pageinfo/:id', :controller => 'pageinfo', :action => 'show'
-
-#   # legacy routes to 410
-#   map.connect ':content_tag/events/:year', :controller => 'main', :action => 'legacy_events_redirect'
-#   map.connect ':content_tag/events/:year/:month', :controller => 'main', :action => 'legacy_events_redirect'
-#   map.connect ':content_tag/events/:year/:month/:event_stat', :controller => 'main', :action => 'legacy_events_redirect'
+  ### connect up "data" to the api/data controller
+  match 'data/:action', to:'api#data'
   
-  
-#   ### pubsite content_tag routes - should pretty much catch *everything* else right now
-#   map.site_news ':content_tag/news', :controller => 'pages', :action => 'news'
-#   map.site_faqs ':content_tag/faqs', :controller => 'pages', :action => 'faqs'
-#   map.site_articles ':content_tag/articles', :controller => 'pages', :action => 'articles'
-#   map.site_events ':content_tag/events', :controller => 'pages', :action => 'events'
-#   map.site_learning_lessons ':content_tag/learning_lessons', :controller => 'pages', :action => 'learning_lessons'
+  ### current routes for specific content
+  match 'pages/list', to:'pages#list', :as => 'pagelist'
+  match 'pages/:id/print', to:'pages#show', :as => 'print_pageid', :defaults => { :print => 1 }
+  match 'pages/:id', to:'pages#show', :as => 'pageid', :requirements => { :id => /\d+/ }
+  match 'pages/:id/:title/print', to:'pages#show', :as => 'print_page', :defaults => { :print => 1 }
+  match 'pages/:id/:title', to:'pages#show', :as => 'page'
 
-#   map.short_pageid ':id', :controller => 'pages', :action => 'show',  :requirements => { :id => /\d+/ }
+  ### old routes for specific content
+  match 'article/:id/print', to:'pages#redirect_article', :defaults => { :print => 1 }, :requirements => { :id => /\d+/ }
+  match 'article/:id', to:'pages#redirect_article', :requirements => { :id => /\d+/ }
+  match 'events/:id/print', to:'pages#redirect_event', :defaults => { :print => 1 }, :requirements => { :id => /\d+/ }
+  match 'events/:id', to:'pages#redirect_event', :requirements => { :id => /\d+/ }  
+  match 'faq/:id/print', to:'pages#redirect_faq', :defaults => { :print => 1 }, :requirements => { :id => /\d+/ }
+  match 'faq/:id', to:'pages#redirect_faq', :requirements => { :id => /\d+/ }
+  match 'pages/*title', to:'pages#redirect_article'
 
-#   map.site_search '/main/search', :controller => 'main', :action => 'search'
-#   map.main_blog '/main/blog', :controller => 'main', :action => 'blog'
-#   map.main_communities '/main/communities', :controller => 'main', :action => 'communities'
-#   map.set_institution '/main/set_institution', :controller => 'main', :action => 'set_institution'
-#   map.show_institution_list '/main/show_institution_list', :controller => 'main', :action => 'show_institution_list', :conditions => { :method => :post }
-#   map.main_special '/main/:path', :controller => 'main', :action => 'special'
-  
-#   map.site_index ':content_tag', :controller => 'main', :action => 'community_tag'
-#   map.about_community ':content_tag/about', :controller => 'main', :action => 'about_community'
-  
+  ### more named routes
+  match 'logo/:file', to:'logo#display', :as => 'logo'
+  match 'reports', to:'reports#index', :as => 'reports'
+  match 'category/:content_tag', to:'main#category_tag', :as => 'category_tag_index'
 
-#   ### catch?  I'm not sure that these are ever actually touched because of the :content_tag routes above
-#   map.connect ':controller', :action => 'index'
-#   map.connect ':controller/:action'
-#   map.connect ':controller/:action/:id'
-#   map.connect ':controller/:action/:id.:format'
+  # preview
+  match 'preview/page/:source/:source_id', to:'preview#showpage', :as => 'preview_page'
+  match 'preview/:content_tag', to:'preview#content_tag', :as => 'preview_tag'
+  match 'preview/showcategory/:categorystring', to:'preview#showcategory', :as => 'preview_category'
+  match 'preview', to:'preview#index', :as => 'preview_home'
+
+  # pageinfo
+  match 'pageinfo/pagelinklist/:content_tag', to:'pageinfo#pagelinklist', :as => 'pageinfo_pagelinklist'
+  match 'pageinfo/pagelist/:content_tag', to:'pageinfo#pagelist', :as => 'pageinfo_pagelist'
+  match 'pageinfo/source/:source_name/:source_id', to:'pageinfo#find_by_source', :as => 'pageinfo_source'
+  match 'pageinfo/source', to:'pageinfo#find_by_source', :as => 'pageinfo_findsource'
+  match 'pageinfo/:id', to:'pageinfo#show', :as => 'pageinfo_page'
+
+  # legacy routes to 410
+  match ':content_tag/events/:year', to:'main#legacy_events_redirect'
+  match ':content_tag/events/:year/:month', to:'main#legacy_events_redirect'
+  match ':content_tag/events/:year/:month/:event_stat', to:'main#legacy_events_redirect'
   
-#   # this must be last
-#   map.connect '*path', :controller => 'application', :action => 'do_404', :requirements => { :path => /.*/ }
-# end
+  ### pubsite content_tag routes - should pretty much catch *everything* else right now
+  match ':content_tag/news', to:'pages#news', :as => 'site_news'
+  match ':content_tag/faqs', to:'pages#faqs', :as => 'site_faqs'
+  match ':content_tag/articles', to:'pages#articles', :as => 'site_articles'
+  match ':content_tag/events', to:'pages#events', :as => 'site_events'
+  match ':content_tag/learning_lessons', to:'pages#learning_lessons', :as => 'site_learning_lessons'
+
+  ### short pageid
+  match ':id', to:'pages#show',  :requirements => { :id => /\d+/ }, :as => 'short_pageid'
+
+  match 'main/search', to:'main#search', :as => 'site_search'
+  match 'main/blog', to:'main#blog', :as => 'main_blog'
+  match 'main/communities', to:'main#communities', :as => 'main_communities'
+  match 'main/set_institution', to:'main#set_institution', :as => 'set_institution'
+  match 'main/show_institution_list', to:'main#show_institution_list', :via => [:post], :as => 'show_institution_list'
+  match 'main/:path', to:'main#special', :as => 'main_special'
+  match ':content_tag', to:'main#community_tag', :as => 'site_index'
+  match ':content_tag/about', to:'main#about_community', :as => 'about_community'
+
+  # this must be last
+  match '*path', to:'application#do_404', :requirements => { :path => /.*/ }
+
+end

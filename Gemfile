@@ -62,8 +62,11 @@ gem 'geocoder'
 gem 'geoip'
 
 # image submission and other image handling
-gem 'paperclip'
-gem 'rmagick', :require => false
+# gem 'paperclip'
+# gem 'rmagick', :require => false
+
+# image sizing
+gem 'fastimage'
 
 # cron management
 gem 'lockfile'

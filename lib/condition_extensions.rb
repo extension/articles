@@ -8,7 +8,7 @@
 module ConditionExtensions
 
   def count_cache_expiry
-    Settings.cache-expiry
+    Settings.cache_expiry
   end
   
   def get_cache_key(method_name,optionshash={})

@@ -10,6 +10,7 @@ class PublishingCommunity < ActiveRecord::Base
   extend ConditionExtensions
   has_content_tags
   ordered_by :default => "#{self.table_name}.name ASC"
+  has_many :taggings, :as => :taggable, dependent: :destroy
 
 
   # topics for public site

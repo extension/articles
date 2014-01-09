@@ -45,9 +45,9 @@ class ApplicationController < ActionController::Base
     
   def set_request_url_options
     if(!request.nil?)
-      Settings.url_options['host'] = request.host unless (request.host.nil?)
-      Settings.url_options['protocol'] = request.protocol unless (request.protocol.nil?)
-      Settings.url_options['port'] = request.port unless (request.port.nil?)
+      Settings.urlwriter_host = request.host unless (request.host.nil?)
+      Settings.urlwriter_protocol = request.protocol unless (request.protocol.nil?)
+      Settings.urlwriter_port = request.port unless (request.port.nil?)
     end
   end
   

@@ -39,6 +39,8 @@ class Page < ActiveRecord::Base
   has_one :link_stat
   belongs_to :page_source
   
+  has_many :taggings, :as => :taggable, dependent: :destroy
+
   validates_numericality_of :learn_id, :allow_blank => true, :message => "event must be a valid event number." 
 
   scope :bucketed_as, lambda{|bucketname|
@@ -652,9 +654,9 @@ class Page < ActiveRecord::Base
   
   
   def id_and_link(only_path = false, params = {})
-    default_url_options[:host] = AppConfig.get_url_host
-    default_url_options[:protocol] = AppConfig.get_url_protocol
-    if(default_port = AppConfig.get_url_port)
+    default_url_options[:host] = Settings.urlwriter_host
+    default_url_options[:protocol] = Settings.urlwriter_protocol
+    if(default_port = Settings.urlwriter_port)
       default_url_options[:port] = default_port
     end
     page_params = {:id => self.id, :title => self.url_title, :only_path => only_path}
@@ -909,7 +911,7 @@ class Page < ActiveRecord::Base
   end
   
   def self.content_cache_expiry
-    Settings.cache-expiry
+    Settings.cache_expiry
   end
   
   def has_map?

@@ -29,6 +29,7 @@ GEM
     activesupport (3.2.16)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
+    addressable (2.3.5)
     airbrake (3.1.15)
       builder
       multi_json
@@ -55,10 +56,6 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
-    climate_control (0.0.3)
-      activesupport (>= 3.0)
-    cocaine (0.5.3)
-      climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.0)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -73,6 +70,8 @@ GEM
     erubis (2.7.0)
     execjs (2.0.2)
     extension-html5shiv-rails (3.6.2.1)
+    fastimage (1.5.5)
+      addressable (~> 2.3, >= 2.3.5)
     font-awesome-sass-rails (3.0.2.2)
       railties (>= 3.1.1)
       sass-rails (>= 3.1.1)
@@ -125,11 +124,6 @@ GEM
     omniauth-openid (1.0.1)
       omniauth (~> 1.0)
       rack-openid (~> 1.3.1)
-    paperclip (3.5.2)
-      activemodel (>= 3.0.0)
-      activesupport (>= 3.0.0)
-      cocaine (~> 0.5.3)
-      mime-types
     polyglot (0.3.3)
     posix-spawn (0.3.8)
     pothoven-attachment_fu (3.2.11)
@@ -196,7 +190,6 @@ GEM
       redis (>= 2.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rmagick (2.13.2)
     ruby-openid (2.3.0)
     sass (3.2.13)
     sass-rails (3.2.6)
@@ -236,6 +229,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   dalli
   extension-html5shiv-rails
+  fastimage
   font-awesome-sass-rails
   geocoder
   geoip
@@ -250,7 +244,6 @@ DEPENDENCIES
   nokogiri (= 1.5.10)
   omniauth (~> 1.0)
   omniauth-openid
-  paperclip
   pothoven-attachment_fu
   powder
   pry
@@ -259,7 +252,6 @@ DEPENDENCIES
   rails_config
   ratom
   redis-rails
-  rmagick
   sass-rails (~> 3.2.3)
   select2-rails
   thor

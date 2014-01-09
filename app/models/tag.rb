@@ -8,7 +8,9 @@
 # The Tag model. This model is automatically generated and added to your app if you run the tagging generator included with has_many_polymorphs.
 
 class Tag < ActiveRecord::Base
- 
+  has_many :taggings
+
+
   SPLITTER = Regexp.new(/\s*,\s*/)
   JOINER = ", " 
   
@@ -28,18 +30,18 @@ class Tag < ActiveRecord::Base
   validates_uniqueness_of :name, :case_sensitive => false
   
   # Set up the polymorphic relationship.
-  has_many_polymorphs :taggables, 
-    :from => [:pages, :sponsors, :publishing_communities], 
-    :through => :taggings, 
-    :dependent => :destroy,
-    :as => :tag,
-    :skip_duplicates => false, 
-    :parent_extend => proc {
-      # Defined on the taggable models, not on Tag itself. Return the tagnames associated with this record as a string.
-      def to_s
-        self.map(&:name).sort.join(Tag::JOINER)
-      end
-    }
+  # has_many_polymorphs :taggables, 
+  #   :from => [:pages, :sponsors, :publishing_communities], 
+  #   :through => :taggings, 
+  #   :dependent => :destroy,
+  #   :as => :tag,
+  #   :skip_duplicates => false, 
+  #   :parent_extend => proc {
+  #     # Defined on the taggable models, not on Tag itself. Return the tagnames associated with this record as a string.
+  #     def to_s
+  #       self.map(&:name).sort.join(Tag::JOINER)
+  #     end
+  #   }
         
   # Callback to normalize the tagname before saving it. 
   def before_save

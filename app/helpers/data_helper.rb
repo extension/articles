@@ -4,6 +4,7 @@
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+require 'fastimage'
 
 module DataHelper
 

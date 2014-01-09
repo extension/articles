@@ -9,6 +9,8 @@ class Sponsor < ActiveRecord::Base
   belongs_to :logo
   acts_as_list
   has_content_tags
+  has_many :taggings, :as => :taggable, dependent: :destroy
+
   SPONSORSHIP_LEVELS = ["titanium", "platinum", "gold", "silver", "bronze"]
 
   scope :prioritized, {:include => :logo, :order => 'position ASC'}
