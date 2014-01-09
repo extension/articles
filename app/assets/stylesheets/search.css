@@ -16,7 +16,7 @@ form.gsc-search-box {width:60% !important; margin:0 auto !important;}
 #search {
     padding: .75em 1em 1em 1em;
     border-bottom: 2px solid #f7ddc2;
-    background: #fff3e8 url(/images/search/orange_fade.png) top repeat-x;
+    background: #fff3e8 url(/assets/search/orange_fade.png) top repeat-x;
     margin-bottom:4em;
 }
 #search label { 
@@ -37,7 +37,7 @@ form.gsc-search-box {width:60% !important; margin:0 auto !important;}
     position: relative;
 }
 #search_results li span {
-background: transparent url(/images/search/white_fade.png) top right repeat-y;
+background: transparent url(/assets/search/white_fade.png) top right repeat-y;
 position: absolute;
 top: 0;
 right: 0;
@@ -110,9 +110,9 @@ code {color:#000; font-weight:bold;line-height:1.1em !important; padding-right: 
 
 .feedback_banner {margin:30px auto 0; width:840px;}
 .feedback_banner p {border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;}
-.feedback_banner.success p {padding:10px 10px 10px 45px; background: #e4ffe4 url(/images/common/success.gif) 20px 50% no-repeat; color:#024d03; border: 1px solid #40CE1B;}
-.feedback_banner.failure p {padding:10px 10px 10px 45px; background: #ffebf3 url(/images/common/failure.gif) 20px 50% no-repeat; color:red; border: 1px solid red;}
-.feedback_banner.warning p {padding:10px 10px 10px 45px; background: #ddd url(/images/common/failure.gif) 20px 50% no-repeat; color:red; border: 1px solid red;}
+.feedback_banner.success p {padding:10px 10px 10px 45px; background: #e4ffe4 url(/assets/common/success.gif) 20px 50% no-repeat; color:#024d03; border: 1px solid #40CE1B;}
+.feedback_banner.failure p {padding:10px 10px 10px 45px; background: #ffebf3 url(/assets/common/failure.gif) 20px 50% no-repeat; color:red; border: 1px solid red;}
+.feedback_banner.warning p {padding:10px 10px 10px 45px; background: #ddd url(/assets/common/failure.gif) 20px 50% no-repeat; color:red; border: 1px solid red;}
 .feedback_banner a {text-decoration: none;}
 
 p.explanation {margin-top: 20px; line-height:1.1em !important; color:#333;}

@@ -74,7 +74,7 @@
   <div class="container">
     
     <% if params[:print] %>
-      <img id="print-logo" src="/images/frontporch/eX_ARLN_logo_wTM_600x331.png" width="120pt" height="66pt"/>
+      <img id="print-logo" src="/assets/frontporch/eX_ARLN_logo_wTM_600x331.png" width="120pt" height="66pt"/>
       <%- if(@personal[:location] and @personal[:institution]) -%>
         <span id="institution_logo" >
           <%- if !(@personal[:institution].logo.nil?) -%>
@@ -90,7 +90,7 @@
                 <div class="navbar-inner">
                     <a class="btn btn-navbar" data-toggle="collapse" data-target=".search-collapse"><i class='icon-search icon-white'></i></a>
                     <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">MENU</a>
-                    <a class="brand" href="/"><img class='nonmobile hidden-phone' src="/images/frontporch/eX_ARLN_logo_wTM_249x137.png" alt="eXtension" /><img class='visible-phone' src="/images/frontporch/logo_mobile.gif" alt="eXtension" /></a>
+                    <a class="brand" href="/"><img class='nonmobile hidden-phone' src="/assets/frontporch/eX_ARLN_logo_wTM_249x137.png" alt="eXtension" /><img class='visible-phone' src="/assets/frontporch/logo_mobile.gif" alt="eXtension" /></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li class="active"><a href="/">Home</a></li>
@@ -168,7 +168,7 @@
       <hr class="noprint" />
       
       <footer>
-        <span id="extension_icon_512" class="pull-left noprint"><img id="extension_logo" src="/images/extension_logo.jpg" alt="eXtension" /></span>
+        <span id="extension_icon_512" class="pull-left noprint"><img id="extension_logo" src="/assets/extension_logo.jpg" alt="eXtension" /></span>
         <ul class='inline noprint'>
           <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
           <li><%= link_to_unless_current "Institutional Partners", main_special_path(:path => 'partners') %></li>
@@ -182,8 +182,6 @@
 
     </div> <!-- /container -->
         
-    <%= javascript_include_tag 'jquery-1.9.1.min' %>
-    <%= javascript_include_tag 'bootstrap.min' %>
 
     <script class="code" type="text/javascript">
       

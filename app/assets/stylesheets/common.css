@@ -75,7 +75,7 @@ div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
 div#app_location.preview {background: #229ec0; position:absolute; top:30px; left: 25%; right: 25%; font-size:1.5em;width:50%; margin: 0 auto;color:#fff; padding:.5em;border:2px solid #fff;}
 div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5em;}
 
-.usericon {padding-left: 18px;background: transparent url(/images/common/user.gif) no-repeat left center;}
+.usericon {padding-left: 18px;background: transparent url(/assets/common/user.gif) no-repeat left center;}
 
 .clear, .clearing {clear: both;}
 .left {float: left}
@@ -175,14 +175,14 @@ span.button a {
 	background: #fff;
 	color: #0e1450 !important;
 	text-decoration: none;
-	background: transparent url(/images/people/button-a.png) -500px bottom repeat-x;
+	background: transparent url(/assets/people/button-a.png) -500px bottom repeat-x;
 }
 .button2 a:hover {
 	color: #000 !important;
-	background: transparent url(/images/people/button-a.png) 0 bottom repeat-x;
+	background: transparent url(/assets/people/button-a.png) 0 bottom repeat-x;
 }
 
-#csv {float:right;background: url(/images/common/page_excel.png) no-repeat left 50%;padding-left:20px;clear:right;}
+#csv {float:right;background: url(/assets/common/page_excel.png) no-repeat left 50%;padding-left:20px;clear:right;}
 
 #adminnotice {background:#E42020;
    z-index:10;

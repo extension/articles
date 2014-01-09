@@ -20,33 +20,33 @@
     <h2>Social Media Links <span>(B)</span></h2>
     <ul class="unstyled">
       <% if !@community.twitter_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_twitter.gif"), "#{@community.twitter_handle}" %> <%=link_to @community.twitter_handle, @community.twitter_handle %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_twitter.gif"), "#{@community.twitter_handle}" %> <%=link_to @community.twitter_handle, @community.twitter_handle %></li>
       <% else %>
-        <li><%= image_tag("/images/frontporch/icon_twitter.gif") %> Twitter not set</li>
+        <li><%= image_tag("/assets/frontporch/icon_twitter.gif") %> Twitter not set</li>
       <% end %>
       
       <% if !@community.facebook_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_facebook.gif"), "#{@community.facebook_handle}" %> <%= link_to @community.facebook_handle, @community.facebook_handle %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_facebook.gif"), "#{@community.facebook_handle}" %> <%= link_to @community.facebook_handle, @community.facebook_handle %></li>
       <% else %>
-       <li><%= image_tag("/images/frontporch/icon_facebook.gif") %> Facebook not set</li>
+       <li><%= image_tag("/assets/frontporch/icon_facebook.gif") %> Facebook not set</li>
       <% end %>
       
       <% if !@community.youtube_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_youtube.gif"), "#{@community.youtube_handle}" %> <%=link_to @community.youtube_handle, @community.youtube_handle %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_youtube.gif"), "#{@community.youtube_handle}" %> <%=link_to @community.youtube_handle, @community.youtube_handle %></li>
       <% else %>
-        <li><%= image_tag("/images/frontporch/icon_youtube.gif") %> YouTube not set</li>
+        <li><%= image_tag("/assets/frontporch/icon_youtube.gif") %> YouTube not set</li>
       <% end %>
       
       <% if !@community.pinterest_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_pinterest.gif"), "#{@community.pinterest_handle}" %> <%=link_to @community.pinterest_handle, @community.pinterest_handle %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_pinterest.gif"), "#{@community.pinterest_handle}" %> <%=link_to @community.pinterest_handle, @community.pinterest_handle %></li>
       <% else %>
-        <li><%= image_tag("/images/frontporch/icon_pinterest.gif") %> Pinterest not set</li>
+        <li><%= image_tag("/assets/frontporch/icon_pinterest.gif") %> Pinterest not set</li>
       <% end %>
       
       <% if !@community.gplus_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_googleplus.gif"), "#{@community.gplus_handle}" %> <%=link_to @community.gplus_handle, @community.gplus_handle %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_googleplus.gif"), "#{@community.gplus_handle}" %> <%=link_to @community.gplus_handle, @community.gplus_handle %></li>
       <% else %>
-        <li><%= image_tag("/images/frontporch/icon_googleplus.gif") %> Google+ not set</li>
+        <li><%= image_tag("/assets/frontporch/icon_googleplus.gif") %> Google+ not set</li>
       <% end %>
    </ul>
    
@@ -149,6 +149,6 @@
 	</div>
   
   <div class="span5">
-    <%= image_tag("/images/frontporch/frontporch_cop_homepage_preview.jpg", :alt => "", :class => "checklist_diagram") %>
+    <%= image_tag("/assets/frontporch/frontporch_cop_homepage_preview.jpg", :alt => "", :class => "checklist_diagram") %>
 	</div>
 </div>

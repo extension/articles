@@ -10,7 +10,7 @@ q.style.cssText = 'border: 1px solid #7e9db9; padding: 2px;';
 }
 var b = function() {
 if (q.value == '') {
-q.style.background = '#FFFFFF url(/images/interface/google_custom_search_watermark.gif) left no-repeat';
+q.style.background = '#FFFFFF url(/assets/interface/google_custom_search_watermark.gif) left no-repeat';
 }
 };
 var f = function() {

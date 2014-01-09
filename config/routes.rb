@@ -109,6 +109,6 @@ Darmok::Application.routes.draw do
   match ':content_tag/about', to:'main#about_community', :as => 'about_community'
 
   # this must be last
-  match '*path', to:'application#do_404', :requirements => { :path => /.*/ }
+  # match '*path', to:'application#do_404', :requirements => { :path => /.*/ }
 
 end

@@ -10,7 +10,7 @@ div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
 div#app_location.preview {background: #222; position:absolute; left: 20%; right: 20%; width:60%; margin: 0 auto;color:#ccc; padding:0 2em 2em;border:2px solid #888;}
 div#app_location.preview h3 {color:#fff;}
 div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5em;}
-#preview_wrapper {display:none;background: url(/images/pubsite/shadow_60percent.png) 0 0; z-index:10; top: 0; position:absolute; width:100%;left:0; height:1200px;}
+#preview_wrapper {display:none;background: url(/assets/pubsite/shadow_60percent.png) 0 0; z-index:10; top: 0; position:absolute; width:100%;left:0; height:1200px;}
 #preview_wrapper.preview {display:block;} 
 
 #preview_page #article_content,
@@ -59,9 +59,9 @@ a.moreaboutpitch {color:#333;}
 .report_table {font-size:14px;}
 td.longurls a {word-wrap: break-word;width:300px; display:block;}
 
-.missing {background: #ffebf3 url(/images/common/failure.gif) 4px 3px no-repeat; padding:.25em .25em .25em 25px; border-left:4px solid red;}
-.launchready {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0  no-repeat; padding-left:20px; height:20px;}
-span.launchready  {background: #fff url(/images/pubsite/checkmark_mini.png) 0 0  no-repeat; display:block;float:left;text-indent:-2000px;}
+.missing {background: #ffebf3 url(/assets/common/failure.gif) 4px 3px no-repeat; padding:.25em .25em .25em 25px; border-left:4px solid red;}
+.launchready {background: #fff url(/assets/pubsite/checkmark_mini.png) 0 0  no-repeat; padding-left:20px; height:20px;}
+span.launchready  {background: #fff url(/assets/pubsite/checkmark_mini.png) 0 0  no-repeat; display:block;float:left;text-indent:-2000px;}
 
 iframe {max-width:100%;}
 #pagelinks {font-size:13px; color:#777;}
