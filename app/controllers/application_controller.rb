@@ -24,10 +24,6 @@ class ApplicationController < ActionController::Base
   before_filter :set_request_url_options
   before_filter :set_app_location
 
-  has_mobile_fu
-  skip_before_filter :set_mobile_format
-  before_filter :mobile_detection
-
   helper_method :get_location_options
   helper_method :get_county_options
   helper_method :with_content_tag?
@@ -35,12 +31,6 @@ class ApplicationController < ActionController::Base
   
   def set_app_location
     @app_location_for_display = Settings.app_location
-  end
-  
-  def mobile_detection
-    if is_mobile_device?
-      @mobile_device = true
-    end
   end
     
   def set_request_url_options

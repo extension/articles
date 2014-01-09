@@ -18,14 +18,12 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   # files for bootstrap-in-asset-pipeline integration
   gem 'anjlab-bootstrap-rails', '~> 2.0', :require => 'bootstrap-rails'
-  gem 'font-awesome-sass-rails'
   gem 'jquery-ui-rails'
   gem 'extension-html5shiv-rails', :require => 'html5shiv-rails'
-  gem "select2-rails"
 end
 
-# mobile device detection
-gem 'mobile-fu'
+# # mobile device detection
+# gem 'mobile-fu'
 
 # server settings
 gem "rails_config"

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<!DOCTYPE html>
 <head>
   <meta charset="utf-8" />
   
@@ -34,19 +35,11 @@
   <meta name="twitter:title" content="<%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %>">
   <meta property="twitter:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
   
-  
-  
-  <% if params[:print] %>
-	    <%= stylesheet_link_tag 'print-for-screen' %>
-	    <%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
-	    <%= stylesheet_link_tag 'print', :media => 'print' %>
-	<% else %>
-	    <%= stylesheet_link_tag 'bootstrap' %>
-	    <%= stylesheet_link_tag 'frontporch' %>
-	    <%= stylesheet_link_tag 'frontporch_extra' %>
-    	<%= stylesheet_link_tag 'print-for-screen', :media => 'print' %>
-    	<%= stylesheet_link_tag 'print', :media => 'print' %>
-	<% end %>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+  <!--[if lt IE 9]>
+    <%= javascript_include_tag 'html5shiv' %>
+  <![endif]-->    
   
   <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
 </head>
