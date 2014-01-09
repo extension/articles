@@ -1,4 +1,0 @@
-#!/usr/bin/env ruby
-require_relative '../config/boot'
-$LOAD_PATH.unshift "#{RAILTIES_PATH}/builtin/rails_info"
-require 'commands/about'
