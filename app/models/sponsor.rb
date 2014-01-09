@@ -11,7 +11,7 @@ class Sponsor < ActiveRecord::Base
   has_content_tags
   SPONSORSHIP_LEVELS = ["titanium", "platinum", "gold", "silver", "bronze"]
 
-  named_scope :prioritized, {:include => :logo, :order => 'position ASC'}
+  scope :prioritized, {:include => :logo, :order => 'position ASC'}
 
   # returns a comma delimited of the tags - with the primary content tag name first in the list
   # used for community editing in the administrative interface for public communities

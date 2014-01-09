@@ -16,17 +16,17 @@ class ReportsController < ApplicationController
   end
 
   def graphs
-    data_url = "#{AppConfig.configtable['data_site']}"
+    data_url = "#{Settings.data_site}"
     return redirect_to(data_url, :status => :moved_permanently)
   end
 
   def publishedcontent
-    data_url = "#{AppConfig.configtable['data_site']}pages/publishedcontent"
+    data_url = "#{Settings.data_site}pages/publishedcontent"
     return redirect_to(data_url, :status => :moved_permanently)
   end
 
   def activitygraph
-    data_url = "#{AppConfig.configtable['data_site']}"
+    data_url = "#{Settings.data_site}"
     return redirect_to(data_url, :status => :moved_permanently)
   end
 

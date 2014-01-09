@@ -33,7 +33,7 @@ module Extension
         opts = {:orderings => {}, :default => 'id ASC'}.merge(opts)
         
         # Add named scope
-        named_scope :ordered, lambda { |providedorder = nil|
+        scope :ordered, lambda { |providedorder = nil|
           # expecting an order param of "column[,columns] direction"
           if(!providedorder.blank?)
             if(self.orderings.keys.include?(providedorder))

@@ -8,7 +8,7 @@
 module TaggingScopes
   def self.included(base)
     base.class_eval do
-      named_scope :tagged_with_all, lambda{|taglist|
+      scope :tagged_with_all, lambda{|taglist|
         includelist= Tag.castlist_to_array(taglist,true,false)
         {:joins => [:tags], :conditions => "tags.name IN (#{includelist.map{|tagname| "'#{tagname}'"}.join(',')})", :group => "#{self.table_name}.id", :having => "COUNT(#{self.table_name}.id) = #{includelist.size}"}
       }

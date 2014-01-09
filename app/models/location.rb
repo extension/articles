@@ -26,10 +26,10 @@ class Location < ActiveRecord::Base
   has_many :communities
   has_many :branding_institutions
   
-  named_scope :filtered, lambda {|options| userfilter_conditions(options)}
-  named_scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
+  scope :filtered, lambda {|options| userfilter_conditions(options)}
+  scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
   
-  named_scope :states, {:conditions => {:entrytype => STATE}}
+  scope :states, {:conditions => {:entrytype => STATE}}
     
   # TODO: review heureka location reporting methods.  Justcode Issue #555 
   
@@ -50,7 +50,7 @@ class Location < ActiveRecord::Base
     end
   end
   
-  def self.get_geoip_data(ipaddress = AppConfig.configtable['request_ip_address'])
+  def self.get_geoip_data(ipaddress = Settings.request_ip_address)
     returnhash = {}
     if(geoip_data_file = AppConfig.geoip_data_file)
       if(data = GeoIP.new(geoip_data_file).city(ipaddress))
@@ -70,7 +70,7 @@ class Location < ActiveRecord::Base
     end
   end
   
-  def self.find_by_geoip(ipaddress = AppConfig.configtable['request_ip_address'])
+  def self.find_by_geoip(ipaddress = Settings.request_ip_address'])
     if(geoip_data = self.get_geoip_data(ipaddress))
       if(geoip_data[:country_code] == 'US')
         self.find_by_abbreviation(geoip_data[:region])

@@ -7,9 +7,6 @@
 
 class NoticeController < ApplicationController
   layout 'frontporch'  
-  def ask
-    render :layout => false
-  end
 
   def admin_required
     @right_column = false 

@@ -12,7 +12,7 @@ class Logo < ActiveRecord::Base
   COMMUNITY = 2
   INSTITUTION = 3
   
-  named_scope :sponsorlogos, :conditions => {:logotype => SPONSOR} 
+  scope :sponsorlogos, :conditions => {:logotype => SPONSOR} 
   
   has_attachment  :storage => :db_file, 
                   :content_type => :image,

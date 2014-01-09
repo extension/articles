@@ -12,8 +12,8 @@ class PageUpdate < ActiveRecord::Base
   belongs_to :user
   belongs_to :page
   
-  named_scope :for, lambda { |page| { :conditions => {:page_id => page.id } }}
-  named_scope :include_pages, :include => [:page]
+  scope :for, lambda { |page| { :conditions => {:page_id => page.id } }}
+  scope :include_pages, :include => [:page]
   
   # TODO: Sugar like edit?, destroy? etc..
   

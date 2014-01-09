@@ -65,10 +65,10 @@ class Api::DataController < ApplicationController
       
       if(filteredparams.limit.nil?)
          # empty limit? set to default
-         limit = AppConfig.configtable['default_content_limit']
-      elsif(filteredparams.limit > AppConfig.configtable['max_content_limit'])
+         limit = Settings.default_content_limit
+      elsif(filteredparams.limit > Settings.max_content_limit)
           # limit over? return an error, let's be pedantic
-          returnhash = {:success => false, :errormessage => "Requested limit of #{filteredparams.limit} is greater than the max allowed: #{AppConfig.configtable['max_content_limit']}"}
+          returnhash = {:success => false, :errormessage => "Requested limit of #{filteredparams.limit} is greater than the max allowed: #{Settings.max_content_limit}"}
           return render :text => returnhash.to_json
       else
          limit = filteredparams.limit
@@ -101,7 +101,7 @@ class Api::DataController < ApplicationController
       if(alltags)
          @returnitems = Page.recent_content(:datatypes => datatypes, :limit => limit)
       else
-         @returnitems = Page.recent_content(:datatypes => datatypes, :content_tags => content_tags, :limit => limit, :tag_operator => tag_operator, :within_days => AppConfig.configtable['events_within_days'])
+         @returnitems = Page.recent_content(:datatypes => datatypes, :content_tags => content_tags, :limit => limit, :tag_operator => tag_operator, :within_days => Settings.events_within_days)
       end
                   
       @returnitems.each do |item|

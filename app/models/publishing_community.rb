@@ -18,12 +18,12 @@ class PublishingCommunity < ActiveRecord::Base
   belongs_to :homage, :class_name => "Page", :foreign_key => "homage_id"
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
 
-  named_scope :tagged_with_content_tag, lambda {|tagname| 
+  scope :tagged_with_content_tag, lambda {|tagname| 
     {:include => {:taggings => :tag}, :conditions => "tags.name = '#{tagname}' AND taggings.tagging_kind = #{Tagging::CONTENT}"}
   }
 
-  named_scope :ordered_by_topic, {:include => :topic, :order => 'topics.name ASC, communities.public_name ASC'}
-  named_scope :launched, {:conditions => {:is_launched => true}}
+  scope :ordered_by_topic, {:include => :topic, :order => 'topics.name ASC, communities.public_name ASC'}
+  scope :launched, {:conditions => {:is_launched => true}}
 
   def primary_content_tag_name(force_cache_update=false)    
     self.cached_content_tags(force_cache_update)[0]
@@ -122,13 +122,13 @@ class PublishingCommunity < ActiveRecord::Base
     if(self.aae_group_id.blank?)
       nil
     else
-      "#{AppConfig.configtable['ask_two_point_oh']}groups/#{self.aae_group_id}"
+      "#{Settings.ask_two_point_oh}groups/#{self.aae_group_id}"
     end
   end
 
 
 def update_create_group_resource_tags
-  drupaldatabase = AppConfig.configtable['create_database']
+  drupaldatabase = Settings.create_database
   if(self.drupal_node_id.blank?)
     return true
   end

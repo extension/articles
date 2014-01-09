@@ -30,7 +30,7 @@ class MainController < ApplicationController
     @featured_bio = Page.articles.tagged_with_all_content_tags(['front page', 'bio']).ordered.first
      
     @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
-    @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+    @ask_two_point_oh_form = Settings.ask_two_point_oh_form
    end
    
   def category_tag
@@ -105,7 +105,7 @@ class MainController < ApplicationController
     if(@community and @community.aae_group_id.present?)
       @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
     else
-      @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+      @ask_two_point_oh_form = Settings.ask_two_point_oh_form
     end
     
     @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
@@ -137,7 +137,7 @@ class MainController < ApplicationController
   
   def search
     @right_column = false
-    @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+    @ask_two_point_oh_form = Settings.ask_two_point_oh_form
     set_title("Search results")
     set_title("eXtension - Search results")
   end

@@ -8,11 +8,7 @@
 module ConditionExtensions
 
   def count_cache_expiry
-    if(!AppConfig.configtable['cache-expiry'][self.name].nil?)
-      AppConfig.configtable['cache-expiry'][self.name]
-    else
-      15.minutes
-    end
+    Settings.cache-expiry
   end
   
   def get_cache_key(method_name,optionshash={})
@@ -43,9 +39,9 @@ module ConditionExtensions
 
   def build_date_condition(options={})    
     # TODO:  other date shortcuts like "thisweek", etc.  
-    datefield = options[:datefield] || AppConfig.configtable['default_datefield']
-    dateinterval = options[:dateinterval] || AppConfig.configtable['default_dateinterval']
-    tz = options[:tz] || AppConfig.configtable['default_timezone']  
+    datefield = options[:datefield] || Settings.default_datefield
+    dateinterval = options[:dateinterval] || Settings.default_dateinterval
+    tz = options[:tz] || Settings.default_timezone
     
     
     if(tz and tz != 'UTC' and TZInfo::Timezone.all_identifiers.include?(tz))

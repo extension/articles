@@ -124,7 +124,7 @@ class PagesController < ApplicationController
 
     # redirect to learn
     if(@page.is_event?)
-      return redirect_to(AppConfig.configtable['learn_site'],:status => :moved_permanently)
+      return redirect_to(Settings.learn_site,:status => :moved_permanently)
     end
     
     # set canonical_link
@@ -185,7 +185,7 @@ class PagesController < ApplicationController
     if(@community and @community.aae_group_id.present?)
       @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
     else
-      @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+      @ask_two_point_oh_form = Settings.ask_two_point_oh_form
     end  
     
     @donation_block = false
@@ -306,6 +306,6 @@ class PagesController < ApplicationController
   end
   
   def events
-    return redirect_to(AppConfig.configtable['learn_site'],:status => :moved_permanently)
+    return redirect_to(Settings.learn_site,:status => :moved_permanently)
   end
 end

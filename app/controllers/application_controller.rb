@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
   helper_method :content_tag_url_display_name
   
   def set_app_location
-    @app_location_for_display = AppConfig.configtable['app_location']
+    @app_location_for_display = Settings.app_location
   end
   
   def mobile_detection
@@ -46,9 +46,9 @@ class ApplicationController < ActionController::Base
     
   def set_request_url_options
     if(!request.nil?)
-      AppConfig.configtable['url_options']['host'] = request.host unless (request.host.nil?)
-      AppConfig.configtable['url_options']['protocol'] = request.protocol unless (request.protocol.nil?)
-      AppConfig.configtable['url_options']['port'] = request.port unless (request.port.nil?)
+      Settings.url_options['host'] = request.host unless (request.host.nil?)
+      Settings.url_options['protocol'] = request.protocol unless (request.protocol.nil?)
+      Settings.url_options['port'] = request.port unless (request.port.nil?)
     end
   end
   
@@ -79,12 +79,12 @@ class ApplicationController < ActionController::Base
   
   def set_default_request_ip_address
     # if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
-    #   AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
+    #   Settings.request_ip_address = request.env["HTTP_X_FORWARDED_FOR"]
     # elsif(!request.env["REMOTE_ADDR"].nil?)
     if(!request.env["REMOTE_ADDR"].nil?)
-      AppConfig.configtable['request_ip_address'] = request.env["REMOTE_ADDR"]
+      Settings.request_ip_address = request.env["REMOTE_ADDR"]
     else
-      AppConfig.configtable['request_ip_address'] = AppConfig.configtable['default_request_ip']
+      Settings.request_ip_address = Settings.default_request_ip
     end
     return true
   end

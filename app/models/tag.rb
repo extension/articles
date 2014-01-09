@@ -55,7 +55,7 @@ class Tag < ActiveRecord::Base
   end
     
   
-  named_scope :content_tags, {:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}"}
+  scope :content_tags, {:include => :taggings, :conditions => "taggings.tagging_kind = #{Tagging::CONTENT}"}
   
   # TODO: review.  This is kind of a hack that might should be done differently
   def content_community

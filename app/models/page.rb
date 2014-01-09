@@ -7,7 +7,7 @@
 class Page < ActiveRecord::Base
   # for events
   attr_accessor :event_time, :event_date
-  include ActionController::UrlWriter # so that we can generate URLs out of the model
+  include Rails.application.routes.url_helpers # so that we can generate URLs out of the model
   include TaggingScopes
   
   
@@ -41,21 +41,21 @@ class Page < ActiveRecord::Base
   
   validates_numericality_of :learn_id, :allow_blank => true, :message => "event must be a valid event number." 
 
-  named_scope :bucketed_as, lambda{|bucketname|
+  scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
   
-  named_scope :broken_links, :conditions => {:has_broken_links => true}
+  scope :broken_links, :conditions => {:has_broken_links => true}
 
-  named_scope :indexed, :conditions => {:indexed => INDEXED}
-  named_scope :articles, :conditions => {:datatype => 'Article'}
-  named_scope :news, :conditions => {:datatype => 'News'}
-  named_scope :faqs, :conditions => {:datatype => 'Faq'}
-  named_scope :events, :conditions => {:datatype => 'Event'}
-  named_scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
+  scope :indexed, :conditions => {:indexed => INDEXED}
+  scope :articles, :conditions => {:datatype => 'Article'}
+  scope :news, :conditions => {:datatype => 'News'}
+  scope :faqs, :conditions => {:datatype => 'Faq'}
+  scope :events, :conditions => {:datatype => 'Event'}
+  scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
   
   
-  named_scope :by_datatype, lambda{|datatype|
+  scope :by_datatype, lambda{|datatype|
    if(datatype.is_a?(Array))
      datatypes_list = datatype.map{|d| "'#{d}'"}.join(',')
      {:conditions => "datatype IN (#{datatypes_list})"}
@@ -65,7 +65,7 @@ class Page < ActiveRecord::Base
   }
   
   # Get all events in a given month, this month if no month is given
-  named_scope :monthly, lambda { |*date|
+  scope :monthly, lambda { |*date|
     
     # Default to this month if not date is given
     date = date.flatten.first ? date.flatten.first : Date.today    
@@ -73,19 +73,19 @@ class Page < ActiveRecord::Base
   }
   
   # Get all events starting after (and including) the given date
-  named_scope :after, lambda { |date| { :conditions => ['datatype = ? AND event_start >= ?', 'event',date] } }
+  scope :after, lambda { |date| { :conditions => ['datatype = ? AND event_start >= ?', 'event',date] } }
   
   # Get all events within x number of days from the given date
-  named_scope :within, lambda { |interval, date| { :conditions => ['datatype = ? AND (event_start >= ? AND event_start < ?)', 'event', date, date + interval] } }
+  scope :within, lambda { |interval, date| { :conditions => ['datatype = ? AND (event_start >= ? AND event_start < ?)', 'event', date, date + interval] } }
   
-  named_scope :in_states, lambda { |*states| 
+  scope :in_states, lambda { |*states| 
     states = states.flatten.compact.uniq.reject { |s| s.blank? }
     return {} if states.empty?
     conditions = states.collect { |s| sanitize_sql_array(["state_abbreviations like ?", "%#{s.to_s.upcase}%"]) }.join(' AND ')
     {:conditions => "#{conditions} OR (state_abbreviations = '' and coverage = 'National')"}
   }
   
-  named_scope :full_text_search, lambda{|options|
+  scope :full_text_search, lambda{|options|
     match_string = options[:q]
     boolean_mode = options[:boolean_mode] || false
     if(boolean_mode)
@@ -404,9 +404,9 @@ class Page < ActiveRecord::Base
       launched_communitylist = PublishingCommunity.launched.all(:order => 'name')
       launched_community_ids = launched_communitylist.map(&:id).join(',')
       
-      # limit to last AppConfig.configtable['recent_feature_limit'] days so we aren't pulling the full list every single time
+      # limit to last Settings.recent_feature_limit days so we aren't pulling the full list every single time
       # converting to a date to take advantage of mysql query caching for the day
-      only_since = Time.zone.now.to_date - AppConfig.configtable['recent_feature_limit'].day
+      only_since = Time.zone.now.to_date - Settings.recent_feature_limit.day
       
       # get articles and their communities - joining them up by content tags
       # we have to do this group concat here because a given article may belong
@@ -909,11 +909,7 @@ class Page < ActiveRecord::Base
   end
   
   def self.content_cache_expiry
-    if(!AppConfig.configtable['cache-expiry'][self.name].nil?)
-      AppConfig.configtable['cache-expiry'][self.name]
-    else
-      15.minutes
-    end
+    Settings.cache-expiry
   end
   
   def has_map?
