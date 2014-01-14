@@ -35,7 +35,8 @@
   <meta name="twitter:title" content="<%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %>">
   <meta property="twitter:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
   
-  <%= stylesheet_link_tag    "application" %>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= stylesheet_link_tag    "print", :media => "print" %>
   <%= javascript_include_tag "application" %>
   <!--[if lt IE 9]>
     <%= javascript_include_tag 'html5shiv' %>
