@@ -19,8 +19,10 @@ class Tagging < ActiveRecord::Base
   ALL = 42  # the ultimate answer, of course
 
   belongs_to :owner, :class_name => "User", :foreign_key => "owner_id"
-  belongs_to :tag, :foreign_key => "tag_id", :class_name => "Tag"
+  belongs_to :tag
   belongs_to :taggable, :polymorphic => true
+  
+  validates :tag_id, :uniqueness => {:scope => [:taggable_id, :taggable_type]}
   
   # If you also need to use <tt>acts_as_list</tt>, you will have to manage the tagging positions manually by creating decorated join records when you associate Tags with taggables.
   # acts_as_list :scope => :taggable

@@ -27,7 +27,7 @@ class ActiveRecord::Base #:nodoc:
         end
       end
     end
-  
+    
     # Removes tags from <tt>self</tt>. Accepts a string of tagnames, an array of tagnames, an array of ids, or an array of Tags.  
     def _remove_tags(tagarray,ownerid,kind)
       taggable?(true)

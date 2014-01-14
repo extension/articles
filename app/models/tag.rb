@@ -28,20 +28,6 @@ class Tag < ActiveRecord::Base
   # If database speed becomes an issue, you could remove these validations and rescue the ActiveRecord database constraint errors instead.
   validates_presence_of :name
   validates_uniqueness_of :name, :case_sensitive => false
-  
-  # Set up the polymorphic relationship.
-  # has_many_polymorphs :taggables, 
-  #   :from => [:pages, :sponsors, :publishing_communities], 
-  #   :through => :taggings, 
-  #   :dependent => :destroy,
-  #   :as => :tag,
-  #   :skip_duplicates => false, 
-  #   :parent_extend => proc {
-  #     # Defined on the taggable models, not on Tag itself. Return the tagnames associated with this record as a string.
-  #     def to_s
-  #       self.map(&:name).sort.join(Tag::JOINER)
-  #     end
-  #   }
         
   # Callback to normalize the tagname before saving it. 
   def before_save
