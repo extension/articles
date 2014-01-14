@@ -7,9 +7,11 @@
 
 class Sponsor < ActiveRecord::Base
   belongs_to :logo
+  has_many :taggings, :as => :taggable, dependent: :destroy
+  has_many :tags, :through => :taggings
+  
   acts_as_list
   has_content_tags
-  has_many :taggings, :as => :taggable, dependent: :destroy
 
   SPONSORSHIP_LEVELS = ["titanium", "platinum", "gold", "silver", "bronze"]
 
