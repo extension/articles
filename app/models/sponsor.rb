@@ -6,6 +6,9 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class Sponsor < ActiveRecord::Base
+  include TaggingExtensions
+  extend  TaggingFinders
+  
   belongs_to :logo
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings

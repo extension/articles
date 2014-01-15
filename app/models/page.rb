@@ -9,6 +9,8 @@ class Page < ActiveRecord::Base
   attr_accessor :event_time, :event_date
   include Rails.application.routes.url_helpers # so that we can generate URLs out of the model
   include TaggingScopes
+  include TaggingExtensions
+  extend  TaggingFinders
   
   
   URL_TITLE_LENGTH = 100

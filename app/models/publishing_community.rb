@@ -8,6 +8,9 @@
 class PublishingCommunity < ActiveRecord::Base
   serialize :cached_content_tag_data
   extend ConditionExtensions
+  include TaggingExtensions
+  extend  TaggingFinders
+  
   has_content_tags
   ordered_by :default => "#{self.table_name}.name ASC"
 
