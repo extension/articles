@@ -9,7 +9,9 @@
 
 class Tag < ActiveRecord::Base
   has_many :taggings
-
+  has_many :publishing_communities, through: :taggings, source: :taggable, source_type: 'PublishingCommunity'
+  has_many :pages, through: :taggings, source: :taggable, source_type: 'Page'
+  has_many :sponsors, through: :taggings, source: :taggable, source_type: 'Sponsor'
 
   SPLITTER = Regexp.new(/\s*,\s*/)
   JOINER = ", " 
