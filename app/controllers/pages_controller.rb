@@ -283,7 +283,7 @@ class PagesController < ApplicationController
     else
       pagelist_scope = pagelist_scope.ordered
     end
-    @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100)
+    @pages = pagelist_scope.page(params[:page]).per(100)
     @youth = true if @topic and @topic.name == 'Youth'
    
   end 

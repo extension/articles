@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   #protect_from_forgery # See ActionController::RequestForgeryProtection for details  
   include AuthLib
-  rescue_from WillPaginate::InvalidPage, :with => :do_invalid_page
   helper_method :current_person
 
   require 'zip_code_to_state'
@@ -109,10 +108,6 @@ class ApplicationController < ActionController::Base
     @page_title = 'Status 410 - Page Removed'
     @page_meta_description = 'Status 410 - Page Removed'
     render :template => "/shared/410", :layout => 'frontporch', :status => "410"
-  end
-  
-  def do_invalid_page
-    render :text => 'Invalid page requested', :status => 400
   end
     
   private

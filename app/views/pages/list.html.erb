@@ -41,7 +41,7 @@
     <%- end -%>
     
     <div class = "pagelinks">
-      <%= will_paginate(@pages,:params => {:content_types => params[:content_types], :tags => params[:tags], :articlefilter => params[:articlefilter]}) %>
+      <%= paginate(@pages,:params => {:content_types => params[:content_types], :tags => params[:tags], :articlefilter => params[:articlefilter]}) %>
     </div>
     
   </div><!-- END Content -->

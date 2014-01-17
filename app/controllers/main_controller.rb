@@ -57,10 +57,10 @@ class MainController < ApplicationController
     
     if(!@content_tag.nil?)
       set_title("Content tagged \"#{@content_tag.name}\"")
-      @pages = Page.tagged_with_content_tag(@content_tag.name).ordered(order).paginate(:page => params[:page])
+      @pages = Page.tagged_with_content_tag(@content_tag.name).ordered(order).page(params[:page])
     else
       set_title("Recent Content")
-      @pages = Page.ordered(order).paginate(:page => params[:page])
+      @pages = Page.ordered(order).page(params[:page])
     end
     render(:template => 'pages/list')
     
@@ -145,7 +145,7 @@ class MainController < ApplicationController
   def blog
     @page_title = "Recently Featured"
     order = "source_updated_at DESC"
-    @pages = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered(order).paginate(:page => params[:page], :per_page => 10)
+    @pages = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered(order).page(params[:page]).per(10)
     if @pages.blank?
       @pages << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
     end
@@ -157,7 +157,7 @@ class MainController < ApplicationController
     @page_title = "Our Resources"
     @canonical_link = main_communities_url
     @special_page = SpecialPage.find_by_path('communities')
-    @pages = Page.diverse_feature_list().paginate(:page => params[:page], :per_page => 10)
+    @pages = Kaminari.paginate_array(Page.diverse_feature_list()).page(params[:page]).per(10)
     render :template => "/pages/list"
   end
   

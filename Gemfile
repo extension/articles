@@ -42,7 +42,8 @@ gem 'omniauth-openid'
 gem 'jquery-rails'
 
 # pagination
-gem 'will_paginate'
+gem 'kaminari'
+
 # command line tools
 gem 'thor'
 
