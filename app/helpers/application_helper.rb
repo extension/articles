@@ -47,7 +47,7 @@ module ApplicationHelper
           mdisplay = day_and_time_display
         end
     end
-    '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'
+    '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'.html_safe
   end
   
   def expanded_time_print(time)

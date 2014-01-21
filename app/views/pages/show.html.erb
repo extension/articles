@@ -11,13 +11,13 @@
 		  <%- if(!@page_communities.blank?) -%>
           <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
       <%- end -%>
-      <span class="page_timestamp"><%= micro_time_print(@page.source_updated_at, 'updated') %></span><span class='divider hidden-phone noprint'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print noprint" %></span>
+      <span class="page_timestamp"><%= micro_time_print(@page.source_updated_at, 'updated').html_safe %></span><span class='divider hidden-phone noprint'>|</span><span><%= link_to 'Print', (request.url + "/print/"), :class => "print noprint" %></span>
       
       <%= render(:partial => 'shared/addthis') %>
 		</div>
 		
 		<div id="article_content">
-		  <%= @page.content %>
+		  <%= @page.content.html_safe %>
 		</div>
 		
 		<div class='backtotop span9 noprint'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
