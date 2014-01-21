@@ -19,7 +19,7 @@ class PagesController < ApplicationController
     
     # get the title out, find it, and redirect  
     if params[:title]
-      raw_title_to_lookup = CGI.unescape(request.request_uri.gsub('/pages/', ''))
+      raw_title_to_lookup = CGI.unescape(request.url.gsub('/pages/', ''))
       # comes in double-escaped from apache to handle the infamous '?'
       raw_title_to_lookup = CGI.unescape(raw_title_to_lookup)
       # why is this?
