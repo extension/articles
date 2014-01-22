@@ -1,5 +1,5 @@
-module Extension
-  module HasTags
+
+module HasTags
     
     def self.included(within)
       within.class_eval { extend ClassMethods }
@@ -123,5 +123,4 @@ module Extension
       
           
     end
-  end
 end

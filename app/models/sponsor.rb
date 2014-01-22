@@ -1,5 +1,5 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2009 North Carolina State University
+#  Copyright (c) North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
@@ -7,6 +7,7 @@
 
 class Sponsor < ActiveRecord::Base
   include TaggingExtensions
+  include HasTags
   extend  TaggingFinders
   
   belongs_to :logo

@@ -1,12 +1,12 @@
 # === COPYRIGHT:
-#  Copyright (c) 2005-2011 North Carolina State University
+#  Copyright (c) 2005-2014 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #  BSD(-compatible)
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
-module Extension
-  module Ordered
+
+module Ordered
     
     def self.included(within)
       within.class_eval { extend ClassMethods }
@@ -109,6 +109,5 @@ module Extension
       
       def metaclass; class << self; self end; end
     end
-  end
 end
-        
+

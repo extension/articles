@@ -1,5 +1,5 @@
 # === COPYRIGHT:
-# Copyright (c) 2005-2011 North Carolina State University
+# Copyright (c) North Carolina State University
 # Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 # BSD(-compatible)
@@ -10,6 +10,8 @@ class Page < ActiveRecord::Base
   include Rails.application.routes.url_helpers # so that we can generate URLs out of the model
   include TaggingScopes
   include TaggingExtensions
+  include Ordered
+  include HasTags
   extend  TaggingFinders
   
   

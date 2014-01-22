@@ -9,6 +9,8 @@ class PublishingCommunity < ActiveRecord::Base
   serialize :cached_content_tag_data
   extend ConditionExtensions
   include TaggingExtensions
+  include Ordered
+  include HasTags
   extend  TaggingFinders
   
   has_content_tags
