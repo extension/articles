@@ -53,17 +53,17 @@ Darmok::Application.routes.draw do
   ### current routes for specific content
   match 'pages/list', to:'pages#list', :as => 'pagelist'
   match 'pages/:id/print', to:'pages#show', :as => 'print_pageid', :defaults => { :print => 1 }
-  match 'pages/:id', to:'pages#show', :as => 'pageid', :requirements => { :id => /\d+/ }
+  match 'pages/:id', to:'pages#show', :as => 'pageid', :constraints => { :id => /\d+/ }
   match 'pages/:id/:title/print', to:'pages#show', :as => 'print_page', :defaults => { :print => 1 }
   match 'pages/:id/:title', to:'pages#show', :as => 'page'
 
   ### old routes for specific content
-  match 'article/:id/print', to:'pages#redirect_article', :defaults => { :print => 1 }, :requirements => { :id => /\d+/ }
-  match 'article/:id', to:'pages#redirect_article', :requirements => { :id => /\d+/ }
-  match 'events/:id/print', to:'pages#redirect_event', :defaults => { :print => 1 }, :requirements => { :id => /\d+/ }
-  match 'events/:id', to:'pages#redirect_event', :requirements => { :id => /\d+/ }  
-  match 'faq/:id/print', to:'pages#redirect_faq', :defaults => { :print => 1 }, :requirements => { :id => /\d+/ }
-  match 'faq/:id', to:'pages#redirect_faq', :requirements => { :id => /\d+/ }
+  match 'article/:id/print', to:'pages#redirect_article', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
+  match 'article/:id', to:'pages#redirect_article', :constraints => { :id => /\d+/ }
+  match 'events/:id/print', to:'pages#redirect_event', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
+  match 'events/:id', to:'pages#redirect_event', :constraints => { :id => /\d+/ }  
+  match 'faq/:id/print', to:'pages#redirect_faq', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
+  match 'faq/:id', to:'pages#redirect_faq', :constraints => { :id => /\d+/ }
   match 'pages/*title', to:'pages#redirect_article'
 
   ### more named routes
@@ -97,7 +97,7 @@ Darmok::Application.routes.draw do
   match ':content_tag/learning_lessons', to:'pages#learning_lessons', :as => 'site_learning_lessons'
 
   ### short pageid
-  match ':id', to:'pages#show',  :requirements => { :id => /\d+/ }, :as => 'short_pageid'
+  match ':id', to:'pages#show', :constraints => { :id => /\d+/ }, :as => 'short_pageid'
 
   match 'main/search', to:'main#search', :as => 'site_search'
   match 'main/blog', to:'main#blog', :as => 'main_blog'
@@ -107,8 +107,9 @@ Darmok::Application.routes.draw do
   match 'main/:path', to:'main#special', :as => 'main_special'
   match ':content_tag', to:'main#community_tag', :as => 'site_index'
   match ':content_tag/about', to:'main#about_community', :as => 'about_community'
+  
 
   # this must be last
-  # match '*path', to:'application#do_404', :requirements => { :path => /.*/ }
+  # match '*path', to:'application#do_404', :constraints => { :path => /.*/ }
 
 end
