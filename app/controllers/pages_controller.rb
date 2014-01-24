@@ -157,7 +157,7 @@ class PagesController < ApplicationController
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tag_names).prioritized
         # loop through the list, and see if one of these matches my @community already
         # if so, use that, else, just use the first in the list
-        use_content_tag_name = @community_content_tag_names.rand
+        use_content_tag_name = @community_content_tag_names.sample
         @community_content_tag_names.each do |community_content_tag_name|
           if(@community and @community.content_tag_names.include?(community_content_tag_name))
             use_content_tag_name = community_content_tag_name
