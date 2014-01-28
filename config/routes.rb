@@ -11,6 +11,7 @@ Darmok::Application.routes.draw do
   namespace :widgets do
     match '/generate_new_widget', to: "content#generate_new_widget", :as => 'generate_new_widget'
     match '/content', to: "content#index", :as => 'content'
+    match '/content/show', to: "content#show", :as => 'content_show'
     match '/', to: "home#index", :as => 'home'
   end
   

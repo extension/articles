@@ -196,7 +196,7 @@ module ApplicationHelper
   
 
   def content_widget_styles
-    css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
+    css_data = File.new("#{Rails.root}/public/stylesheets/content_widget.css", 'r').read
     '<br /><style type="text/css" media="screen">' + css_data + '</style>'.html_safe
   end
   

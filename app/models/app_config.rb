@@ -143,7 +143,7 @@ class AppConfig
   #   @@configtable['auto_assign_incoming_questions'] = true
   #   @@configtable['faq_create_url'] = 'http://create.extension.org/node/add/faq'
      
-  #   @@configtable['geoip_data_file'] = "#{RAILS_ROOT}/data/GeoIP/GeoIPCity.dat"
+  #   @@configtable['geoip_data_file'] = "#{Rails.root}/data/GeoIP/GeoIPCity.dat"
     
   #   # Airbrake notifications
   #   @@configtable['airbrake_api_key'] = 'NotSet'
@@ -199,7 +199,7 @@ class AppConfig
   # end
   
   # def AppConfig.set_content_widget_css
-  #   css_data = File.new("#{RAILS_ROOT}/public/stylesheets/content_widget.css", 'r').read
+  #   css_data = File.new("#{Rails.root}/public/stylesheets/content_widget.css", 'r').read
   #   @@content_widget_styles = '<br /><style type="text/css" media="screen">' + css_data + '</style>'
   # end
   
@@ -213,7 +213,7 @@ class AppConfig
   
   # def AppConfig.load_config
   #   self.default_config
-  #   configfile ="#{RAILS_ROOT}/config/appconfig.yml"
+  #   configfile ="#{Rails.root}/config/appconfig.yml"
   #   if File.exists?(configfile) then
   #     temp = YAML.load_file(configfile)
   #     if temp.class == Hash

@@ -160,7 +160,7 @@ class Rebuild < Thor
     index_pages_count = (@pages.size / 50000) + 1
 
     # create the index
-    File.open("#{RAILS_ROOT}/public/sitemaps/sitemap_index.xml", 'w') do |sitemap_index|
+    File.open("#{Rails.root}/public/sitemaps/sitemap_index.xml", 'w') do |sitemap_index|
       sitemap_index.puts('<?xml version="1.0" encoding="UTF-8"?>')
       sitemap_index.puts('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
       # communities
@@ -183,7 +183,7 @@ class Rebuild < Thor
     end
 
     # communities
-    File.open("#{RAILS_ROOT}/public/sitemaps/sitemap_communities.xml", 'w') do |sitemap_communities|
+    File.open("#{Rails.root}/public/sitemaps/sitemap_communities.xml", 'w') do |sitemap_communities|
       sitemap_communities.puts('<?xml version="1.0" encoding="UTF-8"?>')
       sitemap_communities.puts('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
       PublishingCommunity.launched.each do |community|
@@ -198,7 +198,7 @@ class Rebuild < Thor
 
     # pages
     if(index_pages_count == 1)
-      File.open("#{RAILS_ROOT}/public/sitemaps/sitemap_pages.xml", 'w') do |sitemap_pages|
+      File.open("#{Rails.root}/public/sitemaps/sitemap_pages.xml", 'w') do |sitemap_pages|
         sitemap_pages.puts('<?xml version="1.0" encoding="UTF-8"?>')
         sitemap_pages.puts('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
         @pages.each do |page|
@@ -212,7 +212,7 @@ class Rebuild < Thor
     else
       splits = split_array(@pages,index_pages_count)
       for i in (1..index_pages_count)
-        File.open("#{RAILS_ROOT}/public/sitemaps/sitemap_pages_#{i}.xml", 'w') do |sitemap_pages|
+        File.open("#{Rails.root}/public/sitemaps/sitemap_pages_#{i}.xml", 'w') do |sitemap_pages|
           sitemap_pages.puts('<?xml version="1.0" encoding="UTF-8"?>')
           sitemap_pages.puts('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
           splits[i-1].each do |page|

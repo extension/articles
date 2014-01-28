@@ -52,39 +52,30 @@ class Widgets::ContentController < ApplicationController
     # handle parameters and querying data for the widget
     setup_contents
     
-    # return js to write the widget to the page when the page hosting the widget loads
-    render :update do |page|         
-      page << "document.write('#{escape_javascript(content_widget_styles)}');"
-      page << "document.write('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension Latest #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>');"
-      page << "document.write('<h3>There are currently no content items at this time.</h3>')" if @contents.length == 0      
-      @contents.each do |content|
-        page << "document.write('<li><a href=#{page_url(:id => content.id, :title => content.url_title)}>');"
-        page << "document.write('#{escape_javascript(content.title)}');" 
-        page << "document.write('</a></li>');"
-      end
-      morelinkparams_array = []
-      @filteredparams.option_values_hash.each do |keysym,value|
-        key = keysym.to_s
-        # ignore quantity and limit
-        if(key != 'quantity' and key != 'limit')
-          if(key == 'tags')
-            morelinkparams_array << "#{key}=#{value.join(@taglist_seperator)}"
-          elsif(value.is_a?(Array))
-            morelinkparams_array << "#{key}=#{value.join(',')}"
-          else
-            morelinkparams_array << "#{key}=#{value}"
-          end
+    morelinkparams_array = []
+    @filteredparams.option_values_hash.each do |keysym,value|
+      key = keysym.to_s
+      # ignore quantity and limit
+      if(key != 'quantity' and key != 'limit')
+        if(key == 'tags')
+          morelinkparams_array << "#{key}=#{value.join(@taglist_seperator)}"
+        elsif(value.is_a?(Array))
+          morelinkparams_array << "#{key}=#{value.join(',')}"
+        else
+          morelinkparams_array << "#{key}=#{value}"
         end
       end
-      @morelinkparams = morelinkparams_array.join('&')      
-      if(!@morelinkparams.blank?)
-        morelink = "http://#{request.host_with_port}/pages/list?#{@morelinkparams}"
-      else
-        morelink = "http://#{request.host_with_port}/pages/list"
-      end
-      page << "document.write('<li><a href=\"#{morelink}\">More...</a></li>');" 
-      page << "document.write('</ul>');" 
-      page << "document.write('<p><a href=\"http://#{request.host_with_port}/widgets/content\">Create your own eXtension widget</a></p></div>');" 
+    end
+    @morelinkparams = morelinkparams_array.join('&')      
+    if(!@morelinkparams.blank?)
+      @morelink = "http://#{request.host_with_port}/pages/list?#{@morelinkparams}"
+    else
+      @morelink = "http://#{request.host_with_port}/pages/list"
+    end
+    
+    # return js to write the widget to the page when the page hosting the widget loads
+    respond_to do |format|
+      format.js  
     end
   end
   
