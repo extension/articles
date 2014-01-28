@@ -1,16 +1,20 @@
-document.write("<%= escape_javascript(content_widget_styles) %>");
-document.write("<%= escape_javascript('<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension Latest #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>') %>");
+document.write('<%= escape_javascript(content_widget_styles).html_safe %>');
+document.write('<%= escape_javascript("<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension Latest #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>").html_safe %>');
 
 <% if @contents.length == 0 %>
-  document.write("<%= escape_javascript('<h3>There are currently no content items at this time.</h3>') %>"); 
+  document.write('<%= escape_javascript("<h3>There are currently no content items at this time.</h3>").html_safe %>'); 
 <% end %>
 
 <% @contents.each do |content| %>
-  document.write("<%= escape_javascript('<li><a href=#{page_url(:id => content.id, :title => content.url_title)}>') %>");
-  document.write("<%= escape_javascript(content.title) %>");
+  document.write('<%= escape_javascript("<li><a href=#{page_url(:id => content.id, :title => content.url_title)}>").html_safe %>');
+  document.write('<%= escape_javascript(content.title).html_safe %>');
   document.write("</a></li>");
 <% end %>
 
-document.write("<%= escape_javascript('<li><a href=\"#{@morelink}\">More...</a></li>') %>");
+document.write('<%= escape_javascript("<li><a href=\"#{@morelink}\">More...</a></li>").html_safe %>');
 document.write("</ul>"); 
-document.write("<%= escape_javascript('<p><a href=\"http://#{request.host_with_port}/widgets/content\">Create your own eXtension widget</a></p></div>') %>"); 
+document.write('<%= escape_javascript("<p><a href=\"http://#{request.host_with_port}/widgets/content\">Create your own eXtension widget</a></p></div>").html_safe %>'); 
+
+
+
+
