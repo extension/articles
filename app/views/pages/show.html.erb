@@ -9,7 +9,7 @@
 		<div class='infobar bordered clearfix'>
 		  
 		  <%- if(!@page_communities.blank?) -%>
-          <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
+          <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ').html_safe  %>
       <%- end -%>
       <span class="page_timestamp"><%= micro_time_print(@page.source_updated_at, 'updated').html_safe %></span><span class='divider hidden-phone noprint'>|</span><span><%= link_to 'Print', (request.url + "/print/"), :class => "print noprint" %></span>
       
@@ -82,7 +82,7 @@
       <div class="community-resources span3 clearfix">
         <h2>Resources</h2>
         <% if @in_this_section %>
-          <%= @in_this_section.content %>
+          <%= @in_this_section.content.html_safe %>
         <% end %>
       </div>
     </div>

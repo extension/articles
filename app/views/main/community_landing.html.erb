@@ -50,7 +50,7 @@
     <div class='span3 community-resources'>
       <h2>Resources</h2>
       <% if @in_this_section %>
-        <%= @in_this_section.content %>
+        <%= @in_this_section.content.html_safe %>
       <% end %>
     </div>
 
