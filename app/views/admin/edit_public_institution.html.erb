@@ -4,7 +4,7 @@
 
     <h2><%= @institution.name %></h2>
 
-    <% form_tag( {:action => 'update_public_institution', :id => @institution.id}) do %>
+    <%= form_tag( {:action => 'update_public_institution', :id => @institution.id}) do %>
         <fieldset class="stacked">
             <h3>Edit details</h3>
 

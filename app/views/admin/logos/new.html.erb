@@ -2,9 +2,15 @@
     <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %></p>
     <h1>Upload file</h1>
 
-    <%= error_messages_for :logo %>
+    <% if @logo.errors.any? %>
+	  <ul>
+	    <% @logo.errors.full_messages.each do |msg| %>
+	      <li><%= msg %></li>
+	    <% end %>
+	  </ul>
+	<% end %>
 
-    <% form_for(:logo, @logo, :url => admin_logos_url, :html => { :multipart => true }) do |f| %>
+    <%= form_for @logo, :url => admin_logos_url, :html => { :multipart => true } do |f| %>
 
       <p>
         <label for="logo">Browse:</label>

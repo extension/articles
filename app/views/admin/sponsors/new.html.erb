@@ -1,7 +1,7 @@
 <div id="admin">
 <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %> &gt; <%= link_to('Sponsors',admin_sponsors_url)  %></p>    
 <h2>New sponsor</h2>
-<% form_for :sponsor, @sponsor, :url => admin_sponsors_url do |f| %>
+<%= form_for @sponsor, :url => admin_sponsors_url do |f| %>
 
     <fieldset class="stacked">
         <%= render :partial => 'form' %>

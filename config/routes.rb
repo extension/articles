@@ -50,6 +50,8 @@ Darmok::Application.routes.draw do
   match 'admin/:action', :controller => 'admin'
   match 'admin', to: 'admin#index', :as => 'admin_index'
   
+  match 'notice/admin_required', to: 'notice#admin_required'
+  
   ### connect up "data" to the api/data controller
   match 'data/:action', to:'api#data'
   
@@ -111,7 +113,6 @@ Darmok::Application.routes.draw do
   match ':content_tag', to:'main#community_tag', :as => 'site_index'
   match ':content_tag/about', to:'main#about_community', :as => 'about_community'
   
-
   # this must be last
   # match '*path', to:'application#do_404', :constraints => { :path => /.*/ }
 

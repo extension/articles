@@ -2,8 +2,14 @@
     <p><%= link_to 'Admin home', :action => 'index' %> > <%= link_to 'All Communities', :action => 'manage_communities' %></p>
     <h1>Edit Community Details: <%= @community.name %></h1>
 
-    <% form_tag( {:action => 'update_public_community', :id => @community}) do %>
-        <%= error_messages_for :community %>
+    <%= form_tag( {:action => 'update_public_community', :id => @community}) do %>
+        <% if @community.errors.any? %>
+		  <ul>
+		    <% @community.errors.full_messages.each do |msg| %>
+		      <li><%= msg %></li>
+		    <% end %>
+		  </ul>
+		<% end %>
 
         <fieldset>
 
