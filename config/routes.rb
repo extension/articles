@@ -48,6 +48,7 @@ Darmok::Application.routes.draw do
 
   match 'admin/:action/:id', :controller => 'admin'
   match 'admin/:action', :controller => 'admin'
+  match 'admin', to: 'admin#index', :as => 'admin_index'
   
   ### connect up "data" to the api/data controller
   match 'data/:action', to:'api#data'
