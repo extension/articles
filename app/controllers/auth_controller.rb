@@ -43,7 +43,7 @@ class AuthController < ApplicationController
   end
   
   def failure
-    logger.debug(request.env["omniauth.auth"].inspect)
+    raise request.env["omniauth.auth"].to_yaml
   end
   
   
