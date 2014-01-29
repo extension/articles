@@ -4,6 +4,7 @@ Darmok::Application.routes.draw do
   # auth
   match '/logout', to:'auth#end', :as => 'logout'
   match '/auth/:provider/callback', to: 'auth#success'
+  match '/auth/failure', to: 'auth#failure'
 
       
   ### Widget Stuff ###
