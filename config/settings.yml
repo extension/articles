@@ -44,7 +44,7 @@ request_ip_address: '127.0.0.1'
     
 
     # cache expiry
-cache_expiry: 1.hour
+cache_expiry: 60
 
 # defaults for date ranges for reports
 default_datefield: 'created_at'
