@@ -28,7 +28,7 @@
         <div class='infobar'>
           <% if(!page.community_content_tag_names.blank?) -%>
             <% page.community_content_tag_names.each do |tagname| %>
-              <%= link_to_public_community_home(Tag.find_by_name(tagname).content_community) %>
+              <%= link_to_public_community_home(Tag.find_by_name(tagname).content_community).html_safe %>
             <% end %>
           <% end %>
     			<span><i class='icon-clock-orange'></i> Updated: <%= expanded_time_print(page.source_updated_at)%></span>
