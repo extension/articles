@@ -21,7 +21,7 @@
 		<%- @pages.each do |page| -%>
 		<div class='article'>
 		  <% link_to(page_url(:id => page.id, :title => page.url_title)) do %>
-		  <%= first_image(page.content, false)  %>
+		  <%= first_image(page.content, false).html_safe  %>
 		  <% end %>
   		
         <h1><%= link_to(page.title,page_url(:id => page.id, :title => page.url_title)) %></h1>
