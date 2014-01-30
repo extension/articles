@@ -85,7 +85,7 @@
       <div class='latest-tweets latest-tweets-alt'>
         <h2>Latest Tweets</h2>
         <% if !@community.twitter_widget.blank? %>
-          <%= @community.twitter_widget %>
+          <%= @community.twitter_widget.html_safe %>
         <% else %>
           <%= render(:partial => 'shared/twitter_timeline_general') %>
         <% end%>
