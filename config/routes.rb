@@ -49,6 +49,7 @@ Darmok::Application.routes.draw do
   match 'admin/:action/:id', :controller => 'admin'
   match 'admin/:action', :controller => 'admin'
   match 'admin', to: 'admin#index', :as => 'admin_index'
+  match 'admin/edit_institution_logo', to: 'admin#edit_institution_logo', :as => 'admin_edit_institutional_logo'
   
   match 'notice/admin_required', to: 'notice#admin_required'
   

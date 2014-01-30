@@ -16,15 +16,19 @@
 		  </ul>
 		<% end %>
 
-    <%= form_for(:logo, @logo, :html => { :multipart => true }) do |f| %>
-    	<%= hidden_field_tag(:institution_id, @institution.id) %>
+    <%= form_for @logo, :url => admin_edit_institutional_logo_path, :html => { :multipart => true } do |f| %>
+    	<%= hidden_field_tag(:id, @institution.id) %>
 
       <p>
         <label for="logo">Browse:</label>
         <%= f.file_field :uploaded_data %>
       </p>
       <p>
-        <%= submit_tag 'Upload' %> or <%= link_to 'delete', url_for(:action => 'delete_institution_logo', :id => @institution.id), :confirm => 'Are you sure?', :method => :delete %>
+        <%= submit_tag 'Upload' %> 
+        <% if @logo.persisted? %>
+          or 
+          <%= link_to 'delete', url_for(:action => 'delete_institution_logo', :id => @institution.id), :confirm => 'Are you sure?', :method => :delete %>
+        <% end %>
       </p>
     <% end -%>
 
