@@ -24,7 +24,7 @@
   			<h3 class='bordered'>Browse related by Tag</h3>
   			<%- if @page_content_tag_names -%>
           <p class="caption publictags">
-            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag))}.join(', ') %>
+            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag)).html_safe }.join(', ').html_safe %>
           </p>
         <%- end -%>
   		</div>
