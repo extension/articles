@@ -6,7 +6,6 @@
 #  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
 
 class StatusController < ApplicationController
-  session :off
   
   def version
     @deploy = Hash.new
