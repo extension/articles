@@ -3,7 +3,7 @@
 <%- else -%>
   <h1>Article Information</h1>
   <%- if !current_person -%>
-    <p>Extension personnel with an eXtension account can <%= link_to('sign in',url_for(:controller => 'auth', :action => 'people')) %> for more information</p>
+    <p>Extension personnel with an eXtension account can <%= link_to('sign in','/auth/people') %> for more information</p>
   <%- else -%>
     <p>You are currently signed in as <%= current_person.fullname -%> (<%= link_to('sign out',logout_path) %>)</p>
   <%- end -%>
