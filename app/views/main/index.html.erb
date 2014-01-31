@@ -17,7 +17,7 @@
         <div class="item <%= i == 0 ? "active" : "" %>">
           <%= first_image(feature.content).html_safe %>
             <div class="carousel-caption">
-              <% link_to(feature.id_and_link) do %>
+              <%= link_to(feature.id_and_link) do %>
                 <h1><%= feature.title %></h1>
                 <p><%= get_title(feature.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read More</span></p>
               <% end %>
