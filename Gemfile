@@ -60,10 +60,6 @@ gem 'useragent'
 gem 'geocoder'
 gem 'geoip'
 
-# image submission and other image handling
-# gem 'paperclip'
-# gem 'rmagick', :require => false
-
 # image sizing
 gem 'fastimage'
 
@@ -75,6 +71,7 @@ gem 'dalli'
 
 # attachment_fu plugin replacement
 gem "pothoven-attachment_fu"
+gem 'rmagick', :require => false
 
 # acts_as_list
 gem 'acts_as_list'
