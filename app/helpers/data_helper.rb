@@ -92,7 +92,7 @@ module DataHelper
       if actual_img_width.present? && actual_img_width[0].to_f > 550
         return raw('<img width="'+actual_img_width[0].to_s+'" '+src+' alt="" />')
       else
-        return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />'.html_safe
+        return raw('<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />').html_safe
       end
     else
       return unless image_tag.present?
