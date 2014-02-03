@@ -108,6 +108,6 @@ module DataHelper
     image_tag = content.match(/<img[^>]*>/)
     return unless image_tag
     src = image_tag[0].match(/src="[^"]*"/)[0]
-    return '<img height="135" '+src+' alt="" />'
+    return raw('<img height="135" '+src+' alt="" />').html_safe
   end  
 end
