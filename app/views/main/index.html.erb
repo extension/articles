@@ -81,7 +81,7 @@
       <% if @featured_bio.present? %>
     	  <h2>Our People</h2>
     	  <%= link_to(@featured_bio.id_and_link) do %>
-    	    <%= first_bio_image @featured_bio.content %>
+    	    <%= (first_bio_image @featured_bio.content).html_safe %>
     	    <strong><%= @featured_bio.title %></strong><br />
           <!-- <em>Communications Expert</em><br /> -->
           <p><%= get_title(@featured_bio.content).truncate(320,{:omission => '...', :avoid_orphans => true}) %></p>
