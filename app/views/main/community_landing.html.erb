@@ -15,7 +15,7 @@
         <div class="item <%= i == 0 ? "active" : "" %>">
           <%= first_image(feature.content).html_safe %>
             <div class="carousel-caption">
-              <% link_to(feature.id_and_link) do %>
+              <%= link_to(feature.id_and_link) do %>
                 <h1><%= feature.title %></h1>
                 <p><%= get_title(feature.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read More</span></p>
               <% end %>
@@ -60,11 +60,11 @@
     <div class="meet-extension span3">
       <% if @featured_bio.present? %>
     	  <h2>Our People</h2>
-    	  <% link_to(@featured_bio.id_and_link) do %>
-    	    <%= first_bio_image @featured_bio.content %>
-    	    <strong class="clearfix"><%= @featured_bio.title %></strong>
+    	  <%= link_to(@featured_bio.id_and_link) do %>
+    	    <%= first_bio_image(@featured_bio.content).present? ? first_bio_image(@featured_bio.content).html_safe : nil %>
+    	    <strong class="clearfix"><%= @featured_bio.title.html_safe %></strong>
           <!-- <em>Communications Expert</em><br /> -->
-          <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %></p>
+          <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}).html_safe %></p>
     	  <% end %>
     	<% else %>
     	  <h2>Our People</h2>
@@ -95,7 +95,7 @@
       	<div class='callout orange'>
       		<h4>Donate to <%= @community.name %></h4>
       		<p>Your donation keeps eXtension growing.</p>
-      		<% link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
+      		<%= link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
       		  <i class='icon-heart icon-white'></i> Give Now
       		<% end %>
       	</div>

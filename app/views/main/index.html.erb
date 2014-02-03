@@ -46,7 +46,7 @@
   <div class="row">
     <div class="span9">
       <div class="centennial-logo-wrapper">
-        <% link_to("http://www.extension100years.net/", {:class => ""}) do %>
+        <%= link_to("http://www.extension100years.net/", {:class => ""}) do %>
           <img class='centennial-logo' src="/assets/frontporch/extension-centennial-logo_240.png" alt="Smith-Lever Extension Centennial Celebration" />
         <% end %>
       </div>
@@ -80,7 +80,7 @@
     <div class="meet-extension span3">
       <% if @featured_bio.present? %>
     	  <h2>Our People</h2>
-    	  <% link_to(@featured_bio.id_and_link) do %>
+    	  <%= link_to(@featured_bio.id_and_link) do %>
     	    <%= first_bio_image @featured_bio.content %>
     	    <strong><%= @featured_bio.title %></strong><br />
           <!-- <em>Communications Expert</em><br /> -->

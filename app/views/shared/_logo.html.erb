@@ -1,7 +1,7 @@
 <h3 class="yourlocal">Your Local Extension:</h3>
 
 <h1 class="logo" >
-  <% link_to(@personal[:institution].public_uri) do %>
+  <%= link_to(@personal[:institution].public_uri) do %>
     <%- if !(@personal[:institution].logo.nil?) -%>
       <%= render_inline_logo({:logo => @personal[:institution].logo, :alt_text => @personal[:institution].name}) %>
     <%- else -%>

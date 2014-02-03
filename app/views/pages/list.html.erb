@@ -20,7 +20,7 @@
 		
 		<%- @pages.each do |page| -%>
 		<div class='article'>
-		  <% link_to(page_url(:id => page.id, :title => page.url_title)) do %>
+		  <%= link_to(page_url(:id => page.id, :title => page.url_title)) do %>
 		  <%= first_image(page.content, false)  %>
 		  <% end %>
   		
@@ -33,7 +33,7 @@
           <% end %>
     			<span><i class='icon-clock-orange'></i> Updated: <%= expanded_time_print(page.source_updated_at)%></span>
     		</div>
-    		<% link_to(page.id_and_link) do %>
+    		<%= link_to(page.id_and_link) do %>
           <p><%= strip_tags(get_title(page.content).truncate(160,{:omission => '...', :avoid_orphans => true})) %></p>
           <span class="btn orange lg">Read More</span>
         <% end %>  
