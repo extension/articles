@@ -74,6 +74,9 @@ GEM
     extension-html5shiv-rails (3.6.2.1)
     fastimage (1.5.5)
       addressable (~> 2.3, >= 2.3.5)
+    font-awesome-sass-rails (3.0.2.2)
+      railties (>= 3.1.1)
+      sass-rails (>= 3.1.1)
     geocoder (1.1.9)
     geoip (1.3.5)
     grit (2.5.0)
@@ -226,6 +229,7 @@ DEPENDENCIES
   dalli
   extension-html5shiv-rails
   fastimage
+  font-awesome-sass-rails
   geocoder
   geoip
   hpricot

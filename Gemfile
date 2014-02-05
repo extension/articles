@@ -22,6 +22,7 @@ group :assets do
   gem 'extension-html5shiv-rails', :require => 'html5shiv-rails'
 end
 
+gem 'font-awesome-sass-rails'
 # # mobile device detection
 # gem 'mobile-fu'
 
