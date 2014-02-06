@@ -14,6 +14,7 @@ gem 'mysql2'
 # speed up sppppppprooooockets
 gem 'turbo-sprockets-rails3'
 group :assets do
+  gem 'uglifier'
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   # files for bootstrap-in-asset-pipeline integration
