@@ -20,9 +20,9 @@ group :assets do
   gem 'anjlab-bootstrap-rails', '~> 2.0', :require => 'bootstrap-rails'
   gem 'jquery-ui-rails'
   gem 'extension-html5shiv-rails', :require => 'html5shiv-rails'
+  gem 'font-awesome-rails'
 end
 
-gem 'font-awesome-sass-rails'
 # # mobile device detection
 # gem 'mobile-fu'
 

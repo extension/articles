@@ -31,7 +31,7 @@
               <%= link_to_public_community_home(Tag.find_by_name(tagname).content_community).html_safe %>
             <% end %>
           <% end %>
-    			<span><i class='icon-time'></i> Updated: <%= expanded_time_print(page.source_updated_at)%></span>
+    			<span><i class='fa fa-clock-o'></i> Updated: <%= expanded_time_print(page.source_updated_at)%></span>
     		</div>
     		<%= link_to(page.id_and_link) do %>
           <p><%= strip_tags(get_title(page.content).truncate(160,{:omission => '...', :avoid_orphans => true})) %></p>
