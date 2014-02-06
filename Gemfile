@@ -19,7 +19,9 @@ group :assets do
   # files for bootstrap-in-asset-pipeline integration
   gem 'anjlab-bootstrap-rails', '~> 2.0', :require => 'bootstrap-rails'
   gem 'jquery-ui-rails'
+  # extension's packaging of html5shiv for the asset pipeline
   gem 'extension-html5shiv-rails', :require => 'html5shiv-rails'
+  # replaces glyphicons
   gem 'font-awesome-rails'
 end
 
@@ -80,16 +82,16 @@ gem 'acts_as_list'
 group :development do
   # require the powder gem
   gem 'powder'
+  # debug http requests
   gem 'net-http-spy'
+  # jason uses pry, forces the gem on everyone
   gem 'pry'
+  # deployment
   gem 'capistrano', '~> 2.15.5' 
   gem 'capatross'
-
-  # moar advanced stats in dev only
-  #gem 'gsl', :git => 'git://github.com/30robots/rb-gsl.git'
-  #gem 'statsample-optimization', :require => 'statsample'
-
+  # shut the asset requests up in dev log
   gem 'quiet_assets'
+  # fun things for dealing with 500 errors
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'meta_request'
