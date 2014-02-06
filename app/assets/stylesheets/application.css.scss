@@ -9,9 +9,11 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require twitter/bootstrap
- *= require twitter/bootstrap-responsive
  *= require font-awesome
  *= require_tree ./all
 */
+
+$navbarCollapseWidth: 767px;
+@import "twitter/bootstrap";
+@import "twitter/bootstrap-responsive"
 
