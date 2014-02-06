@@ -35,15 +35,14 @@ GEM
     airbrake (3.1.15)
       builder
       multi_json
-    anjlab-bootstrap-rails (2.3.1.2)
-      railties (>= 3.0)
-      sass (>= 3.2)
     arel (3.0.3)
     better_errors (1.1.0)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-sass (2.3.2.2)
+      sass (~> 3.2)
     builder (3.0.4)
     callsite (0.0.11)
     capatross (1.5.2)
@@ -222,9 +221,9 @@ PLATFORMS
 DEPENDENCIES
   acts_as_list
   airbrake
-  anjlab-bootstrap-rails (~> 2.0)
   better_errors
   binding_of_caller
+  bootstrap-sass (~> 2.3.2.2)
   capatross
   capistrano (~> 2.15.5)
   coffee-rails (~> 3.2.1)
