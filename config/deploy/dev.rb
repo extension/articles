@@ -1,7 +1,7 @@
-set :deploy_to, "/services/apache/vhosts/www.demo.extension.org/railsroot/"
+set :deploy_to, "/services/www/"
 if(branch = ENV['BRANCH'])
   set :branch, branch
 else
-  set :branch, 'development'
+  set :branch, 'ruby19rails3'
 end
-server 'www.demo.extension.org', :app, :web, :db, :primary => true
+server 'dev-www.extension.org', :app, :web, :db, :primary => true
