@@ -187,7 +187,8 @@ input[type="color"],
 }
 
 .navbar .nav > li > a {
-  font-size: 18px
+  font-size: 18px;
+  padding:10px;
 }
 
 .navbar .nav > li > a:hover {
