@@ -2,8 +2,8 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-#  BSD(-compatible)
-#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+# 
+#  see LICENSE file
 class AdminController < ApplicationController
   before_filter :admin_signin_required
   before_filter :turn_off_right_column

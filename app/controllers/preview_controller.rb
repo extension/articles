@@ -2,8 +2,8 @@
 # Copyright (c) 2005-2009 North Carolina State University
 # Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# BSD(-compatible)
-# see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+#
+# see LICENSE file
 
 class PreviewController < ApplicationController
   before_filter :set_content_tag_and_community_and_topic
