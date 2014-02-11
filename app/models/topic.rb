@@ -2,8 +2,8 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-#  BSD(-compatible)
-#  see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+# 
+#  see LICENSE file
 
 class Topic < ActiveRecord::Base
   COMMUNITY_ASSOCIATION_CACHE_EXPIRY = 24.hours

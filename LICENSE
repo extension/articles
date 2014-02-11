@@ -1,43 +1,36 @@
-Copyrights in the code authored by North Carolina State University
-is licensed under the following terms:
-
-Software License Agreement
-
-Copyright (c) 2005-2009, North Carolina State University
+This source code is Copyright (c) North Carolina State University
 All rights reserved.
 
-Redistribution and use of the software in source and
-binary forms, with or without modification, are permitted
-provided that the following conditions are met:
+This code is provided to the eXtension Foundation, under the terms of 
+the eXtension Institutional Contributor and Business Agreement, which 
+may be found at:
 
-* Redistributions of source code must retain the above
-  copyright notice, this list of conditions and the
-  following disclaimer.
+http://create.extension.org/Contributor_and_Business_Agreements
 
-* Redistributions in binary form must reproduce the above
-  copyright notice, this list of conditions and the
-  following disclaimer in the documentation and/or other
-  materials provided with the distribution.
+Individual contributions to this code are also covered by the Individual 
+Contributor and eXtension Business Agreement also found at:
 
-* Neither the name of North Carolina State University nor the
-  names of its contributors may be used to endorse or promote
-  products derived from this software without specific prior
-  written permission of North Carolina State University.
+http://create.extension.org/Contributor_and_Business_Agreements
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
+Use of the code is subject to the eXtension Foundation Terms of Use, found at:
 
-(The foregoing Agreement is the BSD License, Copyright
-2005 by the Open Source Institute)
+http://www.extension.org/main/termsofuse
+
+Third Party Libraries and Code
+=============================
+
+Where applicable, certain libraries or code snippets will be available under 
+less restrictive terms, including the BSD/MIT source code licenses, we've 
+tried to exercise due diligence in indicating third-party code libraries that
+are not subject to the same terms as the NC State University/eXtension code, but
+it's possible that we have missed some items. 
+
+For partners in good standing with the rights to use this code by eXtension's
+Terms of Use, you must conduct a audit of the code for all applicable licensing
+terms before making use of the code under the Terms of Use. 
+
+NC State University, eXtension, and the code contributors are not liable for 
+oversights made in the inclusion of code not subject to the eXtension Terms 
+of Use, and by using this code, you agree to hold harmless all aforementioned
+parties for any oversights in the use of third-party libraries and code.
+

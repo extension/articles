@@ -2,8 +2,8 @@
 # Copyright (c) North Carolina State University
 # Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# BSD(-compatible)
-# see LICENSE file or view at http://about.extension.org/wiki/LICENSE
+#
+# see LICENSE file
 class Page < ActiveRecord::Base
   # for events
   attr_accessor :event_time, :event_date
