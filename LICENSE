@@ -19,9 +19,10 @@ http://www.extension.org/main/termsofuse
 Third Party Libraries and Code
 =============================
 
-Where applicable, certain libraries or code snippets will be available under 
-less restrictive terms, including the BSD/MIT source code licenses, we've 
-tried to exercise due diligence in indicating third-party code libraries that
+Where applicable, certain third-party libraries or code snippets will be available 
+under different terms than the eXtension Foundation Terms of Use.
+
+We've tried to exercise due diligence in indicating third-party code libraries that
 are not subject to the same terms as the NC State University/eXtension code, but
 it's possible that we have missed some items. 
 
@@ -33,4 +34,3 @@ NC State University, eXtension, and the code contributors are not liable for
 oversights made in the inclusion of code not subject to the eXtension Terms 
 of Use, and by using this code, you agree to hold harmless all aforementioned
 parties for any oversights in the use of third-party libraries and code.
-
