@@ -50,6 +50,7 @@ Darmok::Application.configure do
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   config.assets.precompile += %w( application-print.css )
+  config.assets.precompile += %w( print.css )
   config.assets.precompile += %w( public.css )
   config.assets.precompile += %w( ie8.css )
 
