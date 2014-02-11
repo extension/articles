@@ -2,7 +2,7 @@
 #  Copyright (c) North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-#  BSD(-compatible)
+# 
 #  see LICENSE file or view at https://github.com/extension/darmok/wiki/LICENSE
 
 class PublishingCommunity < ActiveRecord::Base
