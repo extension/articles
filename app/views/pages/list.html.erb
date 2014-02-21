@@ -35,7 +35,6 @@
     		</div>
     		<%= link_to(page.id_and_link) do %>
           <p><%= strip_tags(get_title(page.content).truncate(160,{:omission => '...', :avoid_orphans => true})) %></p>
-          <span class="btn orange lg">Read More</span>
         <% end %>  
   	</div>
     <%- end -%>
