@@ -25,15 +25,7 @@ Darmok::Application.routes.draw do
 #   map.redirect 'main', :controller => 'main', :action => 'index', :permanent => true
 #   map.connect 'feeds', :controller => 'feeds'
     
-#   map.redirect 'feeds/articles', :controller => 'feeds', :action => 'content', :content_types => 'articles', :permanent => true  
-#   map.redirect 'feeds/faqs', :controller => 'feeds', :action => 'content', :content_types => 'faqs', :permanent => true  
-#   map.redirect 'feeds/events', :controller => 'feeds', :action => 'content', :content_types => 'events', :permanent => true  
-#   map.redirect 'feeds/all', :controller => 'feeds', :action => 'content', :permanent => true  
 
-#   map.connect 'feeds/community/-/:tags', :controller => 'feeds', :action => 'community'
-#   map.content_feed 'feeds/content/:tags', :controller => 'feeds', :action => 'content'
-#   map.connect 'feeds/:action', :controller => 'feeds'
-  
 #   ### pubsite redirect routes
 #   map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
 #   map.redirect 'news', :controller => 'pages', :action => 'news', :content_tag => 'all', :permanent => true  
@@ -45,6 +37,12 @@ Darmok::Application.routes.draw do
     resources :sponsors, :collection => {:update_positions => :post}
     resources :logos
   end
+
+  match 'feeds', to: "feeds#index"
+  match 'feeds/content/:tags', to: "feeds#content", as: 'content_feed'
+  match 'feeds/community/-/:tags', to: "feeds#community"
+  match 'feeds/:action', to: "feeds"
+
 
   match 'admin/:action/:id', :controller => 'admin'
   match 'admin/:action', :controller => 'admin'
