@@ -92,7 +92,7 @@ class PreviewController < ApplicationController
       # got here via /preview/pages/title for handling wiki titles
       # so we can't use the title param - we have to use the request_uri because of
       # the infamous question mark articles
-      title_to_lookup = CGI.unescape(request.request_uri.gsub('/preview/pages/', ''))
+      title_to_lookup = CGI.unescape(request.url.gsub('/preview/pages/', ''))
       title_to_lookup.gsub!(' ', '_')
       source_id = title_to_lookup
     end
@@ -140,7 +140,7 @@ class PreviewController < ApplicationController
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
         # loop through the list, and see if one of these matches my @community already
         # if so, use that, else, just use the first in the list
-        use_content_tag = @community_content_tags.rand
+        use_content_tag = @community_content_tags.sample
         @community_content_tags.each do |community_content_tag|
           if(community_content_tag.content_community == @community)
             use_content_tag = community_content_tag

@@ -1,15 +1,18 @@
 # === COPYRIGHT:
-# Copyright (c) 2005-2011 North Carolina State University
+# Copyright (c) North Carolina State University
 # Developed with funding for the National eXtension Initiative.
 # === LICENSE:
 #
 # see LICENSE file
-require 'mofo'
 class Page < ActiveRecord::Base
   # for events
   attr_accessor :event_time, :event_date
-  include ActionController::UrlWriter # so that we can generate URLs out of the model
+  include Rails.application.routes.url_helpers # so that we can generate URLs out of the model
   include TaggingScopes
+  include TaggingExtensions
+  include Ordered
+  include HasTags
+  extend  TaggingFinders
   
   
   URL_TITLE_LENGTH = 100
@@ -39,24 +42,26 @@ class Page < ActiveRecord::Base
   has_many :content_buckets, :through => :bucketings
   has_one :link_stat
   belongs_to :page_source
-  
+  has_many :taggings, :as => :taggable, dependent: :destroy
+  has_many :tags, :through => :taggings
+
   validates_numericality_of :learn_id, :allow_blank => true, :message => "event must be a valid event number." 
 
-  named_scope :bucketed_as, lambda{|bucketname|
+  scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
   
-  named_scope :broken_links, :conditions => {:has_broken_links => true}
+  scope :broken_links, :conditions => {:has_broken_links => true}
 
-  named_scope :indexed, :conditions => {:indexed => INDEXED}
-  named_scope :articles, :conditions => {:datatype => 'Article'}
-  named_scope :news, :conditions => {:datatype => 'News'}
-  named_scope :faqs, :conditions => {:datatype => 'Faq'}
-  named_scope :events, :conditions => {:datatype => 'Event'}
-  named_scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
+  scope :indexed, :conditions => {:indexed => INDEXED}
+  scope :articles, :conditions => {:datatype => 'Article'}
+  scope :news, :conditions => {:datatype => 'News'}
+  scope :faqs, :conditions => {:datatype => 'Faq'}
+  scope :events, :conditions => {:datatype => 'Event'}
+  scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
   
   
-  named_scope :by_datatype, lambda{|datatype|
+  scope :by_datatype, lambda{|datatype|
    if(datatype.is_a?(Array))
      datatypes_list = datatype.map{|d| "'#{d}'"}.join(',')
      {:conditions => "datatype IN (#{datatypes_list})"}
@@ -66,7 +71,7 @@ class Page < ActiveRecord::Base
   }
   
   # Get all events in a given month, this month if no month is given
-  named_scope :monthly, lambda { |*date|
+  scope :monthly, lambda { |*date|
     
     # Default to this month if not date is given
     date = date.flatten.first ? date.flatten.first : Date.today    
@@ -74,19 +79,19 @@ class Page < ActiveRecord::Base
   }
   
   # Get all events starting after (and including) the given date
-  named_scope :after, lambda { |date| { :conditions => ['datatype = ? AND event_start >= ?', 'event',date] } }
+  scope :after, lambda { |date| { :conditions => ['datatype = ? AND event_start >= ?', 'event',date] } }
   
   # Get all events within x number of days from the given date
-  named_scope :within, lambda { |interval, date| { :conditions => ['datatype = ? AND (event_start >= ? AND event_start < ?)', 'event', date, date + interval] } }
+  scope :within, lambda { |interval, date| { :conditions => ['datatype = ? AND (event_start >= ? AND event_start < ?)', 'event', date, date + interval] } }
   
-  named_scope :in_states, lambda { |*states| 
+  scope :in_states, lambda { |*states| 
     states = states.flatten.compact.uniq.reject { |s| s.blank? }
     return {} if states.empty?
     conditions = states.collect { |s| sanitize_sql_array(["state_abbreviations like ?", "%#{s.to_s.upcase}%"]) }.join(' AND ')
     {:conditions => "#{conditions} OR (state_abbreviations = '' and coverage = 'National')"}
   }
   
-  named_scope :full_text_search, lambda{|options|
+  scope :full_text_search, lambda{|options|
     match_string = options[:q]
     boolean_mode = options[:boolean_mode] || false
     if(boolean_mode)
@@ -405,9 +410,9 @@ class Page < ActiveRecord::Base
       launched_communitylist = PublishingCommunity.launched.all(:order => 'name')
       launched_community_ids = launched_communitylist.map(&:id).join(',')
       
-      # limit to last AppConfig.configtable['recent_feature_limit'] days so we aren't pulling the full list every single time
+      # limit to last Settings.recent_feature_limit days so we aren't pulling the full list every single time
       # converting to a date to take advantage of mysql query caching for the day
-      only_since = Time.zone.now.to_date - AppConfig.configtable['recent_feature_limit'].day
+      only_since = Time.zone.now.to_date - Settings.recent_feature_limit.day
       
       # get articles and their communities - joining them up by content tags
       # we have to do this group concat here because a given article may belong
@@ -554,33 +559,8 @@ class Page < ActiveRecord::Base
       page.indexed = Page::INDEXED
     end
     
-    if(page.datatype == 'Event')
-      event_data = hCalendar.find(:first => {:text => entry.content.to_s})
-      page.title = event_data.summary
-      page.original_content = CGI.unescapeHTML(event_data.description)
-      page.event_start = event_data.dtstart
-
-      if event_data.properties.include?("dtend")
-        duration = (event_data.dtend - event_data.dtstart) / (24 * 60 * 60) # result in days
-        page.event_duration = duration.to_i
-      end
-
-      location = event_data.location.split('|')
-      page.event_location = location[0]
-      page.coverage = location[1]
-      page.state_abbreviations = location[2]
-
-      if event_data.properties.include?('status')
-        if event_data.status == 'CANCELLED'
-          returndata = [page.source_updated_at, 'deleted', page.source_url]
-          page.destroy
-          return returndata
-        end
-      end
-    else
-      page.title = entry.title
-      page.original_content = entry.content.to_s
-    end
+    page.title = entry.title
+    page.original_content = entry.content.to_s
 
     # reference_pages
     reference_pages_array = []
@@ -678,9 +658,9 @@ class Page < ActiveRecord::Base
   
   
   def id_and_link(only_path = false, params = {})
-    default_url_options[:host] = AppConfig.get_url_host
-    default_url_options[:protocol] = AppConfig.get_url_protocol
-    if(default_port = AppConfig.get_url_port)
+    default_url_options[:host] = Settings.urlwriter_host
+    default_url_options[:protocol] = Settings.urlwriter_protocol
+    if(default_port = Settings.urlwriter_port)
       default_url_options[:port] = default_port
     end
     page_params = {:id => self.id, :title => self.url_title, :only_path => only_path}
@@ -935,11 +915,7 @@ class Page < ActiveRecord::Base
   end
   
   def self.content_cache_expiry
-    if(!AppConfig.configtable['cache-expiry'][self.name].nil?)
-      AppConfig.configtable['cache-expiry'][self.name]
-    else
-      15.minutes
-    end
+    Settings.cache_expiry
   end
   
   def has_map?

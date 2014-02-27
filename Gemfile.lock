@@ -1,23 +1,50 @@
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   remote: https://systems.extension.org/rubygems/
   specs:
-    SystemTimer (1.2.3)
-    actionmailer (2.3.18)
-      actionpack (= 2.3.18)
-    actionpack (2.3.18)
-      activesupport (= 2.3.18)
-      rack (~> 1.1.0)
-    activerecord (2.3.18)
-      activesupport (= 2.3.18)
-    activeresource (2.3.18)
-      activesupport (= 2.3.18)
-    activesupport (2.3.18)
-    airbrake (3.1.2)
-      activesupport
+    actionmailer (3.2.17)
+      actionpack (= 3.2.17)
+      mail (~> 2.5.4)
+    actionpack (3.2.17)
+      activemodel (= 3.2.17)
+      activesupport (= 3.2.17)
+      builder (~> 3.0.0)
+      erubis (~> 2.7.0)
+      journey (~> 1.0.4)
+      rack (~> 1.4.5)
+      rack-cache (~> 1.2)
+      rack-test (~> 0.6.1)
+      sprockets (~> 2.2.1)
+    activemodel (3.2.17)
+      activesupport (= 3.2.17)
+      builder (~> 3.0.0)
+    activerecord (3.2.17)
+      activemodel (= 3.2.17)
+      activesupport (= 3.2.17)
+      arel (~> 3.0.2)
+      tzinfo (~> 0.3.29)
+    activeresource (3.2.17)
+      activemodel (= 3.2.17)
+      activesupport (= 3.2.17)
+    activesupport (3.2.17)
+      i18n (~> 0.6, >= 0.6.4)
+      multi_json (~> 1.0)
+    acts_as_list (0.3.0)
+      activerecord (>= 3.0)
+    addressable (2.3.5)
+    airbrake (3.1.15)
       builder
-    awesome_print (0.3.2)
-    builder (2.1.2)
+      multi_json
+    arel (3.0.3)
+    better_errors (1.1.0)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
+    bootstrap-sass (2.3.2.2)
+      sass (~> 3.2)
+    builder (3.0.4)
+    callsite (0.0.11)
     capatross (1.5.2)
       capistrano (>= 2.11)
       grit (>= 2.4)
@@ -30,38 +57,59 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
-    diff-lcs (1.2.4)
-    fake_arel (0.9.7)
-      activerecord (>= 2.3.5)
-    fastercsv (1.5.4)
-    fastimage (1.5.0)
-    geoip (1.0.0)
-    geokit (1.5.0)
+    coderay (1.1.0)
+    coffee-rails (3.2.2)
+      coffee-script (>= 2.2.0)
+      railties (~> 3.2.0)
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.6.3)
+    dalli (2.7.0)
+    debug_inspector (0.0.2)
+    diff-lcs (1.2.5)
+    erubis (2.7.0)
+    execjs (2.0.2)
+    extension-html5shiv-rails (3.6.2.1)
+    fastimage (1.5.5)
+      addressable (~> 2.3, >= 2.3.5)
+    font-awesome-rails (4.0.3.1)
+      railties (>= 3.2, < 5.0)
+    geocoder (1.1.9)
+    geoip (1.3.5)
     grit (2.5.0)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
-    has_many_polymorphs (2.13)
-      activerecord
-    hashie (2.0.4)
-    highline (1.6.19)
-    hpricot (0.8.4)
-    i18n (0.5.0)
-    json (1.7.7)
-    json_pure (1.5.1)
-    libxml-ruby (2.3.3)
-    lockfile (1.4.3)
-    mail (2.2.15)
-      activesupport (>= 2.3.6)
-      i18n (>= 0.4.0)
+    hashie (2.0.5)
+    highline (1.6.20)
+    hike (1.2.3)
+    hpricot (0.8.6)
+    i18n (0.6.9)
+    journey (1.0.4)
+    jquery-rails (3.0.4)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
+    jquery-ui-rails (4.1.1)
+      railties (>= 3.1.0)
+    json (1.8.1)
+    kaminari (0.15.1)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
+    libxml-ruby (2.6.0)
+    lockfile (2.1.0)
+    mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    map_by_method (0.8.3)
-    mime-types (1.25)
-    mofo (0.2.16)
-      hpricot (>= 0.4.59)
-    mysql (2.8.1)
-    mysql2 (0.3.13)
+    meta_request (0.2.8)
+      callsite
+      rack-contrib
+      railties
+    method_source (0.8.2)
+    mime-types (1.25.1)
+    multi_json (1.8.4)
+    mysql2 (0.3.14)
+    net-http-spy (0.2.1)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
@@ -69,87 +117,144 @@ GEM
     net-ssh (2.7.0)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
-    nokogiri (1.4.4)
+    nokogiri (1.5.10)
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
       rack
     omniauth-openid (1.0.1)
       omniauth (~> 1.0)
       rack-openid (~> 1.3.1)
-    paperclip (2.3.11)
-      activerecord (>= 2.3.0)
-      activesupport (>= 2.3.2)
-    polyglot (0.3.1)
-    posix-spawn (0.3.6)
-    powder (0.1.8)
+    polyglot (0.3.4)
+    posix-spawn (0.3.8)
+    pothoven-attachment_fu (3.2.11)
+    powder (0.2.0)
       thor (>= 0.11.5)
-    rack (1.1.6)
+    pry (0.9.12.4)
+      coderay (~> 1.0)
+      method_source (~> 0.8)
+      slop (~> 3.4)
+    quiet_assets (1.0.2)
+      railties (>= 3.1, < 5.0)
+    rack (1.4.5)
+    rack-cache (1.2)
+      rack (>= 0.4)
+    rack-contrib (1.1.0)
+      rack (>= 0.9.1)
     rack-openid (1.3.1)
       rack (>= 1.1.0)
       ruby-openid (>= 2.1.8)
-    rack-rewrite (1.0.2)
-    rails (2.3.18)
-      actionmailer (= 2.3.18)
-      actionpack (= 2.3.18)
-      activerecord (= 2.3.18)
-      activeresource (= 2.3.18)
-      activesupport (= 2.3.18)
-      rake (>= 0.8.3)
-    rake (10.0.3)
-    ratom (0.6.7)
-      libxml-ruby (>= 1.1.2)
-    rdoc (3.12)
+    rack-ssl (1.3.3)
+      rack
+    rack-test (0.6.2)
+      rack (>= 1.0)
+    rails (3.2.17)
+      actionmailer (= 3.2.17)
+      actionpack (= 3.2.17)
+      activerecord (= 3.2.17)
+      activeresource (= 3.2.17)
+      activesupport (= 3.2.17)
+      bundler (~> 1.0)
+      railties (= 3.2.17)
+    rails_config (0.3.3)
+      activesupport (>= 3.0)
+    railties (3.2.17)
+      actionpack (= 3.2.17)
+      activesupport (= 3.2.17)
+      rack-ssl (~> 1.3.2)
+      rake (>= 0.8.7)
+      rdoc (~> 3.4)
+      thor (>= 0.14.6, < 2.0)
+    rake (10.1.1)
+    ratom (0.8.2)
+      libxml-ruby (~> 2.6.0)
+    rdoc (3.12.2)
       json (~> 1.4)
+    redis (3.0.6)
+    redis-actionpack (3.2.4)
+      actionpack (~> 3.2.0)
+      redis-rack (~> 1.4.4)
+      redis-store (~> 1.1.4)
+    redis-activesupport (3.2.5)
+      activesupport (~> 3.2.0)
+      redis-store (~> 1.1.0)
+    redis-rack (1.4.4)
+      rack (~> 1.4.0)
+      redis-store (~> 1.1.4)
+    redis-rails (3.2.4)
+      redis-actionpack (~> 3.2.4)
+      redis-activesupport (~> 3.2.4)
+      redis-store (~> 1.1.4)
+    redis-store (1.1.4)
+      redis (>= 2.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rmagick (2.13.1)
-    ruby-openid (2.2.3)
+    rmagick (2.13.2)
+    ruby-openid (2.3.0)
+    sass (3.2.13)
+    sass-rails (3.2.6)
+      railties (~> 3.2.0)
+      sass (>= 3.1.10)
+      tilt (~> 1.3)
+    slop (3.4.7)
+    sprockets (2.2.2)
+      hike (~> 1.2)
+      multi_json (~> 1.0)
+      rack (~> 1.0)
+      tilt (~> 1.1, != 1.3.0)
     thor (0.18.1)
-    treetop (1.4.9)
+    tilt (1.4.1)
+    treetop (1.4.15)
+      polyglot
       polyglot (>= 0.3.1)
-    trollop (1.16.2)
-    tzinfo (0.3.26)
-    what_methods (1.0.1)
-    will_paginate (2.3.15)
-    wirble (0.1.3)
+    turbo-sprockets-rails3 (0.3.11)
+      railties (> 3.2.8, < 4.0.0)
+      sprockets (>= 2.2.0)
+    tzinfo (0.3.38)
+    uglifier (2.4.0)
+      execjs (>= 0.3.0)
+      json (>= 1.8.0)
+    useragent (0.10.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  SystemTimer
-  airbrake (= 3.1.2)
-  awesome_print
+  acts_as_list
+  airbrake
+  better_errors
+  binding_of_caller
+  bootstrap-sass (~> 2.3.2.2)
   capatross
-  capistrano
-  fake_arel
-  fastercsv
+  capistrano (~> 2.15.5)
+  coffee-rails (~> 3.2.1)
+  dalli
+  extension-html5shiv-rails
   fastimage
+  font-awesome-rails
+  geocoder
   geoip
-  geokit
-  has_many_polymorphs
   hpricot
-  json_pure
+  jquery-rails
+  jquery-ui-rails
+  kaminari
   lockfile
-  mail
-  map_by_method
-  mofo
-  mysql
-  nokogiri
+  meta_request
+  mysql2
+  net-http-spy
+  nokogiri (= 1.5.10)
   omniauth (~> 1.0)
   omniauth-openid
-  paperclip
+  pothoven-attachment_fu
   powder
-  rack-rewrite
-  rails (= 2.3.18)
+  pry
+  quiet_assets
+  rails (= 3.2.17)
+  rails_config
   ratom
-  rdoc
-  rest-client
+  redis-rails
   rmagick
-  ruby-openid
+  sass-rails (~> 3.2.3)
   thor
-  trollop (= 1.16.2)
-  tzinfo
-  what_methods
-  will_paginate
-  wirble
+  turbo-sprockets-rails3
+  uglifier
+  useragent

@@ -1,4 +1,10 @@
-<%= error_messages_for 'sponsor' %>
+<% if @sponsor.errors.any? %>
+  <ul>
+    <% @sponsor.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </ul>
+<% end %>
 
 <p>
     <label>Name:</label>

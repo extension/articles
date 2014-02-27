@@ -1,0 +1,88 @@
+/* Server location visual indicator
+-----------------------------------------------------------------------------*/
+div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:8px;}
+div#app_location.localdev {display:none;}
+div#app_location.demo {background: #ff00ff;border:1px solid #000;color:#222;}
+div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
+div#app_location a:visited {color:#222; text-decoration:underline;}
+div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
+
+div#app_location.preview {background: #222; position:absolute; left: 20%; right: 20%; width:60%; margin: 0 auto;color:#ccc; padding:0 2em 2em;border:2px solid #888;}
+div#app_location.preview h3 {color:#fff;}
+div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5em;}
+#preview_wrapper {display:none;background: url(/assets/pubsite/shadow_60percent.png) 0 0; z-index:10; top: 0; position:absolute; width:100%;left:0; height:1200px;}
+#preview_wrapper.preview {display:block;} 
+
+#preview_page #article_content,
+#preview_page #article_title {z-index:25; background:#fff; position:relative; outline:10px solid #fff; outline-offset: -1px;}
+
+.clearing {clear: both;}
+
+
+
+/*override responsive styles*/
+img {height: auto !important;}
+a.moreaboutpitch {color:#333;}
+
+.institutional_logo img {max-width:224px; padding:1em; border:1px solid #eee; margin:1em;}
+.margin_bottom {margin-bottom:3em;}
+.margin_bottom.small {margin-bottom:.5em;}
+.notopmargin {margin-top:0;}
+
+.community-resources {font-size:13px; line-height:18px;}
+.community-resources a {color:#333;}
+.community-resources p {margin:0 0 .5em;}
+.community-resources li {font-size:13px; line-height:18px;}
+
+#learn_widget.upcoming .event_year {display:none;}
+
+
+#tag_wrapper {
+  height: 120px;
+  overflow: auto;
+  background: #fff;
+  padding: 10px;
+  margin-bottom:2em;
+}
+#widget_code_module {margin-top:20px;}
+
+.thumb.tright {float: right; margin-left:20px;}
+.thumb.tleft {float: left; margin-right:20px;}
+.thumbcaption {font-size:13px; margin:10px 0 10px; line-height:1.3em;}
+
+.brokencount, .warningcount {background:#C0999E !important; font-weight:bold; font-size:1.5em; color:#85000C;}
+.broken {background:#C0999E !important; font-weight:bold; color:#85000C;}
+.redirect, .unpublished {background:#FFFF00 !important; font-weight:bold;}
+.unpublishedlinks, .redirectcount {background:#FFFF00 !important; font-size:1.5em;}
+.td_c {text-align:center !important; font-weight:bold;}
+.zero {color:#ccc;font-weight:normal;}
+.report_table {font-size:14px;}
+td.longurls a {word-wrap: break-word;width:300px; display:block;}
+
+.missing {background: #ffebf3 url(/assets/common/failure.gif) 4px 3px no-repeat; padding:.25em .25em .25em 25px; border-left:4px solid red;}
+.launchready {background: #fff url(/assets/pubsite/checkmark_mini.png) 0 0  no-repeat; padding-left:20px; height:20px;}
+span.launchready  {background: #fff url(/assets/pubsite/checkmark_mini.png) 0 0  no-repeat; display:block;float:left;text-indent:-2000px;}
+
+iframe {max-width:100%;}
+#pagelinks {font-size:13px; color:#777;}
+#pagelinks a {color:#777;}
+#pagelinks i {opacity: 0.4; filter: alpha(opacity=40);}
+#pagelinks p {line-height:1.2em; margin:0 0 2px;}
+
+@media (max-width: 480px) {
+  .singleimage .thumbinner {width:auto !important;}
+  .singleimage .thumb {float:none;}
+  .singleimage img {width:100% !important;}
+  .singleimage .thumb {margin-left:0;margin-right:0;}
+}
+.tagline-home .centennial-logo {margin-right:20px; width:120px;height:120px;}
+.centennial-logo-wrapper {margin-left:20px !important; margin-bottom:10px; float:left; /*outline:1px solid lime;*/}
+.tagline-text-wrapper {font-family: 'Sanchez', serif; /*outline:1px solid red;*/ padding:25px;}
+.tagline-button-wrapper {margin-right:20px !important; /*line-height:120px;*/ /*outline:1px solid red;*/ margin-bottom: 20px; /*margin-left:20px;*/}
+
+.table-wrapper {
+  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+table tr td {word-wrap:break-word !important;}

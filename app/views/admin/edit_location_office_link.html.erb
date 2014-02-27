@@ -6,7 +6,7 @@
     <h2><%= @location.name %></h2>
     
   
-    <% form_tag( {:action => 'update_location_office_link', :id => @location}) do %>
+    <%= form_tag( {:action => 'update_location_office_link', :id => @location}) do %>
         <fieldset class="stacked">
             <h3>Edit details</h3>
         <p>

@@ -4,19 +4,19 @@
     <h3>Connect with us</h3>
     <ul class="inline">
       <% if !@community.twitter_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_twitter.gif", :alt => "Twitter"), "#{@community.twitter_handle}" %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_twitter.gif", :alt => "Twitter"), "#{@community.twitter_handle}" %></li>
       <% end %>
       <% if !@community.facebook_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_facebook.gif", :alt => "Facebook"), "#{@community.facebook_handle}" %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_facebook.gif", :alt => "Facebook"), "#{@community.facebook_handle}" %></li>
       <% end %>
       <% if !@community.youtube_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_youtube.gif", :alt => "YouTube"), "#{@community.youtube_handle}" %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_youtube.gif", :alt => "YouTube"), "#{@community.youtube_handle}" %></li>
       <% end %>
       <% if !@community.pinterest_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_pinterest.gif", :alt => "Pinterest"), "#{@community.pinterest_handle}" %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_pinterest.gif", :alt => "Pinterest"), "#{@community.pinterest_handle}" %></li>
       <% end %>
       <% if !@community.gplus_handle.blank? %>
-        <li><%=link_to image_tag("/images/frontporch/icon_googleplus.gif", :alt => "Google+"), "#{@community.gplus_handle}" %></li>
+        <li><%=link_to image_tag("/assets/frontporch/icon_googleplus.gif", :alt => "Google+"), "#{@community.gplus_handle}" %></li>
       <% end %>
     </ul>
   </div>

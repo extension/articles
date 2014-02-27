@@ -6,12 +6,18 @@
 #  see LICENSE file
 
 class GeoName < ActiveRecord::Base
-  
-  
-  def self.find_by_geoip(ipaddress = AppConfig.configtable['request_ip_address'])
+  geocoded_by :address, :latitude  => :lat, :longitude => :long
+
+
+  def address
+    [feature_name, state_abbrevation, 'US'].compact.join(', ')
+  end
+
+
+  def self.find_by_geoip(ipaddress = Settings.request_ip_address)
     if(geoip_data = Location.get_geoip_data(ipaddress))
       if(geoip_data[:country_code] == 'US')
-        self.find(:first, :conditions => "feature_name = '#{geoip_data[:city]}' and map_name = '#{geoip_data[:city]}' and state_abbreviation = '#{geoip_data[:region]}'")
+        self.where("state_abbreviation = '#{geoip_data[:region]}'").where("feature_name = '#{geoip_data[:city]}'").near([geoip_data[:lat], geoip_data[:lon]],10).first
       else
         return nil
       end

@@ -9,7 +9,7 @@
 		<%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
 		<% end %>
       
-      <span><%= micro_time_print(@article.updated_at, 'updated') %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %></span>
+      <span><%= micro_time_print(@article.updated_at, 'updated').html_safe %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %></span>
       
       <%= render(:partial => 'shared/addthis') %>
 		</div>
@@ -18,13 +18,13 @@
 		  <%= @article.content %>
 		</div>
 		
-		<div class='backtotop span9'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
+		<div class='backtotop span9'><a href='#top'><i class='fa fa-arrow-up'></i>Back to Top</a></div>
 		<div class='row'>
   		<div class='article-info span6'>
   			<h3 class='bordered'>Browse related by Tag</h3>
   			<%- if @page_content_tag_names -%>
           <p class="caption publictags">
-            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag))}.join(', ') %>
+            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag)).html_safe }.join(', ').html_safe %>
           </p>
         <%- end -%>
   		</div>
@@ -62,8 +62,8 @@
     	<div class='callout orange span3'>
     		<h4>Donate to <%= @community.name %></h4>
     		<p>Your donation keeps eXtension growing.</p>
-    		<% link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
-    		  <i class='icon-heart icon-white'></i> Give Now
+    		<%= link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
+    		  <i class='fa fa-heart icon-white'></i> Give Now
     		<% end %>
     	</div>
     </div>

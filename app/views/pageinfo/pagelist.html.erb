@@ -14,7 +14,7 @@
        <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
    <% end %>
 
-   <%= will_paginate @pages, :params => {:articlefilter => params[:articlefilter]} %>
+   <%= paginate @pages, :params => {:articlefilter => params[:articlefilter]} %>
    </div>
 
    <p id="csv"><%= link_to('Download a list of these articles (csv)',:action => 'pagelist', :content_types => params[:content_types], :articlefilter => params[:articlefilter], :download => 'csv') %> </p>
@@ -50,6 +50,6 @@
        <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
    <% end %>
 
-   <%= will_paginate @pages, :params => {:articlefilter => params[:articlefilter]} %>
+   <%= paginate @pages, :params => {:articlefilter => params[:articlefilter]} %>
    </div>
 <%- end -%>

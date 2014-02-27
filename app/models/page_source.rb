@@ -11,12 +11,12 @@ require 'open-uri'
 require 'net/http'
 
 class PageSource < ActiveRecord::Base
-  include ActionController::UrlWriter # so that we can generate URLs out of the model
+  include Rails.application.routes.url_helpers # so that we can generate URLs out of the model
   serialize :last_requested_information
   serialize :default_request_options
   has_many :pages
   
-  named_scope :active, :conditions => {:active => true}
+  scope :active, :conditions => {:active => true}
   
   def page_source_url(node_id)
     # presumes a drupal source, which is all we have right now
@@ -33,15 +33,15 @@ class PageSource < ActiveRecord::Base
   def page_feed_url(source_id,options = {})
     if(!options[:demofeed].blank?)
       use_demo_uri = options[:demofeed]
-    elsif(AppConfig.configtable['sourcefilter'] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name]['demofeed'])
-      use_demo_uri = AppConfig.configtable['sourcefilter'][self.name]['demofeed']
+    elsif(Settings.sourcefilter and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name]['demofeed'])
+      use_demo_uri = Settings.sourcefilter[self.name]['demofeed']
     else
       use_demo_uri = false
     end
     
     # check config for override for dev mode
-    if(AppConfig.configtable['sourcefilter'] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name]['page_uri'])
-      feed_url = AppConfig.configtable['sourcefilter'][self.name]['page_uri']
+    if(Settings.sourcefilter and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name]['page_uri'])
+      feed_url = Settings.sourcefilter[self.name]['page_uri']
     elsif(use_demo_uri)
       if(self.demo_uri.blank?)
         feed_url = 'error://no-demo-uri-for-this-source'  # will fail parsing as invalid URI
@@ -58,8 +58,8 @@ class PageSource < ActiveRecord::Base
   def feed_url(options = {})
     if(!options[:demofeed].blank?)
       use_demo_uri = options[:demofeed]
-    elsif(AppConfig.configtable['sourcefilter'] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name]['demofeed'])
-      use_demo_uri = AppConfig.configtable['sourcefilter'][self.name]['demofeed']
+    elsif(Settings.sourcefilter and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name]['demofeed'])
+      use_demo_uri = Settings.sourcefilter[self.name]['demofeed']
     else
       use_demo_uri = false
     end
@@ -79,7 +79,7 @@ class PageSource < ActiveRecord::Base
       elsif(self.latest_source_time)
         updated_time = self.latest_source_time
       else
-        updated_time = AppConfig.configtable['epoch_time']
+        updated_time = Settings.epoch_time
       end
       
       if(request_options.blank?)
@@ -90,8 +90,8 @@ class PageSource < ActiveRecord::Base
     end
     
     # check config for override for dev mode
-    if(AppConfig.configtable['sourcefilter'] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name] and AppConfig.configtable['sourcefilter'][self.name]['uri'])
-      feed_url = AppConfig.configtable['sourcefilter'][self.name]['uri']
+    if(Settings.sourcefilter and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name]['uri'])
+      feed_url = Settings.sourcefilter[self.name]['uri']
     elsif(use_demo_uri)
       if(self.demo_uri.blank?)
         feed_url = 'error://no-demo-uri-for-this-source'  # will fail parsing as invalid URI

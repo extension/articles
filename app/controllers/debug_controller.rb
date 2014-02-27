@@ -14,7 +14,7 @@ class DebugController < ApplicationController
   
   def location
     filteredparams = ParamsFilter.new([:ipaddress],params)
-    @search_ip = filteredparams.ipaddress.nil? ? AppConfig.configtable['request_ip_address'] : filteredparams.ipaddress
+    @search_ip = filteredparams.ipaddress.nil? ? Settings.request_ip_address : filteredparams.ipaddress
     @geoip_data = Location.get_geoip_data(@search_ip)
     @geo_location = Location.find_by_geoip(@search_ip)
     @geo_county = County.find_by_geoip(@search_ip)

@@ -8,7 +8,7 @@ require 'net/https'
 
 class Link < ActiveRecord::Base
   serialize :last_check_information
-  include ActionController::UrlWriter # so that we can generate URLs out of the model
+  include Rails.application.routes.url_helpers # so that we can generate URLs out of the model
   
   belongs_to :page
   has_many :linkings
@@ -43,24 +43,24 @@ class Link < ActiveRecord::Base
   # maximum number of times we'll check a broken link before giving up
   MAX_ERROR_COUNT = 10
   
-  named_scope :checklist, :conditions => ["linktype IN (#{EXTERNAL},#{LOCAL},#{IMAGE})"]
-  named_scope :external, :conditions => {:linktype => EXTERNAL}
-  named_scope :internal, :conditions => {:linktype => INTERNAL}
-  named_scope :unpublished, :conditions => {:linktype => WANTED}
-  named_scope :local, :conditions => {:linktype => LOCAL}
-  named_scope :file, :conditions => {:linktype => DIRECTFILE}
-  named_scope :category, :conditions => {:linktype => CATEGORY}
-  named_scope :image, :conditions => {:linktype => IMAGE}
+  scope :checklist, :conditions => ["linktype IN (#{EXTERNAL},#{LOCAL},#{IMAGE})"]
+  scope :external, :conditions => {:linktype => EXTERNAL}
+  scope :internal, :conditions => {:linktype => INTERNAL}
+  scope :unpublished, :conditions => {:linktype => WANTED}
+  scope :local, :conditions => {:linktype => LOCAL}
+  scope :file, :conditions => {:linktype => DIRECTFILE}
+  scope :category, :conditions => {:linktype => CATEGORY}
+  scope :image, :conditions => {:linktype => IMAGE}
 
-  named_scope :checked, :conditions => ["last_check_at IS NOT NULL"]
-  named_scope :unchecked, :conditions => ["last_check_at IS NULL"]
-  named_scope :good, :conditions => {:status => OK}
-  named_scope :broken, :conditions => {:status => BROKEN}
-  named_scope :warning, :conditions => {:status => WARNING}
-  named_scope :redirected, :conditions => {:status => OK_REDIRECT}
+  scope :checked, :conditions => ["last_check_at IS NOT NULL"]
+  scope :unchecked, :conditions => ["last_check_at IS NULL"]
+  scope :good, :conditions => {:status => OK}
+  scope :broken, :conditions => {:status => BROKEN}
+  scope :warning, :conditions => {:status => WARNING}
+  scope :redirected, :conditions => {:status => OK_REDIRECT}
   
-  named_scope :checked_yesterday_or_earlier, :conditions => ["DATE(last_check_at) <= ?",Date.yesterday]
-  named_scope :checked_over_one_month_ago, :conditions => ["DATE(last_check_at) <= DATE_SUB(NOW(),INTERVAL 1 MONTH)",Date.yesterday]
+  scope :checked_yesterday_or_earlier, :conditions => ["DATE(last_check_at) <= ?",Date.yesterday]
+  scope :checked_over_one_month_ago, :conditions => ["DATE(last_check_at) <= DATE_SUB(NOW(),INTERVAL 1 MONTH)",Date.yesterday]
   
   def self.is_create?(host)
     (host == 'create.extension.org' or host == 'create.demo.extension.org')
@@ -120,9 +120,9 @@ class Link < ActiveRecord::Base
   end
   
   def href_url
-    default_url_options[:host] = AppConfig.get_url_host
-    default_url_options[:protocol] = AppConfig.get_url_protocol
-    if(default_port = AppConfig.get_url_port)
+    default_url_options[:host] = Settings.urlwriter_host
+    default_url_options[:protocol] = Settings.urlwriter_protocol
+    if(default_port = Settings.urlwriter_port)
      default_url_options[:port] = default_port
     end
     

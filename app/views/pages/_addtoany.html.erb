@@ -5,7 +5,7 @@
 var a2a_config = a2a_config || {};
 a2a_config.linkname=document.title;
 a2a_config.track_links='custom';
-<%- if(AppConfig.configtable['app_location'] == 'production') -%>
+<%- if(Settings.app_location == 'production') -%>
 a2a_config.track_links_key='http://extension.org/<%= @page.id %>';
 <%- else -%>
 a2a_config.track_links_key='<%= short_pageid_url(:id => @page.id) %>';

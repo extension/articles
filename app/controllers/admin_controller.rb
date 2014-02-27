@@ -60,8 +60,8 @@ class AdminController < ApplicationController
       flash[:error] = 'Invalid institution'
       redirect_to :action => :index
     end
-    @logo = @institution.logo
-    if(request.post?)
+    @logo = @institution.logo ||= Logo.new
+    if(request.post? || request.put?)
       @newlogo = Logo.new(params[:logo])
       @newlogo.logotype = Logo::INSTITUTION
       if @newlogo.save
@@ -210,6 +210,7 @@ class AdminController < ApplicationController
   
   def update_public_institution
     @institution =  BrandingInstitution.find(params['id'])
+    @institution.name = params['institution']['name']
     @institution.referer_domain = params['institution']['referer_domain']
     @institution.public_uri = params['institution']['public_uri']
 

@@ -47,7 +47,7 @@ module ApplicationHelper
           mdisplay = day_and_time_display
         end
     end
-    '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'
+    '<abbr class="' + class_name + '" title="' + time.strftime(mformat) + '">' + time.strftime(mdisplay) + '</abbr>'.html_safe
   end
   
   def expanded_time_print(time)
@@ -192,6 +192,12 @@ module ApplicationHelper
     else
       return @personal[:county].id
     end
+  end
+  
+
+  def content_widget_styles
+    css_data = File.new("#{Rails.root}/public/stylesheets/content_widget.css", 'r').read
+    '<br /><style type="text/css" media="screen">' + css_data + '</style>'.html_safe
   end
   
 end

@@ -66,7 +66,7 @@ module AuthLib
   end
 
   def www_access_denied
-    redirect_to(:controller=>:auth, :action => :people)
+    redirect_to '/auth/people'
   end  
   
   

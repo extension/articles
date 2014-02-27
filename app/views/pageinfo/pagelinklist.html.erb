@@ -18,7 +18,7 @@
        <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
    <% end %>
 
-   <%= will_paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
+   <%= paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
    </div>
 
 <table class="table" id="linkchecker">
@@ -98,6 +98,6 @@
        <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
    <% end %>
 
-   <%= will_paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
+   <%= paginate @pages, :params => {:content_types => params[:content_types], :articlefilter => params[:articlefilter]} %>
    </div>
 <%- end -%>

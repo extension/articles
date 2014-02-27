@@ -1,5 +1,5 @@
 <%
-case AppConfig.configtable['app_location']
+case Settings.app_location
     when 'production'   then @gaprofile = "UA-155321-2" # www.extension.org
     when 'demo'         then @gaprofile = "UA-155321-25" # demo.extension.org
     when 'localdev'     then @gaprofile = "UA-155321-0"

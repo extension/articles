@@ -1,78 +1,104 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 source 'https://systems.extension.org/rubygems/'
 
-gem 'rails', '2.3.18'
-# rdoc - removes a warning
-gem 'rdoc'
-# database
-gem 'mysql'
-# pagination
-gem 'will_paginate'
-# command line tools
-gem 'thor'
-# csv output/import
-gem 'fastercsv'
-# authentication
-gem 'ruby-openid'
-# polymorphic HMT assocations
-gem 'has_many_polymorphs'
+gem 'rails', '3.2.17'
+
+# all things xml
+gem 'nokogiri', '1.5.10'
+
+# data
+gem 'mysql2'
+
+# Gems used only for assets and not required
+# in production environments by default.
+# speed up sppppppprooooockets
+gem 'turbo-sprockets-rails3'
+group :assets do
+  gem 'uglifier'
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+  # files for bootstrap-in-asset-pipeline integration
+  gem 'bootstrap-sass', '~> 2.3.2.2'
+  gem 'jquery-ui-rails'
+  # extension's packaging of html5shiv for the asset pipeline
+  gem 'extension-html5shiv-rails', :require => 'html5shiv-rails'
+  # replaces glyphicons
+  gem 'font-awesome-rails'
+end
+
+# # mobile device detection
+# gem 'mobile-fu'
+
+# server settings
+gem "rails_config"
+
+# more xml
+gem 'hpricot'
+
 # atom parsing
 gem 'ratom', :require => 'atom'
-# extended tz management
-gem 'tzinfo'
-# ip to geo mapping
-gem 'geokit'
-gem 'geoip'
-# html and link manipulation
-gem 'nokogiri'
-gem 'hpricot'
-# image submission and other image handling
-gem 'paperclip'
-gem 'rmagick', :require => false
-# cron management
-gem 'lockfile'
-# needed for mail fetching and parsing
-gem 'SystemTimer'
-gem 'mail'
-# arel syntax for rails2
-gem 'fake_arel'
-# microformats
-gem 'mofo'
-# widget related
-gem 'rest-client'
-gem 'json_pure'
-# command line
-gem 'thor'
-gem 'trollop', '1.16.2'
-#get image attributes
-gem 'fastimage'
-# handle rewrites of trailing slashes
-gem 'rack-rewrite'
-
-#airbrake
-gem 'airbrake', '3.1.2'
 
 # authentication
 gem 'omniauth', "~> 1.0"
 gem 'omniauth-openid'
 
-# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
-# gem 'ruby-debug'
-# gem 'ruby-debug19', :require => 'ruby-debug'
+# jquery magick
+gem 'jquery-rails'
 
-# Bundle gems for the local environment. Make sure to
-# put test-only gems in this group so their generators
-# and rake tasks are available in development mode:
-group :development, :test do
-  gem 'wirble'
-  gem "awesome_print"
-  gem "map_by_method"
-  gem "what_methods"
-  #gem "net-http-spy"  # not useable with the savon gem, results in SystemStackError: stack level too deep on requests
-  gem "powder"
-  #gem "rails-footnotes", '< 3.7.0'
-  # Deploy with Capistrano
-  gem 'capistrano'
-  # log stuff
+# pagination
+gem 'kaminari'
+
+# command line tools
+gem 'thor'
+
+# exception handling
+gem 'airbrake'
+
+# caching
+gem 'redis-rails'
+
+# useragent analysis
+gem 'useragent'
+
+# ip to geo mapping
+gem 'geocoder'
+gem 'geoip'
+
+# image sizing
+gem 'fastimage'
+
+# cron management
+gem 'lockfile'
+
+# memcached
+gem 'dalli'
+
+# attachment_fu plugin replacement
+gem "pothoven-attachment_fu"
+gem 'rmagick', :require => false
+
+# acts_as_list
+gem 'acts_as_list'
+
+group :development do
+  # require the powder gem
+  gem 'powder'
+  # debug http requests
+  gem 'net-http-spy'
+  # jason uses pry, forces the gem on everyone
+  gem 'pry'
+  # deployment
+  gem 'capistrano', '~> 2.15.5' 
   gem 'capatross'
+  # shut the asset requests up in dev log
+  gem 'quiet_assets'
+  # fun things for dealing with 500 errors
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'meta_request'
+
 end
+
+
+
+

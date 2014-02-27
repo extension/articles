@@ -6,8 +6,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>eXtension: <%= @page_title || controller.action_name %></title>
-    <%= stylesheet_link_tag 'common' %>
-    <%= javascript_include_tag :defaults %>
+      <%= stylesheet_link_tag    "application" %>
+      <%= javascript_include_tag "application" %>
+      <!--[if lt IE 9]>
+        <%= javascript_include_tag 'html5shiv' %>
+      <![endif]-->  
 </head>
 
 <body>
@@ -19,7 +22,7 @@
   
     <div id="wrapper">
         <div id="masthead">
-            <div id="logo"><%= image_tag("/images/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %></div>
+            <div id="logo"><%= image_tag("/assets/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %></div>
         </div>
     
         <div id="content">

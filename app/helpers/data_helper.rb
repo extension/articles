@@ -4,6 +4,7 @@
 # === LICENSE:
 # 
 #  see LICENSE file
+require 'fastimage'
 
 module DataHelper
 
@@ -84,20 +85,20 @@ module DataHelper
     return unless content.present?
     image_tag = content.match(/<img[^>]*>/)
     if placeholder
-      return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />' unless image_tag
+      return raw('<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />') unless image_tag
       src = image_tag[0].match(/src="[^"]*"/)[0]
       actual_img_src = src.gsub('src="','')[0..-2]
       actual_img_width = FastImage.size(actual_img_src)
       if actual_img_width.present? && actual_img_width[0].to_f > 550
-        return '<img width="'+actual_img_width[0].to_s+'" '+src+' alt="" />'
+        return raw('<img width="'+actual_img_width[0].to_s+'" '+src+' alt="" />')
       else
-        return '<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />'
+        return raw('<img src = "/images/frontporch/default_feature_720x340.jpg" alt="" />')
       end
     else
       return unless image_tag.present?
       src = image_tag[0].match(/src="[^"]*"/)
       if src.present?
-        return '<img '+src[0]+' alt="" />'
+        return raw('<img '+src[0]+' alt="" />')
       end
     end
   end
@@ -107,6 +108,6 @@ module DataHelper
     image_tag = content.match(/<img[^>]*>/)
     return unless image_tag
     src = image_tag[0].match(/src="[^"]*"/)[0]
-    return '<img height="135" '+src+' alt="" />'
+    return raw('<img height="135" '+src+' alt="" />')
   end  
 end

@@ -9,24 +9,24 @@
 		<div class='infobar bordered clearfix'>
 		  
 		  <%- if(!@page_communities.blank?) -%>
-          <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
+          <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ').html_safe  %>
       <%- end -%>
-      <span class="page_timestamp"><%= micro_time_print(@page.source_updated_at, 'updated') %></span><span class='divider hidden-phone noprint'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print noprint" %></span>
+      <span class="page_timestamp"><%= micro_time_print(@page.source_updated_at, 'updated').html_safe %></span><span class='divider hidden-phone noprint'>|</span><span><%= link_to 'Print', (request.url + "/print/"), :class => "print noprint" %></span>
       
       <%= render(:partial => 'shared/addthis') %>
 		</div>
 		
 		<div id="article_content">
-		  <%= @page.content %>
+		  <%= @page.content.html_safe %>
 		</div>
 		
-		<div class='backtotop span9 noprint'><a href='#top'><i class='icon-arrow-up'></i>Back to Top</a></div>
+		<div class='backtotop span9 noprint'><a href='#top'><i class='fa fa-arrow-up'></i>Back to Top</a></div>
 		<div class='row noprint'>
   		<div class='article-info span6'>
   			<h3 class='bordered'>Browse related by Tag</h3>
   			<%- if @page_content_tag_names -%>
           <p class="caption publictags">
-            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag))}.join(', ') %>
+            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag).html_safe)}.join(', ').html_safe %>
           </p>
         <%- end -%>
   		</div>
@@ -64,8 +64,8 @@
     	<div class='callout orange span3'>
     		<h4>Donate to <%= @community.name %></h4>
     		<p>Your donation keeps eXtension growing.</p>
-    		<% link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
-    		  <i class='icon-heart icon-white'></i> Give Now
+    		<%= link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UGLAUSDMMQB2G&item_name=#{@community.name}", :class => "btn orange lg")  do %>
+    		  <i class='fa fa-heart icon-white'></i> Give Now
     		<% end %>
     	</div>
     </div>
@@ -82,7 +82,7 @@
       <div class="community-resources span3 clearfix">
         <h2>Resources</h2>
         <% if @in_this_section %>
-          <%= @in_this_section.content %>
+          <%= @in_this_section.content.html_safe %>
         <% end %>
       </div>
     </div>
@@ -90,5 +90,5 @@
 </div>
 
 <div id="pagelinks">
-  <p><i class="icon-list"></i> <%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %></p>
+  <p><i class="fa fa-list"></i> <%= link_to('View publishing information about this page.', pageinfo_page_url(:id => @page.id)) %></p>
 </div>

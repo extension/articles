@@ -52,7 +52,7 @@ class AdminLog < ActiveRecord::Base
     newae = self.new do |ae|
       ae.person = person
       ae.event = event
-      ae.ip = AppConfig.configtable['request_ip_address']
+      ae.ip = Settings.request_ip_address
       ae.data = data
     end
     newae.save

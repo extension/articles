@@ -1,0 +1,111 @@
+<!-- Image Rotator, Connect With Us, Local Extension Office -->
+<div class="row">
+  <div class="span9">
+    <div id="myCarousel" class="carousel slide">
+      
+      <% if @featured_articles.length > 1 %>
+        <ol class="carousel-indicators">
+          <% @featured_articles.each_with_index do |feature, i| %>
+            <li data-target="#myCarousel" data-slide-to="<%= i %>" class="<%= i == 0 ? "active" : "" %>"></li>
+          <% end %>
+        </ol>
+      <% end %>
+      <div class="carousel-inner">
+		  
+      <!-- replace with @featured_article -->
+		  <% @featured_articles.each_with_index do |feature, i| %>
+        <div class="item <%= i == 0 ? "active" : "" %>">
+          <%= first_image(feature.content) %>
+            <div class="carousel-caption">
+              <%= link_to(feature.id_and_link) do %>
+                <h1><%= feature.title %></h1>
+                <p><%= get_title(feature.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read More</span></p>
+              <% end %>
+            </div>
+        </div>  
+      <% end %>
+      
+      </div>
+      
+      <% if @featured_articles.length > 1 %>
+        <!-- Carousel nav -->
+        <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+        <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="span3">
+    <%= render(:partial => 'shared/social_and_locations_general') %>
+  </div>
+</div>
+
+<!-- Tagline -->
+<div class="tagline-home">
+  
+  <div class="row">
+    <div class="span9">
+      <div class="centennial-logo-wrapper">
+        <%= link_to("http://www.extension100years.net/", {:class => ""}) do %>
+          <img class='centennial-logo' src="/assets/frontporch/extension-centennial-logo_240.png" alt="Smith-Lever Extension Centennial Celebration" />
+        <% end %>
+      </div>
+      <div class="tagline-text-wrapper">
+      <%= link_to('Extending Knowledge. Changing Lives.', main_special_path(:path => 'about'), :class => "moreaboutpitch") %>
+      </div>
+    </div>
+
+    
+    <div class="span3">
+      <div class="tagline-button-wrapper pull-right">
+      <%= link_to('Learn More', main_special_path(:path => 'about'), :class => "btn orange lg") %>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <!-- Upcoming Webinars, Meet Extension, Trending Questions, Latest Tweets -->
+  <div class="row">
+    <div class='featured_aae_questions span3'>
+    	<h2>Trending Questions</h2>
+    	<script type="text/javascript" src="https://ask.extension.org/widgets/front_porch.js"></script> 
+    	<a href="http://ask.extension.org" class='btn orange lg span3' title="One-to-one answers from a network of experts at universities across America.">Ask an Expert</a>
+    </div>
+    
+    
+    
+    <div class='visible-phone clearfix'></div>
+                
+    <div class="meet-extension span3">
+      <% if @featured_bio.present? %>
+    	  <h2>Our People</h2>
+    	  <%= link_to(@featured_bio.id_and_link) do %>
+    	    <%= first_bio_image @featured_bio.content %>
+    	    <strong><%= @featured_bio.title %></strong><br />
+          <!-- <em>Communications Expert</em><br /> -->
+          <p><%= get_title(@featured_bio.content).truncate(320,{:omission => '...', :avoid_orphans => true}) %></p>
+    	  <% end %>
+    	<% else %>
+    	  <h2>Our People</h2>
+    	  <h3>There are no biographies at this time.</h3>
+    	<% end %>
+    </div>
+                
+    <div class="upcoming_learn_events span3 clearfix">
+      <% if !@sponsors.blank? %>
+          <div class="sponsors clearfix">
+          <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
+          </div>
+      <% end %>
+      
+      <script type="text/javascript" src="https://learn.extension.org/widgets/front_porch.js?limit=2"></script>
+    </div>
+    
+                
+    <div class='latest-tweets span3'>
+      <h2>Latest Tweets</h2>
+      <%= render(:partial => 'shared/twitter_timeline_general') %>
+    </div>
+  
+  </div>

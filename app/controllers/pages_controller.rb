@@ -19,7 +19,7 @@ class PagesController < ApplicationController
     
     # get the title out, find it, and redirect  
     if params[:title]
-      raw_title_to_lookup = CGI.unescape(request.request_uri.gsub('/pages/', ''))
+      raw_title_to_lookup = CGI.unescape(request.url.gsub('/pages/', ''))
       # comes in double-escaped from apache to handle the infamous '?'
       raw_title_to_lookup = CGI.unescape(raw_title_to_lookup)
       # why is this?
@@ -124,7 +124,7 @@ class PagesController < ApplicationController
 
     # redirect to learn
     if(@page.is_event?)
-      return redirect_to(AppConfig.configtable['learn_site'],:status => :moved_permanently)
+      return redirect_to(Settings.learn_site,:status => :moved_permanently)
     end
     
     # set canonical_link
@@ -157,7 +157,7 @@ class PagesController < ApplicationController
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tag_names).prioritized
         # loop through the list, and see if one of these matches my @community already
         # if so, use that, else, just use the first in the list
-        use_content_tag_name = @community_content_tag_names.rand
+        use_content_tag_name = @community_content_tag_names.sample
         @community_content_tag_names.each do |community_content_tag_name|
           if(@community and @community.content_tag_names.include?(community_content_tag_name))
             use_content_tag_name = community_content_tag_name
@@ -185,7 +185,7 @@ class PagesController < ApplicationController
     if(@community and @community.aae_group_id.present?)
       @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
     else
-      @ask_two_point_oh_form = AppConfig.configtable['ask_two_point_oh_form']
+      @ask_two_point_oh_form = Settings.ask_two_point_oh_form
     end  
     
     @donation_block = false
@@ -283,7 +283,7 @@ class PagesController < ApplicationController
     else
       pagelist_scope = pagelist_scope.ordered
     end
-    @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100)
+    @pages = pagelist_scope.page(params[:page]).per(100)
     @youth = true if @topic and @topic.name == 'Youth'
    
   end 
@@ -306,6 +306,6 @@ class PagesController < ApplicationController
   end
   
   def events
-    return redirect_to(AppConfig.configtable['learn_site'],:status => :moved_permanently)
+    return redirect_to(Settings.learn_site,:status => :moved_permanently)
   end
 end

@@ -1,0 +1,24 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %></p>
+    <h1>Upload file</h1>
+
+    <% if @logo.errors.any? %>
+	  <ul>
+	    <% @logo.errors.full_messages.each do |msg| %>
+	      <li><%= msg %></li>
+	    <% end %>
+	  </ul>
+	<% end %>
+
+    <%= form_for @logo, :url => admin_logos_url, :html => { :multipart => true } do |f| %>
+
+      <p>
+        <label for="logo">Browse:</label>
+        <%= f.file_field :uploaded_data %>
+      </p>
+      <p>
+        <%= submit_tag 'Upload' %>
+      </p>
+    <% end -%>
+
+</div>

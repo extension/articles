@@ -12,8 +12,6 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   #protect_from_forgery # See ActionController::RequestForgeryProtection for details  
   include AuthLib
-  include SslRequirement
-  rescue_from WillPaginate::InvalidPage, :with => :do_invalid_page
   helper_method :current_person
 
   require 'zip_code_to_state'
@@ -25,30 +23,20 @@ class ApplicationController < ActionController::Base
   before_filter :set_request_url_options
   before_filter :set_app_location
 
-  has_mobile_fu
-  skip_before_filter :set_mobile_format
-  before_filter :mobile_detection
-
   helper_method :get_location_options
   helper_method :get_county_options
   helper_method :with_content_tag?
   helper_method :content_tag_url_display_name
   
   def set_app_location
-    @app_location_for_display = AppConfig.configtable['app_location']
-  end
-  
-  def mobile_detection
-    if is_mobile_device?
-      @mobile_device = true
-    end
+    @app_location_for_display = Settings.app_location
   end
     
   def set_request_url_options
     if(!request.nil?)
-      AppConfig.configtable['url_options']['host'] = request.host unless (request.host.nil?)
-      AppConfig.configtable['url_options']['protocol'] = request.protocol unless (request.protocol.nil?)
-      AppConfig.configtable['url_options']['port'] = request.port unless (request.port.nil?)
+      Settings.urlwriter_host = request.host unless (request.host.nil?)
+      Settings.urlwriter_protocol = request.protocol unless (request.protocol.nil?)
+      Settings.urlwriter_port = request.port unless (request.port.nil?)
     end
   end
   
@@ -79,12 +67,12 @@ class ApplicationController < ActionController::Base
   
   def set_default_request_ip_address
     # if(!request.env["HTTP_X_FORWARDED_FOR"].nil?)
-    #   AppConfig.configtable['request_ip_address'] = request.env["HTTP_X_FORWARDED_FOR"]
+    #   Settings.request_ip_address = request.env["HTTP_X_FORWARDED_FOR"]
     # elsif(!request.env["REMOTE_ADDR"].nil?)
     if(!request.env["REMOTE_ADDR"].nil?)
-      AppConfig.configtable['request_ip_address'] = request.env["REMOTE_ADDR"]
+      Settings.request_ip_address = request.env["REMOTE_ADDR"]
     else
-      AppConfig.configtable['request_ip_address'] = AppConfig.configtable['default_request_ip']
+      Settings.request_ip_address = Settings.default_request_ip
     end
     return true
   end
@@ -120,10 +108,6 @@ class ApplicationController < ActionController::Base
     @page_title = 'Status 410 - Page Removed'
     @page_meta_description = 'Status 410 - Page Removed'
     render :template => "/shared/410", :layout => 'frontporch', :status => "410"
-  end
-  
-  def do_invalid_page
-    render :text => 'Invalid page requested', :status => 400
   end
     
   private

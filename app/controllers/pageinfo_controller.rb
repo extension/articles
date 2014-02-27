@@ -68,15 +68,15 @@ class PageinfoController < ApplicationController
     sort_order = "pages.has_broken_links DESC,pages.source_updated_at DESC"
     if(@filteredparameters.onlybroken)
       if(@filteredparameters.with_instant_survey_links)
-        @pages = pagelist_scope.broken_links.with_instant_survey_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+        @pages = pagelist_scope.broken_links.with_instant_survey_links.page(params[:page]).order(sort_order).per(100)
       else
-        @pages = pagelist_scope.broken_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+        @pages = pagelist_scope.broken_links.page(params[:page]).order(sort_order).per(100)
       end
     else
       if(@filteredparameters.with_instant_survey_links)
-        @pages = pagelist_scope.with_instant_survey_links.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+        @pages = pagelist_scope.with_instant_survey_links.page(params[:page]).order(sort_order).per(100)
       else
-        @pages = pagelist_scope.paginate(:page => params[:page], :per_page => 100, :order => sort_order)
+        @pages = pagelist_scope.page(params[:page]).order(sort_order).per(100)
       end      
     end
   end
@@ -141,7 +141,7 @@ class PageinfoController < ApplicationController
       csvfilename =  "#{content_types}_pages_for_tag_#{@content_tag.name}"
       return page_csvlist(@pages,csvfilename,@content_tag)
     else
-      @pages = pagelist_scope.ordered.paginate(:page => params[:page], :per_page => 100)
+      @pages = pagelist_scope.ordered.page(params[:page]).per(100)
     end
   end
   

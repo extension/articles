@@ -24,7 +24,7 @@ class FeedsController < ApplicationController
   def content
     begin
     filteredparameters_list = [:max_results,
-                               {:limit => {:default => AppConfig.configtable['default_feed_content_limit']}},
+                               {:limit => {:default => Settings.default_feed_content_limit}},
                                :tags,
                                {:content_types => {:default => 'articles,news,faqs,events'}}]
     filteredparams = ParamsFilter.new(filteredparameters_list,params)
@@ -37,8 +37,8 @@ class FeedsController < ApplicationController
     end
     
     # limit over max? let's be pedantic
-    if(limit > AppConfig.configtable['max_feed_content_limit'])
-      return render_feed_error({:errormessage => "Requested limit of #{limit} is greater than the max allowed: #{AppConfig.configtable['max_feed_content_limit']}"})
+    if(limit > Settings.max_feed_content_limit)
+      return render_feed_error({:errormessage => "Requested limit of #{limit} is greater than the max allowed: #{Settings.max_feed_content_limit}"})
     end
     
     
@@ -73,7 +73,7 @@ class FeedsController < ApplicationController
     if(alltags)
        @returnitems = Page.recent_content(:datatypes => datatypes, :limit => limit)
     else
-       @returnitems = Page.recent_content(:datatypes => datatypes, :content_tags => content_tags, :limit => limit, :tag_operator => tag_operator, :within_days => AppConfig.configtable['events_within_days'])
+       @returnitems = Page.recent_content(:datatypes => datatypes, :content_tags => content_tags, :limit => limit, :tag_operator => tag_operator, :within_days => Settings.events_within_days)
     end
               
     title = "eXtension #{filteredparams.content_types.map{|name| name.capitalize}.join(',')}"
