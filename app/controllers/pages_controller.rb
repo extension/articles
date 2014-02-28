@@ -19,6 +19,7 @@ class PagesController < ApplicationController
     
     # get the title out, find it, and redirect  
     if params[:title]
+      logger.debug "** raw_title_to_lookup: #{CGI.unescape(request.fullpath.gsub('/pages/', ''))}"
       raw_title_to_lookup = CGI.unescape(request.fullpath.gsub('/pages/', ''))
       # comes in double-escaped from apache to handle the infamous '?'
       raw_title_to_lookup = CGI.unescape(raw_title_to_lookup)
@@ -43,6 +44,7 @@ class PagesController < ApplicationController
         title_to_lookup = raw_title_to_lookup
       end
       
+      logger.debug "** page to look up: #{title_to_lookup}"
       @page = Page.find_by_legacy_title_from_url(title_to_lookup)       
     elsif(params[:id])
       if(params[:print])
