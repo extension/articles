@@ -32,7 +32,7 @@ Darmok::Application.routes.draw do
 #   map.redirect 'faqs', :controller => 'pages', :action => 'faqs', :content_tag => 'all', :permanent => true
 #   map.redirect 'articles', :controller => 'pages', :action => 'articles', :content_tag => 'all', :permanent => true
   
-  ### pubsite admin routes
+  ### admin routes
   namespace :admin do
     resources :sponsors, :collection => {:update_positions => :post}
     resources :logos
@@ -51,8 +51,10 @@ Darmok::Application.routes.draw do
   
   match 'notice/admin_required', to: 'notice#admin_required'
   
-  ### connect up "data" to the api/data controller
-  match 'data/:action', to:'api#data'
+  ### api routes
+  namespace :api do
+    match 'data/:action', to: 'data'
+  end
   
   ### current routes for specific content
   match 'pages/list', to:'pages#list', :as => 'pagelist'
