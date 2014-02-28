@@ -59,7 +59,7 @@ Darmok::Application.routes.draw do
   match 'pages/:id/print', to:'pages#show', :as => 'print_pageid', :defaults => { :print => 1 }
   match 'pages/:id', to:'pages#show', :as => 'pageid', :constraints => { :id => /\d+/ }
   match 'pages/:id/:title/print', to:'pages#show', :as => 'print_page', :defaults => { :print => 1 }
-  match 'pages/:id/:title', to:'pages#show', :as => 'page'
+  match 'pages/:id/:title', to:'pages#show', :as => 'page', :constraints => { :id => /\d+/ }
 
   ### old routes for specific content
   match 'article/:id/print', to:'pages#redirect_article', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
