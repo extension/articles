@@ -899,6 +899,7 @@ ul.extension_global_nav a {color:#ccc !important;}
 #admin table tr .islive {text-indent:-5000px;}
 #admin table tr.true .islive {background: #edfbff url(/assets/pubsite/green_dot.png) 50% 50% no-repeat;}
 #admin table td.notset {color:#aaa;}
+.notset {color:#aaa;}
 
 label {font-weight:bold;}
 .carousel-caption a {text-decoration:none}
