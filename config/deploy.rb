@@ -62,10 +62,9 @@ namespace :deploy do
     run <<-CMD
     rm -rf #{release_path}/config/database.yml #{release_path}/index &&
     rm -rf #{release_path}/public/robots.txt &&
-    rm -rf #{release_path}/config/appconfig.yml &&
     ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
     ln -nfs #{shared_path}/config/robots.txt #{release_path}/public/robots.txt &&
-    ln -nfs #{shared_path}/config/appconfig.yml #{release_path}/config/appconfig.yml &&
+    ln -nfs #{shared_path}/config/settings.local.yml #{release_path}/config/settings.local.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki &&
