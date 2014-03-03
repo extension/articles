@@ -6,16 +6,16 @@
 		<div class='infobar bordered clearfix'>
 		  
 		<% if !@community_content_tags.blank? %>  
-		<%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ')  %>
+		<%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ').html_safe  %>
 		<% end %>
       
-      <span><%= micro_time_print(@article.updated_at, 'updated').html_safe %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.request_uri + "/print/"), :class => "print" %></span>
+      <span><%= micro_time_print(@article.updated_at, 'updated').html_safe %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.fullpath + "/print/"), :class => "print" %></span>
       
       <%= render(:partial => 'shared/addthis') %>
 		</div>
 		
 		<div id="article_content">
-		  <%= @article.content %>
+		  <%= @article.content.html_safe %>
 		</div>
 		
 		<div class='backtotop span9'><a href='#top'><i class='fa fa-arrow-up'></i>Back to Top</a></div>
@@ -77,7 +77,7 @@
     </div>
     
     <% if @in_this_section %>
-      <%= @in_this_section.content %>
+      <%= @in_this_section.content.html_safe %>
     <% end %>
   </div>
 </div>
