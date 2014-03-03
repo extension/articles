@@ -1,7 +1,7 @@
 <div id="admin">
   <h1>Community Content Checklist</h1>
   <div class="well">
-  <p>This list reflects the "eXtension Community of Practice" and other public communities created in the <%= link_to('People application', :controller => 'people', :action => 'communities') %>. To add a community to this page (and the Public Site), please create a community in People.</p>
+  <p>This list reflects the "eXtension Community of Practice" and other public communities created in the <%= link_to('People application', url: 'https://people.extension.org/communities') %>. To add a community to this page (and the Public Site), please create a community in People.</p>
   
   <p>To set a Public Community Name, Topic, and Resource Area Tag for your community, contact your content staff representative</p>
   </div>
@@ -25,8 +25,8 @@
           <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
           <td <%= community.topic.nil? ? 'class="notset"' : '' %>><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
           <td <%= community.cached_content_tags.blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags.blank? ? '<span>not set</span>' : link_to_preview_tags(community.cached_content_tags) %></td>
-          <td class="checklist"><%= community.cached_content_tags.blank? ? '<span>n/a</span>' : link_to_preview_tags(community.cached_content_tags, true) %></td>
-          <td><a href='<%= people_community_url(community.id) %>'>info</a></td>
+          <td class="checklist"><%= community.cached_content_tags.blank? ? '<span>n/a</span>'.html_safe : link_to_preview_tags(community.cached_content_tags, true) %></td>
+          <td><a href='<%= "https://people.extension.org/communities/#{community.id}" %>'>info</a></td>
           </tr>
       <% end%>
   </table>
