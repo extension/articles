@@ -1,5 +1,5 @@
 document.write('<%= escape_javascript(content_widget_styles).html_safe %>');
-document.write('<%= escape_javascript("<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/images/common/extension_icon_40x40.png\" /> <span>eXtension Latest #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>").html_safe %>');
+document.write('<%= escape_javascript("<div id=\"content_widget\" style=\"width:#{@width}px\"><h3><img src=\"http://#{request.host_with_port}/assets/common/extension_icon_40x40.png\" /> <span>eXtension Latest #{@type}: #{@content_tags}</span><br class=\"clearing\" /></h3><ul>").html_safe %>');
 
 <% if @contents.length == 0 %>
   document.write('<%= escape_javascript("<h3>There are currently no content items at this time.</h3>").html_safe %>'); 
