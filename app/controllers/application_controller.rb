@@ -100,7 +100,7 @@ class ApplicationController < ActionController::Base
     personalize_location_and_institution if not @personal
     @page_title = 'Status 404 - Page Not Found'
     @page_meta_description = 'Status 404 - Page Not Found'
-    render(:template => "/shared/404", :layout => 'frontporch', :status  => "404")
+    render(:template => "/shared/404.html.erb", :layout => 'frontporch', :status  => "404")
   end
   
   def do_410
