@@ -92,7 +92,7 @@ class PreviewController < ApplicationController
       # got here via /preview/pages/title for handling wiki titles
       # so we can't use the title param - we have to use the request_uri because of
       # the infamous question mark articles
-      title_to_lookup = CGI.unescape(request.url.gsub('/preview/pages/', ''))
+      title_to_lookup = CGI.unescape(request.fullpath.gsub('/preview/pages/', ''))
       title_to_lookup.gsub!(' ', '_')
       source_id = title_to_lookup
     end
