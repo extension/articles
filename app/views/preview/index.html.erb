@@ -25,7 +25,7 @@
           <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
           <td <%= community.topic.nil? ? 'class="notset"' : '' %>><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
           <td <%= community.cached_content_tags.blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags.blank? ? '<span>not set</span>' : link_to_preview_tags(community.cached_content_tags) %></td>
-          <td class="checklist"><%= community.cached_content_tags.blank? ? '<span>n/a</span>' : link_to_preview_tags(community.cached_content_tags, true) %></td>
+          <td class="checklist"><%= community.cached_content_tags.blank? ? '<span>n/a</span>'.html_safe : link_to_preview_tags(community.cached_content_tags, true) %></td>
           <td><a href='<%= "https://people.extension.org/communities/#{community.id}" %>'>info</a></td>
           </tr>
       <% end%>
