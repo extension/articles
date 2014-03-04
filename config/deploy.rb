@@ -1,43 +1,41 @@
 set :stages, %w(prod dev)
 set :default_stage, "dev"
 require 'capistrano/ext/multistage'
-
-# added by capatross generate_config
 require 'capatross'
 require "bundler/capistrano"
-require 'yaml'
 require 'airbrake/capistrano'
 
-#------------------------------
-# <i>Should</i> only have to edit these three vars for standard eXtension deployments
+TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE', 'yes','YES','y','Y']
+FALSE_VALUES = [false, 0, '0', 'f', 'F', 'false', 'FALSE','no','NO','n','N']
 
 set :application, "darmok"
 set :user, 'pacecar'
-set :localuser, ENV['USER']
-#------------------------------
-
-set :repository, "git@github.com:extension/#{application}.git"
+set :repository, "git@github.com:extension/darmok.git"
 set :scm, "git"
 set :use_sudo, false
-set :ruby, "/usr/local/bin/ruby"
+set :keep_releases, 5
 ssh_options[:forward_agent] = true
 set :port, 24
 set :bundle_flags, '--deployment --binstubs'
 
-# Disable our app before running the deploy
-before "deploy", "deploy:web:disable"
-
-# After code is updated, do some house cleaning
-after "deploy:update_code", "deploy:update_maint_msg"
-after "deploy:update_code", "deploy:link_configs"
-after "deploy:update_code", "deploy:cleanup"
-
-# don't forget to turn it back on
-after "deploy", "deploy:web:enable"
+before "deploy", "deploy:checks:git_push"
+if(TRUE_VALUES.include?(ENV['MIGRATE']))
+  before "deploy", "deploy:web:disable"
+  after "deploy:update_code", "deploy:update_maint_msg"
+  after "deploy:update_code", "deploy:link_and_copy_configs"
+  after "deploy:update_code", "deploy:cleanup"
+  after "deploy:update_code", "deploy:migrate"
+  after "deploy", "deploy:web:enable"
+else
+  before "deploy", "deploy:checks:git_migrations"
+  after "deploy:update_code", "deploy:update_maint_msg"
+  after "deploy:update_code", "deploy:link_and_copy_configs"
+  after "deploy:update_code", "deploy:cleanup"
+end
 
 # Add tasks to the deploy namespace
 namespace :deploy do
-  
+
   desc "Deploy the #{application} application with migrations"
   task :default, :roles => :app do
     # Invoke deployment with migrations
@@ -56,9 +54,9 @@ namespace :deploy do
   task :update_maint_msg, :roles => :app do
      invoke_command "cp -f #{release_path}/public/maintenancemessage.html #{shared_path}/system/maintenancemessage.html"
   end
-  
+
   desc "Link up various configs (valid after an update code invocation)"
-  task :link_configs, :roles => :app do
+  task :link_and_copy_configs, :roles => :app do
     run <<-CMD
     rm -rf #{release_path}/config/database.yml #{release_path}/index &&
     rm -rf #{release_path}/public/robots.txt &&
@@ -68,57 +66,56 @@ namespace :deploy do
     rm -rf #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki &&
-    ln -nfs #{shared_path}/sites #{release_path}/public/sites &&   
+    ln -nfs #{shared_path}/sites #{release_path}/public/sites &&
     ln -nfs #{shared_path}/data #{release_path}/data &&
     rm -rf #{release_path}/public/sitemaps &&
     ln -nfs #{shared_path}/sitemaps #{release_path}/public/sitemaps &&
     ln -nfs #{shared_path}/omniauth #{release_path}/tmp/omniauth
     CMD
   end
-  
+
     # Override default web enable/disable tasks
   namespace :web do
-    
+
     desc "Put Apache in maintenancemode by touching the system/maintenancemode file"
     task :disable, :roles => :app do
       invoke_command "touch #{shared_path}/system/maintenancemode"
     end
-  
+
     desc "Remove Apache from maintenancemode by removing the system/maintenancemode file"
     task :enable, :roles => :app do
       invoke_command "rm -f #{shared_path}/system/maintenancemode"
     end
-    
+
   end
 
-end
+  namespace :checks do
+    desc "check to see if the local branch is ahead of the upstream tracking branch"
+    task :git_push, :roles => :app do
+      branch_status = `git status --branch --porcelain`.split("\n")[0]
 
-#--------------------------------------------------------------------------
-# useful administrative routines
-#--------------------------------------------------------------------------
+      if(branch_status =~ %r{^## (\w+)\.\.\.([\w|/]+) \[(\w+) (\d+)\]})
+        if($3 == 'ahead')
+          logger.important "Your local #{$1} branch is ahead of #{$2} by #{$4} commits. You probably want to push these before deploying."
+          $stdout.puts "Do you want to continue deployment? (Y/N)"
+          unless (TRUE_VALUES.include?($stdin.gets.strip))
+            logger.important "Stopping deployment by request!"
+            exit(0)
+          end
+        end
+      end
+    end
 
-namespace :admin do
-  
-  desc "Open up a remote console to #{application} (be sure to set your RAILS_ENV appropriately)"
-  task :console, :roles => :app do
-    input = ''
-    invoke_command "cd #{current_path} && ./script/console #{ENV['RAILS_ENV'] || 'production'}" do |channel, stream, data|
-      next if data.chomp == input.chomp || data.chomp == ''
-      print data
-      channel.send_data(input = $stdin.gets) if data =~ /^(>|\?)>/
+    desc "check to see if there are migrations in origin/branch "
+    task :git_migrations, :roles => :app do
+      diff_stat = `git --no-pager diff --shortstat #{current_revision} #{branch} db/migrate`.strip
+
+      if(!diff_stat.empty?)
+        diff_files = `git --no-pager diff --summary #{current_revision} #{branch} db/migrate`
+        logger.info "Your local #{branch} branch has migration changes and you did not specify MIGRATE=true for this deployment"
+        logger.info "#{diff_files}"
+      end
     end
   end
 
-  desc "Tail the server logs for #{application}"
-  task :tail_logs, :roles => :app do
-    run "tail -f #{shared_path}/log/production.log" do |channel, stream, data|
-      puts  # for an extra line break before the host name
-      puts "#{channel[:host]}: #{data}" 
-      break if stream == :err    
-    end
-  end
 end
-
-
-
-
