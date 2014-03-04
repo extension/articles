@@ -9,7 +9,7 @@
         <% end %>
       </ol>
       <div class="carousel-inner">
-		  
+
       <!-- replace with @featured_article -->
 		  <% @community_highlights.each_with_index do |feature, i| %>
         <div class="item <%= i == 0 ? "active" : "" %>">
@@ -17,12 +17,12 @@
             <div class="carousel-caption">
               <%= link_to(feature.id_and_link) do %>
                 <h1><%= feature.title %></h1>
-                <p><%= get_title(feature.content).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read More</span></p>
+                <p><%= get_wow_text(feature).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read More</span></p>
               <% end %>
             </div>
-        </div>  
+        </div>
       <% end %>
-      
+
       </div>
       <!-- Carousel nav -->
       <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
@@ -46,7 +46,7 @@
 
   <!-- Upcoming Webinars, Meet Extension, Trending Questions, Latest Tweets -->
   <div class="row">
-    
+
     <div class='span3 community-resources'>
       <h2>Resources</h2>
       <% if @in_this_section %>
@@ -54,9 +54,9 @@
       <% end %>
     </div>
 
-    
+
     <div class='visible-phone clearfix'></div>
-              
+
     <div class="meet-extension span3">
       <% if @featured_bio.present? %>
     	  <h2>Our People</h2>
@@ -64,7 +64,7 @@
     	    <%= first_bio_image(@featured_bio.content).present? ? first_bio_image(@featured_bio.content) : nil %>
     	    <strong class="clearfix"><%= @featured_bio.title.html_safe %></strong>
           <!-- <em>Communications Expert</em><br /> -->
-          <p><%= get_title(@featured_bio.content).truncate(160,{:omission => '...', :avoid_orphans => true}).html_safe %></p>
+          <p><%= get_wow_text(@featured_bio).truncate(160,{:omission => '...', :avoid_orphans => true}).html_safe %></p>
     	  <% end %>
     	<% else %>
     	  <h2>Our People</h2>
@@ -72,15 +72,15 @@
     	<% end %>
     	<div class='featured_aae_questions'>
     	<h2>Trending Questions</h2>
-    	<script type="text/javascript" src="<%= @ask_question_widget_url %>"></script> 
+    	<script type="text/javascript" src="<%= @ask_question_widget_url %>"></script>
     	<%= link_to "Ask an Expert", @ask_two_point_oh_form, :class => "btn orange lg span3", :title => "One-to-one answers from a network of experts at universities across America." %>
     	</div>
     </div>
-                
+
     <div class="upcoming_learn_events span3 clearfix">
       <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
     </div>
-    
+
     <div class='span3'>
       <div class='latest-tweets latest-tweets-alt'>
         <h2>Latest Tweets</h2>
@@ -90,7 +90,7 @@
           <%= render(:partial => 'shared/twitter_timeline_general') %>
         <% end%>
       </div>
-    
+
       <% if @donation_block %>
       	<div class='callout orange'>
       		<h4>Donate to <%= @community.name %></h4>
@@ -100,12 +100,12 @@
       		<% end %>
       	</div>
       <% end %>
-      
+
       <div class="upcoming_learn_events clearfix">
         <% if !@sponsors.blank? %>
             <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
         <% end %>
       </div>
     </div>
-  
+
   </div>
