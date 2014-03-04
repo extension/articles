@@ -17,7 +17,7 @@
             <div class="carousel-caption">
               <%= link_to(feature.id_and_link) do %>
                 <h1><%= feature.title %></h1>
-                <p><%= get_wow_text(feature).truncate(160,{:omission => '...', :avoid_orphans => true}) %><span class="read"><span>></span>Read More</span></p>
+                <p><%= get_wow_text(feature).truncate(160,{:omission => '...', :separator => ' '}) %><span class="read"><span>></span>Read More</span></p>
               <% end %>
             </div>
         </div>
@@ -64,7 +64,7 @@
     	    <%= first_bio_image(@featured_bio.content).present? ? first_bio_image(@featured_bio.content) : nil %>
     	    <strong class="clearfix"><%= @featured_bio.title.html_safe %></strong>
           <!-- <em>Communications Expert</em><br /> -->
-          <p><%= get_wow_text(@featured_bio).truncate(160,{:omission => '...', :avoid_orphans => true}).html_safe %></p>
+          <p><%= get_wow_text(@featured_bio).truncate(160,{:omission => '...', :separator => ' '}).html_safe %></p>
     	  <% end %>
     	<% else %>
     	  <h2>Our People</h2>

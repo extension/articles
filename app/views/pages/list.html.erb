@@ -3,7 +3,7 @@
 	<!-- Left column -->
 	<div class='span2 resource-areas hidden-phone'>
 	  <h3>Resource Areas</h3>
-	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+	  <% for topic in Topic.topics_list %>
       <h4><%= topic.name%></h4>
       <ul class='unstyled'>
         <%for community in topic.publishing_communities %>
@@ -34,7 +34,7 @@
     			<span><i class='fa fa-clock-o'></i> Updated: <%= expanded_time_print(page.source_updated_at)%></span>
     		</div>
     		<%= link_to(page.id_and_link) do %>
-          <p><%= strip_tags(get_wow_text(page).truncate(160,{:omission => '...', :avoid_orphans => true})) %></p>
+          <p><%= strip_tags(get_wow_text(page).truncate(160,{:omission => '...', :separator => ' '})) %></p>
         <% end %>
   	</div>
     <%- end -%>

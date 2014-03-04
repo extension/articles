@@ -1,26 +1,26 @@
 
 <div id="sidebar" class="rightcolumn">
-    
+
     <% if @show_resource_areas %>
         <div class="resource_areas">
             <h1>Resource Areas</h1>
-            <%= render(:partial => "shared/communities_sitehome", :locals => {:topics  => Topic.topics_list({:launchedonly => true})}) %>
+            <%= render(:partial => "shared/communities_sitehome", :locals => {:topics  => Topic.topics_list }) %>
         </div>
     <% end %>
-    
+
     <div class="aae_module">
         <%= link_to(Settings.ask_two_point_oh_form, :class => 'aae_form_link') do %>
             <span>Ask an Expert</span>
             <p>Connect with experts from Universities across the country</p>
         <% end %>
     </div>
-    
+
     <% if !@sponsors.blank? %>
         <div class="sponsors advertisement">
         <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
         </div>
     <% end %>
-    
+
 </div> <!-- end .rightcolumn -->
 
 <br class="clearing" />
