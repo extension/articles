@@ -2,55 +2,56 @@
 #  Copyright (c) 2005-2011 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 
 class PagesController < ApplicationController
   layout 'frontporch'
+  before_filter :force_html_format
   before_filter :set_content_tag_and_community_and_topic
   before_filter :signin_optional
-  
+
   def redirect_article
     # folks chop off the page name and expect the url to give them something
     if not (params[:title] or params[:id])
       redirect_to site_articles_url(with_content_tag?), :status=>301
       return
     end
-    
-    # get the title out, find it, and redirect  
+
+    # get the title out, find it, and redirect
     if params[:title]
       raw_title_to_lookup = CGI.unescape(request.fullpath.gsub('/pages/', ''))
       # comes in double-escaped from apache to handle the infamous '?'
       raw_title_to_lookup = CGI.unescape(raw_title_to_lookup)
       # why is this?
       raw_title_to_lookup.gsub!('??.html', '?')
-      
+
       # special handling for mediawiki-like "Categoy:bob" - style titles
       if raw_title_to_lookup =~ /Category\:(.+)/
         content_tag = $1.gsub(/_/, ' ')
         redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(content_tag)), :status=>301
         return
       end
-      
+
       if raw_title_to_lookup =~ /\/print(\/)?$/
         print = true
         raw_title_to_lookup.gsub!(/\/print(\/)?$/, '')
       end
-      
+
       # try and handle googlebot urls that have the page params on the end for redirection (new urls automatically handled)
       (title_to_lookup,blah) = raw_title_to_lookup.split(%r{(.+)\?})[1,2]
       if(!title_to_lookup)
         title_to_lookup = raw_title_to_lookup
       end
-      
-      @page = Page.find_by_legacy_title_from_url(title_to_lookup)       
+
+      @page = Page.find_by_legacy_title_from_url(title_to_lookup)
     elsif(params[:id])
       if(params[:print])
         print = true
       end
       @page = Page.find_by_id(params[:id])
     end
-    
+
     if @page
       if(print)
         redirect_to(print_page_url(:id => @page.id, :title => @page.url_title), :status => :moved_permanently)
@@ -63,7 +64,7 @@ class PagesController < ApplicationController
       return
     end
   end
-  
+
   def redirect_faq
     # folks chop off the page name and expect the url to give them something
     if (!params[:id])
@@ -84,7 +85,7 @@ class PagesController < ApplicationController
       return do_404
     end
   end
-  
+
   def redirect_event
     # folks chop off the page name and expect the url to give them something
     if (!params[:id])
@@ -103,18 +104,18 @@ class PagesController < ApplicationController
       end
     else
       return do_404
-    end    
+    end
   end
-  
-  
-    
+
+
+
   def show
     # folks chop off the page name and expect the url to give them something
     if (!params[:id])
       redirect_to site_articles_url(with_content_tag?), :status=>301
       return
     end
-    
+
     @page = Page.find_by_id(params[:id])
     if @page
       @published_content = true
@@ -126,33 +127,33 @@ class PagesController < ApplicationController
     if(@page.is_event?)
       return redirect_to(Settings.learn_site,:status => :moved_permanently)
     end
-    
+
     # set canonical_link
     @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
-   
+
     # special redirect check
     if(@page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id))
       return redirect_to(main_special_url(:path => @special_page.path),:status => :moved_permanently)
     end
-    
+
     # redirect check
     if(!params[:title] or params[:title] != @page.url_title)
       return redirect_to(@canonical_link,:status => :moved_permanently)
     end
-    
-    
+
+
 
     # get the tags on this article that correspond to community content tags
     @page_content_tag_names = @page.cached_content_tag_names
     @page_bucket_names = @page.content_buckets.map(&:name)
-        
-    if(!@page_content_tag_names.blank?)      
+
+    if(!@page_content_tag_names.blank?)
       # news check to set the meta tags for noindex
       @published_content = false if (@page.indexed == Page::NOT_INDEXED)
-      
+
       # get the tags on this article that are content tags on communities
       @community_content_tag_names = @page.community_content_tag_names
-    
+
       if(!@community_content_tag_names.blank?)
         @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tag_names).prioritized
         # loop through the list, and see if one of these matches my @community already
@@ -163,12 +164,12 @@ class PagesController < ApplicationController
             use_content_tag_name = community_content_tag_name
           end
         end
-      
+
         use_content_tag = Tag.find_by_name(use_content_tag_name)
         @community = use_content_tag.content_community
         @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag})  if @community
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
-        
+
         @page_communities = []
         @community_content_tag_names.each do |tagname|
           if(tag = Tag.find_by_name(tagname))
@@ -180,31 +181,31 @@ class PagesController < ApplicationController
       end
     end
     set_title("#{@page.title}")
-    
+
     # link for Ask an Expert group form
     if(@community and @community.aae_group_id.present?)
       @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
     else
       @ask_two_point_oh_form = Settings.ask_two_point_oh_form
-    end  
-    
+    end
+
     @donation_block = false
     if(@community and @community.show_donation.present?)
       @donation_block = true
     end
     if use_content_tag
       @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{use_content_tag.name}"
-    else 
+    else
       @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
     end
-    
-    
+
+
     if(!@community_content_tag_names.blank? and !@page_content_tag_names.blank?)
-      flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase}) 
+      flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase})
       flash.now[:googleanalyticsresourcearea] = @community_content_tag_names[0].gsub(' ','_')
     end
   end
-  
+
   def list
     @list_content = true # don't index this page
 
@@ -214,37 +215,37 @@ class PagesController < ApplicationController
       return do_404 unless Page.orderings.has_value?(@filteredparameters.order)
       @order = @filteredparameters.order
     end
-   
+
     # empty tags? - presume "all"
     if(@filteredparameters.tags.nil?)
        alltags = true
        content_tags = ['all']
     else
-       taglist_operator = @filteredparameters._tags.taglist_operator     
+       taglist_operator = @filteredparameters._tags.taglist_operator
        alltags = (@filteredparameters.tags.include?('all'))
        if(alltags)
          content_tags = ['all']
-       else 
+       else
          content_tags = @filteredparameters.tags
        end
     end
-    
+
     pagelist_scope = Page.scoped({})
-    if(!alltags)   
+    if(!alltags)
       if(taglist_operator and taglist_operator == 'and')
         pagelist_scope = pagelist_scope.tagged_with_all_content_tags(content_tags)
       else
         pagelist_scope = pagelist_scope.tagged_with_any_content_tags(content_tags)
       end
     end
-   
+
     if(@filteredparameters.content_types)
       content_type_conditions = Page.content_type_conditions(@filteredparameters.content_types,{:allevents => true})
       if(!content_type_conditions.blank?)
          pagelist_scope = pagelist_scope.where(content_type_conditions)
       end
     end
-   
+
      if(!@filteredparameters.articlefilter.nil?)
       case @filteredparameters.articlefilter
       when 'all'
@@ -266,8 +267,8 @@ class PagesController < ApplicationController
         pagelist_scope = pagelist_scope.bucketed_as(bucket)
       end
     end # @articlefilter.nil?
-   
-   
+
+
     titletypes = @filteredparameters.content_types.map{|type| type.capitalize}.join(', ')
     if(!alltags)
       tagstring = content_tags.join(" #{taglist_operator} ")
@@ -277,7 +278,7 @@ class PagesController < ApplicationController
       @page_title = titletypes
       @page_title = "#{titletypes} - all - eXtension"
     end
-   
+
     if(@order)
       pagelist_scope = pagelist_scope.ordered(@order)
     else
@@ -285,26 +286,26 @@ class PagesController < ApplicationController
     end
     @pages = pagelist_scope.page(params[:page]).per(100)
     @youth = true if @topic and @topic.name == 'Youth'
-   
-  end 
-  
- 
+
+  end
+
+
   def articles
     redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
-  
+
   def news
     redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
-  
+
   def learning_lessons
     redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
-  
+
   def faqs
     redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
-  
+
   def events
     return redirect_to(Settings.learn_site,:status => :moved_permanently)
   end
