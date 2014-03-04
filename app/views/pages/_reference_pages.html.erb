@@ -1,8 +1,8 @@
 <div id="relatedfaqs">
   <h3>Related Questions...</h3>
   <ul class="caption">
-  <%- @page.reference_pages.each do |reference_page| -%>    
-    <li><%= link_to(reference_page.title.truncate(60,{:omission => '...', :avoid_orphans => true}), page_url(:id => reference_page.id, :title => reference_page.url_title), {:title => reference_page.title}) %></li>
-  <%- end -%>            
+  <%- @page.reference_pages.each do |reference_page| -%>
+    <li><%= link_to(reference_page.title.truncate(60,{:omission => '...', :separator => ' '}), page_url(:id => reference_page.id, :title => reference_page.url_title), {:title => reference_page.title}) %></li>
+  <%- end -%>
   </ul>
 </div>
