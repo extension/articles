@@ -41,6 +41,10 @@ Darmok::Application.routes.draw do
   match 'feeds', to: "feeds#index"
   match 'feeds/content/:tags', to: "feeds#content", as: 'content_feed'
   match 'feeds/community/-/:tags', to: "feeds#community"
+  match 'feeds/articles', to: "feeds#content", :content_types => 'articles'
+  match 'feeds/faqs', to: "feeds#content", :content_types => 'faqs'
+  match 'feeds/events', to: "feeds#content", :content_types => 'events'
+  match 'feeds/all', to: "feeds#content"
   match 'feeds/:action', to: "feeds"
 
 
