@@ -34,7 +34,7 @@
     			<span><i class='fa fa-clock-o'></i> Updated: <%= expanded_time_print(page.source_updated_at)%></span>
     		</div>
     		<%= link_to(page.id_and_link) do %>
-          <p><%= strip_tags(get_wow_text(page).truncate(160,{:omission => '...', :separator => ' '}) %></p>
+          <p><%= strip_tags(get_wow_text(page).truncate(160,{:omission => '...', :separator => ' '})) %></p>
         <% end %>
   	</div>
     <%- end -%>
