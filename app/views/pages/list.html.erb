@@ -3,10 +3,10 @@
 	<!-- Left column -->
 	<div class='span2 resource-areas hidden-phone'>
 	  <h3>Resource Areas</h3>
-	  <% for topic in Topic.topics_list %>
+	  <%- Topic.topics_list.each do |topic| -%>
       <h4><%= topic.name%></h4>
       <ul class='unstyled'>
-        <%for community in topic.publishing_communities %>
+        <%- topic.publishing_communities.each do |community| -%>
           <li><%= link_to_public_community(community) %></li>
         <%end%>
       </ul>

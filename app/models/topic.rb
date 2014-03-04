@@ -31,4 +31,13 @@ class Topic < ActiveRecord::Base
     self.includes(:publishing_communities).where("publishing_communities.is_launched = TRUE").order("topics.name ASC, publishing_communities.public_name").uniq
   end
 
+  def self.frontporch_hashlist
+    topics_hash = {}
+    topics_list.each do |topic|
+      topics_hash[topic.name] = topic.publishing_communities
+    end
+    topics_hash
+  end
+
+
 end
