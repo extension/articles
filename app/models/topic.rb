@@ -28,7 +28,7 @@ class Topic < ActiveRecord::Base
 
 
   def self.topics_list
-    self.includes(:publishing_communities).where("publishing_communities.is_launched = TRUE").order("topics.name ASC, publishing_communities.public_name")
+    self.includes(:publishing_communities).where("publishing_communities.is_launched = TRUE").order("topics.name ASC, publishing_communities.public_name").uniq
   end
 
 end
