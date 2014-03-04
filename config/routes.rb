@@ -28,9 +28,6 @@ Darmok::Application.routes.draw do
 
 #   ### pubsite redirect routes
 #   map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
-#   map.redirect 'news', :controller => 'pages', :action => 'news', :content_tag => 'all', :permanent => true  
-#   map.redirect 'faqs', :controller => 'pages', :action => 'faqs', :content_tag => 'all', :permanent => true
-#   map.redirect 'articles', :controller => 'pages', :action => 'articles', :content_tag => 'all', :permanent => true
   
   ### admin routes
   namespace :admin do
@@ -43,7 +40,6 @@ Darmok::Application.routes.draw do
   match 'feeds/community/-/:tags', to: "feeds#community"
   match 'feeds/articles', to: "feeds#content", :content_types => 'articles'
   match 'feeds/faqs', to: "feeds#content", :content_types => 'faqs'
-  match 'feeds/events', to: "feeds#content", :content_types => 'events'
   match 'feeds/all', to: "feeds#content"
   match 'feeds/:action', to: "feeds"
 
