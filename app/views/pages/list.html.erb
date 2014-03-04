@@ -3,7 +3,7 @@
 	<!-- Left column -->
 	<div class='span2 resource-areas hidden-phone'>
 	  <h3>Resource Areas</h3>
-	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+	  <% for topic in Topic.topics_list %>
       <h4><%= topic.name%></h4>
       <ul class='unstyled'>
         <%for community in topic.publishing_communities %>

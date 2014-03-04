@@ -3,28 +3,28 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8" />
-  
+
   <% if !@openidmeta.nil? %><%= @openidmeta %><% end %>
 
   <%- if(@list_content) -%>
-    <meta name="robots" content="noindex,nofollow" /> 
+    <meta name="robots" content="noindex,nofollow" />
 	<%- elsif(!@published_content or params[:print]) -%>
-    <meta name="robots" content="noindex,follow" /> 
+    <meta name="robots" content="noindex,follow" />
   <%- elsif(@page and @page.indexed == Page::NOT_GOOGLE_INDEXED) -%>
-    <meta name="googlebot" content="noindex,follow" /> 
+    <meta name="googlebot" content="noindex,follow" />
   <%- end -%>
 
   <%- if @canonical_link -%>
     <link rel="canonical" href="<%= @canonical_link %>"/>
   <%- end -%>
-  
+
   <title><%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %></title>
   <meta name="description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>">
-  
+
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width">
-  
-  
+
+
   <meta property="og:url" content="<%= request.protocol + request.host_with_port + request.fullpath %>"/>
   <meta property="og:type" content="<%= (@page_type == "article") ? "article" : "website" %>"/>
   <meta property="og:title" content="<%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %>"/>
@@ -34,33 +34,33 @@
 
   <meta name="twitter:title" content="<%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %>">
   <meta property="twitter:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
-  
+
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= stylesheet_link_tag    "print", :media => "print" %>
   <%= javascript_include_tag "application" %>
   <!--[if lt IE 9]>
     <%= javascript_include_tag 'html5shiv' %>
-  <![endif]-->    
-  
+  <![endif]-->
+
   <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
 </head>
 
-<body>  
+<body>
   <script src="https://www.extension.org/javascripts/global_nav_public.js" type="text/javascript"></script>
-  
+
   <%- if(current_person and current_person.is_admin?) -%>
  	  <div id="adminnotice" class="noprint"><p>You are logged into an admin account (<%= link_to('sign out',logout_path) %>)</p></div>
   <%- end -%>
-  
+
   <% if(@app_location_for_display != 'production')%>
     <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://create.extension.org/node/1781") %></p></div>
   <% end %>
-  
+
 <div id="body_wrapper"><!-- used for preview -->
     <div id="preview_wrapper" class="<%= @app_location_for_display %>"></div>
     <% if(@app_location_for_display == 'preview' )%>
       <div id="app_location" class="preview">
-        <h3>Article Preview Tool</h3> 
+        <h3>Article Preview Tool</h3>
         <p>This shows how your page will appear when published to www.extension.org. The navigation areas are grayed out because those sections are not available in preview mode. However, all links within your article do work.</p>
       </div>
     <% elsif (@app_location_for_display != 'production' ) %>
@@ -69,7 +69,7 @@
 </div><!-- end #body_wrapper -->
 
   <div class="container">
-    
+
     <% if params[:print] %>
       <img id="print-logo" src="/assets/frontporch/eX_ARLN_logo_600x331.png" width="120pt" height="66pt"/>
       <%- if(@personal[:location] and @personal[:institution]) -%>
@@ -82,7 +82,7 @@
         </span>
       <% end %>
     <% end %>
- 
+
             <div class="navbar">
                 <div class="navbar-inner">
                     <a class="btn btn-navbar" data-toggle="collapse" data-target=".search-collapse"><i class='fa fa-search icon-white'></i></a>
@@ -105,15 +105,15 @@
                 </div>
             </div>
 
-      
+
       <%= yield :layout %>
-      
+
       <hr />
-      
+
       <div class="row noprint">
         <div class="span3 resource-areas">
           <h3>Resource Areas</h3>
-      	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+      	  <% for topic in Topic.topics_list %>
             <% if topic.name == "Alerts" || topic.name == "Community" || topic.name == "Disaster Issues" %>
             <h4><%= topic.name%></h4>
             <ul class='unstyled'>
@@ -125,7 +125,7 @@
           <%end%>
         </div>
         <div class="span3 resource-areas">
-      	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+      	  <% for topic in Topic.topics_list %>
             <% if topic.name == "Energy" || topic.name == "Environment" || topic.name == "Family" %>
             <h4><%= topic.name%></h4>
             <ul class='unstyled'>
@@ -137,7 +137,7 @@
           <%end%>
         </div>
         <div class="span3 resource-areas">
-      	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+      	  <% for topic in Topic.topics_list  %>
       	    <% if topic.name == "Farm" %>
             <h4><%= topic.name%></h4>
             <ul class='unstyled'>
@@ -149,7 +149,7 @@
           <% end %>
         </div>
         <div class="span3 resource-areas">
-      	  <% for topic in Topic.topics_list({:launchedonly => true}) %>
+      	  <% for topic in Topic.topics_list  %>
       	  <% if topic.name == "Health and Nutrition" || topic.name == "Lawn and Garden" || topic.name == "Pest Management" || topic.name == "Youth" %>
             <h4><%= topic.name%></h4>
             <ul class='unstyled'>
@@ -161,9 +161,9 @@
           <% end %>
         </div>
       </div>
-      
+
       <hr class="noprint" />
-      
+
       <footer>
         <span id="extension_icon_512" class="pull-left noprint"><img id="extension_logo" src="/assets/extension_logo.jpg" alt="eXtension" /></span>
         <ul class='inline noprint'>
@@ -178,16 +178,16 @@
       </footer>
 
     </div> <!-- /container -->
-        
+
 
     <script class="code" type="text/javascript">
-      
+
       $('.carousel').carousel({
         interval: 6000
       })
-      
+
       $("#article_content table.table").wrap("<div class='table-wrapper'></div>");
-      
+
       function change_institution() {
         var ZipOrState = $('#zip_or_state').val();
   		  $.ajax({
@@ -197,28 +197,28 @@
           data: {zip_or_state: ZipOrState}
         })
         .done(function() {
-        })  
+        })
         .fail(function() {
           alert("change institution error");
         })
   		}
-      
+
       $('#zip_or_state').keypress(function (e) {
         if (e.which == 13) {
           change_institution();
         }
       });
-      
+
       $("#submit_zip").click(function () {
         change_institution();
       });
-      
+
       $("#preview_wrapper").height($("body").height());
-      
+
       $('#submit_widget').click(function() {
         generate_widget();
       });
-      
+
 
       function generate_widget() {
     	  $.ajax({
@@ -229,23 +229,23 @@
         })
         .done(function(data) {
           $("#example_widget").html(data);
-        })  
+        })
         .fail(function() {
           alert("problem generating widget");
         })
     	}
-      
+
       $("#select_from_tags li").click(function() {
         $tags = $('#widget_tags').val();
         if ($tags != "" ) {
-          $tags += ", " 
+          $tags += ", "
         }
         $('#widget_tags').val($tags +$(this).html());
       });
-      
-      
+
+
     </script>
-    
+
     <%= render(:partial => '/partial/googleanalytics') %>
   </body>
 </html>
