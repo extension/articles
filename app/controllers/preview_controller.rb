@@ -6,6 +6,7 @@
 # see LICENSE file
 
 class PreviewController < ApplicationController
+  before_filter :force_html_format
   before_filter :set_content_tag_and_community_and_topic
   before_filter :signin_optional
 
@@ -20,7 +21,7 @@ class PreviewController < ApplicationController
     @right_column = false
 
     if(@content_tag.nil?)
-      return render(:template => 'preview/invalid_tag')
+      return render(:template => '/preview/invalid_tag')
     end
 
     if(!canonicalized_category?(params[:content_tag]))
