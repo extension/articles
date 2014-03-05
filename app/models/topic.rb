@@ -28,7 +28,7 @@ class Topic < ActiveRecord::Base
 
 
   def self.topics_list
-    self.joins(:publishing_communities).where("publishing_communities.is_launched = TRUE").order("topics.name ASC, publishing_communities.public_name")
+    self.joins(:publishing_communities).where("publishing_communities.is_launched = TRUE").order("topics.name ASC, publishing_communities.public_name").uniq
   end
 
   def self.frontporch_hashlist
