@@ -36,7 +36,7 @@
         <div class="rightcolmodule">
         <h1><span class="feed">Resource Area Feeds</span></h1>
         <ul>
-           <% tag_name = @community.primary_content_tag_name %>
+           <% tag_name = @community.primary_tag_name %>
             <li><%= link_to('Track all new content', content_feed_url(:tags => tag_name)) %></li>
          </ul>
          <%- if tag_name == 'parenting' -%>

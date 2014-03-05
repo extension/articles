@@ -37,27 +37,27 @@ class PreviewController < ApplicationController
       @page_title = "Launch checklist for content tagged \"#{@content_tag.name}\" (#{@community.name})"
       # youth styling
       @youth = true if @topic and @topic.name == 'Youth'
-      @other_community_content_tag_names = @community.cached_content_tags(true).reject{|name| name == @content_tag.name}
+      @other_community_tag_names = @community.tag_names.reject{|name| name == @content_tag.name}
       # TODO: sponsor list?
     end
 
-    @all_content_count = Page.tagged_with_content_tag(@content_tag.name).count
-    @events_count = Page.events.tagged_with_content_tag(@content_tag.name).count
-    @faqs_count = Page.faqs.tagged_with_content_tag(@content_tag.name).count
-    @articles_count =  Page.articles.tagged_with_content_tag(@content_tag.name).count
-    @features_count = Page.newsicles.bucketed_as('feature').tagged_with_content_tag(@content_tag.name).count
-    @news_count = Page.news.tagged_with_content_tag(@content_tag.name).count
-    @learning_lessons_count = Page.articles.bucketed_as('learning lessons').tagged_with_content_tag(@content_tag.name).count
-    @contents_count = Page.articles.bucketed_as('contents').tagged_with_content_tag(@content_tag.name).count
-    @homage_count = Page.articles.bucketed_as('homage').tagged_with_content_tag(@content_tag.name).count
+    @all_content_count = Page.tagged_with(@content_tag.name).count
+    @events_count = Page.events.tagged_with(@content_tag.name).count
+    @faqs_count = Page.faqs.tagged_with(@content_tag.name).count
+    @articles_count =  Page.articles.tagged_with(@content_tag.name).count
+    @features_count = Page.newsicles.bucketed_as('feature').tagged_with(@content_tag.name).count
+    @news_count = Page.news.tagged_with(@content_tag.name).count
+    @learning_lessons_count = Page.articles.bucketed_as('learning lessons').tagged_with(@content_tag.name).count
+    @contents_count = Page.articles.bucketed_as('contents').tagged_with(@content_tag.name).count
+    @homage_count = Page.articles.bucketed_as('homage').tagged_with(@content_tag.name).count
     @homage = @community.homage unless(@community.nil?)
 
 
-    @articles_broken_count =  Page.articles.tagged_with_content_tag(@content_tag.name).broken_links.count
-    @faqs_broken_count =  Page.faqs.tagged_with_content_tag(@content_tag.name).broken_links.count
-    @events_broken_count =  Page.events.tagged_with_content_tag(@content_tag.name).broken_links.count
-    @news_broken_count =  Page.news.tagged_with_content_tag(@content_tag.name).broken_links.count
-    @instant_survey_count = Page.tagged_with_content_tag(@content_tag.name).with_instant_survey_links.count
+    @articles_broken_count =  Page.articles.tagged_with(@content_tag.name).broken_links.count
+    @faqs_broken_count =  Page.faqs.tagged_with(@content_tag.name).broken_links.count
+    @events_broken_count =  Page.events.tagged_with(@content_tag.name).broken_links.count
+    @news_broken_count =  Page.news.tagged_with(@content_tag.name).broken_links.count
+    @instant_survey_count = Page.tagged_with(@content_tag.name).with_instant_survey_links.count
 
 
 
@@ -118,10 +118,10 @@ class PreviewController < ApplicationController
     # get the tags on this article that correspond to community content tags
     if(!@article.content_tags.nil?)
       @article_content_tags = @article.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
-      @article_content_tag_names = @article_content_tags.map(&:name)
+      @article_tag_names = @article_content_tags.map(&:name)
     else
       @article_content_tags = []
-      @article_content_tag_names = []
+      @article_tag_names = []
     end
 
     if(!@article.content_buckets.nil?)
@@ -135,14 +135,14 @@ class PreviewController < ApplicationController
       @youth = true if @article_bucket_names.include?('youth')
 
       # get the tags on this article that are content tags on communities
-      @community_content_tags = (Tag.community_content_tags & @article_content_tags)
+      @community_tags = (Tag.community_tags & @article_content_tags)
 
-      if(!@community_content_tags.blank?)
-        @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tags.map(&:name)).prioritized
+      if(!@community_tags.blank?)
+        @sponsors = Sponsor.tagged_with_any(@community_tags.map(&:name)).prioritized
         # loop through the list, and see if one of these matches my @community already
         # if so, use that, else, just use the first in the list
-        use_content_tag = @community_content_tags.sample
-        @community_content_tags.each do |community_content_tag|
+        use_content_tag = @community_tags.sample
+        @community_tags.each do |community_content_tag|
           if(community_content_tag.content_community == @community)
             use_content_tag = community_content_tag
           end

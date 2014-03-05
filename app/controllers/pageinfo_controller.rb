@@ -62,7 +62,7 @@ class PageinfoController < ApplicationController
     end
     
     if(@content_tag)
-      pagelist_scope = pagelist_scope.tagged_with_content_tag(@content_tag.name)
+      pagelist_scope = pagelist_scope.tagged_with(@content_tag.name)
     end
                                          
     sort_order = "pages.has_broken_links DESC,pages.source_updated_at DESC"
@@ -106,7 +106,7 @@ class PageinfoController < ApplicationController
     end
     
     if(@content_tag)
-      pagelist_scope = pagelist_scope.tagged_with_content_tag(@content_tag.name)
+      pagelist_scope = pagelist_scope.tagged_with(@content_tag.name)
     end
     
     if(!@filteredparameters.articlefilter.nil?)

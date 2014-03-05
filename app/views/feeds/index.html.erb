@@ -15,7 +15,7 @@
           <li><a href="/feeds/content/" title="All content feed">All content</a></li>
           <%for community in @communities%>
               <%- if community.tags.length > 0 -%>
-      		      <li><%= link_to(community.public_name, content_feed_url(:tags => community.primary_content_tag_name)) %></li>
+      		      <li><%= link_to(community.public_name, content_feed_url(:tags => community.primary_tag_name)) %></li>
               <%- end -%>
           <%- end -%>
       </ul>

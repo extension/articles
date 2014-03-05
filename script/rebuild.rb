@@ -7,21 +7,21 @@ require 'uri'
 
 class Rebuild < Thor
   include Thor::Actions
-  
+
   # these are not the tasks that you seek
   no_tasks do
     # load rails based on environment
-    
+
     def load_rails(environment)
       if !ENV["RAILS_ENV"] || ENV["RAILS_ENV"] == ""
         ENV["RAILS_ENV"] = environment
       end
       require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
     end
-    
+
     def recreate_primary_links(verbose = false)
       # dump the links table
-      Link.connection.execute('truncate table links;')      
+      Link.connection.execute('truncate table links;')
       page_count = 1
       puts "Creating content links for each page"
       Page.all.each do |page|
@@ -33,10 +33,10 @@ class Rebuild < Thor
       end
       return page_count
     end
-    
+
     def recreate_linkings(verbose = false)
       # dump the linkings table
-      Linking.connection.execute('truncate table linkings;')      
+      Linking.connection.execute('truncate table linkings;')
       page_count = 1
       returndata = {}
       puts "Processing in-page links"
@@ -69,7 +69,7 @@ class Rebuild < Thor
       returndata[:errors] = errors
       returndata
     end
-    
+
     def split_array(array, chunks)
       size = array.size
       splitpoint = (size/chunks)
@@ -83,7 +83,7 @@ class Rebuild < Thor
       end
       splits
     end
-    
+
   end
 
 
@@ -98,7 +98,7 @@ class Rebuild < Thor
       puts "\t#{linktype} => #{count}"
     end
   end
-  
+
   desc "touch_pages", "Touch pages will rebuild url titles"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
@@ -109,14 +109,14 @@ class Rebuild < Thor
       puts "Processed Page #{page.id} #{page.url_title}" if (options[:verbose])
     end
   end
-  
+
   desc "link_stats", "Rebuild link stats (doesn't show progress)"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   def link_stats
     load_rails(options[:environment])
     LinkStat.update_counts
   end
-  
+
   desc "links", "Recreate links table (also recreates linkings)"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
@@ -150,7 +150,7 @@ class Rebuild < Thor
       end
     end
   end
-  
+
   desc "sitemaps", "Recreate sitemaps"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   def sitemaps
@@ -187,7 +187,7 @@ class Rebuild < Thor
       sitemap_communities.puts('<?xml version="1.0" encoding="UTF-8"?>')
       sitemap_communities.puts('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
       PublishingCommunity.launched.each do |community|
-        community.cached_content_tags.each do |name|
+        community.tag_names.each do |name|
           sitemap_communities.puts('<url>')
           sitemap_communities.puts("<loc>http://www.extension.org/#{URI.encode(Tag.url_display_name(name))}</loc>")
           sitemap_communities.puts('</url>')
@@ -204,7 +204,7 @@ class Rebuild < Thor
         @pages.each do |page|
           sitemap_pages.puts('<url>')
           sitemap_pages.puts("<loc>http://www.extension.org/pages/#{page.id}/#{page.url_title}</loc>")
-          sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</lastmod>")      
+          sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</lastmod>")
           sitemap_pages.puts('</url>')
         end
         sitemap_pages.puts('</urlset>')
@@ -218,18 +218,18 @@ class Rebuild < Thor
           splits[i-1].each do |page|
             sitemap_pages.puts('<url>')
             sitemap_pages.puts("<loc>http://www.extension.org/pages/#{page.id}/#{page.url_title}</loc>")
-            sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</lastmod>")      
+            sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</lastmod>")
             sitemap_pages.puts('</url>')
           end
           sitemap_pages.puts('</urlset>')
         end
       end
-    end  
+    end
   end
-  
-  
-  
-  
+
+
+
+
 end
 
 Rebuild.start

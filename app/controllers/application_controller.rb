@@ -198,7 +198,7 @@ class ApplicationController < ActionController::Base
     end
 
     if(!Tag::BLACKLIST.include?(content_tag_name))
-      if(@content_tag = Tag.content_tags.find_by_name(Tag.normalizename(content_tag_name)))
+      if(@content_tag = Tag.find_by_name(Tag.normalizename(content_tag_name)))
         session[:content_tag] = @content_tag.name
       end
     end

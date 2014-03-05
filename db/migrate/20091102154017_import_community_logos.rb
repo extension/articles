@@ -27,7 +27,7 @@ class ImportCommunityLogos < ActiveRecord::Migration
     
     # now copads
     Community.notinstitutions.public_list.find(:all).each do |c|
-      content_tag_name = c.primary_content_tag_name
+      content_tag_name = c.primary_tag_name
       if(!content_tag_name.nil?)
         file_name = content_tag_name.gsub(/[,_]/,'').gsub(/ /,'_').downcase
         gif_file = "#{Rails.root.to_s}/public/images/layout/copad_#{file_name}.gif"

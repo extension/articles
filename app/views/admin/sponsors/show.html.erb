@@ -1,11 +1,11 @@
 <div id="admin">
-    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %> &gt; <%= link_to('Sponsors',admin_sponsors_url)  %></p>    
+    <p><%= link_to 'Admin home', :controller=>'/admin', :action => 'index' %> &gt; <%= link_to('Sponsors',admin_sponsors_url)  %></p>
     <h2>Sponsor</h2>
-    
+
     <%= render_inline_logo({:logo => @sponsor.logo, :show_thumbnail => false}) %>
 
     <p>Graphic: <%= link_to(@sponsor.logo.filename, logo_url if @sponsor.image) %></p>
-    <p>Tags: <%= @sponsor.content_tag_names %></p>
+    <p>Tags: <%= @sponsor.tag_names %></p>
 
     <p><%= link_to 'Edit', :action => 'edit', :id => @sponsor %></p>
     <p><%= link_to 'Delete', { :action => 'destroy', :id => @sponsor }, :confirm => 'Are you sure?', :method => :post %></p>

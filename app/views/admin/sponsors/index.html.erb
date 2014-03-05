@@ -6,19 +6,19 @@
     <p>The sponsors will be displayed in this order on the eXtension homepage.</p>
     <div id="sponsor_list">
         <ul id="sortable_list">
-        <% @sponsors.each do |sponsor| %>    
+        <% @sponsors.each do |sponsor| %>
             <li id="item_<%= sponsor.id %>">
                 <span class="sponsor_actions">
                     <span>Name: <%= sponsor.name.blank? ? 'not set' : sponsor.name %></span><br/>
-                    <span>Tags: <%= sponsor.content_tag_names %></span><br/>
+                    <span>Tags: <%= sponsor.tag_names %></span><br/>
                     <span>Level: <%= sponsor.level.blank? ? 'not set' : sponsor.level %></span>
                     <%= link_to("edit", edit_admin_sponsor_url(sponsor)) %>
                     <%= link_to('delete',admin_sponsor_url(sponsor) , {:confirm => 'Are you sure?', :method => :delete, :class => "delete"}) %>
                 </span>
                 <%= render_inline_logo({:logo => sponsor.logo, :show_thumbnail => true}) %>
-                
+
             </li>
         <% end %>
         </ul>
-    </div>  
+    </div>
 </div>

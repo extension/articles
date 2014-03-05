@@ -2,7 +2,7 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 class AdminController < ApplicationController
   before_filter :admin_signin_required
@@ -10,17 +10,17 @@ class AdminController < ApplicationController
   before_filter :www_store_location
 
   layout 'frontporch'
-  
+
   def index
     set_title("eXtension Pubsite Admin")
   end
-    
+
   def manage_topics
     @right_column = false
     set_title("Manage Topics - Pubsite Admin")
     @topics = Topic.find(:all)
   end
-  
+
   def destroy_topic
     if(topic = Topic.find_by_id(params[:id]))
       AdminLog.log_event(current_person, AdminLog::DELETE_TOPIC,{:topicname => topic.name})
@@ -29,7 +29,7 @@ class AdminController < ApplicationController
     flash[:notice] = 'Topic Deleted'
     redirect_to :action => :manage_topics
   end
-  
+
   def create_topic
     topic = Topic.create(params[:topic])
     if(!topic.nil?)
@@ -38,17 +38,17 @@ class AdminController < ApplicationController
     end
     redirect_to :action => :manage_topics
   end
-  
+
   def manage_communities
-    set_title("Manage Communities - Pubsite Admin")    
+    set_title("Manage Communities - Pubsite Admin")
     @communities =  PublishingCommunity.all(:order => 'name')
   end
 
   def manage_institution_logos
     set_title("Manage Institution Logos - Pubsite Admin")
     @institutionslist = BrandingInstitution.all(:order => 'name')
-  end  
-  
+  end
+
   def manage_community_logos
     set_title("Manage Community Logos - Pubsite Admin")
     @communitieslist = PublishingCommunity.all(:order => 'name')
@@ -71,8 +71,8 @@ class AdminController < ApplicationController
         redirect_to(:action => 'manage_institution_logos')
       end
     end
-  end  
-  
+  end
+
   def edit_community_logo
     @community = PublishingCommunity.find_by_id(params[:id])
     if(@community.nil?)
@@ -91,7 +91,7 @@ class AdminController < ApplicationController
       end
     end
   end
-  
+
   def delete_community_logo
     @community = PublishingCommunity.find_by_id(params[:id])
     if(@community.nil?)
@@ -102,7 +102,7 @@ class AdminController < ApplicationController
     flash[:notice] = 'Logo was successfully removed.'
     redirect_to(:action => 'manage_community_logos')
   end
-  
+
   def delete_institution_logo
     @institution = BrandingInstitution.find_by_id(params[:id])
     if(@institution.nil?)
@@ -115,21 +115,21 @@ class AdminController < ApplicationController
   end
 
   def manage_institutions
-    set_title("Manage Institutions - Pubsite Admin")    
+    set_title("Manage Institutions - Pubsite Admin")
     @landgrant_institutions =  BrandingInstitution.all(:include => :location, :order => 'locations.abbreviation')
   end
-    
+
   def manage_locations_office_links
-    set_title("Manage Office Links - Pubsite Admin")    
+    set_title("Manage Office Links - Pubsite Admin")
     @locations =  Location.displaylist
   end
-  
+
   def edit_location_office_link
     set_title('Edit Location Office Link')
     set_title("Edit Location Office Link - Pubsite Admin")
-    @location = Location.find(params[:id])    
+    @location = Location.find(params[:id])
   end
-  
+
   def update_location_office_link
     @location =  Location.find(params['id'])
     oldlink = @location.office_link
@@ -144,7 +144,7 @@ class AdminController < ApplicationController
     redirect_to :action => :manage_locations_office_links
 
   end
-    
+
   def update_public_community
     @community =  PublishingCommunity.find(params['id'])
     @community.public_topic_id = params['community']['public_topic_id']
@@ -162,52 +162,52 @@ class AdminController < ApplicationController
     @community.twitter_widget = params['community']['twitter_widget']
 
     # sanity check tags
-    if(params['community']['content_tag_names'].blank?)
+    if(params['community']['tag_names'].blank?)
       flash[:notice] = "You must specify a resource area tag for publishing communities"
       return(render(:action => "edit_public_community"))
     end
 
     # sanity check tag names
-    this_community_content_tags = @community.tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT)
-    other_community_tags = Tag.community_content_tags({:all => true},true) - this_community_content_tags
+    this_community_tags = @community.tags
+    other_community_tags = Tag.community_tags - this_community_tags
     other_community_tag_names = other_community_tags.map(&:name)
-    updatelist = Tag.castlist_to_array(params['community']['content_tag_names'],true)
+    updatelist = Tag.castlist_to_array(params['community']['tag_names'],true)
     invalid_tags = []
     updatelist.each do |tagname|
       if(other_community_tag_names.include?(tagname) or Tag::CONTENTBLACKLIST.include?(tagname))
         invalid_tags << tagname
       end
     end
-    
+
     if(!invalid_tags.blank?)
       flash[:notice] = "The following tag names are in use by other communities or are not allowed for community use: #{invalid_tags.join(Tag::JOINER)}"
       return(render(:action => "edit_public_community"))
     end
-        
+
     if @community.save
       flash[:notice] = 'Community Updated'
-      @community.content_tag_names=(params['community']['content_tag_names'])
+      @community.tag_names=(params['community']['tag_names'])
       # update create resource tags
       @community.update_create_group_resource_tags
       AdminLog.log_event(current_person, AdminLog::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
       # cache updates - this is kind of a hack
       if(@community.is_launched_changed?)
-        Tag.community_content_tags({:launchedonly => true},true)
+        Tag.community_tags({:launchedonly => true},true)
       end
-              
+
       redirect_to :action => :manage_communities
     else
       flash[:notice] = 'Error updating community'
       return(render(:action => "edit_public_community"))
     end
   end
-    
+
   def edit_public_community
     set_title('Edit Community Public Options')
     set_title("Edit Community - Pubsite Admin")
     @community = PublishingCommunity.find(params[:id])
   end
-  
+
   def update_public_institution
     @institution =  BrandingInstitution.find(params['id'])
     @institution.name = params['institution']['name']
@@ -217,29 +217,29 @@ class AdminController < ApplicationController
     if @institution.save
       flash[:notice] = 'Institution Updated'
       AdminLog.log_event(current_person, AdminLog::UPDATE_PUBLIC_INSTITUTION,{:institution_id => @institution.id, :institution_name => @institution.name})
-      
+
     else
       flash[:notice] = 'Error updating institution'
     end
     redirect_to :action => :manage_institutions
   end
-    
+
   def edit_public_institution
     set_title('Edit Institution Public Options')
     set_title("Edit Institution - Pubsite Admin")
     @institution = BrandingInstitution.find(params[:id])
   end
-   
+
   def special_pages
-  end  
-  
+  end
+
   def category_tag_redirects
   end
-    
+
   # list recent notifications
   def notifications
     dateinterval = params[:dateinterval] || 'withinlastweek'
     @notifications = Notification.find(:all, :include => [:user,:creator], :conditions => Notification.build_date_condition({:dateinterval => dateinterval}), :order => 'created_at DESC')
   end
-  
+
 end

@@ -1,9 +1,9 @@
 <div id="admin">
     <p><%= link_to 'Admin home', :action => :index%></p>
-    <h1>Manage Communities</h1>  
+    <h1>Manage Communities</h1>
   <div>
   <p>This list reflects the "eXtension Community of Practice" and other public communities created in the <%= link_to('People application', 'https://people.extension.org') %>. To add a community to this page (and the Public Site), please create a community in People.</p>
-  
+
   <h2>eXtension Publishing Communities</h2>
   <table class="table">
       <tr>
@@ -22,13 +22,13 @@
           <td><%= community.name %></td>
           <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
           <td <%= community.topic.nil? ? 'class="notset"' : '' %>><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
-          <td <%= community.cached_content_tags.blank? ? 'class="notset"' : '' %>><%= community.cached_content_tags.blank? ? 'not set' : community.cached_content_tags.join(Tag::JOINER) %></td></tr>
+          <td <%= community.tag_names.blank? ? 'class="notset"' : '' %>><%= community.tag_names.blank? ? 'not set' : community.tag_names.join(Tag::JOINER) %></td></tr>
       <% end%>
   </table>
-  
-  
-  
+
+
+
   </div>
 
-  
+
 </div>
