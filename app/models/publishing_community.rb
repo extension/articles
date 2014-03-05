@@ -6,7 +6,6 @@
 #  see LICENSE file or view at https://github.com/extension/darmok/wiki/LICENSE
 
 class PublishingCommunity < ActiveRecord::Base
-  serialize :cached_content_tag_data
   extend ConditionExtensions
   include Ordered
 
@@ -73,51 +72,6 @@ class PublishingCommunity < ActiveRecord::Base
     return taglist.join(Tag::JOINER)
   end
 
-  # returns an array of the names
-  def cached_content_tags(force_cache_update=false)
-    if(self.cached_content_tag_data.blank? or self.cached_content_tag_data[:primary_tag].blank? or self.cached_content_tag_data[:all_tags].blank? or force_cache_update)
-      # get primary content tag first - should be only one - and if not, we'll force it anyway
-      primary_tags = tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT_PRIMARY)
-      if(!primary_tags.blank?)
-        tagarray = []
-        primary_content_tag = primary_tags[0]
-        tagarray << primary_content_tag
-        # get the rest...
-        other_content_tags = tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT)
-        other_content_tags.each do |tag|
-          if(tag != primary_content_tag)
-            tagarray << tag
-          end
-        end
-        tagarray += other_content_tags if !other_content_tags.blank?
-      else
-        tagarray = tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT)
-      end
-
-      cachedata = {}
-      if(!tagarray.blank?)
-        cachedata[:primary_tag] = {:id => tagarray[0].id, :name => tagarray[0].name}
-        cachedata[:all_tags] = {}
-        tagarray.map{|t| cachedata[:all_tags][t.id] = t.name}
-      end
-      update_attribute(:cached_content_tag_data, cachedata)
-    else
-      cachedata =  self.cached_content_tag_data
-    end
-
-    returntagarray = []
-    if(!cachedata[:primary_tag].nil?)
-      primary_tag_name = cachedata[:primary_tag][:name]
-      returntagarray << primary_tag_name
-      cachedata[:all_tags].each do |id,name|
-        if(name != primary_tag_name)
-          returntagarray << name
-        end
-      end
-    end
-    return returntagarray
-  end
-
 
   def ask_an_expert_group_url
     if(self.aae_group_id.blank?)
@@ -135,7 +89,7 @@ class PublishingCommunity < ActiveRecord::Base
     end
 
     insert_values = []
-    self.cached_content_tags(true).each do |content_tag|
+    self.tag_names.each do |content_tag|
       if(content_tag == self.primary_tag_name)
         primary = 1
       else
