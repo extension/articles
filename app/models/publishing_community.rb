@@ -69,7 +69,7 @@ class PublishingCommunity < ActiveRecord::Base
       end
     end
 
-    return taglist.join(Tag::JOINER)
+    return updatelist.join(Tag::JOINER)
   end
 
 

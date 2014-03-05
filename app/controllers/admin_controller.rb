@@ -168,7 +168,7 @@ class AdminController < ApplicationController
     end
 
     # sanity check tag names
-    this_community_tags = @community.tags_by_ownerid_and_kind(Person.systemuserid,Tagging::CONTENT)
+    this_community_tags = @community.tags
     other_community_tags = Tag.community_tags - this_community_tags
     other_community_tag_names = other_community_tags.map(&:name)
     updatelist = Tag.castlist_to_array(params['community']['tag_names'],true)
