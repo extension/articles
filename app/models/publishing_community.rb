@@ -45,7 +45,7 @@ class PublishingCommunity < ActiveRecord::Base
   def tag_names
     returntags = []
     returntags << primary_tag_name
-    returntags += tags.pluck("tags.name")
+    returntags += tags.map(&:name)
     returntags.uniq.compact
   end
 

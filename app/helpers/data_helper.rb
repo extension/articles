@@ -54,10 +54,10 @@ module DataHelper
   end
 
   def link_to_public_community(community)
-    if(community.tag_names.empty?)
-      return community.public_name
+    if(community.primary_tag_name.present?)
+      link_to(h(community.public_name), site_index_url(:content_tag => content_tag_url_display_name(community.primary_tag_name)))
     else
-      return link_to(h(community.public_name), site_index_url(:content_tag => content_tag_url_display_name(community.primary_tag_name)))
+      community.public_name
     end
   end
 
