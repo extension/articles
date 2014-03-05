@@ -246,7 +246,7 @@ class Page < ActiveRecord::Base
   # returns it from memcache or from an association call to the db
   #
   # @return [Array] array of content tag names
-  def content_tags
+  def tags_minus_contentblacklist
     self.tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
   end
 
@@ -256,24 +256,17 @@ class Page < ActiveRecord::Base
   # @return [Array] array of content tag names
   # @param [Boolean] forcecacheupdate force caching update
   def tag_names
-    self.content_tags.map{|t| t.name}
+    self.tags_minus_contentblacklist.map{|t| t.name}
   end
 
-  def cached_tag_field(ownerid,kind)
-    if(ownerid == Person.systemuserid and kind == Tagging::CONTENT)
-      return 'cached_content_tags'
-    else
-      return nil
-    end
-  end
 
   # return an array of the content tag names for this page, filtering out the blacklist and compared to the community content tags
   # returns it from memcache or from an association call to the db (via self.content_tags)
   #
   # @return [Array] array of content tag names
   # @param [Boolean] forcecacheupdate force caching update
-  def community_tags(forcecacheupdate = false)
-    self.content_tags(forcecacheupdate) & Tag.community_tags({:launchedonly => true})
+  def community_tags
+    self.tags_minus_contentblacklist & Tag.community_tags({:launchedonly => true})
   end
 
   def community_tag_names
@@ -292,54 +285,50 @@ class Page < ActiveRecord::Base
   # @option options [Date] :calendar_date for Events filtering
   # @option options [Integer] :within_days for Events filtering
   # @option options [String] :tag_operator 'and' or 'or' matching for content tags
-  # @param [Boolean] forcecacheupdate force caching update
-  def self.recent_content(options = {},forcecacheupdate=false)
-    cache_key = self.get_cache_key(this_method,options)
-    Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
-      if(options[:datatypes].nil? or options[:datatypes] == 'all')
-        datatypes = ['Article','Faq','News']
-      elsif(options[:datatypes].is_a?(Array))
-        datatypes = options[:datatypes]
-      else
-        datatypes = [options[:datatypes]]
-      end
-
-      # build the scope
-      recent_content_scope = Page.scoped({})
-      recent_content_scope = recent_content_scope
-      # datatypes
-      datatype_conditions = self.datatype_conditions(datatypes)
-      if(!datatype_conditions.blank?)
-        recent_content_scope = recent_content_scope.where(datatype_conditions)
-      end
-      # content tags
-      if(!options[:content_tags].nil?)
-        if(options[:tag_operator] and options[:tag_operator] == 'and')
-          recent_content_scope = recent_content_scope.tagged_with(options[:content_tags])
-        else
-          recent_content_scope = recent_content_scope.tagged_with_any(options[:content_tags])
-        end
-      elsif(!options[:content_tag].nil?)
-        if(options[:content_tag].is_a?(Tag))
-          tagname = options[:content_tag].name
-        else
-          tagname = options[:content_tag]
-        end
-        recent_content_scope = recent_content_scope.tagged_with(options[:content_tag].name)
-      end
-
-      # limit?
-      if(options[:limit])
-        recent_content_scope = recent_content_scope.limit(options[:limit])
-      end
-      # ordering
-      if(options[:order])
-        recent_content_scope = recent_content_scope.ordered(options[:order])
-      else
-        recent_content_scope = recent_content_scope.ordered
-      end
-      recent_content_scope.all
+  def self.recent_content(options = {})
+    if(options[:datatypes].nil? or options[:datatypes] == 'all')
+      datatypes = ['Article','Faq','News']
+    elsif(options[:datatypes].is_a?(Array))
+      datatypes = options[:datatypes]
+    else
+      datatypes = [options[:datatypes]]
     end
+
+    # build the scope
+    recent_content_scope = Page.scoped({})
+    recent_content_scope = recent_content_scope
+    # datatypes
+    datatype_conditions = self.datatype_conditions(datatypes)
+    if(!datatype_conditions.blank?)
+      recent_content_scope = recent_content_scope.where(datatype_conditions)
+    end
+    # content tags
+    if(!options[:content_tags].nil?)
+      if(options[:tag_operator] and options[:tag_operator] == 'and')
+        recent_content_scope = recent_content_scope.tagged_with(options[:content_tags])
+      else
+        recent_content_scope = recent_content_scope.tagged_with_any(options[:content_tags])
+      end
+    elsif(!options[:content_tag].nil?)
+      if(options[:content_tag].is_a?(Tag))
+        tagname = options[:content_tag].name
+      else
+        tagname = options[:content_tag]
+      end
+      recent_content_scope = recent_content_scope.tagged_with(options[:content_tag].name)
+    end
+
+    # limit?
+    if(options[:limit])
+      recent_content_scope = recent_content_scope.limit(options[:limit])
+    end
+    # ordering
+    if(options[:order])
+      recent_content_scope = recent_content_scope.ordered(options[:order])
+    else
+      recent_content_scope = recent_content_scope.ordered
+    end
+    recent_content_scope.all
   end
 
   def self.datatype_conditions(datatypes,options = {})
@@ -375,16 +364,12 @@ class Page < ActiveRecord::Base
 
 
 
-  def self.main_feature_list(options = {},forcecacheupdate=false)
-   # OPTIMIZE: keep an eye on this caching
-   cache_key = self.get_cache_key(this_method,options)
-   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+  def self.main_feature_list(options = {})
     if(options[:content_tag].nil?)
       self.newsicles.bucketed_as('feature').ordered.limit(options[:limit]).all
     else
       self.newsicles.bucketed_as('feature').tagged_with(options[:content_tag].name).ordered.limit(options[:limit]).all
     end
-   end
   end
 
   # get featured articles that are diverse across communities (ie. make sure only one article per community is returned up to limit # of articles).
@@ -395,62 +380,57 @@ class Page < ActiveRecord::Base
   # @option options [Integer] :limit query limit
   # @option opts [ContentTag] :content_tag ContentTag to search for
   # @param [Boolean] forcecacheupdate force caching update
-  def self.diverse_feature_list(options = {}, forcecacheupdate=false)
-      communities_represented = []
-      pages_to_return = []
+  def self.diverse_feature_list(options = {})
+    communities_represented = []
+    pages_to_return = []
 
-      # get a list of launched communities
-      launched_communitylist = PublishingCommunity.launched.all(:order => 'name')
-      launched_community_ids = launched_communitylist.map(&:id).join(',')
+    # get a list of launched communities
+    launched_communitylist = PublishingCommunity.launched.all(:order => 'name')
+    launched_community_ids = launched_communitylist.map(&:id).join(',')
 
-      # limit to last Settings.recent_feature_limit days so we aren't pulling the full list every single time
-      # converting to a date to take advantage of mysql query caching for the day
-      only_since = Time.zone.now.to_date - Settings.recent_feature_limit.day
+    # limit to last Settings.recent_feature_limit days so we aren't pulling the full list every single time
+    # converting to a date to take advantage of mysql query caching for the day
+    only_since = Time.zone.now.to_date - Settings.recent_feature_limit.day
 
-      # get articles and their communities - joining them up by content tags
-      # we have to do this group concat here because a given article may belong
-      # to more than one community
-      pagelist = self.articles.select("#{self.table_name}.*, GROUP_CONCAT(publishing_communities.id) as community_ids_string")
-      .joins([:content_buckets, {:tags => :publishing_communities}])
-      .where("DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}'")
-      .where("publishing_communities.id IN (#{launched_community_ids})")
-      .where("content_buckets.name = 'feature'")
-      .group("#{self.table_name}.id")
-      .order("#{self.table_name}.source_updated_at DESC")
+    # get articles and their communities - joining them up by content tags
+    # we have to do this group concat here because a given article may belong
+    # to more than one community
+    pagelist = self.articles.select("#{self.table_name}.*, GROUP_CONCAT(publishing_communities.id) as community_ids_string")
+    .joins([:content_buckets, {:tags => :publishing_communities}])
+    .where("DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}'")
+    .where("publishing_communities.id IN (#{launched_community_ids})")
+    .where("content_buckets.name = 'feature'")
+    .group("#{self.table_name}.id")
+    .order("#{self.table_name}.source_updated_at DESC")
 
-      pagelist.each do |page|
-        community_ids = page.community_ids_string.split(',')
+    pagelist.each do |page|
+      community_ids = page.community_ids_string.split(',')
 
-        if community_ids.length > 0
-          # if we have already processed an article from the tags applied to this article, go to the next one
-          if (community_ids & communities_represented) != []
-            next
-          else
-            pages_to_return << page
-            communities_represented.concat(community_ids)
-          end
-        else
+      if community_ids.length > 0
+        # if we have already processed an article from the tags applied to this article, go to the next one
+        if (community_ids & communities_represented) != []
           next
+        else
+          pages_to_return << page
+          communities_represented.concat(community_ids)
         end
-        # end of are there associated communities
-        break if pages_to_return.length == options[:limit]
+      else
+        next
       end
-      # end of article loop
-      pages_to_return
-
+      # end of are there associated communities
+      break if pages_to_return.length == options[:limit]
+    end
+    # end of article loop
+    pages_to_return
   end
 
 
-  def self.main_lessons_list(options = {},forcecacheupdate=false)
-   # OPTIMIZE: keep an eye on this caching
-   cache_key = self.get_cache_key(this_method,options)
-   Rails.cache.fetch(cache_key, :force => forcecacheupdate, :expires_in => self.content_cache_expiry) do
+  def self.main_lessons_list(options = {})
     if(options[:content_tag].nil?)
       self.articles.bucketed_as('learning lessons').ordered.limit(options[:limit]).all
     else
       self.articles.bucketed_as('learning lessons').tagged_with(options[:content_tag].name).ordered.limit(options[:limit]).all
     end
-   end
   end
 
   def self.contents_for_content_tag(options = {})
@@ -598,7 +578,7 @@ class Page < ActiveRecord::Base
     # even if the content didn't change
 
     if(!entry_category_terms.blank?)
-      page.replace_tags_with_and_cache(entry_category_terms,Person.systemuserid,Tagging::CONTENT)
+      page.replacetags_fromlist(entry_category_terms)
       page.put_in_buckets(entry_category_terms)
 
       # check for homage replacement
@@ -1023,6 +1003,19 @@ class Page < ActiveRecord::Base
     with_scope do
       includes([:link_stat,:links]).where("links.host = 'is-nri.com'")
     end
+  end
+
+  def replacetags_fromlist(taglist)
+    replacelist = Tag.castlist_to_array(taglist)
+    newtags = []
+    replacelist.each do |tagname|
+      if(tag = Tag.where(name: tagname).first)
+        newtags << tag
+      else
+        newtags << Tag.create(name: tagname)
+      end
+    end
+    self.tags = newtags
   end
 
 end

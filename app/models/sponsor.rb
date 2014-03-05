@@ -38,8 +38,21 @@ class Sponsor < ActiveRecord::Base
   # this will silently strip out content tags in use by other communities
   # it's up to the controller level to deal with the warnings on this
   def tag_names=(taglist)
-    self.replace_tags(taglist)
+    self.replacetags_fromlist(taglist)
     self.tag_names
+  end
+
+  def replacetags_fromlist(taglist)
+    replacelist = Tag.castlist_to_array(taglist)
+    newtags = []
+    replacelist.each do |tagname|
+      if(tag = Tag.where(name: tagname).first)
+        newtags << tag
+      else
+        newtags << Tag.create(name: tagname)
+      end
+    end
+    self.tags = newtags
   end
 
 end

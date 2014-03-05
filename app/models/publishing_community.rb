@@ -44,7 +44,10 @@ class PublishingCommunity < ActiveRecord::Base
   # returns a comma delimited of the tags - with the primary content tag name first in the list
   # used for community editing in the administrative interface for public communities
   def tag_names
-    self.tags.pluck("tags.name").join(Tag::JOINER)
+    returntags = []
+    returntags << primary_tag_name
+    returntags += tags.pluck("tags.name")
+    returntags.uniq.compact
   end
 
   # this will silently strip out content tags in use by other communities
@@ -57,29 +60,15 @@ class PublishingCommunity < ActiveRecord::Base
     updatelist = Tag.castlist_to_array(taglist,true)
     primary = updatelist[0]
 
-    # primary tag - first in the list
-    if(!other_community_tag_names.include?(primary) and !Tag::CONTENTBLACKLIST.include?(primary))
-      self.replace_tags(primary,Person.systemuserid,Tagging::CONTENT_PRIMARY)
-    end
-
     # okay, do all the tags as CONTENT taggings - updating the cached_tags for search
-    self.replace_tags(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))},Person.systemuserid,Tagging::CONTENT)
+    self.replacetags_fromlist(updatelist.reject{|tname| (other_community_tag_names.include?(tname) or Tag::CONTENTBLACKLIST.include?(tname))})
 
-    # update the Tag model's community_tags
-    cctags = Tag.community_tags
-    if(self.is_launched?)
-      Tag.community_tags({:launchedonly => true})
+    # after the tag was potentially created, set the primary tag setting
+    if(!other_community_tag_names.include?(primary) and !Tag::CONTENTBLACKLIST.include?(primary))
+      if(primary_tag = Tag.where(name: primary).first)
+        self.update_attribute(:primary_tag_id, primary_tag.id)
+      end
     end
-
-    # now update the cached content community for each tag
-    cctags.each do |t|
-      t.content_community
-    end
-
-    # now update my cached_content_tags
-    taglist = self.cached_content_tags(true)
-
-
 
     return taglist.join(Tag::JOINER)
   end
@@ -139,32 +128,47 @@ class PublishingCommunity < ActiveRecord::Base
   end
 
 
-def update_create_group_resource_tags
-  drupaldatabase = Settings.create_database
-  if(self.drupal_node_id.blank?)
-    return true
-  end
-
-  insert_values = []
-  self.cached_content_tags(true).each do |content_tag|
-    if(content_tag == self.primary_tag_name)
-      primary = 1
-    else
-      primary = 0
+  def update_create_group_resource_tags
+    drupaldatabase = Settings.create_database
+    if(self.drupal_node_id.blank?)
+      return true
     end
-    insert_values << "(#{self.drupal_node_id},#{ActiveRecord::Base.quote_value(self.name)},#{self.id},#{ActiveRecord::Base.quote_value(content_tag)},#{primary})"
+
+    insert_values = []
+    self.cached_content_tags(true).each do |content_tag|
+      if(content_tag == self.primary_tag_name)
+        primary = 1
+      else
+        primary = 0
+      end
+      insert_values << "(#{self.drupal_node_id},#{ActiveRecord::Base.quote_value(self.name)},#{self.id},#{ActiveRecord::Base.quote_value(content_tag)},#{primary})"
+    end
+
+    if(!insert_values.blank?)
+      insert_sql = "INSERT INTO #{drupaldatabase}.group_resource_tags (nid,community_name,community_id,resource_tag_name,is_primary_tag)"
+      insert_sql += " VALUES #{insert_values.join(',')}"
+
+      self.connection.execute("DELETE FROM #{drupaldatabase}.group_resource_tags WHERE nid = #{self.drupal_node_id}")
+      self.connection.execute(insert_sql)
+    end
+
+    return true;
   end
 
-  if(!insert_values.blank?)
-    insert_sql = "INSERT INTO #{drupaldatabase}.group_resource_tags (nid,community_name,community_id,resource_tag_name,is_primary_tag)"
-    insert_sql += " VALUES #{insert_values.join(',')}"
-
-    self.connection.execute("DELETE FROM #{drupaldatabase}.group_resource_tags WHERE nid = #{self.drupal_node_id}")
-    self.connection.execute(insert_sql)
+  def replacetags_fromlist(taglist)
+    replacelist = Tag.castlist_to_array(taglist)
+    newtags = []
+    replacelist.each do |tagname|
+      if(tag = Tag.where(name: tagname).first)
+        newtags << tag
+      else
+        newtags << Tag.create(name: tagname)
+      end
+    end
+    self.tags = newtags
   end
 
-  return true;
-end
+
 
 
 end

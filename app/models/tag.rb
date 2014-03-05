@@ -44,7 +44,6 @@ class Tag < ActiveRecord::Base
     self.class.url_display_name(self.name)
   end
 
-  # TODO: review.  This is kind of a hack that might should be done differently
   def content_community
     self.publishing_communities.first
   end

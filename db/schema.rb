@@ -354,7 +354,6 @@ ActiveRecord::Schema.define(:version => 20140305154434) do
     t.integer  "tag_id",                      :null => false
     t.integer  "taggable_id",                 :null => false
     t.string   "taggable_type", :limit => 32
-    t.string   "tag_display",                 :null => false
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at"
   end

@@ -37,7 +37,7 @@ class PreviewController < ApplicationController
       @page_title = "Launch checklist for content tagged \"#{@content_tag.name}\" (#{@community.name})"
       # youth styling
       @youth = true if @topic and @topic.name == 'Youth'
-      @other_community_tag_names = @community.cached_content_tags(true).reject{|name| name == @content_tag.name}
+      @other_community_tag_names = @community.tag_names.reject{|name| name == @content_tag.name}
       # TODO: sponsor list?
     end
 
