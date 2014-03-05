@@ -8,7 +8,7 @@
 class Topic < ActiveRecord::Base
   COMMUNITY_ASSOCIATION_CACHE_EXPIRY = 24.hours
 
-  has_many :publishing_communities, :foreign_key => 'public_topic_id', :order => 'publishing_communities.public_name'
+  has_many :publishing_communities, :foreign_key => 'public_topic_id'
 
   def launched_communities(forcecacheupdate=false)
     self.publishing_communities(:include => :taggings, :conditions => "publishing_communities.is_launched = TRUE", :order => 'publishing_communities.public_name')
@@ -28,13 +28,13 @@ class Topic < ActiveRecord::Base
 
 
   def self.topics_list
-    self.includes(:publishing_communities).where("publishing_communities.is_launched = TRUE").order("topics.name ASC, publishing_communities.public_name").uniq
+    self.joins(:publishing_communities).where("publishing_communities.is_launched = TRUE").order("topics.name ASC, publishing_communities.public_name")
   end
 
   def self.frontporch_hashlist
     topics_hash = {}
     topics_list.each do |topic|
-      topics_hash[topic.name] = topic.publishing_communities
+      topics_hash[topic.name] = topic.publishing_communities.order('publishing_communities.public_name')
     end
     topics_hash
   end
