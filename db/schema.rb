@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130805115553) do
+ActiveRecord::Schema.define(:version => 20140305154434) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -281,7 +281,6 @@ ActiveRecord::Schema.define(:version => 20130805115553) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "page_source_id"
-    t.text     "cached_content_tags"
     t.text     "old_source_url"
     t.boolean  "event_all_day"
     t.text     "alternate_source_url"
@@ -330,6 +329,7 @@ ActiveRecord::Schema.define(:version => 20130805115553) do
     t.string   "gplus_handle"
     t.text     "twitter_widget"
     t.boolean  "show_donation",           :default => true
+    t.integer  "primary_tag_id"
   end
 
   create_table "special_pages", :force => true do |t|
@@ -351,21 +351,15 @@ ActiveRecord::Schema.define(:version => 20130805115553) do
   end
 
   create_table "taggings", :force => true do |t|
-    t.integer  "tag_id",                                         :null => false
-    t.integer  "taggable_id",                                    :null => false
-    t.string   "taggable_type",     :limit => 32
-    t.string   "tag_display",                                    :null => false
-    t.integer  "owner_id",                                       :null => false
-    t.integer  "weight",                          :default => 1, :null => false
-    t.datetime "created_at",                                     :null => false
+    t.integer  "tag_id",                      :null => false
+    t.integer  "taggable_id",                 :null => false
+    t.string   "taggable_type", :limit => 32
+    t.string   "tag_display",                 :null => false
+    t.datetime "created_at",                  :null => false
     t.datetime "updated_at"
-    t.integer  "tagging_kind"
-    t.string   "old_taggable_type"
-    t.integer  "old_taggable_id"
   end
 
-  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "tagging_kind", "owner_id"], :name => "taggingindex", :unique => true
-  add_index "taggings", ["taggable_id", "taggable_type", "tagging_kind"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_tagging_kind"
+  add_index "taggings", ["taggable_id", "taggable_type", "tag_id"], :name => "taggingindex", :unique => true
 
   create_table "tags", :force => true do |t|
     t.string   "name",       :null => false

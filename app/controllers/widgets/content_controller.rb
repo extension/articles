@@ -13,7 +13,7 @@ class Widgets::ContentController < ApplicationController
   
   # page with content widget builder
   def index
-    @launched_tags = Tag.community_content_tags({:launchedonly => true})
+    @launched_tags = Tag.community_tags({:launchedonly => true})
     @limit = DEFAULT_LIMIT
     @width = DEFAULT_WIDTH
     @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :limit => DEFAULT_LIMIT, :width => DEFAULT_WIDTH, :content_types => 'articles,news,faqs'}\"></script>"  

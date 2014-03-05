@@ -20,7 +20,7 @@ class MainController < ApplicationController
 
     # articles tagged 'front page' in Create will be eligible for front page display. the one with the latest source updated timestamp will win.
     # in the case that one does not exist, it will fall back to the about page.
-    @featured_articles = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered.limit(1)
+    @featured_articles = Page.articles.tagged_with(['front page', 'feature']).ordered.limit(1)
     if @featured_articles.blank?
       @featured_articles << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
     end
@@ -28,7 +28,7 @@ class MainController < ApplicationController
     # Articles tagged with 'front page' and 'bio in Create will be eligible for the front page bio display.
     # The one with the latest source updated timestamp will win.
     # in the case that one does not exist, the bio area will just collapse
-    @featured_bio = Page.articles.tagged_with_all_content_tags(['front page', 'bio']).ordered.first
+    @featured_bio = Page.articles.tagged_with(['front page', 'bio']).ordered.first
 
     @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
     @ask_two_point_oh_form = Settings.ask_two_point_oh_form
@@ -58,7 +58,7 @@ class MainController < ApplicationController
 
     if(!@content_tag.nil?)
       set_title("Content tagged \"#{@content_tag.name}\"")
-      @pages = Page.tagged_with_content_tag(@content_tag.name).ordered(order).page(params[:page])
+      @pages = Page.tagged_with(@content_tag.name).ordered(order).page(params[:page])
     else
       set_title("Recent Content")
       @pages = Page.ordered(order).page(params[:page])
@@ -115,13 +115,13 @@ class MainController < ApplicationController
 
     set_title(@community.public_name)
     @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)
-    community_content_tag_names = @community.content_tag_names
-    @sponsors = Sponsor.tagged_with_any_content_tags(community_content_tag_names).prioritized
+    community_tag_names = @community.tag_names
+    @sponsors = Sponsor.tagged_with_any(community_tag_names).prioritized
     @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @community_highlights = Page.main_feature_list({:content_tag => @content_tag, :limit => 8})
     flash.now[:googleanalytics] = "/" + @content_tag.name.gsub(' ','_')
     flash.now[:googleanalyticsresourcearea] = @content_tag.name.gsub(' ','_')
-    @featured_bio = Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).offset(rand(Page.articles.tagged_with_all_content_tags(['bio', @content_tag.name]).length)).first
+    @featured_bio = Page.articles.tagged_with(['bio', @content_tag.name]).offset(rand(Page.articles.tagged_with(['bio', @content_tag.name]).length)).first
 
     return render(:template => 'main/community_landing')
   end
@@ -146,7 +146,7 @@ class MainController < ApplicationController
   def blog
     @page_title = "Recently Featured"
     order = "source_updated_at DESC"
-    @pages = Page.articles.tagged_with_all_content_tags(['front page', 'feature']).ordered(order).page(params[:page]).per(10)
+    @pages = Page.articles.tagged_with(['front page', 'feature']).ordered(order).page(params[:page]).per(10)
     if @pages.blank?
       @pages << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
     end

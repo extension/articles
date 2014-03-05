@@ -9,11 +9,11 @@ class CreatePrimaryContentTag < ActiveRecord::Migration
     
     Community.all.each do |c|
       if(!fixcommunities[c.id].nil?)
-        c.content_tag_names=(fixcommunities[c.id])
+        c.tag_names=(fixcommunities[c.id])
       else
         content_tags = c.tags_by_ownerid_and_kind(User.systemuserid,Tag::CONTENT)
         if(!content_tags.blank?)
-          c.content_tag_names=(content_tags.map(&:name))
+          c.tag_names=(content_tags.map(&:name))
         end
       end
     end

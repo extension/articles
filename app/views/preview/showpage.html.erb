@@ -5,8 +5,8 @@
 		<h1 id="article_title"><%= @article.title %></h1>
 		<div class='infobar bordered clearfix'>
 		  
-		<% if !@community_content_tags.blank? %>  
-		<%= @community_content_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ').html_safe  %>
+		<% if !@community_tags.blank? %>  
+		<%= @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ').html_safe  %>
 		<% end %>
       
       <span><%= micro_time_print(@article.updated_at, 'updated').html_safe %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.fullpath + "/print/"), :class => "print" %></span>
@@ -22,9 +22,9 @@
 		<div class='row'>
   		<div class='article-info span6'>
   			<h3 class='bordered'>Browse related by Tag</h3>
-  			<%- if @page_content_tag_names -%>
+  			<%- if @page_tag_names -%>
           <p class="caption publictags">
-            <%= @page_content_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag)).html_safe }.join(', ').html_safe %>
+            <%= @page_tag_names.collect{|tag| link_to tag, category_tag_index_url(content_tag_url_display_name(tag)).html_safe }.join(', ').html_safe %>
           </p>
         <%- end -%>
   		</div>

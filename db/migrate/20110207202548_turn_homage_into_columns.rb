@@ -11,8 +11,8 @@ class TurnHomageIntoColumns < ActiveRecord::Migration
     # loop through and get the current homage articles, if they exist
     current_homage_articles = {}
     communitylist.each do |community|
-      if(primary_content_tag_name = community.primary_content_tag_name)
-        current_homage_articles[community] = Article.bucketed_as('homage').tagged_with_content_tag(primary_content_tag_name).ordered.first
+      if(primary_tag_name = community.primary_tag_name)
+        current_homage_articles[community] = Article.bucketed_as('homage').tagged_with(primary_tag_name).ordered.first
       end
     end
 

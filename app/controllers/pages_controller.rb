@@ -144,23 +144,23 @@ class PagesController < ApplicationController
 
 
     # get the tags on this article that correspond to community content tags
-    @page_content_tag_names = @page.cached_content_tag_names
+    @page_tag_names = @page.tag_names
     @page_bucket_names = @page.content_buckets.map(&:name)
 
-    if(!@page_content_tag_names.blank?)
+    if(!@page_tag_names.blank?)
       # news check to set the meta tags for noindex
       @published_content = false if (@page.indexed == Page::NOT_INDEXED)
 
       # get the tags on this article that are content tags on communities
-      @community_content_tag_names = @page.community_content_tag_names
+      @community_tag_names = @page.community_tag_names
 
-      if(!@community_content_tag_names.blank?)
-        @sponsors = Sponsor.tagged_with_any_content_tags(@community_content_tag_names).prioritized
+      if(!@community_tag_names.blank?)
+        @sponsors = Sponsor.tagged_with_any(@community_tag_names).prioritized
         # loop through the list, and see if one of these matches my @community already
         # if so, use that, else, just use the first in the list
-        use_content_tag_name = @community_content_tag_names.sample
-        @community_content_tag_names.each do |community_content_tag_name|
-          if(@community and @community.content_tag_names.include?(community_content_tag_name))
+        use_content_tag_name = @community_tag_names.sample
+        @community_tag_names.each do |community_content_tag_name|
+          if(@community and @community.tag_names.include?(community_content_tag_name))
             use_content_tag_name = community_content_tag_name
           end
         end
@@ -171,7 +171,7 @@ class PagesController < ApplicationController
         @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
 
         @page_communities = []
-        @community_content_tag_names.each do |tagname|
+        @community_tag_names.each do |tagname|
           if(tag = Tag.find_by_name(tagname))
             if(community = tag.content_community)
               @page_communities << community
@@ -200,9 +200,9 @@ class PagesController < ApplicationController
     end
 
 
-    if(!@community_content_tag_names.blank? and !@page_content_tag_names.blank?)
-      flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page_content_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase})
-      flash.now[:googleanalyticsresourcearea] = @community_content_tag_names[0].gsub(' ','_')
+    if(!@community_tag_names.blank? and !@page_tag_names.blank?)
+      flash.now[:googleanalytics] = @page.id_and_link(true,{:tags => @page_tag_names.join(',').gsub(' ','_'), :content_types => @page.datatype.downcase})
+      flash.now[:googleanalyticsresourcearea] = @community_tag_names[0].gsub(' ','_')
     end
   end
 
@@ -233,9 +233,9 @@ class PagesController < ApplicationController
     pagelist_scope = Page.scoped({})
     if(!alltags)
       if(taglist_operator and taglist_operator == 'and')
-        pagelist_scope = pagelist_scope.tagged_with_all_content_tags(content_tags)
+        pagelist_scope = pagelist_scope.tagged_with(content_tags)
       else
-        pagelist_scope = pagelist_scope.tagged_with_any_content_tags(content_tags)
+        pagelist_scope = pagelist_scope.tagged_with_any(content_tags)
       end
     end
 

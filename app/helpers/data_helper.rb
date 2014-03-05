@@ -2,7 +2,7 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 require 'fastimage'
 
@@ -15,18 +15,18 @@ module DataHelper
     if(params[:event_state])
       make_a_link_params << "event_state=#{params[:event_state]}"
     end
-    
+
     if(params[:year] and params[:month])
       make_a_link_params << "year=#{params[:year]}"
       make_a_link_params << "month=#{params[:month]}"
     end
-    
+
     if(!make_a_link_params.blank?)
       make_a_link = "\"/\" + this.value + \"/#{params[:action]}?#{make_a_link_params.join('&')}\""
     else
       make_a_link = "\"/\" + this.value + \"/#{params[:action]}\""
     end
-    
+
     communities = PublishingCommunity.launched.ordered("public_name ASC")
     txt = "<select name='community'"
     txt += " onchange='go_category(#{make_a_link})'"
@@ -36,39 +36,39 @@ module DataHelper
     txt += '>All</option>'
 
     for community in communities
-      txt += "<option value='#{community.primary_content_tag_name}'"
+      txt += "<option value='#{community.primary_tag_name}'"
       txt += ' selected' if (selected_community && community == selected_community)
       txt += '>'+ community.public_name+'</option>'
     end
     return txt+'</select>'
   end
-  
+
   def link_to_public_community_home(community)
     if(community.nil?)
       return ''
-    elsif(community.content_tag_names.empty?)
+    elsif(community.tag_names.empty?)
       return community.public_name
     else
-      return "<span class=\"label label-tag\">"  + link_to(h(community.public_name), site_index_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name))) + "</span>"
+      return "<span class=\"label label-tag\">"  + link_to(h(community.public_name), site_index_url(:content_tag => content_tag_url_display_name(community.primary_tag_name))) + "</span>"
     end
   end
-  
+
   def link_to_public_community(community)
-    if(community.content_tag_names.empty?)
+    if(community.tag_names.empty?)
       return community.public_name
     else
-      return link_to(h(community.public_name), site_index_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name)))
+      return link_to(h(community.public_name), site_index_url(:content_tag => content_tag_url_display_name(community.primary_tag_name)))
     end
   end
-  
+
   def link_to_preview_community_home(community)
-    if(community.content_tag_names.empty?)
+    if(community.tag_names.empty?)
       return community.public_name
     else
-      return "<span>"  + link_to(h(community.public_name + "Home"), preview_tag_url(:content_tag => content_tag_url_display_name(community.primary_content_tag_name))) + "</span>"
+      return "<span>"  + link_to(h(community.public_name + "Home"), preview_tag_url(:content_tag => content_tag_url_display_name(community.primary_tag_name))) + "</span>"
     end
   end
-     
+
   def state_select(name, params)
     if(@content_tag)
       make_a_link = "\"/#{@content_tag.url_display_name}/events?event_state=\" + this.value"
@@ -80,7 +80,7 @@ module DataHelper
     end
     select(name, :event_state, Location.displaylist.collect{|l| [l.name, l.abbreviation]}.unshift(['All', '']), {:selected => params[:event_state]},{ :onchange => 'go_state(' + make_a_link + ')'})
   end
-  
+
   def first_image(content, placeholder=true)
     return unless content.present?
     image_tag = content.match(/<img[^>]*>/)
@@ -103,12 +103,12 @@ module DataHelper
       end
     end
   end
-  
+
   def first_bio_image(content)
     return unless content
     image_tag = content.match(/<img[^>]*>/)
     return unless image_tag
     src = image_tag[0].match(/src="[^"]*"/)[0]
     return raw('<img height="135" '+src+' alt="" />')
-  end  
+  end
 end
