@@ -36,7 +36,7 @@ gem "rails_config"
 gem 'hpricot'
 
 # atom parsing
-gem 'ratom', :require => 'atom'
+gem 'ratom', :require => 'atom',  github: 'extension/ratom', branch: "master"
 
 # authentication
 gem 'omniauth', "~> 1.0"
@@ -88,7 +88,7 @@ group :development do
   # jason uses pry, forces the gem on everyone
   gem 'pry'
   # deployment
-  gem 'capistrano', '~> 2.15.5' 
+  gem 'capistrano', '~> 2.15.5'
   gem 'capatross'
   # shut the asset requests up in dev log
   gem 'quiet_assets'
@@ -98,7 +98,3 @@ group :development do
   gem 'meta_request'
 
 end
-
-
-
-

@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/extension/ratom.git
+  revision: 254456c5e36cc3bbbe595f42fb386e403abd4db5
+  branch: master
+  specs:
+    ratom (0.8.2)
+      libxml-ruby (>= 2.6.0)
+
 GEM
   remote: https://rubygems.org/
   remote: https://systems.extension.org/rubygems/
@@ -96,7 +104,7 @@ GEM
     kaminari (0.15.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-    libxml-ruby (2.6.0)
+    libxml-ruby (2.7.0)
     lockfile (2.1.0)
     mail (2.5.4)
       mime-types (~> 1.16)
@@ -108,7 +116,7 @@ GEM
     method_source (0.8.2)
     mime-types (1.25.1)
     multi_json (1.8.4)
-    mysql2 (0.3.14)
+    mysql2 (0.3.15)
     net-http-spy (0.2.1)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
@@ -165,8 +173,6 @@ GEM
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
     rake (10.1.1)
-    ratom (0.8.2)
-      libxml-ruby (~> 2.6.0)
     rdoc (3.12.2)
       json (~> 1.4)
     redis (3.0.6)
@@ -250,7 +256,7 @@ DEPENDENCIES
   quiet_assets
   rails (= 3.2.17)
   rails_config
-  ratom
+  ratom!
   redis-rails
   rmagick
   sass-rails (~> 3.2.3)
