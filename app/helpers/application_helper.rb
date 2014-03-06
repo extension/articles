@@ -105,18 +105,12 @@ module ApplicationHelper
   end
 
   def get_wow_text(page)
-    html_content = page.content
-    return "" if html_content.blank?
-    begin
-      parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
-      text = parsed_html.css("div#wow").text
-      if(text.blank?)
-        # fallback to the first paragraph
-        text = parsed_html.css("p").text
-      end
-      return text
-    rescue Nokogiri::XML::XPath::SyntaxError
-      return page.title
+    if(page.summary.blank?)
+      # the reason for this is the page is likely readonly from a collection
+      newpage = Page.find(page.id)
+      newpage.set_summary(true)
+    else
+      page.summary
     end
   end
 
