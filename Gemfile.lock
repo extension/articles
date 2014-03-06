@@ -79,7 +79,7 @@ GEM
     erubis (2.7.0)
     execjs (2.0.2)
     extension-html5shiv-rails (3.6.2.1)
-    fastimage (1.5.5)
+    fastimage (1.6.1)
       addressable (~> 2.3, >= 2.3.5)
     font-awesome-rails (4.0.3.1)
       railties (>= 3.2, < 5.0)
