@@ -39,7 +39,7 @@ gem 'hpricot'
 gem 'ratom', :require => 'atom',  github: 'extension/ratom', branch: "master"
 
 # authentication
-gem 'omniauth', "~> 1.0"
+gem 'omniauth', ">= 1.0"
 gem 'omniauth-openid'
 
 # jquery magick
@@ -53,9 +53,6 @@ gem 'thor'
 
 # exception handling
 gem 'airbrake'
-
-# caching
-gem 'redis-rails'
 
 # useragent analysis
 gem 'useragent'

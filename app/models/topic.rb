@@ -34,7 +34,7 @@ class Topic < ActiveRecord::Base
   def self.frontporch_hashlist
     topics_hash = {}
     topics_list.each do |topic|
-      topics_hash[topic.name] = topic.publishing_communities.order('publishing_communities.public_name')
+      topics_hash[topic.name] = topic.publishing_communities.includes(:primary_tag).order('publishing_communities.public_name')
     end
     topics_hash
   end
