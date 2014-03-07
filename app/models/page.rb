@@ -583,7 +583,7 @@ class Page < ActiveRecord::Base
 
       # check for homage replacement
       if(entry_category_terms.include?('homage'))
-        content_tags = page.tags.content_tags
+        content_tags = page.tags
         content_tags.each do |content_tag|
           if(community = content_tag.content_community)
             community.update_attribute(:homage_id,page.id)

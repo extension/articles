@@ -116,8 +116,8 @@ class PreviewController < ApplicationController
     end
 
     # get the tags on this article that correspond to community content tags
-    if(!@article.content_tags.nil?)
-      @article_content_tags = @article.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
+    if(!@article.tags.nil?)
+      @article_content_tags = @article.tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
       @article_tag_names = @article_content_tags.map(&:name)
     else
       @article_content_tags = []
