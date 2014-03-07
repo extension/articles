@@ -862,17 +862,17 @@ class Page < ActiveRecord::Base
   def set_summary(save = false)
     html_content = self.content
     return "" if html_content.blank?
-    begin
+    parsed_html = ''
+    mutex = Mutex.new
+    mutex.synchronize do
       parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
-      text = parsed_html.css("div#wow").text
-      if(text.blank?)
-        # fallback to the first paragraph
-        text = parsed_html.css("p").text
-      end
-      self.summary = text
-    rescue Nokogiri::XML::XPath::SyntaxError
-      self.summary = self.title
     end
+    text = parsed_html.css("div#wow").text
+    if(text.blank?)
+      # fallback to the first paragraph
+      text = parsed_html.css("p").text
+    end
+    self.summary = text
     if(save)
       self.save
     end
