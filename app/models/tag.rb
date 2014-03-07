@@ -63,9 +63,9 @@ class Tag < ActiveRecord::Base
   def self.community_tags(options = {})
     launchedonly = options[:launchedonly].nil? ? false : options[:launchedonly]
     if(launchedonly)
-      self.joins(:publishing_communities).where("taggings.taggable_type = 'PublishingCommunity'").where("publishing_communities.is_launched = TRUE").order(:name)
+      self.joins(:publishing_communities).where("publishing_communities.is_launched = TRUE").order(:name)
     else
-      self.joins(:publishing_communities).where("taggings.taggable_type = 'PublishingCommunity'").order(:name)
+      self.joins(:publishing_communities).order(:name)
     end
 end
 

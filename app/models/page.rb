@@ -270,8 +270,7 @@ class Page < ActiveRecord::Base
   end
 
   def community_tag_names
-    global_community_tag_names = Tag.community_tags({:launchedonly => true}).map(&:name)
-    self.tag_names & global_community_tag_names
+    self.community_tags.map(&:name)
   end
 
   # return a collection of the most recent news articles for the specified limit/content tag
@@ -583,7 +582,7 @@ class Page < ActiveRecord::Base
 
       # check for homage replacement
       if(entry_category_terms.include?('homage'))
-        content_tags = page.tags.content_tags
+        content_tags = page.tags
         content_tags.each do |content_tag|
           if(community = content_tag.content_community)
             community.update_attribute(:homage_id,page.id)
@@ -848,14 +847,47 @@ class Page < ActiveRecord::Base
    if self.original_content_changed?
     self.reprocess_links # sets self.content
     self.set_sizes
+    self.set_summary
    end
   end
 
   def store_content #ac
     self.convert_links # sets self.content
     self.set_sizes
+    self.set_summary
     self.save
   end
+
+  def set_summary(save = false)
+    html_content = self.content
+    return "" if html_content.blank?
+    parsed_html = ''
+    begin
+      mutex = Mutex.new
+      mutex.synchronize do
+        parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
+      end
+    rescue Nokogiri::XML::XPath::SyntaxError
+      return self.title # fallback return, but doesn't set self.summary
+    end
+    if(!parsed_html.blank?)
+      text = parsed_html.css("div#wow").text
+      if(text.blank?)
+        # fallback to the first paragraph
+        text = parsed_html.css("p").text
+      end
+      self.summary = text
+      if(save)
+        self.save
+      end
+      parsed_html = nil
+      self.summary
+    else
+      self.title # fallback return, but doesn't set self.summary
+    end
+  end
+
+
 
   # Reprocesses the links in the given article by deleting the existing linkings
   # for the article and running convert_links again to parse the links in the article

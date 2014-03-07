@@ -27,6 +27,7 @@ class AdminController < ApplicationController
       topic.destroy
     end
     flash[:notice] = 'Topic Deleted'
+    hashlist = Topic.frontporch_hashlist(force: true)
     redirect_to :action => :manage_topics
   end
 
@@ -36,6 +37,7 @@ class AdminController < ApplicationController
       flash[:notice] = 'Topic Created'
       AdminLog.log_event(current_person, AdminLog::CREATE_TOPIC,{:topicname => topic.name})
     end
+    hashlist = Topic.frontporch_hashlist(force: true)
     redirect_to :action => :manage_topics
   end
 
@@ -191,9 +193,7 @@ class AdminController < ApplicationController
       @community.update_create_group_resource_tags
       AdminLog.log_event(current_person, AdminLog::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
       # cache updates - this is kind of a hack
-      if(@community.is_launched_changed?)
-        Tag.community_tags({:launchedonly => true},true)
-      end
+      hashlist = Topic.frontporch_hashlist(force: true)
 
       redirect_to :action => :manage_communities
     else

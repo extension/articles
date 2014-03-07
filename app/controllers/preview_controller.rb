@@ -41,23 +41,23 @@ class PreviewController < ApplicationController
       # TODO: sponsor list?
     end
 
-    @all_content_count = Page.tagged_with(@content_tag.name).count
-    @events_count = Page.events.tagged_with(@content_tag.name).count
-    @faqs_count = Page.faqs.tagged_with(@content_tag.name).count
-    @articles_count =  Page.articles.tagged_with(@content_tag.name).count
-    @features_count = Page.newsicles.bucketed_as('feature').tagged_with(@content_tag.name).count
-    @news_count = Page.news.tagged_with(@content_tag.name).count
-    @learning_lessons_count = Page.articles.bucketed_as('learning lessons').tagged_with(@content_tag.name).count
-    @contents_count = Page.articles.bucketed_as('contents').tagged_with(@content_tag.name).count
-    @homage_count = Page.articles.bucketed_as('homage').tagged_with(@content_tag.name).count
+    @all_content_count = Page.tagged_with(@content_tag.name).all.count
+    @events_count = Page.events.tagged_with(@content_tag.name).all.count
+    @faqs_count = Page.faqs.tagged_with(@content_tag.name).all.count
+    @articles_count =  Page.articles.tagged_with(@content_tag.name).all.count
+    @features_count = Page.newsicles.bucketed_as('feature').tagged_with(@content_tag.name).all.count
+    @news_count = Page.news.tagged_with(@content_tag.name).all.count
+    @learning_lessons_count = Page.articles.bucketed_as('learning lessons').tagged_with(@content_tag.name).all.count
+    @contents_count = Page.articles.bucketed_as('contents').tagged_with(@content_tag.name).all.count
+    @homage_count = Page.articles.bucketed_as('homage').tagged_with(@content_tag.name).all.count
     @homage = @community.homage unless(@community.nil?)
 
 
-    @articles_broken_count =  Page.articles.tagged_with(@content_tag.name).broken_links.count
-    @faqs_broken_count =  Page.faqs.tagged_with(@content_tag.name).broken_links.count
-    @events_broken_count =  Page.events.tagged_with(@content_tag.name).broken_links.count
-    @news_broken_count =  Page.news.tagged_with(@content_tag.name).broken_links.count
-    @instant_survey_count = Page.tagged_with(@content_tag.name).with_instant_survey_links.count
+    @articles_broken_count =  Page.articles.tagged_with(@content_tag.name).broken_links.all.count
+    @faqs_broken_count =  Page.faqs.tagged_with(@content_tag.name).broken_links.all.count
+    @events_broken_count =  Page.events.tagged_with(@content_tag.name).broken_links.all.count
+    @news_broken_count =  Page.news.tagged_with(@content_tag.name).broken_links.all.count
+    @instant_survey_count = Page.tagged_with(@content_tag.name).with_instant_survey_links.all.count
 
 
 
@@ -116,8 +116,8 @@ class PreviewController < ApplicationController
     end
 
     # get the tags on this article that correspond to community content tags
-    if(!@article.content_tags.nil?)
-      @article_content_tags = @article.content_tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
+    if(!@article.tags.nil?)
+      @article_content_tags = @article.tags.reject{|t| Tag::CONTENTBLACKLIST.include?(t.name) }.compact
       @article_tag_names = @article_content_tags.map(&:name)
     else
       @article_content_tags = []
