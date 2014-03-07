@@ -52,14 +52,14 @@
    
    <h2>Features <span>(C)</span></h2>
    <%- if @features_count > 0 -%>
-    <p><span class="launchready">Yes</span> <%= link_to("<span>#{@features_count}</span> Published Articles tagged as \"feature\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'feature', :content_types => 'articles,news')) %></p>
+    <p><span class="launchready">Yes</span> <%= link_to("<span>#{@features_count}</span> Published Articles tagged as \"feature\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'feature', :content_types => 'articles,news')) %></p>
     <%- else -%>
        <p class="missing">No Published Articles categorized as "feature"</p>
     <%- end -%>
    
    <h2>Resources/Contents <span>(D)</span></h2>
    <%- if @contents_count > 1 -%>
-    <p class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %> 
+    <p class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %> 
        <br />(<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
        </p>
     <%- elsif @contents_count == 1 -%>
@@ -88,28 +88,28 @@
     <ul>
         <!-- Articles -->
         <%- if @articles_count > 0 -%>
-           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@articles_count}</span> Published Articles", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'articles')) %></li>
+           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@articles_count}</span> Published Articles".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'articles')) %></li>
         <%- else -%>
            <li class="missing">No Published Articles</li>
         <%- end -%>
 
         <!-- faqs -->
         <%- if @faqs_count > 0 -%>
-           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@faqs_count}</span> Published Faqs", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'faqs')) %> <span>(F)</span></li>
+           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@faqs_count}</span> Published Faqs".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'faqs')) %> <span>(F)</span></li>
         <%- else -%>
            <li class="missing">No Published FAQs <span>(F)</span></li>
         <%- end -%>
 
         <!-- News -->
         <%- if @news_count > 0 -%>
-           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@news_count}</span> Published News", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'news')) %> <span>(H)</span></li>
+           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@news_count}</span> Published News".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'news')) %> <span>(H)</span></li>
         <%- else -%>
            <li class="missing">No Published Articles categorized as "news" <span>(H)</span></li>
         <%- end -%>
 
         <!-- Learning Lessons -->
         <%- if @learning_lessons_count > 0 -%>
-        <li><span class="launchready">Yes</span> <%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"", pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'learning lessons', :content_types => 'articles')) %> <span>(E)</span></li>
+        <li><span class="launchready">Yes</span> <%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'learning lessons', :content_types => 'articles')) %> <span>(E)</span></li>
         <%- else -%>
            <li class="missing">No Published Articles categorized as "learning lesson" <span>(E)</span></li>
         <%- end -%>
