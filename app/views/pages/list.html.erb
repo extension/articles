@@ -3,11 +3,11 @@
 	<!-- Left column -->
 	<div class='span2 resource-areas hidden-phone'>
 	  <h3>Resource Areas</h3>
-	  <%- Topic.topics_list.each do |topic| -%>
-      <h4><%= topic.name%></h4>
+	  <%- Topic.frontporch_hashlist.each do |topic_name,community_info_list| -%>
+      <h4><%= topic_name %></h4>
       <ul class='unstyled'>
-        <%- topic.publishing_communities.each do |community| -%>
-          <li><%= link_to_public_community(community) %></li>
+        <%- community_info_list.each do |community_info| -%>
+          <li><%= link_to_frontporch_topic_community(community_info) %></li>
         <%end%>
       </ul>
     <%end%>

@@ -1,6 +1,6 @@
 <h4><%= topic_name %></h4>
 <ul class='unstyled'>
-  <%- topics_hash[topic_name].each do |community| -%>
-    <li><%= link_to_public_community(community) %></li>
+  <%- topics_hash[topic_name].each do |community_info| -%>
+    <li><%= link_to_frontporch_topic_community(community_info) %></li>
   <%end%>
 </ul>

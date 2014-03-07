@@ -61,6 +61,14 @@ module DataHelper
     end
   end
 
+  def link_to_frontporch_topic_community(community_info)
+    if(community_info[:primary_tag_name].present?)
+      link_to(h(community_info[:public_name]), site_index_url(:content_tag => content_tag_url_display_name(community_info[:primary_tag_name])))
+    else
+      community_info[:public_name]
+    end
+  end
+
   def link_to_preview_community_home(community)
     if(community.tag_names.empty?)
       return community.public_name
