@@ -867,17 +867,21 @@ class Page < ActiveRecord::Base
     mutex.synchronize do
       parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
     end
-    text = parsed_html.css("div#wow").text
-    if(text.blank?)
-      # fallback to the first paragraph
-      text = parsed_html.css("p").text
+    if(!parsed_html.blank?)
+      text = parsed_html.css("div#wow").text
+      if(text.blank?)
+        # fallback to the first paragraph
+        text = parsed_html.css("p").text
+      end
+      self.summary = text
+      if(save)
+        self.save
+      end
+      self.summary
+    else
+      self.title # fallback return, but doesn't set self.summary
     end
-    self.summary = text
-    if(save)
-      self.save
-    end
-    self.summary
-end
+  end
 
 
 
