@@ -863,9 +863,13 @@ class Page < ActiveRecord::Base
     html_content = self.content
     return "" if html_content.blank?
     parsed_html = ''
-    mutex = Mutex.new
-    mutex.synchronize do
-      parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
+    begin
+      mutex = Mutex.new
+      mutex.synchronize do
+        parsed_html = Nokogiri::HTML::DocumentFragment.parse(html_content)
+      end
+    rescue Nokogiri::XML::XPath::SyntaxError
+      return self.title # fallback return, but doesn't set self.summary
     end
     if(!parsed_html.blank?)
       text = parsed_html.css("div#wow").text
