@@ -878,6 +878,7 @@ class Page < ActiveRecord::Base
         self.save
       end
       self.summary
+      parsed_html = nil
     else
       self.title # fallback return, but doesn't set self.summary
     end
