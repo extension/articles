@@ -270,8 +270,7 @@ class Page < ActiveRecord::Base
   end
 
   def community_tag_names
-    global_community_tag_names = Tag.community_tags({:launchedonly => true}).map(&:name)
-    self.tag_names & global_community_tag_names
+    self.community_tags.map(&:name)
   end
 
   # return a collection of the most recent news articles for the specified limit/content tag
