@@ -7,11 +7,11 @@
 
 # a convenience class for parsing an atom feed into items useful for Article-like display
 
-class PreviewPage < Page
+class PreviewPage
   
   attr_accessor :source, :source_id
   attr_accessor :page_source, :title, :original_content, :updated_at, :published_at, :source_url, :author, :is_dpl
-  attr_accessor :content_buckets, :content_tags
+  attr_accessor :content_buckets, :content_tags, :tags
 
 
 
