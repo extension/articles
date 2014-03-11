@@ -2,20 +2,20 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 
 # a convenience class for parsing an atom feed into items useful for Article-like display
 
 class PreviewPage
-  
+
   attr_accessor :source, :source_id
   attr_accessor :page_source, :title, :original_content, :updated_at, :published_at, :source_url, :author, :is_dpl
-  attr_accessor :content_buckets, :content_tags, :tags
+  attr_accessor :content_buckets, :tags
 
 
 
-  
+
   def self.new_from_source(source,source_id)
     page_source = PageSource.find_by_name(source)
     return nil if(page_source.blank?)
@@ -26,7 +26,7 @@ class PreviewPage
     page.parse_atom_content
     return page
   end
-  
+
   #
   # parses original_content with Nokogiri
   #
@@ -36,7 +36,7 @@ class PreviewPage
     end
     @parsed_content
   end
-  
+
   def content
     # blank content check
     if(self.original_content.blank?)
@@ -46,7 +46,7 @@ class PreviewPage
     self.convert_links
     return @converted_content.to_html
   end
-  
+
   #
   # puts together a hash of the <a href>'s in the content
   # [href] = link text
@@ -62,7 +62,7 @@ class PreviewPage
     end
     @content_links
   end
-  
+
   def converted_links
     if(@converted_links.nil?)
       @converted_links = {}
@@ -75,8 +75,8 @@ class PreviewPage
     end
     @converted_links
   end
-  
-  # 
+
+  #
   # converts relative hrefs and hrefs that refer to the feed source
   # to something relative to /preview/pages/
   #
@@ -85,14 +85,14 @@ class PreviewPage
     if(self.original_content.blank?)
       return 0
     end
-    
+
     source_uri = URI.parse(self.source_url)
     host_to_make_relative = source_uri.host
-          
+
     if(@converted_content.nil?)
       @converted_content = Nokogiri::HTML::DocumentFragment.parse(self.original_content)
     end
-    
+
     convert_count = 0
     @converted_content.css('a').each do |anchor|
       if(anchor['href'])
@@ -108,7 +108,7 @@ class PreviewPage
           anchor.set_attribute('title', 'Bad Link, Please edit or remove it.')
           next
         end
-        
+
         if(original_uri.scheme.nil?)
           if(original_uri.path =~ /^\/wiki\/(.*)/)  # does path start with '/wiki'? - then strip it out
             # check to see if this is a Category:blah link
@@ -130,8 +130,8 @@ class PreviewPage
                 anchor.set_attribute('href', '#')
                 anchor.set_attribute('class', 'warning_link')
                 anchor.set_attribute('title', 'Relative link, unable to show in preview')
-                next               
-              end                    
+                next
+              end
             end
           end
           # attach the fragment to the end of it if there was one
@@ -139,7 +139,7 @@ class PreviewPage
             newhref += "##{original_uri.fragment}"
           end
           anchor.set_attribute('href',newhref)
-          convert_count += 1              
+          convert_count += 1
         elsif((original_uri.scheme == 'http' or original_uri.scheme == 'https') and original_uri.host == host_to_make_relative)
           # make relative
           if(original_uri.path =~ /^\/wiki\/(.*)/) # does path start with '/wiki'? - then strip it out
@@ -156,33 +156,33 @@ class PreviewPage
                 anchor.set_attribute('href', original_uri.to_s)
                 anchor.set_attribute('class', 'warning_link')
                 anchor.set_attribute('title', 'Unable to handle in preview')
-                next               
-              end      
-            end            
+                next
+              end
+            end
           end
-          
+
           # attach the fragment to the end of it if there was one
           if(!original_uri.fragment.blank?)
             newhref += "##{original_uri.fragment}"
           end
           anchor.set_attribute('href',newhref)
-          convert_count += 1              
+          convert_count += 1
         end
       end # anchor had an href attribute
     end # loop through the anchor tags
     convert_count
   end
-  
-  def set_content_tags(tagarray)
+
+  def set_tags(tagarray)
     namearray = []
     tagarray.each do |tag_name|
       normalized_tag_name = Tag.normalizename(tag_name)
       next if Tag::BLACKLIST.include?(normalized_tag_name)
       namearray << normalized_tag_name
     end
-    
+
     taglist = Tag.find(:all, :conditions => "name IN (#{namearray.map{|n| "'#{n}'"}.join(',')})")
-    self.content_tags = taglist
+    self.tags = taglist
   end
 
   def put_in_buckets(categoryarray)
@@ -190,14 +190,14 @@ class PreviewPage
     categoryarray.each do |name|
       namearray << ContentBucket.normalizename(name)
     end
-    
+
     buckets = ContentBucket.find(:all, :conditions => "name IN (#{namearray.map{|n| "'#{n}'"}.join(',')})")
     self.content_buckets = buckets
   end
-    
+
   def parse_atom_content()
     parsed_atom_entry = page_source.atom_page_entry(self.source_id)
-    
+
 
      if parsed_atom_entry.updated.nil?
        self.updated_at = Time.now.utc
@@ -222,13 +222,13 @@ class PreviewPage
      end
 
       if(!parsed_atom_entry.categories.blank?)
-       self.set_content_tags(parsed_atom_entry.categories.map(&:term))
-       self.put_in_buckets(parsed_atom_entry.categories.map(&:term))    
+       self.set_tags(parsed_atom_entry.categories.map(&:term))
+       self.put_in_buckets(parsed_atom_entry.categories.map(&:term))
      end
-     
+
    end
-  
-  
-     
-  
+
+
+
+
 end
