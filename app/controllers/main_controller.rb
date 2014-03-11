@@ -221,7 +221,7 @@ class MainController < ApplicationController
       session[:location_and_county] = {:location_id => institution.location.id}
       session[:multistate] = nil
     end
-    request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to home_url)
+    request.env["HTTP_REFERER"] ? (redirect_to :back) : (redirect_to root_url)
   end
 
   private

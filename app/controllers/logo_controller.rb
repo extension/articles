@@ -2,7 +2,7 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 
 class LogoController < ApplicationController
@@ -18,23 +18,23 @@ class LogoController < ApplicationController
         respond_to do |format|
           format.html { render :action => 'show', :layout => false }
           format.xml  { render :xml => @logo.to_xml }
-          format.jpg  { send_data(@logo.image_data(show_thumbnail), 
-                                  :type  => @logo.content_type, 
-                                  :filename => @logo.filename, 
+          format.jpg  { send_data(@logo.image_data(show_thumbnail),
+                                  :type  => @logo.content_type,
+                                  :filename => @logo.filename,
                                   :disposition => 'inline') }
-          format.gif  { send_data(@logo.image_data(show_thumbnail), 
-                                  :type  => @logo.content_type, 
-                                  :filename => @logo.filename, 
+          format.gif  { send_data(@logo.image_data(show_thumbnail),
+                                  :type  => @logo.content_type,
+                                  :filename => @logo.filename,
                                   :disposition => 'inline') }
-          format.png  { send_data(@logo.image_data(show_thumbnail), 
-                                  :type  => @logo.content_type, 
-                                  :filename => @logo.filename, 
+          format.png  { send_data(@logo.image_data(show_thumbnail),
+                                  :type  => @logo.content_type,
+                                  :filename => @logo.filename,
                                   :disposition => 'inline') }
         end
       end
-    rescue Exception => err  
-      file = image_path("loading.gif")
-      data = File.new(file, 'r').read
+    rescue Exception => err
+      file = Rails.root.join("app","assets","images","loading.gif")
+      data = File.open(file, 'r').read
       send_data(data, :filename => "unknown.gif", :type => "image/gif", :disposition => 'inline')
     end
   end
