@@ -77,6 +77,9 @@ gem 'rmagick', :require => false
 # acts_as_list
 gem 'acts_as_list'
 
+# catch rack errors
+gem 'rack-robustness'
+
 group :development do
   # require the powder gem
   gem 'powder'

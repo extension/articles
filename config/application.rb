@@ -60,5 +60,15 @@ module Darmok
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+
+    # see https://github.com/rack/rack/issues/337
+    config.middleware.use ::Rack::Robustness do |g|
+      g.no_catch_all
+      g.on(ArgumentError) { |ex| 400 }
+      g.content_type 'text/plain'
+      g.body{ |ex| ex.message }
+      g.ensure(true) { |ex| env['rack.errors'].write(ex.message) }
+    end
   end
 end
