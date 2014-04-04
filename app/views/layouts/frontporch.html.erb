@@ -19,7 +19,7 @@
   <%- end -%>
 
   <title><%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %></title>
-  <meta name="description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>">
+  <meta name="description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering research-based information emerging from America's land-grant university system." %>">
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width">
@@ -28,12 +28,12 @@
   <meta property="og:url" content="<%= request.protocol + request.host_with_port + request.fullpath %>"/>
   <meta property="og:type" content="<%= (@page_type == "article") ? "article" : "website" %>"/>
   <meta property="og:title" content="<%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %>"/>
-  <meta property="og:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
+  <meta property="og:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering research-based information emerging from America's land-grant university system." %>"/>
 
   <meta name="twitter:card" content="summary">
 
   <meta name="twitter:title" content="<%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %>">
-  <meta property="twitter:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering the best, most researched knowledge from the smartest university minds across America." %>"/>
+  <meta property="twitter:description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering research-based information emerging from America's land-grant university system." %>"/>
 
   <% if params[:print] %>
     <%= stylesheet_link_tag    "print-for-screen", :media => "all" %>
