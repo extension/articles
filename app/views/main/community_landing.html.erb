@@ -72,8 +72,8 @@
     	<% end %>
     	<div class='featured_aae_questions'>
     	<h2>Trending Questions</h2>
-    	<script type="text/javascript" src="<%= @ask_question_widget_url %>"></script>
-    	<%= link_to "Ask an Expert", @ask_two_point_oh_form, :class => "btn orange lg span3", :title => "One-to-one answers from a network of experts at universities across America." %>
+    	<script type="text/javascript" src="<%= @ask_question_widget_url %>&limit=4"></script>
+    	<%= link_to image_tag("Ask_An_Expert_logo_color.png", :class => "ask-an-expert-button", :alt =>"Ask an Expert"), @ask_two_point_oh_form, :title => "One-to-one answers from a network of experts at universities across America." %>
     	</div>
     </div>
 
