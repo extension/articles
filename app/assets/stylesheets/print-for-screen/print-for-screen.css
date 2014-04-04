@@ -9,13 +9,6 @@ body {font-size: small;margin:0;padding:3%;font-family: georgia, times, serif;co
 .noprint {display:none;}
 .dontprintme {display:none;}
 
-.rightcolumn h1, 
-.rightcolumn p,
-.rightcolumn ul,
-.rightcolumn img,
-.rightcolumn form,
-.rightcolumn div {display:none;}
-
 .clear { clear: both; }
 
 .left {float:left;}
