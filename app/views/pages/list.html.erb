@@ -1,21 +1,7 @@
 <!-- Left Column, Content, Right Column -->
 <div class="row">
-	<!-- Left column -->
-	<div class='span2 resource-areas hidden-phone'>
-	  <h3>Resource Areas</h3>
-	  <%- Topic.frontporch_hashlist.each do |topic_name,community_info_list| -%>
-      <h4><%= topic_name %></h4>
-      <ul class='unstyled'>
-        <%- community_info_list.each do |community_info| -%>
-          <li><%= link_to_frontporch_topic_community(community_info) %></li>
-        <%end%>
-      </ul>
-    <%end%>
-	</div><!-- END Left column -->
-
-
   <!-- Content -->
-	<div class="span7">
+	<div class="span9">
 		<div class='title'><%= @page_title %></div>
 
 		<%- @pages.each do |page| -%>
