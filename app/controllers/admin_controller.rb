@@ -213,6 +213,7 @@ class AdminController < ApplicationController
     @institution.name = params['institution']['name']
     @institution.referer_domain = params['institution']['referer_domain']
     @institution.public_uri = params['institution']['public_uri']
+    @institution.is_active = params['institution']['is_active']
 
     if @institution.save
       flash[:notice] = 'Institution Updated'
