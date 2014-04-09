@@ -2,22 +2,28 @@
     <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
     <h2>Institution Management - Public Attributes</h2>
     <table class="table">
+        <thead>
         <tr>
             <th scope="col">State</th>	
             <th scope="col">Institution</th>
             <th scope="col">URL ("about this institution" link)</th>
             <th scope="col">Domain</th>
-            <th scope="col">edit</th>
+            <th scope="col">Active?</th>
+            <th scope="col">&nbsp;</th>
         </tr>
+        </thead>
 
+        <tbody>
         <% for institution in @landgrant_institutions %>
-            <tr>
+            <tr class="<%= institution.is_active? %>">
                 <td><%= institution.location.abbreviation %></td>
 	            <td><%= institution.name %></td>
 	            <td><%= link_to institution.public_uri, institution.public_uri %></td>
 	            <td><%= institution.referer_domain %></td>
+                <td class="islive"><%= institution.is_active? %></td>
                 <td><%= link_to('edit', :action => 'edit_public_institution', :id => institution.id)%></td>
             </tr>
         <% end %>
+        </tbody>
     </table>
 </div>

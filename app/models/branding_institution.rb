@@ -9,6 +9,7 @@ class BrandingInstitution < ActiveRecord::Base
   belongs_to :location
   belongs_to :logo
 
+  scope :active, where(is_active: true)
 
   # TODO: this function is a little silly no?
   def self.find_by_referer(referer)

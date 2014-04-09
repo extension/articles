@@ -155,7 +155,7 @@ class ApplicationController < ActionController::Base
     if(!session[:branding_institution_id].nil?)
       search_id = session[:branding_institution_id]
       begin
-        personalized_institution = BrandingInstitution.find_by_id(search_id)
+        personalized_institution = BrandingInstitution.active.find_by_id(search_id)
       rescue
         session[:branding_institution_id] = nil
       end
@@ -163,7 +163,7 @@ class ApplicationController < ActionController::Base
       if (personalized_institution and @personal[:location].nil?)
         @personal[:location] = @personal[:institution].location
       end
-    elsif(refering_institution = BrandingInstitution.find_by_referer(request.referer))
+    elsif(refering_institution = BrandingInstitution.active.find_by_referer(request.referer))
       session[:branding_institution_id] = refering_institution.id.to_s
       @personal[:institution] = refering_institution
     elsif(@personal[:location])

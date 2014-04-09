@@ -27,9 +27,14 @@
         </p>
         
         <p>
+            <label><%= check_box_tag 'institution[is_active]', true, @institution.is_active %> Active?</label>
+            <span class="help-block">Whether or not this institution is shown to the public for branding.</span>
+        </p>
+
+        <p>
             <input type="submit" value="Update"> 
             <%= link_to 'cancel', {:controller => "admin", :action => "manage_institutions"}, {:class => "cancel"}  %> 
-        </p>
+        </p>     
         </fieldset>
     <% end %>
 

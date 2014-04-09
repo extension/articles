@@ -189,7 +189,7 @@ class MainController < ApplicationController
           format.js {render :template => 'main/show_no_institution'}
         end
       else
-        branding_institutions_for_location = location.branding_institutions
+        branding_institutions_for_location = location.branding_institutions.active
         if(!branding_institutions_for_location.blank?)
           if(branding_institutions_for_location.length == 1)
             @personal[:institution] = branding_institutions_for_location[0]
@@ -216,7 +216,7 @@ class MainController < ApplicationController
   end
 
   def set_institution
-    if(institution = BrandingInstitution.find_by_id(params[:institution_id]))
+    if(institution = BrandingInstitution.active.find_by_id(params[:institution_id]))
       session[:branding_institution_id] = institution.id
       session[:location_and_county] = {:location_id => institution.location.id}
       session[:multistate] = nil
