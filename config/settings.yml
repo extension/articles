@@ -64,7 +64,7 @@ max_feed_content_limit: 200
 # Google Maps Key
 google_map_key: "ABQIAAAA1LmtLYh4TNIbY5g8p1Lv7RTX9Q_j-d1gVWC6rr14ybx0yf1UjRTepIB7tNRw_H6gggFEgWdIu5E7ig"
   
-geoip_data_file: "#{Rails.root}/data/GeoIP/GeoIPCity.dat"
+geoip_data_file: <%= Rails.root%>/data/GeoIP/GeoIPCity.dat
     
 # create database
 create_database: 'prod_create'
