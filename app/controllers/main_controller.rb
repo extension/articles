@@ -184,7 +184,7 @@ class MainController < ApplicationController
       else
         state = params[:zip_or_state].upcase
       end
-      if(!(location = Location.find_by_abbreviation(state)))
+      if(!(location = Location.find_by_abbreviation_or_name(state)))
         respond_to do |format|
           format.js {render :template => 'main/show_no_institution'}
         end
