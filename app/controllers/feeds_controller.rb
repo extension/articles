@@ -26,7 +26,7 @@ class FeedsController < ApplicationController
     filteredparameters_list = [:max_results,
                                {:limit => {:default => Settings.default_feed_content_limit}},
                                :tags,
-                               {:content_types => {:default => 'articles,news,faqs,events'}}]
+                               {:content_types => {:default => 'articles,news,faqs'}}]
     filteredparams = ParamsFilter.new(filteredparameters_list,params)
     
     
@@ -61,8 +61,6 @@ class FeedsController < ApplicationController
         datatypes << 'Faq'
       when 'articles'
         datatypes << 'Article'
-      when 'events'
-        datatypes << 'Event'
       when 'news'
         datatypes << 'News'
       end
