@@ -207,7 +207,7 @@ class PageSource < ActiveRecord::Base
   
   def self.atom_feed(fetch_url)
     xmlcontent = self.fetch_url_content(fetch_url)
-    Atom::Feed.load_feed(xmlcontent)
+    Feedjira::Feed.parse(xmlcontent)
   end
     
   # returns a block of content read from a file or a URL, does not parse
