@@ -1,11 +1,3 @@
-GIT
-  remote: git://github.com/extension/ratom.git
-  revision: 254456c5e36cc3bbbe595f42fb386e403abd4db5
-  branch: master
-  specs:
-    ratom (0.8.2)
-      libxml-ruby (>= 2.6.0)
-
 GEM
   remote: https://rubygems.org/
   remote: https://systems.extension.org/rubygems/
@@ -72,6 +64,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.7.0)
+    curb (0.8.5)
     dalli (2.7.0)
     debug_inspector (0.0.2)
     diff-lcs (1.2.5)
@@ -80,6 +73,10 @@ GEM
     extension-html5shiv-rails (3.6.2.1)
     fastimage (1.6.1)
       addressable (~> 2.3, >= 2.3.5)
+    feedjira (1.1.0)
+      curb (~> 0.8.1)
+      loofah (~> 1.2.1)
+      sax-machine (~> 0.2.1)
     font-awesome-rails (4.0.3.1)
       railties (>= 3.2, < 5.0)
     geocoder (1.1.9)
@@ -103,8 +100,9 @@ GEM
     kaminari (0.15.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-    libxml-ruby (2.7.0)
     lockfile (2.1.3)
+    loofah (1.2.1)
+      nokogiri (>= 1.4.4)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -186,6 +184,8 @@ GEM
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
+    sax-machine (0.2.1)
+      nokogiri (~> 1.6.0)
     slop (3.4.7)
     sprockets (2.2.2)
       hike (~> 1.2)
@@ -221,6 +221,7 @@ DEPENDENCIES
   dalli
   extension-html5shiv-rails
   fastimage
+  feedjira
   font-awesome-rails
   geocoder
   geoip
@@ -242,7 +243,6 @@ DEPENDENCIES
   rack-robustness
   rails (= 3.2.17)
   rails_config
-  ratom!
   rmagick
   sass-rails (~> 3.2.3)
   thor
