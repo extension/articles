@@ -478,7 +478,7 @@ class Page < ActiveRecord::Base
     # category processing
     entry_category_terms = []
     if(!entry.categories.blank?)
-      entry_category_terms = entry.categories.map(&:term)
+      entry_category_terms = entry.categories
     end
 
     # check for delete
