@@ -544,23 +544,6 @@ class Page < ActiveRecord::Base
       page.reference_pages = reference_pages_array.join(',')
     end
 
-    # process timezone
-    if (!entry.categories.blank?)
-      if(tz_category = entry.categories.detect{|category| category.label == "time_zone"})
-        page.time_zone = tz_category.term
-        # remove timezone category so other categories can be parsed out as tags
-        # entry.categories.delete(tz_category) is not working for this, so explicitly find the category
-        entry.categories.delete_if{|category| category.label == "time_zone"}
-
-        # reset entry_category_terms if we deleted a time zone
-        entry_category_terms = []
-        if(!entry.categories.blank?)
-          entry_category_terms = entry.categories.map(&:term)
-        end
-      end
-    end
-
-
     if(page.new_record?)
       returndata = [page.source_updated_at, 'added']
       page.save
