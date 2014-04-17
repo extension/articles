@@ -86,10 +86,6 @@ module ApplicationHelper
     return summary
   end
 
-  def format_text_for_display(content)
-    return word_wrap(simple_format(auto_link(content, :all, :target => "_blank")))
-  end
-
   private
 
   def word_truncate(string, word_count=60, threshold=80)
