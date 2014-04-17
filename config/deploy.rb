@@ -36,14 +36,6 @@ end
 # Add tasks to the deploy namespace
 namespace :deploy do
 
-  desc "Deploy the #{application} application with migrations"
-  task :default, :roles => :app do
-    # Invoke deployment with migrations
-    deploy.migrations
-  end
-
-
-
   # Override default restart task
   desc "Restart passenger"
   task :restart, :roles => :app do
