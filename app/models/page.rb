@@ -535,18 +535,6 @@ class Page < ActiveRecord::Base
     page.title = entry.title
     page.original_content = entry.content.to_s
 
-    # reference_pages
-    reference_pages_array = []
-    if(!entry.links.blank?)
-      reference_pages_array = []
-      entry.links.each do |link|
-        if(link.rel == 'related')
-          reference_pages_array << link.href
-        end
-      end
-      page.reference_pages = reference_pages_array.join(',')
-    end
-
     if(page.new_record?)
       returndata = [page.source_updated_at, 'added']
       page.save
@@ -883,24 +871,6 @@ class Page < ActiveRecord::Base
     self.linkings.destroy_all
     result = self.convert_links
     result
-  end
-
-  # override of standard reference_questions getter, that will sanity check reference questions list.
-  # returns an array of valid reference questions
-  def reference_pages
-    returnarray = []
-    if(reflist = read_attribute(:reference_pages))
-      refpage_url_array = reflist.split(',')
-      refpage_fingerprints = refpage_url_array.map{|url| "'#{Digest::SHA1.hexdigest(url)}'"}
-      if(!refpage_fingerprints.blank?)
-        returnarray = Page.all(:conditions => "source_url_fingerprint IN (#{refpage_fingerprints.join(',')})")
-      end
-    end
-    if(returnarray.blank?)
-      return nil
-    else
-      return returnarray
-    end
   end
 
   def self.content_cache_expiry

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140408205655) do
+ActiveRecord::Schema.define(:version => 20140417131351) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -270,7 +270,6 @@ ActiveRecord::Schema.define(:version => 20140408205655) do
     t.text     "source_url"
     t.string   "source_url_fingerprint"
     t.boolean  "is_dpl",                                       :default => false
-    t.text     "reference_pages"
     t.integer  "migrated_id"
     t.boolean  "has_broken_links",                             :default => false
     t.text     "coverage"
