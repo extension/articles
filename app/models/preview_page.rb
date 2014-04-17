@@ -212,18 +212,18 @@ class PreviewPage
      end
 
      self.title = parsed_atom_entry.title
-     self.source_url = parsed_atom_entry.links[0].href if self.source_url.blank?
-     self.author = parsed_atom_entry.authors[0].name
+     self.source_url = parsed_atom_entry.links[0] if self.source_url.blank?
+     self.author = 'Contributors'
      self.original_content = parsed_atom_entry.content.to_s
 
      # flag as dpl
-     if !parsed_atom_entry.categories.blank? and parsed_atom_entry.categories.map(&:term).include?('dpl')
+     if !parsed_atom_entry.categories.blank? and parsed_atom_entry.categories.include?('dpl')
        self.is_dpl = true
      end
 
       if(!parsed_atom_entry.categories.blank?)
-       self.set_tags(parsed_atom_entry.categories.map(&:term))
-       self.put_in_buckets(parsed_atom_entry.categories.map(&:term))
+       self.set_tags(parsed_atom_entry.categories)
+       self.put_in_buckets(parsed_atom_entry.categories)
      end
 
    end
