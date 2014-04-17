@@ -455,11 +455,14 @@ class Page < ActiveRecord::Base
       page.source_url_fingerprint = Digest::SHA1.hexdigest(provided_source_url.downcase)
     end
 
-    # process rel='alternate' link
-    entry.links.each do |entry_link|
-      if(entry_link.rel == 'alternate')
-        page.alternate_source_url = entry_link.href
-      end
+
+    # feedjira sets .links as an array of alternates, create only has one link
+    # and as far as I can tell, so does eorganic and pbgworks as of this time
+    # so let's check links[0] as a means of seeing if we need to set an alternate_source_url
+    # which - in create - would have come from a page alias that #%@^%@^@^ was used
+
+    if(entry.links and entry.links[0] != provided_source_url)
+      page.alternate_source_url = entry.links[0]
     end
 
     # updated
