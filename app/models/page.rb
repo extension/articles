@@ -455,11 +455,14 @@ class Page < ActiveRecord::Base
       page.source_url_fingerprint = Digest::SHA1.hexdigest(provided_source_url.downcase)
     end
 
-    # process rel='alternate' link
-    entry.links.each do |entry_link|
-      if(entry_link.rel == 'alternate')
-        page.alternate_source_url = entry_link.href
-      end
+
+    # feedjira sets .links as an array of alternates, create only has one link
+    # and as far as I can tell, so does eorganic and pbgworks as of this time
+    # so let's check links[0] as a means of seeing if we need to set an alternate_source_url
+    # which - in create - would have come from a page alias that #%@^%@^@^ was used
+
+    if(entry.links and entry.links[0] != provided_source_url)
+      page.alternate_source_url = entry.links[0]
     end
 
     # updated
@@ -478,7 +481,7 @@ class Page < ActiveRecord::Base
     # category processing
     entry_category_terms = []
     if(!entry.categories.blank?)
-      entry_category_terms = entry.categories.map(&:term)
+      entry_category_terms = entry.categories
     end
 
     # check for delete
@@ -531,35 +534,6 @@ class Page < ActiveRecord::Base
 
     page.title = entry.title
     page.original_content = entry.content.to_s
-
-    # reference_pages
-    reference_pages_array = []
-    if(!entry.links.blank?)
-      reference_pages_array = []
-      entry.links.each do |link|
-        if(link.rel == 'related')
-          reference_pages_array << link.href
-        end
-      end
-      page.reference_pages = reference_pages_array.join(',')
-    end
-
-    # process timezone
-    if (!entry.categories.blank?)
-      if(tz_category = entry.categories.detect{|category| category.label == "time_zone"})
-        page.time_zone = tz_category.term
-        # remove timezone category so other categories can be parsed out as tags
-        # entry.categories.delete(tz_category) is not working for this, so explicitly find the category
-        entry.categories.delete_if{|category| category.label == "time_zone"}
-
-        # reset entry_category_terms if we deleted a time zone
-        entry_category_terms = []
-        if(!entry.categories.blank?)
-          entry_category_terms = entry.categories.map(&:term)
-        end
-      end
-    end
-
 
     if(page.new_record?)
       returndata = [page.source_updated_at, 'added']
@@ -897,24 +871,6 @@ class Page < ActiveRecord::Base
     self.linkings.destroy_all
     result = self.convert_links
     result
-  end
-
-  # override of standard reference_questions getter, that will sanity check reference questions list.
-  # returns an array of valid reference questions
-  def reference_pages
-    returnarray = []
-    if(reflist = read_attribute(:reference_pages))
-      refpage_url_array = reflist.split(',')
-      refpage_fingerprints = refpage_url_array.map{|url| "'#{Digest::SHA1.hexdigest(url)}'"}
-      if(!refpage_fingerprints.blank?)
-        returnarray = Page.all(:conditions => "source_url_fingerprint IN (#{refpage_fingerprints.join(',')})")
-      end
-    end
-    if(returnarray.blank?)
-      return nil
-    else
-      return returnarray
-    end
   end
 
   def self.content_cache_expiry

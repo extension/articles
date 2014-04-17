@@ -36,7 +36,8 @@ gem "rails_config"
 gem 'hpricot'
 
 # atom parsing
-gem 'ratom', :require => 'atom',  github: 'extension/ratom', branch: "master"
+# gem 'ratom', :require => 'atom',  github: 'extension/ratom', branch: "master"
+gem 'feedjira'
 
 # authentication
 gem 'omniauth', ">= 1.0"
