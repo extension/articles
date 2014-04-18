@@ -262,7 +262,11 @@ class FilteredParameter
             end
          end
          if returnarray.blank?
-            return @default.split(Regexp.new(/\s*,\s*/)).collect{|item| item.strip}
+            if(@default)
+              return @default.split(Regexp.new(/\s*,\s*/)).collect{|item| item.strip}
+            else
+              return nil
+            end
          end
       end
       return returnarray.compact.uniq
