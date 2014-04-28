@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-source 'https://systems.extension.org/rubygems/'
+source 'https://engineering.extension.org/rubygems'
 
 gem 'rails', '3.2.17'
 
