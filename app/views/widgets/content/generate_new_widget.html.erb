@@ -2,7 +2,7 @@
 
 <div id="loading" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
 
-<div id="content_widget" style="width:<%= @width %>px"><h3><%= asset_url('/images/common/extension_icon_40x40.png') %><span>eXtension Latest <%= @type %>: <%= @content_tags %></span>
+<div id="content_widget" style="width:<%= @width %>px"><h3><img src="//<%= request.host_with_port %>/assets/common/extension_icon_40x40.png" /> <span>eXtension Latest <%= @type %>: <%= @content_tags %></span>
   <br class="clearing" /></h3>
 <ul>
 <%- if @contents.length == 0 -%>
