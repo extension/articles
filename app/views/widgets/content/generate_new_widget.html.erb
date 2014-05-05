@@ -2,11 +2,11 @@
 
 <div id="loading" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
 
-<div id="content_widget" style="width:<%= @width %>px"><h3><img src="http://<%= request.host_with_port %>/images/common/extension_icon_40x40.png" /> <span>eXtension Latest <%= @type %>: <%= @content_tags %></span>
+<div id="content_widget" style="width:<%= @width %>px"><h3><img src="//<%= request.host_with_port %>/assets/common/extension_icon_40x40.png" /> <span>eXtension Latest <%= @content_types.join(', ') -%>: <%= @content_tags.join(', ') -%></span>
   <br class="clearing" /></h3>
 <ul>
 <%- if @contents.length == 0 -%>
-<li>There are currently no content items at this time.</li> 
+<li>There are currently no content items at this time.</li>
 <%- else -%>
   <% @contents.each do |content| %>
     <li><a href=<%= page_url(:id => content.id, :title => content.url_title) %>> <%= content.title %></a></li>

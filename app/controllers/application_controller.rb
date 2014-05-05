@@ -273,4 +273,8 @@ class ApplicationController < ActionController::Base
     request.format = 'html'
   end
 
+def force_js_format
+  request.format = 'js'
+end
+
 end
