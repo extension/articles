@@ -30,13 +30,9 @@ class PreviewController < ApplicationController
 
 
     if(@community.nil?)
-      @page_title = "eXtension Content Checklist for tag: #{@content_tag}"
-      # youth styling
-      @youth = true if @content_tag.name == 'youth'
+      return render(:template => '/preview/invalid_tag')
     else
       @page_title = "Launch checklist for content tagged \"#{@content_tag.name}\" (#{@community.name})"
-      # youth styling
-      @youth = true if @topic and @topic.name == 'Youth'
       @other_community_tag_names = @community.tag_names.reject{|name| name == @content_tag.name}
       # TODO: sponsor list?
     end
