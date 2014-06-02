@@ -30,13 +30,9 @@ class PreviewController < ApplicationController
 
 
     if(@community.nil?)
-      @page_title = "eXtension Content Checklist for tag: #{@content_tag}"
-      # youth styling
-      @youth = true if @content_tag.name == 'youth'
+      return render(:template => '/preview/invalid_tag')
     else
       @page_title = "Launch checklist for content tagged \"#{@content_tag.name}\" (#{@community.name})"
-      # youth styling
-      @youth = true if @topic and @topic.name == 'Youth'
       @other_community_tag_names = @community.tag_names.reject{|name| name == @content_tag.name}
       # TODO: sponsor list?
     end
@@ -131,8 +127,6 @@ class PreviewController < ApplicationController
     end
 
     if(!@article_content_tags.blank?)
-      # is this article tagged with youth?
-      @youth = true if @article_bucket_names.include?('youth')
 
       # get the tags on this article that are content tags on communities
       @community_tags = (Tag.community_tags & @article_content_tags)
@@ -150,7 +144,6 @@ class PreviewController < ApplicationController
 
         @community = use_content_tag.content_community
         @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag})  if @community
-        @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
       end
     end
 

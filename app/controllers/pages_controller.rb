@@ -168,7 +168,6 @@ class PagesController < ApplicationController
         use_content_tag = Tag.find_by_name(use_content_tag_name)
         @community = use_content_tag.content_community
         @in_this_section = Page.contents_for_content_tag({:content_tag => use_content_tag})  if @community
-        @youth = true if @community and @community.topic and @community.topic.name == 'Youth'
 
         @page_communities = []
         @community_tag_names.each do |tagname|
@@ -285,7 +284,6 @@ class PagesController < ApplicationController
       pagelist_scope = pagelist_scope.ordered
     end
     @pages = pagelist_scope.page(params[:page]).per(100)
-    @youth = true if @topic and @topic.name == 'Youth'
 
   end
 

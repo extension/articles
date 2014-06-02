@@ -1,2 +1,8 @@
-<h2>Missing Tag</h2>
-<p>No content is currently associated with this tag</p> 
+<h2>Invalid Tag</h2>
+<%- if @content_tag.nil? -%>
+<p>No content is currently associated with this tag (<%= params[:content_tag] %>)</p>
+<%- elsif @community.nil? -%>
+<p>No community is currently associated with this tag (<%= params[:content_tag] %>)</p>
+<%- else -%>
+<p>An unknown error occurred</p>
+<%- end -%>
