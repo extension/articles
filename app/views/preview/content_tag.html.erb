@@ -16,7 +16,7 @@
         <p class="launchready"><%= link_to("Ask an Expert Group ##{@community.aae_group_id}",@community.ask_an_expert_group_url) %></p>
       <%- end -%>
     <%- end -%>
-   
+
     <h2>Social Media Links <span>(B)</span></h2>
     <ul class="unstyled">
       <% if !@community.twitter_handle.blank? %>
@@ -24,42 +24,42 @@
       <% else %>
         <li><%= image_tag("/assets/frontporch/icon_twitter.gif") %> Twitter not set</li>
       <% end %>
-      
+
       <% if !@community.facebook_handle.blank? %>
         <li><%=link_to image_tag("/assets/frontporch/icon_facebook.gif"), "#{@community.facebook_handle}" %> <%= link_to @community.facebook_handle, @community.facebook_handle %></li>
       <% else %>
        <li><%= image_tag("/assets/frontporch/icon_facebook.gif") %> Facebook not set</li>
       <% end %>
-      
+
       <% if !@community.youtube_handle.blank? %>
         <li><%=link_to image_tag("/assets/frontporch/icon_youtube.gif"), "#{@community.youtube_handle}" %> <%=link_to @community.youtube_handle, @community.youtube_handle %></li>
       <% else %>
         <li><%= image_tag("/assets/frontporch/icon_youtube.gif") %> YouTube not set</li>
       <% end %>
-      
+
       <% if !@community.pinterest_handle.blank? %>
         <li><%=link_to image_tag("/assets/frontporch/icon_pinterest.gif"), "#{@community.pinterest_handle}" %> <%=link_to @community.pinterest_handle, @community.pinterest_handle %></li>
       <% else %>
         <li><%= image_tag("/assets/frontporch/icon_pinterest.gif") %> Pinterest not set</li>
       <% end %>
-      
+
       <% if !@community.gplus_handle.blank? %>
         <li><%=link_to image_tag("/assets/frontporch/icon_googleplus.gif"), "#{@community.gplus_handle}" %> <%=link_to @community.gplus_handle, @community.gplus_handle %></li>
       <% else %>
         <li><%= image_tag("/assets/frontporch/icon_googleplus.gif") %> Google+ not set</li>
       <% end %>
    </ul>
-   
+
    <h2>Features <span>(C)</span></h2>
    <%- if @features_count > 0 -%>
     <p><span class="launchready">Yes</span> <%= link_to("<span>#{@features_count}</span> Published Articles tagged as \"feature\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'feature', :content_types => 'articles,news')) %></p>
     <%- else -%>
        <p class="missing">No Published Articles categorized as "feature"</p>
     <%- end -%>
-   
+
    <h2>Resources/Contents <span>(D)</span></h2>
    <%- if @contents_count > 1 -%>
-    <p class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %> 
+    <p class="missing"><%= link_to("<span>#{@contents_count}</span> Published Articles categorized as \"contents\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'contents', :content_types => 'articles')) %>
        <br />(<%= link_to("#{@contents_page.title} is currently chosen for the contents view", @contents_page.id_and_link) %>)
        </p>
     <%- elsif @contents_count == 1 -%>
@@ -67,22 +67,22 @@
     <%- else -%>
        <p class="missing">No Published Article categorized as "contents"</p>
     <%- end -%>
-   
+
    <h2>Bios <span>(E)</span></h2>
    <p>Articles tagged with "bio". Randomly selected on page load.</p>
-   
+
    <h2>Learn Event Widget <span>(F)</span></h2>
   <p>Events pulled from learn.extension.org tagged with "<%= @content_tag.url_display_name %>". If there are no events tagged <%= @content_tag.url_display_name %>, the displays recent events.</p>
-   
+
    <h2>Twitter Widget <span>(G)</span></h2>
    <% if @community.twitter_widget.blank? %>
     <p class="missing">Contact your content staff representative to set up a Twitter widget for your community.</p>
    <% end %>
-   
-   
+
+
    <h2>Ask an Expert Widget <span>(H)</span></h2>
    <p>Questions pulled from ask.extension.org which are public and tagged with "<%= @content_tag.url_display_name %>". If there are no questions tagged <%= @content_tag.url_display_name %>, the displays recent questions.</p>
-   
+
    <h2>Pages</h2>
     <p><%= link_to("Find Page by Node ID",pageinfo_findsource_url)%>
     <ul>
@@ -144,10 +144,10 @@
          <li><%= link_to(pluralize(@instant_survey_count,'page'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:with_instant_survey_links => true)) %> have links to instant survey</li>
        </ul>
       <%- end -%>
-   
-	  
+
+
 	</div>
-  
+
   <div class="span5">
     <%= image_tag("/assets/frontporch/frontporch_cop_homepage_preview.jpg", :alt => "", :class => "checklist_diagram") %>
 	</div>
