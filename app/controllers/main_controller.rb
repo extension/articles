@@ -26,9 +26,8 @@ class MainController < ApplicationController
     end
 
     # Articles tagged with 'front page' and 'bio in Create will be eligible for the front page bio display.
-    # The one with the latest source updated timestamp will win.
     # in the case that one does not exist, the bio area will just collapse
-    @featured_bio = Page.articles.tagged_with(['front page', 'bio']).ordered.first
+    @featured_bio = Page.articles.tagged_with(['front page', 'bio']).offset(rand(Page.articles.tagged_with(['front page', 'bio']).length)).first
 
     @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
     @ask_two_point_oh_form = Settings.ask_two_point_oh_form
