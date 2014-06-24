@@ -24,7 +24,10 @@
       </label>
       
       <p><label>Number of latest items: <%= text_field_tag :quantity, @limit, :size => 3, :class => "input-mini" %></label></p>
-      <p><label>Width: <%= text_field_tag :width, @width, :size => 3, :class => "input-mini" %> pixels</label></p>
+      <p>
+        <label>Width: <%= text_field_tag :width, @width, :size => 3, :class => "input-mini" %> pixels <small>(can be set to "auto")</small></label>
+      </p>
+      
       <p>
         <label>Content Tags:</label>
         <small>Comma separated. Leave blank for all content.</small>
