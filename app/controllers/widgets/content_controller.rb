@@ -94,6 +94,7 @@ class Widgets::ContentController < ApplicationController
     @filteredparams = ParamsFilter.new([:apikey,:content_types,:limit,:quantity,:tags,:width],params)
 
     @width = @filteredparams.width || DEFAULT_WIDTH
+    @width = @width == 0 ? "auto" : "#{@width}px"
     @limit = @filteredparams.limit || DEFAULT_LIMIT
     # legacy, check for quantity parameter
     if(!@filteredparams.quantity.blank?)
