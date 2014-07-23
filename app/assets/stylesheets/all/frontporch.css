@@ -77,9 +77,6 @@ h3 {
 	margin-top:0px;
 }
 
-a:focus {
-  outline:none;
-}
 
 label,
 input,
@@ -230,16 +227,9 @@ ul.nav {
 
 .navbar .form-search input.search-query {
 	background:#F8F8F8 url(/assets/frontporch/search_bg.gif) 10px 4px no-repeat;
-	-webkit-box-shadow:inset 2px 2px 5px #888;
-	-moz-box-shadow:inset 2px 2px 5px #888;
-	box-shadow:inset 2px 2px 5px #888;
 	padding:3px 23px 3px 40px;
 	color:#A1A1A1;
 	border-right:0;
-}
-
-.navbar .form-search input.search-query:focus {
-	border-color:rgb(204, 204, 204);
 }
 
 .navbar .form-search .btn {
@@ -372,17 +362,11 @@ ul.nav {
 #institution_picker input {
 	position: relative;
 	background:#FFF url(/assets/frontporch/locate_bg.jpg) 12px 7px no-repeat;
-	-webkit-box-shadow:inset 2px 2px 5px #888;
-	-moz-box-shadow:inset 2px 2px 5px #888;
-	box-shadow:inset 2px 2px 5px #888;
 	padding:3px 3px 3px 25px;
 	color:#A1A1A1;
 	border-right:0;
 }
 
-#institution_picker input:focus {
-	border-color:rgb(204, 204, 204);
-}
 #institution_picker .btn {
   position: relative;
 	background: #fa6218;
@@ -1095,10 +1079,6 @@ ul.nav {
 .navbar .form-search input.search-query {
 	padding:0px 0px 0px 40px;
 	margin-left:10px;
-}
-
-.navbar .form-search input.search-query:focus {
-	border-color:rgb(204, 204, 204);
 }
 
 .navbar .form-search .btn {
