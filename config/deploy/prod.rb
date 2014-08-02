@@ -1,3 +1,4 @@
-set :deploy_to, "/services/www/"
+set :deploy_to, "/services/frontporch/"
 set :branch, 'master'
-server 'www.extension.org', :app, :web, :db, :primary => true
+set :vhost, 'www.extension.org'
+server vhost, :app, :web, :db, :primary => true

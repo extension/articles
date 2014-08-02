@@ -21,14 +21,12 @@ set :bundle_flags, '--deployment --binstubs'
 before "deploy", "deploy:checks:git_push"
 if(TRUE_VALUES.include?(ENV['MIGRATE']))
   before "deploy", "deploy:web:disable"
-  after "deploy:update_code", "deploy:update_maint_msg"
   after "deploy:update_code", "deploy:link_and_copy_configs"
   after "deploy:update_code", "deploy:cleanup"
   after "deploy:update_code", "deploy:migrate"
   after "deploy", "deploy:web:enable"
 else
   before "deploy", "deploy:checks:git_migrations"
-  after "deploy:update_code", "deploy:update_maint_msg"
   after "deploy:update_code", "deploy:link_and_copy_configs"
   after "deploy:update_code", "deploy:cleanup"
 end
@@ -40,11 +38,6 @@ namespace :deploy do
   desc "Restart passenger"
   task :restart, :roles => :app do
     run "touch #{current_path}/tmp/restart.txt"
-  end
-
-  desc "Update maintenance mode page/graphics (valid after an update code invocation)"
-  task :update_maint_msg, :roles => :app do
-     invoke_command "cp -f #{release_path}/public/maintenancemessage.html #{shared_path}/system/maintenancemessage.html"
   end
 
   desc "Link up various configs (valid after an update code invocation)"
@@ -71,12 +64,12 @@ namespace :deploy do
 
     desc "Put Apache in maintenancemode by touching the system/maintenancemode file"
     task :disable, :roles => :app do
-      invoke_command "touch #{shared_path}/system/maintenancemode"
+      invoke_command "touch /services/maintenance/#{vhost}.maintenancemode"
     end
 
     desc "Remove Apache from maintenancemode by removing the system/maintenancemode file"
     task :enable, :roles => :app do
-      invoke_command "rm -f #{shared_path}/system/maintenancemode"
+      invoke_command "rm -f /services/maintenance/#{vhost}.maintenancemode"
     end
 
   end
