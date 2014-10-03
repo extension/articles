@@ -3,11 +3,7 @@
 
 # environment files
 /.rvmrc
-/.powenv
-/.powrc
 /.tm_properties
-# /.ruby-gemset
-# /.ruby-version
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
@@ -31,7 +27,3 @@
 # legacy yarddocs
 /.yardoc
 /doc/*
-
-# /data/
-# (jayoung) no idea why this is ignored 
-/data/*
