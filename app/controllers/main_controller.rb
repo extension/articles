@@ -110,7 +110,7 @@ class MainController < ApplicationController
 
     @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
     @ask_question_widget_url = "https://ask.extension.org/widgets/answered.js?tags=#{@content_tag.name}"
-    @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}"
+    @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{@content_tag.name}&showdate_on_past_events=false"
 
     set_title(@community.public_name)
     @canonical_link = site_index_url(:content_tag => @content_tag.url_display_name)
