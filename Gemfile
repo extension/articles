@@ -53,7 +53,7 @@ gem 'kaminari'
 gem 'thor'
 
 # exception handling
-gem 'airbrake'
+gem 'honeybadger'
 
 # useragent analysis
 gem 'useragent'

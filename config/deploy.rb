@@ -3,7 +3,6 @@ set :default_stage, "dev"
 require 'capistrano/ext/multistage'
 require 'capatross'
 require "bundler/capistrano"
-require 'airbrake/capistrano'
 
 TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE', 'yes','YES','y','Y']
 FALSE_VALUES = [false, 0, '0', 'f', 'F', 'false', 'FALSE','no','NO','n','N']
