@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------*/
 div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:8px;}
 div#app_location.localdev {display:none;}
-div#app_location.demo {background: #ff00ff;border:1px solid #000;color:#222;}
+div#app_location.dev {background: #ff00ff;border:1px solid #000;color:#222;}
 div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
 div#app_location a:visited {color:#222; text-decoration:underline;}
 div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
@@ -11,7 +11,7 @@ div#app_location.preview {background: #222; position:absolute; left: 20%; right:
 div#app_location.preview h3 {color:#fff;}
 div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5em;}
 #preview_wrapper {display:none;background: url(/assets/pubsite/shadow_60percent.png) 0 0; z-index:10; top: 0; position:absolute; width:100%;left:0; height:1200px;}
-#preview_wrapper.preview {display:block;} 
+#preview_wrapper.preview {display:block;}
 
 #preview_page #article_content,
 #preview_page #article_title {z-index:25; background:#fff; position:relative; outline:10px solid #fff; outline-offset: -1px;}
