@@ -3,7 +3,6 @@ urlwriter_host: 'darmok.dev'
 urlwriter_protocol: 'http://'
 urlwriter_port: '80'
 
-airbrake_api_key: 'notset'
 app_location: 'localdev'
 account_review_url: 'http://aae.dev/questions/account_review_request'
 ask_two_point_oh: 'http://aae.dev'
@@ -34,13 +33,11 @@ campus_site: 'http://campus.extension.org/'
 pdc_site: 'http://pdc.extension.org/'
 data_site: 'http://data.extension.org/'
 
-
 # used to push IP Address down into the models, for the email crons
 default_request_ip: '127.0.0.1'
 request_ip_address: '127.0.0.1'
 
-
-    # cache expiry
+# cache expiry
 cache_expiry: 60
 
 # defaults for date ranges for reports
