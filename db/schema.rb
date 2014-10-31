@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140417131351) do
+ActiveRecord::Schema.define(:version => 20141017184901) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -171,7 +171,7 @@ ActiveRecord::Schema.define(:version => 20140417131351) do
     t.integer  "page_id"
     t.string   "host"
     t.string   "source_host"
-    t.string   "path"
+    t.text     "path"
     t.string   "fingerprint"
     t.text     "url"
     t.string   "alias_fingerprint"
