@@ -9,7 +9,7 @@ FALSE_VALUES = [false, 0, '0', 'f', 'F', 'false', 'FALSE','no','NO','n','N']
 
 set :application, "darmok"
 set :user, 'pacecar'
-set :repository, "git@github.com:extension/darmok.git"
+set :repository, "git@github.com:extension/frontporch.git"
 set :scm, "git"
 set :use_sudo, false
 set :keep_releases, 5
