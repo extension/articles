@@ -7,7 +7,7 @@ require "bundler/capistrano"
 TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE', 'yes','YES','y','Y']
 FALSE_VALUES = [false, 0, '0', 'f', 'F', 'false', 'FALSE','no','NO','n','N']
 
-set :application, "darmok"
+set :application, "frontporch"
 set :user, 'pacecar'
 set :repository, "git@github.com:extension/frontporch.git"
 set :scm, "git"
@@ -42,19 +42,17 @@ namespace :deploy do
   desc "Link up various configs (valid after an update code invocation)"
   task :link_and_copy_configs, :roles => :app do
     run <<-CMD
-    rm -rf #{release_path}/config/database.yml #{release_path}/index &&
-    rm -rf #{release_path}/public/robots.txt &&
     ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
     ln -nfs #{shared_path}/config/robots.txt #{release_path}/public/robots.txt &&
     ln -nfs #{shared_path}/config/settings.local.yml #{release_path}/config/settings.local.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
-    ln -nfs #{shared_path}/upload/attachment_fu #{release_path}/tmp/attachment_fu &&
-    ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki &&
-    ln -nfs #{shared_path}/sites #{release_path}/public/sites &&
+    ln -nfs #{shared_path}/uploads #{release_path}/tmp/attachment_fu &&
+    ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki/files &&
+    ln -nfs #{shared_path}/drupalfiles #{release_path}/public/sites/default/files &&
     ln -nfs #{shared_path}/data #{release_path}/data &&
-    rm -rf #{release_path}/public/sitemaps &&
     ln -nfs #{shared_path}/sitemaps #{release_path}/public/sitemaps &&
-    ln -nfs #{shared_path}/omniauth #{release_path}/tmp/omniauth
+    ln -nfs #{shared_path}/tmpcache    #{release_path}/tmp/cache &&
+    ln -nfs #{shared_path}/tmpauth #{release_path}/tmp/auth
     CMD
   end
 
