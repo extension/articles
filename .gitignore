@@ -12,7 +12,7 @@
 
 # public dir
 /public/system
-/public/sitemaps/*.xml
+/public/sitemaps
 
 # configuration
 /config/database.yml
