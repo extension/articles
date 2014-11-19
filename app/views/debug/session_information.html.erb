@@ -1,19 +1,21 @@
 <% @page_title = "Session Information" %>
 
-
 <%- if !session -%>
   <h2>No session data</h2>
 <%- else -%>
   <h2>Your Session Information</h2>
-  <table cellspacing="0">
+  <table class='table'>
     <%- session.each do |key,value|%>
-     	<tr>
-     	  <td scope="row" class="label"><%= key %></td>   
-     	  <td><%= value %></td>         
-     	</tr>
+      <tr>
+        <td><%= key %></td>
+        <td><%= value %></td>
+      </tr>
      <%- end -%>
+     <td>request_ip</td>
+     <td><%= request.remote_ip %></td>
   </table>
 <%- end -%>
+
 
 <%- if(@personal.blank?) -%>
   <h2>No personalized location information</h2>
@@ -21,8 +23,8 @@
     <h2>Your Personalized Location Information</h2>
     <table cellspacing="0">
        	<tr>
-       	  <td scope="row" class="label">Location</td>   
-       	  <td><%= @personal[:location] ? @personal[:location].name : 'Unknown' %></td>         
+       	  <td scope="row" class="label">Location</td>
+       	  <td><%= @personal[:location] ? @personal[:location].name : 'Unknown' %></td>
        	</tr>
     </table>
   <%- end -%>
