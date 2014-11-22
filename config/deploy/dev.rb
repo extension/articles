@@ -5,4 +5,4 @@ else
   set :branch, 'master'
 end
 set :vhost, 'dev-www.extension.org'
-server 'sugarmountainbog.vm.extension.org', :app, :web, :db, :primary => true
+server vhost, :app, :web, :db, :primary => true
