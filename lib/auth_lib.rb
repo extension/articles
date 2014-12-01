@@ -18,7 +18,7 @@ module AuthLib
       @current_person
     end
   end
-  
+
   def set_current_person(person)
     if(person.blank?)
       @current_person = nil
@@ -32,11 +32,11 @@ module AuthLib
     end
   end
 
-  private  
-  
+  private
+
 
   def signin_required
-    if session[:person_id]      
+    if session[:person_id]
       person = Person.find_by_id(session[:person_id])
       if (person.signin_allowed?)
         set_current_person(person)
@@ -44,19 +44,19 @@ module AuthLib
       else
         set_current_person(nil)
         return redirect_to(root_url)
-      end        
+      end
     end
 
-    # store current location so that we can 
+    # store current location so that we can
     # come back after the user logged in
     www_store_location
     www_access_denied
-    return false 
+    return false
   end
-  
-  
+
+
   def signin_optional
-    if session[:person_id]      
+    if session[:person_id]
       person = Person.find_by_id(session[:person_id])
       if (person.signin_allowed?)
         set_current_person(person)
@@ -67,15 +67,15 @@ module AuthLib
 
   def www_access_denied
     redirect_to '/auth/people'
-  end  
-  
-  
+  end
+
+
   # store current uri in  the session.
   # we can return to this location by calling return_location
   def www_store_location
     session[:www_return_to] = request.fullpath
   end
-  
+
   def www_clear_location
     session[:www_return_to] = nil
   end
@@ -92,22 +92,22 @@ module AuthLib
 
 
   def admin_signin_required
-    if session[:person_id]      
+    if session[:person_id]
       person = Person.find_by_id(session[:person_id])
       if (person.signin_allowed? and person.is_admin?)
         set_current_person(person)
         return true
       else
         set_current_person(nil)
-        return redirect_to(:controller => 'notice', :action => 'admin_required')
+        return redirect_to(:controller => '/notice', :action => 'admin_required')
       end
     end
 
-    # store current location so that we can 
+    # store current location so that we can
     # come back after the user logged in
     www_store_location
     www_access_denied
-    return false 
+    return false
   end
 
 end
