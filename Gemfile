@@ -81,6 +81,9 @@ gem 'acts_as_list'
 # catch rack errors
 gem 'rack-robustness'
 
+# legacy data support
+gem 'safe_attributes'
+
 group :development do
   # require the powder gem
   gem 'powder'
