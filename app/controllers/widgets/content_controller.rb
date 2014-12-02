@@ -18,7 +18,7 @@ class Widgets::ContentController < ApplicationController
     @launched_tags = Tag.community_tags({:launchedonly => true})
     @limit = DEFAULT_LIMIT
     @width = DEFAULT_WIDTH
-    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :limit => DEFAULT_LIMIT, :width => DEFAULT_WIDTH, :content_types => 'articles,news,faqs'}\"></script>"
+    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :limit => DEFAULT_LIMIT, :width => DEFAULT_WIDTH, :content_types => 'articles,faqs'}\"></script>"
     render :layout => 'frontporch'
   end
 
@@ -109,12 +109,12 @@ class Widgets::ContentController < ApplicationController
       when 'articles'
         @content_types = ['articles']
       else
-        @content_types = ['articles','news','faqs']
+        @content_types = ['articles','faqs']
       end
     elsif(@filteredparams.content_types)
       @content_types = @filteredparams.content_types
     else
-      @content_types = ['articles','news','faqs']
+      @content_types = ['articles','faqs']
     end
 
 
@@ -152,8 +152,6 @@ class Widgets::ContentController < ApplicationController
         datatypes << 'Faq'
       when 'articles'
         datatypes << 'Article'
-      when 'news'
-        datatypes << 'News'
       end
     end
 

@@ -148,7 +148,7 @@ class PagesController < ApplicationController
     @page_bucket_names = @page.content_buckets.map(&:name)
 
     if(!@page_tag_names.blank?)
-      # news check to set the meta tags for noindex
+      # indexed check to set the meta tags for noindex
       @published_content = false if (@page.indexed == Page::NOT_INDEXED)
 
       # get the tags on this article that are content tags on communities
@@ -208,7 +208,7 @@ class PagesController < ApplicationController
   def list
     @list_content = true # don't index this page
 
-    @filteredparameters = ParamsFilter.new([:tags,{:content_types => {:default => 'articles,news,faqs,events'}},{:articlefilter => :string},:order],params)
+    @filteredparameters = ParamsFilter.new([:tags,{:content_types => {:default => 'articles,faqs'}},{:articlefilter => :string},:order],params)
     if(!@filteredparameters.order.nil?)
       # validate order
       return do_404 unless Page.orderings.has_value?(@filteredparameters.order)
@@ -289,10 +289,6 @@ class PagesController < ApplicationController
 
 
   def articles
-    redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
-  end
-
-  def news
     redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
 

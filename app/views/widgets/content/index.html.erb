@@ -1,33 +1,29 @@
 <div class="row">
   <div class="span6">
     <h1>Customize Your Content Widget</h1>
-    
+
     <%= form_tag( {:action => 'generate_new_widget'}, {:id => "widget_form"}) do %>
-    
+
     <div class="well">
       <h4>Type of Content</h4>
       <label class="radio">
         <%= radio_button_tag(:content_types, 'articles', false) %>
         Articles
-      </label>    
-      <label class="radio">
-        <%= radio_button_tag(:content_types, 'news', false) %>
-        News
       </label>
       <label class="radio">
         <%= radio_button_tag(:content_types, 'faqs', false) %>
         FAQs
       </label>
       <label class="radio">
-        <%= radio_button_tag(:content_types, 'articles,news,faqs', false) %>
-        Articles, News, And FAQs
+        <%= radio_button_tag(:content_types, 'articles,faqs', false) %>
+        Articles and FAQs
       </label>
-      
+
       <p><label>Number of latest items: <%= text_field_tag :quantity, @limit, :size => 3, :class => "input-mini" %></label></p>
       <p>
         <label>Width: <%= text_field_tag :width, @width, :size => 3, :class => "input-mini" %> pixels <small>(can be set to "auto")</small></label>
       </p>
-      
+
       <p>
         <label>Content Tags:</label>
         <small>Comma separated. Leave blank for all content.</small>
@@ -41,7 +37,7 @@
         <%= radio_button_tag(:tag_operator, 'and', false) %>
         Display content with <strong>all</strong> of the above tags
       </label>
-      
+
       <h4>Content Tag Picker (click to add)</h4>
       <div id="tag_wrapper">
         <ul id="select_from_tags" class="unstyled">
@@ -54,7 +50,7 @@
     </div>
     <% end %>
 	</div>
-	
+
 	<div class="span6">
 	  <div id="example_widget">
 	    <%= render(:partial => 'example_widget') %>
