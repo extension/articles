@@ -30,12 +30,12 @@ class Page < ActiveRecord::Base
   ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest events' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
                             :default => "source_updated_at DESC"
 
-  has_one :primary_link, :class_name => "Link"
-  has_many :linkings
+  has_one :primary_link, :class_name => "Link", dependent: :destroy
+  has_many :linkings, dependent: :destroy
   has_many :links, :through => :linkings
-  has_many :bucketings
+  has_many :bucketings, dependent: :destroy
   has_many :content_buckets, :through => :bucketings
-  has_one :link_stat
+  has_one :link_stat, dependent: :destroy
   belongs_to :page_source
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings

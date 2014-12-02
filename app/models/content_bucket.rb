@@ -2,25 +2,26 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 
 class ContentBucket < ActiveRecord::Base
-  
-  has_many :pages, :through => :bucketings
+
+  has_many :bucketings, dependent: :destroy
+  has_many :pages, through: :bucketings
 
   SPLITTER = Regexp.new(/\s*,\s*/)
-  JOINER = ", " 
+  JOINER = ", "
 
-  # Callback to normalize the tagname before saving it. 
+  # Callback to normalize the tagname before saving it.
   def before_save
     self.name = self.class.normalizename(self.name)
   end
-    
+
   class << self
-  
-    # normalize tag names 
-    # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces)   
+
+    # normalize tag names
+    # convert whitespace to single space, underscores to space, yank everything that's not alphanumeric : - or whitespace (which is now single spaces)
     def normalizename(name)
       # make an initial downcased copy - don't want to modify name as a side effect
       returnstring = name.downcase
@@ -30,7 +31,7 @@ class ContentBucket < ActiveRecord::Base
       returnstring.gsub!(/\s+/,' ')
       returnstring.strip!
       returnstring
-    end  
+    end
   end
-    
+
 end
