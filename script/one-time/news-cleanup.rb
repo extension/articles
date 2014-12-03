@@ -3,7 +3,7 @@ require 'rubygems'
 
 # load rails
 if !ENV["RAILS_ENV"] || ENV["RAILS_ENV"] == ""
-  ENV["RAILS_ENV"] = 'development'
+  ENV["RAILS_ENV"] = 'production'
 end
 require_relative("../../config/environment")
 
