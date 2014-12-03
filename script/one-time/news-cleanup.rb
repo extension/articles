@@ -38,20 +38,21 @@ class CreateFieldDataBody < ActiveRecord::Base
 end
 
 # let's delete some buckets
-# ContentBucket.where("name IN ('news','originalnews','notnews')").each do |bucket|
-#   puts "Cleaning up the #{bucket.name} content bucket"
-#   bucket.destroy
-# end
+ContentBucket.where("name IN ('news','originalnews','notnews')").each do |bucket|
+  puts "Cleaning up the #{bucket.name} content bucket"
+  # delete the bucketings faster
+  Bucketing.delete_all("content_bucket_id = #{bucket.id}")
+  bucket.destroy
+end
 
 puts " --- "
 
 # let us loop through the news, update the workflow,
 # create some workflow events, and then destroy the page
 
-# limited to two at a time for testing right now
-Page.where(datatype: 'News').limit(2).each do |page|
-# Page.where(datatype: 'News').find_each do |page|
-  puts "Processing Page ##{page.id}:"
+# Page.where(datatype: 'News').limit(2).each do |page|
+Page.where(datatype: 'News').find_each do |page|
+  puts "\nProcessing Page ##{page.id}:"
   node_id = page.create_node_id
 
   if(create_node = CreateNode.where(nid: node_id).first)
