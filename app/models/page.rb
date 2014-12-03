@@ -30,12 +30,12 @@ class Page < ActiveRecord::Base
   ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest events' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
                             :default => "source_updated_at DESC"
 
-  has_one :primary_link, :class_name => "Link"
-  has_many :linkings
+  has_one :primary_link, :class_name => "Link", dependent: :destroy
+  has_many :linkings, dependent: :destroy
   has_many :links, :through => :linkings
-  has_many :bucketings
+  has_many :bucketings, dependent: :destroy
   has_many :content_buckets, :through => :bucketings
-  has_one :link_stat
+  has_one :link_stat, dependent: :destroy
   belongs_to :page_source
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
@@ -50,10 +50,8 @@ class Page < ActiveRecord::Base
 
   scope :indexed, :conditions => {:indexed => INDEXED}
   scope :articles, :conditions => {:datatype => 'Article'}
-  scope :news, :conditions => {:datatype => 'News'}
   scope :faqs, :conditions => {:datatype => 'Faq'}
   scope :events, :conditions => {:datatype => 'Event'}
-  scope :newsicles, :conditions => ["(datatype = 'Article' OR datatype = 'News')"]
 
 
   scope :by_datatype, lambda{|datatype|
@@ -134,16 +132,6 @@ class Page < ActiveRecord::Base
   # syntactic sugar - returns true if the datatype is an article
   def is_article?
     (self.datatype == 'Article')
-  end
-
-  # syntactic sugar - returns true if the datatype is news
-  def is_news?
-    (self.datatype == 'News')
-  end
-
-  # syntactic sugar - returns true if the datatype is news or an article
-  def is_newsicle?
-    (self.datatype == 'News' or self.datatype == 'Article')
   end
 
   # syntactic sugar - returns true if the datatype is a faq
@@ -230,15 +218,6 @@ class Page < ActiveRecord::Base
    end
 
    buckets = ContentBucket.find(:all, :conditions => "name IN (#{namearray.map{|n| "'#{n}'"}.join(',')})")
-   # bucket as "notnews" if categoryarray doesn't include 'news' or 'originalnews'
-   if(!categoryarray.include?('news') and !categoryarray.include?('originalnews'))
-     buckets << ContentBucket.find_by_name('notnews')
-   end
-
-   # force news bucket if categoryarray includes 'originalnews'
-   if(categoryarray.include?('originalnews'))
-     buckets << ContentBucket.find_by_name('news')
-   end
    self.content_buckets = buckets
   end
 
@@ -273,20 +252,9 @@ class Page < ActiveRecord::Base
     self.community_tags.map(&:name)
   end
 
-  # return a collection of the most recent news articles for the specified limit/content tag
-  # will check memcache first
-  #
-  # @return [Array<Page>] array/collection of matching pages
-  # @param [Hash] options query options
-  # @option options [Integer] :limit query limit
-  # @option options [String] :content_tags string of content tags to search for (it could also an array or anything Tag.castlist_to_array takes)
-  # @option options [Array] :datatypes array of datatypes to search for ['Article','Faq','News] accepted
-  # @option options [Date] :calendar_date for Events filtering
-  # @option options [Integer] :within_days for Events filtering
-  # @option options [String] :tag_operator 'and' or 'or' matching for content tags
   def self.recent_content(options = {})
     if(options[:datatypes].nil? or options[:datatypes] == 'all')
-      datatypes = ['Article','Faq','News']
+      datatypes = ['Article','Faq']
     elsif(options[:datatypes].is_a?(Array))
       datatypes = options[:datatypes]
     else
@@ -338,8 +306,6 @@ class Page < ActiveRecord::Base
         datatype_conditions << "(datatype = 'Article')"
       when 'Faq'
         datatype_conditions << "(datatype = 'Faq')"
-      when 'News'
-        datatype_conditions << "(datatype = 'News')"
       end
     end
 
@@ -354,8 +320,6 @@ class Page < ActiveRecord::Base
         datatypes << 'Faq'
       when 'articles'
         datatypes << 'Article'
-      when 'news'
-        datatypes << 'News'
       end
     end
     self.datatype_conditions(datatypes,options)
@@ -365,9 +329,9 @@ class Page < ActiveRecord::Base
 
   def self.main_feature_list(options = {})
     if(options[:content_tag].nil?)
-      self.newsicles.bucketed_as('feature').ordered.limit(options[:limit]).all
+      self.articles.bucketed_as('feature').ordered.limit(options[:limit]).all
     else
-      self.newsicles.bucketed_as('feature').tagged_with(options[:content_tag].name).ordered.limit(options[:limit]).all
+      self.articles.bucketed_as('feature').tagged_with(options[:content_tag].name).ordered.limit(options[:limit]).all
     end
   end
 
@@ -493,10 +457,8 @@ class Page < ActiveRecord::Base
 
     # check for datatype
     if(!entry_category_terms.blank?)
-      # news overrides article => overrides faq
-      if(entry_category_terms.include?('news') or entry_category_terms.include?('originalnews') )
-        page.datatype = 'News'
-      elsif(entry_category_terms.include?('article'))
+      # article => overrides faq
+      if(entry_category_terms.include?('article'))
         page.datatype = 'Article'
       elsif(entry_category_terms.include?('faq'))
         page.datatype = 'Faq'
@@ -510,11 +472,6 @@ class Page < ActiveRecord::Base
     # flag as dpl
     if(!entry_category_terms.blank? and entry_category_terms.include?('dpl'))
       page.is_dpl = true
-    end
-
-    # set noindex if news
-    if(page.datatype == 'News' and !entry_category_terms.include?('originalnews'))
-      page.indexed = Page::NOT_INDEXED
     end
 
     # set noindex if noindex
@@ -634,7 +591,7 @@ class Page < ActiveRecord::Base
   def self.find_by_legacy_title_from_url(url)
    return nil unless url
    real_title = url.gsub(/_/, ' ')
-   self.where("created_at <= '2011-03-21'").where("datatype IN ('Article','News')").find_by_title(real_title)
+   self.where("created_at <= '2011-03-21'").where(datatype: 'Article').find_by_title(real_title)
   end
 
   def self.find_by_title_url(url)
@@ -1005,5 +962,16 @@ class Page < ActiveRecord::Base
     end
     self.tags = newtags
   end
+
+  def create_node_id
+    if(source != 'create')
+      nil
+    elsif(self.source_url =~ %r{\.?/(\d+)})
+      $1
+    else
+      nil
+    end
+  end
+
 
 end

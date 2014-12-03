@@ -52,7 +52,7 @@
 
    <h2>Features <span>(C)</span></h2>
    <%- if @features_count > 0 -%>
-    <p><span class="launchready">Yes</span> <%= link_to("<span>#{@features_count}</span> Published Articles tagged as \"feature\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'feature', :content_types => 'articles,news')) %></p>
+    <p><span class="launchready">Yes</span> <%= link_to("<span>#{@features_count}</span> Published Articles tagged as \"feature\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'feature', :content_types => 'articles')) %></p>
     <%- else -%>
        <p class="missing">No Published Articles categorized as "feature"</p>
     <%- end -%>
@@ -100,13 +100,6 @@
            <li class="missing">No Published FAQs <span>(F)</span></li>
         <%- end -%>
 
-        <!-- News -->
-        <%- if @news_count > 0 -%>
-           <li><span class="launchready">Yes</span> <%= link_to("<span>#{@news_count}</span> Published News".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :content_types => 'news')) %> <span>(H)</span></li>
-        <%- else -%>
-           <li class="missing">No Published Articles categorized as "news" <span>(H)</span></li>
-        <%- end -%>
-
         <!-- Learning Lessons -->
         <%- if @learning_lessons_count > 0 -%>
         <li><span class="launchready">Yes</span> <%= link_to("<span>#{@learning_lessons_count}</span> Published Articles categorized as \"learning lesson\"".html_safe, pageinfo_pagelist_url(:content_tag => @content_tag.url_display_name, :articlefilter => 'learning lessons', :content_types => 'articles')) %> <span>(E)</span></li>
@@ -126,16 +119,12 @@
         <%- if @faqs_broken_count > 0 -%>
            <li class="missing"><%= link_to(pluralize(@faqs_broken_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs',:onlybroken => true)) %> have broken links</li>
         <%- end -%>
-        <%- if @news_broken_count > 0 -%>
-           <li class="missing"><%= link_to(pluralize(@news_broken_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news',:onlybroken => true)) %> have broken links</li>
-        <%- end -%>
       </ul>
 
       <h4>All Links</h4>
       <ul>
          <li><%= link_to(pluralize(@articles_count,'article'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'articles')) %></li>
          <li><%= link_to(pluralize(@faqs_count,'faq'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'faqs')) %></li>
-         <li><%= link_to(pluralize(@news_count,'news'), pageinfo_pagelinklist_url(:content_tag => @content_tag.url_display_name,:content_types => 'news')) %></li>
       </ul>
 
       <%- if @instant_survey_count > 0 -%>

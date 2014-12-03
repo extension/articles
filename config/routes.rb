@@ -6,7 +6,7 @@ Darmok::Application.routes.draw do
   match '/auth/:provider/callback', to: 'auth#success'
   match '/auth/failure', to: 'auth#failure'
 
-      
+
   ### Widget Stuff ###
   # redirects
   namespace :widgets do
@@ -15,7 +15,7 @@ Darmok::Application.routes.draw do
     match '/content/show', to: "content#show", :as => 'content_show'
     match '/', to: "home#index", :as => 'home'
   end
-  
+
 
   ## Debug ##
   match 'debug/location', to:'debug#location', :as => 'debuglocation'
@@ -24,11 +24,11 @@ Darmok::Application.routes.draw do
 #   ### pubsite routes ###
 #   map.redirect 'main', :controller => 'main', :action => 'index', :permanent => true
 #   map.connect 'feeds', :controller => 'feeds'
-    
+
 
 #   ### pubsite redirect routes
 #   map.redirect 'wiki/*title', :controller => 'articles', :action => 'page', :permanent => true
-  
+
   ### admin routes
   namespace :admin do
     resources :sponsors, :collection => {:update_positions => :post}
@@ -48,14 +48,14 @@ Darmok::Application.routes.draw do
   match 'admin/:action', :controller => 'admin'
   match 'admin', to: 'admin#index', :as => 'admin_index'
   match 'admin/edit_institution_logo', to: 'admin#edit_institution_logo', :as => 'admin_edit_institutional_logo'
-  
+
   match 'notice/admin_required', to: 'notice#admin_required'
-  
+
   ### api routes
   namespace :api do
     match 'data/:action', to: 'data'
   end
-  
+
   ### current routes for specific content
   match 'pages/list', to:'pages#list', :as => 'pagelist'
   match 'pages/:id/print', to:'pages#show', :as => 'print_pageid', :defaults => { :print => 1 }
@@ -67,7 +67,7 @@ Darmok::Application.routes.draw do
   match 'article/:id/print', to:'pages#redirect_article', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
   match 'article/:id', to:'pages#redirect_article', :constraints => { :id => /\d+/ }
   match 'events/:id/print', to:'pages#redirect_event', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
-  match 'events/:id', to:'pages#redirect_event', :constraints => { :id => /\d+/ }  
+  match 'events/:id', to:'pages#redirect_event', :constraints => { :id => /\d+/ }
   match 'faq/:id/print', to:'pages#redirect_faq', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
   match 'faq/:id', to:'pages#redirect_faq', :constraints => { :id => /\d+/ }
   match 'pages/*title', to:'pages#redirect_article'
@@ -94,9 +94,8 @@ Darmok::Application.routes.draw do
   match ':content_tag/events/:year', to:'main#legacy_events_redirect'
   match ':content_tag/events/:year/:month', to:'main#legacy_events_redirect'
   match ':content_tag/events/:year/:month/:event_stat', to:'main#legacy_events_redirect'
-  
+
   ### pubsite content_tag routes - should pretty much catch *everything* else right now
-  match ':content_tag/news', to:'pages#news', :as => 'site_news'
   match ':content_tag/faqs', to:'pages#faqs', :as => 'site_faqs'
   match ':content_tag/articles', to:'pages#articles', :as => 'site_articles'
   match ':content_tag/events', to:'pages#events', :as => 'site_events'
@@ -113,7 +112,7 @@ Darmok::Application.routes.draw do
   match 'main/:path', to:'main#special', :as => 'main_special'
   match ':content_tag', to:'main#community_tag', :as => 'site_index'
   match ':content_tag/about', to:'main#about_community', :as => 'about_community'
-  
+
   # this must be last
   # match '*path', to:'application#do_404', :constraints => { :path => /.*/ }
 

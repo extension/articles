@@ -29,7 +29,7 @@ class MainController < ApplicationController
     # in the case that one does not exist, the bio area will just collapse
     @featured_bio = Page.articles.tagged_with(['front page', 'bio']).offset(rand(Page.articles.tagged_with(['front page', 'bio']).length)).first
 
-    @recent_content = Page.recent_content({:datatypes => ['Article','Faq','News'], :limit => 10})
+    @recent_content = Page.recent_content({:datatypes => ['Article','Faq'], :limit => 10})
     @ask_two_point_oh_form = Settings.ask_two_point_oh_form
    end
 
