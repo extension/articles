@@ -10,32 +10,40 @@ require_relative("../../config/environment")
 class CreateNodeWorkflow < ActiveRecord::Base
   # connects to the create database
   self.establish_connection :create
-  self.set_table_name 'node_workflow'
-  self.set_primary_key "nwid"
+  self.table_name='node_workflow'
+  self.primary_key="nwid"
 end
 
 
 class CreateNodeWorkflowEvent < ActiveRecord::Base
   # connects to the create database
   self.establish_connection :create
-  self.set_table_name 'node_workflow_events'
-  self.set_primary_key "weid"
+  self.table_name='node_workflow_events'
+  self.primary_key="weid"
 end
 
 class CreateNode < ActiveRecord::Base
   # connects to the create database
   self.establish_connection :create
-  self.set_table_name 'node'
-  self.set_primary_key "nid"
+  self.table_name='node'
+  self.primary_key="nid"
   self.inheritance_column = "none"
   bad_attribute_names :changed
 end
 
-# let's delete some buckets
-ContentBucket.where("name IN ('news','originalnews','notnews')").each do |bucket|
-  bucket.destroy
+class CreateFieldDataBody < ActiveRecord::Base
+  # connects to the create database
+  self.establish_connection :create
+  self.table_name='field_data_body'
 end
 
+# let's delete some buckets
+# ContentBucket.where("name IN ('news','originalnews','notnews')").each do |bucket|
+#   puts "Cleaning up the #{bucket.name} content bucket"
+#   bucket.destroy
+# end
+
+puts " --- "
 
 # let us loop through the news, update the workflow,
 # create some workflow events, and then destroy the page
@@ -81,6 +89,35 @@ Page.where(datatype: 'News').limit(2).each do |page|
 
       puts "... logged workflow events."
 
+
+      # inject some markup that lets viewers know what happened
+      if(body = CreateFieldDataBody.where(bundle: create_node.type).where(entity_id: create_node.id).first)
+        if(create_node.type == 'article')
+          body_block = <<-END_TEXT.gsub(/\s+/, " ").strip
+          <div id="news_removal_notes" style="background: #ffff00;border:1px solid #000;color:#000;">
+          <p>On December 3, 2014, eXtension unpublished and removed all News content from www.extension.org.
+          This Article, because it was tagged "news" has been unpublished and marked as inactive.
+          Please feel free to rework this page and republish it as an indexed Article as appropriate.
+          Do not hesitate to <a href="http://create.extension.org/node/99714">Contact
+          our Community Support staff</a> with any questions you may have.</p></div>
+          <br/>
+          END_TEXT
+        else
+          body_block = <<-END_TEXT.gsub(/\s+/, " ").strip
+          <div id="news_removal_notes" style="background: #ffff00;border:1px solid #000;color:#000;">
+          <p>On December 3, 2014, eXtension unpublished and removed all News content from www.extension.org.
+          This News page has been unpublished and marked as inactive. If you would like to rework this page
+          into an Article and republish it, please <a href="http://create.extension.org/node/99714">Contact
+          our Community Support staff</a> to convert this page or get more clarification.</p></div>
+          <br/>
+          END_TEXT
+        end
+
+        body.connection.execute("UPDATE #{CreateFieldDataBody.table_name} SET body_value = #{ActiveRecord::Base.quote_value(body_block + body.body_value)} where bundle = '#{create_node.type}' AND entity_id = #{create_node.id}")
+        puts "... updated body content with disclaimer for node ##{create_node.id}."
+      else
+        puts "... unable to find body content for node ##{create_node.id}."
+      end
     else
       puts "... unable to find a workflow entry for this node (create node id: #{node_id})."
     end
