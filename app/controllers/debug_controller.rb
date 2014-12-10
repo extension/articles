@@ -29,13 +29,5 @@ class DebugController < ApplicationController
 
   end
 
-  def setparaman
-    if(params[:enabled] and TRUE_VALUES.include?(params[:enabled]))
-      cookies[:paraman] = { :value => true, :expires => 1.hour.from_now }
-    elsif(params[:enabled] and FALSE_VALUES.include?(params[:enabled]))
-      cookies.delete :paraman
-    end
-    return redirect_to root_url
-  end
 
 end

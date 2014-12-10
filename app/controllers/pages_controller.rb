@@ -131,6 +131,11 @@ class PagesController < ApplicationController
     # set canonical_link
     @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
 
+    # flag check
+    if(check_flags)
+      return redirect_to(@canonical_link)
+    end
+
     # special redirect check
     if(@page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id))
       return redirect_to(main_special_url(:path => @special_page.path),:status => :moved_permanently)
@@ -303,4 +308,18 @@ class PagesController < ApplicationController
   def events
     return redirect_to(Settings.learn_site,:status => :moved_permanently)
   end
+
+  def check_flags
+    if(params[:paraman] and TRUE_VALUES.include?(params[:paraman]))
+      cookies[:paraman] = { :value => true, :expires => 1.hour.from_now }
+      true
+    elsif(params[:paraman] and FALSE_VALUES.include?(params[:paraman]))
+      cookies.delete :paraman
+      true
+    else
+      false
+    end
+  end
+
+
 end
