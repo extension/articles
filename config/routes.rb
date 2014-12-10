@@ -20,6 +20,8 @@ Darmok::Application.routes.draw do
   ## Debug ##
   match 'debug/location', to:'debug#location', :as => 'debuglocation'
   match 'debug/session_information', to:'debug#session_information'
+  match 'debug/setparaman', to:'debug#setparaman'
+
 #   #################################################################
 #   ### pubsite routes ###
 #   map.redirect 'main', :controller => 'main', :action => 'index', :permanent => true
