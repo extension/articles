@@ -7,19 +7,23 @@
 	<div class="span9">
 		<h1 id="article_title"><%= @page.title %></h1>
 		<div class='infobar bordered clearfix'>
-		  
+
 		  <%- if(!@page_communities.blank?) -%>
           <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ').html_safe  %>
       <%- end -%>
       <span class="page_timestamp"><%= micro_time_print(@page.source_updated_at, 'updated').html_safe %></span><span class='divider hidden-phone noprint'>|</span><span><%= link_to 'Print', (request.url + "/print/"), :class => "print noprint" %></span>
-      
+
       <%= render(:partial => 'shared/addthis') %>
 		</div>
-		
-		<div id="article_content">
-		  <%= @page.content.html_safe %>
+
+		<%- if cookies[:paraman] -%>
+			<div id="article_content" class="paraman">
+		 <%- else -%>
+			<div id="article_content">
+		 <%- end -%>
+			<%= @page.content.html_safe %>
 		</div>
-		
+
 		<div class='backtotop span9 noprint'><a href='#top'><i class='fa fa-arrow-up'></i>Back to Top</a></div>
 		<div class='row noprint'>
   		<div class='article-info span6'>
@@ -41,24 +45,24 @@
         		<a class="addthis_button_pinterest_share"></a>
         		<a class="addthis_button_email"></a>
         		</div>
-        		<!-- AddThis Button END -->	  
-  			</div>          			
+        		<!-- AddThis Button END -->
+  			</div>
   			<div class='callout orange'>
   				<h4>Have a Question?</h4>
   				<p><%= link_to "Try asking one of our Experts", @ask_two_point_oh_form, :class => "aae_form_link" %></p>
   			</div>
   		</div>
 		</div>
-		
+
   </div>
-  
+
   <div class="span3 noprint">
     <% if @community %>
       <%= render(:partial => 'shared/social_and_locations_community') %>
     <% else %>
       <%= render(:partial => 'shared/social_and_locations_general') %>
     <% end %>
-    
+
     <% if @donation_block %>
     <div class='row'>
     	<div class='callout orange span3'>
@@ -71,13 +75,13 @@
     </div>
     <br />
     <% end %>
-    
+
     <div class='row'>
       <div class="upcoming_learn_events span3 clearfix">
         <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
       </div>
     </div>
-    
+
     <div class='row'>
       <div class="community-resources span3 clearfix">
         <h2>Resources</h2>

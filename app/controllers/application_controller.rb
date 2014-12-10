@@ -9,6 +9,9 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE', 'yes','YES','y','Y','on']
+  FALSE_VALUES = [false, 0, '0', 'f', 'F', 'false', 'FALSE','no','NO','n','N','off']
+
   helper :all # include all helpers, all the time
   #protect_from_forgery # See ActionController::RequestForgeryProtection for details
   include AuthLib
@@ -109,6 +112,9 @@ class ApplicationController < ActionController::Base
     @page_meta_description = 'Status 410 - Page Removed'
     render :template => "/shared/410", :layout => 'frontporch', :status => "410"
   end
+
+
+
 
   private
 
