@@ -18,7 +18,9 @@ div#app_location.preview a {color:#fff; text-decoration:underline; padding:0 .5e
 
 .clearing {clear: both;}
 
-
+.paraman {
+  cursor: url(/assets/paraman.png), auto;
+}
 
 /*override responsive styles*/
 img {height: auto !important;}

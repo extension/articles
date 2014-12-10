@@ -9,6 +9,9 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE', 'yes','YES','y','Y']
+  FALSE_VALUES = [false, 0, '0', 'f', 'F', 'false', 'FALSE','no','NO','n','N']
+
   helper :all # include all helpers, all the time
   #protect_from_forgery # See ActionController::RequestForgeryProtection for details
   include AuthLib
@@ -22,6 +25,7 @@ class ApplicationController < ActionController::Base
   before_filter :personalize_location_and_institution
   before_filter :set_request_url_options
   before_filter :set_app_location
+  before_filter :check_flags
 
   helper_method :get_location_options
   helper_method :get_county_options
@@ -109,6 +113,16 @@ class ApplicationController < ActionController::Base
     @page_meta_description = 'Status 410 - Page Removed'
     render :template => "/shared/410", :layout => 'frontporch', :status => "410"
   end
+
+  def check_flags
+    if(params[:paraman] and TRUE_VALUES.include?(params[:paraman]))
+      session[:paraman] = true
+    elsif(params[:paraman] and FALSE_VALUES.include?(params[:paraman]))
+      session[:paraman] = nil
+    end
+    true
+  end
+
 
   private
 
