@@ -4,20 +4,20 @@
 	<div class="span9">
 		<h1 id="article_title"><%= @article.title %></h1>
 		<div class='infobar bordered clearfix'>
-		  
-		<% if !@community_tags.blank? %>  
+
+		<% if !@community_tags.blank? %>
 		<%= @community_tags.collect{|tag| tag.content_community }.uniq.compact.collect { |community| link_to_public_community_home(community) }.join(', ').html_safe  %>
 		<% end %>
-      
+
       <span><%= micro_time_print(@article.updated_at, 'updated').html_safe %></span><span class='divider hidden-phone'>|</span><span><%= link_to 'Print', (request.fullpath + "/print/"), :class => "print" %></span>
-      
+
       <%= render(:partial => 'shared/addthis') %>
 		</div>
-		
+
 		<div id="article_content">
 		  <%= @article.content.html_safe %>
 		</div>
-		
+
 		<div class='backtotop span9'><a href='#top'><i class='fa fa-arrow-up'></i>Back to Top</a></div>
 		<div class='row'>
   		<div class='article-info span6'>
@@ -39,43 +39,43 @@
         		<a class="addthis_button_pinterest_share"></a>
         		<a class="addthis_button_email"></a>
         		</div>
-        		<!-- AddThis Button END -->	  
-  			</div>          			
+        		<!-- AddThis Button END -->
+  			</div>
   			<div class='callout orange'>
   				<h4>Have a Question?</h4>
   				<p><%= link_to "Try asking one of our Experts", @ask_two_point_oh_form, :class => "aae_form_link" %></p>
   			</div>
   		</div>
 		</div>
-		
+
   </div>
-  
+
   <div class="span3">
     <% if @community %>
       <%= render(:partial => 'shared/social_and_locations_community') %>
     <% else %>
       <%= render(:partial => 'shared/social_and_locations_general') %>
     <% end %>
-    
+
     <% if @donation_block %>
     <div class='row'>
     	<div class='callout orange span3'>
     		<h4>Donate to <%= @community.name %></h4>
     		<p>Your donation keeps eXtension growing.</p>
-    		<%= link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=C9XAJ2ZPCT3RU&item_name=#{@community.name}", :class => "btn orange lg")  do %>
+    		<%= link_to("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WE92HR9YBZ57C&item_name=#{@community.name}", :class => "btn orange lg")  do %>
     		  <i class='fa fa-heart icon-white'></i> Give Now
     		<% end %>
     	</div>
     </div>
     <br />
     <% end %>
-    
+
     <div class='row'>
       <div class="upcoming_learn_events span3 clearfix">
         <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
       </div>
     </div>
-    
+
     <% if @in_this_section %>
       <%= @in_this_section.content.html_safe %>
     <% end %>
