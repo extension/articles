@@ -62,6 +62,9 @@ module Darmok
     config.assets.version = '1.0'
 
 
+    config.middleware.insert_before ActionDispatch::ParamsParser, "CatchJsonParseErrors"
+    
+
     # see https://github.com/rack/rack/issues/337
     config.middleware.use ::Rack::Robustness do |g|
       g.no_catch_all
