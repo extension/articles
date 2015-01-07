@@ -31,6 +31,12 @@ class ApplicationController < ActionController::Base
   helper_method :with_content_tag?
   helper_method :content_tag_url_display_name
 
+  def append_info_to_payload(payload)
+    super
+    payload[:ip] = request.remote_ip
+    payload[:auth_id] = current_person.id if current_person
+  end
+
   def set_app_location
     @app_location_for_display = Settings.app_location
   end
@@ -279,8 +285,8 @@ class ApplicationController < ActionController::Base
     request.format = 'html'
   end
 
-def force_js_format
-  request.format = 'js'
-end
+  def force_js_format
+    request.format = 'js'
+  end
 
 end
