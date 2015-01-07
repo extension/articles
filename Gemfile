@@ -84,6 +84,9 @@ gem 'rack-robustness'
 # legacy data support
 gem 'safe_attributes'
 
+# terse logging
+gem 'lograge'
+
 group :development do
   # require the powder gem
   gem 'powder'

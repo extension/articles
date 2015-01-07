@@ -69,7 +69,15 @@ Darmok::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
-  
+
   config.action_mailer.asset_host = "https://#{Settings.urlwriter_host}"
-  
+
+  # terse logging
+  config.lograge.enabled = true
+  config.lograge.custom_options = lambda do |event|
+    unwanted_keys = %w[format action controller utf8]
+    params = event.payload[:params].reject { |key,_| unwanted_keys.include? key }
+    {time: event.time.to_s(:db), auth_id: event.payload[:auth_id], ip: event.payload[:ip], params: params}
+  end
+
 end
