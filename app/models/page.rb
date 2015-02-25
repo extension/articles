@@ -807,7 +807,8 @@ class Page < ActiveRecord::Base
         # fallback to the first paragraph
         text = parsed_html.css("p").text
       end
-      self.summary = text
+      # truncate at 16K
+      self.summary = text.truncate(16384)
       if(save)
         self.save
       end
