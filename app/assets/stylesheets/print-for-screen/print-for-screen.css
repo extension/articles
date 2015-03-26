@@ -28,7 +28,7 @@ h5 {font-size:10pt;}
 h1#article_title {font-size:2.1em !important;font-weight:normal;padding-bottom:0;margin-bottom:0;}
 
 img {border: 0;}
-#article_content img {max-width:260pt;height:auto; float:right; margin-bottom:20pt; margin-left:20pt;}
+#article_content img {max-width:260pt;height:auto !important; float:right; margin-bottom:20pt; margin-left:20pt;}
 
 #article {margin:0 0 20pt;padding:0 0 20pt;font-family: georgia, times, serif;}
 #content_css_reset #article {margin:0;padding:0;}
