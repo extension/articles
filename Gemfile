@@ -81,6 +81,9 @@ gem 'acts_as_list'
 # catch rack errors
 gem 'rack-robustness'
 
+# kill off bad behavior
+gem 'rack-attack'
+
 # legacy data support
 gem 'safe_attributes'
 

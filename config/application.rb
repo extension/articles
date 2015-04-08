@@ -63,7 +63,9 @@ module Darmok
 
 
     config.middleware.insert_before ActionDispatch::ParamsParser, "CatchJsonParseErrors"
-    
+
+    # blacklist some requests
+    config.middleware.use Rack::Attack
 
     # see https://github.com/rack/rack/issues/337
     config.middleware.use ::Rack::Robustness do |g|
