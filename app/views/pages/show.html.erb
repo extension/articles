@@ -11,7 +11,7 @@
 		  <%- if(!@page_communities.blank?) -%>
           <%= @page_communities.collect { |community| link_to_public_community_home(community) }.join(', ').html_safe  %>
       <%- end -%>
-      <span class="page_timestamp"><%= micro_time_print(@page.source_updated_at, 'updated').html_safe %></span><span class='divider hidden-phone noprint'>|</span>
+      <span class="page_timestamp"><%= micro_time_print(@page.source_updated_at, 'updated').html_safe %></span><span class='divider hidden-phone noprint'></span>
 
 			<%= render(:partial => 'shared/printfriendly') %>
       <%= render(:partial => 'shared/addthis') %>
