@@ -15,8 +15,8 @@ body {
 	margin:-5px auto;
 	background: #FFF;
 	padding:5px 26px;
-	box-shadow: 6px 0 4px -4px #666 , -6px 0 4px -4px #666; 
-	-moz-box-shadow: 6px 0 4px -4px #666, -6px 0 4px -4px #666; 
+	box-shadow: 6px 0 4px -4px #666 , -6px 0 4px -4px #666;
+	-moz-box-shadow: 6px 0 4px -4px #666, -6px 0 4px -4px #666;
 	-webkit-box-shadow: 6px 0 4px -4px #666, -6px 0 4px -4px #666;
 }
 
@@ -59,7 +59,7 @@ h3 {
 	right:0px;
 	border-bottom:1px dotted #CCC;
 }
- 
+
 .title:after {
 	content:"";
 	position: absolute;
@@ -285,7 +285,7 @@ ul.nav {
   background-image: -o-linear-gradient(top, #FF7100, #FF9E58);
   background-image: linear-gradient(to bottom, #FF7100, #FF9E58);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFF7100', endColorstr='#FFFF9E58', GradientType=0);  
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFF7100', endColorstr='#FFFF9E58', GradientType=0);
   *background-color: #FF964A;
 }
 .navbar .btn-navbar:active,
@@ -382,7 +382,7 @@ ul.nav {
 }
 #institution_picker .btn:hover {
 	color:#EEE;
-} 
+}
 
 .tagline {
     line-height: 30px;
@@ -524,7 +524,7 @@ h3.learn_widget_generic_title {margin:20px 0 10px;}
 .aae_qw_see_more {display:none;}
 
 #aae_qw li.last {
-  border:0;  
+  border:0;
 }
 #aae_qw h3 {display:none;}
 #aae_qw h3.aae_qw_no_matches {display:block;}
@@ -691,7 +691,7 @@ ul.thumbnails.pull-right {
     font-family: 'Sanchez', serif;
 	font-size: 22px;
 	line-height: 120%;
-	margin:0px;	
+	margin:0px;
 	width:100%;
 	color:#f07b05;
 	padding:10px 0;
@@ -713,7 +713,7 @@ ul.thumbnails.pull-right {
  	border-top:1px dotted #CCC;
 	border-bottom:1px dotted #CCC;
 }
- 
+
 .article-info h3.bordered:after {
 	content:"";
 	position: absolute;
@@ -782,8 +782,8 @@ ul.thumbnails.pull-right {
     font-family: 'Sanchez', serif;
 	font-size: 22px;
 	line-height: 120%;
-	margin:0px 10px 5px 10px;	
-	color:#FFF;	
+	margin:0px 10px 5px 10px;
+	color:#FFF;
 }
 
 .callout p {
@@ -811,7 +811,7 @@ ul.thumbnails.pull-right {
 	font-weight: bold;
 	border-left:15px solid #F77923;
 	margin-left:-26px;
-	padding-left:11px;	
+	padding-left:11px;
 	line-height: 150%;
 }
 
@@ -1095,7 +1095,7 @@ ul.nav {
   .carousel-caption p {font-size:15px;}
 .article h1 {font-size:24px;}
 h1#article_title {font-size: 24px; margin-top:10px;}
-#myCarousel {margin: 0 -20px;} 
+#myCarousel {margin: 0 -20px;}
 #myCarousel .item {height:auto; margin-bottom:2em;}
 .container {padding-top:0 !important;}
 .brand img {
@@ -1132,3 +1132,14 @@ footer p {
 	font-size: 85%;
 }
 }
+
+
+.addthis_toolbox.visible-desktop {
+	/*outline: 1px solid lime;*/
+	margin-top:20px;
+}
+.addthis_toolbox.hidden-desktop {
+	/*outline: 1px solid lime;*/
+	margin:15px 0 5px;
+}
+#twitter-widget-0 {width:80px !important;}
