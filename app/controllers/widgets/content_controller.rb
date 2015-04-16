@@ -18,13 +18,13 @@ class Widgets::ContentController < ApplicationController
     @launched_tags = Tag.community_tags({:launchedonly => true})
     @limit = DEFAULT_LIMIT
     @width = DEFAULT_WIDTH
-    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :limit => DEFAULT_LIMIT, :width => DEFAULT_WIDTH, :content_types => 'articles,faqs'}\"></script>"
+    @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :protocol => "https", :escape => false, :limit => DEFAULT_LIMIT, :width => DEFAULT_WIDTH, :content_types => 'articles,faqs'}\"></script>"
     render :layout => 'frontporch'
   end
 
-  # generate_new_widget builds the widget from a template (rather than doing a document.write as you see in the show method).
-  # this is because we have to replace the html for the widget div instead of return js to modify it, because that js is only
-  # executing on page load. that's why we do it with show is because that's called from the js as part of the hosting page's load
+  # generate_new_widget builds the example widget from the template of the same name.
+  # This is not a good design, and is absolutely not DRY.
+  # It should be fixed at some point if deemed a priority.
   def generate_new_widget
     # handle parameters and querying data for the widget
     setup_contents
@@ -70,9 +70,9 @@ class Widgets::ContentController < ApplicationController
     end
     @morelinkparams = morelinkparams_array.join('&')
     if(!@morelinkparams.blank?)
-      @morelink = "http://#{request.host_with_port}/pages/list?#{@morelinkparams}"
+      @morelink = "https://#{request.host_with_port}/pages/list?#{@morelinkparams}"
     else
-      @morelink = "http://#{request.host_with_port}/pages/list"
+      @morelink = "https://#{request.host_with_port}/pages/list"
     end
 
     # return js to write the widget to the page when the page hosting the widget loads

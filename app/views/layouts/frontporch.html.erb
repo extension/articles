@@ -197,26 +197,6 @@
 
       $("#preview_wrapper").height($("body").height());
 
-      $('#submit_widget').click(function() {
-        generate_widget();
-      });
-
-
-      function generate_widget() {
-    	  $.ajax({
-          type: "POST",
-          url: "<%= widgets_generate_new_widget_path() %>",
-          cache: false,
-          data: $('#widget_form').serialize()
-        })
-        .done(function(data) {
-          $("#example_widget").html(data);
-        })
-        .fail(function() {
-          alert("problem generating widget");
-        })
-    	}
-
       $("#select_from_tags li").click(function() {
         $tags = $('#widget_tags').val();
         if ($tags != "" ) {
