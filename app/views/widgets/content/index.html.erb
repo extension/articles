@@ -57,3 +57,29 @@
     </div>
 	</div>
 </div>
+
+
+
+
+<script class="code" type="text/javascript">
+
+$('#submit_widget').click(function() {
+  generate_widget();
+});
+
+
+function generate_widget() {
+  $.ajax({
+    type: "POST",
+    url: "<%= widgets_generate_new_widget_path() %>",
+    cache: false,
+    data: $('#widget_form').serialize()
+  })
+  .done(function(data) {
+    $("#example_widget").html(data);
+  })
+  .fail(function() {
+    alert("problem generating widget");
+  })
+}
+</script>
