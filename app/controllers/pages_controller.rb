@@ -119,6 +119,8 @@ class PagesController < ApplicationController
     @page = Page.find_by_id(params[:id])
     if @page
       @published_content = true
+    elsif(page_rediect = PageRedirect.where(redirect_page_id: params[:id]).first)
+      return redirect_to(page_url(:id => page_rediect.page.id, :title => page_rediect.page.url_title), status: :moved_permanently)
     else
       return do_404
     end
