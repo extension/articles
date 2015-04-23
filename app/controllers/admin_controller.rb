@@ -237,6 +237,9 @@ class AdminController < ApplicationController
   def category_tag_redirects
   end
 
+  def page_redirects
+  end
+
   # list recent notifications
   def notifications
     dateinterval = params[:dateinterval] || 'withinlastweek'

@@ -1,0 +1,29 @@
+<% @page_title = "Page Redirects" %>
+<% @selected_tab = :admin %>
+
+<h2>Page Redirects</h2>
+
+<p>The following page id's are redirected to another page inside the application</p>
+
+<table class="table">
+  <thead>
+    <tr>
+        <th scope="col">Redirected ID</th>
+        <th scope="col">Page</th>
+        <th scope="col">Reason</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% PageRedirect.all.each do |redirect| %>
+    <tr>
+      <td><%= redirect.redirect_page_id %></td>
+      <td><%= link_to(redirect.page.title, redirect.page.id_and_link) %></td>
+      <td><%= redirect.reason -%></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to 'Admin Home', :action => 'index' %>
+</p>
