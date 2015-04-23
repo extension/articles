@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141017184901) do
+ActiveRecord::Schema.define(:version => 20150423122720) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -224,6 +224,14 @@ ActiveRecord::Schema.define(:version => 20141017184901) do
     t.string "target_url"
     t.string "target_url_fingerprint"
   end
+
+  create_table "page_redirects", :force => true do |t|
+    t.integer "page_id",          :null => false
+    t.integer "redirect_page_id", :null => false
+    t.string  "reason"
+  end
+
+  add_index "page_redirects", ["redirect_page_id"], :name => "redirect_page_index", :unique => true
 
   create_table "page_sources", :force => true do |t|
     t.string   "name"
