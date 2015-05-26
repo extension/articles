@@ -33,7 +33,11 @@ class ApplicationController < ActionController::Base
 
   def append_info_to_payload(payload)
     super
-    payload[:ip] = request.remote_ip
+    begin
+      payload[:ip] = request.remote_ip
+    rescue ActionDispatch::RemoteIp::IpSpoofAttackError
+      payload[:ip] = request.env["HTTP_X_FORWARDED_FOR"]
+    end
     payload[:auth_id] = current_person.id if current_person
   end
 
