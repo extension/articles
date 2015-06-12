@@ -3,6 +3,7 @@ class Rack::Attack
   # blacklist Typhoeus requests for now
   blacklist('block Typhoeus UA requests') do |req|
     req.user_agent == 'Typhoeus - https://github.com/typhoeus/typhoeus'
+    req.user_agent =~ %r{Genieo}
   end
 
 
