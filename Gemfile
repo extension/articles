@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-source 'https://engineering.extension.org/rubygems'
 
 gem 'rails', '3.2.21'
 
@@ -21,7 +20,7 @@ group :assets do
   gem 'bootstrap-sass', '~> 2.3.2.2'
   gem 'jquery-ui-rails'
   # extension's packaging of html5shiv for the asset pipeline
-  gem 'extension-html5shiv-rails', :require => 'html5shiv-rails'
+  gem 'extension-html5shiv-rails', :require => 'html5shiv-rails', :source => 'https://engineering.extension.org/rubygems'
   # replaces glyphicons
   gem 'font-awesome-rails'
 end
