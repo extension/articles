@@ -127,7 +127,7 @@ class PagesController < ApplicationController
 
     # redirect to learn
     if(@page.is_event?)
-      return redirect_to(Settings.learn_site,:status => :moved_permanently)
+      return redirect_to(Settings.events_relocation_url,:status => :moved_permanently)
     end
 
     # set canonical_link
@@ -308,7 +308,7 @@ class PagesController < ApplicationController
   end
 
   def events
-    return redirect_to(Settings.learn_site,:status => :moved_permanently)
+    return redirect_to(Settings.events_relocation_url,:status => :moved_permanently)
   end
 
   def check_flags

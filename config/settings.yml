@@ -15,6 +15,7 @@ extensionorg_demowiki_host: 'cop.demo.extension.org'
 
 # Default sites
 ask_two_point_oh_form: 'https://ask.extension.org/ask'
+events_relocation_url: 'https://learn.extension.org/'
 
 # used to push IP Address down into the models, for the email crons
 default_request_ip: '127.0.0.1'
