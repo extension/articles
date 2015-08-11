@@ -70,8 +70,8 @@ class Link < ActiveRecord::Base
     (host == 'cop.extension.org' or host == 'cop.demo.extension.org')
   end
 
-  def self.is_www?(host)
-    (host == 'www.extension.org' or host == 'www.demo.extension.org')
+  def self.is_articles?(host)
+    (host == 'www.extension.org' or host == 'www.demo.extension.org' or host == 'articles.extension.org')
   end
 
   def is_create?
@@ -86,13 +86,13 @@ class Link < ActiveRecord::Base
     self.class.is_create?(self.host) or self.class.is_copwiki?(self.host)
   end
 
-  # note to the future humorless, the www site is currently (as of this commit)
+  # note to the future humorless, the www/articles site is currently (as of this commit)
   # the extension.org site that "has no name" (and multiple
   # attempts in the staff to attempt to give it a name) - so in an effort to
-  # encapsulate something that needs to resolve to "www" - I called it
+  # encapsulate something that needs to resolve to "www/articles" - I called it
   # voldemort.  <jayoung>
   def self.is_voldemort?(host)
-    self.is_create?(host) or self.is_copwiki?(host) or self.is_www?(host)
+    self.is_create?(host) or self.is_copwiki?(host) or self.is_articles?(host)
   end
 
 
@@ -155,7 +155,7 @@ class Link < ActiveRecord::Base
       self.path
     when IMAGE
       if(self.is_copwiki_or_create?)
-        "https://www.extension.org#{self.path}"
+        "https://#{Settings.urlwriter_host}/#{self.path}"
       else
         self.url
       end
