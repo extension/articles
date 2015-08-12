@@ -58,7 +58,7 @@
   <%- end -%>
 
   <% if(@app_location_for_display != 'production')%>
-    <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://create.extension.org/node/1781") %></p></div>
+    <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p></div>
   <% end %>
 
 <div id="body_wrapper"><!-- used for preview -->
@@ -69,7 +69,7 @@
         <p>This shows how your page will appear when published to www.extension.org. The navigation areas are grayed out because those sections are not available in preview mode. However, all links within your article do work.</p>
       </div>
     <% elsif (@app_location_for_display != 'production' ) %>
-      <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://create.extension.org/node/1781") %></p></div>
+      <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p></div>
     <% end %>
 </div><!-- end #body_wrapper -->
 
