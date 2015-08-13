@@ -2,7 +2,7 @@
 
 <div id="loading" style="display:none"><p><img src='/images/widgets/ajax_loader_white.gif' /> Loading... </p></div>
 
-<div id="content_widget" style="width:<%= @width %>"><h3><img src="//<%= request.host_with_port %>/assets/common/extension_icon_40x40.png" /> <span>eXtension Latest <%= @content_types.join(', ') -%>: <%= @content_tags.join(', ') -%></span>
+<div id="content_widget" style="width:<%= @width %>"><h3><img src="//<%= Settings.urlwriter_host %>/assets/common/extension_icon_40x40.png" /> <span>eXtension Latest <%= @content_types.join(', ') -%>: <%= @content_tags.join(', ') -%></span>
   <br class="clearing" /></h3>
 <ul>
 <%- if @contents.length == 0 -%>
@@ -12,13 +12,13 @@
     <li><a href=<%= page_url(:id => content.id, :title => content.url_title) %>> <%= content.title %></a></li>
   <%- end -%>
   <%- if(!@morelinkparams.blank?) -%>
-    <li><a href="<%= "http://#{request.host_with_port}/pages/list?#{@morelinkparams}" %>">More...</a></li>
+    <li><a href="<%= "#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/pages/list?#{@morelinkparams}" %>">More...</a></li>
   <%- else -%>
-  <li><a href="<%= "http://#{request.host_with_port}/pages/list" %>">More...</a></li>
+  <li><a href="<%= "#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/pages/list" %>">More...</a></li>
   <%- end -%>
 <%- end -%>
 </ul>
-<p><a href="http://<%= request.host_with_port %>/widgets/content">Create your own eXtension widget</a></p></div>
+<p><a href="<%= "#{Settings.urlwriter_protocol}#{Settings.urlwriter_host/widgets/content" -%>">Create your own eXtension widget</a></p></div>
 
 <div id="widget_code_module" class="well">
   <p>Copy the code below and paste it on your website:</p>
