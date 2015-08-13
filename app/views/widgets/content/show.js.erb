@@ -1,16 +1,18 @@
 document.write('<%= escape_javascript(content_widget_styles).html_safe %>');
-document.write('<%= escape_javascript("<div id=\"content_widget\" style=\"width:#{@width} !important\"><h3><img src=\"https://#{request.host_with_port}/assets/common/extension_icon_40x40.png\" /> <span>eXtension Latest #{@content_types.join(', ')}: #{@content_tags.join(', ')}</span><br class=\"clearing\" /></h3><ul>").html_safe %>');
+document.write('<%= escape_javascript("<div id=\"content_widget\" style=\"width:#{@width} !important\"><h3><img src=\"#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/assets/common/extension_icon_40x40.png\" /> <span>eXtension Latest #{@content_types.join(', ')}: #{@content_tags.join(', ')}</span><br class=\"clearing\" /></h3><ul>").html_safe %>');
 
 <% if @contents.length == 0 %>
   document.write('<%= escape_javascript("<h3>There are currently no content items at this time.</h3>").html_safe %>');
 <% end %>
 
 <% @contents.each do |content| %>
-  document.write('<%= escape_javascript("<li><a href=#{page_url(:id => content.id, :title => content.url_title, :protocol => "https")}>").html_safe %>');
+  // protocol for links is forced to be http because of the problems with
+  // legacy content and embeds that have no https representation
+  document.write('<%= escape_javascript("<li><a href=#{page_url(:id => content.id, :title => content.url_title, :protocol => "http")}>").html_safe %>');
   document.write('<%= escape_javascript(content.title).html_safe %>');
   document.write("</a></li>");
 <% end %>
 
 document.write('<%= escape_javascript("<li><a href=\"#{@morelink}\">More...</a></li>").html_safe %>');
 document.write("</ul>");
-document.write('<%= escape_javascript("<p><a href=\"https://#{request.host_with_port}/widgets/content\">Create your own eXtension widget</a></p></div>").html_safe %>');
+document.write('<%= escape_javascript("<p><a href=\"#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/widgets/content\">Create your own eXtension widget</a></p></div>").html_safe %>');

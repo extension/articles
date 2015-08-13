@@ -18,6 +18,7 @@ class Widgets::ContentController < ApplicationController
     @launched_tags = Tag.community_tags({:launchedonly => true})
     @limit = DEFAULT_LIMIT
     @width = DEFAULT_WIDTH
+    # widget code protocol is forced to be https
     @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :protocol => "https", :escape => false, :limit => DEFAULT_LIMIT, :width => DEFAULT_WIDTH, :content_types => 'articles,faqs'}\"></script>"
     render :layout => 'frontporch'
   end
@@ -29,6 +30,7 @@ class Widgets::ContentController < ApplicationController
     # handle parameters and querying data for the widget
     setup_contents
     (!@content_tags or @content_tags == 'All') ? tags_to_filter = nil : tags_to_filter = @content_tags
+    # protocol is left alone here in order to work on dev
     @widget_code = "<script type=\"text/javascript\" src=\"#{url_for :controller => 'widgets/content', :action => :show, :escape => false, :tags => @content_tags.join(@taglist_seperator), :quantity => @limit, :width => @width, :content_types => @content_types.join(',')}\"></script>"
 
     morelinkparams_array = []
@@ -70,9 +72,9 @@ class Widgets::ContentController < ApplicationController
     end
     @morelinkparams = morelinkparams_array.join('&')
     if(!@morelinkparams.blank?)
-      @morelink = "https://#{request.host_with_port}/pages/list?#{@morelinkparams}"
+      @morelink = "http://#{request.host_with_port}/pages/list?#{@morelinkparams}"
     else
-      @morelink = "https://#{request.host_with_port}/pages/list"
+      @morelink = "http://#{request.host_with_port}/pages/list"
     end
 
     # return js to write the widget to the page when the page hosting the widget loads
