@@ -75,7 +75,6 @@ Darmok::Application.routes.draw do
 
   ### more named routes
   match 'logo/:file', to:'logo#display', :as => 'logo'
-  match 'reports', to:'reports#index', :as => 'reports'
   match 'category/:content_tag', to:'main#category_tag', :as => 'category_tag_index'
 
   # preview
