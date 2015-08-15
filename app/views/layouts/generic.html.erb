@@ -1,16 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
+<!DOCTYPE html>
+<html lang="en">
+<!DOCTYPE html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta charset="utf-8" />
     <title>eXtension: <%= @page_title || controller.action_name %></title>
       <%= stylesheet_link_tag    "application" %>
       <%= javascript_include_tag "application" %>
       <!--[if lt IE 9]>
         <%= javascript_include_tag 'html5shiv' %>
-      <![endif]-->  
+      <![endif]-->
 </head>
 
 <body>
@@ -19,15 +17,15 @@
         <p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p>
     </div>
     <% end %>
-  
+
     <div id="wrapper">
         <div id="masthead">
-            <div id="logo"><%= image_tag("/assets/common/extension_logo_small.gif", :alt => "eXtension - more mind reach") %></div>
+            <div id="logo"><%= image_tag("/assets/common/extension_logo_small.gif", :alt => "eXtension") %></div>
         </div>
-    
+
         <div id="content">
             <%= yield :layout %>
-            
+
             <br class="clearing" />
         </div>
     </div> <!-- #wrapper -->
