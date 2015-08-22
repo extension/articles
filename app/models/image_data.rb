@@ -6,9 +6,9 @@
 # see LICENSE file
 
 class ImageData < ActiveRecord::Base
-
-
-
+  belongs_to :link
+  has_many :linkings, :through => :link
+  has_many :pages, :through => :linkings
 
 
 
@@ -38,7 +38,24 @@ class ImageData < ActiveRecord::Base
     END_SQL
 
     CreateFile.connection.execute(query)
-
   end
+
+
+  def self.link_by_path(matchpath,link_id,source)
+    case source
+      when 'copwiki'
+        if(id = self.where(path: matchpath).where(source: 'copwiki').first)
+          id.update_column(:link_id,link_id)
+        end
+      when 'create'
+        if(id = self.where(path: "public://#{matchpath}").where(source: 'create').first)
+          id.update_column(:link_id,link_id)
+        end
+      else
+        # nothing for now
+    end
+  end
+
+
 
 end
