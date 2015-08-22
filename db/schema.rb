@@ -142,7 +142,6 @@ ActiveRecord::Schema.define(:version => 20150821165659) do
   add_index "geo_names", ["feature_name", "state_abbreviation", "county"], :name => "name_state_county_ndx"
 
   create_table "image_data", :force => true do |t|
-    t.integer "link_id"
     t.string  "filename"
     t.text    "path"
     t.integer "source_id"
@@ -151,8 +150,14 @@ ActiveRecord::Schema.define(:version => 20150821165659) do
     t.text    "copyright"
   end
 
-  add_index "image_data", ["link_id"], :name => "link_index"
   add_index "image_data", ["source_id", "source"], :name => "source_id_index", :unique => true
+
+  create_table "image_data_links", :force => true do |t|
+    t.integer "link_id",       :null => false
+    t.string  "image_data_id", :null => false
+  end
+
+  add_index "image_data_links", ["link_id", "image_data_id"], :name => "link_index", :unique => true
 
   create_table "link_stats", :force => true do |t|
     t.integer  "page_id"

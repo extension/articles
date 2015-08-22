@@ -12,7 +12,8 @@ class Link < ActiveRecord::Base
 
   belongs_to :page
   has_many :linkings
-  has_one :image_data
+  has_one :image_data_link
+  has_one :image_data, :through => :image_data_link
 
   validates_presence_of :fingerprint, :linktype
 

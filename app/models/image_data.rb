@@ -6,9 +6,11 @@
 # see LICENSE file
 
 class ImageData < ActiveRecord::Base
-  belongs_to :link
-  has_many :linkings, :through => :link
+  has_many :image_data_links
+  has_many :links, :through => :image_data_links
+  has_many :linkings, :through => :links
   has_many :pages, :through => :linkings
+
 
 
 
@@ -44,12 +46,23 @@ class ImageData < ActiveRecord::Base
   def self.link_by_path(matchpath,link_id,source)
     case source
       when 'copwiki'
-        if(id = self.where(path: matchpath).where(source: 'copwiki').first)
-          id.update_column(:link_id,link_id)
+        # somehow there are /a/aa/filename/some_other_file_name paths
+        matchpath_breakdown = matchpath.split('/')
+        searchpath = "/#{matchpath_breakdown[1]}/#{matchpath_breakdown[2]}/#{matchpath_breakdown[3]}"
+        if(id = self.where(path: searchpath).where(source: 'copwiki').first)
+          begin
+            id.image_data_links.create(link_id: link_id)
+          rescue ActiveRecord::RecordNotUnique
+            # already linked
+          end
         end
       when 'create'
         if(id = self.where(path: "public://#{matchpath}").where(source: 'create').first)
-          id.update_column(:link_id,link_id)
+          begin
+            id.image_data_links.create(link_id: link_id)
+          rescue ActiveRecord::RecordNotUnique
+            # already linked
+          end
         end
       else
         # nothing for now
