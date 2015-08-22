@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150423122720) do
+ActiveRecord::Schema.define(:version => 20150821165659) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -140,6 +140,19 @@ ActiveRecord::Schema.define(:version => 20150423122720) do
   end
 
   add_index "geo_names", ["feature_name", "state_abbreviation", "county"], :name => "name_state_county_ndx"
+
+  create_table "image_data", :force => true do |t|
+    t.integer "link_id"
+    t.string  "filename"
+    t.text    "path"
+    t.integer "source_id"
+    t.string  "source"
+    t.text    "description"
+    t.text    "copyright"
+  end
+
+  add_index "image_data", ["link_id"], :name => "link_index"
+  add_index "image_data", ["source_id", "source"], :name => "source_id_index", :unique => true
 
   create_table "link_stats", :force => true do |t|
     t.integer  "page_id"
