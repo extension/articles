@@ -44,24 +44,25 @@ class Link < ActiveRecord::Base
   # maximum number of times we'll check a broken link before giving up
   MAX_ERROR_COUNT = 10
 
-  scope :checklist, :conditions => ["linktype IN (#{EXTERNAL},#{LOCAL},#{IMAGE})"]
-  scope :external, :conditions => {:linktype => EXTERNAL}
-  scope :internal, :conditions => {:linktype => INTERNAL}
-  scope :unpublished, :conditions => {:linktype => WANTED}
-  scope :local, :conditions => {:linktype => LOCAL}
-  scope :file, :conditions => {:linktype => DIRECTFILE}
-  scope :category, :conditions => {:linktype => CATEGORY}
-  scope :image, :conditions => {:linktype => IMAGE}
+  scope :checklist, -> {where("linktype IN (#{EXTERNAL},#{LOCAL},#{IMAGE})")}
+  scope :external, -> {where(:linktype => EXTERNAL)}
+  scope :internal, -> {where(:linktype => INTERNAL)}
+  scope :unpublished, -> {where(:linktype => WANTED)}
+  scope :local, -> {where(:linktype => LOCAL)}
+  scope :file, -> {where(:linktype => DIRECTFILE)}
+  scope :category, -> {where(:linktype => CATEGORY)}
+  scope :image, -> {where(:linktype => IMAGE)}
+  scope :unlinked_images, -> { image.includes(:image_data).where('image_data.id' => nil) }
 
-  scope :checked, :conditions => ["last_check_at IS NOT NULL"]
-  scope :unchecked, :conditions => ["last_check_at IS NULL"]
-  scope :good, :conditions => {:status => OK}
-  scope :broken, :conditions => {:status => BROKEN}
-  scope :warning, :conditions => {:status => WARNING}
-  scope :redirected, :conditions => {:status => OK_REDIRECT}
+  scope :checked, -> {where("last_check_at IS NOT NULL")}
+  scope :unchecked, -> {where("last_check_at IS NULL")}
+  scope :good, -> {where(:status => OK)}
+  scope :broken, -> {where(:status => BROKEN)}
+  scope :warning, -> {where(:status => WARNING)}
+  scope :redirected, -> {where(:status => OK_REDIRECT)}
 
-  scope :checked_yesterday_or_earlier, :conditions => ["DATE(last_check_at) <= ?",Date.yesterday]
-  scope :checked_over_one_month_ago, :conditions => ["DATE(last_check_at) <= DATE_SUB(NOW(),INTERVAL 1 MONTH)",Date.yesterday]
+  scope :checked_yesterday_or_earlier, -> {where("DATE(last_check_at) <= ?",Date.yesterday)}
+  scope :checked_over_one_month_ago, -> {where("DATE(last_check_at) <= DATE_SUB(?,INTERVAL 1 MONTH)",Date.yesterday)}
 
   def self.is_create?(host)
     (host == 'create.extension.org' or host == 'create.demo.extension.org')
@@ -609,10 +610,6 @@ class Link < ActiveRecord::Base
     else
       # nothing for now
     end
-  end
-
-  def self.unlinked_images
-    self.image.includes(:image_data).where('image_data.id' => nil)
   end
 
   def self.connect_unlinked_images
