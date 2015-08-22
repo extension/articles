@@ -27,8 +27,7 @@ class Page < ActiveRecord::Base
   before_update :check_content
   before_destroy :change_primary_link
 
-  ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest events' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
-                            :default => "source_updated_at DESC"
+  ordered_by :orderings => {'Newest to oldest'=> "source_updated_at DESC"}, :default => "source_updated_at DESC"
 
   has_one :primary_link, :class_name => "Link", dependent: :destroy
   has_many :linkings, dependent: :destroy
@@ -39,8 +38,8 @@ class Page < ActiveRecord::Base
   belongs_to :page_source
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
+  has_many :image_data, :through => :links
 
-  validates_numericality_of :learn_id, :allow_blank => true, :message => "event must be a valid event number."
 
   scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
@@ -51,7 +50,6 @@ class Page < ActiveRecord::Base
   scope :indexed, :conditions => {:indexed => INDEXED}
   scope :articles, :conditions => {:datatype => 'Article'}
   scope :faqs, :conditions => {:datatype => 'Faq'}
-  scope :events, :conditions => {:datatype => 'Event'}
 
 
   scope :by_datatype, lambda{|datatype|

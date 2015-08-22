@@ -121,13 +121,10 @@ class PagesController < ApplicationController
       @published_content = true
     elsif(page_rediect = PageRedirect.where(redirect_page_id: params[:id]).first)
       return redirect_to(page_url(:id => page_rediect.page.id, :title => page_rediect.page.url_title), status: :moved_permanently)
+    elsif(oei = OldEventId.where(event_id: params[:id]).first)
+      return redirect_to(Settings.learn_site,:status => :moved_permanently)
     else
       return do_404
-    end
-
-    # redirect to learn
-    if(@page.is_event?)
-      return redirect_to(Settings.learn_site,:status => :moved_permanently)
     end
 
     # set canonical_link
