@@ -14,15 +14,19 @@ class WikiImage < ActiveRecord::Base
   attr_accessor :desc, :copy
 
   def parse
-    parts = self.page_text.split(/^==\s+[\w\s]*\s+==\n/)
+    parts = self.page_text.split(/^==\s+[\w\s:]*\s+==\n?/)
     if(parts[1].nil?)
       self.desc = self.page_text.gsub(/\[\[Category:.*?\]\]/i,'')
     else
       d = parts[1]
       c = parts[2]
       c += parts[3] if(!parts[3].nil?)
-      self.desc = d.gsub(/\[\[Category:.*?\]\]/i,'') if !d.nil?
-      self.copy = c.gsub(/\[\[Category:.*?\]\]/i,'') if !c.nil?
+      d.gsub!(/\[\[Category.*?\]\]/i,'') if !d.nil?
+      c.gsub!(/\[\[Category.*?\]\]/i,'') if !c.nil?
+      d.strip! if !d.nil?
+      c.strip! if !c.nil?
+      self.desc = d if !d.blank?
+      self.copy = c if !c.blank?
     end
   end
 
