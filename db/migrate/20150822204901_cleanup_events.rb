@@ -4,6 +4,9 @@ class CleanupEvents < ActiveRecord::Migration
     # delete the events
     execute "DELETE from pages where datatype = 'Event'"
 
+    # remove event_start index
+    remove_index(:pages, :name => 'index_pages_on_event_start')
+
     # remove old columns
     remove_column(:pages, :event_start)
     remove_column(:pages, :time_zone)
