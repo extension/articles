@@ -18,6 +18,8 @@ class PublishingCommunity < ActiveRecord::Base
   belongs_to :primary_tag, :class_name => "Tag"
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
+  has_many :pages, :through => :tags
+  has_many :image_data, :through => :pages
 
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
 
