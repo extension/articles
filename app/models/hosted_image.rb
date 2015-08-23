@@ -53,7 +53,7 @@ class HostedImage < ActiveRecord::Base
         searchpath = "/#{matchpath_breakdown[1]}/#{matchpath_breakdown[2]}/#{matchpath_breakdown[3]}"
         if(id = self.where(path: searchpath).where(source: 'copwiki').first)
           begin
-            id.image_data_links.create(link_id: link_id)
+            id.hosted_image_links.create(link_id: link_id)
           rescue ActiveRecord::RecordNotUnique
             # already linked
           end
@@ -61,7 +61,7 @@ class HostedImage < ActiveRecord::Base
       when 'create'
         if(id = self.where(path: "public://#{matchpath}").where(source: 'create').first)
           begin
-            id.image_data_links.create(link_id: link_id)
+            id.hosted_image_links.create(link_id: link_id)
           rescue ActiveRecord::RecordNotUnique
             # already linked
           end

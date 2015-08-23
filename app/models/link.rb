@@ -589,25 +589,25 @@ class Link < ActiveRecord::Base
     returnhash
   end
 
-  def connect_to_image_data
+  def connect_to_hosted_image
     if(%r{^/mediawiki/files/thumb} =~ self.path)
       matchpath = self.path.gsub(%r{^/mediawiki/files/thumb},'')
-      ImageData.link_by_path(matchpath,self.id,'copwiki')
+      HostedImage.link_by_path(matchpath,self.id,'copwiki')
     elsif(%r{^/mediawiki/files} =~ self.path)
       matchpath = self.path.gsub(%r{^/mediawiki/files},'')
-      ImageData.link_by_path(matchpath,self.id,'copwiki')
+      HostedImage.link_by_path(matchpath,self.id,'copwiki')
     elsif(%r{^/sites/default/files/w/thumb} =~ self.path)
       matchpath = self.path.gsub(%r{^/sites/default/files/w/thumb},'')
-      ImageData.link_by_path(matchpath,self.id,'copwiki')
+      HostedImage.link_by_path(matchpath,self.id,'copwiki')
     elsif(%r{^/sites/default/files/w} =~ self.path)
       matchpath = self.path.gsub(%r{^/sites/default/files/w},'')
-      ImageData.link_by_path(matchpath,self.id,'copwiki')
+      HostedImage.link_by_path(matchpath,self.id,'copwiki')
     elsif(%r{^/sites/default/files/styles/\w+/public/}  =~ self.path)
       matchpath = self.path.gsub(%r{^/sites/default/files/styles/\w+/public/},'')
-      ImageData.link_by_path(matchpath,self.id,'create')
+      HostedImage.link_by_path(matchpath,self.id,'create')
     elsif(%r{^/sites/default/files/} =~ self.path)
       matchpath = self.path.gsub(%r{^/sites/default/files/},'')
-      ImageData.link_by_path(matchpath,self.id,'create')
+      HostedImage.link_by_path(matchpath,self.id,'create')
     else
       # nothing for now
     end
@@ -615,7 +615,7 @@ class Link < ActiveRecord::Base
 
   def self.connect_unlinked_images
     self.unlinked_images.each do |image_link|
-      image_link.connect_to_image_data
+      image_link.connect_to_hosted_image
     end
   end
 
