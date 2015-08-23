@@ -39,6 +39,7 @@ class Page < ActiveRecord::Base
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
   has_many :hosted_images, :through => :links
+  has_many :year_analytics
 
 
   scope :bucketed_as, lambda{|bucketname|
@@ -960,5 +961,39 @@ class Page < ActiveRecord::Base
     end
   end
 
+  def weeks_published(through_date)
+    if(self.created_at.to_date > through_date)
+      0
+    else
+      (through_date - self.created_at.to_date).to_i / 7
+    end
+  end
+
+  def page_stat_attributes
+    pageviews = self.year_analytics.pluck(:pageviews).sum
+    unique_pageviews = self.year_analytics.pluck(:unique_pageviews).sum
+    weeks_published = self.weeks_published(END_DATE)
+    if(weeks_published > 52)
+      mean_pageviews = pageviews / 52.to_f
+      mean_unique_pageviews = unique_pageviews / 52.to_f
+    elsif(weeks_published > 0)
+      mean_pageviews = pageviews / weeks_published.to_f
+      mean_unique_pageviews = unique_pageviews / weeks_published.to_f
+    else
+      mean_pageviews = 0
+      mean_unique_pageviews = 0
+    end
+
+    attributes = {}
+    attributes[:pageviews] = pageviews
+    attributes[:unique_pageviews] = unique_pageviews
+    attributes[:weeks_published] = weeks_published
+    attributes[:mean_pageviews] = mean_pageviews
+    attributes[:mean_unique_pageviews] = mean_unique_pageviews
+    attributes[:image_links] = self.links.image.count
+    attributes[:copwiki_images] = self.hosted_images.from_copwiki.unique.count
+    attributes[:create_images] = self.hosted_images.from_create.unique.count
+    attributes
+  end
 
 end

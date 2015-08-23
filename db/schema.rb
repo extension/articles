@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150823131548) do
+ActiveRecord::Schema.define(:version => 20150823135949) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -275,6 +275,22 @@ ActiveRecord::Schema.define(:version => 20150823131548) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "page_stats", :force => true do |t|
+    t.integer  "page_id"
+    t.integer  "pageviews"
+    t.integer  "unique_pageviews"
+    t.integer  "weeks_published"
+    t.float    "mean_pageviews"
+    t.float    "mean_unique_pageviews"
+    t.integer  "image_links"
+    t.integer  "copwiki_images"
+    t.integer  "create_images"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
+  add_index "page_stats", ["page_id"], :name => "index_page_stats_on_page_id", :unique => true
 
   create_table "page_updates", :force => true do |t|
     t.integer  "user_id"

@@ -6,6 +6,7 @@
 #  see LICENSE file
 
 class YearAnalytic < ActiveRecord::Base
+  belongs_to :page
 
   URL_PAGE = 'page'
   URL_MIGRATED_WIKI = 'wiki'
