@@ -5,7 +5,7 @@
 #
 # see LICENSE file
 
-class ImageDataLink < ActiveRecord::Base
+class HostedImageLink < ActiveRecord::Base
   belongs_to :link
-  belongs_to :image_data
+  belongs_to :hosted_image
 end

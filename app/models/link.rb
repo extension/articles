@@ -12,8 +12,8 @@ class Link < ActiveRecord::Base
 
   belongs_to :page
   has_many :linkings
-  has_one :image_data_link, :dependent => :destroy
-  has_one :image_data, :through => :image_data_link
+  has_one :hosted_image_link, :dependent => :destroy
+  has_one :hosted_image, :through => :hosted_image_link
 
   validates_presence_of :fingerprint, :linktype
 
@@ -53,7 +53,7 @@ class Link < ActiveRecord::Base
   scope :file, -> {where(:linktype => DIRECTFILE)}
   scope :category, -> {where(:linktype => CATEGORY)}
   scope :image, -> {where(:linktype => IMAGE)}
-  scope :unlinked_images, -> { image.includes(:image_data).where('image_data.id' => nil) }
+  scope :unlinked_images, -> { image.includes(:hosted_image).where('hosted_images.id' => nil) }
 
   scope :checked, -> {where("last_check_at IS NOT NULL")}
   scope :unchecked, -> {where("last_check_at IS NULL")}

@@ -5,12 +5,14 @@
 #
 # see LICENSE file
 
-class ImageData < ActiveRecord::Base
-  has_many :image_data_links
-  has_many :links, :through => :image_data_links
+class HostedImage < ActiveRecord::Base
+  has_many :hosted_image_links
+  has_many :links, :through => :hosted_image_links
   has_many :linkings, :through => :links
   has_many :pages, :through => :linkings
 
+  scope :from_copwiki, -> {where(source: 'copwiki')}
+  scope :from_create, -> {where(source: 'create')}
 
 
 

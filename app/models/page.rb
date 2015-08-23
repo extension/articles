@@ -38,7 +38,7 @@ class Page < ActiveRecord::Base
   belongs_to :page_source
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
-  has_many :image_data, :through => :links
+  has_many :hosted_images, :through => :links
 
 
   scope :bucketed_as, lambda{|bucketname|

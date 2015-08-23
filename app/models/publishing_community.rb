@@ -19,7 +19,7 @@ class PublishingCommunity < ActiveRecord::Base
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
   has_many :pages, :through => :tags
-  has_many :image_data, :through => :pages
+  has_many :hosted_images, :through => :pages
 
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
 
