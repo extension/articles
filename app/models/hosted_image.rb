@@ -10,13 +10,18 @@ class HostedImage < ActiveRecord::Base
   has_many :links, :through => :hosted_image_links
   has_many :linkings, :through => :links
   has_many :pages, :through => :linkings
+  has_many :page_stats, :through => :pages
 
   scope :from_copwiki, -> {where(source: 'copwiki')}
   scope :from_create, -> {where(source: 'create')}
   scope :with_copyright, -> {where("copyright IS NOT NULL")}
 
   def self.published_count
-    joins(:hosted_image_links).count('distinct hosted_image_id')
+    joins(:hosted_image_links).count('distinct hosted_image_links.hosted_image_id')
+  end
+
+  def self.viewed_count
+    joins(:page_stats).where("page_stats.mean_unique_pageviews >= 1").count("distinct hosted_images.id")
   end
 
   def self.update_from_create

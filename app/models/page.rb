@@ -40,7 +40,7 @@ class Page < ActiveRecord::Base
   has_many :tags, :through => :taggings
   has_many :hosted_images, :through => :links
   has_many :year_analytics
-  has_one  :page_stat
+  has_one  :page_stat, dependent: :destroy
 
 
   scope :bucketed_as, lambda{|bucketname|

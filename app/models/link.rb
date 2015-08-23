@@ -19,6 +19,8 @@ class Link < ActiveRecord::Base
 
   # this is the association for items that link to this item
   has_many :linkedpages, :through => :linkings, :source => :page
+  has_many :page_stats, :through => :linkedpages
+
 
   # link types
   WANTED = 1

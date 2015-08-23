@@ -22,6 +22,8 @@ class PublishingCommunity < ActiveRecord::Base
   has_many :hosted_images, :through => :pages
   has_many :page_stats, :through => :pages
   has_many :links, :through => :pages
+  has_many :viewed_images, :through => :page_stats, :source => :hosted_images
+  has_many :viewed_links, :through => :page_stats, :source => :links
 
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
 
@@ -142,26 +144,28 @@ class PublishingCommunity < ActiveRecord::Base
     attributes[:missing_pages] = missing_pages
     attributes[:viewed_percentiles] = viewed_percentiles
     attributes[:image_links] = self.links.image.count("distinct links.id")
+    attributes[:viewed_image_links] = self.viewed_links.image.joins(:page_stats).where("page_stats.mean_unique_pageviews >= 1").count("distinct links.id")
 
-    copwiki_images = 0
-    create_images = 0
-    hosted_images = 0
-    copwiki_images_with_copyright = 0
-    create_images_with_copyright = 0
-    hosted_images_with_copyright = 0
-    self.hosted_images.uniq.each do |hi|
-      hosted_images += 1
-      create_images += 1 if hi.source == 'create'
-      copwiki_images += 1 if hi.source == 'copwiki'
-      if(!hi.copyright.blank?)
-        hosted_images_with_copyright += 1
-        create_images_with_copyright += 1 if hi.source == 'create'
-        copwiki_images_with_copyright += 1 if hi.source == 'copwiki'
-      end
-    end
+    copwiki_images = self.hosted_images.from_copwiki.published_count
+    create_images = self.hosted_images.from_create.published_count
+    hosted_images = self.hosted_images.published_count
+
+    viewed_copwiki_images = self.viewed_images.from_copwiki.viewed_count
+    viewed_create_images = self.viewed_images.from_create.viewed_count
+    viewed_hosted_images = self.viewed_images.viewed_count
+
+    copwiki_images_with_copyright = self.hosted_images.from_copwiki.with_copyright.published_count
+    create_images_with_copyright = self.hosted_images.from_create.with_copyright.published_count
+    hosted_images_with_copyright = self.hosted_images.with_copyright.count('distinct hosted_images.id')
+
     attributes[:copwiki_images] = copwiki_images
     attributes[:create_images] = create_images
     attributes[:hosted_images] = hosted_images
+
+    attributes[:viewed_copwiki_images] = viewed_copwiki_images
+    attributes[:viewed_create_images] = viewed_create_images
+    attributes[:viewed_hosted_images] = viewed_hosted_images
+
     attributes[:copwiki_images_with_copyright] = copwiki_images_with_copyright
     attributes[:create_images_with_copyright] = create_images_with_copyright
     attributes[:hosted_images_with_copyright] = hosted_images_with_copyright

@@ -7,6 +7,9 @@
 
 class PageStat < ActiveRecord::Base
   belongs_to :page
+  has_many :hosted_images, :through => :page
+  has_many :links, :through => :page
+
 
   # hardcoded right now
   START_DATE = Date.parse('2014-08-24')
@@ -52,10 +55,16 @@ class PageStat < ActiveRecord::Base
       attributes[:missing_pages] = missing_pages
       attributes[:viewed_percentiles] = viewed_percentiles
       attributes[:image_links] = Link.image.count("distinct links.id")
+      attributes[:viewed_image_links] = Link.image.joins(:page_stats).where("page_stats.mean_unique_pageviews >= 1").count("distinct links.id")
 
       copwiki_images = HostedImage.from_copwiki.published_count
       create_images = HostedImage.from_create.published_count
       hosted_images = HostedImage.published_count
+
+      viewed_copwiki_images = HostedImage.from_copwiki.viewed_count
+      viewed_create_images = HostedImage.from_create.viewed_count
+      viewed_hosted_images = HostedImage.viewed_count
+
       copwiki_images_with_copyright = HostedImage.from_copwiki.with_copyright.published_count
       create_images_with_copyright = HostedImage.from_create.with_copyright.published_count
       hosted_images_with_copyright = HostedImage.with_copyright.published_count
@@ -63,6 +72,10 @@ class PageStat < ActiveRecord::Base
       attributes[:copwiki_images] = copwiki_images
       attributes[:create_images] = create_images
       attributes[:hosted_images] = hosted_images
+      attributes[:viewed_copwiki_images] = viewed_copwiki_images
+      attributes[:viewed_create_images] = viewed_create_images
+      attributes[:viewed_hosted_images] = viewed_hosted_images
+
       attributes[:copwiki_images_with_copyright] = copwiki_images_with_copyright
       attributes[:create_images_with_copyright] = create_images_with_copyright
       attributes[:hosted_images_with_copyright] = hosted_images_with_copyright
