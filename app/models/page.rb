@@ -999,7 +999,7 @@ class Page < ActiveRecord::Base
     copwiki_images_with_copyright = 0
     create_images_with_copyright = 0
     hosted_images_with_copyright = 0
-    self.hosted_images.each do |hi|
+    self.hosted_images.all.each do |hi|
       hosted_images += 1
       create_images += 1 if hi.source == 'create'
       copwiki_images += 1 if hi.source == 'copwiki'
