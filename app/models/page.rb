@@ -972,7 +972,7 @@ class Page < ActiveRecord::Base
   def page_stat_attributes
     pageviews = self.year_analytics.pluck(:pageviews).sum
     unique_pageviews = self.year_analytics.pluck(:unique_pageviews).sum
-    weeks_published = self.weeks_published(END_DATE)
+    weeks_published = self.weeks_published(PageStat::END_DATE)
     if(weeks_published > 52)
       mean_pageviews = pageviews / 52.to_f
       mean_unique_pageviews = unique_pageviews / 52.to_f
@@ -991,8 +991,8 @@ class Page < ActiveRecord::Base
     attributes[:mean_pageviews] = mean_pageviews
     attributes[:mean_unique_pageviews] = mean_unique_pageviews
     attributes[:image_links] = self.links.image.count
-    attributes[:copwiki_images] = self.hosted_images.from_copwiki.unique.count
-    attributes[:create_images] = self.hosted_images.from_create.unique.count
+    attributes[:copwiki_images] = self.hosted_images.from_copwiki.count
+    attributes[:create_images] = self.hosted_images.from_create.count
     attributes
   end
 
