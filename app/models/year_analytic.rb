@@ -63,6 +63,12 @@ class YearAnalytic < ActiveRecord::Base
     end
   end
 
+  def self.associate_with_pages
+    self.all.each do |ya|
+      ya.associate_with_page
+    end
+  end
+
 
 
 
