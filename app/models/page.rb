@@ -40,6 +40,7 @@ class Page < ActiveRecord::Base
   has_many :tags, :through => :taggings
   has_many :hosted_images, :through => :links
   has_many :year_analytics
+  has_one  :page_stat
 
 
   scope :bucketed_as, lambda{|bucketname|
@@ -991,8 +992,29 @@ class Page < ActiveRecord::Base
     attributes[:mean_pageviews] = mean_pageviews
     attributes[:mean_unique_pageviews] = mean_unique_pageviews
     attributes[:image_links] = self.links.image.count
-    attributes[:copwiki_images] = self.hosted_images.from_copwiki.count
-    attributes[:create_images] = self.hosted_images.from_create.count
+
+    copwiki_images = 0
+    create_images = 0
+    hosted_images = 0
+    copwiki_images_with_copyright = 0
+    create_images_with_copyright = 0
+    hosted_images_with_copyright = 0
+    self.hosted_images.each do |hi|
+      hosted_images += 1
+      create_images += 1 if hi.source == 'create'
+      copwiki_images += 1 if hi.source == 'copwiki'
+      if(!hi.copyright.blank?)
+        hosted_images_with_copyright += 1
+        create_images_with_copyright += 1 if hi.source == 'create'
+        copwiki_images_with_copyright += 1 if hi.source == 'copwiki'
+      end
+    end
+    attributes[:copwiki_images] = copwiki_images
+    attributes[:create_images] = create_images
+    attributes[:hosted_images] = hosted_images
+    attributes[:copwiki_images_with_copyright] = copwiki_images_with_copyright
+    attributes[:create_images_with_copyright] = create_images_with_copyright
+    attributes[:hosted_images_with_copyright] = hosted_images_with_copyright
     attributes
   end
 

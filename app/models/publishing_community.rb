@@ -20,6 +20,8 @@ class PublishingCommunity < ActiveRecord::Base
   has_many :tags, :through => :taggings
   has_many :pages, :through => :tags
   has_many :hosted_images, :through => :pages
+  has_many :page_stats, :through => :pages
+  has_many :links, :through => :pages
 
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
 
@@ -124,6 +126,47 @@ class PublishingCommunity < ActiveRecord::Base
     self.tags = newtags
   end
 
+
+  def page_stat_attributes
+    pages = self.page_stats.eligible_pages.count
+    viewed_pages = self.page_stats.viewed.count
+    missing_pages = self.page_stats.missing.count
+    viewed_percentiles = []
+    PageStat::PERCENTILES.each do |percentile|
+      viewed_percentiles << self.page_stats.pluck(:mean_unique_pageviews).nist_percentile(percentile)
+    end
+
+    attributes = {}
+    attributes[:pages] = pages
+    attributes[:viewed_pages] = viewed_pages
+    attributes[:missing_pages] = missing_pages
+    attributes[:viewed_percentiles] = viewed_percentiles
+    attributes[:image_links] = self.links.image.count("distinct links.id")
+
+    copwiki_images = 0
+    create_images = 0
+    hosted_images = 0
+    copwiki_images_with_copyright = 0
+    create_images_with_copyright = 0
+    hosted_images_with_copyright = 0
+    self.hosted_images.uniq.each do |hi|
+      hosted_images += 1
+      create_images += 1 if hi.source == 'create'
+      copwiki_images += 1 if hi.source == 'copwiki'
+      if(!hi.copyright.blank?)
+        hosted_images_with_copyright += 1
+        create_images_with_copyright += 1 if hi.source == 'create'
+        copwiki_images_with_copyright += 1 if hi.source == 'copwiki'
+      end
+    end
+    attributes[:copwiki_images] = copwiki_images
+    attributes[:create_images] = create_images
+    attributes[:hosted_images] = hosted_images
+    attributes[:copwiki_images_with_copyright] = copwiki_images_with_copyright
+    attributes[:create_images_with_copyright] = create_images_with_copyright
+    attributes[:hosted_images_with_copyright] = hosted_images_with_copyright
+    attributes
+  end
 
 
 

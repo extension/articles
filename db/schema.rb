@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150823135949) do
+ActiveRecord::Schema.define(:version => 20150823172540) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -70,6 +70,25 @@ ActiveRecord::Schema.define(:version => 20150823135949) do
   end
 
   add_index "category_tag_redirects", ["term"], :name => "name_ndx", :unique => true
+
+  create_table "community_page_stats", :force => true do |t|
+    t.integer  "publishing_community_id"
+    t.integer  "pages"
+    t.integer  "viewed_pages"
+    t.integer  "missing_pages"
+    t.text     "viewed_percentiles"
+    t.integer  "image_links"
+    t.integer  "copwiki_images"
+    t.integer  "create_images"
+    t.integer  "hosted_images"
+    t.integer  "copwiki_images_with_copyright"
+    t.integer  "create_images_with_copyright"
+    t.integer  "hosted_images_with_copyright"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
+  add_index "community_page_stats", ["publishing_community_id"], :name => "index_community_page_stats_on_publishing_community_id", :unique => true
 
   create_table "content_buckets", :force => true do |t|
     t.string   "name",       :null => false
@@ -286,8 +305,12 @@ ActiveRecord::Schema.define(:version => 20150823135949) do
     t.integer  "image_links"
     t.integer  "copwiki_images"
     t.integer  "create_images"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
+    t.integer  "hosted_images"
+    t.integer  "copwiki_images_with_copyright"
+    t.integer  "create_images_with_copyright"
+    t.integer  "hosted_images_with_copyright"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   add_index "page_stats", ["page_id"], :name => "index_page_stats_on_page_id", :unique => true

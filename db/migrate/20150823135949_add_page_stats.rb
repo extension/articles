@@ -10,6 +10,10 @@ class AddPageStats < ActiveRecord::Migration
       t.integer  "image_links"
       t.integer  "copwiki_images"
       t.integer  "create_images"
+      t.integer  "hosted_images"
+      t.integer  "copwiki_images_with_copyright"
+      t.integer  "create_images_with_copyright"
+      t.integer  "hosted_images_with_copyright"      
       t.datetime "created_at",       :null => false
       t.datetime "updated_at",       :null => false
     end

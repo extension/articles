@@ -13,8 +13,11 @@ class HostedImage < ActiveRecord::Base
 
   scope :from_copwiki, -> {where(source: 'copwiki')}
   scope :from_create, -> {where(source: 'create')}
+  scope :with_copyright, -> {where("copyright IS NOT NULL")}
 
-
+  def self.published_count
+    joins(:hosted_image_links).count('distinct hosted_image_id')
+  end
 
   def self.update_from_create
     create_database = CreateFile.connection.current_database
