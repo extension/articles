@@ -7,7 +7,7 @@
 
 class PageStat < ActiveRecord::Base
   belongs_to :page
-  has_many :hosted_images, :through => :page
+  has_many :images_hosted, :through => :page, :source => :hosted_images
   has_many :links, :through => :page
 
 
@@ -31,10 +31,11 @@ class PageStat < ActiveRecord::Base
   def self.rebuild_stats
     self.connection.execute("TRUNCATE TABLE #{self.table_name};")
     Page.order(:id).all.each do |p|
+      page_stat_attributes = p.page_stat_attributes
       if(ps = self.where(page_id: p.id).first)
-        ps.update_attributes(p.page_stat_attributes)
+        ps.update_attributes(page_stat_attributes)
       else
-        ps = self.create(p.page_stat_attributes.merge({:page_id => p.id}))
+        ps = self.create(page_stat_attributes.merge({:page_id => p.id}))
       end
     end
   end
