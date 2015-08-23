@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150822204901) do
+ActiveRecord::Schema.define(:version => 20150823131548) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -407,6 +407,20 @@ ActiveRecord::Schema.define(:version => 20150822204901) do
   end
 
   add_index "update_times", ["datasource_type", "datasource_id", "datatype"], :name => "recordsignature", :unique => true
+
+  create_table "year_analytics", :force => true do |t|
+    t.integer  "page_id"
+    t.text     "analytics_url"
+    t.string   "url_type"
+    t.integer  "url_page_id"
+    t.string   "url_wiki_title"
+    t.integer  "pageviews"
+    t.integer  "unique_pageviews"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "zip_codes", :force => true do |t|
     t.integer "zip_code"
