@@ -12,11 +12,15 @@ class Link < ActiveRecord::Base
 
   belongs_to :page
   has_many :linkings
+  has_one :hosted_image_link, :dependent => :destroy
+  has_one :hosted_image, :through => :hosted_image_link
 
   validates_presence_of :fingerprint, :linktype
 
   # this is the association for items that link to this item
   has_many :linkedpages, :through => :linkings, :source => :page
+  has_many :page_stats, :through => :linkedpages
+
 
   # link types
   WANTED = 1
@@ -43,24 +47,25 @@ class Link < ActiveRecord::Base
   # maximum number of times we'll check a broken link before giving up
   MAX_ERROR_COUNT = 10
 
-  scope :checklist, :conditions => ["linktype IN (#{EXTERNAL},#{LOCAL},#{IMAGE})"]
-  scope :external, :conditions => {:linktype => EXTERNAL}
-  scope :internal, :conditions => {:linktype => INTERNAL}
-  scope :unpublished, :conditions => {:linktype => WANTED}
-  scope :local, :conditions => {:linktype => LOCAL}
-  scope :file, :conditions => {:linktype => DIRECTFILE}
-  scope :category, :conditions => {:linktype => CATEGORY}
-  scope :image, :conditions => {:linktype => IMAGE}
+  scope :checklist, -> {where("linktype IN (#{EXTERNAL},#{LOCAL},#{IMAGE})")}
+  scope :external, -> {where(:linktype => EXTERNAL)}
+  scope :internal, -> {where(:linktype => INTERNAL)}
+  scope :unpublished, -> {where(:linktype => WANTED)}
+  scope :local, -> {where(:linktype => LOCAL)}
+  scope :file, -> {where(:linktype => DIRECTFILE)}
+  scope :category, -> {where(:linktype => CATEGORY)}
+  scope :image, -> {where(:linktype => IMAGE)}
+  scope :unlinked_images, -> { image.includes(:hosted_image).where('hosted_images.id' => nil) }
 
-  scope :checked, :conditions => ["last_check_at IS NOT NULL"]
-  scope :unchecked, :conditions => ["last_check_at IS NULL"]
-  scope :good, :conditions => {:status => OK}
-  scope :broken, :conditions => {:status => BROKEN}
-  scope :warning, :conditions => {:status => WARNING}
-  scope :redirected, :conditions => {:status => OK_REDIRECT}
+  scope :checked, -> {where("last_check_at IS NOT NULL")}
+  scope :unchecked, -> {where("last_check_at IS NULL")}
+  scope :good, -> {where(:status => OK)}
+  scope :broken, -> {where(:status => BROKEN)}
+  scope :warning, -> {where(:status => WARNING)}
+  scope :redirected, -> {where(:status => OK_REDIRECT)}
 
-  scope :checked_yesterday_or_earlier, :conditions => ["DATE(last_check_at) <= ?",Date.yesterday]
-  scope :checked_over_one_month_ago, :conditions => ["DATE(last_check_at) <= DATE_SUB(NOW(),INTERVAL 1 MONTH)",Date.yesterday]
+  scope :checked_yesterday_or_earlier, -> {where("DATE(last_check_at) <= ?",Date.yesterday)}
+  scope :checked_over_one_month_ago, -> {where("DATE(last_check_at) <= DATE_SUB(?,INTERVAL 1 MONTH)",Date.yesterday)}
 
   def self.is_create?(host)
     (host == 'create.extension.org' or host == 'create.demo.extension.org')
@@ -586,6 +591,35 @@ class Link < ActiveRecord::Base
     returnhash
   end
 
+  def connect_to_hosted_image
+    if(%r{^/mediawiki/files/thumb} =~ self.path)
+      matchpath = self.path.gsub(%r{^/mediawiki/files/thumb},'')
+      HostedImage.link_by_path(matchpath,self.id,'copwiki')
+    elsif(%r{^/mediawiki/files} =~ self.path)
+      matchpath = self.path.gsub(%r{^/mediawiki/files},'')
+      HostedImage.link_by_path(matchpath,self.id,'copwiki')
+    elsif(%r{^/sites/default/files/w/thumb} =~ self.path)
+      matchpath = self.path.gsub(%r{^/sites/default/files/w/thumb},'')
+      HostedImage.link_by_path(matchpath,self.id,'copwiki')
+    elsif(%r{^/sites/default/files/w} =~ self.path)
+      matchpath = self.path.gsub(%r{^/sites/default/files/w},'')
+      HostedImage.link_by_path(matchpath,self.id,'copwiki')
+    elsif(%r{^/sites/default/files/styles/\w+/public/}  =~ self.path)
+      matchpath = self.path.gsub(%r{^/sites/default/files/styles/\w+/public/},'')
+      HostedImage.link_by_path(matchpath,self.id,'create')
+    elsif(%r{^/sites/default/files/} =~ self.path)
+      matchpath = self.path.gsub(%r{^/sites/default/files/},'')
+      HostedImage.link_by_path(matchpath,self.id,'create')
+    else
+      # nothing for now
+    end
+  end
+
+  def self.connect_unlinked_images
+    self.unlinked_images.each do |image_link|
+      image_link.connect_to_hosted_image
+    end
+  end
 
 
 end

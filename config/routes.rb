@@ -67,8 +67,6 @@ Darmok::Application.routes.draw do
   ### old routes for specific content
   match 'article/:id/print', to:'pages#redirect_article', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
   match 'article/:id', to:'pages#redirect_article', :constraints => { :id => /\d+/ }
-  match 'events/:id/print', to:'pages#redirect_event', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
-  match 'events/:id', to:'pages#redirect_event', :constraints => { :id => /\d+/ }
   match 'faq/:id/print', to:'pages#redirect_faq', :defaults => { :print => 1 }, :constraints => { :id => /\d+/ }
   match 'faq/:id', to:'pages#redirect_faq', :constraints => { :id => /\d+/ }
   match 'pages/*title', to:'pages#redirect_article'

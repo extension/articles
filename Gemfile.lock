@@ -225,7 +225,7 @@ DEPENDENCIES
   capistrano (~> 2.15.5)
   coffee-rails (~> 3.2.1)
   dalli
-  extension-html5shiv-rails
+  extension-html5shiv-rails!
   fastimage
   feedjira
   font-awesome-rails
@@ -259,3 +259,6 @@ DEPENDENCIES
   turbo-sprockets-rails3
   uglifier
   useragent
+
+BUNDLED WITH
+   1.10.6
