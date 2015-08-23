@@ -86,29 +86,6 @@ class PagesController < ApplicationController
     end
   end
 
-  def redirect_event
-    # folks chop off the page name and expect the url to give them something
-    if (!params[:id])
-      redirect_to site_events_url(with_content_tag?), :status=>301
-      return
-    end
-    if(params[:print])
-      print = true
-    end
-    @page = Page.events.find_by_migrated_id(params[:id])
-    if @page
-      if(print)
-        redirect_to(print_page_url(:id => @page.id, :title => @page.url_title), :status => :moved_permanently)
-      else
-        redirect_to(page_url(:id => @page.id, :title => @page.url_title), :status => :moved_permanently)
-      end
-    else
-      return do_404
-    end
-  end
-
-
-
   def show
     # folks chop off the page name and expect the url to give them something
     if (!params[:id])
