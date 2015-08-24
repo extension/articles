@@ -2,18 +2,18 @@
 <table class="table">
     <tr>
   		<td>Total Pages</td>
-    	<td class="mednumber"><%= number_with_delimiter(@community.pages.count) -%></td>
+    	<td class="mednumber"><%= link_to(number_with_delimiter(@community.pages.count), pagelist_imageaudit_path(:community_id => @community.id)) -%></td>
       <td>&nbsp;</td>
     </tr>
     <tr>
       <td>Eligible Pages</td>
-      <td class="mednumber"><%= number_with_delimiter(@summary_data['pages']) -%></td>
+      <td class="mednumber"><%= link_to(number_with_delimiter(@summary_data['pages']), pagelist_imageaudit_path(:community_id => @community.id, :eligible => 'true')) -%></td>
       <td><em>Pages published for at least 1 week prior to <%= PageStat::END_DATE -%></em></td>
     </tr>
     <tr>
       <td>Viewed Pages</td>
       <td style="white-space:nowrap;">
-        <span class="mednumber"><%= number_with_delimiter(@summary_data['viewed_pages']) -%></span>
+        <span class="mednumber"><%= link_to(number_with_delimiter(@summary_data['viewed_pages']), pagelist_imageaudit_path(:community_id => @community.id, :viewed => 'true')) -%></span>
         <span class="mednumber">(<%= number_to_percentage((@summary_data['viewed_pages'] / @summary_data['pages']) * 100, :precision => 1 ) -%>)</span>
       </td>
       <td><em>Pages with at least <strong>one</strong> unique pageview per week<br/>between <%= PageStat::START_DATE -%> and <%= PageStat::END_DATE -%></em></td>
@@ -21,7 +21,7 @@
     <tr>
       <td>Missing Pages</td>
       <td style="white-space:nowrap;">
-        <span class="mednumber"><%= number_with_delimiter(@summary_data['missing_pages']) -%></span>
+        <span class="mednumber"><%= link_to(number_with_delimiter(@summary_data['missing_pages']), pagelist_imageaudit_path(:community_id => @community.id, :missing => 'true')) -%></span>
         <span class="mednumber">(<%= number_to_percentage((@summary_data['missing_pages'] / @summary_data['pages']) * 100, :precision => 1 ) -%>)</span>
       </td>
       <td>
