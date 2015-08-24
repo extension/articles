@@ -10,7 +10,6 @@ class FeedsController < ApplicationController
   layout 'frontporch'
 
   def index
-    @right_column = false
     set_title('Feeds')
     set_title('eXtension - Feeds')
     @communities = PublishingCommunity.launched.all(:order => 'public_name')

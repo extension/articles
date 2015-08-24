@@ -136,7 +136,6 @@ class MainController < ApplicationController
   end
 
   def search
-    @right_column = false
     @ask_two_point_oh_form = Settings.ask_two_point_oh_form
     set_title("Search results")
     set_title("eXtension - Search results")
