@@ -24,8 +24,8 @@
     <tr>
       <th>Page ID#</th>
       <th>Page Title</th>
+      <th>Total Unique Pageviews</th>
       <th>Mean Unique Pageviews</th>
-      <th>&nbsp;</th>
     </tr>
   </thead>
   <tbody>
@@ -33,8 +33,8 @@
       <tr>
         <td><%= link_to("#{page.id}",page_imageaudit_path(page.id)) -%></td>
         <td><%= link_to(page.title, page.id_and_link) %></td>
+        <td><%= number_with_delimiter(page.page_stat.unique_pageviews) -%></td>
         <td><%= number_with_precision(page.page_stat.mean_unique_pageviews, precision: 1) -%></td>
-        <td><%= link_to('pageinfo',pageinfo_page_url(:id => page.id)) %></td>
       </tr>
     <%- end -%>
     </tbody>

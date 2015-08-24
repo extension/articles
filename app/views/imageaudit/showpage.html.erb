@@ -20,6 +20,18 @@
       <td class="mednumber"><%= number_with_delimiter(@stats.hosted_images) -%></td>
     </tr>
     <tr>
+        <td>Communities</td>
+        <td>
+          <table>
+            <%- @page.publishing_communities.each do |pc| -%>
+            <tr>
+              <td><%= link_to(pc.name,community_imageaudit_path(pc.id)) -%></td>
+            </tr>
+            <%- end -%>
+          </table>
+        </td>
+    </tr>
+    <tr>
         <td>Source</td>
         <td><%= @page.page_source.name %></td>
     </tr>

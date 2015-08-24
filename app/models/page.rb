@@ -109,6 +109,10 @@ class Page < ActiveRecord::Base
     joins(:tags).where("tags.name IN (#{in_string})").group("#{self.table_name}.id")
   }
 
+  scope :eligible, -> {joins(:page_stat).where("page_stats.weeks_published > 0")}
+  scope :viewed, -> {joins(:page_stat).where("page_stats.weeks_published > 0").where("page_stats.mean_unique_pageviews >= 1")}
+  scope :missing, -> {joins(:page_stat).where("page_stats.weeks_published > 0").where("page_stats.mean_unique_pageviews = 0")}
+
   # returns a class::method::options string to use as a memcache key
   #
   # @param [String] method_name name of the method (or other string) to associate this cache with
