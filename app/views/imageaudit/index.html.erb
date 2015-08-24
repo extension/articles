@@ -1,0 +1,98 @@
+<h1>Content Summary</h1>
+<p><small>You are currently signed in as <%= current_person.fullname -%> (<%= link_to('sign out',logout_path) %>)</small></p>
+<table class="table">
+    <tr>
+  		<td>Total Pages</td>
+    	<td class="bignumber"><%= number_with_delimiter(Page.count) -%></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>Eligible Pages</td>
+      <td class="bignumber"><%= number_with_delimiter(@summary_data['pages']) -%></td>
+      <td><em>Pages published for at least 1 week prior to <%= PageStat::END_DATE -%></em></td>
+    </tr>
+    <tr>
+      <td>Viewed Pages</td>
+      <td style="white-space:nowrap;">
+        <span class="bignumber"><%= number_with_delimiter(@summary_data['viewed_pages']) -%></span>
+        <span class="mednumber">(<%= number_to_percentage((@summary_data['viewed_pages'] / @summary_data['pages']) * 100, :precision => 1 ) -%>)</span>
+      </td>
+      <td><em>Pages with at least <strong>one</strong> unique pageview per week<br/>between <%= PageStat::START_DATE -%> and <%= PageStat::END_DATE -%></em></td>
+    </tr>
+    <tr>
+      <td>Missing Pages</td>
+      <td style="white-space:nowrap;">
+        <span class="bignumber"><%= number_with_delimiter(@summary_data['missing_pages']) -%></span>
+        <span class="mednumber">(<%= number_to_percentage((@summary_data['missing_pages'] / @summary_data['pages']) * 100, :precision => 1 ) -%>)</span>
+      </td>
+      <td>
+        <em>Pages with <strong>zero</strong> unique pageviews<br/>
+        between <%= PageStat::START_DATE -%> and <%= PageStat::END_DATE -%></em>
+      </td>
+    </tr>
+    <tr>
+      <td>Viewed Page Percentiles</td>
+      <td>
+        <table class="table">
+        <%- PageStat::PERCENTILES.each_with_index do |percentile, index| -%>
+          <tr>
+          <td class='mednumber'>
+            <%= "#{percentile}th"  -%>
+          </td>
+          <td class='mednumber'>
+            <%= number_with_precision(@summary_data['viewed_percentiles'][index], precision: 1) -%>
+          <td>
+          </tr>
+        <%- end -%>
+        </table>
+      </td>
+      <td><em>Percentiles (NIST standard) of mean unique pageviews per week<br/>between <%= PageStat::START_DATE -%> and <%= PageStat::END_DATE -%></em></td>
+    </tr>
+    <tr>
+      <td>Image Links</td>
+      <td>
+        <span class="bignumber"><%= number_with_delimiter(@summary_data['image_links']) -%></span>
+      </td>
+      <td>
+        <em>Links (good or bad) to any kind of image, including various sizes or styles of hosted images</em>
+      </td>
+    </tr>
+    <tr>
+      <td>Hosted Images</td>
+      <td>
+        <span class="bignumber"><%= number_with_delimiter(@summary_data['hosted_images']) -%></span><br/>
+        <span>CoP Wiki: <%= number_with_delimiter(@summary_data['copwiki_images']) -%></span><br/>
+        <span>Create: <%= number_with_delimiter(@summary_data['create_images']) -%></span>
+      </td>
+      <td>
+        <em>Images uploaded to either the legacy cop.extension.org system or create.extension.org</em>
+      </td>
+    </tr>
+    <tr>
+      <td>Viewed (Hosted) Images</td>
+      <td>
+        <span class="bignumber"><%= number_with_delimiter(@summary_data['viewed_hosted_images']) -%></span><br/>
+        <span>CoP Wiki: <%= number_with_delimiter(@summary_data['viewed_copwiki_images']) -%></span><br/>
+        <span>Create: <%= number_with_delimiter(@summary_data['viewed_create_images']) -%></span>
+      </td>
+      <td>
+        <em>Images uploaded to either the legacy cop.extension.org cms or the create.extension.org cms that are linked to within <strong>viewed</strong> pages</em>
+      </td>
+    </tr>
+    <tr>
+      <td>Copyright Information</td>
+      <td style="white-space:nowrap;">
+        <span class="bignumber"><%= number_with_delimiter(@summary_data['hosted_images_with_copyright']) -%></span>
+        <span class="mednumber">(<%= number_to_percentage((@summary_data['hosted_images_with_copyright'] / @summary_data['hosted_images']) * 100, :precision => 1 ) -%>)</span>
+        <br/>
+        <span>CoP Wiki: <%= number_with_delimiter(@summary_data['copwiki_images_with_copyright']) -%></span>
+        <span>(<%= number_to_percentage((@summary_data['copwiki_images_with_copyright'] / @summary_data['copwiki_images']) * 100, :precision => 1 ) -%>)</span>
+        <br/>
+        <span>Create: <%= number_with_delimiter(@summary_data['create_images_with_copyright']) -%></span>
+        <span>(<%= number_to_percentage((@summary_data['create_images_with_copyright'] / @summary_data['create_images']) * 100, :precision => 1 ) -%>)</span>
+      </td>
+      <td>
+        <em>Of all hosted images (on a particular cms) the percentage of those images with any mention of the copyright/source for the image</em>
+      </td>
+    </tr>
+</table>

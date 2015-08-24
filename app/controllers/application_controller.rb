@@ -128,8 +128,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def turn_off_right_column
-    @right_column = false
+  def turn_off_resource_areas
+    @no_show_resource_areas = true
   end
 
   # def disable_link_prefetching

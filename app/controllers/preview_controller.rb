@@ -9,16 +9,15 @@ class PreviewController < ApplicationController
   before_filter :force_html_format
   before_filter :set_content_tag_and_community_and_topic
   before_filter :signin_optional
+  before_filter :turn_off_resource_areas
 
   layout 'frontporch'
 
   def index
-    @right_column = false
     @communities =  PublishingCommunity.all(:order => 'name')
   end
 
   def content_tag
-    @right_column = false
 
     if(@content_tag.nil?)
       return render(:template => '/preview/invalid_tag')

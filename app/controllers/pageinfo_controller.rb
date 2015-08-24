@@ -9,14 +9,14 @@ class PageinfoController < ApplicationController
   before_filter :signin_optional
   before_filter :set_content_tag_and_community_and_topic
   before_filter :www_store_location
+  before_filter :turn_off_resource_areas
   layout 'frontporch'
-  
-  
+
+
   def find_by_source
-    @right_column = false
     source_name = params[:source_name]
     source_id = params[:source_id]
-    if(!source_name.blank? and !source_id.blank?)      
+    if(!source_name.blank? and !source_id.blank?)
       @page = Page.find_by_source_name_and_id(source_name,source_id)
       if(@page)
         return redirect_to pageinfo_page_url(:id => @page.id)
@@ -25,9 +25,8 @@ class PageinfoController < ApplicationController
       end
     end
   end
- 
+
   def show
-    @right_column = false
     @page = Page.find_by_id(params[:id])
     if(@page)
       @external_links = @page.links.external
@@ -38,20 +37,19 @@ class PageinfoController < ApplicationController
 
     end
   end
-  
+
   def pagelinklist
     @filteredparameters = ParamsFilter.new([:content_tag,
                                             :content_types,
                                             {:onlybroken => :boolean},
                                             {:with_instant_survey_links => :boolean}],params)
-    @right_column = false
     if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
       # fake content tag for display purposes
       @content_tag = Tag.new(:name => 'all')
     else
       @content_tag = @filteredparameters.content_tag
     end
-    
+
     # build the scope
     pagelist_scope = Page.scoped({})
     if(@filteredparameters.content_types)
@@ -60,11 +58,11 @@ class PageinfoController < ApplicationController
          pagelist_scope = pagelist_scope.where(content_type_conditions)
       end
     end
-    
+
     if(@content_tag)
       pagelist_scope = pagelist_scope.tagged_with(@content_tag.name)
     end
-                                         
+
     sort_order = "pages.has_broken_links DESC,pages.source_updated_at DESC"
     if(@filteredparameters.onlybroken)
       if(@filteredparameters.with_instant_survey_links)
@@ -77,7 +75,7 @@ class PageinfoController < ApplicationController
         @pages = pagelist_scope.with_instant_survey_links.page(params[:page]).order(sort_order).per(100)
       else
         @pages = pagelist_scope.page(params[:page]).order(sort_order).per(100)
-      end      
+      end
     end
   end
 
@@ -90,12 +88,12 @@ class PageinfoController < ApplicationController
       @content_tag = @filteredparameters.content_tag
     end
     @articlefilter = @filteredparameters.articlefilter
-      
+
 
     if(!@filteredparameters.download.nil? and @filteredparameters.download == 'csv')
       isdownload = true
     end
-    
+
     # build the scope
     pagelist_scope = Page.scoped({})
     if(@filteredparameters.content_types)
@@ -104,11 +102,11 @@ class PageinfoController < ApplicationController
          pagelist_scope = pagelist_scope.where(content_type_conditions)
       end
     end
-    
+
     if(@content_tag)
       pagelist_scope = pagelist_scope.tagged_with(@content_tag.name)
     end
-    
+
     if(!@filteredparameters.articlefilter.nil?)
      case @filteredparameters.articlefilter
      when 'all'
@@ -133,7 +131,7 @@ class PageinfoController < ApplicationController
        pagelist_scope = pagelist_scope.bucketed_as(bucket)
      end
    end # @articlefilter.nil?
-    
+
 
     if(isdownload)
       @pages = pagelist_scope.ordered
@@ -144,7 +142,7 @@ class PageinfoController < ApplicationController
       @pages = pagelist_scope.ordered.page(params[:page]).per(100)
     end
   end
-  
+
   def page_csvlist(articlelist,filename,content_tag)
     @pages = articlelist
     @content_tag = content_tag
@@ -152,5 +150,5 @@ class PageinfoController < ApplicationController
     response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
     render(:template => 'pageinfo/page_csvlist', :layout => false)
   end
-  
+
 end

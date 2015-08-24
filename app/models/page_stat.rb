@@ -13,7 +13,7 @@ class PageStat < ActiveRecord::Base
 
   # hardcoded right now
   START_DATE = Date.parse('2014-08-24')
-  END_DATE = Date.parse('2015-08-24')
+  END_DATE = Date.parse('2015-08-22')
 
   PERCENTILES = [99,95,90,75,50,25,10]
 
@@ -41,7 +41,10 @@ class PageStat < ActiveRecord::Base
   end
 
 
-  def self.overall_stat_attributes
+  def self.overall_stat_attributes(rebuild = false)
+    if(cps = CommunityPageStat.where(publishing_community_id: 0).first and !rebuild)
+      cps.attributes
+    else
       pages = self.eligible_pages.count
       viewed_pages = self.viewed.count
       missing_pages = self.missing.count
@@ -80,7 +83,14 @@ class PageStat < ActiveRecord::Base
       attributes[:copwiki_images_with_copyright] = copwiki_images_with_copyright
       attributes[:create_images_with_copyright] = create_images_with_copyright
       attributes[:hosted_images_with_copyright] = hosted_images_with_copyright
-      attributes
+
+      if(cps = CommunityPageStat.where(publishing_community_id: 0).first)
+        cps.update_attributes(attributes)
+      else
+        cps = CommunityPageStat.create(attributes.merge({:publishing_community_id => 0}))
+      end
+      cps.attributes
     end
+  end
 
 end

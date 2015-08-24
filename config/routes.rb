@@ -6,6 +6,9 @@ Darmok::Application.routes.draw do
   match '/auth/:provider/callback', to: 'auth#success'
   match '/auth/failure', to: 'auth#failure'
 
+  # imageaudit
+  match 'imageaudit', to: "imageaudit#index"
+
 
   ### Widget Stuff ###
   # redirects

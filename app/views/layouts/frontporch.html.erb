@@ -115,6 +115,7 @@
 
       <hr />
 
+      <%- if @no_show_resource_areas.nil? or !@no_show_resource_areas -%>
       <div class="row noprint">
         <%- topics_hash = Topic.frontporch_hashlist -%>
         <div class="span3 resource-areas">
@@ -143,6 +144,7 @@
           <%- end -%>
         </div>
       </div>
+      <%- end -%>
 
       <hr class="noprint" />
 

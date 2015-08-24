@@ -7,7 +7,7 @@
 
 class Admin::SponsorsController < ApplicationController
   before_filter :admin_signin_required
-  before_filter :turn_off_right_column
+  before_filter :turn_off_resource_areas
 
   layout 'frontporch'
 
