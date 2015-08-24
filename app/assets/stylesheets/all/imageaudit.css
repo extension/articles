@@ -1,8 +1,8 @@
-#your-img {
-    height: auto;
-    width: auto;
-    max-width: 300px;
-    max-height: 300px;
+.imageaudit {
+  height: auto;
+  width: auto;
+  max-width: 300px;
+  max-height: 300px;
 }
 
 .bignumber {font-size:2em;}

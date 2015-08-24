@@ -16,6 +16,28 @@ class HostedImage < ActiveRecord::Base
   scope :from_create, -> {where(source: 'create')}
   scope :with_copyright, -> {where("copyright IS NOT NULL")}
 
+  def self.linked
+    joins(:hosted_image_links).uniq
+  end
+
+  def self.viewed
+    joins(:page_stats).where("page_stats.mean_unique_pageviews >= 1").uniq
+  end
+
+  def src_path
+    if(self.source == 'copwiki')
+      URI.escape("http://create.extension.org/sites/default/files/w#{self.path}")
+    elsif(self.source == 'create')
+      if(%r{^public:} =~ self.path)
+        URI.escape(self.path.gsub('public://','http://create.extension.org/sites/default/files/'))
+      else
+        ''
+      end
+    else
+      ''
+    end
+  end
+
   def self.published_count
     joins(:hosted_image_links).count('distinct hosted_image_links.hosted_image_id')
   end

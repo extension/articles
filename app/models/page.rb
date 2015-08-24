@@ -38,6 +38,7 @@ class Page < ActiveRecord::Base
   belongs_to :page_source
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
+  has_many :publishing_communities, :through => :tags
   has_many :hosted_images, :through => :links
   has_many :year_analytics
   has_one  :page_stat, dependent: :destroy

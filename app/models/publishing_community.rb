@@ -19,11 +19,11 @@ class PublishingCommunity < ActiveRecord::Base
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
   has_many :pages, :through => :tags
-  has_many :hosted_images, :through => :pages
+  has_many :hosted_images, :through => :pages, :uniq => true
   has_many :page_stats, :through => :pages
   has_many :links, :through => :pages
-  has_many :viewed_images, :through => :page_stats, :source => :images_hosted
-  has_many :viewed_links, :through => :page_stats, :source => :links
+  has_many :viewed_images, :through => :page_stats, :source => :images_hosted, :uniq => true
+  has_many :viewed_links, :through => :page_stats, :source => :links, :uniq => true
   has_one  :community_page_stat
 
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
