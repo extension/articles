@@ -11,9 +11,8 @@ class CommunityPageStat < ActiveRecord::Base
 
   # hardcoded right now
   START_DATE = Date.parse('2014-08-24')
-  END_DATE = Date.parse('2015-08-24')
+  END_DATE = Date.parse('2015-08-22')
 
-  PERCENTILES = [99,95,90,75,50,25,10]
 
 
   def update_stats
@@ -23,6 +22,7 @@ class CommunityPageStat < ActiveRecord::Base
 
   def self.rebuild_stats
     self.connection.execute("TRUNCATE TABLE #{self.table_name};")
+    PageStat.overall_stat_attributes # rebuild all stats
     PublishingCommunity.order(:id).all.each do |p|
       if(ps = self.where(publishing_community_id: p.id).first)
         ps.update_attributes(p.page_stat_attributes)
