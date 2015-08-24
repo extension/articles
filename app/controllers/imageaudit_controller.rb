@@ -15,5 +15,12 @@ class ImageauditController < ApplicationController
     @summary_data = PageStat.overall_stat_attributes
   end
 
+  def community
+    @community = PublishingCommunity.find_by_id(params[:id])
+    if(@community.nil?)
+      return do_404
+    end
+    @summary_data = @community.community_page_stat.attributes
+  end
 
 end

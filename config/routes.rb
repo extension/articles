@@ -7,7 +7,8 @@ Darmok::Application.routes.draw do
   match '/auth/failure', to: 'auth#failure'
 
   # imageaudit
-  match 'imageaudit', to: "imageaudit#index"
+  match 'imageaudit', to: "imageaudit#index", :as => 'imageaudit'
+  match 'imageaudit/community/:id', to: "imageaudit#community", :as => 'community_imageaudit'
 
 
   ### Widget Stuff ###
