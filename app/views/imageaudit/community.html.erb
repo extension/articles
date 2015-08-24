@@ -59,7 +59,7 @@
     <tr>
       <td>Hosted Images</td>
       <td>
-        <span class="mednumber"><%= number_with_delimiter(@summary_data['hosted_images']) -%></span><br/>
+        <span class="mednumber"><%= link_to(number_with_delimiter(@summary_data['hosted_images']), imagelist_imageaudit_path(:community_id => @community.id)) -%></span><br/>
         <span>CoP Wiki: <%= number_with_delimiter(@summary_data['copwiki_images']) -%></span><br/>
         <span>Create: <%= number_with_delimiter(@summary_data['create_images']) -%></span>
       </td>
@@ -70,7 +70,7 @@
     <tr>
       <td>Viewed (Hosted) Images</td>
       <td>
-        <span class="mednumber"><%= number_with_delimiter(@summary_data['viewed_hosted_images']) -%></span><br/>
+        <span class="mednumber"><%=  link_to(number_with_delimiter(@summary_data['viewed_hosted_images']), imagelist_imageaudit_path(:community_id => @community.id,:viewed => 'true')) -%></span><br/>
         <span>CoP Wiki: <%= number_with_delimiter(@summary_data['viewed_copwiki_images']) -%></span><br/>
         <span>Create: <%= number_with_delimiter(@summary_data['viewed_create_images']) -%></span>
       </td>
@@ -81,7 +81,7 @@
     <tr>
       <td>Copyright Information</td>
       <td style="white-space:nowrap;">
-        <span class="mednumber"><%= number_with_delimiter(@summary_data['hosted_images_with_copyright']) -%></span>
+        <span class="mednumber"><%= link_to(number_with_delimiter(@summary_data['hosted_images_with_copyright']), imagelist_imageaudit_path(:community_id => @community.id, :viewed => 'true', :copyright => 'true'))  -%></span>
         <span class="mednumber">(<%= number_to_percentage((@summary_data['hosted_images_with_copyright'] / @summary_data['hosted_images']) * 100, :precision => 1 ) -%>)</span>
         <br/>
         <span>CoP Wiki: <%= number_with_delimiter(@summary_data['copwiki_images_with_copyright']) -%></span>

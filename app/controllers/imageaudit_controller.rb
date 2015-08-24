@@ -45,7 +45,7 @@ class ImageauditController < ApplicationController
       @filter_strings << "Viewed images only"
       @filtered = true
       if(@community)
-        image_scope = @community.viewed_images
+        image_scope = @community.viewed_images.viewed
       else
         image_scope = image_scope.viewed
       end
