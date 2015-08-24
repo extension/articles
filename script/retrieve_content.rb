@@ -6,18 +6,18 @@ require 'lockfile'
 
 class RetrieveContent < Thor
   include Thor::Actions
-  
+
   # these are not the tasks that you seek
   no_tasks do
     # load rails based on environment
-    
+
     def load_rails(environment)
       if !ENV["RAILS_ENV"] || ENV["RAILS_ENV"] == ""
         ENV["RAILS_ENV"] = environment
       end
       require_relative("../config/environment")
     end
-    
+
     def get_refresh_since(options)
       if(options[:refresh_since])
         case options[:refresh_since]
@@ -39,9 +39,9 @@ class RetrieveContent < Thor
       else
         'default'
       end
-    end              
-  
-    
+    end
+
+
     def get_page_sources(options)
       if(options[:sources] == 'all')
         PageSource.all(:order => 'name')
@@ -64,7 +64,7 @@ class RetrieveContent < Thor
     source_options[:refresh_since] = get_refresh_since(options)
     puts PageSource.all(:order => 'name').map{|source| "#{source.name} (#{source.active? ? 'active' : 'inactive'})"}.join("\n")
   end
-  
+
   desc "sourceinfo", "show sources and information"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :refresh_since,:default => 'default', :aliases => "-t", :desc => "Refresh since provided time (parseable time or 'lastday','lastweek','lastmonth','default')"
@@ -90,14 +90,14 @@ class RetrieveContent < Thor
         if(page_source.last_requested_at)
           puts "Last updated: #{page_source.last_requested_at.strftime("%B %e, %Y, %l:%M %p %Z")}"
           puts "Last request result: #{page_source.last_requested_success? ? 'success' : 'failure'}"
-          puts "Last request information: #{page_source.last_requested_information.inspect}"        
+          puts "Last request information: #{page_source.last_requested_information.inspect}"
         else
           puts "No last request information"
         end
       end
     end
   end
-  
+
   desc "request", "request available content and show the number of atom entries available (does not update)"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :refresh_since,:default => 'default', :aliases => "-t", :desc => "Refresh since provided time (parseable time or 'lastday','lastweek','lastmonth','default')"
@@ -118,7 +118,7 @@ class RetrieveContent < Thor
       puts "Atom Entry count: #{atom_entries.size}"
     end
   end
-  
+
   desc "update", "request available content and add/update/delete pages as appropriate"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :refresh_since,:default => 'default', :aliases => "-t", :desc => "Refresh since provided time (parseable time or 'lastday','lastweek','lastmonth','default')"
@@ -129,7 +129,7 @@ class RetrieveContent < Thor
     errors = []
     lockfile = Lockfile.new('/tmp/retrieve_content.lock', :retries => 0)
     begin
-      lockfile.lock do    
+      lockfile.lock do
         source_options = {}
         source_options[:refresh_since] = get_refresh_since(options)
         if(options[:demofeed])
@@ -150,13 +150,13 @@ class RetrieveContent < Thor
     rescue Lockfile::MaxTriesLockError => e
       $stderr.puts "Another content fetcher is already running. Exiting."
     end
-    
+
     if(!errors.blank?)
       $stderr.puts "There were errors with the following page sources:  #{errors.join(',')}"
       $stderr.puts "Please run retrieve_content sourceinfo --last to get more information"
     end
   end
-  
+
 end
 
 RetrieveContent.start
