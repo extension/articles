@@ -12,11 +12,17 @@ class HostedImage < ActiveRecord::Base
   has_many :pages, :through => :linkings
   has_many :page_stats, :through => :pages
 
-  scope :linked, -> {joins(:hosted_image_links)}
   scope :from_copwiki, -> {where(source: 'copwiki')}
   scope :from_create, -> {where(source: 'create')}
   scope :with_copyright, -> {where("copyright IS NOT NULL")}
 
+  def self.linked
+    joins(:hosted_image_links).uniq
+  end
+
+  def self.viewed
+    joins(:page_stats).where("page_stats.mean_unique_pageviews >= 1").uniq
+  end
 
   def src_path
     if(self.source == 'copwiki')

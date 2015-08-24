@@ -1,12 +1,14 @@
 <h1>Images</h1>
-
+<%- if @filter_strings -%>
+<p>Filtered by: <%= @filter_strings.join(' | ') -%></p>
+<%- end -%>
 <div id="paginator_wrapper">
   <%- if @images.length > 0 -%>
     <p class="display_results">Displaying <strong><%= @images.offset_value + 1 %>-<%= @images.offset_value + @images.length %></strong> of <strong><%= @images.total_count %></strong></p>
   <%- else -%>
       <p class="display_results">Displaying <strong>0</strong> of <strong>0</strong></p>
   <%- end -%>
-  <%= paginate @images, :params => @page_params %>
+  <%= paginate @images, :params => @pagination_params %>
 </div>
 <table class="table table-striped">
   <thead>
@@ -24,11 +26,9 @@
         <td><%= image.id -%> (<%= link_to('details',image_imageaudit_path(image.id)) -%>)</td>
         <td><%= imageaudit_link(image) -%></td>
         <td>
-          <table>
             <%- image.page_ids.each do |pid | -%>
-            <tr><td><%= link_to("#{pid}",page_imageaudit_path(pid)) -%></td></tr>
+              <%= link_to("#{pid}",page_imageaudit_path(pid)) -%>,
             <%- end -%>
-          </table>
         </td>
         <td><%= image.copyright -%></td>
         <td><%= imageaudit_sourcelink(image) -%></td>
