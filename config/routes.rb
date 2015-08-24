@@ -9,6 +9,10 @@ Darmok::Application.routes.draw do
   # imageaudit
   match 'imageaudit', to: "imageaudit#index", :as => 'imageaudit'
   match 'imageaudit/community/:id', to: "imageaudit#community", :as => 'community_imageaudit'
+  match 'imageaudit/image/:id', to: "imageaudit#showimage", :as => 'image_imageaudit'
+  match 'imageaudit/page/:id', to: "imageaudit#showpage", :as => 'page_imageaudit'
+  match 'imageaudit/imagelist', to: "imageaudit#imagelist", :as => 'imagelist_imageaudit'
+  match 'imageaudit/pagelist', to: "imageaudit#pagelist", :as => 'pagelist_imageaudit'
 
 
   ### Widget Stuff ###

@@ -23,4 +23,24 @@ class ImageauditController < ApplicationController
     @summary_data = @community.community_page_stat.attributes
   end
 
+  def imagelist
+    @images = HostedImage.linked.page(params[:page]).per(10)
+    @page_params = {}
+  end
+
+  def showimage
+    @image = HostedImage.find_by_id(params[:id])
+    if(@image.nil?)
+      return do_404
+    end
+  end
+
+  def showpage
+    @page = Page.includes(:page_stat).find_by_id(params[:id])
+    if(@page.nil?)
+      return do_404
+    end
+  end
+
+
 end

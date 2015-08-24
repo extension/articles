@@ -65,7 +65,7 @@
         <span>Create: <%= number_with_delimiter(@summary_data['create_images']) -%></span>
       </td>
       <td>
-        <em>Images uploaded to either the legacy cop.extension.org system or create.extension.org</em>
+        <em>Images uploaded to either the legacy cop.extension.org cms or the create.extension.org cms</em>
       </td>
     </tr>
     <tr>
@@ -107,14 +107,13 @@
       <th>Image Links</th>
       <th>Hosted Images</th>
       <th>Viewed (Hosted) Images</th>
-      <th>More Details</th>
     </tr>
   </thead>
   <tbody>
     <%- PublishingCommunity.order(:name).each do |pc| -%>
       <%- stats = pc.community_page_stat -%>
         <tr>
-        <td><%= pc.name -%></td>
+        <td><%= link_to(pc.name,community_imageaudit_path(pc.id)) -%></td>
         <%- if stats['pages'] == 0 -%>
           <td>0</td>
           <td>0</td>
@@ -122,7 +121,6 @@
           <td>0</td>
           <td>0</td>
           <td>0</td>
-          <td>n/a</td>
         <%- else -%>
           <td><%= number_with_delimiter(stats['pages']) -%></td>
           <td>
@@ -136,7 +134,6 @@
           <td><%= number_with_delimiter(stats['image_links']) -%></td>
           <td><%= number_with_delimiter(stats['hosted_images']) -%></td>
           <td><%= number_with_delimiter(stats['viewed_hosted_images']) -%></td>
-          <td><em>...</em></td>
         <%- end -%>
         </tr>
       <%- end -%>
