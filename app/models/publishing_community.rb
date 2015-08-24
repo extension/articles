@@ -24,6 +24,7 @@ class PublishingCommunity < ActiveRecord::Base
   has_many :links, :through => :pages
   has_many :viewed_images, :through => :page_stats, :source => :images_hosted
   has_many :viewed_links, :through => :page_stats, :source => :links
+  has_one  :community_page_stat
 
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
 
