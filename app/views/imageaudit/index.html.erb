@@ -3,18 +3,18 @@
 <table class="table">
     <tr>
   		<td>Total Pages</td>
-    	<td class="bignumber"><%= number_with_delimiter(Page.count) -%></td>
+    	<td class="mednumber"><%= number_with_delimiter(Page.count) -%></td>
       <td>&nbsp;</td>
     </tr>
     <tr>
       <td>Eligible Pages</td>
-      <td class="bignumber"><%= number_with_delimiter(@summary_data['pages']) -%></td>
+      <td class="mednumber"><%= number_with_delimiter(@summary_data['pages']) -%></td>
       <td><em>Pages published for at least 1 week prior to <%= PageStat::END_DATE -%></em></td>
     </tr>
     <tr>
       <td>Viewed Pages</td>
       <td style="white-space:nowrap;">
-        <span class="bignumber"><%= number_with_delimiter(@summary_data['viewed_pages']) -%></span>
+        <span class="mednumber"><%= number_with_delimiter(@summary_data['viewed_pages']) -%></span>
         <span class="mednumber">(<%= number_to_percentage((@summary_data['viewed_pages'] / @summary_data['pages']) * 100, :precision => 1 ) -%>)</span>
       </td>
       <td><em>Pages with at least <strong>one</strong> unique pageview per week<br/>between <%= PageStat::START_DATE -%> and <%= PageStat::END_DATE -%></em></td>
@@ -22,7 +22,7 @@
     <tr>
       <td>Missing Pages</td>
       <td style="white-space:nowrap;">
-        <span class="bignumber"><%= number_with_delimiter(@summary_data['missing_pages']) -%></span>
+        <span class="mednumber"><%= number_with_delimiter(@summary_data['missing_pages']) -%></span>
         <span class="mednumber">(<%= number_to_percentage((@summary_data['missing_pages'] / @summary_data['pages']) * 100, :precision => 1 ) -%>)</span>
       </td>
       <td>
@@ -51,7 +51,7 @@
     <tr>
       <td>Image Links</td>
       <td>
-        <span class="bignumber"><%= number_with_delimiter(@summary_data['image_links']) -%></span>
+        <span class="mednumber"><%= number_with_delimiter(@summary_data['image_links']) -%></span>
       </td>
       <td>
         <em>Links (good or bad) to any kind of image, including various sizes or styles of hosted images</em>
@@ -60,7 +60,7 @@
     <tr>
       <td>Hosted Images</td>
       <td>
-        <span class="bignumber"><%= number_with_delimiter(@summary_data['hosted_images']) -%></span><br/>
+        <span class="mednumber"><%= number_with_delimiter(@summary_data['hosted_images']) -%></span><br/>
         <span>CoP Wiki: <%= number_with_delimiter(@summary_data['copwiki_images']) -%></span><br/>
         <span>Create: <%= number_with_delimiter(@summary_data['create_images']) -%></span>
       </td>
@@ -71,7 +71,7 @@
     <tr>
       <td>Viewed (Hosted) Images</td>
       <td>
-        <span class="bignumber"><%= number_with_delimiter(@summary_data['viewed_hosted_images']) -%></span><br/>
+        <span class="mednumber"><%= number_with_delimiter(@summary_data['viewed_hosted_images']) -%></span><br/>
         <span>CoP Wiki: <%= number_with_delimiter(@summary_data['viewed_copwiki_images']) -%></span><br/>
         <span>Create: <%= number_with_delimiter(@summary_data['viewed_create_images']) -%></span>
       </td>
@@ -82,7 +82,7 @@
     <tr>
       <td>Copyright Information</td>
       <td style="white-space:nowrap;">
-        <span class="bignumber"><%= number_with_delimiter(@summary_data['hosted_images_with_copyright']) -%></span>
+        <span class="mednumber"><%= number_with_delimiter(@summary_data['hosted_images_with_copyright']) -%></span>
         <span class="mednumber">(<%= number_to_percentage((@summary_data['hosted_images_with_copyright'] / @summary_data['hosted_images']) * 100, :precision => 1 ) -%>)</span>
         <br/>
         <span>CoP Wiki: <%= number_with_delimiter(@summary_data['copwiki_images_with_copyright']) -%></span>
@@ -96,3 +96,49 @@
       </td>
     </tr>
 </table>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Community Name</th>
+      <th>Eligible Pages</th>
+      <th>Viewed Pages (%)</th>
+      <th>Missing Pages (%)</th>
+      <th>Image Links</th>
+      <th>Hosted Images</th>
+      <th>Viewed (Hosted) Images</th>
+      <th>More Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%- PublishingCommunity.order(:name).each do |pc| -%>
+      <%- stats = pc.community_page_stat -%>
+        <tr>
+        <td><%= pc.name -%></td>
+        <%- if stats['pages'] == 0 -%>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>n/a</td>
+        <%- else -%>
+          <td><%= number_with_delimiter(stats['pages']) -%></td>
+          <td>
+            <%= number_with_delimiter(stats['viewed_pages']) -%>
+            (<%= number_to_percentage((stats['viewed_pages'] / stats['pages']) * 100, :precision => 1 ) -%>)
+          </td>
+          <td>
+            <%= number_with_delimiter(stats['missing_pages']) -%>
+            (<%= number_to_percentage((stats['missing_pages'] / stats['pages']) * 100, :precision => 1 ) -%>)
+          </td>
+          <td><%= number_with_delimiter(stats['image_links']) -%></td>
+          <td><%= number_with_delimiter(stats['hosted_images']) -%></td>
+          <td><%= number_with_delimiter(stats['viewed_hosted_images']) -%></td>
+          <td><em>...</em></td>
+        <%- end -%>
+        </tr>
+      <%- end -%>
+    </tbody>
+  </table>
