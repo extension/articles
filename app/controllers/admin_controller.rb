@@ -6,7 +6,7 @@
 #  see LICENSE file
 class AdminController < ApplicationController
   before_filter :admin_signin_required
-  before_filter :turn_off_right_column
+  before_filter :turn_off_resource_areas
   before_filter :www_store_location
 
   layout 'frontporch'
@@ -16,7 +16,6 @@ class AdminController < ApplicationController
   end
 
   def manage_topics
-    @right_column = false
     set_title("Manage Topics - Pubsite Admin")
     @topics = Topic.find(:all)
   end

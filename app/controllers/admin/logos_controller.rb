@@ -2,13 +2,13 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 
 class Admin::LogosController < ApplicationController
   before_filter :admin_signin_required
-  before_filter :turn_off_right_column
-  
+  before_filter :turn_off_resource_areas
+
   layout 'frontporch'
 
   def index
@@ -26,7 +26,7 @@ class Admin::LogosController < ApplicationController
 
     if @logo.save
       flash[:notice] = 'Logo was successfully uploaded.'
-      AdminLog.log_event(current_person, AdminLog::CREATE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})      
+      AdminLog.log_event(current_person, AdminLog::CREATE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})
       redirect_to(admin_logos_url)
     else
       render(:action => "new")
@@ -38,6 +38,6 @@ class Admin::LogosController < ApplicationController
     AdminLog.log_event(current_person, AdminLog::DELETE_LOGO,{:logo_id => @logo.id, :logo_filename => @logo.filename})
     @logo.destroy
     redirect_to(admin_logos_url)
-  end    
-    
+  end
+
 end

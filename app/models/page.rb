@@ -27,8 +27,7 @@ class Page < ActiveRecord::Base
   before_update :check_content
   before_destroy :change_primary_link
 
-  ordered_by :orderings => {'Events Default' => 'event_start ASC', 'Newest to oldest events' => 'event_start DESC', 'Newest to oldest'=> "source_updated_at DESC"},
-                            :default => "source_updated_at DESC"
+  ordered_by :orderings => {'Newest to oldest'=> "source_updated_at DESC"}, :default => "source_updated_at DESC"
 
   has_one :primary_link, :class_name => "Link", dependent: :destroy
   has_many :linkings, dependent: :destroy
@@ -39,8 +38,11 @@ class Page < ActiveRecord::Base
   belongs_to :page_source
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
+  has_many :publishing_communities, :through => :tags
+  has_many :hosted_images, :through => :links
+  has_many :year_analytics
+  has_one  :page_stat, dependent: :destroy
 
-  validates_numericality_of :learn_id, :allow_blank => true, :message => "event must be a valid event number."
 
   scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
@@ -51,7 +53,6 @@ class Page < ActiveRecord::Base
   scope :indexed, :conditions => {:indexed => INDEXED}
   scope :articles, :conditions => {:datatype => 'Article'}
   scope :faqs, :conditions => {:datatype => 'Faq'}
-  scope :events, :conditions => {:datatype => 'Event'}
 
 
   scope :by_datatype, lambda{|datatype|
@@ -107,6 +108,10 @@ class Page < ActiveRecord::Base
     in_string = tag_list.map{|t| "'#{t}'"}.join(',')
     joins(:tags).where("tags.name IN (#{in_string})").group("#{self.table_name}.id")
   }
+
+  scope :eligible, -> {joins(:page_stat).where("page_stats.weeks_published > 0")}
+  scope :viewed, -> {joins(:page_stat).where("page_stats.weeks_published > 0").where("page_stats.mean_unique_pageviews >= 1")}
+  scope :missing, -> {joins(:page_stat).where("page_stats.weeks_published > 0").where("page_stats.mean_unique_pageviews = 0")}
 
   # returns a class::method::options string to use as a memcache key
   #
@@ -923,18 +928,6 @@ class Page < ActiveRecord::Base
     [text.size,text.scan(/[\w-]+/).size]
   end
 
-  def event_date
-    @event_date || (self.event_start.blank? ? nil : (self.event_all_day? ? self.event_start.utc.to_date : self.event_start.in_time_zone(self.time_zone).to_date))
-  end
-
-  def event_time
-    @event_time || (self.event_start.blank? ? nil : (self.event_all_day? ? nil : self.event_start.in_time_zone(self.time_zone).strftime('%I:%M %p')))
-  end
-
-  def event_duration
-    read_attribute(:event_duration) || (self.event_all_day? ? 1 : 0)
-  end
-
   def displaytitle
     self.title.truncate(255,{:omission => '', :separator => ' '})
   end
@@ -974,5 +967,60 @@ class Page < ActiveRecord::Base
     end
   end
 
+  def weeks_published(through_date)
+    if(self.created_at.to_date > through_date)
+      0
+    else
+      (through_date - self.created_at.to_date).to_i / 7
+    end
+  end
+
+  def page_stat_attributes
+    pageviews = self.year_analytics.pluck(:pageviews).sum
+    unique_pageviews = self.year_analytics.pluck(:unique_pageviews).sum
+    weeks_published = self.weeks_published(PageStat::END_DATE)
+    if(weeks_published > 52)
+      mean_pageviews = pageviews / 52.to_f
+      mean_unique_pageviews = unique_pageviews / 52.to_f
+    elsif(weeks_published > 0)
+      mean_pageviews = pageviews / weeks_published.to_f
+      mean_unique_pageviews = unique_pageviews / weeks_published.to_f
+    else
+      mean_pageviews = 0
+      mean_unique_pageviews = 0
+    end
+
+    attributes = {}
+    attributes[:pageviews] = pageviews
+    attributes[:unique_pageviews] = unique_pageviews
+    attributes[:weeks_published] = weeks_published
+    attributes[:mean_pageviews] = mean_pageviews
+    attributes[:mean_unique_pageviews] = mean_unique_pageviews
+    attributes[:image_links] = self.links.image.count
+
+    copwiki_images = 0
+    create_images = 0
+    hosted_images = 0
+    copwiki_images_with_copyright = 0
+    create_images_with_copyright = 0
+    hosted_images_with_copyright = 0
+    self.hosted_images.all.each do |hi|
+      hosted_images += 1
+      create_images += 1 if hi.source == 'create'
+      copwiki_images += 1 if hi.source == 'copwiki'
+      if(!hi.copyright.blank?)
+        hosted_images_with_copyright += 1
+        create_images_with_copyright += 1 if hi.source == 'create'
+        copwiki_images_with_copyright += 1 if hi.source == 'copwiki'
+      end
+    end
+    attributes[:copwiki_images] = copwiki_images
+    attributes[:create_images] = create_images
+    attributes[:hosted_images] = hosted_images
+    attributes[:copwiki_images_with_copyright] = copwiki_images_with_copyright
+    attributes[:create_images_with_copyright] = create_images_with_copyright
+    attributes[:hosted_images_with_copyright] = hosted_images_with_copyright
+    attributes
+  end
 
 end

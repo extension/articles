@@ -1,8 +1,8 @@
 # === COPYRIGHT:
 #  Copyright (c) North Carolina State University
-#  Developed with funding for the National eXtension Initiative.
+#  Developed with funding from the eXtension Foundation
 # === LICENSE:
-#  BSD(-compatible)
+#
 #  see LICENSE file
 
 module CacheTools
@@ -12,7 +12,7 @@ module CacheTools
   end
 
   # assumes activerecord - just make sure there's something
-  # that responds to self.id if this is happening on an 
+  # that responds to self.id if this is happening on an
   # instance
   def get_cache_key(method_name,optionshash={})
    optionshashval = Digest::SHA1.hexdigest(optionshash.inspect)
@@ -20,7 +20,7 @@ module CacheTools
      cache_key = "#{self.name}::#{method_name}::#{optionshashval}"
    else
      cache_key = "#{self.class.name}##{self.id}::#{method_name}::#{optionshashval}"
-   end    
+   end
    return cache_key
   end
 
