@@ -25,5 +25,15 @@ module ImageauditHelper
     end
   end
 
+  def percentage_display(partial,total)
+    if(total == 0)
+      'n/a'
+    else
+      number_to_percentage((partial /total) * 100, :precision => 1 )
+    end
+
+  end
+
+
 
 end
