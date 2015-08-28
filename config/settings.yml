@@ -23,7 +23,6 @@ people_site: 'http://people.extension.org/'
 learn_site: 'https://learn.extension.org/'
 cop_site: 'http://cop.extension.org/wiki'
 collaborate_site: 'http://collaborate.extension.org/wiki/'
-create_site: 'http://create.extension.org/'
 about_blog: 'http://about.extension.org/'
 help_wiki: 'http://docs.extension.org/wiki/'
 public_site: 'http://www.extension.org'
@@ -59,3 +58,4 @@ geoip_data_file: <%= Rails.root%>/data/GeoIP/GeoIPCity.dat
 
 # create database
 create_database: 'prod_create'
+create_site: 'http://create.extension.org/'

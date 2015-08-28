@@ -13,6 +13,7 @@
 # public dir
 /public/system
 /public/sitemaps
+/public/mediawiki
 
 # configuration
 /config/database.yml
@@ -27,3 +28,6 @@
 # legacy yarddocs
 /.yardoc
 /doc/*
+
+# testing
+/imagetest

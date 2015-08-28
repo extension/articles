@@ -89,6 +89,14 @@ gem 'safe_attributes'
 # terse logging
 gem 'lograge'
 
+# exif data
+gem 'mini_exiftool'
+
+# mime type determination
+gem 'mimemagic'
+
+
+
 group :development do
   # require the powder gem
   gem 'powder'

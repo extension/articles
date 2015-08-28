@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150823172540) do
+ActiveRecord::Schema.define(:version => 20150828171934) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -38,6 +38,18 @@ ActiveRecord::Schema.define(:version => 20150823172540) do
   end
 
   add_index "annotations", ["url"], :name => "index_annotations_on_url"
+
+  create_table "audit_logs", :force => true do |t|
+    t.string  "auditable_type",       :null => false
+    t.integer "auditable_id",         :null => false
+    t.integer "contributor_id",       :null => false
+    t.string  "changed_item",         :null => false
+    t.boolean "previous_check_Value"
+    t.text    "previous_notes"
+    t.text    "current_notes"
+  end
+
+  add_index "audit_logs", ["auditable_type", "auditable_id", "contributor_id"], :name => "audit_ndx", :unique => true
 
   create_table "branding_institutions", :force => true do |t|
     t.string   "name",                                             :null => false
@@ -164,6 +176,19 @@ ActiveRecord::Schema.define(:version => 20150823172540) do
 
   add_index "geo_names", ["feature_name", "state_abbreviation", "county"], :name => "name_state_county_ndx"
 
+  create_table "hosted_image_audits", :force => true do |t|
+    t.integer "hosted_image_id",                          :null => false
+    t.boolean "is_stock",              :default => false, :null => false
+    t.integer "is_stock_by"
+    t.boolean "community_reviewed",    :default => false, :null => false
+    t.integer "community_reviewed_by"
+    t.boolean "staff_reviewed",        :default => false, :null => false
+    t.integer "staff_reviewed_by"
+    t.text    "notes"
+  end
+
+  add_index "hosted_image_audits", ["hosted_image_id"], :name => "image_ndx", :unique => true
+
   create_table "hosted_image_links", :force => true do |t|
     t.integer "link_id",         :null => false
     t.string  "hosted_image_id", :null => false
@@ -178,6 +203,7 @@ ActiveRecord::Schema.define(:version => 20150823172540) do
     t.string  "source"
     t.text    "description"
     t.text    "copyright"
+    t.integer "create_fid"
   end
 
   add_index "hosted_images", ["source_id", "source"], :name => "source_id_index", :unique => true
@@ -271,6 +297,19 @@ ActiveRecord::Schema.define(:version => 20150823172540) do
   end
 
   add_index "old_event_ids", ["event_id"], :name => "event_ndx", :unique => true
+
+  create_table "page_audits", :force => true do |t|
+    t.integer "page_id",                                  :null => false
+    t.boolean "keep_published",        :default => true,  :null => false
+    t.integer "keep_published_by"
+    t.boolean "community_reviewed",    :default => false, :null => false
+    t.integer "community_reviewed_by"
+    t.boolean "staff_reviewed",        :default => false, :null => false
+    t.integer "staff_reviewed_by"
+    t.text    "notes"
+  end
+
+  add_index "page_audits", ["page_id"], :name => "page_ndx", :unique => true
 
   create_table "page_redirects", :force => true do |t|
     t.integer "page_id",          :null => false
