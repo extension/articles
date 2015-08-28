@@ -16,12 +16,53 @@ class HostedImage < ActiveRecord::Base
   scope :from_create, -> {where(source: 'create')}
   scope :with_copyright, -> {where("copyright IS NOT NULL")}
 
+
+  def filemime
+    MimeMagic.by_magic(File.open(self.filesys_path))
+  end
+
+  def filesize
+    File.size(self.filesys_path)
+  end
+
+  def filetype
+    case self.filemime.mediatype
+    when 'application'
+      'document'
+    when 'image'
+      self.filemime.mediatype
+    when 'video'
+      self.filemime.mediatype
+    when 'audio'
+      self.filemime.mediatype
+    else
+      'undefined'
+    end
+  end
+
+
   def self.linked
     joins(:hosted_image_links).uniq
   end
 
   def self.viewed
     joins(:page_stats).where("page_stats.mean_unique_pageviews >= 1").uniq
+  end
+
+  def filesys_path
+    if(self.source == 'copwiki')
+      "#{Rails.root}/public/mediawiki/files#{self.path}"
+    else
+      ''
+    end
+  end
+
+  def create_uri
+    if(source == 'create')
+      self.path
+    elsif(source == 'copwiki')
+      "public://w#{self.path}"
+    end
   end
 
   def src_path

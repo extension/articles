@@ -67,6 +67,7 @@ GEM
     diff-lcs (1.2.5)
     erubis (2.7.0)
     execjs (2.0.2)
+    exifr (1.2.3.1)
     extension-html5shiv-rails (3.6.2.1)
     fastimage (1.6.1)
       addressable (~> 2.3, >= 2.3.5)
@@ -115,6 +116,8 @@ GEM
       railties
     method_source (0.8.2)
     mime-types (1.25.1)
+    mimemagic (0.3.0)
+    mini_exiftool (2.5.1)
     mini_portile (0.5.2)
     multi_json (1.10.1)
     mysql2 (0.3.16)
@@ -225,6 +228,7 @@ DEPENDENCIES
   capistrano (~> 2.15.5)
   coffee-rails (~> 3.2.1)
   dalli
+  exifr
   extension-html5shiv-rails!
   fastimage
   feedjira
@@ -239,6 +243,8 @@ DEPENDENCIES
   lockfile
   lograge
   meta_request
+  mimemagic
+  mini_exiftool
   mysql2
   net-http-spy
   nokogiri (~> 1.6.1)

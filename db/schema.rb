@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150823172540) do
+ActiveRecord::Schema.define(:version => 20150827132038) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(:version => 20150823172540) do
     t.string  "source"
     t.text    "description"
     t.text    "copyright"
+    t.integer "create_fid"
   end
 
   add_index "hosted_images", ["source_id", "source"], :name => "source_id_index", :unique => true
