@@ -13,12 +13,12 @@ module ImageauditHelper
 
   def imageaudit_sourcelink(image)
     if(image.source == 'copwiki')
-      if(!image.create_fid.nil?)
-        ("copwiki<br/>" + link_to('create image data',"http://#{Settings.create_site}/file/#{image.create_fid}")).html_safe
-      else
+      # if(!image.create_fid.nil?)
+      #   ("copwiki<br/>" + link_to('create image data',"http://#{Settings.create_site}/file/#{image.create_fid}")).html_safe
+      # else
         'copwiki'
-      end
-      elsif(image.source == 'create')
+      # end
+    elsif(image.source == 'create')
       link_to('create',"http://#{Settings.create_site}/file/#{image.source_id}").html_safe
     else
       ''
