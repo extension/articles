@@ -226,20 +226,6 @@ class Rebuild < Thor
     end
   end
 
-  desc "pagestats", "Rebuild page and community stats"
-  method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
-  def pagestats
-    load_rails(options[:environment])
-    # update media from create
-    HostedImage.update_from_create
-    PageStat.rebuild_stats
-    CommunityPageStat.rebuild_stats
-    PageStat.overall_stat_attributes(true)
-  end
-
-
-
-
 end
 
 Rebuild.start

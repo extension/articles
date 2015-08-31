@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150828171934) do
+ActiveRecord::Schema.define(:version => 20150831004521) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -38,18 +38,6 @@ ActiveRecord::Schema.define(:version => 20150828171934) do
   end
 
   add_index "annotations", ["url"], :name => "index_annotations_on_url"
-
-  create_table "audit_logs", :force => true do |t|
-    t.string  "auditable_type",       :null => false
-    t.integer "auditable_id",         :null => false
-    t.integer "contributor_id",       :null => false
-    t.string  "changed_item",         :null => false
-    t.boolean "previous_check_Value"
-    t.text    "previous_notes"
-    t.text    "current_notes"
-  end
-
-  add_index "audit_logs", ["auditable_type", "auditable_id", "contributor_id"], :name => "audit_ndx", :unique => true
 
   create_table "branding_institutions", :force => true do |t|
     t.string   "name",                                             :null => false
@@ -82,29 +70,6 @@ ActiveRecord::Schema.define(:version => 20150828171934) do
   end
 
   add_index "category_tag_redirects", ["term"], :name => "name_ndx", :unique => true
-
-  create_table "community_page_stats", :force => true do |t|
-    t.integer  "publishing_community_id"
-    t.integer  "pages"
-    t.integer  "viewed_pages"
-    t.integer  "missing_pages"
-    t.text     "viewed_percentiles"
-    t.integer  "image_links"
-    t.integer  "viewed_image_links"
-    t.integer  "copwiki_images"
-    t.integer  "create_images"
-    t.integer  "hosted_images"
-    t.integer  "viewed_copwiki_images"
-    t.integer  "viewed_create_images"
-    t.integer  "viewed_hosted_images"
-    t.integer  "copwiki_images_with_copyright"
-    t.integer  "create_images_with_copyright"
-    t.integer  "hosted_images_with_copyright"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-  end
-
-  add_index "community_page_stats", ["publishing_community_id"], :name => "index_community_page_stats_on_publishing_community_id", :unique => true
 
   create_table "content_buckets", :force => true do |t|
     t.string   "name",       :null => false
@@ -175,38 +140,6 @@ ActiveRecord::Schema.define(:version => 20150828171934) do
   end
 
   add_index "geo_names", ["feature_name", "state_abbreviation", "county"], :name => "name_state_county_ndx"
-
-  create_table "hosted_image_audits", :force => true do |t|
-    t.integer "hosted_image_id",                          :null => false
-    t.boolean "is_stock",              :default => false, :null => false
-    t.integer "is_stock_by"
-    t.boolean "community_reviewed",    :default => false, :null => false
-    t.integer "community_reviewed_by"
-    t.boolean "staff_reviewed",        :default => false, :null => false
-    t.integer "staff_reviewed_by"
-    t.text    "notes"
-  end
-
-  add_index "hosted_image_audits", ["hosted_image_id"], :name => "image_ndx", :unique => true
-
-  create_table "hosted_image_links", :force => true do |t|
-    t.integer "link_id",         :null => false
-    t.string  "hosted_image_id", :null => false
-  end
-
-  add_index "hosted_image_links", ["link_id", "hosted_image_id"], :name => "link_index", :unique => true
-
-  create_table "hosted_images", :force => true do |t|
-    t.string  "filename"
-    t.text    "path"
-    t.integer "source_id"
-    t.string  "source"
-    t.text    "description"
-    t.text    "copyright"
-    t.integer "create_fid"
-  end
-
-  add_index "hosted_images", ["source_id", "source"], :name => "source_id_index", :unique => true
 
   create_table "link_stats", :force => true do |t|
     t.integer  "page_id"
@@ -298,19 +231,6 @@ ActiveRecord::Schema.define(:version => 20150828171934) do
 
   add_index "old_event_ids", ["event_id"], :name => "event_ndx", :unique => true
 
-  create_table "page_audits", :force => true do |t|
-    t.integer "page_id",                                  :null => false
-    t.boolean "keep_published",        :default => true,  :null => false
-    t.integer "keep_published_by"
-    t.boolean "community_reviewed",    :default => false, :null => false
-    t.integer "community_reviewed_by"
-    t.boolean "staff_reviewed",        :default => false, :null => false
-    t.integer "staff_reviewed_by"
-    t.text    "notes"
-  end
-
-  add_index "page_audits", ["page_id"], :name => "page_ndx", :unique => true
-
   create_table "page_redirects", :force => true do |t|
     t.integer "page_id",          :null => false
     t.integer "redirect_page_id", :null => false
@@ -337,26 +257,6 @@ ActiveRecord::Schema.define(:version => 20150828171934) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "page_stats", :force => true do |t|
-    t.integer  "page_id"
-    t.integer  "pageviews"
-    t.integer  "unique_pageviews"
-    t.integer  "weeks_published"
-    t.float    "mean_pageviews"
-    t.float    "mean_unique_pageviews"
-    t.integer  "image_links"
-    t.integer  "copwiki_images"
-    t.integer  "create_images"
-    t.integer  "hosted_images"
-    t.integer  "copwiki_images_with_copyright"
-    t.integer  "create_images_with_copyright"
-    t.integer  "hosted_images_with_copyright"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-  end
-
-  add_index "page_stats", ["page_id"], :name => "index_page_stats_on_page_id", :unique => true
 
   create_table "page_updates", :force => true do |t|
     t.integer  "user_id"
@@ -489,20 +389,6 @@ ActiveRecord::Schema.define(:version => 20150828171934) do
   end
 
   add_index "update_times", ["datasource_type", "datasource_id", "datatype"], :name => "recordsignature", :unique => true
-
-  create_table "year_analytics", :force => true do |t|
-    t.integer  "page_id"
-    t.text     "analytics_url"
-    t.string   "url_type"
-    t.integer  "url_page_id"
-    t.string   "url_wiki_title"
-    t.integer  "pageviews"
-    t.integer  "unique_pageviews"
-    t.date     "start_date"
-    t.date     "end_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "zip_codes", :force => true do |t|
     t.integer "zip_code"
