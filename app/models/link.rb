@@ -12,8 +12,6 @@ class Link < ActiveRecord::Base
 
   belongs_to :page
   has_many :linkings
-  has_one :hosted_image_link, :dependent => :destroy
-  has_one :hosted_image, :through => :hosted_image_link
 
   validates_presence_of :fingerprint, :linktype
 
@@ -590,36 +588,5 @@ class Link < ActiveRecord::Base
     end
     returnhash
   end
-
-  def connect_to_hosted_image
-    if(%r{^/mediawiki/files/thumb} =~ self.path)
-      matchpath = self.path.gsub(%r{^/mediawiki/files/thumb},'')
-      HostedImage.link_by_path(matchpath,self.id,'copwiki')
-    elsif(%r{^/mediawiki/files} =~ self.path)
-      matchpath = self.path.gsub(%r{^/mediawiki/files},'')
-      HostedImage.link_by_path(matchpath,self.id,'copwiki')
-    elsif(%r{^/sites/default/files/w/thumb} =~ self.path)
-      matchpath = self.path.gsub(%r{^/sites/default/files/w/thumb},'')
-      HostedImage.link_by_path(matchpath,self.id,'copwiki')
-    elsif(%r{^/sites/default/files/w} =~ self.path)
-      matchpath = self.path.gsub(%r{^/sites/default/files/w},'')
-      HostedImage.link_by_path(matchpath,self.id,'copwiki')
-    elsif(%r{^/sites/default/files/styles/\w+/public/}  =~ self.path)
-      matchpath = self.path.gsub(%r{^/sites/default/files/styles/\w+/public/},'')
-      HostedImage.link_by_path(matchpath,self.id,'create')
-    elsif(%r{^/sites/default/files/} =~ self.path)
-      matchpath = self.path.gsub(%r{^/sites/default/files/},'')
-      HostedImage.link_by_path(matchpath,self.id,'create')
-    else
-      # nothing for now
-    end
-  end
-
-  def self.connect_unlinked_images
-    self.unlinked_images.each do |image_link|
-      image_link.connect_to_hosted_image
-    end
-  end
-
 
 end
