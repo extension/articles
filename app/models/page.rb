@@ -106,9 +106,9 @@ class Page < ActiveRecord::Base
     joins(:tags).where("tags.name IN (#{in_string})").group("#{self.table_name}.id")
   }
 
-  scope :eligible, -> {joins(:page_stat).where("page_stats.weeks_published > 0")}
-  scope :viewed, -> {joins(:page_stat).where("page_stats.weeks_published > 0").where("page_stats.mean_unique_pageviews >= 1")}
-  scope :missing, -> {joins(:page_stat).where("page_stats.weeks_published > 0").where("page_stats.mean_unique_pageviews = 0")}
+  scope :keep, -> {where("keep_published = 1")}
+  scope :unpublish, -> {where("keep_published = 0")}
+
 
   # returns a class::method::options string to use as a memcache key
   #
@@ -963,6 +963,30 @@ class Page < ActiveRecord::Base
       nil
     end
   end
+
+  def self.update_keep_from_imageaudit
+    imageaudit_database = Settings.imageaudit_database
+    query = <<-END_SQL.gsub(/\s+/, " ").strip
+    UPDATE #{self.connection.current_database}.#{self.table_name}, #{imageaudit_database}.pages
+    SET #{self.connection.current_database}.#{self.table_name}.keep_published = #{imageaudit_database}.pages.keep_published
+    WHERE #{imageaudit_database}.pages.id = #{self.connection.current_database}.#{self.table_name}.id
+    END_SQL
+    self.connection.execute(query)
+    true
+  end
+
+  def unpublish
+    if(self.source == 'create')
+      if(create_node = CreateNode.where(nid: self.create_node_id).first)
+        return (create_node.unpublish and create_node.inject_unpublish_notice)
+      else
+        return false
+      end
+    else
+      return true
+    end
+  end
+
 
 
 end

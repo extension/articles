@@ -120,6 +120,7 @@ class Rebuild < Thor
   desc "links", "Recreate links table (also recreates linkings)"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
+  method_option :linkings,:default => true, :aliases => "-v", :desc => "Output verbose progress"
   def links
     load_rails(options[:environment])
     recreate_primary_links(options[:verbose])
