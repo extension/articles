@@ -17,6 +17,8 @@ class CreateNode < ActiveRecord::Base
   def unpublish(mark_inactive = true)
     if(cnw = CreateNodeWorkflow.where(node_id: self.nid).last)
       unix_timestamp = Time.now.utc.to_i
+      # Note: setting 'unpublished at' to nil is a hack to
+      # keep it out of the deleted items atom feed
       cnw.update_attributes(active: false,
                             status_text: 'Draft',
                             status: 1,
@@ -24,7 +26,7 @@ class CreateNode < ActiveRecord::Base
                             draft_status: nil,
                             draft_status_text: nil,
                             published_at: nil,
-                            unpublished_at: unix_timestamp,
+                            unpublished_at: nil,
                             published_revision_id: nil,
                             changed: unix_timestamp)
 
