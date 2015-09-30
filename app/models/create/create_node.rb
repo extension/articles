@@ -45,7 +45,7 @@ class CreateNode < ActiveRecord::Base
                                        revision_id: cnw.current_revision_id,
                                        event_id: CreateNodeWorkflowEvent::INACTIVE,
                                        description: 'made inactive',
-                                       created: unix_timestamp)
+                                       created: unix_timestamp + 1)
       end
       true
     else
