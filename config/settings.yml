@@ -61,4 +61,4 @@ create_database: 'prod_create'
 create_site: 'http://create.extension.org/'
 
 #imageaudit database
-imageaudit_database: 'prod_imageaudit '
+imageaudit_database: 'prod_imageaudit'
