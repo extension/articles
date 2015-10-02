@@ -5,9 +5,8 @@
 #
 # see LICENSE file
 
-class CreateTaxonomyTerm < ActiveRecord::Base
+class CreateFieldDataBody < ActiveRecord::Base
   # connects to the create database
   self.establish_connection :create
-  self.set_table_name 'taxonomy_term_data'
-  self.set_primary_key "tid"
+  self.table_name='field_data_body'
 end
