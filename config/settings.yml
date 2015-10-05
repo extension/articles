@@ -1,5 +1,5 @@
 session_token: '1234567890123456789012345678901234567890'
-urlwriter_host: 'darmok.dev'
+urlwriter_host: 'frontporch.dev'
 urlwriter_protocol: 'http://'
 urlwriter_port: '80'
 
@@ -34,3 +34,7 @@ geoip_data_file: <%= Rails.root%>/data/GeoIP/GeoIPCity.dat
 
 # create database
 create_database: 'prod_create'
+create_site: 'http://create.extension.org/'
+
+#imageaudit database
+imageaudit_database: 'prod_imageaudit'

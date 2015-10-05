@@ -13,13 +13,27 @@ module ImageauditHelper
 
   def imageaudit_sourcelink(image)
     if(image.source == 'copwiki')
-      'copwiki'
+      # if(!image.create_fid.nil?)
+      #   ("copwiki<br/>" + link_to('create image data',"http://#{Settings.create_site}/file/#{image.create_fid}")).html_safe
+      # else
+        'copwiki'
+      # end
     elsif(image.source == 'create')
-      link_to('create',"http://create.extension.org/file/#{image.source_id}").html_safe
+      link_to('create',"http://#{Settings.create_site}/file/#{image.source_id}").html_safe
     else
       ''
     end
   end
+
+  def percentage_display(partial,total)
+    if(total == 0)
+      'n/a'
+    else
+      number_to_percentage((partial /total) * 100, :precision => 1 )
+    end
+
+  end
+
 
 
 end

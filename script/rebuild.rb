@@ -120,6 +120,7 @@ class Rebuild < Thor
   desc "links", "Recreate links table (also recreates linkings)"
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   method_option :verbose,:default => true, :aliases => "-v", :desc => "Output verbose progress"
+  method_option :linkings,:default => true, :aliases => "-v", :desc => "Output verbose progress"
   def links
     load_rails(options[:environment])
     recreate_primary_links(options[:verbose])
@@ -225,20 +226,6 @@ class Rebuild < Thor
       end
     end
   end
-
-  desc "pagestats", "Rebuild page and community stats"
-  method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
-  def pagestats
-    load_rails(options[:environment])
-    # update media from create
-    HostedImage.update_from_create
-    PageStat.rebuild_stats
-    CommunityPageStat.rebuild_stats
-    PageStat.overall_stat_attributes(true)
-  end
-
-
-
 
 end
 

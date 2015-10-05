@@ -39,9 +39,6 @@ class Page < ActiveRecord::Base
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
   has_many :publishing_communities, :through => :tags
-  has_many :hosted_images, :through => :links
-  has_many :year_analytics
-  has_one  :page_stat, dependent: :destroy
 
 
   scope :bucketed_as, lambda{|bucketname|
@@ -109,9 +106,9 @@ class Page < ActiveRecord::Base
     joins(:tags).where("tags.name IN (#{in_string})").group("#{self.table_name}.id")
   }
 
-  scope :eligible, -> {joins(:page_stat).where("page_stats.weeks_published > 0")}
-  scope :viewed, -> {joins(:page_stat).where("page_stats.weeks_published > 0").where("page_stats.mean_unique_pageviews >= 1")}
-  scope :missing, -> {joins(:page_stat).where("page_stats.weeks_published > 0").where("page_stats.mean_unique_pageviews = 0")}
+  scope :keep, -> {where("keep_published = 1")}
+  scope :unpublish, -> {where("keep_published = 0")}
+
 
   # returns a class::method::options string to use as a memcache key
   #
@@ -967,60 +964,29 @@ class Page < ActiveRecord::Base
     end
   end
 
-  def weeks_published(through_date)
-    if(self.created_at.to_date > through_date)
-      0
-    else
-      (through_date - self.created_at.to_date).to_i / 7
-    end
+  def self.update_keep_from_imageaudit
+    imageaudit_database = Settings.imageaudit_database
+    query = <<-END_SQL.gsub(/\s+/, " ").strip
+    UPDATE #{self.connection.current_database}.#{self.table_name}, #{imageaudit_database}.pages
+    SET #{self.connection.current_database}.#{self.table_name}.keep_published = #{imageaudit_database}.pages.keep_published
+    WHERE #{imageaudit_database}.pages.id = #{self.connection.current_database}.#{self.table_name}.id
+    END_SQL
+    self.connection.execute(query)
+    true
   end
 
-  def page_stat_attributes
-    pageviews = self.year_analytics.pluck(:pageviews).sum
-    unique_pageviews = self.year_analytics.pluck(:unique_pageviews).sum
-    weeks_published = self.weeks_published(PageStat::END_DATE)
-    if(weeks_published > 52)
-      mean_pageviews = pageviews / 52.to_f
-      mean_unique_pageviews = unique_pageviews / 52.to_f
-    elsif(weeks_published > 0)
-      mean_pageviews = pageviews / weeks_published.to_f
-      mean_unique_pageviews = unique_pageviews / weeks_published.to_f
-    else
-      mean_pageviews = 0
-      mean_unique_pageviews = 0
-    end
-
-    attributes = {}
-    attributes[:pageviews] = pageviews
-    attributes[:unique_pageviews] = unique_pageviews
-    attributes[:weeks_published] = weeks_published
-    attributes[:mean_pageviews] = mean_pageviews
-    attributes[:mean_unique_pageviews] = mean_unique_pageviews
-    attributes[:image_links] = self.links.image.count
-
-    copwiki_images = 0
-    create_images = 0
-    hosted_images = 0
-    copwiki_images_with_copyright = 0
-    create_images_with_copyright = 0
-    hosted_images_with_copyright = 0
-    self.hosted_images.all.each do |hi|
-      hosted_images += 1
-      create_images += 1 if hi.source == 'create'
-      copwiki_images += 1 if hi.source == 'copwiki'
-      if(!hi.copyright.blank?)
-        hosted_images_with_copyright += 1
-        create_images_with_copyright += 1 if hi.source == 'create'
-        copwiki_images_with_copyright += 1 if hi.source == 'copwiki'
+  def unpublish
+    if(self.source == 'create')
+      if(create_node = CreateNode.where(nid: self.create_node_id).first)
+        return (create_node.unpublish and create_node.inject_unpublish_notice)
+      else
+        return false
       end
+    else
+      return true
     end
-    attributes[:copwiki_images] = copwiki_images
-    attributes[:create_images] = create_images
-    attributes[:hosted_images] = hosted_images
-    attributes[:copwiki_images_with_copyright] = copwiki_images_with_copyright
-    attributes[:create_images_with_copyright] = create_images_with_copyright
-    attributes[:hosted_images_with_copyright] = hosted_images_with_copyright
-    attributes
   end
+
+
 
 end
