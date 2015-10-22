@@ -826,9 +826,10 @@ ul.thumbnails.pull-right {
 
 .resource-areas ul li,
 .resource-areas ul li a {
-	font-size:12px;
+	font-size:14px;
 	color:#747474;
-	line-height: 140%;
+	line-height: 1.3em;
+	margin-bottom:.7em;
 }
 
 footer {
