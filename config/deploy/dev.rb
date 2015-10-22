@@ -4,5 +4,5 @@ if(branch = ENV['BRANCH'])
 else
   set :branch, 'master'
 end
-set :vhost, 'dev-www.extension.org'
+set :vhost, 'dev-articles.extension.org'
 server vhost, :app, :web, :db, :primary => true
