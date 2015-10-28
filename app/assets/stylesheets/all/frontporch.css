@@ -1147,3 +1147,25 @@ footer p {
 
 
 .welcome-message a {font-size: 16px;}
+
+.resource-areas-primary h4 {
+	font-size:20px;
+	color:#F77923;
+	font-weight:normal;
+	text-transform: none;
+	border-bottom:1px solid #E3E3E3;
+	padding-bottom:.35em;
+	margin-left:-26px;
+	padding-left:26px;
+}
+.resource-areas-primary ul {
+ margin-bottom:1.2em;
+}
+
+.resource-areas-primary ul li,
+.resource-areas-primary ul li a {
+	font-size:15px;
+	color:#747474;
+	line-height: 1.3em;
+	margin-bottom:.4em;
+}
