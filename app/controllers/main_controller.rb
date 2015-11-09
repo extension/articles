@@ -12,25 +12,11 @@ class MainController < ApplicationController
   layout 'frontporch'
 
   def index
-    @published_content = true  # index the main page
-    sponsorlist = Sponsor.all
-    @sponsors = Hash.new
-    Sponsor::SPONSORSHIP_LEVELS.each{ |level| @sponsors[level] = Array.new}
-    sponsorlist.each{ |sponsor| @sponsors[sponsor.level] << sponsor if sponsor.level}
-
-    # articles tagged 'front page' in Create will be eligible for front page display. the one with the latest source updated timestamp will win.
-    # in the case that one does not exist, it will fall back to the about page.
-    @featured_articles = Page.articles.tagged_with(['front page', 'feature']).ordered.limit(1)
-    if @featured_articles.blank?
-      @featured_articles << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
-    end
-
-    # Articles tagged with 'front page' and 'bio in Create will be eligible for the front page bio display.
-    # in the case that one does not exist, the bio area will just collapse
-    @featured_bio = Page.articles.tagged_with(['front page', 'bio']).offset(rand(Page.articles.tagged_with(['front page', 'bio']).length)).first
-
-    @recent_content = Page.recent_content({:datatypes => ['Article','Faq'], :limit => 10})
-    @ask_two_point_oh_form = Settings.ask_two_point_oh_form
+    @page_title = "Featured Articles"
+    @canonical_link = main_communities_url
+    @special_page = SpecialPage.find_by_path('communities')
+    @pages = Kaminari.paginate_array(Page.diverse_feature_list).page(params[:page]).per(3)
+    render :template => "/pages/list"
    end
 
   def category_tag
@@ -153,11 +139,12 @@ class MainController < ApplicationController
   end
 
   def communities
-    @page_title = "Our Resources"
+    @no_show_resource_areas = true
+    @page_title = "Our Resource Areas"
     @canonical_link = main_communities_url
     @special_page = SpecialPage.find_by_path('communities')
-    @pages = Kaminari.paginate_array(Page.diverse_feature_list).page(params[:page]).per(10)
-    render :template => "/pages/list"
+
+
   end
 
   def special

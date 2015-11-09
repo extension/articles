@@ -18,7 +18,7 @@
     <link rel="canonical" href="<%= @canonical_link %>"/>
   <%- end -%>
 
-  <title><%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Objective. Research-based. Credible." %></title>
+  <title><%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Issues. Innovation. Impact." %></title>
   <meta name="description" content="<%= @page_meta_description ? @page_meta_description : "eXtension is an interactive learning environment delivering research-based information emerging from America's land-grant university system." %>">
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -95,9 +95,9 @@
                     <a class="brand" href="/"><img class='nonmobile hidden-phone' src="/assets/frontporch/ex_logo_i-three_tagline.png" alt="eXtension" /><img class='visible-phone' src="/assets/frontporch/logo_mobile.gif" alt="eXtension" /></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li class="active"><a href="/">Home</a></li>
+                            <li><a href="/">Home</a></li>
                             <li><%= link_to('Resource Areas', main_communities_path()) %></li>
-                            <li><%= link_to('Recent ', main_blog_path()) %></li>
+                            <li><a href="https://extension.org/">eXtension.org</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                     <div class="search-collapse collapse">
