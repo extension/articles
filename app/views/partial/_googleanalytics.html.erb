@@ -1,12 +1,13 @@
 <%
 case Settings.app_location
     when 'production'   then @gaprofile = "UA-155321-2" # www.extension.org
-    when 'demo'         then @gaprofile = "UA-155321-25" # demo.extension.org
+    when 'demo'         then @gaprofile = "UA-155321-25" # dev-www.extension.org
     when 'localdev'     then @gaprofile = "UA-155321-0"
+    when 'articles'     then @gaprofile = "UA-155321-0"
 end
 %>
 
-<!-- GA for wwww.extension.org -->
+<!-- Google Analytics Snippet -->
 <script type="text/javascript">
 
   var _gaq = _gaq || [];

@@ -114,4 +114,12 @@ class Api::DataController < ApplicationController
       return render :text => returnhash.to_json
    end
 
+   def resource_area_tags
+     returnhash = {}
+     PublishingCommunity.all.each do |pc|
+       returnhash[pc.name] = pc.tag_names
+     end
+     return render :text => returnhash.to_json
+   end
+
 end

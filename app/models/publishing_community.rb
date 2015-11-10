@@ -6,7 +6,6 @@
 #  see LICENSE file or view at https://github.com/extension/darmok/wiki/LICENSE
 
 class PublishingCommunity < ActiveRecord::Base
-  extend ConditionExtensions
   include Ordered
 
   ordered_by :default => "#{self.table_name}.name ASC"

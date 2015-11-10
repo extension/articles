@@ -104,6 +104,11 @@ class PagesController < ApplicationController
       return do_404
     end
 
+    # redirect to learn
+    if(@page.is_event?)
+      return redirect_to(Settings.events_relocation_url,:status => :moved_permanently)
+    end
+
     # set canonical_link
     @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
 
@@ -281,9 +286,6 @@ class PagesController < ApplicationController
     redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
   end
 
-  def events
-    return redirect_to(Settings.learn_site,:status => :moved_permanently)
-  end
 
   def check_flags
     if(params[:paraman] and TRUE_VALUES.include?(params[:paraman]))

@@ -2,9 +2,8 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
-include GroupingExtensions
 
 class Location < ActiveRecord::Base
   include CacheTools
@@ -14,28 +13,27 @@ class Location < ActiveRecord::Base
   INSULAR = 2
   OUTSIDEUS = 3
   ALL = "all"
-  
-  
+
+
   # Constants from pubsite - rename in pubsite code, Location::LOCATION_STATE is redundant no?
-  
+
   # LOCATION_UNKNOWN = 0
   # LOCATION_STATE = 1
   # LOCATION_INSULAR = 2
   # LOCATION_OUTSIDEUS = 3
-  
+
   has_many :users
   has_many :counties
   has_many :communities
   has_many :branding_institutions
-  
-  scope :filtered, lambda {|options| userfilter_conditions(options)}
+
   scope :displaylist, {:group => "#{table_name}.id",:order => "entrytype,name"}
-  
+
   scope :states, {:conditions => {:entrytype => STATE}}
-    
-  # TODO: review heureka location reporting methods.  Justcode Issue #555 
-  
-  
+
+  # TODO: review heureka location reporting methods.  Justcode Issue #555
+
+
   def get_associated_county(county_string)
     if county = self.counties.find(:first, :conditions => ["counties.name = ?", county_string.strip])
       return county
@@ -43,7 +41,7 @@ class Location < ActiveRecord::Base
       return nil
     end
   end
-  
+
   def self.find_by_abbreviation_or_name(location_string)
     if location = Location.find_by_abbreviation(location_string.strip) or location = Location.find_by_name(location_string.strip)
       return location
@@ -51,7 +49,7 @@ class Location < ActiveRecord::Base
       return nil
     end
   end
-  
+
   def self.find_by_geoip(ipaddress = Settings.request_ip_address,cache_options = {})
     cache_key = self.get_cache_key(__method__,{ipaddress: ipaddress})
     Rails.cache.fetch(cache_key,cache_options) do
@@ -87,8 +85,5 @@ class Location < ActiveRecord::Base
     else
       return nil
     end
-  end  
+  end
 end
-
-
-

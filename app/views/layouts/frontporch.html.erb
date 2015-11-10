@@ -51,14 +51,14 @@
 </head>
 
 <body>
-  <script src="https://assets.extension.org/javascripts/global_nav_public.js" type="text/javascript"></script>
+  <script src="https://assets.extension.org/javascripts/dev-global_nav_public.js" type="text/javascript"></script>
 
   <%- if(current_person and current_person.is_admin?) -%>
  	  <div id="adminnotice" class="noprint"><p>You are logged into an admin account (<%= link_to('sign out',logout_path) %>)</p></div>
   <%- end -%>
 
   <% if(@app_location_for_display != 'production')%>
-    <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://create.extension.org/node/1781") %></p></div>
+    <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p></div>
   <% end %>
 
 <div id="body_wrapper"><!-- used for preview -->
@@ -69,17 +69,11 @@
         <p>This shows how your page will appear when published to www.extension.org. The navigation areas are grayed out because those sections are not available in preview mode. However, all links within your article do work.</p>
       </div>
     <% elsif (@app_location_for_display != 'production' ) %>
-      <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site. <%= link_to("more info", "http://create.extension.org/node/1781") %></p></div>
+      <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p></div>
     <% end %>
 </div><!-- end #body_wrapper -->
 
   <div class="container">
-
-
-    <div class="new_design_announcement">
-      <p>This site is getting a new homepage on Tuesday, November 10. <a href="https://about.extension.org/?utm_source=www&utm_medium=www_banner&utm_campaign=redesign_announcement
-">See a sneak peek of what's coming</a>.</p>
-    </div>
 
     <% if params[:print] %>
       <img id="print-logo" src="/assets/frontporch/ex_logo_i-three_tagline.png" width="120pt" height="66pt"/>
@@ -101,9 +95,9 @@
                     <a class="brand" href="/"><img class='nonmobile hidden-phone' src="/assets/frontporch/ex_logo_i-three_tagline.png" alt="eXtension" /><img class='visible-phone' src="/assets/frontporch/logo_mobile.gif" alt="eXtension" /></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li class="active"><a href="/">Home</a></li>
+                            <li><a href="/">Home</a></li>
                             <li><%= link_to('Resource Areas', main_communities_path()) %></li>
-                            <li><%= link_to('Recent ', main_blog_path()) %></li>
+                            <li><a href="https://extension.org/">eXtension.org</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                     <div class="search-collapse collapse">

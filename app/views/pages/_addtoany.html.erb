@@ -5,13 +5,8 @@
 var a2a_config = a2a_config || {};
 a2a_config.linkname=document.title;
 a2a_config.track_links='custom';
-<%- if(Settings.app_location == 'production') -%>
-a2a_config.track_links_key='http://extension.org/<%= @page.id %>';
-<%- else -%>
 a2a_config.track_links_key='<%= short_pageid_url(:id => @page.id) %>';
-<%- end -%>
 a2a_config.onclick=1;
 a2a_config.no_3p=1;
 </script>
 <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
-

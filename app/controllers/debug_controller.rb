@@ -29,5 +29,20 @@ class DebugController < ApplicationController
 
   end
 
+  # convenience function to make my life easier right now
+  def resource_redirects
+    output = []
+    PublishingCommunity.all.each do |pc|
+      pc.tag_names.each do |tagname|
+        gsubtext = '[\\\+_\s]'
+        redirect_string = "redirectmatch permanent ^/#{tagname.gsub(' ',gsubtext)}/?$ http://#{Settings.urlwriter_host}/#{tagname.gsub(' ','_')}"
+        output << redirect_string
+      end
+    end
+
+    return render :text => output.join("\n")
+
+  end
+
 
 end

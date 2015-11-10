@@ -28,6 +28,7 @@ Darmok::Application.routes.draw do
   ## Debug ##
   match 'debug/location', to:'debug#location', :as => 'debuglocation'
   match 'debug/session_information', to:'debug#session_information'
+  match 'debug/resource_redirects', to:'debug#resource_redirects'
 
 #   #################################################################
 #   ### pubsite routes ###

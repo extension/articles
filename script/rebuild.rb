@@ -165,17 +165,17 @@ class Rebuild < Thor
       sitemap_index.puts('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
       # communities
       sitemap_index.puts('<sitemap>')
-      sitemap_index.puts('<loc>http://www.extension.org/sitemaps/sitemap_communities.xml</loc>')
+      sitemap_index.puts("<loc>#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/sitemaps/sitemap_communities.xml</loc>")
       sitemap_index.puts('</sitemap>')
       # pages
       if(index_pages_count == 1)
         sitemap_index.puts('<sitemap>')
-        sitemap_index.puts('<loc>http://www.extension.org/sitemaps/sitemap_pages.xml</loc>')
+        sitemap_index.puts("<loc>#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/sitemaps/sitemap_pages.xml</loc>")
         sitemap_index.puts('</sitemap>')
       else
         for i in (1..index_pages_count)
           sitemap_index.puts('<sitemap>')
-          sitemap_index.puts("<loc>http://www.extension.org/sitemaps/sitemap_pages_#{i}.xml</loc>")
+          sitemap_index.puts("<loc>#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/sitemaps/sitemap_pages_#{i}.xml</loc>")
           sitemap_index.puts('</sitemap>')
         end
       end
@@ -189,7 +189,7 @@ class Rebuild < Thor
       PublishingCommunity.launched.each do |community|
         community.tag_names.each do |name|
           sitemap_communities.puts('<url>')
-          sitemap_communities.puts("<loc>http://www.extension.org/#{URI.encode(Tag.url_display_name(name))}</loc>")
+          sitemap_communities.puts("<loc>#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/#{URI.encode(Tag.url_display_name(name))}</loc>")
           sitemap_communities.puts('</url>')
         end
       end
@@ -203,7 +203,7 @@ class Rebuild < Thor
         sitemap_pages.puts('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
         @pages.each do |page|
           sitemap_pages.puts('<url>')
-          sitemap_pages.puts("<loc>http://www.extension.org/pages/#{page.id}/#{page.url_title}</loc>")
+          sitemap_pages.puts("<loc>#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/pages/#{page.id}/#{page.url_title}</loc>")
           sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</lastmod>")
           sitemap_pages.puts('</url>')
         end
@@ -217,7 +217,7 @@ class Rebuild < Thor
           sitemap_pages.puts('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
           splits[i-1].each do |page|
             sitemap_pages.puts('<url>')
-            sitemap_pages.puts("<loc>http://www.extension.org/pages/#{page.id}/#{page.url_title}</loc>")
+            sitemap_pages.puts("<loc>#{Settings.urlwriter_protocol}#{Settings.urlwriter_host}/pages/#{page.id}/#{page.url_title}</loc>")
             sitemap_pages.puts("<lastmod>#{page.source_updated_at.xmlschema}</lastmod>")
             sitemap_pages.puts('</url>')
           end

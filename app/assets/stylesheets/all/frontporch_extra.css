@@ -1,8 +1,14 @@
 /* Server location visual indicator
 -----------------------------------------------------------------------------*/
+ul.extension_global_nav {background:#C2C6CC !important; text-align: right !important;}
+ul.extension_global_nav .nav-name {color:#555;font-weight:bold;}
+ul.extension_global_nav li a {color:#5A6782 !important;}
+ul.extension_global_nav li a:hover {color: #1A294A !important;}
+
 div#app_location {position:fixed;left:0;top:0;z-index:100;color:#fff;width:90px; padding:8px;}
 div#app_location.localdev {display:none;}
 div#app_location.dev {background: #ff00ff;border:1px solid #000;color:#222;}
+div#app_location.articles {background: #f47B28; border:1px solid #000;color:#222;}
 div#app_location a {color:#222; text-decoration:underline; padding:0 .5em;}
 div#app_location a:visited {color:#222; text-decoration:underline;}
 div#app_location a:hover {color:#000;background: #fff;text-decoration:none;}
