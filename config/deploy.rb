@@ -7,9 +7,9 @@ require "bundler/capistrano"
 TRUE_VALUES = [true, 1, '1', 't', 'T', 'true', 'TRUE', 'yes','YES','y','Y']
 FALSE_VALUES = [false, 0, '0', 'f', 'F', 'false', 'FALSE','no','NO','n','N']
 
-set :application, "frontporch"
+set :application, "articles"
 set :user, 'pacecar'
-set :repository, "git@github.com:extension/frontporch.git"
+set :repository, "git@github.com:extension/articles.git"
 set :scm, "git"
 set :use_sudo, false
 set :keep_releases, 5

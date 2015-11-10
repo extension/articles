@@ -1,4 +1,4 @@
-set :deploy_to, "/services/frontporch/"
+set :deploy_to, "/services/articles/"
 if(branch = ENV['BRANCH'])
   set :branch, branch
 else
