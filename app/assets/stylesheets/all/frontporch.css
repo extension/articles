@@ -890,11 +890,18 @@ ul.extension_global_nav a {color:#ccc !important;}
 label {font-weight:bold;}
 .carousel-caption a {text-decoration:none}
 
-/*.addthis_toolbox {border:1px solid lime;}*/
+/* Add this overrides */
 .addthis_toolbox a {display:block;}
+.addthis_button_pinterest_pinit {width: 44px !important;}
+.addthis_button_google_plusone {width: 64px !important;}
+.at-share-btn {margin: 6px !important;}
+.social-bookmarks {padding: 20px 0 6px;}
+
 #page404 {padding:2em 2em 370px; background: transparent url(/assets/pubsite/404_field.jpg) left bottom no-repeat; min-height:180px;}
 .sponsor_carousel {height:144px; padding:0;margin:0;}
 .rotator_sponsorlogo {height:140px !important; text-align:center; list-style:none; padding:0;margin:0;}
+
+
 
 
 .navbar .brand img.nonmobile {width: 165px; max-width:none;}
