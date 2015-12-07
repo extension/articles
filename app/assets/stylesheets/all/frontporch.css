@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-	margin:-5px auto;
+	margin:0 auto;
 	background: #FFF;
 	padding:5px 26px;
 	box-shadow: 6px 0 4px -4px #666 , -6px 0 4px -4px #666;
@@ -859,10 +859,6 @@ footer a {
 footer a:hover {
 	color:#333;
 }
-
-
-ul.extension_global_nav {background:#53586d !important;}
-ul.extension_global_nav a {color:#ccc !important;}
 
 #adminnotice {background:#E42020;}
 #adminnotice p {text-align: center; color:#fff; padding:.5em 0; margin:0;}
