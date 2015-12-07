@@ -154,7 +154,7 @@
           <li><%= link_to_unless_current "Privacy", main_special_path(:path => 'privacy') %></li>
           <li><%= link_to_unless_current "Contact Us", main_special_path(:path => 'contact_us') %></li>
           <li><%= link_to_unless_current "Disclaimer", main_special_path(:path => 'disclaimer') %></li>
-          <li class="last"><%= link_to_unless_current "Terms of Use", main_special_path(:path => 'termsofuse') %></li>
+          <li class="last"><%= link_to("Terms of Use","https://extension.org/terms-of-use/")%></li>
         </ul>
         <p>&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
       </footer>
