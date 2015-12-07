@@ -116,6 +116,7 @@ Darmok::Application.routes.draw do
   match 'main/communities', to:'main#communities', :as => 'main_communities'
   match 'main/set_institution', to:'main#set_institution', :as => 'set_institution'
   match 'main/show_institution_list', to:'main#show_institution_list', :via => [:post], :as => 'show_institution_list'
+  match 'main/termsofuse', to: redirect('https://extension.org/terms-of-use/')
   match 'main/:path', to:'main#special', :as => 'main_special'
   match ':content_tag', to:'main#community_tag', :as => 'site_index'
   match ':content_tag/about', to:'main#about_community', :as => 'about_community'
