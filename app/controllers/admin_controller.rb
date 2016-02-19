@@ -152,7 +152,6 @@ class AdminController < ApplicationController
     @community.public_description = params['community']['public_description']
     @community.public_name = params['community']['public_name']
     @community.is_launched = ( params['community']['is_launched'] ? true : false)
-    @community.show_donation = ( params['community']['show_donation'] ? true : false)
     @community.homage_name = params['community']['homage_name']
     @community.aae_group_id = params['community']['aae_group_id']
     @community.twitter_handle = params['community']['twitter_handle']
