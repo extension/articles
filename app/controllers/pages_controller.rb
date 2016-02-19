@@ -174,10 +174,6 @@ class PagesController < ApplicationController
       @ask_two_point_oh_form = Settings.ask_two_point_oh_form
     end
 
-    @donation_block = false
-    if(@community and @community.show_donation.present?)
-      @donation_block = true
-    end
     if use_content_tag
       @learn_event_widget_url = "https://learn.extension.org/widgets/upcoming.js?tags=#{use_content_tag.name}&showdate_on_past_events=false"
     else
