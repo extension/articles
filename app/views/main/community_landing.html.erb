@@ -91,6 +91,8 @@
         <% end%>
       </div>
 
+      <%= render(:partial => '/partial/usda_nifa') %>
+
       <div class="upcoming_learn_events clearfix">
         <% if !@sponsors.blank? %>
             <%= render(:partial => 'shared/sponsors', :locals => {:sponsorlist =>  @sponsors}) %>
