@@ -14,7 +14,6 @@ set :scm, "git"
 set :use_sudo, false
 set :keep_releases, 5
 ssh_options[:forward_agent] = true
-set :port, 24
 set :bundle_flags, '--deployment --binstubs'
 
 before "deploy", "deploy:checks:git_push"
@@ -45,6 +44,7 @@ namespace :deploy do
     ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
     ln -nfs #{shared_path}/config/robots.txt #{release_path}/public/robots.txt &&
     ln -nfs #{shared_path}/config/settings.local.yml #{release_path}/config/settings.local.yml &&
+    ln -nfs #{shared_path}/config/honeybadger.yml #{release_path}/config/honeybadger.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/uploads #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki/files &&
