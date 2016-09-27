@@ -95,6 +95,8 @@ gem 'mini_exiftool'
 # mime type determination
 gem 'mimemagic'
 
+# Ruby 2.2 requirement
+gem 'test-unit'
 
 
 group :development do
