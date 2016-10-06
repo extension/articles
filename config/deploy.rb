@@ -14,7 +14,6 @@ set :scm, "git"
 set :use_sudo, false
 set :keep_releases, 5
 ssh_options[:forward_agent] = true
-set :port, 24
 set :bundle_flags, '--deployment --binstubs'
 
 before "deploy", "deploy:checks:git_push"
@@ -45,6 +44,7 @@ namespace :deploy do
     ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml &&
     ln -nfs #{shared_path}/config/robots.txt #{release_path}/public/robots.txt &&
     ln -nfs #{shared_path}/config/settings.local.yml #{release_path}/config/settings.local.yml &&
+    ln -nfs #{shared_path}/config/honeybadger.yml #{release_path}/config/honeybadger.yml &&
     rm -rf #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/uploads #{release_path}/tmp/attachment_fu &&
     ln -nfs #{shared_path}/wikifiles #{release_path}/public/mediawiki/files &&
@@ -56,17 +56,19 @@ namespace :deploy do
     CMD
   end
 
-    # Override default web enable/disable tasks
+  # Override default web enable/disable tasks
   namespace :web do
 
-    desc "Put Apache in maintenancemode by touching the system/maintenancemode file"
+    desc "Put Apache and Cronmon in maintenancemode by touching the maintenancemode file"
     task :disable, :roles => :app do
       invoke_command "touch /services/maintenance/#{vhost}.maintenancemode"
+      invoke_command "touch /services/maintenance/CRONMONHALT"
     end
 
-    desc "Remove Apache from maintenancemode by removing the system/maintenancemode file"
+    desc "Remove Apache and Cronmon from maintenancemode by removing the maintenancemode file"
     task :enable, :roles => :app do
       invoke_command "rm -f /services/maintenance/#{vhost}.maintenancemode"
+      invoke_command "rm -f /services/maintenance/CRONMONHALT"
     end
 
   end
