@@ -98,6 +98,8 @@ gem 'mimemagic'
 # Ruby 2.2 requirement
 gem 'test-unit'
 
+# prevent iframe crap
+gem "secure_headers"
 
 group :development do
   # require the powder gem
