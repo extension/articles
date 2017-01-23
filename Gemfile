@@ -99,7 +99,7 @@ gem 'mimemagic'
 gem 'test-unit'
 
 # prevent iframe crap
-gem "secure_headers"
+# gem "secure_headers"
 
 group :development do
   # require the powder gem
