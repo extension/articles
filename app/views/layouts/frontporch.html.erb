@@ -150,10 +150,9 @@
         <span id="extension_icon_512" class="pull-left noprint"><img id="extension_logo" src="/assets/extension_logo.jpg" alt="eXtension" /></span>
         <ul class='inline noprint'>
           <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
-          <li><%= link_to_unless_current "Institutional Partners", main_special_path(:path => 'partners') %></li>
-          <li><%= link_to_unless_current "Privacy", main_special_path(:path => 'privacy') %></li>
-          <li><%= link_to_unless_current "Contact Us", main_special_path(:path => 'contact_us') %></li>
-          <li><%= link_to_unless_current "Disclaimer", main_special_path(:path => 'disclaimer') %></li>
+          <li><%= link_to("eXtension Members","https://extension.org/membership/current/")%></li>
+          <li><%= link_to("Privacy","https://extension.org/privacy/")%></li>
+          <li><%= link_to("Contact Us","https://extension.org/contact/")%></li>
           <li class="last"><%= link_to("Terms of Use","https://extension.org/terms-of-use/")%></li>
         </ul>
         <p>&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
