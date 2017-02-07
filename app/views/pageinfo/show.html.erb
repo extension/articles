@@ -10,14 +10,8 @@
 
   <table class="table">
       <tr>
-		  <%- if @page.is_special_page? and @special_page = SpecialPage.find_by_page_id(@page.id) -%>
-			<td>Published URL (Special Page)</td>
-        	<td><%= link_to(main_special_path(:path => @special_page.path)) %></td>
-		  <%- else -%>
-			<td>Published URL</td>
-          	<td><%= link_to(@page.id_and_link, @page.id_and_link) %></td>
-	  	  <%- end -%>
-
+			     <td>Published URL</td>
+    	     <td><%= link_to(@page.id_and_link, @page.id_and_link) %></td>
       </tr>
       <tr>
           <td>Internal Page ID</td>

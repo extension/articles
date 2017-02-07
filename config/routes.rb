@@ -111,13 +111,20 @@ Darmok::Application.routes.draw do
   ### short pageid
   match ':id', to:'pages#show', :constraints => { :id => /\d+/ }, :as => 'short_pageid'
 
+
+  ### main links
+  # Note: the following are redirecting at the apache level as of 2017-02-17 or earlier
+  # RewriteRule ^/main/termsofuse(.*)$          https://extension.org/terms-of-use [NC,L,R=permanent]
+  # RewriteRule ^/main/privacy(.*)$             https://extension.org/privacy [NC,L,R=permanent]
+  # RewriteRule ^/main/about(.*)$               https://extension.org/about [NC,L,R=permanent]
+  # RewriteRule ^/main/disclaimer(.*)$          https://extension.org/terms-of-use [NC,L,R=permanent]
+  # RewriteRule ^/main/contact_us(.*)$          https://extension.org/contact [NC,L,R=permanent]
+
   match 'main/search', to:'main#search', :as => 'site_search'
   match 'main/blog', to:'main#blog', :as => 'main_blog'
   match 'main/communities', to:'main#communities', :as => 'main_communities'
   match 'main/set_institution', to:'main#set_institution', :as => 'set_institution'
   match 'main/show_institution_list', to:'main#show_institution_list', :via => [:post], :as => 'show_institution_list'
-  match 'main/termsofuse', to: redirect('https://extension.org/terms-of-use/')
-  match 'main/:path', to:'main#special', :as => 'main_special'
   match ':content_tag', to:'main#community_tag', :as => 'site_index'
   match ':content_tag/about', to:'main#about_community', :as => 'about_community'
 

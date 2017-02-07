@@ -14,7 +14,6 @@ class MainController < ApplicationController
   def index
     @page_title = "Featured Articles"
     @canonical_link = main_communities_url
-    @special_page = SpecialPage.find_by_path('communities')
     @pages = Kaminari.paginate_array(Page.diverse_feature_list).page(params[:page]).per(3)
     render :template => "/pages/list"
    end
@@ -137,25 +136,7 @@ class MainController < ApplicationController
     @no_show_resource_areas = true
     @page_title = "Our Resource Areas"
     @canonical_link = main_communities_url
-    @special_page = SpecialPage.find_by_path('communities')
-
-
   end
-
-  def special
-    path = params[:path]
-    if(!path or !@special_page = SpecialPage.find_by_path(path))
-      return do_404
-    end
-
-    @published_content = true
-    @canonical_link = main_special_url(:path => @special_page.path)
-    @page = @special_page.page
-    @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
-    set_title(@special_page.main_heading)
-    render(:template => "/pages/show")
-  end
-
 
   def show_institution_list
     if params[:zip_or_state]
