@@ -229,9 +229,6 @@ class AdminController < ApplicationController
     @institution = BrandingInstitution.find(params[:id])
   end
 
-  def special_pages
-  end
-
   def category_tag_redirects
   end
 
