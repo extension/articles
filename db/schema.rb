@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160219160222) do
+ActiveRecord::Schema.define(:version => 20170207183725) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -293,7 +293,6 @@ ActiveRecord::Schema.define(:version => 20160219160222) do
     t.integer  "page_source_id"
     t.text     "old_source_url"
     t.text     "alternate_source_url"
-    t.boolean  "is_special_page",                              :default => false
     t.text     "summary"
     t.boolean  "keep_published",                               :default => true
   end
@@ -338,17 +337,6 @@ ActiveRecord::Schema.define(:version => 20160219160222) do
     t.text     "twitter_widget"
     t.integer  "primary_tag_id"
   end
-
-  create_table "special_pages", :force => true do |t|
-    t.string  "path"
-    t.string  "titletag"
-    t.string  "main_heading"
-    t.string  "sub_heading"
-    t.integer "page_id"
-  end
-
-  add_index "special_pages", ["page_id"], :name => "page_ndx", :unique => true
-  add_index "special_pages", ["path"], :name => "path_ndx", :unique => true
 
   create_table "sponsors", :force => true do |t|
     t.integer "logo_id"
