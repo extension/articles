@@ -61,6 +61,7 @@ a.moreaboutpitch {color:#333;}
 .zero {color:#ccc;font-weight:normal;}
 .report_table {font-size:14px;}
 td.longurls a {word-wrap: break-word;width:300px; display:block;}
+a {word-wrap: break-word;}
 
 .missing {background: #ffebf3 url(/assets/common/failure.gif) 4px 3px no-repeat; padding:.25em .25em .25em 25px; border-left:4px solid red;}
 .launchready {background: #fff url(/assets/pubsite/checkmark_mini.png) 0 0  no-repeat; padding-left:20px; height:20px;}
