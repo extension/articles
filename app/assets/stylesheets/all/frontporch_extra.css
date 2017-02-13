@@ -99,3 +99,11 @@ table tr td {word-wrap:break-word !important;}
   font-weight:bold;}
 
 .usda-nifa {font-size:14px; line-height:18px; color:#888;}
+
+/* Handle global_shortcuts_bar_public responsively */
+.visible-xs {display: none !important;}
+@media (max-width: 767px) {
+  .hidden-xs {display: none !important;}
+  .global-nav-mobile {display: block;}
+  .visible-xs {display: block !important;}
+}
