@@ -51,7 +51,9 @@
 </head>
 
 <body>
-  <script src="https://assets.extension.org/javascripts/global_shortcuts_bar_public.js" type="text/javascript"></script>
+  <div class='nonmobile hidden-xs'>
+    <script src="https://assets.extension.org/javascripts/global_shortcuts_bar_public.js" type="text/javascript"></script>
+  </div>
 
   <%- if(current_person and current_person.is_admin?) -%>
  	  <div id="adminnotice" class="noprint"><p>You are logged into an admin account (<%= link_to('sign out',logout_path) %>)</p></div>
@@ -99,6 +101,9 @@
                             <li><%= link_to('Resource Areas', main_communities_path()) %></li>
                             <li><a href="https://extension.org/">eXtension.org</a></li>
                         </ul>
+                        <div class="global-nav-mobile visible-xs">
+                          <script src="https://assets.extension.org/javascripts/global_shortcuts_bar_public.js" type="text/javascript"></script>
+                        </div>
                     </div><!--/.nav-collapse -->
                     <div class="search-collapse collapse">
 
