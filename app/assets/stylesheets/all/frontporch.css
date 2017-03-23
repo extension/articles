@@ -769,9 +769,13 @@ ul.thumbnails.pull-right {
 	color:#f86f20;
 }
 
+.search-prompt {font-size: 16px;}
+.search-prompt span {background: #FDFFC4; padding:4px 10px;}
+
 .callout {
 	font-size: 16px;
 	padding:10px 0;
+
 }
 
 .callout.orange {
