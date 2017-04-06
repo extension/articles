@@ -21,7 +21,7 @@ class Page < ActiveRecord::Base
   DEFAULT_TIMEZONE = 'America/New_York'
 
 
-  after_create :store_content, :create_primary_link
+  after_create :store_content, :create_primary_link, :set_create_node_id
   after_update :update_primary_link_alternate
   before_save  :set_url_title
   before_update :check_content
@@ -39,18 +39,18 @@ class Page < ActiveRecord::Base
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
   has_many :publishing_communities, :through => :tags
+  belongs_to :create_node
 
 
   scope :bucketed_as, lambda{|bucketname|
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
 
-  scope :broken_links, :conditions => {:has_broken_links => true}
-
-  scope :indexed, :conditions => {:indexed => INDEXED}
-  scope :articles, :conditions => {:datatype => 'Article'}
-  scope :faqs, :conditions => {:datatype => 'Faq'}
-
+  scope :broken_links, -> {where(has_broken_links: true)}
+  scope :indexed, -> {where(index: INDEXED)}
+  scope :articles, -> {where(datatype: 'Article')}
+  scope :faqs, -> {where(datatype: 'Faq')}
+  scope :create_pages, -> {where(source: 'create')}
 
   scope :by_datatype, lambda{|datatype|
    if(datatype.is_a?(Array))
@@ -954,13 +954,13 @@ class Page < ActiveRecord::Base
     self.tags = newtags
   end
 
-  def create_node_id
+  def set_create_node_id
     if(source != 'create')
-      nil
+      true
     elsif(self.source_url =~ %r{\.?/(\d+)})
-      $1
+      self.update_column(:create_node_id,$1)
     else
-      nil
+      true
     end
   end
 
