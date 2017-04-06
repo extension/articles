@@ -46,12 +46,10 @@ class Page < ActiveRecord::Base
    {:include => :content_buckets, :conditions => "content_buckets.name = '#{ContentBucket.normalizename(bucketname)}'"}
   }
 
-  scope :broken_links, :conditions => {:has_broken_links => true}
-
-  scope :indexed, :conditions => {:indexed => INDEXED}
-  scope :articles, :conditions => {:datatype => 'Article'}
-  scope :faqs, :conditions => {:datatype => 'Faq'}
-
+  scope :broken_links, -> {where(has_broken_links: true)}
+  scope :indexed, -> {where(index: INDEXED)}
+  scope :articles, -> {where(datatype: 'Article')}
+  scope :faqs, -> {where(datatype: 'Faq')}
   scope :create_pages, -> {where(source: 'create')}
 
   scope :by_datatype, lambda{|datatype|
