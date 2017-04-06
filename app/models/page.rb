@@ -39,6 +39,7 @@ class Page < ActiveRecord::Base
   has_many :taggings, :as => :taggable, dependent: :destroy
   has_many :tags, :through => :taggings
   has_many :publishing_communities, :through => :tags
+  belongs_to :create_node
 
 
   scope :bucketed_as, lambda{|bucketname|
@@ -51,6 +52,7 @@ class Page < ActiveRecord::Base
   scope :articles, :conditions => {:datatype => 'Article'}
   scope :faqs, :conditions => {:datatype => 'Faq'}
 
+  scope :create_pages, -> {where(source: 'create')}
 
   scope :by_datatype, lambda{|datatype|
    if(datatype.is_a?(Array))
