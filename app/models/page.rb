@@ -21,7 +21,7 @@ class Page < ActiveRecord::Base
   DEFAULT_TIMEZONE = 'America/New_York'
 
 
-  after_create :store_content, :create_primary_link
+  after_create :store_content, :create_primary_link, :set_create_node_id
   after_update :update_primary_link_alternate
   before_save  :set_url_title
   before_update :check_content
@@ -954,13 +954,13 @@ class Page < ActiveRecord::Base
     self.tags = newtags
   end
 
-  def create_node_id
+  def set_create_node_id
     if(source != 'create')
-      nil
+      true
     elsif(self.source_url =~ %r{\.?/(\d+)})
-      $1
+      self.update_column(:create_node_id,$1)
     else
-      nil
+      true
     end
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170207183725) do
+ActiveRecord::Schema.define(:version => 20170406130055) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -258,17 +258,6 @@ ActiveRecord::Schema.define(:version => 20170207183725) do
     t.datetime "updated_at"
   end
 
-  create_table "page_updates", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "page_id"
-    t.datetime "created_at",                                         :null => false
-    t.string   "action",                                             :null => false
-    t.string   "remote_addr", :limit => 20, :default => "127.0.0.1"
-  end
-
-  add_index "page_updates", ["page_id"], :name => "index_page_updates_on_page_id"
-  add_index "page_updates", ["user_id"], :name => "index_page_updates_on_user_id"
-
   create_table "pages", :force => true do |t|
     t.string   "datatype"
     t.integer  "indexed",                                      :default => 1
@@ -295,6 +284,7 @@ ActiveRecord::Schema.define(:version => 20170207183725) do
     t.text     "alternate_source_url"
     t.text     "summary"
     t.boolean  "keep_published",                               :default => true
+    t.integer  "create_node_id"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
