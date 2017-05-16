@@ -6,30 +6,6 @@
   </div>
 </div>
 
-<div class="row">
-  <%- topics_hash = Topic.frontporch_hashlist -%>
-  <div class="span3 resource-areas resource-areas-primary">
-    <%- ['Alerts','Community','Disaster Issues'].each do |topic_name| -%>
-      <%- next if topics_hash[topic_name].blank? -%>
-      <%= render(:partial => '/partial/frontporch_topic', :locals => {:topic_name => topic_name, :topics_hash => topics_hash}) -%>
-    <%- end -%>
-  </div>
-  <div class="span3 resource-areas resource-areas-primary">
-    <%- ['Energy','Environment','Family'].each do |topic_name| -%>
-      <%- next if topics_hash[topic_name].blank? -%>
-      <%= render(:partial => '/partial/frontporch_topic', :locals => {:topic_name => topic_name, :topics_hash => topics_hash}) -%>
-    <%- end -%>
-  </div>
-  <div class="span3 resource-areas resource-areas-primary">
-    <%- ['Farm'].each do |topic_name| -%>
-      <%- next if topics_hash[topic_name].blank? -%>
-      <%= render(:partial => '/partial/frontporch_topic', :locals => {:topic_name => topic_name, :topics_hash => topics_hash}) -%>
-    <%- end -%>
-  </div>
-  <div class="span3 resource-areas resource-areas-primary">
-    <%- ['Health and Nutrition','Lawn and Garden','Pest Management','Youth'].each do |topic_name| -%>
-      <%- next if topics_hash[topic_name].blank? -%>
-      <%= render(:partial => '/partial/frontporch_topic', :locals => {:topic_name => topic_name, :topics_hash => topics_hash}) -%>
-    <%- end -%>
-  </div>
+<div class="resource-areas-primary">
+  <%= render(:partial => 'main/resource_areas') %>
 </div>
