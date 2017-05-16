@@ -119,34 +119,7 @@
       <hr />
 
       <%- if @no_show_resource_areas.nil? or !@no_show_resource_areas -%>
-      <div class="row noprint">
-        <%- topics_hash = Topic.frontporch_hashlist -%>
-        <div class="span3 resource-areas">
-          <h3>Resource Areas</h3>
-          <%- ['Alerts','Community','Disaster Issues'].each do |topic_name| -%>
-            <%- next if topics_hash[topic_name].blank? -%>
-            <%= render(:partial => '/partial/frontporch_topic', :locals => {:topic_name => topic_name, :topics_hash => topics_hash}) -%>
-          <%- end -%>
-        </div>
-        <div class="span3 resource-areas">
-          <%- ['Energy','Environment','Family'].each do |topic_name| -%>
-            <%- next if topics_hash[topic_name].blank? -%>
-            <%= render(:partial => '/partial/frontporch_topic', :locals => {:topic_name => topic_name, :topics_hash => topics_hash}) -%>
-          <%- end -%>
-        </div>
-        <div class="span3 resource-areas">
-          <%- ['Farm'].each do |topic_name| -%>
-            <%- next if topics_hash[topic_name].blank? -%>
-            <%= render(:partial => '/partial/frontporch_topic', :locals => {:topic_name => topic_name, :topics_hash => topics_hash}) -%>
-          <%- end -%>
-        </div>
-        <div class="span3 resource-areas">
-          <%- ['Health and Nutrition','Lawn and Garden','Pest Management','Youth'].each do |topic_name| -%>
-            <%- next if topics_hash[topic_name].blank? -%>
-            <%= render(:partial => '/partial/frontporch_topic', :locals => {:topic_name => topic_name, :topics_hash => topics_hash}) -%>
-          <%- end -%>
-        </div>
-      </div>
+        <%= render(:partial => 'main/resource_areas') %>
       <%- end -%>
 
       <hr class="noprint" />
