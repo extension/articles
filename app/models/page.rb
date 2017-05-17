@@ -988,5 +988,12 @@ class Page < ActiveRecord::Base
   end
 
 
+  def self.orphaned_pages
+    page_ids = self.pluck(:id)
+    community_tag_ids = Tag.community_tags.map(&:id)
+    pages_with_community_tags = Tagging.where("tag_id IN (#{community_tag_ids.join(',')})").where(taggable_type: 'Page').pluck(:taggable_id).uniq
+    orphaned_ids = page_ids - pages_with_community_tags
+    self.where("id IN (#{orphaned_ids.join(',')})")
+  end
 
 end
