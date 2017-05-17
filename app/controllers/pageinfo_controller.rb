@@ -12,6 +12,9 @@ class PageinfoController < ApplicationController
   before_filter :turn_off_resource_areas
   layout 'frontporch'
 
+  def numbers
+    @communities =  PublishingCommunity.all(:order => 'name')
+  end
 
   def find_by_source
     source_name = params[:source_name]
@@ -80,7 +83,7 @@ class PageinfoController < ApplicationController
   end
 
   def pagelist
-    @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:articlefilter => :string},{:download => :string}],params)
+    @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:articlefilter => :string},{:download => :string},{:recent => :string}],params)
     if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
       # fake content tag for display purposes
       @content_tag = Tag.new(:name => 'all')
@@ -103,9 +106,14 @@ class PageinfoController < ApplicationController
       end
     end
 
-    if(@content_tag)
+    if(@content_tag and @content_tag.name != 'all')
       pagelist_scope = pagelist_scope.tagged_with(@content_tag.name)
     end
+
+    if(!@filteredparameters.recent.nil? and TRUE_VALUES.include?(@filteredparameters.recent))
+      pagelist_scope = pagelist_scope.recent
+    end
+
 
     if(!@filteredparameters.articlefilter.nil?)
      case @filteredparameters.articlefilter
@@ -146,7 +154,7 @@ class PageinfoController < ApplicationController
   def page_csvlist(articlelist,filename,content_tag_name)
     @pages = articlelist
     @content_tag_name = content_tag_name
-    response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
+    response.headers['Content-Type'] = 'text/csv; charset=ISO-8859-1; header=present'
     response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
     render(:template => 'pageinfo/page_csvlist', :layout => false)
   end

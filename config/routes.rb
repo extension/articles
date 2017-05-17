@@ -93,9 +93,11 @@ Darmok::Application.routes.draw do
   # pageinfo
   match 'pageinfo/pagelinklist/:content_tag', to:'pageinfo#pagelinklist', :as => 'pageinfo_pagelinklist'
   match 'pageinfo/pagelist/:content_tag', to:'pageinfo#pagelist', :as => 'pageinfo_pagelist'
+  match 'pageinfo/pagelist', to:'pageinfo#pagelist', :as => 'pageinfo_pagelist'
   match 'pageinfo/source/:source_name/:source_id', to:'pageinfo#find_by_source', :as => 'pageinfo_source'
   match 'pageinfo/source', to:'pageinfo#find_by_source', :as => 'pageinfo_findsource'
   match 'pageinfo/orphaned', to:'pageinfo#orphaned', :as => 'pageinfo_orphaned'
+  match 'pageinfo/numbers', to:'pageinfo#numbers', :as => 'pageinfo_numbers'
   match 'pageinfo/:id', to:'pageinfo#show', :as => 'pageinfo_page'
 
   # legacy routes to 410

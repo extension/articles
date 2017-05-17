@@ -109,6 +109,9 @@ class Page < ActiveRecord::Base
   scope :keep, -> {where("keep_published = 1")}
   scope :unpublish, -> {where("keep_published = 0")}
 
+  # recent content
+  scope :recent, -> {where("source_created_at >= ?",6.months.ago).where("#{self.table_name}.created_at >= ?",6.months.ago)}
+
 
   # returns a class::method::options string to use as a memcache key
   #
