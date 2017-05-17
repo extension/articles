@@ -1,0 +1,35 @@
+<div id="admin">
+  <h1>Community Content Numbers</h1>
+  <h2>eXtension Publishing Communities</h2>
+  <div class="well">
+  <p>Recent pages is the number of newly created and published pages within the last 6 months</p>
+  </div>
+
+  <table class="table report_table">
+      <thead>
+          <th>Launched</th>
+          <th>Community Name</th>
+          <th>Total Pages</th>
+          <th>Recent Pages</th>
+      </thead>
+      <tr>
+        <td>&nbsp;</td>
+        <td>Overall</td>
+        <td><%= link_to("<span>#{Page.count}</span> pages".html_safe, pageinfo_pagelist_url) -%></td>
+        <td><%= link_to("<span>#{Page.recent.count}</span> pages".html_safe, pageinfo_pagelist_url(:recent => 'true')) -%></td>
+      </tr>
+      <%- @communities.each do |community| -%>
+      <tr class="<%= community.is_launched -%>">
+          <td class="islive"><%= community.is_launched -%></td>
+          <td><%= community.name -%></td>
+          <%- if community.tag_names.blank? -%>
+          <td>n/a (community doesn't have a tag)</td>
+          <td>n/a (community doesn't have a tag)</td>
+          <%- else -%>
+          <td><%= Page.tagged_with_any(community.tag_names).pluck("pages.id").uniq.count -%></td>
+          <td><%= Page.tagged_with_any(community.tag_names).recent.pluck("pages.id").uniq.count -%></td>
+          <%- end -%>
+          </tr>
+      <%- end -%>
+  </table>
+</div>

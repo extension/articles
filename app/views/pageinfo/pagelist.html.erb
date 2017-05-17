@@ -17,7 +17,7 @@
    <%= paginate @pages, :params => {:articlefilter => params[:articlefilter]} %>
    </div>
 
-   <p id="csv"><%= link_to('Download a list of these articles (csv)',:action => 'pagelist', :content_types => params[:content_types], :articlefilter => params[:articlefilter], :download => 'csv') %> </p>
+   <p id="csv"><%= link_to('Download a list of these articles (csv)',:action => 'pagelist', :content_types => params[:content_types], :articlefilter => params[:articlefilter], :recent => params[:recent], :download => 'csv') %> </p>
    <table class="table table-striped report_table">
        <tr>
            <th>Page ID</th>
