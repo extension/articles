@@ -137,18 +137,33 @@ class PageinfoController < ApplicationController
       @pages = pagelist_scope.ordered
       content_types = (@filteredparameters.content_types.blank?) ? 'all' : @filteredparameters.content_types.join('+')
       csvfilename =  "#{content_types}_pages_for_tag_#{@content_tag.name}"
-      return page_csvlist(@pages,csvfilename,@content_tag)
+      return page_csvlist(@pages,csvfilename,@content_tag.name)
     else
       @pages = pagelist_scope.ordered.page(params[:page]).per(100)
     end
   end
 
-  def page_csvlist(articlelist,filename,content_tag)
+  def page_csvlist(articlelist,filename,content_tag_name)
     @pages = articlelist
-    @content_tag = content_tag
+    @content_tag_name = content_tag_name
     response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
     response.headers['Content-Disposition'] = 'attachment; filename='+filename+'.csv'
     render(:template => 'pageinfo/page_csvlist', :layout => false)
+  end
+
+  def orphaned
+    @filteredparameters = ParamsFilter.new([{:download => :string}],params)
+    if(!@filteredparameters.download.nil? and @filteredparameters.download == 'csv')
+      isdownload = true
+    end
+
+    if(isdownload)
+      @pages = Page.orphaned_pages
+      csvfilename =  "all_orphaned_pages"
+      return page_csvlist(@pages,csvfilename,'orphaned')
+    else
+      @pages = Page.orphaned_pages
+    end
   end
 
 end
