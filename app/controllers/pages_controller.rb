@@ -8,7 +8,7 @@
 class PagesController < ApplicationController
   layout 'frontporch'
   before_filter :force_html_format
-  before_filter :set_content_tag_and_community_and_topic
+  before_filter :set_content_tag_and_community
   before_filter :signin_optional
 
   def redirect_article

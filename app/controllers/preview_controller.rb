@@ -7,7 +7,7 @@
 
 class PreviewController < ApplicationController
   before_filter :force_html_format
-  before_filter :set_content_tag_and_community_and_topic
+  before_filter :set_content_tag_and_community
   before_filter :signin_optional
   before_filter :turn_off_resource_areas
 

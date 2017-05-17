@@ -15,31 +15,6 @@ class AdminController < ApplicationController
     set_title("eXtension Pubsite Admin")
   end
 
-  def manage_topics
-    set_title("Manage Topics - Pubsite Admin")
-    @topics = Topic.find(:all)
-  end
-
-  def destroy_topic
-    if(topic = Topic.find_by_id(params[:id]))
-      AdminLog.log_event(current_person, AdminLog::DELETE_TOPIC,{:topicname => topic.name})
-      topic.destroy
-    end
-    flash[:notice] = 'Topic Deleted'
-    hashlist = Topic.frontporch_hashlist(force: true)
-    redirect_to :action => :manage_topics
-  end
-
-  def create_topic
-    topic = Topic.create(params[:topic])
-    if(!topic.nil?)
-      flash[:notice] = 'Topic Created'
-      AdminLog.log_event(current_person, AdminLog::CREATE_TOPIC,{:topicname => topic.name})
-    end
-    hashlist = Topic.frontporch_hashlist(force: true)
-    redirect_to :action => :manage_topics
-  end
-
   def manage_communities
     set_title("Manage Communities - Pubsite Admin")
     @communities =  PublishingCommunity.all(:order => 'name')
@@ -148,7 +123,6 @@ class AdminController < ApplicationController
 
   def update_public_community
     @community =  PublishingCommunity.find(params['id'])
-    @community.public_topic_id = params['community']['public_topic_id']
     @community.public_description = params['community']['public_description']
     @community.public_name = params['community']['public_name']
     @community.is_launched = ( params['community']['is_launched'] ? true : false)
@@ -190,9 +164,6 @@ class AdminController < ApplicationController
       # update create resource tags
       @community.update_create_group_resource_tags
       AdminLog.log_event(current_person, AdminLog::UPDATE_PUBLIC_COMMUNITY,{:community_id => @community.id, :community_name => @community.name})
-      # cache updates - this is kind of a hack
-      hashlist = Topic.frontporch_hashlist(force: true)
-
       redirect_to :action => :manage_communities
     else
       flash[:notice] = 'Error updating community'

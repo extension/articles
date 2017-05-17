@@ -3,7 +3,7 @@
   <div class="well">
   <p>This list reflects the "eXtension Community of Practice" and other public communities created in the <%= link_to('People application', url: 'https://people.extension.org/communities') %>. To add a community to this page (and the Public Site), please create a community in People.</p>
 
-  <p>To set a Public Community Name, Topic, and Resource Area Tag for your community, contact your content staff representative</p>
+  <p>To set a Public Community Name and Resource Area Tag for your community, contact your content staff representative</p>
   </div>
 
   <h2>eXtension Publishing Communities</h2>
@@ -12,7 +12,6 @@
           <th>Live</th>
           <th>Community Name</th>
           <th>Public Community Name</th>
-          <th>Topic</th>
           <th>Resource Area Tag</th>
           <th>Launch Checklist</th>
           <th>Community Info</th>
@@ -23,7 +22,6 @@
           <td class="islive"><%= community.is_launched %></td>
           <td><%= community.name %></td>
           <td <%= community.public_name.nil? ? 'class="muted"'.html_safe : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
-          <td <%= community.topic.nil? ? 'class="muted"'.html_safe : '' %>><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
           <td <%= (community.tag_names.blank? ? 'class="muted"'.html_safe : '').html_safe %>><%= community.tag_names.blank? ? '<span>not set</span>'.html_safe : link_to_preview_tags(community.tag_names) %></td>
           <td class="checklist"><%= community.tag_names.blank? ? '<span class="muted">n/a</span>'.html_safe : link_to_preview_tags(community.tag_names, true) %></td>
           <td><a href='<%= "https://people.extension.org/communities/#{community.id}" %>'>info</a></td>

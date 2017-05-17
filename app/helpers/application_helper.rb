@@ -128,22 +128,6 @@ module ApplicationHelper
 
   end
 
-  def select_tag_for_topic(community = nil)
-    topics = Topic.find :all
-    selected_arr = []
-    for topic in topics
-      if community
-        if !community.topic.nil?
-          selected_arr.push(topic.id) if community.public_topic_id == topic.id
-        end
-      end
-    end
-    topic_mapping = topics.map {|t| [t.name,t.id]}
-    topic_mapping.unshift(['',''])
-    option_html = options_for_select(topic_mapping, selected_arr)
-    select_tag('community[public_topic_id]', option_html, {})
-  end
-
   def incomplete_profile(action)
     return '<h3>'+
           'Your profile must be complete to '+action+'.  '+link_to_unless_current("Complete profile.", edit_user_url(:id => current_user.id) )+
