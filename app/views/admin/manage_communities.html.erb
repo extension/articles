@@ -11,7 +11,6 @@
           <th>Live</th>
           <th>Community Name</th>
           <th>Public Community Name</th>
-          <th>Topic</th>
           <th>Resource Area Tag</th>
       </tr>
 
@@ -21,7 +20,6 @@
           <td class="islive"><%= community.is_launched %></td>
           <td><%= community.name %></td>
           <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
-          <td <%= community.topic.nil? ? 'class="notset"' : '' %>><%= community.topic.nil? ? 'not set' : community.topic.name %></td>
           <td <%= community.tag_names.blank? ? 'class="notset"' : '' %>><%= community.tag_names.blank? ? 'not set' : community.tag_names.join(Tag::JOINER) %></td></tr>
       <% end%>
   </table>

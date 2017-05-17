@@ -10,8 +10,6 @@ class PublishingCommunity < ActiveRecord::Base
 
   ordered_by :default => "#{self.table_name}.name ASC"
 
-  # topics for public site
-  belongs_to :topic, :foreign_key => 'public_topic_id'
   belongs_to :logo
   belongs_to :homage, :class_name => "Page", :foreign_key => "homage_id"
   belongs_to :primary_tag, :class_name => "Tag"
@@ -22,7 +20,6 @@ class PublishingCommunity < ActiveRecord::Base
 
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
 
-  scope :ordered_by_topic, {:include => :topic, :order => 'topics.name ASC, communities.public_name ASC'}
   scope :launched, {:conditions => {:is_launched => true}}
 
   scope :tagged_with, lambda{|tagliststring|

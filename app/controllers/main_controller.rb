@@ -7,7 +7,7 @@
 
 class MainController < ApplicationController
   before_filter :force_html_format, except: :show_institution_list
-  before_filter :set_content_tag_and_community_and_topic
+  before_filter :set_content_tag_and_community
 
   layout 'frontporch'
 

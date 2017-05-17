@@ -230,18 +230,9 @@ class ApplicationController < ActionController::Base
     return @community
   end
 
-  def set_topic(community)
-    @topic = nil
-    if(!community.nil?)
-      @topic = community.topic
-    end
-
-    return @topic
-  end
-
-  # sets @content_tag, @community and @topic for callers
-  def set_content_tag_and_community_and_topic
-    set_topic(set_community(set_content_tag))
+  # sets @content_tag, @community for visitors
+  def set_content_tag_and_community
+    set_community(set_content_tag)
     return true
   end
 
