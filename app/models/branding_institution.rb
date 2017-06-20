@@ -2,7 +2,7 @@
 #  Copyright (c) North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file or view at https://github.com/extension/darmok/wiki/LICENSE
 
 class BrandingInstitution < ActiveRecord::Base
@@ -29,5 +29,5 @@ class BrandingInstitution < ActiveRecord::Base
     else
       return nil
     end
-  end  
+  end
 end
