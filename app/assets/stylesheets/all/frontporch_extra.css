@@ -67,6 +67,13 @@ a {word-wrap: break-word;}
 .launchready {background: #fff url(/assets/pubsite/checkmark_mini.png) 0 0  no-repeat; padding-left:20px; height:20px;}
 span.launchready  {background: #fff url(/assets/pubsite/checkmark_mini.png) 0 0  no-repeat; display:block;float:left;text-indent:-2000px;}
 
+.learn-widget-header-specific {display:none;}
+.learn-widget-wrapper {border: 0 !important; padding: 0 !important;}
+.learn-widget-header-general {font-family: 'Sanchez', serif !important; font-size: 20px !important; color: #f86f20; margin: 20px 0 10px !important;}
+.learn-widget-see-more a {color: #f86f20; font-size: 12px; text-transform: uppercase;}
+#community_landing .learn-widget-wrapper.recent .learn-widget-event-date {display:none;}
+
+
 iframe {max-width:100%;}
 #pagelinks {font-size:13px; color:#777;}
 #pagelinks a {color:#777;}

@@ -1,4 +1,5 @@
 <!-- Image Rotator, Connect With Us, Local Extension Office -->
+<div id="community_landing">
 <div class="row">
   <div class="span9">
     <h1 class='title'><%= @page_title %></h1>
@@ -78,7 +79,7 @@
     </div>
 
     <div class="upcoming_learn_events span3 clearfix">
-      <script type="text/javascript" src="<%= @learn_event_widget_url %>"></script>
+      <%= render(:partial => '/partial/learn_widget.html', :locals => {:learn_category =>  @learn_category}) %>
     </div>
 
     <div class='span3'>
@@ -101,3 +102,4 @@
     </div>
 
   </div>
+</div>

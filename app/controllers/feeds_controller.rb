@@ -13,7 +13,6 @@ class FeedsController < ApplicationController
     set_title('Feeds')
     set_title('eXtension - Feeds')
     @communities = PublishingCommunity.launched.all(:order => 'public_name')
-    @learn_event_widget_url = "https://learn.extension.org/widgets/front_porch.js"
   end
 
   def community
