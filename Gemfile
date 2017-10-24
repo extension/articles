@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.22.5'
 
 # all things xml
-gem 'nokogiri', '~> 1.6.1'
+gem 'nokogiri'
 
 # data
 gem 'mysql2'
