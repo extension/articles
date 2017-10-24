@@ -23,8 +23,11 @@ class PreviewPage
     page.source = source
     page.source_id = source_id.to_s
     page.page_source = page_source
-    page.parse_atom_content
-    return page
+    if(page.parse_atom_content)
+      page
+    else
+      nil
+    end
   end
 
   #
@@ -197,6 +200,7 @@ class PreviewPage
 
   def parse_atom_content()
     parsed_atom_entry = page_source.atom_page_entry(self.source_id)
+    return false if(parsed_atom_entry.blank?)
 
 
      if parsed_atom_entry.updated.nil?
@@ -225,6 +229,8 @@ class PreviewPage
        self.set_tags(parsed_atom_entry.categories)
        self.put_in_buckets(parsed_atom_entry.categories)
      end
+
+     true
 
    end
 
