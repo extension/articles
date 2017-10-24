@@ -2,7 +2,7 @@
 #  Copyright (c) 2005-2011 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 
 require 'uri'
@@ -15,9 +15,9 @@ class PageSource < ActiveRecord::Base
   serialize :last_requested_information
   serialize :default_request_options
   has_many :pages
-  
+
   scope :active, :conditions => {:active => true}
-  
+
   def page_source_url(node_id)
     # presumes a drupal source, which is all we have right now
     # also presumes that we are looking up a /node/id
@@ -27,9 +27,9 @@ class PageSource < ActiveRecord::Base
     rescue
       nil
     end
-    "http://#{host}/node/#{CGI::escape(node_id.to_s)}" 
+    "http://#{host}/node/#{CGI::escape(node_id.to_s)}"
   end
-  
+
   def page_feed_url(source_id,options = {})
     if(!options[:demofeed].blank?)
       use_demo_uri = options[:demofeed]
@@ -38,7 +38,7 @@ class PageSource < ActiveRecord::Base
     else
       use_demo_uri = false
     end
-    
+
     # check config for override for dev mode
     if(Settings.sourcefilter and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name]['page_uri'])
       feed_url = Settings.sourcefilter[self.name]['page_uri']
@@ -51,10 +51,10 @@ class PageSource < ActiveRecord::Base
     else
       feed_url = self.page_uri
     end
-    
+
     format(feed_url,CGI::escape(source_id.to_s))
   end
-      
+
   def feed_url(options = {})
     if(!options[:demofeed].blank?)
       use_demo_uri = options[:demofeed]
@@ -63,7 +63,7 @@ class PageSource < ActiveRecord::Base
     else
       use_demo_uri = false
     end
-    
+
     request_options = self.default_request_options
     if(options[:request_options])
       if(request_options.blank?)
@@ -72,7 +72,7 @@ class PageSource < ActiveRecord::Base
         request_options.merge!(options[:request_options])
       end
     end
-    
+
     if(self.retrieve_with_time)
       if(options[:refresh_since] and options[:refresh_since] != 'default')
         updated_time = options[:refresh_since]
@@ -81,14 +81,14 @@ class PageSource < ActiveRecord::Base
       else
         updated_time = Settings.epoch_time
       end
-      
+
       if(request_options.blank?)
         request_options = {'updated-min' => updated_time.xmlschema}
       else
         request_options.merge!({'updated-min' => updated_time.xmlschema})
       end
     end
-    
+
     # check config for override for dev mode
     if(Settings.sourcefilter and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name] and Settings.sourcefilter[self.name]['uri'])
       feed_url = Settings.sourcefilter[self.name]['uri']
@@ -101,33 +101,33 @@ class PageSource < ActiveRecord::Base
     else
       feed_url = self.uri
     end
-    
+
     if(!request_options.blank?)
       feed_url += '?' + request_options.map{|key,value| "#{key}=#{value}"}.join('&')
     end
     return feed_url
   end
-  
+
   def atom_feed(options = {})
     if(@atom_feed.blank?)
       @atom_feed = self.class.atom_feed(self.feed_url(options))
     end
-    
+
     @atom_feed
   end
-  
+
   def atom_entries(options = {})
     self.atom_feed(options).entries
   end
-  
+
   def atom_page_feed(source_id,options={})
     @atom_page_feed = self.class.atom_feed(self.page_feed_url(source_id,options))
   end
-  
+
   def atom_page_entry(source_id,options={})
     self.atom_page_feed(source_id,options).entries[0]
   end
-  
+
   def retrieve_content(options = {})
     update_retrieve_time = (options[:update_retrieve_time].nil? ? true : options[:update_retrieve_time])
     begin
@@ -136,25 +136,25 @@ class PageSource < ActiveRecord::Base
       self.update_attributes({:last_requested_at => Time.now.utc, :last_requested_success => false, :last_requested_information => {:errormessage => e.message}})
       return nil
     end
-    
+
 
     # create new objects from the atom entries
     item_counts = {:adds => 0, :deletes => 0, :errors => 0, :updates => 0, :nochange => 0, :ignored => 0}
     item_ids = {:adds => [], :deletes => [], :errors => [], :updates => [], :nochange => [], :ignored => []}
-    last_updated_item_time = self.latest_source_time  
+    last_updated_item_time = self.latest_source_time
 
     if(!atom_entries.blank?)
       atom_entries.each do |entry|
         begin
           (object_update_time, object_op, object) = Page.create_or_update_from_atom_entry(entry,self)
-          
+
           # get smart about the last updated time
           if(last_updated_item_time.nil?)
             last_updated_item_time = object_update_time
           elsif(object_update_time > last_updated_item_time )
             last_updated_item_time = object_update_time
           end
-          
+
           case object_op
           when 'deleted'
             item_counts[:deletes] += 1
@@ -189,27 +189,27 @@ class PageSource < ActiveRecord::Base
             item_ids[:errors] << message
           end # exception handling for create_or_update_from_atom_entry
         end
-    
+
       update_options = {:last_requested_at => Time.now.utc, :last_requested_success => true, :last_requested_information => {:item_counts => item_counts, :item_ids => item_ids}}
-      
+
       if(update_retrieve_time)
         # update the last retrieval time, add one second so we aren't constantly getting the last record over and over again
-        update_options.merge!({:latest_source_time => last_updated_item_time + 1})     
+        update_options.merge!({:latest_source_time => last_updated_item_time + 1})
       end
     else
       update_options = {:last_requested_at => Time.now.utc, :last_requested_success => true, :last_requested_information => {:note => 'Empty feed'}}
     end
-    
+
     self.update_attributes(update_options)
     return {:item_counts => item_counts, :item_ids => item_ids, :last_updated_item_time => last_updated_item_time}
   end
-  
-  
+
+
   def self.atom_feed(fetch_url)
     xmlcontent = self.fetch_url_content(fetch_url)
     Feedjira::Feed.parse(xmlcontent)
   end
-    
+
   # returns a block of content read from a file or a URL, does not parse
   def self.fetch_url_content(fetch_url)
     urlcontent = ''
@@ -219,13 +219,13 @@ class PageSource < ActiveRecord::Base
       raise ContentRetrievalError, "Fetch URL Content:  Invalid URL: #{feed_url}"
     elsif(fetch_uri.scheme == 'file')
       if File.exists?(fetch_uri.path)
-        File.open(loadfromfile) { |f|  urlcontent = f.read }          
+        File.open(loadfromfile) { |f|  urlcontent = f.read }
       else
-        raise ContentRetrievalError, "Fetch URL Content:  Invalid file #{fetch_uri.path}"        
+        raise ContentRetrievalError, "Fetch URL Content:  Invalid file #{fetch_uri.path}"
       end
-    elsif(fetch_uri.scheme == 'http' or fetch_uri.scheme == 'https')  
+    elsif(fetch_uri.scheme == 'http' or fetch_uri.scheme == 'https')
       # TODO: need to set If-Modified-Since
-      http = Net::HTTP.new(fetch_uri.host, fetch_uri.port) 
+      http = Net::HTTP.new(fetch_uri.host, fetch_uri.port)
       http.read_timeout = 300
       response = fetch_uri.query.nil? ? http.get(fetch_uri.path) : http.get(fetch_uri.path + "?" + fetch_uri.query)
       case response
@@ -233,12 +233,12 @@ class PageSource < ActiveRecord::Base
       when Net::HTTPSuccess
         urlcontent = response.body
       else
-        raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{fetch_url} failed: #{response.code}/#{response.message}"          
-      end    
+        raise ContentRetrievalError, "Fetch URL Content:  Fetch from #{fetch_url} failed: #{response.code}/#{response.message}"
+      end
     else # unsupported URL scheme
-      raise ContentRetrievalError, "Fetch URL Content:  Unsupported scheme #{fetch_url}"          
+      raise ContentRetrievalError, "Fetch URL Content:  Unsupported scheme #{fetch_url}"
     end
-    
+
     return urlcontent
   end
 end
