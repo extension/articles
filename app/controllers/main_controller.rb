@@ -83,9 +83,9 @@ class MainController < ApplicationController
     end
 
     if(@community and @community.aae_group_id.present?)
-      @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
+      @ask_an_expert_form_url = "#{@community.ask_an_expert_group_url}/ask"
     else
-      @ask_two_point_oh_form = Settings.ask_two_point_oh_form
+      @ask_an_expert_form_url = Settings.ask_an_expert_form_url
     end
 
     @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
