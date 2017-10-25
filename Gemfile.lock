@@ -87,7 +87,7 @@ GEM
     hashie (3.3.1)
     highline (1.7.8)
     hike (1.2.3)
-    honeybadger (2.6.1)
+    honeybadger (3.1.2)
     hpricot (0.8.6)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
