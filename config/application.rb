@@ -62,7 +62,7 @@ module Darmok
     config.assets.version = '1.0'
 
 
-    config.middleware.insert_before ActionDispatch::ParamsParser, "CatchJsonParseErrors"
+    config.middleware.insert_before ActionDispatch::ParamsParser, "CatchRackParamErrors"
 
     # blacklist some requests
     config.middleware.use Rack::Attack

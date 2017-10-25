@@ -83,9 +83,9 @@ class MainController < ApplicationController
     end
 
     if(@community and @community.aae_group_id.present?)
-      @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
+      @ask_an_expert_form_url = "#{@community.ask_an_expert_group_url}/ask"
     else
-      @ask_two_point_oh_form = Settings.ask_two_point_oh_form
+      @ask_an_expert_form_url = Settings.ask_an_expert_form_url
     end
 
     @in_this_section = Page.contents_for_content_tag({:content_tag => @content_tag})
@@ -117,19 +117,20 @@ class MainController < ApplicationController
   end
 
   def search
-    @ask_two_point_oh_form = Settings.ask_two_point_oh_form
+    @ask_an_expert_form_url = Settings.ask_an_expert_form_url
     set_title("Search results")
     set_title("eXtension - Search results")
+    if(params[:q])
+      @searchquery = params[:q].force_encoding('UTF-8')
+    else
+      @searchquery = ''
+    end
   end
 
   def blog
     @page_title = "Recently Featured"
     order = "source_updated_at DESC"
     @pages = Page.articles.tagged_with(['front page', 'feature']).ordered(order).page(params[:page]).per(10)
-    if @pages.blank?
-      @pages << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
-    end
-
     render :template => "/pages/list"
   end
 

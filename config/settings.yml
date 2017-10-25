@@ -11,7 +11,7 @@ epoch_time: Time.parse('1970-01-01 00:00:00 UTC')
 # Default sites
 ask_two_point_oh: 'https://ask.extension.org/'
 learn_site: 'https://learn.extension.org'
-ask_two_point_oh_form: 'https://ask.extension.org/ask'
+ask_an_expert_form_url: 'https://ask.extension.org/ask'
 events_relocation_url: 'https://learn.extension.org/'
 home_url: 'https://extension.org'
 
