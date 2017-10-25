@@ -117,9 +117,14 @@ class MainController < ApplicationController
   end
 
   def search
-    @ask_two_point_oh_form = Settings.ask_two_point_oh_form
+    @ask_an_expert_form_url = Settings.ask_an_expert_form_url
     set_title("Search results")
     set_title("eXtension - Search results")
+    if(params[:q])
+      @searchquery = params[:q].force_encoding('UTF-8')
+    else
+      @searchquery = ''
+    end
   end
 
   def blog

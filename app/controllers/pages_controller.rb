@@ -163,9 +163,9 @@ class PagesController < ApplicationController
 
     # link for Ask an Expert group form
     if(@community and @community.aae_group_id.present?)
-      @ask_two_point_oh_form = "#{@community.ask_an_expert_group_url}/ask"
+      @ask_an_expert_form_url = "#{@community.ask_an_expert_group_url}/ask"
     else
-      @ask_two_point_oh_form = Settings.ask_two_point_oh_form
+      @ask_an_expert_form_url = Settings.ask_an_expert_form_url
     end
 
     if use_content_tag
