@@ -131,10 +131,6 @@ class MainController < ApplicationController
     @page_title = "Recently Featured"
     order = "source_updated_at DESC"
     @pages = Page.articles.tagged_with(['front page', 'feature']).ordered(order).page(params[:page]).per(10)
-    if @pages.blank?
-      @pages << Page.find(:first, :conditions => {:id => SpecialPage.find_by_path('about').page_id})
-    end
-
     render :template => "/pages/list"
   end
 
