@@ -83,7 +83,7 @@ class PageinfoController < ApplicationController
   end
 
   def pagelist
-    @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:articlefilter => :string},{:download => :string},{:recent => :string}],params)
+    @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:articlefilter => :string},{:download => :string},{:recent => :string},{:showcommunitytags => :string}],params)
     if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
       # fake content tag for display purposes
       @content_tag = Tag.new(:name => 'all')
@@ -142,6 +142,7 @@ class PageinfoController < ApplicationController
 
 
     if(isdownload)
+      @showcommunitytags = (!@filteredparameters.showcommunitytags.nil? and TRUE_VALUES.include?(@filteredparameters.showcommunitytags))
       @pages = pagelist_scope.ordered
       content_types = (@filteredparameters.content_types.blank?) ? 'all' : @filteredparameters.content_types.join('+')
       csvfilename =  "#{content_types}_pages_for_tag_#{@content_tag.name}"
