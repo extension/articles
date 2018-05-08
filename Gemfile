@@ -104,6 +104,8 @@ gem 'test-unit'
 group :development do
   # require the powder gem
   gem 'powder'
+  # require puma for those switching to puma
+  gem 'puma'
   # debug http requests
   gem 'net-http-spy'
   # jason uses pry, forces the gem on everyone

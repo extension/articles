@@ -157,6 +157,7 @@ GEM
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
+    puma (3.11.4)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.4.7)
@@ -269,6 +270,7 @@ DEPENDENCIES
   pothoven-attachment_fu
   powder
   pry
+  puma
   quiet_assets
   rack-attack
   rack-robustness
