@@ -142,7 +142,6 @@ class PageinfoController < ApplicationController
 
 
     if(isdownload)
-      @showcommunitytags = (!@filteredparameters.showcommunitytags.nil? and TRUE_VALUES.include?(@filteredparameters.showcommunitytags))
       @pages = pagelist_scope.ordered
       content_types = (@filteredparameters.content_types.blank?) ? 'all' : @filteredparameters.content_types.join('+')
       csvfilename =  "#{content_types}_pages_for_tag_#{@content_tag.name}"
