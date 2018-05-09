@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170406130055) do
+ActiveRecord::Schema.define(:version => 20170620133650) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -40,15 +40,14 @@ ActiveRecord::Schema.define(:version => 20170406130055) do
   add_index "annotations", ["url"], :name => "index_annotations_on_url"
 
   create_table "branding_institutions", :force => true do |t|
-    t.string   "name",                                             :null => false
-    t.integer  "location_id",                    :default => 0
+    t.string   "name",                             :null => false
+    t.integer  "location_id",    :default => 0
     t.string   "public_uri"
     t.string   "referer_domain"
-    t.string   "institution_code", :limit => 10
-    t.integer  "logo_id",                        :default => 0
+    t.integer  "logo_id",        :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_active",                      :default => true
+    t.boolean  "is_active",      :default => true
   end
 
   add_index "branding_institutions", ["location_id"], :name => "location_ndx"
