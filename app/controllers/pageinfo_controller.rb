@@ -83,7 +83,7 @@ class PageinfoController < ApplicationController
   end
 
   def pagelist
-    @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:articlefilter => :string},{:download => :string},{:recent => :string}],params)
+    @filteredparameters = ParamsFilter.new([:content_tag,:content_types,{:articlefilter => :string},{:download => :string},{:recent => :string},{:showcommunitytags => :string}],params)
     if(!@filteredparameters.content_tag? or @filteredparameters.content_tag.nil?)
       # fake content tag for display purposes
       @content_tag = Tag.new(:name => 'all')
