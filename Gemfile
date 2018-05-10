@@ -98,6 +98,10 @@ gem 'mimemagic'
 # Ruby 2.2 requirement
 gem 'test-unit'
 
+# Background processing
+gem 'sidekiq', '< 3'
+gem 'sinatra', '< 2'
+
 # prevent iframe crap
 # gem "secure_headers"
 
