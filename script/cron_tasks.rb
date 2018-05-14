@@ -29,14 +29,13 @@ class CronTasks < Thor
       puts "Queued #{unchecked_count} unchecked urls for link checking" if unchecked_count > 0
     end
 
-    def hourly_link_check
+    def daily_link_check
       # queue up unchecked urls older than a day / 24 hours
       day_old_total_count = Link.checklist.checked_yesterday_or_earlier.count
-      this_hours_count = (day_old_total_count / 24).to_i
-      Link.checklist.checked_yesterday_or_earlier.order("last_check_at ASC").limit(this_hours_count).each do |link|
+      Link.checklist.checked_yesterday_or_earlier.order("last_check_at ASC").limit(this_hours_count).find_each do |link|
         link.queue_check_url
       end
-      puts "Queued #{this_hours_count} of #{day_old_total_count} links for link checking" if this_hours_count > 0
+      puts "Queued #{day_old_total_count} links for link checking" if this_hours_count > 0
     end
 
     def daily_link_stat_updates
@@ -49,6 +48,7 @@ class CronTasks < Thor
   method_option :environment,:default => 'production', :aliases => "-e", :desc => "Rails environment"
   def daily
     load_rails(options[:environment])
+    daily_link_check
     daily_link_stat_updates
   end
 
@@ -57,7 +57,6 @@ class CronTasks < Thor
   def hourly
     load_rails(options[:environment])
     check_unchecked
-    hourly_link_check
   end
 
 end
