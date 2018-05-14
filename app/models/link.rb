@@ -463,6 +463,9 @@ class Link < ActiveRecord::Base
   end
 
   def check_url(options = {})
+    # reset
+    self.reset_status
+
     force_check = (!options[:force_check].nil? ? options[:force_check] : false)
     check_again_with_get = (!options[:check_again_with_get].nil? ? options[:check_again_with_get] : true)
     if(!self.last_check_at.nil? and self.last_check_at.to_date == Date.today and !force_check)
@@ -483,30 +486,25 @@ class Link < ActiveRecord::Base
       self.last_check_code = result[:code]
       if(result[:code] == '200')
         self.status = OK
-        self.last_check_status = OK
       elsif(result[:code] == '301' or result[:code] == '302' or result[:code] == '303' or result[:code] == '307')
         self.status = OK_REDIRECT
-        self.last_check_status = OK_REDIRECT
       else
         self.status = BROKEN
-        self.last_check_status = BROKEN
       end
     elsif(result[:ignored])
       self.last_check_response = false
       self.status = IGNORED
-      self.last_check_status = IGNORED
     else
       self.last_check_response = false
       self.last_check_information = {:error => result[:error]}
       self.status = BROKEN
-      self.last_check_status = BROKEN
     end
     self.save
     return result
   end
 
   def reset_status
-    self.update_attributes(:status => nil, :error_count => 0, :last_check_at => nil, :last_check_status => nil, :last_check_response => nil, :last_check_code => nil, :last_check_information => nil)
+    self.update_attributes(:status => nil, :error_count => 0, :last_check_at => nil, :last_check_response => nil, :last_check_code => nil, :last_check_information => nil)
   end
 
 
@@ -527,6 +525,7 @@ class Link < ActiveRecord::Base
     begin
       response = nil
       http_connection = Net::HTTP.new(check_uri.host, check_uri.port)
+      http_connection.read_timeout = 10 # timeout in ~10 seconds, seems about 20 seconds though
       if(check_uri.scheme == 'https')
         # don't verify cert?
         http_connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
