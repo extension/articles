@@ -56,7 +56,6 @@ class Link < ActiveRecord::Base
   scope :redirected, -> {where(:status => OK_REDIRECT)}
 
   scope :checked_yesterday_or_earlier, -> {where("DATE(last_check_at) <= ?",Date.yesterday)}
-  scope :checked_over_one_month_ago, -> {where("DATE(last_check_at) <= DATE_SUB(?,INTERVAL 1 MONTH)",Date.yesterday)}
 
   def self.is_create?(host)
     (host == 'create.extension.org' or host == 'create.demo.extension.org')
