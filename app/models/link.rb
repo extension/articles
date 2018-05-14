@@ -525,7 +525,8 @@ class Link < ActiveRecord::Base
     begin
       response = nil
       http_connection = Net::HTTP.new(check_uri.host, check_uri.port)
-      http_connection.read_timeout = 10 # timeout in ~10 seconds, seems about 20 seconds though
+      http_connection.read_timeout = 10
+      http_connection.open_timeout = 10 
       if(check_uri.scheme == 'https')
         # don't verify cert?
         http_connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
