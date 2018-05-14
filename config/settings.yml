@@ -40,3 +40,6 @@ create_site: 'http://create.extension.org/'
 
 #imageaudit database
 imageaudit_database: 'prod_imageaudit'
+
+# background processing
+redis_enabled: true

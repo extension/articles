@@ -1,0 +1,4 @@
+---
+:verbose: false
+:logfile: ./log/sidekiq.log
+:concurrency:  5

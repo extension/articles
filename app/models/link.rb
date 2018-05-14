@@ -30,20 +30,13 @@ class Link < ActiveRecord::Base
   LOCAL = 7
   IMAGE = 8
 
-
-
   # status codes
+  UNCHECKED = 0
   OK = 1
   OK_REDIRECT = 2
   WARNING = 3
   BROKEN = 4
   IGNORED = 5
-
-  # maximum number of times a broken link reports broken before warning goes to error
-  MAX_WARNING_COUNT = 3
-
-  # maximum number of times we'll check a broken link before giving up
-  MAX_ERROR_COUNT = 10
 
   scope :checklist, -> {where("linktype IN (#{EXTERNAL},#{LOCAL},#{IMAGE})")}
   scope :external, -> {where(:linktype => EXTERNAL)}
@@ -63,7 +56,6 @@ class Link < ActiveRecord::Base
   scope :redirected, -> {where(:status => OK_REDIRECT)}
 
   scope :checked_yesterday_or_earlier, -> {where("DATE(last_check_at) <= ?",Date.yesterday)}
-  scope :checked_over_one_month_ago, -> {where("DATE(last_check_at) <= DATE_SUB(?,INTERVAL 1 MONTH)",Date.yesterday)}
 
   def self.is_create?(host)
     (host == 'create.extension.org' or host == 'create.demo.extension.org')
@@ -111,8 +103,6 @@ class Link < ActiveRecord::Base
       return 'OK'
     when OK_REDIRECT
       return 'Redirect'
-    when WARNING
-      return 'Warning'
     when BROKEN
       return 'Broken'
     when IGNORED
@@ -458,19 +448,35 @@ class Link < ActiveRecord::Base
     return this_link
   end
 
+  def queue_check_url
+    if(!Settings.redis_enabled)
+      self.check_url
+    else
+      self.class.delay.delayed_check_url(self.id)
+    end
+  end
+
+  def self.delayed_check_url(record_id)
+    if(record = find_by_id(record_id))
+      record.check_url
+    end
+  end
 
   def check_url(options = {})
-    save = (!options[:save].nil? ? options[:save] : true)
-    force_error_check = (!options[:force_error_check].nil? ? options[:force_error_check] : false)
-    make_get_request = (!options[:make_get_request].nil? ? options[:make_get_request] : false)
-    check_again_with_get = (!options[:check_again_with_get].nil? ? options[:check_again_with_get] : true)
+    # reset
+    self.reset_status
 
-    return if(!force_error_check and self.error_count >= MAX_ERROR_COUNT)
+    force_check = (!options[:force_check].nil? ? options[:force_check] : false)
+    check_again_with_get = (!options[:check_again_with_get].nil? ? options[:check_again_with_get] : true)
+    if(!self.last_check_at.nil? and self.last_check_at.to_date == Date.today and !force_check)
+      # already checked today
+      return {}
+    end
 
     self.last_check_at = Time.zone.now
-    result = self.class.check_url(self.url,make_get_request)
-    # make get request if responded, and response code was '404' and we didn't initially make a get request
-    if(result[:responded] and !make_get_request and check_again_with_get and (result[:code] =='404' or result[:code] =='405' or result[:code] =='403'))
+    result = self.class.check_url(self.url,false)
+    # make get request if responded, and response code was '404'/'405'/'403'
+    if(result[:responded] and check_again_with_get and (result[:code] =='404' or result[:code] =='405' or result[:code] =='403'))
       result = self.class.check_url(self.url,true)
     end
 
@@ -480,42 +486,25 @@ class Link < ActiveRecord::Base
       self.last_check_code = result[:code]
       if(result[:code] == '200')
         self.status = OK
-        self.last_check_status = OK
-        self.error_count = 0
       elsif(result[:code] == '301' or result[:code] == '302' or result[:code] == '303' or result[:code] == '307')
         self.status = OK_REDIRECT
-        self.last_check_status = OK_REDIRECT
-        self.error_count = 0
       else
-        self.error_count += 1
-        if(self.error_count >= MAX_WARNING_COUNT)
-          self.status = BROKEN
-        else
-          self.status = WARNING
-        end
-        self.last_check_status = BROKEN
+        self.status = BROKEN
       end
     elsif(result[:ignored])
       self.last_check_response = false
       self.status = IGNORED
-      self.last_check_status = IGNORED
     else
       self.last_check_response = false
       self.last_check_information = {:error => result[:error]}
-      self.error_count += 1
-      if(self.error_count >= MAX_WARNING_COUNT)
-        self.status = BROKEN
-      else
-        self.status = WARNING
-      end
-      self.last_check_status = BROKEN
+      self.status = BROKEN
     end
     self.save
     return result
   end
 
   def reset_status
-    self.update_attributes(:status => nil, :error_count => 0, :last_check_at => nil, :last_check_status => nil, :last_check_response => nil, :last_check_code => nil, :last_check_information => nil)
+    self.update_attributes(:status => nil, :error_count => 0, :last_check_at => nil, :last_check_response => nil, :last_check_code => nil, :last_check_information => nil)
   end
 
 
@@ -536,6 +525,8 @@ class Link < ActiveRecord::Base
     begin
       response = nil
       http_connection = Net::HTTP.new(check_uri.host, check_uri.port)
+      http_connection.read_timeout = 10
+      http_connection.open_timeout = 10 
       if(check_uri.scheme == 'https')
         # don't verify cert?
         http_connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
