@@ -32,7 +32,7 @@ class CronTasks < Thor
     def daily_link_check
       # queue up unchecked urls older than a day / 24 hours
       day_old_total_count = Link.checklist.checked_yesterday_or_earlier.count
-      Link.checklist.checked_yesterday_or_earlier.order("last_check_at ASC").limit(this_hours_count).find_each do |link|
+      Link.checklist.checked_yesterday_or_earlier.order("last_check_at ASC").find_each do |link|
         link.queue_check_url
       end
       puts "Queued #{day_old_total_count} links for link checking" if this_hours_count > 0
