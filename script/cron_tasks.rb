@@ -35,7 +35,7 @@ class CronTasks < Thor
       Link.checklist.checked_yesterday_or_earlier.order("last_check_at ASC").find_each do |link|
         link.queue_check_url
       end
-      puts "Queued #{day_old_total_count} links for link checking" if this_hours_count > 0
+      puts "Queued #{day_old_total_count} links for link checking" 
     end
 
     def daily_link_stat_updates
