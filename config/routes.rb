@@ -68,6 +68,7 @@ Darmok::Application.routes.draw do
 
   ### current routes for specific content
   match 'pages/list', to:'pages#list', :as => 'pagelist'
+  match 'pages/:id/wxr', to:'pages#wxr', :as => 'page_wxr', :constraints => { :id => /\d+/ }
   match 'pages/:id/print', to:'pages#show', :as => 'print_pageid', :defaults => { :print => 1 }
   match 'pages/:id', to:'pages#show', :as => 'pageid', :constraints => { :id => /\d+/ }
   match 'pages/:id/:title/print', to:'pages#show', :as => 'print_page', :defaults => { :print => 1 }

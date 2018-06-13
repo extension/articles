@@ -104,11 +104,6 @@ class PagesController < ApplicationController
       return do_404
     end
 
-    # redirect to learn
-    if(@page.is_event?)
-      return redirect_to(Settings.events_relocation_url,:status => :moved_permanently)
-    end
-
     # set canonical_link
     @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
 
@@ -262,6 +257,13 @@ class PagesController < ApplicationController
 
   end
 
+  def wxr
+    @page = Page.find(params[:id])
+    request.format = 'xml'
+    respond_to do |format|
+      format.xml { render(:layout => false, :content_type => "application/rss+xml") }
+    end
+  end
 
   def articles
     redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
