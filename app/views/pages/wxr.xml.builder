@@ -11,12 +11,13 @@ xml.rss "version" => "2.0", \
     xml.link root_url
     xml.pubDate Time.now.utc.to_s(:rfc822)
     xml.language 'en-US'
-    xml.wp :wxr_version do xml.text!("1.2") end
-    xml.wp :base_site_url do xml.text! root_url end
-    xml.wp :base_blog_url do xml.text! root_url end
+    xml.wp :wxr_version, "1.2"
+    xml.wp :base_site_url, root_url
+    xml.wp :base_blog_url, root_url
     xml.item do
-      xml.wp :post_type do xml.cdata!("page") end
-      xml.title @page.title
+      xml.wp :post_type,  do
+        xml.cdata!("page")
+      end
       xml.content :encoded do
         xml.cdata!(@page.content)
       end
