@@ -149,11 +149,6 @@ class Page < ActiveRecord::Base
     (self.datatype == 'Faq') and (self.updated_at.to_date <= Date.parse('2011-07-09'))
   end
 
-  # syntactic sugar - returns true if the datatype is an event
-  def is_event?
-    (self.datatype == 'Event')
-  end
-
   # returns the number of links associated with this page, if updated_at > the link_stat for this page
   # it counts and updates the link_stat
   #
