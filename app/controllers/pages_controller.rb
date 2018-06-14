@@ -263,10 +263,8 @@ class PagesController < ApplicationController
     @page.convert_links(true)
     @absolute_linked_content = @page.content
     @post_type = 'post'
-    request.format = 'xml'
-    respond_to do |format|
-      format.xml { render(:layout => false, :content_type => "application/rss+xml") }
-    end
+    wxr_export = render_to_string(:layout => false, :formats => [:xml])
+    send_data(wxr_export, :type=>"application/xml; charset=utf-8; header=present",:disposition => "attachment; filename=articles_page_#{@page.id}_#{Time.zone.now.strftime('%Y%m%d%H%M')}.xml")
   end
 
   def articles
