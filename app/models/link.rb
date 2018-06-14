@@ -154,7 +154,7 @@ class Link < ActiveRecord::Base
       self.path
     when IMAGE
       if(self.is_copwiki_or_create?)
-        "https://#{Settings.urlwriter_host}#{self.path}"
+        "https://#{Settings.urlwriter_host}/#{self.path}"
       else
         self.url
       end
