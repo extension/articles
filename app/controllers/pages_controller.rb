@@ -259,6 +259,7 @@ class PagesController < ApplicationController
 
   def wxr
     @page = Page.find(params[:id])
+    @post_type = 'page'
     request.format = 'xml'
     respond_to do |format|
       format.xml { render(:layout => false, :content_type => "application/rss+xml") }

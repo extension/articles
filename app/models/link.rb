@@ -57,6 +57,13 @@ class Link < ActiveRecord::Base
 
   scope :checked_yesterday_or_earlier, -> {where("DATE(last_check_at) <= ?",Date.yesterday)}
 
+  # note to the future humorless, the www/articles site is currently (as of this commit)
+  # the extension.org site that "has no name" (and multiple
+  # attempts in the staff to attempt to give it a name) - so in an effort to
+  # encapsulate something that needs to resolve to "www/articles" - I called it
+  # voldemort.  <jayoung>
+  scope :voldemort, -> {where(host: ['create.extension.org','cop.extension.org','www.extension.org','articles.extension.org']) }
+
   def self.is_create?(host)
     (host == 'create.extension.org' or host == 'create.demo.extension.org')
   end
@@ -81,16 +88,15 @@ class Link < ActiveRecord::Base
     self.class.is_create?(self.host) or self.class.is_copwiki?(self.host)
   end
 
-  # note to the future humorless, the www/articles site is currently (as of this commit)
-  # the extension.org site that "has no name" (and multiple
-  # attempts in the staff to attempt to give it a name) - so in an effort to
-  # encapsulate something that needs to resolve to "www/articles" - I called it
-  # voldemort.  <jayoung>
+  # see note on voldemort scope
   def self.is_voldemort?(host)
     self.is_create?(host) or self.is_copwiki?(host) or self.is_articles?(host)
   end
 
 
+  def filename
+    File.basename(self.path, ".*")
+  end
 
 
   def status_to_s
@@ -148,7 +154,7 @@ class Link < ActiveRecord::Base
       self.path
     when IMAGE
       if(self.is_copwiki_or_create?)
-        "https://#{Settings.urlwriter_host}/#{self.path}"
+        "https://#{Settings.urlwriter_host}#{self.path}"
       else
         self.url
       end
@@ -526,7 +532,7 @@ class Link < ActiveRecord::Base
       response = nil
       http_connection = Net::HTTP.new(check_uri.host, check_uri.port)
       http_connection.read_timeout = 10
-      http_connection.open_timeout = 10 
+      http_connection.open_timeout = 10
       if(check_uri.scheme == 'https')
         # don't verify cert?
         http_connection.verify_mode = OpenSSL::SSL::VERIFY_NONE

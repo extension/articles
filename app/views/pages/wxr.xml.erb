@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+	xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:wp="http://wordpress.org/export/1.2/"
+>
+<channel>
+	<title>eXtension Articles</title>
+	<link><%= root_url -%></link>
+	<description></description>
+	<pubDate><%= Time.now.utc.to_s(:rfc822) -%></pubDate>
+	<language>en-US</language>
+	<wp:wxr_version>1.2</wp:wxr_version>
+	<wp:base_site_url><%= root_url -%></wp:base_site_url>
+	<wp:base_blog_url><%= root_url -%></wp:base_blog_url>
+
+
+  <item>
+		<title><%= @page.title -%></title>
+		<link><%= pageid_url(id: @page.id) -%></link>
+		<pubDate><%= @page.source_updated_at.to_s(:rfc822) -%></pubDate>
+		<guid><%= pageid_url(id: @page.id) -%></guid>
+		<content:encoded>
+      <![CDATA[<%= @page.content.html_safe -%>]]>
+    </content:encoded>
+    <wp:post_type><![CDATA[<%= @post_type -%>]]></wp:post_type>
+    <%- if @post_type == 'post' -%>
+      <%- @page.tag_names.each do |name| -%>
+        <category domain="post_tag" nicename="<%= name -%>"><![CDATA[<%= name -%>]]></category>
+      <%- end -%>
+    <%- end -%>
+  </item>
+
+  <%- @page.links.image.voldemort.each do |link| -%>
+    <item>
+      <title><%= link.filename -%></title>
+      <link><%= link.href_url -%></link>
+      <guid><%= link.href_url -%></guid>
+      <!-- Probably should be the timestamp on the file, but articles doesn't store that separately -->
+      <pubDate><%= @page.source_updated_at.to_s(:rfc822) -%></pubDate>
+      <content:encoded><![CDATA[]]></content:encoded>
+      <wp:post_type><![CDATA[attachment]]></wp:post_type>
+      <wp:attachment_url><![CDATA[<%= link.href_url -%>]]></wp:attachment_url>
+    </item>
+  <%- end -%>
+
+</channel>
