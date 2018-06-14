@@ -572,8 +572,8 @@ class Page < ActiveRecord::Base
   end
 
   # called by Link#href_url to return an href to this article
-  def href_url
-    self.id_and_link(true)
+  def href_url(make_internal_links_absolute = false)
+    self.id_and_link(!make_internal_links_absolute)
   end
 
   def to_atom_entry
@@ -610,7 +610,7 @@ class Page < ActiveRecord::Base
     return source_uri.host
   end
 
-  def convert_links
+  def convert_links(make_internal_links_absolute = false)
     returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0, :directfile => 0, :local => 0}
     # walk through the anchor tags and pull out the links
     converted_content = Nokogiri::HTML::DocumentFragment.parse(original_content)
@@ -686,7 +686,7 @@ class Page < ActiveRecord::Base
             anchor.remove
             returninfo[:wanted] += 1
           when Link::INTERNAL
-            newhref = link.href_url
+            newhref = link.href_url(make_internal_links_absolute)
             # bring the fragment back if necessary
             if(!original_uri.fragment.blank?)
               newhref += "##{original_uri.fragment}"

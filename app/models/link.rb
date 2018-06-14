@@ -118,7 +118,7 @@ class Link < ActiveRecord::Base
     end
   end
 
-  def href_url
+  def href_url(make_internal_links_absolute = false)
     default_url_options[:host] = Settings.urlwriter_host
     default_url_options[:protocol] = Settings.urlwriter_protocol
     if(default_port = Settings.urlwriter_port)
@@ -129,7 +129,7 @@ class Link < ActiveRecord::Base
     when WANTED
       return ''
     when INTERNAL
-      self.page.href_url
+      self.page.href_url(make_internal_links_absolute)
     when EXTERNAL
       self.url
     when LOCAL

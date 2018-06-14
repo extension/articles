@@ -260,6 +260,9 @@ class PagesController < ApplicationController
   def wxr
     @page = Page.find(params[:id])
     @post_type = 'page'
+    # reprocess the links in the content in order to make absolute links
+    @page.convert_links(true)
+    @absolute_linked_content = @page.content
     request.format = 'xml'
     respond_to do |format|
       format.xml { render(:layout => false, :content_type => "application/rss+xml") }
