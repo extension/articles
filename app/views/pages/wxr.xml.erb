@@ -24,6 +24,8 @@
 		<guid><%= pageid_url(id: @page.id) -%></guid>
 		<content:encoded><![CDATA[<%= @page.content.html_safe -%>]]></content:encoded>
     <wp:post_type><![CDATA[<%= @post_type -%>]]></wp:post_type>
+    <wp:status><![CDATA[publish]]></wp:status>
+
     <%- if @post_type == 'post' -%>
       <%- @page.tag_names.each do |name| -%>
         <category domain="post_tag" nicename="<%= name -%>"><![CDATA[<%= name -%>]]></category>
