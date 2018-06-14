@@ -84,6 +84,13 @@
 
   </table>
 
+  <%- if current_person -%>
+  <h2>Export Options</h2>
+  <ul>
+    <li><%= link_to("WordPress XML Export (WXR) File",page_wxr_path(id: @page.id)) -%></li>
+  </ul>
+  <%- end -%>
+
   <%- if @external_links and @external_links.size > 0 -%>
   <h2>External Links</h2>
   <p><em>A "Redirect" status indicates that the link is good, but the target site is redirecting the user to another site. A "Broken" status indicates an error code was received for the last check.</em></p>
@@ -206,5 +213,7 @@
     <% end%>
   </table>
   <%- end -%>
+
+
 
 <%- end -%>
