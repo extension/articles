@@ -104,11 +104,6 @@ class PagesController < ApplicationController
       return do_404
     end
 
-    # redirect to learn
-    if(@page.is_event?)
-      return redirect_to(Settings.events_relocation_url,:status => :moved_permanently)
-    end
-
     # set canonical_link
     @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
 
@@ -262,6 +257,15 @@ class PagesController < ApplicationController
 
   end
 
+  def wxr
+    @page = Page.find(params[:id])
+    # reprocess the links in the content in order to make absolute links
+    @page.convert_links(true)
+    @absolute_linked_content = @page.content
+    @post_type = 'post'
+    wxr_export = render_to_string(:layout => false, :formats => [:xml])
+    send_data(wxr_export, :type=>"application/xml; charset=utf-8; header=present",:disposition => "attachment; filename=articles_page_#{@page.id}_#{Time.zone.now.strftime('%Y%m%d%H%M')}.xml")
+  end
 
   def articles
     redirect_to category_tag_index_url(:content_tag => content_tag_url_display_name(params[:content_tag])), :status=>301
