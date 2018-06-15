@@ -7,6 +7,7 @@
 
 class PageinfoController < ApplicationController
   before_filter :signin_optional
+  before_filter :signin_required, only: [:wxr]
   before_filter :set_content_tag_and_community
   before_filter :www_store_location
   before_filter :turn_off_resource_areas
@@ -172,6 +173,16 @@ class PageinfoController < ApplicationController
     else
       @pages = Page.orphaned_pages
     end
+  end
+
+  def wxr
+    @page = Page.find(params[:id])
+    # reprocess the links in the content in order to make absolute links
+    @page.convert_links(true)
+    @absolute_linked_content = @page.content
+    @post_type = 'post'
+    wxr_export = render_to_string(:layout => false, :formats => [:xml])
+    send_data(wxr_export, :type=>"application/xml; charset=utf-8; header=present",:disposition => "attachment; filename=articles_page_#{@page.id}_#{Time.zone.now.strftime('%Y%m%d%H%M')}.xml")
   end
 
 end

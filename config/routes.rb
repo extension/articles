@@ -68,7 +68,6 @@ Darmok::Application.routes.draw do
 
   ### current routes for specific content
   match 'pages/list', to:'pages#list', :as => 'pagelist'
-  match 'pages/:id/wxr', to:'pages#wxr', :as => 'page_wxr', :constraints => { :id => /\d+/ }
   match 'pages/:id/print', to:'pages#show', :as => 'print_pageid', :defaults => { :print => 1 }
   match 'pages/:id', to:'pages#show', :as => 'pageid', :constraints => { :id => /\d+/ }
   match 'pages/:id/:title/print', to:'pages#show', :as => 'print_page', :defaults => { :print => 1 }
@@ -99,6 +98,7 @@ Darmok::Application.routes.draw do
   match 'pageinfo/source', to:'pageinfo#find_by_source', :as => 'pageinfo_findsource'
   match 'pageinfo/orphaned', to:'pageinfo#orphaned', :as => 'pageinfo_orphaned'
   match 'pageinfo/numbers', to:'pageinfo#numbers', :as => 'pageinfo_numbers'
+  match 'pageinfo/:id/wxr', to:'pageinfo#wxr', :as => 'pageinfo_wxr', :constraints => { :id => /\d+/ }
   match 'pageinfo/:id', to:'pageinfo#show', :as => 'pageinfo_page'
 
   # legacy routes to 410
