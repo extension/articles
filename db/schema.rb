@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170620133650) do
+ActiveRecord::Schema.define(:version => 20180615194200) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -290,7 +290,6 @@ ActiveRecord::Schema.define(:version => 20170620133650) do
   add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
   add_index "pages", ["source_created_at", "source_updated_at"], :name => "index_pages_on_source_created_at_and_source_updated_at"
   add_index "pages", ["source_url_fingerprint"], :name => "index_pages_on_source_url_fingerprint", :unique => true
-  add_index "pages", ["title", "content"], :name => "title_content_full_index"
   add_index "pages", ["title"], :name => "index_pages_on_title", :length => {"title"=>255}
 
   create_table "people", :force => true do |t|
