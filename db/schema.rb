@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180615194200) do
+ActiveRecord::Schema.define(:version => 20180620191650) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -284,6 +284,8 @@ ActiveRecord::Schema.define(:version => 20180615194200) do
     t.text     "summary"
     t.boolean  "keep_published",                               :default => true
     t.integer  "create_node_id"
+    t.boolean  "redirect_page",                                :default => false
+    t.text     "redirect_url"
   end
 
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
