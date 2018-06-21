@@ -230,6 +230,14 @@ ActiveRecord::Schema.define(:version => 20180620191650) do
 
   add_index "old_event_ids", ["event_id"], :name => "event_ndx", :unique => true
 
+  create_table "page_redirect_logs", :force => true do |t|
+    t.integer  "person_id",                :default => 0, :null => false
+    t.integer  "event",                    :default => 0, :null => false
+    t.string   "ip",         :limit => 20
+    t.text     "data"
+    t.datetime "created_at"
+  end
+
   create_table "page_redirects", :force => true do |t|
     t.integer "page_id",          :null => false
     t.integer "redirect_page_id", :null => false
