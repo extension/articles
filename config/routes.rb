@@ -98,6 +98,7 @@ Darmok::Application.routes.draw do
   match 'pageinfo/source', to:'pageinfo#find_by_source', :as => 'pageinfo_findsource'
   match 'pageinfo/orphaned', to:'pageinfo#orphaned', :as => 'pageinfo_orphaned'
   match 'pageinfo/numbers', to:'pageinfo#numbers', :as => 'pageinfo_numbers'
+  match 'pageinfo/:id/redirect', to:'pageinfo#redirect', :as => 'pageinfo_page_redirect', :constraints => { :id => /\d+/ }
   match 'pageinfo/:id/wxr', to:'pageinfo#wxr', :as => 'pageinfo_wxr', :constraints => { :id => /\d+/ }
   match 'pageinfo/:id', to:'pageinfo#show', :as => 'pageinfo_page'
 

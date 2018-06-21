@@ -985,6 +985,58 @@ class Page < ActiveRecord::Base
     end
   end
 
+  def redirect(redirect_url,redirected_by)
+    # the url was likely validated in the controller already
+    # but we are going to do it again in case this is automated
+    # or called from the CLI
+    begin
+      uri = URI.parse(redirect_url)
+      if(uri.class != URI::HTTP and uri.class != URI::HTTPS)
+        self.errors.add(:redirect_url, 'only http and https protocols are valid')
+        return false
+      end
+      if(uri.host.nil?)
+        self.errors.add(:redirect_url, 'must have a valid host')
+        return false
+      end
+    rescue URI::InvalidURIError
+      self.errors.add(:redirect_url, 'is invalid')
+      return false
+    end
+
+    already_redirected = self.redirect_page?
+    if(already_redirected)
+      current_redirect_url = self.redirect_url
+    end
+
+    if(self.source == 'create' and !already_redirected)
+      if(create_node = CreateNode.where(nid: self.create_node_id).first)
+        create_node.mark_as_redirected(redirected_by)
+        create_node.inject_redirect_notice(redirected_by)
+      else
+        self.errors.add(:create_node_id, 'Unable to find the page in the create.extension.org database')
+        return false
+      end
+    end
+
+
+    self.update_attributes(redirect_page: true, redirect_url: redirect_url)
+
+    if(already_redirected)
+      PageRedirectLog.log_redirect(redirected_by,
+                                   PageRedirectLog::CHANGE_REDIRECT_URL,
+                                   {old_url: current_redirect_url,
+                                     new_url: redirect_url})
+    else
+      PageRedirectLog.log_redirect(redirected_by,
+                                   PageRedirectLog::SET_INITIAL_REDIRECT,
+                                   {url: redirect_url})
+    end
+
+    return true
+
+  end
+
 
   def self.orphaned_pages
     page_ids = self.pluck(:id)

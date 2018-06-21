@@ -185,4 +185,38 @@ class PageinfoController < ApplicationController
     send_data(wxr_export, :type=>"application/xml; charset=utf-8; header=present",:disposition => "attachment; filename=articles_page_#{@page.id}_#{Time.zone.now.strftime('%Y%m%d%H%M')}.xml")
   end
 
+  def redirect
+    @page = Page.find(params[:id])
+    if request.post?
+      redirect_url = params[:redirect_url]
+      if redirect_url.blank?
+        flash.now[:error] = 'A URL to redirect this event to is required.'
+        return render
+      end
+
+      begin
+        uri = URI.parse(redirect_url)
+        if(uri.class != URI::HTTP and uri.class != URI::HTTPS)
+          flash.now[:error] = 'This URL must be to a http:// or http:// location.'
+          return render
+        end
+        if(uri.host.nil?)
+          flash.now[:error] = 'This URL must be have a valid host.'
+          return render
+        end
+      rescue URI::InvalidURIError
+        flash.now[:error] = 'This URL is not a valid URL.'
+        return render
+      end
+
+      if(@page.redirect(params[:redirect_url],current_person))
+        flash[:success] = "Page redirected."
+        redirect_to pageinfo_page_url(id: @page.id)
+      else
+        error_messages = @page.errors.full_messages.join("<br/>").html_safe
+        flash.now[:error] = error_messages
+      end
+    end
+  end
+
 end

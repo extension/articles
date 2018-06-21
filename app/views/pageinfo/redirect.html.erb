@@ -1,0 +1,29 @@
+<div id="flash">
+  <%= render(partial: 'partial/flashmessages') %>
+</div>
+
+<div class="well">
+  <h2>You are about to redirect this page. This means...</h2>
+  <ul>
+    <li>Any link to the page URL (<%= pageid_url(id: @page.id) -%>) whether external or internal to Articles, will immediately redirect to the listed URL</li>
+    <li>All listings that include the page (e.g. by tag) will display a redirect message instead of the page description</li>
+    <%- if @page.is_create? -%>
+      <li>Workflow controls on the node in Create: <%= link_to(@page.source_url, @page.source_url)%> will be disabled. The node cannot be republished.</li>
+    <%- end -%>
+  </ul>
+  <div class="alert alert-warning">
+    <h3>Redirection is permanent</h3>
+    <p><strong>While you can change the URL this page redirects to, the redirection cannot be removed.</strong></p>
+  </div>
+</div>
+<%= form_tag pageinfo_page_redirect_path(id: @page.id) do %>
+  <p>
+    <label>The URL to redirect to (e.g. http://extension.org/about )</label>
+    <%= text_field_tag :redirect_url, (params[:redirect_url] || ""), class: 'form-control input-xxlarge' %>
+  </p>
+
+  <p>
+    <%= submit_tag 'Redirect Page', :class => "btn btn-default  btn-danger"%>
+    <%= link_to "Cancel", pageinfo_page_path(id: @page.id), :class => "btn btn-default" %>
+  </p>
+<% end %>

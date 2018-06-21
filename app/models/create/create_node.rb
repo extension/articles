@@ -53,6 +53,10 @@ class CreateNode < ActiveRecord::Base
     end
   end
 
+  def mark_as_redirected(redirected_by)
+    # TODO:
+  end
+
   def inject_unpublish_notice(unpublish_date = Date.today)
     if(body = CreateFieldDataBody.where(bundle: self.type).where(entity_id: self.nid).first)
       body_block = <<-END_TEXT.gsub(/\s+/, " ").strip
@@ -60,6 +64,29 @@ class CreateNode < ActiveRecord::Base
       <p>On #{unpublish_date.strftime('%B %e, %Y')}, this content was automatically unpublished and marked as inactive.
       Please feel free to rework this page, along with properly indicating the copyright for all
       included images and republish it as appropriate.</p>
+      <p>Do not hesitate to <a href="http://create.extension.org/node/99714">Contact
+      our Community Support staff</a> with any questions you may have.</p></div>
+      <br/>
+      END_TEXT
+
+      query = <<-END_SQL.gsub(/\s+/, " ").strip
+      UPDATE #{CreateFieldDataBody.table_name}
+      SET body_value = #{ActiveRecord::Base.quote_value(body_block + body.body_value)}
+      WHERE bundle = '#{self.type}' AND entity_id = #{self.nid}
+      END_SQL
+      body.connection.execute(query)
+      true
+    else
+      false
+    end
+  end
+
+  def inject_redirect_notice(redirected_by, unpublish_date = Date.today)
+    if(body = CreateFieldDataBody.where(bundle: self.type).where(entity_id: self.nid).first)
+      body_block = <<-END_TEXT.gsub(/\s+/, " ").strip
+      <div id="content_removal_notes" style="background: #f47c28;border:1px solid #000;color:#000;">
+      <p>On #{unpublish_date.strftime('%B %e, %Y')}, this content was redirected by #{redirected_by.fullname}.</p>
+      <p>This page cannot be republished to articles.extension.org.</p>
       <p>Do not hesitate to <a href="http://create.extension.org/node/99714">Contact
       our Community Support staff</a> with any questions you may have.</p></div>
       <br/>
