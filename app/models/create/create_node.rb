@@ -54,7 +54,52 @@ class CreateNode < ActiveRecord::Base
   end
 
   def mark_as_redirected(redirected_by)
-    # TODO:
+    if(cnw = CreateNodeWorkflow.where(node_id: self.nid).last)
+      unix_timestamp = Time.now.utc.to_i
+      cnw.update_attributes(active: true,
+                            status_text: 'Redirected',
+                            status: CreateNodeWorkflow::REDIRECTED,
+                            changed: unix_timestamp)
+
+      # need some workflow events
+      CreateNodeWorkflowEvent.create(node_id: self.nid,
+                                     node_workflow_id: cnw.nwid,
+                                     user_id: redirected_by.id,
+                                     revision_id: cnw.current_revision_id,
+                                     event_id: CreateNodeWorkflowEvent::REDIRECTED,
+                                     description: CreateNodeWorkflowEvent::DESCRIPTIONS[CreateNodeWorkflowEvent::REDIRECTED],
+                                     created: unix_timestamp)
+      true
+    else
+      false
+    end
+  end
+
+  def unmark_as_redirected(stop_redirected_by)
+    if(cnw = CreateNodeWorkflow.where(node_id: self.nid).last)
+      unix_timestamp = Time.now.utc.to_i
+      # Note: setting 'unpublished at' to nil is a hack to
+      # keep it out of the deleted items atom feed
+      cnw.update_attributes(active: true,
+                            status_text: 'Draft',
+                            status: CreateNodeWorkflow::DRAFT,
+                            review_count: 0,
+                            draft_status: nil,
+                            draft_status_text: nil,
+                            changed: unix_timestamp)
+
+      # need some workflow events
+      CreateNodeWorkflowEvent.create(node_id: self.nid,
+                                     node_workflow_id: cnw.nwid,
+                                     user_id: stop_redirected_by.id,
+                                     revision_id: cnw.current_revision_id,
+                                     event_id: CreateNodeWorkflowEvent::MOVED_TO_DRAFT,
+                                     description: CreateNodeWorkflowEvent::DESCRIPTIONS[CreateNodeWorkflowEvent::MOVED_TO_DRAFT],
+                                     created: unix_timestamp)
+      true
+    else
+      false
+    end
   end
 
   def inject_unpublish_notice(unpublish_date = Date.today)
@@ -64,29 +109,6 @@ class CreateNode < ActiveRecord::Base
       <p>On #{unpublish_date.strftime('%B %e, %Y')}, this content was automatically unpublished and marked as inactive.
       Please feel free to rework this page, along with properly indicating the copyright for all
       included images and republish it as appropriate.</p>
-      <p>Do not hesitate to <a href="http://create.extension.org/node/99714">Contact
-      our Community Support staff</a> with any questions you may have.</p></div>
-      <br/>
-      END_TEXT
-
-      query = <<-END_SQL.gsub(/\s+/, " ").strip
-      UPDATE #{CreateFieldDataBody.table_name}
-      SET body_value = #{ActiveRecord::Base.quote_value(body_block + body.body_value)}
-      WHERE bundle = '#{self.type}' AND entity_id = #{self.nid}
-      END_SQL
-      body.connection.execute(query)
-      true
-    else
-      false
-    end
-  end
-
-  def inject_redirect_notice(redirected_by, unpublish_date = Date.today)
-    if(body = CreateFieldDataBody.where(bundle: self.type).where(entity_id: self.nid).first)
-      body_block = <<-END_TEXT.gsub(/\s+/, " ").strip
-      <div id="content_removal_notes" style="background: #f47c28;border:1px solid #000;color:#000;">
-      <p>On #{unpublish_date.strftime('%B %e, %Y')}, this content was redirected by #{redirected_by.fullname}.</p>
-      <p>This page cannot be republished to articles.extension.org.</p>
       <p>Do not hesitate to <a href="http://create.extension.org/node/99714">Contact
       our Community Support staff</a> with any questions you may have.</p></div>
       <br/>

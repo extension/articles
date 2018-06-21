@@ -12,10 +12,11 @@ class PageRedirectLog < ActiveRecord::Base
 
   SET_INITIAL_REDIRECT = 1
   CHANGE_REDIRECT_URL = 2
-
+  REDIRECTION_REMOVED = 3 # should be an eye rolly emoji, but articles is not utf8mb4
 
   DESCRIPTIONS =  {SET_INITIAL_REDIRECT => 'Redirected page',
-                   CHANGE_REDIRECT_URL => 'Changed redirect url'}
+                   CHANGE_REDIRECT_URL => 'Changed redirect url',
+                   REDIRECTION_REMOVED => 'Removed redirection'}
 
 
   def description

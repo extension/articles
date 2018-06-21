@@ -1038,6 +1038,28 @@ class Page < ActiveRecord::Base
 
   end
 
+  # yes, in the app we say it's permanent, but is anything ever permanent?
+  def stop_redirecting(stop_redirected_by)
+    if(!self.redirect_page?)
+      return false
+    end
+
+    if(self.source == 'create')
+      if(create_node = CreateNode.where(nid: self.create_node_id).first)
+        create_node.unmark_as_redirected(stop_redirected_by)
+      else
+        self.errors.add(:create_node_id, 'Unable to find the page in the create.extension.org database')
+        return false
+      end
+    end
+
+
+    self.update_attributes(redirect_page: false, redirect_url: nil)
+    PageRedirectLog.log_redirect(stop_redirected_by, PageRedirectLog::REDIRECTION_REMOVED)
+    return true
+  end
+
+
 
   def self.orphaned_pages
     page_ids = self.pluck(:id)
