@@ -296,6 +296,7 @@ ActiveRecord::Schema.define(:version => 20180620191650) do
     t.text     "redirect_url"
   end
 
+  add_index "pages", ["datatype", "redirect_page"], :name => "index_pages_on_redirect_page_and_datatype"
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
   add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
   add_index "pages", ["source_created_at", "source_updated_at"], :name => "index_pages_on_source_created_at_and_source_updated_at"

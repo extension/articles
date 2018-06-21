@@ -3,6 +3,8 @@ class AddPageRedirection < ActiveRecord::Migration
     add_column(:pages, :redirect_page, :boolean, :default => false)
     add_column(:pages, :redirect_url, :text)
 
+    add_index "pages", ["datatype","redirect_page"], :name => "index_pages_on_redirect_page_and_datatype"
+
     # create log table
     create_table "page_redirect_logs", :force => true do |t|
       t.integer  "person_id",                :default => 0, :null => false
