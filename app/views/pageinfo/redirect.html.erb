@@ -11,10 +11,6 @@
       <li>Workflow controls on the node in Create: <%= link_to(@page.source_url, @page.source_url)%> will be disabled. The node cannot be republished.</li>
     <%- end -%>
   </ul>
-  <div class="alert alert-warning">
-    <h3>Redirection is permanent</h3>
-    <p><strong>While you can change the URL this page redirects to, the redirection cannot be removed.</strong></p>
-  </div>
 </div>
 <%= form_tag pageinfo_page_redirect_path(id: @page.id) do %>
   <p>

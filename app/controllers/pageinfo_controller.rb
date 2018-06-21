@@ -219,4 +219,14 @@ class PageinfoController < ApplicationController
     end
   end
 
+  def stop_redirect
+    @page = Page.find(params[:id])
+    if request.post?
+      if(@page.stop_redirecting(current_person))
+        flash[:success] = "Page no longer redirected."
+      end
+    end
+    redirect_to pageinfo_page_url(id: @page.id)
+  end
+
 end
