@@ -1014,7 +1014,6 @@ class Page < ActiveRecord::Base
     if(self.source == 'create' and !already_redirected)
       if(create_node = CreateNode.where(nid: self.create_node_id).first)
         create_node.mark_as_redirected(redirected_by)
-        create_node.inject_redirect_notice(redirected_by)
       else
         self.errors.add(:create_node_id, 'Unable to find the page in the create.extension.org database')
         return false

@@ -104,6 +104,11 @@ class PagesController < ApplicationController
       return do_404
     end
 
+    # redirection check
+    if(@page.redirect_page?)
+      return redirect_to(@page.redirect_url,:status => :moved_permanently)
+    end
+
     # set canonical_link
     @canonical_link = page_url(:id => @page.id, :title => @page.url_title)
 
