@@ -52,6 +52,8 @@ class Page < ActiveRecord::Base
   scope :faqs, -> {where(datatype: 'Faq')}
   scope :create_pages, -> {where(source: 'create')}
 
+  scope :not_redirected, ->{where(redirect_page: false)}
+
   scope :by_datatype, lambda{|datatype|
    if(datatype.is_a?(Array))
      datatypes_list = datatype.map{|d| "'#{d}'"}.join(',')
@@ -329,9 +331,9 @@ class Page < ActiveRecord::Base
 
   def self.main_feature_list(options = {})
     if(options[:content_tag].nil?)
-      self.articles.bucketed_as('feature').ordered.limit(options[:limit]).all
+      self.not_redirected.articles.bucketed_as('feature').ordered.limit(options[:limit]).all
     else
-      self.articles.bucketed_as('feature').tagged_with(options[:content_tag].name).ordered.limit(options[:limit]).all
+      self.not_redirected.articles.bucketed_as('feature').tagged_with(options[:content_tag].name).ordered.limit(options[:limit]).all
     end
   end
 
@@ -358,7 +360,7 @@ class Page < ActiveRecord::Base
     # get articles and their communities - joining them up by content tags
     # we have to do this group concat here because a given article may belong
     # to more than one community
-    pagelist = self.articles.select("#{self.table_name}.*, GROUP_CONCAT(publishing_communities.id) as community_ids_string")
+    pagelist = self.not_redirected.articles.select("#{self.table_name}.*, GROUP_CONCAT(publishing_communities.id) as community_ids_string")
     .joins([:content_buckets, {:tags => :publishing_communities}])
     .where("DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}'")
     .where("publishing_communities.id IN (#{launched_community_ids})")

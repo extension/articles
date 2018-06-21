@@ -42,10 +42,10 @@ class MainController < ApplicationController
 
     if(!@content_tag.nil?)
       set_title("Content tagged \"#{@content_tag.name}\"")
-      @pages = Page.tagged_with(@content_tag.name).ordered(order).page(params[:page])
+      @pages = Page.not_redirected.tagged_with(@content_tag.name).ordered(order).page(params[:page])
     else
       set_title("Recent Content")
-      @pages = Page.ordered(order).page(params[:page])
+      @pages = Page.not_redirected.ordered(order).page(params[:page])
     end
     render(:template => 'pages/list')
 
