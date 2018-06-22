@@ -52,6 +52,8 @@ class Page < ActiveRecord::Base
   scope :faqs, -> {where(datatype: 'Faq')}
   scope :create_pages, -> {where(source: 'create')}
 
+  scope :not_redirected, ->{where(redirect_page: false)}
+
   scope :by_datatype, lambda{|datatype|
    if(datatype.is_a?(Array))
      datatypes_list = datatype.map{|d| "'#{d}'"}.join(',')
@@ -329,9 +331,9 @@ class Page < ActiveRecord::Base
 
   def self.main_feature_list(options = {})
     if(options[:content_tag].nil?)
-      self.articles.bucketed_as('feature').ordered.limit(options[:limit]).all
+      self.not_redirected.articles.bucketed_as('feature').ordered.limit(options[:limit]).all
     else
-      self.articles.bucketed_as('feature').tagged_with(options[:content_tag].name).ordered.limit(options[:limit]).all
+      self.not_redirected.articles.bucketed_as('feature').tagged_with(options[:content_tag].name).ordered.limit(options[:limit]).all
     end
   end
 
@@ -358,7 +360,7 @@ class Page < ActiveRecord::Base
     # get articles and their communities - joining them up by content tags
     # we have to do this group concat here because a given article may belong
     # to more than one community
-    pagelist = self.articles.select("#{self.table_name}.*, GROUP_CONCAT(publishing_communities.id) as community_ids_string")
+    pagelist = self.not_redirected.articles.select("#{self.table_name}.*, GROUP_CONCAT(publishing_communities.id) as community_ids_string")
     .joins([:content_buckets, {:tags => :publishing_communities}])
     .where("DATE(#{self.table_name}.source_updated_at) >= '#{only_since.to_s(:db)}'")
     .where("publishing_communities.id IN (#{launched_community_ids})")
@@ -984,6 +986,79 @@ class Page < ActiveRecord::Base
       return true
     end
   end
+
+  def redirect(redirect_url,redirected_by)
+    # the url was likely validated in the controller already
+    # but we are going to do it again in case this is automated
+    # or called from the CLI
+    begin
+      uri = URI.parse(redirect_url)
+      if(uri.class != URI::HTTP and uri.class != URI::HTTPS)
+        self.errors.add(:redirect_url, 'only http and https protocols are valid')
+        return false
+      end
+      if(uri.host.nil?)
+        self.errors.add(:redirect_url, 'must have a valid host')
+        return false
+      end
+    rescue URI::InvalidURIError
+      self.errors.add(:redirect_url, 'is invalid')
+      return false
+    end
+
+    already_redirected = self.redirect_page?
+    if(already_redirected)
+      current_redirect_url = self.redirect_url
+    end
+
+    if(self.source == 'create' and !already_redirected)
+      if(create_node = CreateNode.where(nid: self.create_node_id).first)
+        create_node.mark_as_redirected(redirected_by)
+      else
+        self.errors.add(:create_node_id, 'Unable to find the page in the create.extension.org database')
+        return false
+      end
+    end
+
+
+    self.update_attributes(redirect_page: true, redirect_url: redirect_url)
+
+    if(already_redirected)
+      PageRedirectLog.log_redirect(redirected_by,
+                                   PageRedirectLog::CHANGE_REDIRECT_URL,
+                                   {old_url: current_redirect_url,
+                                     new_url: redirect_url})
+    else
+      PageRedirectLog.log_redirect(redirected_by,
+                                   PageRedirectLog::SET_INITIAL_REDIRECT,
+                                   {url: redirect_url})
+    end
+
+    return true
+
+  end
+
+  # yes, in the app we say it's permanent, but is anything ever permanent?
+  def stop_redirecting(stop_redirected_by)
+    if(!self.redirect_page?)
+      return false
+    end
+
+    if(self.source == 'create')
+      if(create_node = CreateNode.where(nid: self.create_node_id).first)
+        create_node.unmark_as_redirected(stop_redirected_by)
+      else
+        self.errors.add(:create_node_id, 'Unable to find the page in the create.extension.org database')
+        return false
+      end
+    end
+
+
+    self.update_attributes(redirect_page: false, redirect_url: nil)
+    PageRedirectLog.log_redirect(stop_redirected_by, PageRedirectLog::REDIRECTION_REMOVED)
+    return true
+  end
+
 
 
   def self.orphaned_pages

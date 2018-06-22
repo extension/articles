@@ -21,5 +21,20 @@ class CreateNodeWorkflowEvent < ActiveRecord::Base
   INACTIVE = 7
   ACTIVATED = 8
   READY_FOR_COPYEDIT = 9
+  REDIRECTED = 10
+
+  DESCRIPTIONS = {
+    MOVED_TO_DRAFT => 'moved back to draft',
+    READY_FOR_REVIEW => 'marked ready for review',
+    REVIEWED => 'reviewed',
+    READY_TO_PUBLISH => 'marked ready for publish',
+    PUBLISHED => 'published',
+    UNPUBLISHED => 'unpublished',
+    INACTIVE => 'made inactive',
+    ACTIVATED => 'activated',
+    READY_FOR_COPYEDIT => 'marked ready for copy edit',
+    REDIRECTED => 'redirected in articles'
+  }
+
 
 end

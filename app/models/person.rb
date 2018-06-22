@@ -5,7 +5,7 @@
 
 class Person < ActiveRecord::Base
 
-  def fullname 
+  def fullname
     return "#{self.first_name} #{self.last_name}"
   end
 
@@ -16,5 +16,5 @@ class Person < ActiveRecord::Base
   def self.systemuserid
     1
   end
-  
+
 end

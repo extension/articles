@@ -9,10 +9,16 @@
   <%- end -%>
 
   <table class="table">
+      <%- if @page.redirect_page? -%>
+        <tr>
+  			     <td colspan="2"><strong>This page redirects to: <%= link_to(@page.redirect_url, @page.redirect_url) -%></td>
+        </tr>
+      <%- else -%>
       <tr>
 			     <td>Published URL</td>
     	     <td><%= link_to(@page.id_and_link, @page.id_and_link) %></td>
       </tr>
+      <%- end -%>
       <tr>
           <td>Internal Page ID</td>
           <td><%= @page.id %></td>
@@ -85,9 +91,15 @@
   </table>
 
   <%- if current_person -%>
-  <h2>Export Options</h2>
+  <h2>Export and Redirect Options</h2>
   <ul>
     <li><%= link_to("WordPress XML Export (WXR) File",pageinfo_wxr_path(id: @page.id)) -%></li>
+    <%- if @page.redirect_page? -%>
+      <li><%= link_to("Edit Redirect URL",pageinfo_page_redirect_path(id: @page.id)) -%></li>
+      <li><%= link_to("Stop redirecting",pageinfo_page_stop_redirect_path(id: @page.id), :method => :post ) -%></li>
+    <%- else -%>
+    <li><%= link_to("Redirect this page to another URL",pageinfo_page_redirect_path(id: @page.id)) -%></li>
+    <%- end -%>
   </ul>
   <%- end -%>
 

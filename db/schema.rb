@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180615194200) do
+ActiveRecord::Schema.define(:version => 20180620191650) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -230,6 +230,14 @@ ActiveRecord::Schema.define(:version => 20180615194200) do
 
   add_index "old_event_ids", ["event_id"], :name => "event_ndx", :unique => true
 
+  create_table "page_redirect_logs", :force => true do |t|
+    t.integer  "person_id",                :default => 0, :null => false
+    t.integer  "event",                    :default => 0, :null => false
+    t.string   "ip",         :limit => 20
+    t.text     "data"
+    t.datetime "created_at"
+  end
+
   create_table "page_redirects", :force => true do |t|
     t.integer "page_id",          :null => false
     t.integer "redirect_page_id", :null => false
@@ -284,8 +292,11 @@ ActiveRecord::Schema.define(:version => 20180615194200) do
     t.text     "summary"
     t.boolean  "keep_published",                               :default => true
     t.integer  "create_node_id"
+    t.boolean  "redirect_page",                                :default => false
+    t.text     "redirect_url"
   end
 
+  add_index "pages", ["datatype", "redirect_page"], :name => "index_pages_on_redirect_page_and_datatype"
   add_index "pages", ["datatype"], :name => "index_pages_on_datatype"
   add_index "pages", ["migrated_id"], :name => "index_pages_on_migrated_id"
   add_index "pages", ["source_created_at", "source_updated_at"], :name => "index_pages_on_source_created_at_and_source_updated_at"

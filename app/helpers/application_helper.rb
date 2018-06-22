@@ -86,6 +86,26 @@ module ApplicationHelper
     return summary
   end
 
+  def bootstrap_alert_class(type)
+    baseclass = "alert"
+    case type
+    when :alert
+      "#{baseclass} alert-warning"
+    when :warning
+      "#{baseclass} alert-warning"
+    when :error
+      "#{baseclass} alert-danger"
+    when :failure
+      "#{baseclass} alert-warning"
+    when :notice
+      "#{baseclass} alert-info"
+    when :success
+      "#{baseclass} alert-success"
+    else
+      "#{baseclass} #{type.to_s}"
+    end
+  end
+
   private
 
   def word_truncate(string, word_count=60, threshold=80)
