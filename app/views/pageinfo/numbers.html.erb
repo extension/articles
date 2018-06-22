@@ -11,23 +11,33 @@
           <th>Community Name</th>
           <th>Total Pages</th>
           <th>Recent Pages</th>
+          <th>New 12 Months</th>
+          <th>New 24 Months</th>
       </thead>
       <tr>
         <td>&nbsp;</td>
         <td>Overall</td>
         <td><%= link_to("<span>#{Page.count}</span> pages".html_safe, pageinfo_pagelist_url) -%></td>
         <td><%= link_to("<span>#{Page.recent.count}</span> pages".html_safe, pageinfo_pagelist_url(:recent => 'true')) -%></td>
+        <td><%= "<span>#{Page.within_months(12).count}</span> pages".html_safe -%></td>
+        <td><%= "<span>#{Page.within_months(24).count}</span> pages".html_safe -%></td>
+
       </tr>
       <%- @communities.each do |community| -%>
       <tr class="<%= community.is_launched -%>">
           <td class="islive"><%= community.is_launched -%></td>
-          <td><%= community.name -%></td>
           <%- if community.tag_names.blank? -%>
-          <td>n/a (community doesn't have a tag)</td>
-          <td>n/a (community doesn't have a tag)</td>
+          <td><%= community.name -%><br/>(community doesn't have a tag)</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
           <%- else -%>
+          <td><%= community.name -%></td>
           <td><%= Page.tagged_with_any(community.tag_names).pluck("pages.id").uniq.count -%></td>
           <td><%= Page.tagged_with_any(community.tag_names).recent.pluck("pages.id").uniq.count -%></td>
+          <td><%= Page.tagged_with_any(community.tag_names).within_months(12).pluck("pages.id").uniq.count -%></td>
+          <td><%= Page.tagged_with_any(community.tag_names).within_months(24).pluck("pages.id").uniq.count -%></td>
           <%- end -%>
           </tr>
       <%- end -%>
