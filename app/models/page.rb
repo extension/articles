@@ -113,6 +113,7 @@ class Page < ActiveRecord::Base
 
   # recent content
   scope :recent, -> {where("source_created_at >= ?",6.months.ago).where("#{self.table_name}.created_at >= ?",6.months.ago)}
+  scope :within_months, ->(within_months){where("source_created_at >= ?",within_months.months.ago).where("#{self.table_name}.created_at >= ?",within_months.months.ago)}
 
 
   # returns a class::method::options string to use as a memcache key
