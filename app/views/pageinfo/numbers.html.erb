@@ -2,7 +2,13 @@
   <h1>Community Content Numbers</h1>
   <h2>eXtension Publishing Communities</h2>
   <div class="well">
-  <p>Recent pages is the number of newly created and published pages within the last 6 months</p>
+  <%- if @showcontent == 'all' -%>
+    <p>Recent pages is the number of <em>all updated</em> pages within the last 6 months</p>
+    <p>Show <%= link_to('just new content (default)',pageinfo_numbers_path) -%> within the last 6/12/24 months instead</p>
+  <%- else -%>
+    <p>Recent pages is the number of <em>newly</em> created and published pages within the last 6 months</p>
+    <p>Show <%= link_to('all updated content',pageinfo_numbers_path(:showcontent => 'all')) -%> within the last 6/12/24 months instead</p>
+  <%- end -%>
   </div>
 
   <table class="table report_table">
@@ -11,17 +17,27 @@
           <th>Community Name</th>
           <th>Total Pages</th>
           <th>Recent Pages</th>
-          <th>New 12 Months</th>
-          <th>New 24 Months</th>
+          <%- if @showcontent == 'all' -%>
+          <th>Updated in last 12 Months</th>
+          <th>Updated in last 24 Months</th>
+          <%- else -%>
+          <th>New in last 12 Months</th>
+          <th>New in last 24 Months</th>
+          <%- end -%>
       </thead>
       <tr>
         <td>&nbsp;</td>
         <td>Overall</td>
         <td><%= link_to("<span>#{Page.count}</span> pages".html_safe, pageinfo_pagelist_url) -%></td>
+        <%- if @showcontent == 'all' -%>
+        <td><%= "<span>#{Page.all_recent.count}</span> pages".html_safe -%></td>
+        <td><%= "<span>#{Page.all_within_months(12).count}</span> pages".html_safe -%></td>
+        <td><%= "<span>#{Page.all_within_months(24).count}</span> pages".html_safe -%></td>
+        <%- else -%>
         <td><%= link_to("<span>#{Page.recent.count}</span> pages".html_safe, pageinfo_pagelist_url(:recent => 'true')) -%></td>
         <td><%= "<span>#{Page.within_months(12).count}</span> pages".html_safe -%></td>
         <td><%= "<span>#{Page.within_months(24).count}</span> pages".html_safe -%></td>
-
+        <%- end -%>
       </tr>
       <%- @communities.each do |community| -%>
       <tr class="<%= community.is_launched -%>">
@@ -33,13 +49,18 @@
           <td>-</td>
           <td>-</td>
           <%- else -%>
-          <td><%= community.name -%></td>
-          <td><%= Page.tagged_with_any(community.tag_names).pluck("pages.id").uniq.count -%></td>
-          <td><%= Page.tagged_with_any(community.tag_names).recent.pluck("pages.id").uniq.count -%></td>
-          <td><%= Page.tagged_with_any(community.tag_names).within_months(12).pluck("pages.id").uniq.count -%></td>
-          <td><%= Page.tagged_with_any(community.tag_names).within_months(24).pluck("pages.id").uniq.count -%></td>
+            <td><%= community.name -%></td>
+            <td><%= Page.tagged_with_any(community.tag_names).pluck("pages.id").uniq.count -%></td>
+            <%- if @showcontent == 'all' -%>
+              <td><%= Page.tagged_with_any(community.tag_names).all_recent.pluck("pages.id").uniq.count -%></td>
+              <td><%= Page.tagged_with_any(community.tag_names).all_within_months(12).pluck("pages.id").uniq.count -%></td>
+              <td><%= Page.tagged_with_any(community.tag_names).all_within_months(24).pluck("pages.id").uniq.count -%></td>
+            <%- else -%>
+              <td><%= Page.tagged_with_any(community.tag_names).recent.pluck("pages.id").uniq.count -%></td>
+              <td><%= Page.tagged_with_any(community.tag_names).within_months(12).pluck("pages.id").uniq.count -%></td>
+              <td><%= Page.tagged_with_any(community.tag_names).within_months(24).pluck("pages.id").uniq.count -%></td>
+            <%- end -%>
           <%- end -%>
-          </tr>
+        </tr>
       <%- end -%>
-  </table>
 </div>

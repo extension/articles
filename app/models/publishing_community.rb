@@ -20,7 +20,9 @@ class PublishingCommunity < ActiveRecord::Base
 
   validates_format_of :twitter_handle, :facebook_handle, :youtube_handle, :pinterest_handle, :gplus_handle, :with => URI::regexp(%w(http https)), :allow_blank => true
 
-  scope :launched, {:conditions => {:is_launched => true}}
+  scope :launched, -> {where(is_launched: true)}
+  scope :has_ask_group, -> {where("aae_group_id > 0")}
+
 
   scope :tagged_with, lambda{|tagliststring|
     tag_list = Tag.castlist_to_array(tagliststring)

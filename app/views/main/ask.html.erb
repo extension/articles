@@ -1,0 +1,25 @@
+<div id="admin">
+  <h1>Ask a National Expert</h1>
+  <div class="well">
+  <p>Many of our communities take questions at a national level on their subject area utilizing the national <a href="https://ask.extension.org">Ask an Expert</a> platform</p>
+  <p>If the community does not have a link to Ask an Expert and your local state institution(s) participate in the national platform
+    you can <a href="https://ask.extension.org/ask">ask a question</a> to your local state instutition.</p>
+  <p>If your state does not accept questions from Ask an Expert and
+    there's no national subject area for your question, you can also try searching across all Extension sites at <a href="https://search.extension.org">search.extension.org</a></p>
+  </div>
+
+  <table class="table report_table">
+      <thead>
+          <th>Community Name</th>
+          <th>Ask an Expert Link</th>
+      </thead>
+      <%- @communities.each do |community| -%>
+        <tr>
+          <td><%= community.public_name -%></td>
+          <td>
+            <%= link_to("Ask your #{community.primary_tag_name} question".html_safe, "#{community.ask_an_expert_group_url}/ask".html_safe) -%>
+          </td>
+        </tr>
+      <%- end -%>
+    </table>
+</div>
