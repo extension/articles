@@ -111,9 +111,12 @@ class Page < ActiveRecord::Base
   scope :keep, -> {where("keep_published = 1")}
   scope :unpublish, -> {where("keep_published = 0")}
 
-  # recent content
+  # recent new content
   scope :recent, -> {where("source_created_at >= ?",6.months.ago).where("#{self.table_name}.created_at >= ?",6.months.ago)}
   scope :within_months, ->(within_months){where("source_created_at >= ?",within_months.months.ago).where("#{self.table_name}.created_at >= ?",within_months.months.ago)}
+
+  scope :all_recent, -> {where("source_updated_at >= ?",6.months.ago).where("#{self.table_name}.updated_at >= ?",6.months.ago)}
+  scope :all_within_months, ->(within_months){where("source_updated_at >= ?",within_months.months.ago).where("#{self.table_name}.updated_at >= ?",within_months.months.ago)}
 
 
   # returns a class::method::options string to use as a memcache key

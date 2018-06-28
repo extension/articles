@@ -15,6 +15,11 @@ class PageinfoController < ApplicationController
 
   def numbers
     @communities =  PublishingCommunity.all(:order => 'name')
+    if(params[:showcontent] and params[:showcontent] == 'all')
+      @showcontent = 'all'
+    else
+      @showcontent = 'new'
+    end
   end
 
   def find_by_source
