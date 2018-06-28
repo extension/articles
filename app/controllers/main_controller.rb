@@ -18,6 +18,11 @@ class MainController < ApplicationController
     render :template => "/pages/list"
    end
 
+   def ask
+     @page_title = "Ask a National Expert"
+     @communities = PublishingCommunity.launched.has_ask_group.order('public_name')
+   end
+
   def category_tag
 
     if(!@community.nil?)

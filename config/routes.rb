@@ -131,8 +131,10 @@ Darmok::Application.routes.draw do
   match 'main/communities', to:'main#communities', :as => 'main_communities'
   match 'main/set_institution', to:'main#set_institution', :as => 'set_institution'
   match 'main/show_institution_list', to:'main#show_institution_list', :via => [:post], :as => 'show_institution_list'
+  match 'ask-an-expert', to:'main#ask', :as => 'ask_an_expert'
   match ':content_tag', to:'main#community_tag', :as => 'site_index'
   match ':content_tag/about', to:'main#about_community', :as => 'about_community'
+
 
   # this must be last
   # match '*path', to:'application#do_404', :constraints => { :path => /.*/ }
