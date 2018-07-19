@@ -141,6 +141,11 @@
 
     <script class="code" type="text/javascript">
 
+
+    // Remove compromised URLs
+    $("a[href*='bugmugs.org']").removeAttr("href");
+
+
       $('.carousel').carousel({
         interval: 6000
       })
