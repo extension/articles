@@ -2,7 +2,7 @@
 #  Copyright (c) 2005-2009 North Carolina State University
 #  Developed with funding for the National eXtension Initiative.
 # === LICENSE:
-# 
+#
 #  see LICENSE file
 
 class AdminLog < ActiveRecord::Base
@@ -25,6 +25,7 @@ class AdminLog < ActiveRecord::Base
   UPDATE_SPONSOR = 62
   REORDER_SPONSORS = 63
   UPDATE_PUBLIC_CATEGORY = 64
+  UNPUBLISH_PAGE = 100
 
 
   DESCRIPTIONS =  {DELETE_TOPIC => {:description => 'Deleted Topic'},
@@ -41,13 +42,14 @@ class AdminLog < ActiveRecord::Base
                    CREATE_SPONSOR => {:description => 'Created Sponsor'},
                    UPDATE_SPONSOR => {:description => 'Updated Sponsor'},
                    REORDER_SPONSORS => {:description => 'Reordered Sponsors'},
-                   UPDATE_PUBLIC_CATEGORY => {:description => 'Updated public setting for category'}}
+                   UPDATE_PUBLIC_CATEGORY => {:description => 'Updated public setting for category'},
+                   UNPUBLISH_PAGE => {:description => 'Unpublished a page'},}
 
-  
+
   def description
     DESCRIPTIONS.include?(self.event) ? DESCRIPTIONS[self.event][:description] : "Unknown"
   end
-  
+
   def self.log_event(person, event, data = nil)
     newae = self.new do |ae|
       ae.person = person

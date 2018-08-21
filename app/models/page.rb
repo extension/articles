@@ -979,10 +979,14 @@ class Page < ActiveRecord::Base
     true
   end
 
-  def unpublish
+  def unpublish(unpublished_by,additional_comments = '')
     if(self.source == 'create')
       if(create_node = CreateNode.where(nid: self.create_node_id).first)
-        return (create_node.unpublish and create_node.inject_unpublish_notice)
+        success = (create_node.unpublish(unpublished_by) and create_node.inject_unpublish_notice(Date.today,additional_comments))
+        if(success)
+          AdminLog.log_event(unpublished_by, AdminLog::UNPUBLISH_PAGE,{:page_id => self.id, :source_url => self.source_url})
+        end
+        return success
       else
         return false
       end

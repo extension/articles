@@ -7,7 +7,7 @@
 
 class PageinfoController < ApplicationController
   before_filter :signin_optional
-  before_filter :signin_required, only: [:wxr]
+  before_filter :signin_required, only: [:wxr,:redirect,:stop_redirect]
   before_filter :set_content_tag_and_community
   before_filter :www_store_location
   before_filter :turn_off_resource_areas
