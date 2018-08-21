@@ -14,11 +14,12 @@ class CreateNode < ActiveRecord::Base
   bad_attribute_names :changed
 
 
-  def unpublish(unpublished_by,mark_inactive = true)
+  def unpublish(unpublished_by,mark_inactive = true,set_unpublished_at = true)
     if(cnw = CreateNodeWorkflow.where(node_id: self.nid).last)
       unix_timestamp = Time.now.utc.to_i
-      # Note: setting 'unpublished at' to nil is a hack to
-      # keep it out of the deleted items atom feed
+      # note: if set_unpublished_at is false, using a nil timestamp is a hack
+      # to keep it out of the deleted items feed.  If running this across
+      # a whole gigantic set of content, you want to handle deletion separately
       cnw.update_attributes(active: false,
                             status_text: 'Draft',
                             status: 1,
@@ -26,7 +27,7 @@ class CreateNode < ActiveRecord::Base
                             draft_status: nil,
                             draft_status_text: nil,
                             published_at: nil,
-                            unpublished_at: nil,
+                            unpublished_at: (set_unpublished_at ? unix_timestamp : nil),
                             published_revision_id: nil,
                             changed: unix_timestamp)
 
