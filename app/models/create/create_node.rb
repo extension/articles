@@ -14,7 +14,7 @@ class CreateNode < ActiveRecord::Base
   bad_attribute_names :changed
 
 
-  def unpublish(mark_inactive = true)
+  def unpublish(unpublished_by,mark_inactive = true)
     if(cnw = CreateNodeWorkflow.where(node_id: self.nid).last)
       unix_timestamp = Time.now.utc.to_i
       # Note: setting 'unpublished at' to nil is a hack to
@@ -33,7 +33,7 @@ class CreateNode < ActiveRecord::Base
       # need some workflow events
       CreateNodeWorkflowEvent.create(node_id: self.nid,
                                      node_workflow_id: cnw.nwid,
-                                     user_id: 1,
+                                     user_id: unpublished_by.id,
                                      revision_id: cnw.current_revision_id,
                                      event_id: CreateNodeWorkflowEvent::UNPUBLISHED,
                                      description: 'unpublished',
@@ -41,7 +41,7 @@ class CreateNode < ActiveRecord::Base
       if(mark_inactive)
         CreateNodeWorkflowEvent.create(node_id: self.nid,
                                        node_workflow_id: cnw.nwid,
-                                       user_id: 1,
+                                       user_id: unpublished_by.id,
                                        revision_id: cnw.current_revision_id,
                                        event_id: CreateNodeWorkflowEvent::INACTIVE,
                                        description: 'made inactive',
@@ -102,15 +102,19 @@ class CreateNode < ActiveRecord::Base
     end
   end
 
-  def inject_unpublish_notice(unpublish_date = Date.today)
+  def inject_unpublish_notice(unpublish_date = Date.today, additional_comments = '')
     if(body = CreateFieldDataBody.where(bundle: self.type).where(entity_id: self.nid).first)
       body_block = <<-END_TEXT.gsub(/\s+/, " ").strip
       <div id="content_removal_notes" style="background: #f47c28;border:1px solid #000;color:#000;">
-      <p>On #{unpublish_date.strftime('%B %e, %Y')}, this content was automatically unpublished and marked as inactive.
-      Please feel free to rework this page, along with properly indicating the copyright for all
-      included images and republish it as appropriate.</p>
-      <p>Do not hesitate to <a href="http://create.extension.org/node/99714">Contact
-      our Community Support staff</a> with any questions you may have.</p></div>
+        <p>On #{unpublish_date.strftime('%B %e, %Y')}, this content was automatically unpublished and marked as inactive.
+        Please feel free to rework this page, along with properly indicating the copyright for all
+        included images and republish it as appropriate.</p>
+        <p>#{additional_comments}</p>
+        <p>Do not hesitate to email us at
+        <a href="mailto:contact-us@extension.org">contact-us@extension.org</a>
+        with any questions you may have.
+        </p>
+      </div>
       <br/>
       END_TEXT
 
