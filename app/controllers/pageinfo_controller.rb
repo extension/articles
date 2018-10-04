@@ -180,6 +180,16 @@ class PageinfoController < ApplicationController
     end
   end
 
+  def wxr_by_tag
+    previous_page_id = params[:page_id]
+    tag = params[:tag]
+    #find all pages by tag
+    @tagged_pages = Page.tagged_with(tag)
+    #create wxr file
+    wxr_export = render_to_string(:layout => false, :formats => [:xml])
+    send_data(wxr_export, :type=>"application/xml; charset=utf-8; header=present",:disposition => "attachment; filename=#{tag}_pages_#{Time.zone.now.strftime('%Y%m%d%H%M')}.xml")
+  end
+
   def wxr
     @page = Page.find(params[:id])
     # reprocess the links in the content in order to make absolute links

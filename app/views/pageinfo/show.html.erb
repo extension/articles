@@ -100,6 +100,14 @@
     <%- else -%>
     <li><%= link_to("Redirect this page to another URL",pageinfo_page_redirect_path(id: @page.id)) -%></li>
     <%- end -%>
+    <li>
+      Enter tag name to export all pages:
+      <%= form_tag(pageinfo_wxr_by_tag_path, :method => "get") do %>
+        <%= search_field_tag :tag, params[:tag] %>
+        <%= submit_tag "submit", :name => nil, :id => "submit"%>
+        <%= hidden_field_tag :page_id , @page.id %>
+      <% end %>
+    </li>
   </ul>
   <%- end -%>
 
