@@ -4,6 +4,9 @@
    Global Styles (overrides boostrap framework)
    ========================================================================== */
 
+.admin-container {background: #fff; padding: 1em 2em;}
+.admin-container th, .no-wrap {white-space: nowrap;}
+
 body {
 	background: #DDD url(/assets/frontporch/background_bg.jpg) 0 0 repeat fixed;
 	height:100%;

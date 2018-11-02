@@ -1,0 +1,33 @@
+<div id="admin">
+    <p><%= link_to 'Admin home', :controller=>'admin', :action => 'index' %></p>
+    <h2>Content with Shared Ownership</h2>
+    <h2>Total: <%= number_with_delimiter(@total_pages) -%></h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Article ID</th>
+            <th scope="col">Source Updated</th>
+            <th scope="col">Title / URL</th>
+            <th scope="col">CoP Count</th>
+            <th scope="col">CoPs</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          <%- @pages.each do |page| -%>
+          <%- if page.community_tags.size > 1 -%>
+      		<tr>
+            <td><%= page.id -%></td>
+
+            <td class="no-wrap"><%= time_ago_in_words(page.source_updated_at) -%> ago</td>
+            <td><%= link_to(page.title,page_url(:id => page.id, :title => page.url_title), target: :_blank) %> <br /><small><%= humane_date(page.source_updated_at) %></small></td>
+            <td><%= page.community_tags.size -%></td>
+
+            <td><%= page.community_tag_names.join(', ') -%></td>
+          </tr>
+          <%- end -%>
+          <%- end -%>
+
+        </tbody>
+    </table>
+</div>

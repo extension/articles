@@ -15,6 +15,13 @@ class AdminController < ApplicationController
     set_title("eXtension Pubsite Admin")
   end
 
+  def shared_ownership
+    set_title("Content with Shared Ownership")
+    @pages = Page.has_multiple_community_tags()
+    @total_pages = @pages.length
+    render :layout => 'admin'
+  end
+
   def manage_communities
     set_title("Manage Communities - Pubsite Admin")
     @communities =  PublishingCommunity.all(:order => 'name')
