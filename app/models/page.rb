@@ -563,6 +563,26 @@ class Page < ActiveRecord::Base
     tmp_url_title.truncate(URL_TITLE_LENGTH,{:omission => '', :separator => ' '})
   end
 
+  def make_wordpress_permalink_title
+    # make an initial downcased copy - don't want to modify name as a side effect
+    tmp_url_title = self.title.downcase
+    # handle accented characters
+    tmp_url_title = I18n.transliterate(tmp_url_title)
+    # get rid of anything that's not a "word", not whitespace, not : and not -
+    tmp_url_title.gsub!(/[^\s0-9a-zA-Z:-]/,'')
+    # reduce whitespace/multiple spaces to a single space
+    tmp_url_title.gsub!(/\s+/,' ')
+    # remove leading and trailing whitespace
+    tmp_url_title.strip!
+    # convert spaces and underscores to dashes
+    tmp_url_title.gsub!(/[ _]/,'-')
+    # reduce multiple dashes to a single dash
+    tmp_url_title.gsub!(/-+/,'-')
+    # truncate
+    tmp_url_title.truncate(URL_TITLE_LENGTH,{:omission => '', :separator => ' '})
+  end
+
+
 
   def id_and_link(only_path = false, params = {})
     default_url_options[:host] = Settings.urlwriter_host
@@ -581,6 +601,7 @@ class Page < ActiveRecord::Base
   def href_url(make_internal_links_absolute = false)
     self.id_and_link(!make_internal_links_absolute)
   end
+
 
   def to_atom_entry
     Atom::Entry.new do |e|
@@ -616,7 +637,7 @@ class Page < ActiveRecord::Base
     return source_uri.host
   end
 
-  def convert_links(make_internal_links_absolute = false)
+  def convert_links(make_internal_links_absolute = false, convert_cop_links_to_wordpress_permalinks = false, tagged_pages = false)
     returninfo = {:invalid => 0, :wanted => 0, :ignored => 0, :internal => 0, :external => 0, :mailto => 0, :category => 0, :directfile => 0, :local => 0}
     # walk through the anchor tags and pull out the links
     converted_content = Nokogiri::HTML::DocumentFragment.parse(original_content)
@@ -697,6 +718,18 @@ class Page < ActiveRecord::Base
             if(!original_uri.fragment.blank?)
               newhref += "##{original_uri.fragment}"
             end
+
+            if (convert_cop_links_to_wordpress_permalinks)
+              page = Page.find link.page_id
+              if (tagged_pages.include?(page))
+                newhref = page.make_wordpress_permalink_title
+              end
+              # newhref = I18n.transliterate(newhref)
+              # newhref.gsub!(/[^0-9A-Za-z\-]/, '')
+              # newhref = newhref.make_wordpress_permalink_title
+              newhref = "/" + newhref
+            end
+
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'internal_link')
             returninfo[:internal] += 1
@@ -706,8 +739,46 @@ class Page < ActiveRecord::Base
             if(!original_uri.fragment.blank?)
               newhref += "##{original_uri.fragment}"
             end
+
+            if (convert_cop_links_to_wordpress_permalinks)
+              if newhref.include? "/faq/"
+                faq_number = newhref.scan(/\d+/).first
+                page = Page.find_by_migrated_id(faq_number)
+                if page
+                  newhref = "/" + page.url_title
+                end
+              end
+              if newhref.include? "/pages/"
+                newhref = newhref.split('/pages/')[-1]
+                raw_title_to_lookup = CGI.unescape(newhref.gsub('/pages/', ''))
+                # comes in double-escaped from apache to handle the infamous '?'
+                raw_title_to_lookup = CGI.unescape(raw_title_to_lookup)
+                # why is this?
+                raw_title_to_lookup.gsub!('??.html', '?')
+
+                # try and handle googlebot urls that have the page params on the end for redirection (new urls automatically handled)
+                (title_to_lookup,blah) = raw_title_to_lookup.split(%r{(.+)\?})[1,2]
+                if(!title_to_lookup)
+                  title_to_lookup = raw_title_to_lookup
+                end
+
+                page = Page.find_by_legacy_title_from_url(title_to_lookup)
+
+                if page
+                  newhref = "/" + page.url_title
+                end
+              end
+              if newhref.include? "/category/"
+                newhref = newhref.split('/category/')[-1]
+                newhref = CGI.unescape(newhref)
+                newhref = newhref.gsub(' ', '-')
+                newhref = "/tag/" + newhref
+              end
+            end
+
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'local_link')
+            anchor.set_attribute('title', newhref)
             returninfo[:local] += 1
           when Link::EXTERNAL
             newhref = link.href_url

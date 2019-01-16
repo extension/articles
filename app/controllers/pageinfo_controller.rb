@@ -183,6 +183,7 @@ class PageinfoController < ApplicationController
   def wxr_by_tag
     previous_page_id = params[:page_id]
     tag = params[:tag]
+    # @cop_tag = params[:tag]
     #find all pages by tag
     @tagged_pages = Page.tagged_with(tag)
     #create wxr file
