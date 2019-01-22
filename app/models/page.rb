@@ -749,23 +749,34 @@ class Page < ActiveRecord::Base
                 end
               end
               if newhref.include? "/pages/"
-                newhref = newhref.split('/pages/')[-1]
-                raw_title_to_lookup = CGI.unescape(newhref.gsub('/pages/', ''))
-                # comes in double-escaped from apache to handle the infamous '?'
-                raw_title_to_lookup = CGI.unescape(raw_title_to_lookup)
-                # why is this?
-                raw_title_to_lookup.gsub!('??.html', '?')
+                page_id = newhref.scan(/\/\d+\//).first
+                if page_id
+                  page_id = page_id.gsub('/','')
+                  page = Page.find_by_id page_id
+                  if page
+                    newhref = "/" + page.make_wordpress_permalink_title
+                  end
+                else
+                  newhref = newhref.split('/pages/')[-1]
+                  raw_title_to_lookup = CGI.unescape(newhref.gsub('/pages/', ''))
+                  # comes in double-escaped from apache to handle the infamous '?'
+                  raw_title_to_lookup = CGI.unescape(raw_title_to_lookup)
+                  # why is this?
+                  raw_title_to_lookup.gsub!('??.html', '?')
 
-                # try and handle googlebot urls that have the page params on the end for redirection (new urls automatically handled)
-                (title_to_lookup,blah) = raw_title_to_lookup.split(%r{(.+)\?})[1,2]
-                if(!title_to_lookup)
-                  title_to_lookup = raw_title_to_lookup
-                end
+                  # try and handle googlebot urls that have the page params on the end for redirection (new urls automatically handled)
+                  (title_to_lookup,blah) = raw_title_to_lookup.split(%r{(.+)\?})[1,2]
+                  if(!title_to_lookup)
+                    title_to_lookup = raw_title_to_lookup
+                  end
 
-                page = Page.find_by_legacy_title_from_url(title_to_lookup)
+                  page = Page.find_by_legacy_title_from_url(title_to_lookup)
 
-                if page
-                  newhref = "/" + page.url_title
+                  if page
+                    newhref = "/" + page.url_title
+                  else
+                    newhref = "/" + newhref
+                  end
                 end
               end
               if newhref.include? "/category/"
