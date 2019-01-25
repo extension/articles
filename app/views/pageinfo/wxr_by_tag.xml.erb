@@ -16,6 +16,7 @@
 	<wp:base_site_url><%= root_url -%></wp:base_site_url>
 	<wp:base_blog_url><%= root_url -%></wp:base_blog_url>
 
+  <%- @images_in_tagged_pages = [] -%>
   <%- @tagged_pages.each do |page| -%>
     <%- @page = page -%>
     <%- @page.convert_links(true, true, @tagged_pages) -%>
@@ -38,16 +39,23 @@
     </item>
 
     <%- @page.links.image.voldemort.each do |link| -%>
-      <item>
-        <title><%= link.filename -%></title>
-        <link><%= link.href_url -%></link>
-        <guid><%= link.href_url -%></guid>
-        <!-- Probably should be the timestamp on the file, but articles doesn't store that separately -->
-        <pubDate><%= @page.source_updated_at.to_s(:rfc822) -%></pubDate>
-        <content:encoded><![CDATA[]]></content:encoded>
-        <wp:post_type><![CDATA[attachment]]></wp:post_type>
-        <wp:attachment_url><![CDATA[<%= link.href_url -%>]]></wp:attachment_url>
-      </item>
+
+      <%- unless @images_in_tagged_pages.include?(link.href_url) -%>
+
+        <item>
+          <title><%= link.filename -%></title>
+          <link><%= link.href_url -%></link>
+          <guid><%= link.href_url -%></guid>
+          <!-- Probably should be the timestamp on the file, but articles doesn't store that separately -->
+          <pubDate><%= @page.source_updated_at.to_s(:rfc822) -%></pubDate>
+          <content:encoded><![CDATA[]]></content:encoded>
+          <wp:post_type><![CDATA[attachment]]></wp:post_type>
+          <wp:attachment_url><![CDATA[<%= link.href_url -%>]]></wp:attachment_url>
+        </item>
+
+      <%- end -%>
+      <%- @images_in_tagged_pages << link.href_url -%>
+
     <%- end -%>
   <%- end -%>
 </channel>
