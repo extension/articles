@@ -101,6 +101,7 @@ Darmok::Application.routes.draw do
   match 'pageinfo/:id/stop_redirect', to:'pageinfo#stop_redirect', :as => 'pageinfo_page_stop_redirect', :constraints => { :id => /\d+/ }
   match 'pageinfo/:id/redirect', to:'pageinfo#redirect', :as => 'pageinfo_page_redirect', :constraints => { :id => /\d+/ }
   match 'pageinfo/:id/wxr', to:'pageinfo#wxr', :as => 'pageinfo_wxr', :constraints => { :id => /\d+/ }
+  match 'pageinfo/wxr_by_tag', to:'pageinfo#wxr_by_tag', :as => 'pageinfo_wxr_by_tag'
   match 'pageinfo/:id', to:'pageinfo#show', :as => 'pageinfo_page'
 
   # legacy routes to 410
