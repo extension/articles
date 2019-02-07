@@ -1182,5 +1182,5 @@ footer p {
 
 
 .batch-export {background: #eee; padding:.5em 1.5em; margin: 2em 0;}
-.admin-only {color: red; background: #fff; padding:.25em 1em;}
+.admin-only {color: red;}
 .batch-export form, .batch-export h3 {padding:0; margin:0;}

@@ -180,6 +180,9 @@ class PageinfoController < ApplicationController
     end
   end
 
+  def batch_redirect
+  end
+
   def wxr_by_tag
     previous_page_id = params[:page_id]
     tag = params[:tag]
