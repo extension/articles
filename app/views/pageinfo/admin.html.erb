@@ -1,0 +1,34 @@
+<h1>Admin Export and Redirect Options</h1>
+<p class="admin-only">Only admins can see this tool.</p>
+
+<%- if(current_person and current_person.is_admin?) -%>
+  <div class="batch-export">
+
+    <h3>Batch Export by Tag</h3>
+
+    <p>Enter tag name to export all pages</p>
+    <%= form_tag(pageinfo_wxr_by_tag_path, :method => "get") do %>
+      <%= search_field_tag :tag, params[:tag] %>
+      <%= submit_tag "submit", :name => nil, :id => "submit"%>
+    <% end %>
+  </div>
+
+  <div class="batch-export">
+
+    <h3>Batch Redirect by Tag to a New Domain</h3>
+
+    <p>Construct a new page slug using the WordPress Permalink structure for each page with the following tag and redirect to the new URL</p>
+    <%= form_tag({controller: "pageinfo", action: "batch_redirect"}, method: "post", class: "") do %>
+
+    <div class="form-group">
+      <h3><label for="cop_tag" class="control-label">CoP tag</label></h3>
+      <%= text_field_tag("cop_tag" ) -%>
+      <h3><label for="cop_tag" class="control-label">New WordPress Site Domain</label></h3>
+      <p>example: https://blah.extension.org</p>
+      <%= text_field_tag("wordpress_domain" ) -%>
+      <p><%= submit_tag "Batch Convert URLs", :class => "btn btn-default btn-lg btn-danger" %></p>
+    </div>
+
+    <% end %>
+  </div>
+<%- end -%>
