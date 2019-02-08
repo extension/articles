@@ -4,7 +4,7 @@
 <%- if(current_person and current_person.is_admin?) -%>
   <div class="batch-export">
 
-    <h3>Batch Export by Tag</h3>
+    <h3>Batch WordPress XML Export by Tag</h3>
 
     <p>Enter tag name to export all pages</p>
     <%= form_tag(pageinfo_wxr_by_tag_path, :method => "get") do %>
