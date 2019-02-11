@@ -1,0 +1,56 @@
+<%- @body_id = "fullwidth" -%>
+
+<div id="flash">
+  <%= render(partial: 'partial/flashmessages') %>
+</div>
+
+<div class="well">
+  <h2>You are about to batch redirect a set of pages. This means...</h2>
+
+  <p>Any page tagged with <strong><%= @tag -%></strong> will have a new page slug constructed using the WordPress Permalink format and redirected to that location on <strong><%= @wordpress_domain -%></strong>/.</p>
+
+  <ul>
+    <li>Any link to the page URL whether external or internal to Articles, will immediately redirect to the listed URL</li>
+    <li>The page will not be listed in automated category listings, nor shown as a feature.</li>
+    <li>Workflow controls on the page node in Create will be disabled. The node cannot be republished.</li>
+  </ul>
+
+  <h3>This action will affect <%= @tagged_pages.all.count -%> pages.</h3>
+  <h3>New domain: <strong><%= @wordpress_domain -%></strong></h3>
+</div>
+
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Redirected</th>
+      <th>Article URL</th>
+      <th>Article Title</th>
+      <th>WordPress Permalink URL</th>
+      <th>Redirect URL</th>
+    </tr>
+  </thead>
+
+  <%- @tagged_pages.each do |page| -%>
+    <%- @page = page -%>
+    <tr>
+      <td><%= @page.redirect_page -%></td>
+      <td><%= pageid_url(id: @page.id) -%></td>
+      <td><%= @page.title -%></td>
+      <td>/<%= page.make_wordpress_permalink_title -%></td>
+      <td><%= @page.redirect_url -%></td>
+    </tr>
+  <%- end -%>
+</table>
+
+
+<%= form_tag pageinfo_batch_redirect_path do %>
+  <%= hidden_field_tag(:tag, @tag) %>
+  <%= hidden_field_tag(:wordpress_domain, @wordpress_domain) %>
+  <p>
+    <%= submit_tag 'Redirect ALL Pages', :class => "btn btn-lg btn-default btn-danger"%>
+    <%= link_to "Cancel", pageinfo_admin_path, :class => "btn btn-default" %>
+  </p>
+
+<% end %>
