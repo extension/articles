@@ -101,22 +101,6 @@
     <li><%= link_to("Redirect this page to another URL",pageinfo_page_redirect_path(id: @page.id)) -%></li>
     <%- end -%>
   </ul>
-
-  <%- if(current_person and current_person.is_admin?) -%>
-    <div class="batch-export">
-
-      <h3>Batch Export</h3>
-
-      <p>Enter tag name to export all pages</p>
-      <%= form_tag(pageinfo_wxr_by_tag_path, :method => "get") do %>
-        <%= search_field_tag :tag, params[:tag] %>
-        <%= submit_tag "submit", :name => nil, :id => "submit"%>
-        <%= hidden_field_tag :page_id , @page.id %>
-      <% end %>
-      <p class="admin-only">Only admins can see this tool.</p>
-    </div>
-  <%- end -%>
-
   <%- end -%>
 
   <%- if @external_links and @external_links.size > 0 -%>

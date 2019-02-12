@@ -13,6 +13,10 @@ class PageinfoController < ApplicationController
   before_filter :turn_off_resource_areas
   layout 'frontporch'
 
+  def admin
+
+  end
+
   def numbers
     @communities =  PublishingCommunity.all(:order => 'name')
     if(params[:showcontent] and params[:showcontent] == 'all')
@@ -181,9 +185,7 @@ class PageinfoController < ApplicationController
   end
 
   def wxr_by_tag
-    previous_page_id = params[:page_id]
     tag = params[:tag]
-    # @cop_tag = params[:tag]
     #find all pages by tag
     @tagged_pages = Page.tagged_with(tag)
     #create wxr file
