@@ -5,6 +5,7 @@
 </div>
 
 <div class="well">
+  <h2>Tag: <span class="giant-tag"><%= @tag -%></span></h2>
   <h2>You are about to batch redirect a set of pages. This means...</h2>
 
   <p>Any page tagged with <strong><%= @tag -%></strong> will have a new page slug constructed using the WordPress Permalink format and redirected to that location on <strong><%= @wordpress_domain -%></strong>/.</p>
@@ -15,42 +16,17 @@
     <li>Workflow controls on the page node in Create will be disabled. The node cannot be republished.</li>
   </ul>
 
+
   <h3>This action will affect <%= @tagged_pages.all.count -%> pages.</h3>
-  <h3>New domain: <strong><%= @wordpress_domain -%></strong></h3>
+  <h3>New domain: <span class="giant-tag"><%= @wordpress_domain -%></span></h3>
 </div>
 
-
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Redirected</th>
-      <th>Article URL</th>
-      <th>Article Title</th>
-      <th>WordPress Permalink URL</th>
-      <th>Redirect URL</th>
-    </tr>
-  </thead>
-
-  <%- @tagged_pages.each do |page| -%>
-    <%- @page = page -%>
-    <tr>
-      <td><%= @page.redirect_page -%></td>
-      <td><%= pageid_url(id: @page.id) -%></td>
-      <td><%= @page.title -%></td>
-      <td>/<%= page.make_wordpress_permalink_title -%></td>
-      <td><%= @page.redirect_url -%></td>
-    </tr>
-  <%- end -%>
-</table>
-
-
-<%= form_tag pageinfo_batch_redirect_path do %>
+<%= form_tag({controller: "admin", action: "batch_redirect"}, method: "post") do %>
   <%= hidden_field_tag(:tag, @tag) %>
   <%= hidden_field_tag(:wordpress_domain, @wordpress_domain) %>
   <p>
-    <%= submit_tag 'Redirect ALL Pages', :class => "btn btn-lg btn-default btn-danger"%>
-    <%= link_to "Cancel", pageinfo_admin_path, :class => "btn btn-default" %>
+    <%= submit_tag 'Redirect ALL Pages to the new WordPress domain', :class => "btn btn-large btn-default btn-danger"%>
+    <%= link_to "Cancel", admin_manage_exports_and_redirects_path(tag: @tag),  :class => "btn btn-large btn-default" %>
   </p>
 
 <% end %>

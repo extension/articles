@@ -57,6 +57,7 @@ Darmok::Application.routes.draw do
   match 'admin/:action/:id', :controller => 'admin'
   match 'admin/:action', :controller => 'admin'
   match 'admin', to: 'admin#index', :as => 'admin_index'
+  match 'admin/manage_exports_and_redirects', to: 'admin#manage_exports_and_redirects', :as => 'admin_manage_exports_and_redirects'
   match 'admin/edit_institution_logo', to: 'admin#edit_institution_logo', :as => 'admin_edit_institutional_logo'
 
   match 'notice/admin_required', to: 'notice#admin_required'
@@ -98,7 +99,6 @@ Darmok::Application.routes.draw do
   match 'pageinfo/source', to:'pageinfo#find_by_source', :as => 'pageinfo_findsource'
   match 'pageinfo/orphaned', to:'pageinfo#orphaned', :as => 'pageinfo_orphaned'
   match 'pageinfo/numbers', to:'pageinfo#numbers', :as => 'pageinfo_numbers'
-  match 'pageinfo/admin', to:'pageinfo#admin', :as => 'pageinfo_admin'
   match 'pageinfo/:id/stop_redirect', to:'pageinfo#stop_redirect', :as => 'pageinfo_page_stop_redirect', :constraints => { :id => /\d+/ }
   match 'pageinfo/:id/redirect', to:'pageinfo#redirect', :as => 'pageinfo_page_redirect', :constraints => { :id => /\d+/ }
   match 'pageinfo/:id/wxr', to:'pageinfo#wxr', :as => 'pageinfo_wxr', :constraints => { :id => /\d+/ }

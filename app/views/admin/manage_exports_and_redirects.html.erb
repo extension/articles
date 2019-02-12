@@ -1,0 +1,77 @@
+<%- @body_id = "fullwidth" -%>
+
+<div id="flash">
+  <%= render(partial: 'partial/flashmessages') %>
+</div>
+
+<p><%= link_to "Admin home", admin_index_path, :class => "btn btn-default btn-link" %></p>
+
+<h1>Tag-based Batch Export and Redirects</h1>
+
+<%- if !@tag.present? -%>
+
+  <div class="batch-export">
+    <h3>Enter a tag to see export and redirect options</h3>
+    <%= form_tag({controller: "admin", action: "manage_exports_and_redirects"}, method: "get", class: "") do %>
+      <p><%= search_field_tag :tag, params[:tag] %></p>
+      <p><%= submit_tag "Get a Summary For This Tag", :name => nil, :id => "submit", :class => "btn btn-default btn-large"%></p>
+    <% end %>
+  </div>
+
+<%- else -%>
+  <h2>Tag: <span class="giant-tag"><%= @tag -%></span></h2>
+
+  <div class="batch-export">
+  <h3>Batch WordPress XML Export</h3>
+  <h4>There are <%= @tagged_pages.all.count -%> Pages tagged with <strong><%= @tag -%></strong></h4>
+  <%= form_tag(pageinfo_wxr_by_tag_path, :method => "get") do %>
+    <%= hidden_field_tag(:tag, @tag) %>
+    <p><%= submit_tag "Download WordPress XML file", :name => nil, :id => "submit", :class => "btn btn-default btn-primary btn-large"%></p>
+  <% end %>
+  </div>
+
+
+
+  <h2><%= @tagged_pages.all.count -%> Pages tagged <%= @tag -%></h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Article URL</th>
+        <th>Article Title</th>
+        <th>WordPress Permalink URL Preview</th>
+        <th>Redirected</th>
+        <th>Redirect URL</th>
+      </tr>
+    </thead>
+
+    <%- @tagged_pages.each do |page| -%>
+      <%- @page = page -%>
+      <tr>
+        <td><%= pageid_url(id: @page.id) -%></td>
+        <td><%= @page.title -%></td>
+        <td>/<%= page.make_wordpress_permalink_title -%></td>
+        <td><%= @page.redirect_page -%></td>
+        <td><%= @page.redirect_url -%></td>
+      </tr>
+    <%- end -%>
+  </table>
+
+  <div class="batch-export">
+
+    <h3>Redirect all the above pages to a new domain</h3>
+
+    <p>Construct a new page slug using the WordPress Permalink structure for each page with the following tag and redirect to the new URL</p>
+
+    <%= form_tag({controller: "admin", action: "batch_redirect_confirmation"}, method: "post", class: "") do %>
+      <div class="form-group">
+        <h3><label for="wordpress_domain" class="control-label">New WordPress Site Domain</label></h3>
+        <p>example: https://blah.extension.org</p>
+        <%= text_field_tag("wordpress_domain" ) -%>
+        <%= hidden_field_tag(:tag, @tag) %>
+        <p><%= submit_tag "Preview this change", :class => "btn btn-default btn-large btn-primary" %></p>
+      </div>
+    <% end %>
+
+  </div>
+
+<%- end -%>
