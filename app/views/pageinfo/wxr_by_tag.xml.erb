@@ -71,7 +71,7 @@
           <pubDate><%= @page.source_updated_at.to_s(:rfc822) -%></pubDate>
           <content:encoded><![CDATA[]]></content:encoded>
           <wp:post_type><![CDATA[attachment]]></wp:post_type>
-          <wp:attachment_url><![CDATA[/wp-content/uploads/<%= Date.today.strftime("%Y/%m") -%>/<%= link.make_wordpress_file_name -%>.pdf]]></wp:attachment_url>
+          <wp:attachment_url><![CDATA[<%= link.href_url -%>]]></wp:attachment_url>
         </item>
 
       <%- end -%>
