@@ -817,6 +817,13 @@ class Page < ActiveRecord::Base
             returninfo[:category] += 1
           when Link::DIRECTFILE
             newhref = link.href_url
+
+            if (convert_cop_links_to_wordpress_permalinks)
+              if newhref.downcase.include? ".pdf"
+                newhref = link.make_wordpress_file_name
+                newhref = "/wp-content/uploads/" + Date.today.strftime("%Y/%m") + "/" + newhref.to_s + ".pdf"
+              end
+            end
             # ignore the fragment
             anchor.set_attribute('href', newhref)
             anchor.set_attribute('class', 'file_link')
