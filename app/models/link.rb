@@ -121,6 +121,7 @@ class Link < ActiveRecord::Base
   def make_wordpress_file_name
     # remove the path and get the file name
     tmp_url_title = File.basename( self.href_url )
+    file_extension = File.extname( self.href_url ).downcase
     # remove extension
     tmp_url_title = tmp_url_title.rpartition('.').first
     # handle accented characters
@@ -135,6 +136,7 @@ class Link < ActiveRecord::Base
     tmp_url_title.gsub!(/[ _]/,'-')
     # reduce multiple dashes to a single dash
     tmp_url_title.gsub!(/-+/,'-')
+    tmp_url_title = tmp_url_title + file_extension
   end
 
   def href_url(make_internal_links_absolute = false)
