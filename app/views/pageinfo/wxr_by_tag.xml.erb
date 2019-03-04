@@ -57,5 +57,27 @@
       <%- @images_in_tagged_pages << link.href_url -%>
 
     <%- end -%>
+
+    <%- @page.links.file.voldemort.each do |link| -%>
+
+      <%- if link.href_url.downcase.include? ".pdf" -%>
+      <%- unless @images_in_tagged_pages.include?(link.href_url) -%>
+
+        <item>
+          <title><%= link.filename -%></title>
+          <link><%= link.href_url -%></link>
+          <guid><%= link.href_url -%></guid>
+          <!-- Probably should be the timestamp on the file, but articles doesn't store that separately -->
+          <pubDate><%= @page.source_updated_at.to_s(:rfc822) -%></pubDate>
+          <content:encoded><![CDATA[]]></content:encoded>
+          <wp:post_type><![CDATA[attachment]]></wp:post_type>
+          <wp:attachment_url><![CDATA[<%= link.href_url -%>]]></wp:attachment_url>
+        </item>
+
+      <%- end -%>
+      <%- @images_in_tagged_pages << link.href_url -%>
+      <%- end -%>
+
+    <%- end -%>
   <%- end -%>
 </channel>
