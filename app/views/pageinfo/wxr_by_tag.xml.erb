@@ -60,7 +60,8 @@
 
     <%- @page.links.file.voldemort.each do |link| -%>
 
-      <%- if link.href_url.downcase.include? ".pdf" -%>
+
+      <%- if [".pdf", ".doc", ".xls"].any? { |files| link.href_url.downcase.include? files } -%>
       <%- unless @images_in_tagged_pages.include?(link.href_url) -%>
 
         <item>

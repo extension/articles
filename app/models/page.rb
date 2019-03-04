@@ -819,9 +819,10 @@ class Page < ActiveRecord::Base
             newhref = link.href_url
 
             if (convert_cop_links_to_wordpress_permalinks)
-              if newhref.downcase.include? ".pdf"
+              # if newhref.downcase.include? ".pdf"
+              if [".pdf", ".doc", ".xls"].any? { |files| newhref.downcase.include? files }
                 newhref = link.make_wordpress_file_name
-                newhref = "/wp-content/uploads/" + Date.today.strftime("%Y/%m") + "/" + newhref.to_s + ".pdf"
+                newhref = "/wp-content/uploads/" + Date.today.strftime("%Y/%m") + "/" + newhref.to_s
               end
             end
             # ignore the fragment
