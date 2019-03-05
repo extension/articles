@@ -822,7 +822,8 @@ class Page < ActiveRecord::Base
               # if newhref.downcase.include? ".pdf"
               if [".pdf", ".doc", ".xls"].any? { |files| newhref.downcase.include? files }
                 # newhref = link.make_wordpress_file_name
-                newhref = "/wp-content/uploads/" + Date.today.strftime("%Y/%m") + "/" + newhref.to_s
+                file_basename = File.basename( link.href_url )
+                newhref = "/wp-content/uploads/" + Date.today.strftime("%Y/%m") + "/" + file_basename.to_s
               end
             end
             # ignore the fragment
