@@ -821,7 +821,7 @@ class Page < ActiveRecord::Base
             if (convert_cop_links_to_wordpress_permalinks)
               # if newhref.downcase.include? ".pdf"
               if [".pdf", ".doc", ".xls"].any? { |files| newhref.downcase.include? files }
-                newhref = link.make_wordpress_file_name
+                # newhref = link.make_wordpress_file_name
                 newhref = "/wp-content/uploads/" + Date.today.strftime("%Y/%m") + "/" + newhref.to_s
               end
             end
