@@ -118,6 +118,10 @@ class Link < ActiveRecord::Base
     end
   end
 
+  def get_file_base
+    tmp_url_title = File.basename( self.href_url )
+  end
+
   def make_wordpress_file_name
     # remove the path and get the file name
     tmp_url_title = File.basename( self.href_url )
