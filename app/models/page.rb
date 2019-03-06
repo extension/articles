@@ -724,9 +724,6 @@ class Page < ActiveRecord::Base
               if (tagged_pages.include?(page))
                 newhref = page.make_wordpress_permalink_title
               end
-              # newhref = I18n.transliterate(newhref)
-              # newhref.gsub!(/[^0-9A-Za-z\-]/, '')
-              # newhref = newhref.make_wordpress_permalink_title
               newhref = "/" + newhref
             end
 
