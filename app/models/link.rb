@@ -118,6 +118,16 @@ class Link < ActiveRecord::Base
     end
   end
 
+  def convert_file_base_to_wordpress
+    tmp_url_title = File.basename( self.href_url )
+    # reduce whitespace/multiple spaces to a single space
+    tmp_url_title.gsub!(/\s+/,' ')
+    # remove leading and trailing whitespace
+    tmp_url_title.strip!
+    # convert spaces to dashes
+    tmp_url_title.gsub!(/[ ]/,'-')
+  end
+
   def make_wordpress_file_name
     # remove the path and get the file name
     tmp_url_title = File.basename( self.href_url )
