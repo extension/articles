@@ -122,16 +122,16 @@ class Link < ActiveRecord::Base
     tmp_url_title = File.basename( self.href_url )
     # handle accented characters
     tmp_url_title = I18n.transliterate(tmp_url_title)
-    # get rid of anything that's not a "word", not whitespace, not :, not -, not _
-    tmp_url_title.gsub(/[^\s0-9a-zA-Z:-_]/,'')
+    # get rid of anything that's not a "word", not whitespace, not :, not -, not _, not .
+    tmp_url_title = tmp_url_title.gsub(/[^\s0-9a-zA-Z:-_.]/,'')
     # reduce whitespace/multiple spaces to a single space
     tmp_url_title = tmp_url_title.gsub(/\s+/,' ')
     # remove leading and trailing whitespace
-    tmp_url_title.strip
+    tmp_url_title = tmp_url_title.strip
     # convert spaces to dashes
-    tmp_url_title.gsub(/[ ]/,'-')
+    tmp_url_title = tmp_url_title.gsub(/[ ]/,'-')
     # reduce multiple dashes to a single dash
-    tmp_url_title.gsub(/-+/,'-')
+    tmp_url_title = tmp_url_title.gsub(/-+/,'-')
   end
 
   def href_url(make_internal_links_absolute = false)
