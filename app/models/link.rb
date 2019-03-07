@@ -126,7 +126,7 @@ class Link < ActiveRecord::Base
     # handle accented characters
     tmp_url_title = I18n.transliterate(tmp_url_title)
     # get rid of anything that's not a "word", not whitespace, not :, not -, not _, not .
-    tmp_url_title = tmp_url_title.gsub(/[^\s0-9a-zA-Z:-_.]/,'')
+    tmp_url_title = tmp_url_title.gsub(/[^\s0-9a-zA-Z:_.-]/,'')
     # reduce whitespace/multiple spaces to a single space
     tmp_url_title = tmp_url_title.gsub(/\s+/,' ')
     # remove leading and trailing whitespace
