@@ -119,6 +119,16 @@ class Page < ActiveRecord::Base
   scope :all_within_months, ->(within_months){where("source_updated_at >= ?",within_months.months.ago).where("#{self.table_name}.updated_at >= ?",within_months.months.ago)}
 
 
+
+  scope :has_multiple_community_tags, lambda{
+    tag_list = Tag.community_tags({:launchedonly => true})
+    in_string = tag_list.map{|t| "'#{t.id}'"}.join(',')
+    joins(:tags).where("tags.id IN (#{in_string})").group("#{self.table_name}.id").having("COUNT(#{self.table_name}.id) > 1")
+  }
+
+
+
+
   # returns a class::method::options string to use as a memcache key
   #
   # @param [String] method_name name of the method (or other string) to associate this cache with

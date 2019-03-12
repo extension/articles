@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8" />
+
+
+
+
+
+  <title><%= (@page_title) ? @page_title + " - eXtension" : "eXtension - Issues. Innovation. Impact." %></title>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width">
+
+
+
+  <% if params[:print] %>
+    <%= stylesheet_link_tag    "print-for-screen", :media => "all" %>
+  <% else %>
+    <%= stylesheet_link_tag    "application", :media => "all" %>
+    <%= stylesheet_link_tag    "print-for-screen", :media => "print" %>
+  <% end %>
+  <%= stylesheet_link_tag    "print", :media => "print" %>
+  <%= javascript_include_tag "application" %>
+  <!--[if lt IE 9]>
+    <%= javascript_include_tag 'html5shiv' %>
+  <![endif]-->
+
+  <link href='https://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+
+  <%- if(current_person and current_person.is_admin?) -%>
+ 	  <div id="adminnotice" class="noprint"><p>You are logged into an admin account (<%= link_to('sign out',logout_path) %>)</p></div>
+  <%- end -%>
+
+  <% if(@app_location_for_display != 'production')%>
+    <div id="app_location" class="<%= @app_location_for_display %>"><p>You are viewing the <strong><%= @app_location_for_display %></strong> site.</p></div>
+  <% end %>
+
+
+  <div class="admin-container">
+
+
+      <%= yield :layout %>
+
+      <hr />
+
+      <%- if @no_show_resource_areas.nil? or !@no_show_resource_areas -%>
+        <%= render(:partial => 'main/resource_areas') %>
+      <%- end -%>
+
+
+
+      <footer>
+        <span id="extension_icon_512" class="pull-left noprint"><img id="extension_logo" src="/assets/extension_logo.jpg" alt="eXtension" /></span>
+        <ul class='inline noprint'>
+          <li><%= link_to "Feeds", "/feeds", {:class => "feeds"} %></li>
+          <li><%= link_to("eXtension Members","https://extension.org/membership/current/")%></li>
+          <li><%= link_to("Privacy","https://extension.org/privacy/")%></li>
+          <li><%= link_to("Contact Us","https://extension.org/contact/")%></li>
+          <li class="last"><%= link_to("Terms of Use","https://extension.org/terms-of-use/")%></li>
+        </ul>
+        <p>&copy; <%= Time.now.utc.year %> eXtension. All rights reserved.</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+  </body>
+</html>
+
+<!--
+  Acknowledgements:
+  This website includes icons from @glyphicons http://glyphicons.com, used under the Creative Commons Attribution 3.0 Unported (CC BY 3.0) license
+  license details: http://creativecommons.org/licenses/by/3.0/deed.en
+-->
