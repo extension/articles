@@ -22,6 +22,87 @@ class AdminController < ApplicationController
     render :layout => 'admin'
   end
 
+  def manage_exports_and_redirects
+    if params[:tag]
+      @tag = params[:tag]
+      @tagged_pages = Page.tagged_with(@tag)
+    end
+  end
+
+  def batch_redirect_confirmation
+    if request.post?
+      tag = params[:tag]
+      wordpress_domain = params[:wordpress_domain]
+
+      if tag.blank?
+        flash[:error] = 'A tag is required to contruct the new URLs'
+        return redirect_to admin_manage_exports_and_redirects_url
+      end
+
+      if wordpress_domain.blank?
+        flash[:error] = 'A domain is required to contruct the new URLs'
+        return redirect_to admin_manage_exports_and_redirects_url(tag: tag)
+      end
+
+      begin
+        uri = URI.parse(wordpress_domain)
+        if(uri.class != URI::HTTP and uri.class != URI::HTTPS)
+          flash[:error] = 'This domain URL must be http:// or https://'
+          return redirect_to admin_manage_exports_and_redirects_url
+        end
+        if(uri.host.nil?)
+          flash[:error] = 'This domain URL must be have a valid host.'
+          return redirect_to admin_manage_exports_and_redirects_url
+        end
+        rescue URI::InvalidURIError
+          flash[:error] = 'This domain URL is not a valid URL.'
+          return redirect_to admin_manage_exports_and_redirects_url
+      end
+
+      @tag = tag
+      @wordpress_domain = wordpress_domain
+      #find all pages by tag
+      @tagged_pages = Page.tagged_with(tag)
+    else
+      return redirect_to admin_manage_exports_and_redirects_url
+    end #if request.post?
+  end
+
+  def batch_redirect
+   if request.post?
+     tag = params[:tag]
+     wordpress_domain = params[:wordpress_domain]
+
+     if tag.blank?
+       flash[:error] = 'A tag is required to contruct the new URLs'
+       return redirect_to admin_manage_exports_and_redirects_url
+     end
+
+     if wordpress_domain.blank?
+       flash[:error] = 'A domain URL is required to contruct the new URLs'
+       return redirect_to admin_manage_exports_and_redirects_url(tag: tag)
+     end
+
+     #find all pages by tag
+     @tagged_pages = Page.tagged_with(tag)
+
+     count = 0
+     @tagged_pages.each do |page|
+       new_url = wordpress_domain + '/' + page.make_wordpress_permalink_title
+       single_page = Page.find(page.id)
+       if(single_page.redirect(new_url,current_person))
+         count += 1
+       else
+         error_messages += page.errors.full_messages.join("<br/>").html_safe
+         flash[:error] = error_messages
+         return redirect_to admin_manage_exports_and_redirects_url(tag: tag)
+       end
+     end
+     flash[:success] = "All pages redirected"
+     return redirect_to admin_manage_exports_and_redirects_url(tag: tag)
+   end
+ end
+
   def manage_communities
     set_title("Manage Communities - Pubsite Admin")
     @communities =  PublishingCommunity.all(:order => 'name')
