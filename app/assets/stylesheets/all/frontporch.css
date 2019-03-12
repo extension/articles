@@ -1182,3 +1182,12 @@ footer p {
 
 .resource-areas h3 {display: none;}
 .cooperative-extension-logo {padding:10px;}
+
+
+.batch-export {background: #eee; padding:.5em 1.5em; margin: 2em 0;}
+.admin-only {color: red;}
+.batch-export form, .batch-export h3 {padding:0; margin:0;}
+
+
+#fullwidth .container {width: 95%;}
+.giant-tag {background: gold; padding: 10px 20px; border-radius: 20px !important;}

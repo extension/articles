@@ -118,6 +118,27 @@ class Link < ActiveRecord::Base
     end
   end
 
+  def convert_file_base_to_wordpress
+    # get the file base name without extension
+    tmp_url_title = File.basename( self.href_url, File.extname(self.href_url) )
+    # get extension and lowercase it
+    file_extension = File.extname( self.href_url ).downcase
+    # handle accented characters
+    tmp_url_title = I18n.transliterate(tmp_url_title)
+    # get rid of anything that's not a "word", not whitespace, not :, not -, not _, not .
+    tmp_url_title = tmp_url_title.gsub(/[^\s0-9a-zA-Z:_.-]/,'')
+    # reduce whitespace/multiple spaces to a single space
+    tmp_url_title = tmp_url_title.gsub(/\s+/,' ')
+    # remove leading and trailing whitespace
+    tmp_url_title = tmp_url_title.strip
+    # convert spaces to dashes
+    tmp_url_title = tmp_url_title.gsub(/[ ]/,'-')
+    # reduce multiple dashes to a single dash
+    tmp_url_title = tmp_url_title.gsub(/-+/,'-')
+    #append extension
+    tmp_url_title = tmp_url_title + file_extension
+  end
+
   def href_url(make_internal_links_absolute = false)
     default_url_options[:host] = Settings.urlwriter_host
     default_url_options[:protocol] = Settings.urlwriter_protocol

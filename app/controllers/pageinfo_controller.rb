@@ -13,6 +13,10 @@ class PageinfoController < ApplicationController
   before_filter :turn_off_resource_areas
   layout 'frontporch'
 
+  def admin
+
+  end
+
   def numbers
     @communities =  PublishingCommunity.all(:order => 'name')
     if(params[:showcontent] and params[:showcontent] == 'all')
@@ -178,6 +182,15 @@ class PageinfoController < ApplicationController
     else
       @pages = Page.orphaned_pages
     end
+  end
+
+  def wxr_by_tag
+    tag = params[:tag]
+    #find all pages by tag
+    @tagged_pages = Page.tagged_with(tag)
+    #create wxr file
+    wxr_export = render_to_string(:layout => false, :formats => [:xml])
+    send_data(wxr_export, :type=>"application/xml; charset=utf-8; header=present",:disposition => "attachment; filename=#{tag}_pages_#{Time.zone.now.strftime('%Y%m%d%H%M')}.xml")
   end
 
   def wxr
