@@ -1,0 +1,26 @@
+<div id="admin">
+    <h1>Migrated Communities</h1>
+
+  <p>This list reflects the "eXtension Community of Practice" which have migrated to Pressable</p>
+
+  <table class="table">
+      <tr>
+          <th>Community Name</th>
+          <th>Public Community Name</th>
+          <th>Resource Area Tag</th>
+          <th>Migrated Domain</th>
+          <th>Pages</th>
+      </tr>
+
+      <% @communities.each do |community|%>
+      <tr class="<%= community.is_launched %>">
+          <td><%= community.name %></td>
+          <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
+          <td><%= content_tag_url_display_name(community.primary_tag_name) %></td>
+          <td><%= community.migrated_domain %></td>
+          <td><%= number_with_delimiter(community.pages.count) -%></td>
+      </tr>
+      <% end%>
+  </table>
+
+</div>
