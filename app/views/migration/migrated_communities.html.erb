@@ -17,7 +17,7 @@
           <td><%= community.name %></td>
           <td <%= community.public_name.nil? ? 'class="notset"' : '' %>><%= community.public_name.nil? ? 'not set' : community.public_name %></td>
           <td><%= content_tag_url_display_name(community.primary_tag_name) %></td>
-          <td><%= community.migrated_domain %></td>
+          <td><%= link_to(community.migrated_domain, community.migrated_domain) %></td>
           <td><%= number_with_delimiter(community.pages.count) -%></td>
       </tr>
       <% end%>
