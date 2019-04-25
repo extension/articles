@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180620191650) do
+ActiveRecord::Schema.define(:version => 20190424161509) do
 
   create_table "admin_logs", :force => true do |t|
     t.integer  "person_id",                :default => 0, :null => false
@@ -335,6 +335,7 @@ ActiveRecord::Schema.define(:version => 20180620191650) do
     t.string   "gplus_handle"
     t.text     "twitter_widget"
     t.integer  "primary_tag_id"
+    t.string   "migrated_domain"
   end
 
   create_table "sponsors", :force => true do |t|

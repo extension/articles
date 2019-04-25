@@ -45,6 +45,9 @@ Darmok::Application.routes.draw do
     resources :logos
   end
 
+  match 'migration/migrated_communities', to: 'migration#migrated_communities'
+  match 'migration/redirects', to: 'migration#redirects'
+
   match 'feeds', to: "feeds#index"
   match 'feeds/content/:tags', to: "feeds#content", as: 'content_feed'
   match 'feeds/community/-/:tags', to: "feeds#community"

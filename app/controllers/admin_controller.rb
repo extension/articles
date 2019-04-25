@@ -222,6 +222,7 @@ class AdminController < ApplicationController
     @community.pinterest_handle = params['community']['pinterest_handle']
     @community.gplus_handle = params['community']['gplus_handle']
     @community.twitter_widget = params['community']['twitter_widget']
+    @community.migrated_domain = params['community']['migrated_domain']
 
     # sanity check tags
     if(params['community']['tag_names'].blank?)

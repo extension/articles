@@ -1,0 +1,31 @@
+<%- @body_id = "fullwidth" -%>
+<%- @page_title = "Admin - Batch Export and Redirects" -%>
+
+<p><%= link_to 'Migrated Communities', :action => 'migrated_communities' %></p>
+
+<h1>Migrated Content</h1>
+
+<h2>Tag: <span class="giant-tag"><%= content_tag_url_display_name(@community.primary_tag_name) -%></span></h2>
+
+<h2>New domain: <%= link_to(@community.migrated_domain, @community.migrated_domain) -%></h2>
+  <h3><%= @tagged_pages.all.count -%> Pages</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Create Node</th>
+        <th>Article URL (legacy)</th>
+        <th>Article Title</th>
+        <th>WordPress Permalink URL</th>
+      </tr>
+    </thead>
+
+    <%- @tagged_pages.each do |page| -%>
+      <%- @page = page -%>
+      <tr>
+        <td><%= link_to(@page.source_url, @page.source_url) -%></td>
+        <td><%= link_to(pageid_url(id: @page.id), pageid_url(id: @page.id)) -%></td>
+        <td><%= @page.title -%></td>
+        <td><%= link_to(@community.migrated_domain + page.make_wordpress_permalink_title, @community.migrated_domain + page.make_wordpress_permalink_title) -%></td>
+      </tr>
+    <%- end -%>
+  </table>
