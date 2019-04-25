@@ -7,6 +7,7 @@
 
 <h2>Tag: <span class="giant-tag"><%= content_tag_url_display_name(@community.primary_tag_name) -%></span></h2>
 
+<h2>New domain: <%= link_to(@community.migrated_domain, @community.migrated_domain) -%></h2>
   <h3><%= @tagged_pages.all.count -%> Pages</h3>
   <table class="table">
     <thead>
