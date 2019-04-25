@@ -1,7 +1,7 @@
 <div id="admin">
     <h1>Migrated Communities</h1>
 
-  <p>This list reflects the "eXtension Community of Practice" which have migrated to Pressable</p>
+  <p>This list reflects the communities which have migrated to Pressable</p>
 
   <table class="table">
       <tr>
@@ -9,6 +9,7 @@
           <th>Public Community Name</th>
           <th>Resource Area Tag</th>
           <th>Migrated Domain</th>
+          <th>Page Count</th>
           <th>Pages</th>
       </tr>
 
@@ -19,6 +20,7 @@
           <td><%= content_tag_url_display_name(community.primary_tag_name) %></td>
           <td><%= link_to(community.migrated_domain, community.migrated_domain) %></td>
           <td><%= number_with_delimiter(community.pages.count) -%></td>
+          <td><%= link_to('View Pages', :action => 'redirects', :content_tag => content_tag_url_display_name(community.primary_tag_name))%></td>
       </tr>
       <% end%>
   </table>
