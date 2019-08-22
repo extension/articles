@@ -672,11 +672,13 @@ class Page < ActiveRecord::Base
             if(!self.links.include?(image_link))
               self.links << image_link
             end
+            if !image_link.host.include? "flickr"
             if (convert_cop_links_to_wordpress_permalinks)
                 newhref = image_link.convert_file_base_to_wordpress
                 # file_basename = File.basename( newhref )
                 newhref = "/wp-content/uploads/" + Date.today.strftime("%Y/%m") + "/" + newhref.to_s
                 image.set_attribute('src', newhref)
+            end
             end
           else
             image.set_attribute('src', '')
