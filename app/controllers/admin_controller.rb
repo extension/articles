@@ -68,6 +68,24 @@ class AdminController < ApplicationController
     end #if request.post?
   end
 
+  def batch_redirect_confirmation_eorganic
+    if request.post?
+      tag = params[:tag]
+
+      if tag.blank?
+        flash[:error] = 'A tag is required to contruct the new URLs'
+        return redirect_to admin_manage_exports_and_redirects_url
+      end
+
+      @tag = tag
+      @wordpress_domain = 'https://eorganic.org'
+      #find all pages by tag
+      @tagged_pages = Page.tagged_with(tag)
+    else
+      return redirect_to admin_manage_exports_and_redirects_url
+    end #if request.post?
+  end
+
   def batch_redirect
    if request.post?
      tag = params[:tag]
@@ -102,6 +120,35 @@ class AdminController < ApplicationController
      return redirect_to admin_manage_exports_and_redirects_url(tag: tag)
    end
  end
+
+ def batch_redirect_eorganic
+  if request.post?
+    tag = params[:tag]
+
+    if tag.blank?
+      flash[:error] = 'A tag is required to contruct the new URLs'
+      return redirect_to admin_manage_exports_and_redirects_url
+    end
+
+    #find all pages by tag
+    @tagged_pages = Page.tagged_with(tag)
+
+    count = 0
+    @tagged_pages.each do |page|
+      new_url = 'https://eorganic.org/pages/' + page.id.to_s + '/' + page.url_title
+      single_page = Page.find(page.id)
+      if(single_page.redirect(new_url,current_person))
+        count += 1
+      else
+        error_messages += page.errors.full_messages.join("<br/>").html_safe
+        flash[:error] = error_messages
+        return redirect_to admin_manage_exports_and_redirects_url(tag: tag)
+      end
+    end
+    flash[:success] = "All pages redirected"
+    return redirect_to admin_manage_exports_and_redirects_url(tag: tag)
+  end
+end
 
   def manage_communities
     set_title("Manage Communities - Pubsite Admin")

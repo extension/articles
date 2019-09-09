@@ -75,4 +75,20 @@
 
   </div>
 
+  <div class="batch-export">
+
+    <h2>eOrganic Special Case</h2>
+    <h3>Redirect all the above pages to eorganic.org</h3>
+
+    <p>Redirect existing page URI to new domain. e.g. https://eorganic.org/pages/71817/considerations-for-out-wintering-the-organic-dairy-herd-webinar-by-eorganic</p>
+
+    <%= form_tag({controller: "admin", action: "batch_redirect_confirmation_eorganic"}, method: "post", class: "") do %>
+      <div class="form-group">
+        <%= hidden_field_tag(:tag, @tag) %>
+        <p><%= submit_tag "Preview this change", :class => "btn btn-default btn-large btn-primary" %></p>
+      </div>
+    <% end %>
+
+  </div>
+
 <%- end -%>
