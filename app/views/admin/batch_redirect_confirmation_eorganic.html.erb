@@ -1,0 +1,32 @@
+<%- @body_id = "fullwidth" -%>
+<%- @page_title = "Admin - Batch Redirect Confirmation" -%>
+
+<div id="flash">
+  <%= render(partial: 'partial/flashmessages') %>
+</div>
+
+<div class="well">
+  <h2>Tag: <span class="giant-tag"><%= @tag -%></span></h2>
+  <h2>You are about to batch redirect a set of pages. This means...</h2>
+
+  <p>Any page tagged with <strong><%= @tag -%></strong> will be redirected to eorganic.org.</p>
+
+  <ul>
+    <li>Any link to the page URL whether external or internal to Articles, will immediately redirect to the listed URL</li>
+    <li>The page will not be listed in automated category listings, nor shown as a feature.</li>
+    <li>Workflow controls on the page node in Create will be disabled. The node cannot be republished.</li>
+  </ul>
+
+
+  <h3>This action will affect <%= @tagged_pages.all.count -%> pages.</h3>
+  <h3>New domain: <span class="giant-tag">https://eorganic.org/</span></h3>
+</div>
+
+<%= form_tag({controller: "admin", action: "batch_redirect_eorganic"}, method: "post") do %>
+  <%= hidden_field_tag(:tag, @tag) %>
+  <p>
+    <%= submit_tag 'Redirect ALL Pages to eorganic.org', :class => "btn btn-large btn-default btn-danger"%>
+    <%= link_to "Cancel", admin_manage_exports_and_redirects_path(tag: @tag),  :class => "btn btn-large btn-default" %>
+  </p>
+
+<% end %>
