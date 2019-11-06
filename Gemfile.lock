@@ -64,7 +64,7 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     connection_pool (2.2.1)
-    crass (1.0.2)
+    crass (1.0.5)
     dalli (2.7.0)
     debug_inspector (0.0.2)
     diff-lcs (1.2.5)
@@ -115,7 +115,7 @@ GEM
       actionpack (>= 3)
       activesupport (>= 3)
       railties (>= 3)
-    loofah (2.1.1)
+    loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.5.4)
